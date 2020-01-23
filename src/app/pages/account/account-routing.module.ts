@@ -15,6 +15,18 @@ const routes: Routes = [
   {
     path: 'sportlevels',
     loadChildren: () => import('./sportlevels/sportlevels.module').then( m => m.SportlevelsPageModule)
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
+  },
+  {
+    path: 'edit-account',
+    loadChildren: () => import('./edit-account/edit-account.module').then( m => m.EditAccountPageModule)
+  },
+  {
+    path: 'edit-login',
+    loadChildren: () => import('./edit-login/edit-login.module').then( m => m.EditLoginPageModule)
   }
 ];
 

@@ -75,3 +75,22 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
+
+/*
+  ion-menu{
+   --background: var(--ion-color-primary) !important; 
+      ion-content{            
+          --background: var(--ion-color-primary) !important; 
+          ion-list-header{ 
+              --background: var(--ion-color-primary) !important;
+              --color: #FFFFFF !important;   
+          }
+          ion-item{
+              --background: var(--ion-color-primary) !important;
+               --color: #FFFFFF !important;
+               ion-icon{ padding-right: 10px !important; }
+          }
+      }
+  }
+*/
+

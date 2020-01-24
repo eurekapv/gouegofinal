@@ -25,8 +25,13 @@
       arProperty.forEach(element => {
         _this[element] = dataObject[element];
       });
-  
-  
+    }
+
+    setOriginal() {
+      this.do_updated = false;
+      this.do_inserted = false;
+      this.do_deleted = false;
+      this.do_loaded = true;
     }
   }
   

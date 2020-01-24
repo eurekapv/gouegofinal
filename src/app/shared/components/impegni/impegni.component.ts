@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImpegniComponent implements OnInit {
 
+  
+
   constructor() { }
 
   ngOnInit() {}

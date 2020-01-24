@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
@@ -6,13 +6,14 @@ import { AreeService } from 'src/app/services/aree.service';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 import { LocationsService } from 'src/app/services/locations.service';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnDestroy{
+export class HomePage implements OnInit, OnDestroy{
 
   startConfig: StartConfiguration;
   startConfigListen: Subscription;
@@ -28,7 +29,8 @@ export class HomePage implements OnDestroy{
 
   constructor(private startService: StartService,
               private areeService: AreeService,
-              private locationService: LocationsService) {
+              private locationService: LocationsService,
+              private actionSheetController: ActionSheetController) {
 
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
@@ -47,6 +49,11 @@ export class HomePage implements OnDestroy{
     })
   }
 
+  ngOnInit() {
+
+    this.presentActionSheet();
+  }
+
   ngOnDestroy() {
     if (this.startConfigListen) {
       this.startConfigListen.unsubscribe();
@@ -59,6 +66,32 @@ export class HomePage implements OnDestroy{
     if (this.listLocation) {
       this.listLocationListen.unsubscribe();
     }
+  }
+
+  //funzione per mostrare il popup di scelta campo
+  async presentActionSheet()
+  {
+    let buttonsArray: any[]=[]
+    let singleButton: any;
+    //popolo l'array di bottoni con i nomi delle aree operative
+    for (const iterator of this.listAree) {
+      singleButton={
+        text: iterator.DENOMINAZIONE,
+        icon: 'pin',
+        handler: ()=>{
+          //non so cosa si debba fare nell'handler
+          console.log('è stata scelta ' + iterator.DENOMINAZIONE)
+        }
+      }
+
+      buttonsArray.push(singleButton);
+    }
+    const actionSheet = await this.actionSheetController.create
+    ({
+      header: 'Scegli l\'Area di tua preferenza:',
+      buttons: buttonsArray      
+    });
+    await actionSheet.present();
   }
 
 }

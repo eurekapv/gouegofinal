@@ -17,5 +17,6 @@ export class Location extends IDDocument {
   
     constructor() {
       super();
+      this.IMAGEURL = '';
     }
 }

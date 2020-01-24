@@ -17,6 +17,8 @@ export class StartConfiguration {
     private _titleApp: string; //Titolo Applicazione
     private _gruppo: Gruppo; //Gruppo Sportivo
 
+    private _idAreaSelected: string; //IDArea Operativa Selezionata
+
     
     constructor(testingMode: boolean, secureProtocol: boolean) {
 
@@ -27,7 +29,8 @@ export class StartConfiguration {
         this._urlLogo = 'assets/img/logomini.png';
         this._urlLogoMenu = 'assets/img/logomini.png';
         this._appId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; 
-
+        this._idAreaSelected = '';
+        
         if (secureProtocol) {
             this._urlProtocol = 'https'
         }
@@ -64,7 +67,6 @@ export class StartConfiguration {
             this._companyName = this._gruppo.DENOMINAZIONE;
         }
 
-        this._ready = true;
     }
 
     get gruppo(): Gruppo {
@@ -73,6 +75,14 @@ export class StartConfiguration {
 
     set gruppo(value: Gruppo) {
         this._gruppo = value;
+    }
+
+    get idAreaSelected(): string {
+        return this._idAreaSelected;
+    }
+
+    set idAreaSelected(value: string) {
+        this._idAreaSelected = value;
     }
 
     get urlLogoMenu() {

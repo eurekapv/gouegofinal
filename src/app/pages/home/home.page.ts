@@ -2,10 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
-import { AreeService } from 'src/app/services/aree.service';
+
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
-import { LocationsService } from 'src/app/services/locations.service';
+
 
 @Component({
   selector: 'app-home',
@@ -26,9 +26,7 @@ export class HomePage implements OnDestroy{
   listLocationListen: Subscription;
 
 
-  constructor(private startService: StartService,
-              private areeService: AreeService,
-              private locationService: LocationsService) {
+  constructor(private startService: StartService) {
 
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
@@ -37,13 +35,15 @@ export class HomePage implements OnDestroy{
       });
     
     // Sottoscrivo alla ricezione delle Aree
-    this.listAreeListen = this.areeService.listAree.subscribe(aree => {
+    this.listAreeListen = this.startService.listAree.subscribe(aree => {
       this.listAree = aree;
+      
     });
 
     // Sottoscrivo alla ricezione delle Locations
-    this.listLocationListen = this.locationService.listLocation.subscribe(locations => {
+    this.listLocationListen = this.startService.listLocation.subscribe(locations => {
       this.listLocation = locations;
+      
     })
   }
 

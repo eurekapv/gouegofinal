@@ -1,0 +1,32 @@
+.ActivityCard
+{
+    
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    --border-radius: 5px;
+
+};
+
+.FavoriteCardBtn
+ {
+    position: absolute;
+    bottom:40px;
+    right: 0px;
+    height: 25px;
+    width: 25px;
+   
+ };
+
+ .CardImage
+{
+    max-height: 180px;
+};
+
+.PrenotaBtn
+{
+    position: absolute;
+    bottom:40px;
+    right: 100px;
+    height: 25px;
+   
+}

@@ -50,7 +50,6 @@ export class HomePage implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
-
     this.presentActionSheet();
   }
 

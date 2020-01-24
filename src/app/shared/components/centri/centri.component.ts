@@ -8,15 +8,10 @@ import { Location } from 'src/app/models/location.model';
 })
 export class CentriComponent implements OnInit {
 
-  location: Location;
+  @Input() location: Location=new Location;
 
   constructor() {
-    this.location=new Location;
-    this.location.COMUNE='Milano';
-    this.location.DENOMINAZIONE="Washington"
-    this.location.INDIRIZZO='Via Washington 33'
-    this.location.IMAGEURL='http://www.openbeachvolley.com/milano/wp-content/uploads/modi-1-500x500.jpg'
-    this.location.FAVORITE=false;
+    
     
    }
 

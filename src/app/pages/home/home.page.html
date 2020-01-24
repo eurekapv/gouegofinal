@@ -11,8 +11,7 @@
 
 <ion-content>
   <div scrollX="true">
-    <app-centri></app-centri>
-    <app-centri></app-centri>
+      <app-centri *ngFor="let locationItem of listLocation" [location]="locationItem"></app-centri>    
   </div>
 
   <div scrollX="true">

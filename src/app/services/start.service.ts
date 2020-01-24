@@ -30,7 +30,7 @@ export class StartService {
   requestStartAuthorization() {
     const myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const actualStartConfig = this._startConfig.getValue();
-    const myParams = new HttpParams().set('APPID',actualStartConfig.appId);
+    const myParams = new HttpParams().set('APPID', actualStartConfig.appId);
     const doObject = 'GRUPPOSPORTIVO';
 
     let myUrl = actualStartConfig.urlBase + '/' + doObject;

@@ -78,8 +78,11 @@ export class HomePage implements OnInit, OnDestroy{
         text: iterator.DENOMINAZIONE,
         icon: 'pin',
         handler: ()=>{
-          //non so cosa si debba fare nell'handler
-          console.log('è stata scelta ' + iterator.DENOMINAZIONE)
+          
+          console.log('è stata scelta ' + iterator.DENOMINAZIONE);
+
+          //Chiedo al servizio di cambiare l'Area Selezionata
+          this.startService.changeIdAreaSelected(iterator.ID);
         }
       }
 

@@ -142,21 +142,28 @@ export class StartService {
 
           //Procedo con il recupero delle Location
           if (idAreaSelected) {
-            // Memorizzo l'Area nell'oggetto
-            this.startConfig
-            .pipe(take(1))
-            .subscribe( element => {
-                element.idAreaSelected = idAreaSelected;
-
-                //Riemetto l'evento
-                this._startConfig.next(element);
-
-                // Recupero le Location
-                this.requestLocation(idAreaSelected);
-            });
+            // Imposto la nuova Area Selezionata e Carico le Location
+            this.changeIdAreaSelected(idAreaSelected);
           }
         });
 
+    }
+
+
+    // Cambia l'Area Selezionata e carico le Location
+    changeIdAreaSelected(idAreaSelected) {
+      // Memorizzo l'Area nell'oggetto
+      this.startConfig
+      .pipe(take(1))
+      .subscribe( element => {
+          element.idAreaSelected = idAreaSelected;
+
+          //Riemetto l'evento
+          this._startConfig.next(element);
+
+          // Recupero le Location
+          this.requestLocation(idAreaSelected);
+      });
     }
   //#endregion
 
@@ -187,7 +194,7 @@ export class StartService {
 
     // In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('APPID',actualStartConfig.appId);
-    // Nei parametri imposto il gruppo Sportivo
+    // Nei parametri imposto l'Area Operativa
     let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
 
     let myUrl = actualStartConfig.urlBase + '/' + doObject;
@@ -201,6 +208,10 @@ export class StartService {
 
           console.log('Locations');
           console.log(resultData);
+
+          //Cancello le Location
+          this._listLocation.next([]);
+
 
           // Ciclo sull'Array
           for (let index = 0; index < resultData.length; index++) {
@@ -226,7 +237,6 @@ export class StartService {
 
                 // Applicazione Pronta
                 element.ready = true;
-
                 //Riemetto l'evento
                 this._startConfig.next(element);
               

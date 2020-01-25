@@ -1,9 +1,39 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
+<ion-content  class="contentPrinc" >
+  <ion-grid style="height: 100%;">
+    <ion-row class="ion-align-items-center" style="height: 100%;">
+      <ion-col sizeSm="8" offsetSm="2" sizeLg="4" offsetLg="4">
+        <form [formGroup]="form">
+          <ion-card class="cardPrincipale">
+            <ion-card-header color="light">
+              <img src="http://www.openbeachvolley.com/milano/wp-content/uploads/logo_grande.png" class="logo">
+            </ion-card-header>
+            <ion-card-content >
+              <ion-segment class="ion-margin-vertical">
+                <ion-avatar class="avatar">
+                  <img src="../../../../assets/img/avatar.svg">
+                </ion-avatar>
+              </ion-segment>
+              <ion-item>
+                <ion-icon slot="start" name="person" ></ion-icon>
+                <ion-input inputmode="email" type="email" placeholder="Username" formControlName="username"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-icon slot="start" name="key" ></ion-icon>
+                <ion-input inputmode="text" type="password" placeholder="Password" formControlName="password"></ion-input>
+              </ion-item>
+              <ion-button class="btnLogin"  color="primary" fill="outline" expand="block" [disabled]="!form.valid" (click)="onClickLogin()">
+                Login
+              </ion-button>
+              <ion-label>
+                <div class="ion-text-center">Non hai un account? <a routerLink="/auth/register" routerDirection="forward">Registrati</a></div>
+                <div class="ion-text-center"><ion-text color="medium">oppure</ion-text></div>
+                <div class="ion-text-center"><a routerLink="/home" routerDirection="root">Continua senza registrazione</a></div>
+              </ion-label>
+            </ion-card-content>
+          </ion-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid >
 </ion-content>
+

@@ -10,7 +10,7 @@ import { Utente } from '../../../models/utente.model';
 })
 export class LoginPage implements OnInit {
 
-  docUtente: Utente;
+  docUtente=new Utente;
   form: FormGroup;
 
   constructor() { }
@@ -21,15 +21,33 @@ export class LoginPage implements OnInit {
 
   createForm() {
     this.form = new FormGroup({
-      username: new FormControl({
+      username: new FormControl(null, {
         updateOn: 'blur',
-        Validators: [Validators.required]
+        validators: [Validators.required]
       }),
-      password: new FormControl({
+      password: new FormControl(null, {
         updateOn: 'blur',
-        Validators: [Validators.required]
+        validators: [Validators.required]
       })
     });
+  }
+
+  onClickLogin()
+  {
+    if (!this.form.valid)
+    {
+      return
+    }
+    else
+    {
+      //per ora inserisco solo i dati in "docUtente", poi bisognerà integrare la procedura di login vera e propria
+      this.docUtente.WEBLOGIN=this.form.value.username;
+      this.docUtente.INPUTPASSWORD=this.form.value.password;
+      console.log(this.docUtente.WEBLOGIN);
+      console.log(this.docUtente.INPUTPASSWORD);
+
+    }
+
   }
 
 

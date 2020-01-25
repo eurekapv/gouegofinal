@@ -10,6 +10,7 @@ export class ImpegniComponent implements OnInit {
 
   @Input() impegno:Attivita=new Attivita;
   iconName: string;
+  locationName: string;//da valorizzare
 
   constructor() { }
 

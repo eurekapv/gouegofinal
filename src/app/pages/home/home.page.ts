@@ -30,6 +30,9 @@ export class HomePage implements OnInit, OnDestroy{
   //Elenco delle prossime attività (per ora creato a mano)
   listImpegni: Attivita[]=[];
 
+  //Area Selezionata VINENE VALORIZZATA CON IL PULSANTE 'CAMBIA', MA BISOGNA CAPIRE COME VALORIZZARLA ALL'INIZIO
+  selectedArea=new Area;
+
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController) {
 
@@ -51,20 +54,24 @@ export class HomePage implements OnInit, OnDestroy{
       
     })
 
-    /*
+    
     //visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
     //per ora lo lascio commentato, poi si potrà eliminare
-    let prossimoImpegno=new Attivita;
+    /*let prossimoImpegno=new Attivita;
     prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
     prossimoImpegno.DESCRIZIONE="wash"
     prossimoImpegno.SETTORE=SettoreAttivita.settoreCorso;
     this.listImpegni.push(prossimoImpegno);
-    */
+    prossimoImpegno=new Attivita;
+    prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
+    prossimoImpegno.DESCRIZIONE="lore"
+    prossimoImpegno.SETTORE=SettoreAttivita.settorePrenotazione;
+    this.listImpegni.push(prossimoImpegno);*/
+    
 
   }
 
   ngOnInit() {
-    this.presentActionSheet();
   }
 
   ngOnDestroy() {
@@ -97,6 +104,7 @@ export class HomePage implements OnInit, OnDestroy{
 
           //Chiedo al servizio di cambiare l'Area Selezionata
           this.startService.changeIdAreaSelected(iterator.ID);
+          this.selectedArea=iterator;
         }
       }
 

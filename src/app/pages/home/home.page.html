@@ -15,6 +15,11 @@
 </ion-header>
 
 <ion-content>
+
+ <div scrollX="true">
+   <app-impegni *ngFor="let item of listImpegni " [impegno]="item"></app-impegni>
+ </div>
+
   <div scrollX="true">
       <app-centri *ngFor="let locationItem of listLocation" [location]="locationItem"></app-centri>    
   </div>

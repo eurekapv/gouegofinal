@@ -7,6 +7,7 @@ import { CentriComponent } from '../../shared/components/centri/centri.component
 
 
 import { HomePage } from './home.page';
+import { ImpegniComponent } from 'src/app/shared/components/impegni/impegni.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,6 @@ import { HomePage } from './home.page';
       }
     ])
   ],
-  declarations: [HomePage, CentriComponent]
+  declarations: [HomePage, CentriComponent, ImpegniComponent]
 })
 export class HomePageModule {}

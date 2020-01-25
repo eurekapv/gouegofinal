@@ -19,14 +19,16 @@
 
  .CardImage
 {
-    max-height: 180px;
+    height: 180px;
+    min-width: 280px;
+    width: 280px;
 };
 
 .PrenotaBtn
 {
     position: absolute;
     bottom:40px;
-    right: 100px;
+    right: 140px;
     height: 25px;
    
 }

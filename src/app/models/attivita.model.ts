@@ -18,6 +18,7 @@ export class Attivita extends IDDocument {
     DATAORAINIZIO:  Date;
     DATAORAFINE:    Date;
     IDSPORT:        string; //Sport - Attività di riferimento
+    DESCRIZIONE:    string;
 
     constructor() {
         super();

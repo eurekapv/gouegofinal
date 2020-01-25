@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
 
 @Component({
   selector: 'app-impegni',
@@ -7,10 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImpegniComponent implements OnInit {
 
-  
+  @Input() impegno:Attivita=new Attivita;
+  iconName: string;
 
   constructor() { }
 
-  ngOnInit() {}
-
+  ngOnInit() {
+    if (this.impegno.SETTORE===SettoreAttivita.settoreCorso)
+    {
+      this.iconName='school';
+    }
+    else if(this.impegno.SETTORE===SettoreAttivita.settorePrenotazione)
+    {
+      this.iconName='calendar';
+    }
+    else if(this.impegno.SETTORE===SettoreAttivita.settoreTorneo)
+    {
+      this.iconName='medal';
+    }
+  }
 }

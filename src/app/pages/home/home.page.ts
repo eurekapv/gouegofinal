@@ -7,6 +7,7 @@ import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController } from '@ionic/angular';
+import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,8 @@ export class HomePage implements OnInit, OnDestroy{
   listLocation: Location[];
   listLocationListen: Subscription;
 
+  //Elenco delle prossime attività (per ora creato a mano)
+  listImpegni: Attivita[]=[];
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController) {
@@ -47,6 +50,17 @@ export class HomePage implements OnInit, OnDestroy{
       this.listLocation = locations;
       
     })
+
+    /*
+    //visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
+    //per ora lo lascio commentato, poi si potrà eliminare
+    let prossimoImpegno=new Attivita;
+    prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
+    prossimoImpegno.DESCRIZIONE="wash"
+    prossimoImpegno.SETTORE=SettoreAttivita.settoreCorso;
+    this.listImpegni.push(prossimoImpegno);
+    */
+
   }
 
   ngOnInit() {

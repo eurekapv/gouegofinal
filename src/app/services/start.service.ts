@@ -38,7 +38,7 @@ export class StartService {
   
   constructor(private apiService: ApicallService) { }
 
-  // Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione
+  /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
     const myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const actualStartConfig = this._startConfig.getValue();
@@ -186,7 +186,7 @@ export class StartService {
               }));
     }
 
-
+  /** Richiesta delle Location di una Area */
   requestLocation(idArea: string) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'LOCATION';

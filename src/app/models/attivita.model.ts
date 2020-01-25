@@ -23,4 +23,5 @@ export class Attivita extends IDDocument {
     constructor() {
         super();
     }
+    
 }

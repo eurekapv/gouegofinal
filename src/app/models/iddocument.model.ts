@@ -27,6 +27,7 @@
       });
     }
 
+    /** Imposta il documento Originale come se fosse sul database */
     setOriginal() {
       this.do_updated = false;
       this.do_inserted = false;

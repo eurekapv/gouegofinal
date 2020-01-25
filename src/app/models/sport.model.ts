@@ -12,6 +12,10 @@ export class Sport extends IDDocument {
     TIPOLOGIA:      TipoSport;
     PARTECIPANTI:   number;
     ICONA:          string; // Formato Icon-Sport non Ionic Icon
+
+    constructor() {
+        super();
+    }
 }
 
 /*

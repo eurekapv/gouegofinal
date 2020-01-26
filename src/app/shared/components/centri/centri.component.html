@@ -1,4 +1,4 @@
-<ion-card class="ActivityCard scroll-item" clickable  >
+<!-- <ion-card class="ActivityCard scroll-item" clickable>
     <img    [src]="location.IMAGEURL"    class="CardImage">  
   <ion-fab horizontal="start" vertical="bottom">
     <ion-button color="primary" class="PrenotaBtn ion-padding-horizontal" size="small">prenota</ion-button>
@@ -12,9 +12,72 @@
     <ion-item lines="none" clickable>
       <ion-icon name="pin" color="medium"></ion-icon>
       <ion-label class="ion-padding-start">
-        <h2>{{location.DENOMINAZIONE}}</h2>
-        <p>{{ location.COMUNE }} - {{ location.INDIRIZZO }}</p>
+        <h2>{{location.DENOMINAZIONE | titlecase}}</h2>
+        <p>
+          <span *ngIf="location.COMUNE">{{ location.COMUNE }}</span>
+          <span *ngIf="location.COMUNE && location.INDIRIZZO"> - </span>
+          <span *ngIf="location.INDIRIZZO">{{ location.INDIRIZZO }}</span></p>
       </ion-label>
     </ion-item>
   </ion-card-content>
+</ion-card> -->
+
+<ion-card mode="ios" button="true">
+  <img [src]="location.IMAGEURL" style="min-width: 288px;">
+
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button [color]="location.FAVORITE ? 'primary':'medium'" (click)="onClickFavorite()">
+      <ion-icon name="heart"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-fab horizontal="start" vertical="top">
+    <ion-button color="secondary" size="default">
+      <ion-icon slot="start" name="clock">
+      </ion-icon>
+      Prenota
+    </ion-button>
+  </ion-fab>
+
+
+  <ion-card-header style="background-color: floralwhite;">
+    <ion-card-subtitle>
+      <div *ngIf="location.COMUNE || location.INDIRIZZO">
+        <ion-icon name="pin" color="medium"></ion-icon>
+        <span *ngIf="location.COMUNE">{{ location.COMUNE }}</span>
+        <span *ngIf="location.COMUNE && location.INDIRIZZO"> - </span>
+        <span *ngIf="location.INDIRIZZO">{{ location.INDIRIZZO }}</span>
+      </div>
+      <div *ngIf="!location.COMUNE && !location.INDIRIZZO">
+        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        Centro Sportivo
+      </div>
+    </ion-card-subtitle>
+
+    <ion-card-title>{{location.DENOMINAZIONE | titlecase}}</ion-card-title>
+  </ion-card-header>
 </ion-card>
+
+<!-- <ion-card class="ActivityCard scroll-item" clickable  >
+  <img    [src]="location.IMAGEURL"    class="CardImage">  
+<ion-fab horizontal="start" vertical="bottom">
+  <ion-button color="primary" class="PrenotaBtn ion-padding-horizontal" size="small">prenota</ion-button>
+</ion-fab>
+<ion-fab horizontal="end" vertical="bottom">
+  <ion-button  class="FavoriteCardBtn ion-no-padding" size="small" [color]="location.FAVORITE ? 'primary':'medium'" (click)="onClickFavorite()">
+    <ion-icon name="heart"  ></ion-icon>
+  </ion-button>
+</ion-fab>
+<ion-card-content class="ion-no-padding"  >
+  <ion-item lines="none" clickable>
+    <ion-icon name="pin" color="medium"></ion-icon>
+    <ion-label class="ion-padding-start">
+      <h2>{{location.DENOMINAZIONE | titlecase}}</h2>
+      <p>
+        <span *ngIf="location.COMUNE">{{ location.COMUNE }}</span>
+        <span *ngIf="location.COMUNE && location.INDIRIZZO"> - </span>
+        <span *ngIf="location.INDIRIZZO">{{ location.INDIRIZZO }}</span></p>
+    </ion-label>
+  </ion-item>
+</ion-card-content>
+</ion-card> -->

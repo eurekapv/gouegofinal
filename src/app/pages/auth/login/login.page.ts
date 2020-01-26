@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Utente } from '../../../models/utente.model';
+import { StartConfiguration } from 'src/app/models/start-configuration.model';
+import { Subscription } from 'rxjs';
+import { StartService } from 'src/app/services/start.service';
 
 @Component({
   selector: 'app-login',
@@ -10,10 +13,19 @@ import { Utente } from '../../../models/utente.model';
 })
 export class LoginPage implements OnInit {
 
-  docUtente=new Utente;
+  docUtente = new Utente();
   form: FormGroup;
+  startConfig: StartConfiguration;
+  startConfigListen: Subscription;
 
-  constructor() { }
+
+  constructor(private startService: StartService) { 
+
+    this.startConfigListen = this.startService.startConfig.subscribe(element => {
+      this.startConfig = element;
+    });
+
+  }
 
   ngOnInit() {
     this.createForm();

@@ -6,8 +6,10 @@ import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, ModalController } from '@ionic/angular';
 import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
+import { Router } from '@angular/router';
+import { LoginPage } from '../auth/login/login.page';
 
 @Component({
   selector: 'app-home',
@@ -20,26 +22,40 @@ export class HomePage implements OnInit, OnDestroy{
   startConfigListen: Subscription;
 
   // Elenco delle Aree
-  listAree: Area[];
+  listAree: Area[] = [];
   listAreeListen: Subscription;
 
   // Elenco delle Location da mostrare
-  listLocation: Location[];
+  listLocation: Location[] = [];
   listLocationListen: Subscription;
 
-  //Elenco delle prossime attività (per ora creato a mano)
+  //Elenco delle prossime attività
   listImpegni: Attivita[]=[];
 
-  //Area Selezionata VINENE VALORIZZATA CON IL PULSANTE 'CAMBIA', MA BISOGNA CAPIRE COME VALORIZZARLA ALL'INIZIO
-  selectedArea=new Area;
+  // L'area viene recuperata dal subscribe
+  selectedArea: Area;
 
   constructor(private startService: StartService,
-              private actionSheetController: ActionSheetController) {
-
+              private actionSheetController: ActionSheetController,
+              private router: Router,
+              private mdlController: ModalController) {
+ 
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
       .subscribe(element => {
+
         this.startConfig = element;
+
+        //C'è un'area selezionata
+        if (element.idAreaSelected) {
+          
+          console.log('Area arrivata');
+
+          //Chiedo al servizio il documento dell'Area Selezionata
+          this.startService.getArea(element.idAreaSelected).subscribe(elArea => {
+            this.selectedArea = elArea;
+          });
+        }
       });
     
     // Sottoscrivo alla ricezione delle Aree
@@ -55,20 +71,24 @@ export class HomePage implements OnInit, OnDestroy{
     })
 
     
+
+    
+
+  }
+
+  _testAddImpegni() {
     //visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
-    //per ora lo lascio commentato, poi si potrà eliminare
-    /*let prossimoImpegno=new Attivita;
+    let prossimoImpegno=new Attivita();
     prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
     prossimoImpegno.DESCRIZIONE="wash"
     prossimoImpegno.SETTORE=SettoreAttivita.settoreCorso;
     this.listImpegni.push(prossimoImpegno);
-    prossimoImpegno=new Attivita;
+
+    prossimoImpegno=new Attivita();
     prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
     prossimoImpegno.DESCRIZIONE="lore"
     prossimoImpegno.SETTORE=SettoreAttivita.settorePrenotazione;
-    this.listImpegni.push(prossimoImpegno);*/
-    
-
+    this.listImpegni.push(prossimoImpegno);
   }
 
   ngOnInit() {
@@ -88,7 +108,36 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
-  //funzione per mostrare il popup di scelta campo
+
+  /** Gestisce il Click del pulsante di footer */
+  onClickfooterButton() {
+    if (this.startConfig.userLogged) {
+      // Apro lo Storico
+    }
+    else {
+      // Apro il Login
+      this.openLogin();
+    }
+  }
+
+  /** Apertura Videata Modale Login */
+  openLogin() {
+    this.router.navigate(['/','auth','login']);
+    /*
+    this.mdlController
+      .create ({
+        component: LoginPage
+      })
+      .then(frmModal => {
+        frmModal.present();
+        return frmModal.onDidDismiss();
+      })
+      .then(resultData => {
+
+      });*/
+  }
+
+  /** funzione per mostrare il popup di scelta campo */
   async presentActionSheet()
   {
     let buttonsArray: any[]=[]
@@ -99,12 +148,11 @@ export class HomePage implements OnInit, OnDestroy{
         text: iterator.DENOMINAZIONE,
         icon: 'pin',
         handler: ()=>{
-          
-          console.log('è stata scelta ' + iterator.DENOMINAZIONE);
-
+        
           //Chiedo al servizio di cambiare l'Area Selezionata
           this.startService.changeIdAreaSelected(iterator.ID);
-          this.selectedArea=iterator;
+          // Non devo fare niente altro, il servizio emette l'evento di cambio e aggiorna tutto
+
         }
       }
 
@@ -112,10 +160,27 @@ export class HomePage implements OnInit, OnDestroy{
     }
     const actionSheet = await this.actionSheetController.create
     ({
-      header: 'Scegli l\'Area di tua preferenza:',
+      header: 'Scegli il Centro',
       buttons: buttonsArray      
     });
     await actionSheet.present();
   }
+
+
+ //#region GESTIONE INTERFACCIA
+ /** Ritorna il color a seconda dello stato di Login */
+ getColorStateLogin() {
+   let color = 'primary';
+  if (this.startConfig) {
+    if (this.startConfig.userLogged) {
+      color = 'success'
+    }
+    else {
+      color = 'secondary'
+    }
+  }
+  return color;
+ }
+ //#endregion
 
 }

@@ -237,6 +237,7 @@ export class StartService {
 
                 // Applicazione Pronta
                 element.ready = true;
+                console.log('Ambiente Pronto');
                 //Riemetto l'evento
                 this._startConfig.next(element);
               

@@ -18,6 +18,7 @@ export class StartConfiguration {
     private _gruppo: Gruppo; //Gruppo Sportivo
 
     private _idAreaSelected: string; //IDArea Operativa Selezionata
+    private _userLogged: boolean; //Indica un utente loggato
 
     
     constructor(testingMode: boolean, secureProtocol: boolean) {
@@ -131,6 +132,14 @@ export class StartConfiguration {
     
     set ready(value: boolean) {
         this._ready = value;
+    }
+
+    get userLogged(): boolean {
+        return this._userLogged;
+    }
+    
+    set userLogged(value: boolean) {
+        this._userLogged = value;
     }
 
     // get set urlPort

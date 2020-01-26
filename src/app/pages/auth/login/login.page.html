@@ -5,12 +5,12 @@
         <form [formGroup]="form">
           <ion-card class="cardPrincipale">
             <ion-card-header color="light">
-              <img src="http://www.openbeachvolley.com/milano/wp-content/uploads/logo_grande.png" class="logo">
+              <img [src]="startConfig?.urlLogo" class="logo">
             </ion-card-header>
             <ion-card-content >
               <ion-segment class="ion-margin-vertical">
                 <ion-avatar class="avatar">
-                  <img src="../../../../assets/img/avatar.svg">
+                  <img src="assets/img/avatar.svg">
                 </ion-avatar>
               </ion-segment>
               <ion-item>
@@ -27,7 +27,7 @@
               <ion-label>
                 <div class="ion-text-center">Non hai un account? <a routerLink="/auth/register" routerDirection="forward">Registrati</a></div>
                 <div class="ion-text-center"><ion-text color="medium">oppure</ion-text></div>
-                <div class="ion-text-center"><a routerLink="/home" routerDirection="root">Continua senza registrazione</a></div>
+                <div class="ion-text-center"><a routerLink="/home" routerDirection="back">Continua senza registrazione</a></div>
               </ion-label>
             </ion-card-content>
           </ion-card>

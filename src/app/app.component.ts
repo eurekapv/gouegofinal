@@ -41,6 +41,7 @@ export class AppComponent {
                       
                       // Solo se mi dicono che l'ambiente è pronto 
                       if (element.ready) {
+                        console.log('Finito lo Splash');
                         this.showSplash = false;
                       }
       });

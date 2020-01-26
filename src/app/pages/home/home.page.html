@@ -4,12 +4,18 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      {{startConfig?.titleApp}}
+      {{startConfig?.companyName | titlecase }}
     </ion-title>
     <ion-buttons slot="primary">
       <ion-button>
-        <ion-icon name="contact" color="primary"></ion-icon>
+
+        <ion-icon 
+          name="contact" 
+          [color]="getColorStateLogin()">
+        </ion-icon>
+
       </ion-button>
+
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -24,7 +30,7 @@
     </ion-label>
   </ion-item>
   
-  <ion-grid *ngIf="listImpegni.length===0">
+  <ion-grid *ngIf="listImpegni.length===0" >
     <ion-row>
       <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
         <ion-card class="ion-text-center">
@@ -40,7 +46,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf="listImpegni.length===1">
+  <ion-grid *ngIf="listImpegni.length===1" >
     <ion-row>
       <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
         <app-impegni [impegno]="listImpegni[0]"></app-impegni>
@@ -48,14 +54,14 @@
     </ion-row>
   </ion-grid>
 
-  <div scrollX="true" *ngIf="listImpegni.length>1" >
+  <div scrollX="true" *ngIf="listImpegni.length>1">
     <app-impegni *ngFor="let item of listImpegni " [impegno]="item"></app-impegni>
   </div>
 
   <ion-item type="header" lines="none" color="primary">
     <ion-icon slot="start" name="map" ></ion-icon>
     <ion-label class="">
-      <h2>Centri Sportivi - {{ selectedArea.COMUNE }}:</h2>
+      <h2>{{ selectedArea.COMUNE | titlecase }}</h2>
     </ion-label>
     <ion-button slot="end" color="light" fill="outline" *ngIf="listAree.length>1" (click)='presentActionSheet()' >
       Cambia
@@ -63,7 +69,7 @@
   </ion-item>
 
   
-  <div scrollX="true" >
+  <div scrollX="true">
       <app-centri *ngFor="let locationItem of listLocation" [location]="locationItem" ></app-centri>    
   </div>
 
@@ -71,10 +77,11 @@
 
 <ion-footer>
   <ion-button 
-    color="primary"   
+    [color]="getColorStateLogin()"
     expand="block" 
-    size="large">
-      <ion-icon slot="start" name="checkmark"></ion-icon>  
-      Storico
+    size="large"
+    (click)="onClickfooterButton()">
+      <!-- <ion-icon slot="start" name="checkmark"></ion-icon>   -->
+     {{startConfig.userLogged ? 'Storico' : 'Accedi'}}
     </ion-button>
 </ion-footer>

@@ -17,7 +17,11 @@ export class LoginPage implements OnInit {
   form: FormGroup;
   startConfig: StartConfiguration;
   startConfigListen: Subscription;
+  pageVersione = 1; //VERSIONE DI LOGIN DA MOSTRARE
 
+  /*PROPRIETA' VERSIONE 2 */
+  public backgroundImage = 'assets/img/sport5.png';
+  /* ******************** */
 
   constructor(private startService: StartService) { 
 
@@ -60,6 +64,10 @@ export class LoginPage implements OnInit {
 
     }
 
+  }
+
+  goToRegistrazione() {
+    
   }
 
 

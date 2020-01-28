@@ -9,7 +9,6 @@ import { Location } from 'src/app/models/location.model';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
 import { Router } from '@angular/router';
-import { LoginPage } from '../auth/login/login.page';
 
 @Component({
   selector: 'app-home',
@@ -123,18 +122,6 @@ export class HomePage implements OnInit, OnDestroy{
   /** Apertura Videata Modale Login */
   openLogin() {
     this.router.navigate(['/','auth','login']);
-    /*
-    this.mdlController
-      .create ({
-        component: LoginPage
-      })
-      .then(frmModal => {
-        frmModal.present();
-        return frmModal.onDidDismiss();
-      })
-      .then(resultData => {
-
-      });*/
   }
 
   /** funzione per mostrare il popup di scelta campo */

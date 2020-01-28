@@ -1,4 +1,4 @@
-
+// STILI VERSIONE 1
 
 .cardPrincipale
 {
@@ -14,13 +14,13 @@
 
 .contentPrinc
 {
-    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100 */
-/* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100 */
---background: #0cd1e8; /* Old browsers */
---background: -moz-linear-gradient(-45deg,  #0cd1e8 0%, #2989d8 50%, #0cd1e8 100%); /* FF3.6-15 */
---background: -webkit-linear-gradient(-45deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); /* Chrome10-25,Safari5.1-6 */
---background: linear-gradient(135deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', endColorstr='#0cd1e8',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    //Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100
+    //Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100
+--background: #0cd1e8; // Old browsers
+--background: -moz-linear-gradient(-45deg,  #0cd1e8 0%, #2989d8 50%, #0cd1e8 100%); // FF3.6-15 
+--background: -webkit-linear-gradient(-45deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); // Chrome10-25,Safari5.1-6 
+--background: linear-gradient(135deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); // W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ 
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', endColorstr='#0cd1e8',GradientType=1 ); // IE6-9 fallback on horizontal gradient
 
 
 }
@@ -37,3 +37,66 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', end
     width:60%;
     height: auto;
 }
+
+
+// STILI VERSIONE 2
+
+    // Fullscreen centered image background
+
+/*
+    ion-content {
+      --background: url('/assets/img/sport5.png') no-repeat center center / cover;
+      border-color: transparent;
+    }
+
+    .logo {
+      width: 50%;
+      height: auto;
+      max-width: 12em;
+      margin: 0 auto;
+      padding-bottom: 50px;
+    }
+
+    .no-border {
+      border-bottom: 0 !important;
+      box-shadow: none !important;
+    }
+
+    ion-row {
+      align-items: center;
+      text-align: center;
+    }
+
+    @media only screen and (min-width: 768px) {
+      ion-col.col {
+        margin: 0 auto;
+        max-width: 40%;
+      }
+    }
+    span {
+      color: white;
+    }
+    ion-item {
+      border-radius: 30px !important;
+      padding-left: 10px !important;
+      margin-bottom: 10px;
+      background-color: #f6f6f6;
+      opacity: 0.7;
+      font-size: 0.9em;
+    }
+
+    ion-list {
+      margin: 0;
+    }
+
+    .login-button {
+      width: 100%;
+      // border-radius: 30px;
+      font-size: 0.9em;
+      // border: 1px solid #fff;
+      background-color: #39acdc;
+    }
+
+    */
+  
+  

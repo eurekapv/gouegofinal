@@ -1,4 +1,4 @@
-<ion-content  class="contentPrinc" >
+<ion-content  class="contentPrinc" *ngIf="pageVersione == 1">
   <ion-grid style="height: 100%;">
     <ion-row class="ion-align-items-center" style="height: 100%;">
       <ion-col sizeSm="8" offsetSm="2" sizeLg="4" offsetLg="4">
@@ -35,5 +35,53 @@
       </ion-col>
     </ion-row>
   </ion-grid >
+</ion-content>
+
+
+<ion-content class="ion-no-padding" *ngIf="pageVersione == 2">
+  <!-- <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header> -->
+
+
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <img class="logo" src="assets/img/logomini.png" />
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="10" offset-sm="1">
+        <ion-list inset class="no-border">
+          <ion-item>
+            <ion-label>Username</ion-label>
+            <ion-input type="text"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Password</ion-label>
+            <ion-input type="password"></ion-input>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button class="login-button">Login</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div (click)="goToRegistrazione()">
+          <span>O crea un nuovo account.</span>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 

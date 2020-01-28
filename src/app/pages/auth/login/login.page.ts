@@ -5,6 +5,8 @@ import { Utente } from '../../../models/utente.model';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
+import { LoadingController } from '@ionic/angular';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +25,10 @@ export class LoginPage implements OnInit {
   public backgroundImage = 'assets/img/sport5.png';
   /* ******************** */
 
-  constructor(private startService: StartService) { 
+  constructor(private startService: StartService, 
+    private loadingCtrl: LoadingController, 
+    private accountService: AccountService) { 
+
 
     this.startConfigListen = this.startService.startConfig.subscribe(element => {
       this.startConfig = element;
@@ -46,8 +51,12 @@ export class LoginPage implements OnInit {
         validators: [Validators.required]
       })
     });
+
+    
   }
 
+
+  /** Usata per effettuare il login  */
   onClickLogin()
   {
     if (!this.form.valid)
@@ -56,11 +65,33 @@ export class LoginPage implements OnInit {
     }
     else
     {
-      //per ora inserisco solo i dati in "docUtente", poi bisognerà integrare la procedura di login vera e propria
-      this.docUtente.WEBLOGIN=this.form.value.username;
-      this.docUtente.INPUTPASSWORD=this.form.value.password;
-      console.log(this.docUtente.WEBLOGIN);
-      console.log(this.docUtente.INPUTPASSWORD);
+    
+      this.loadingCtrl
+        .create({
+          message: 'Controllo credenziali'
+        })
+        .then(element => {
+
+          //Creo il loading
+          element.present();
+
+          this.accountService
+            .requestAuthorization(this.form.value.username, this.form.value.password)
+            .subscribe(result => {
+                //Chiudo lo Spinner
+                element.dismiss();
+
+                //Chiudo la login
+                console.log(result);
+
+                //resetto la form
+                this.form.reset();
+
+            })
+        })
+
+
+
 
     }
 

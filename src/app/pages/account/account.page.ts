@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Utente } from 'src/app/models/utente.model';
 
 @Component({
   selector: 'app-account',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./account.page.scss'],
 })
 export class AccountPage implements OnInit {
+
+  docUtente= new Utente();
 
   constructor() { }
 

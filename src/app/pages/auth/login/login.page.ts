@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { Utente } from '../../../models/utente.model';
-import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { Subscription } from 'rxjs';
-import { StartService } from 'src/app/services/start.service';
-import { LoadingController } from '@ionic/angular';
-import { AccountService } from 'src/app/services/account.service';
+
+import { LoadingController, ToastController, NavController } from '@ionic/angular';
+import { AccountService } from '../../../services/account.service';
+
 
 @Component({
   selector: 'app-login',
@@ -15,26 +13,17 @@ import { AccountService } from 'src/app/services/account.service';
 })
 export class LoginPage implements OnInit {
 
-  docUtente = new Utente();
+  
   form: FormGroup;
-  startConfig: StartConfiguration;
-  startConfigListen: Subscription;
-  pageVersione = 1; //VERSIONE DI LOGIN DA MOSTRARE
 
-  /*PROPRIETA' VERSIONE 2 */
-  public backgroundImage = 'assets/img/sport5.png';
-  /* ******************** */
+  
 
-  constructor(private startService: StartService, 
-    private loadingCtrl: LoadingController, 
-    private accountService: AccountService) { 
-
-
-    this.startConfigListen = this.startService.startConfig.subscribe(element => {
-      this.startConfig = element;
-    });
-
-  }
+  constructor(
+    
+    private loadingCtrl: LoadingController,
+    private toastCtrl: ToastController, 
+    private accountService: AccountService,
+    private navCtrl: NavController) { }
 
   ngOnInit() {
     this.createForm();
@@ -65,7 +54,7 @@ export class LoginPage implements OnInit {
     }
     else
     {
-    
+      
       this.loadingCtrl
         .create({
           message: 'Controllo credenziali'
@@ -77,15 +66,29 @@ export class LoginPage implements OnInit {
 
           this.accountService
             .requestAuthorization(this.form.value.username, this.form.value.password)
-            .subscribe(result => {
+            .subscribe(dataResult => {
+                // E' arrivato questo
+                console.log(dataResult);
+
                 //Chiudo lo Spinner
                 element.dismiss();
 
-                //Chiudo la login
-                console.log(result);
+                // E' Arrivata una risposta
+                if (dataResult.RESULT === 0) {
+                  this.showMessage(dataResult.MESSAGE);
+                }
+                else {
+                  //resetto la form
+                  this.form.reset();
 
-                //resetto la form
-                this.form.reset();
+                  // In teoria accesso avvenuto correttamente
+                  //Nel Messaggio ci sono le informazioni account
+                  //this.accountService.receiveAccount(dataResult.MESSAGE);
+                  
+                  //Chiudo la pagina e torno indietro
+                  this.navCtrl.navigateBack(['/']);
+                }
+
 
             })
         })
@@ -102,5 +105,14 @@ export class LoginPage implements OnInit {
   }
 
 
+  async showMessage(myMessage: string) {
+    const toast = await this.toastCtrl
+      .create({
+        message: myMessage,
+        duration: 3000
+      });
+
+      toast.present();
+  }
 
 }

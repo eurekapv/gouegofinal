@@ -8,6 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { Area } from '../models/area.model';
 import { Location } from '../models/location.model';
+import { Utente } from '../models/utente.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,9 @@ export class StartService {
   private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
   private _listAree = new BehaviorSubject<Area[]>([]);
   private _listLocation = new BehaviorSubject<Location[]>([]);
+  private _userLogged = new BehaviorSubject<boolean>(false);
+  private _account = new BehaviorSubject<Utente>(new Utente());
+
 
   get startConfig() {
     return this._startConfig.asObservable();
@@ -35,7 +39,16 @@ export class StartService {
     return this._listLocation.asObservable();
   }
 
-  
+  // Espone se l'utente è loggato 
+  get userLogged() {
+    return this._userLogged.asObservable();
+  }
+
+  // Espone l'account 
+  get account() {
+    return this._account.asObservable();
+  }
+
   constructor(private apiService: ApicallService) { }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -167,7 +180,6 @@ export class StartService {
     }
   //#endregion
 
-
   //#region LOCATIONS
     //Aggiunge una location
     addLocation(objLocation: Location) {
@@ -248,4 +260,23 @@ export class StartService {
     
   }
   //#endregion
+
+//#region ACCOUNT
+  //E' stato ricevuto un account in formato JSON
+  setAccount(account: any) {
+    //Imposto il nuovo Account
+    let newUtente = new Utente();
+
+    newUtente.setJSONProperty(account);
+
+    // Imposto il nuovo utente
+    this._account.next(newUtente);
+
+    // Avviso del login
+    this._userLogged.next(true);
+
+    console.log(account);
+  }
+//#endregion
+  
 }

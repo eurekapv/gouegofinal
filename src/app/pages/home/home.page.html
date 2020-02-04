@@ -7,10 +7,10 @@
       {{startConfig?.companyName | titlecase }}
     </ion-title>
     <ion-buttons slot="primary">
-      <ion-button routerLink="/account" routterDirection="forward">
+      <ion-button routerLink="/account" routerDirection="forward" *ngIf="userLogged">
         <ion-icon 
           name="contact" 
-          [color]="getColorStateLogin()">
+          [color]="btnFooterColor()">
         </ion-icon>
 
       </ion-button>
@@ -83,11 +83,11 @@
 
 <ion-footer>
   <ion-button 
-    [color]="getColorStateLogin()"
+    [color]="btnFooterColor()"
     expand="block" 
     size="large"
     (click)="onClickfooterButton()">
-      <!-- <ion-icon slot="start" name="checkmark"></ion-icon>   -->
-     {{startConfig.userLogged ? 'Storico' : 'Accedi'}}
+      <ion-icon slot="start" name="{{btnFooterIcon()}}"></ion-icon>
+      {{btnFooterCaption()}}
     </ion-button>
 </ion-footer>

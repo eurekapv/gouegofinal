@@ -9,6 +9,7 @@ import { Location } from 'src/app/models/location.model';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
 import { Router } from '@angular/router';
+import { Utente } from 'src/app/models/utente.model';
 
 @Component({
   selector: 'app-home',
@@ -17,8 +18,17 @@ import { Router } from '@angular/router';
 })
 export class HomePage implements OnInit, OnDestroy{
 
+  // Parametri Iniziali di Configurazione
   startConfig: StartConfiguration;
   startConfigListen: Subscription;
+
+  //Identificativo Utente Loggato
+  userLogged: boolean;
+  userLoggedListen : Subscription;
+
+  //Account Loggato
+  account: Utente;
+  accountListen: Subscription;
 
   // Elenco delle Aree
   listAree: Area[] = [];
@@ -36,8 +46,8 @@ export class HomePage implements OnInit, OnDestroy{
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
-              private router: Router,
-              private mdlController: ModalController) {
+              private router: Router
+              ) {
  
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
@@ -54,7 +64,7 @@ export class HomePage implements OnInit, OnDestroy{
           this.startService.getArea(element.idAreaSelected).subscribe(elArea => {
             this.selectedArea = elArea;
           });
-        }
+        } 
       });
     
     // Sottoscrivo alla ricezione delle Aree
@@ -69,7 +79,15 @@ export class HomePage implements OnInit, OnDestroy{
       
     })
 
-    
+    //Sottoscrivo all'ascolto di un utente loggato
+    this.userLoggedListen = this.startService.userLogged.subscribe( element => {
+      this.userLogged = element;
+    });
+
+    //Sottoscrivo all'ascolto dell'Account
+    this.accountListen = this.startService.account.subscribe(element => {
+      this.account = element;
+    })
 
     
 
@@ -110,7 +128,7 @@ export class HomePage implements OnInit, OnDestroy{
 
   /** Gestisce il Click del pulsante di footer */
   onClickfooterButton() {
-    if (this.startConfig.userLogged) {
+    if (this.userLogged) {
       // Apro lo Storico
     }
     else {
@@ -156,17 +174,49 @@ export class HomePage implements OnInit, OnDestroy{
 
  //#region GESTIONE INTERFACCIA
  /** Ritorna il color a seconda dello stato di Login */
- getColorStateLogin() {
+ btnFooterColor() {
    let color = 'primary';
-  if (this.startConfig) {
-    if (this.startConfig.userLogged) {
+  
+    if (this.userLogged) {
       color = 'success'
     }
     else {
       color = 'secondary'
     }
+
+    return color;
+ }
+
+ btnFooterCaption() {
+  let retCaption = '';
+  const captionAccedi = 'Accedi';
+
+  retCaption = captionAccedi;
+  //Utente Loggato
+  if (this.userLogged) {
+    // Account Presente
+    if (this.account) {
+        retCaption = this.account.NOMINATIVO ? this.account.NOMINATIVO : captionAccedi      
+    }
   }
-  return color;
+
+  return retCaption;
+ }
+
+ btnFooterIcon() {
+  let retIcon = '';
+  const iconAccedi = 'log-in';
+
+  retIcon = iconAccedi;
+  //Utente Loggato
+  if (this.userLogged) {
+    // Account Presente
+    if (this.account) {
+        retIcon = this.account.NOMINATIVO ? 'list-box' : iconAccedi      
+    }
+  }
+
+  return retIcon;
  }
  //#endregion
 

@@ -28,19 +28,6 @@ export class AccountService {
 
    }
 
-  /** Effettua il login contattando il server, ritorna un Observable */
-  doLogin(username: string, password: string) {
-
-    return this.account.pipe(delay(2000),tap(docUser => {
-      console.log('Ancora');
-      docUser.WEBLOGIN = username;
-      docUser.INPUTPASSWORD = password;
-
-      this._account.next(docUser);
-
-    }));
-  }
-
 
   requestAuthorization( username: string, 
                         password: string, 
@@ -55,5 +42,14 @@ export class AccountService {
 
     return this.apiService
           .httpGet(myUrl, myHeaders, myParams)
+          .pipe(tap(element => {
+            if (element.RESULT == -1) {
+              //Autorizzazione concessa
+              //Dentro a MESSAGE è presente il documento dell'utente
+              // Avviso il servizio si impostare l'account
+              this.startSrv.setAccount(element.MESSAGE);
+            }
+          }));
   }
+
 }

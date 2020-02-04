@@ -1,9 +1,50 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>register</ion-title>
+<ion-header >
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <img src="http://www.openbeachvolley.com/milano/wp-content/uploads/logo_grande.png"
+    class="logo">
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+  <ion-segment>
+    <ion-avatar class="avatar">
+      <img src="/assets/img/avatar.svg">
+      <ion-fab-button color="medium" class="btnAddPhoto">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-avatar>
+    </ion-segment>
+    <h1 class="titolo" >Benvenuto!</h1>
+    <form [formGroup]="form">
+      <ion-list>
+      <ion-item>
+        <ion-icon name="contact" slot="start"></ion-icon>
+        <ion-input type="text" placeholder="Nome" formControlName="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="contact" slot="start"></ion-icon>
+        <ion-input type="text" placeholder="Cognome" formControlName="surname" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="at" slot="start"></ion-icon>
+        <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="key" slot="start"></ion-icon>
+        <ion-input type="password" placeholder="Password" formControlName="psw"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="call" slot="start"></ion-icon>
+        <ion-input type="nuber" placeholder="Cellulare" formControlName="telephone" ></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+  <ion-button color="primary" fill="outline" expand="block" class="btnRegistrati" [disabled]="!form.valid" (click)="onClickRegister()">
+    Registrati
+  </ion-button>
+  
 
 </ion-content>

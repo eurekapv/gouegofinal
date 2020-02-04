@@ -1,9 +1,59 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>account</ion-title>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Profilo</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <div style="height: 1vh"></div>
+  <ion-item lines="none" color="secondary">
+    <ion-avatar slot="start" class="Avatar">
+      <img src="http://www.openbeachvolley.com/milano/wp-content/uploads/Tommaso-Pizzileo-e1549576460833.jpg">
+    </ion-avatar>
+    <ion-label class="ion-text-wrap">
+      <h1>{{ docUtente.NOME }} {{ docUtente.COGNOME }}</h1>
+      <p>{{ docUtente.EMAIL }}</p>
+    </ion-label>
+  </ion-item>
+  <div style="height: 3vh"></div>
+  <ion-list>
+    <ion-item button="true" routerLink="edit-login" routerDirection="forward">
+      <ion-icon slot="start" name="key"></ion-icon>
+      <ion-label>
+        <h2>Login</h2>
+        <p>Modifica le credenziali di accesso</p>
+      </ion-label>
+    </ion-item>
+    <ion-item button="true" routerLink="edit-account" routerDirection="forward">
+      <ion-icon slot="start" name="contact"></ion-icon>
+      <ion-label>
+        <h2>Informazioni personali</h2>
+        <p>Data e luogo di nascita, residenza, ecc..</p>
+      </ion-label>
+    </ion-item>
+    <ion-item button="true" routerLink="sportlevels" routerDirection="forward">
+      <ion-icon slot="start" name="stats"></ion-icon>
+      <ion-label>
+        <h2>Livelli di gioco</h2>
+        <p>Visualizza il tuo livello di gioco</p>
+      </ion-label>
+    </ion-item>
+    <ion-item button="true" routerLink="settings" routerDirection="forward">
+      <ion-icon slot="start" name="settings"></ion-icon>
+      <ion-label>
+        <h2>Opzioni</h2>
+        <p>Quello che ci sarà nelle opzioni, ecc..</p>
+      </ion-label>
+    </ion-item>
+    <ion-item button="true" routerLink="documents" routerDirection="forward">
+      <ion-icon slot="start" name="copy"></ion-icon>
+      <ion-label>
+        <h2>Documenti</h2>
+        <p>Visualizza e scarica i tuoi documenti</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

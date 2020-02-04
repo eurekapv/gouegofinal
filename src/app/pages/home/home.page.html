@@ -7,8 +7,7 @@
       {{startConfig?.companyName | titlecase }}
     </ion-title>
     <ion-buttons slot="primary">
-      <ion-button>
-
+      <ion-button routerLink="/account" routterDirection="forward">
         <ion-icon 
           name="contact" 
           [color]="getColorStateLogin()">
@@ -68,9 +67,16 @@
     </ion-button>  
   </ion-item>
 
-  
-  <div scrollX="true">
-      <app-centri *ngFor="let locationItem of listLocation" [location]="locationItem" ></app-centri>    
+  <ion-grid *ngIf="listLocation.length===1" >
+    <ion-row>
+      <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
+        <app-centri [location]="listLocation[0]" [routerLink]="['/location', listLocation[0].ID]"></app-centri>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div scrollX="true" *ngIf="listLocation.length>1">
+      <app-centri *ngFor="let locationItem of listLocation" [location]="locationItem"  [routerLink]="['/location', locationItem.ID]" ></app-centri>    
   </div>
 
 </ion-content>

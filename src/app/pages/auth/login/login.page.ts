@@ -64,26 +64,23 @@ export class LoginPage implements OnInit {
           //Creo il loading
           element.present();
 
+          // Chiamo il Servizio Account per eseguire l'autorizzazione
           this.accountService
             .requestAuthorization(this.form.value.username, this.form.value.password)
             .subscribe(dataResult => {
-                // E' arrivato questo
-                console.log(dataResult);
 
                 //Chiudo lo Spinner
                 element.dismiss();
 
-                // E' Arrivata una risposta
+                // E' Arrivata una risposta NEGATIVA
                 if (dataResult.RESULT === 0) {
                   this.showMessage(dataResult.MESSAGE);
                 }
                 else {
-                  //resetto la form
-                  this.form.reset();
+                  //LOGIN ACCETTATO
 
-                  // In teoria accesso avvenuto correttamente
-                  //Nel Messaggio ci sono le informazioni account
-                  //this.accountService.receiveAccount(dataResult.MESSAGE);
+                  //Resetto la form
+                  this.form.reset();
                   
                   //Chiudo la pagina e torno indietro
                   this.navCtrl.navigateBack(['/']);

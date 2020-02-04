@@ -11,10 +11,10 @@
   <div style="height: 1vh"></div>
   <ion-item lines="none" color="secondary">
     <ion-avatar slot="start" class="Avatar">
-      <img src="http://www.openbeachvolley.com/milano/wp-content/uploads/Tommaso-Pizzileo-e1549576460833.jpg">
+      <img src="assets/img/avatar.svg">
     </ion-avatar>
     <ion-label class="ion-text-wrap">
-      <h1>{{ docUtente.NOME }} {{ docUtente.COGNOME }}</h1>
+      <h1>{{ docUtente?.NOMINATIVO }}</h1>
       <p>{{ docUtente.EMAIL }}</p>
     </ion-label>
   </ion-item>
@@ -55,5 +55,14 @@
         <p>Visualizza e scarica i tuoi documenti</p>
       </ion-label>
     </ion-item>
+
+    <ion-item button="true" (click)="requestLogout()">
+      <ion-icon slot="start" name="log-out"></ion-icon>
+      <ion-label>
+        <h2>Esci</h2>
+        <p>Disconnetti utente</p>
+      </ion-label>
+    </ion-item>
+
   </ion-list>
 </ion-content>

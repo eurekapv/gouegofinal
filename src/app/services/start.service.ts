@@ -262,8 +262,9 @@ export class StartService {
   //#endregion
 
 //#region ACCOUNT
-  //E' stato ricevuto un account in formato JSON
-  setAccount(account: any) {
+  
+  /** Esegue la connessione con i dati account ricevuti */
+  loginAccount(account: any) {
     //Imposto il nuovo Account
     let newUtente = new Utente();
 
@@ -276,6 +277,12 @@ export class StartService {
     this._userLogged.next(true);
 
     console.log(account);
+  }
+
+  /** Esegue la disconnessione Account */
+  logOffAccount() {
+    // Avviso del login
+    this._userLogged.next(false);
   }
 //#endregion
   

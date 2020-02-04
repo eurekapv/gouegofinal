@@ -14,12 +14,10 @@ import { StartConfiguration } from '../models/start-configuration.model';
 })
 export class AccountService {
 
-  private _account = new BehaviorSubject<Utente>(new Utente());
+  
   private startConfig: StartConfiguration;
 
-  get account() {
-    return this._account.asObservable();
-  }
+
 
   constructor(private startSrv: StartService, private apiService: ApicallService) {
     this.startSrv.startConfig.subscribe(element => {
@@ -47,9 +45,11 @@ export class AccountService {
               //Autorizzazione concessa
               //Dentro a MESSAGE è presente il documento dell'utente
               // Avviso il servizio si impostare l'account
-              this.startSrv.setAccount(element.MESSAGE);
+              this.startSrv.loginAccount(element.MESSAGE);
             }
           }));
   }
+
+
 
 }

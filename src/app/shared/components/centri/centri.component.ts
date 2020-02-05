@@ -20,7 +20,6 @@ export class CentriComponent implements OnInit {
   onClickFavorite()
   {
     this.location.FAVORITE=!this.location.FAVORITE;
-
   }
 
 }

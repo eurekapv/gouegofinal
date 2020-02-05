@@ -4,18 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { LocationPageRoutingModule } from './location-routing.module';
+import { GalleryPageRoutingModule } from './gallery-routing.module';
 
-import { LocationPage } from './location.page';
-
+import { GalleryPage } from './gallery.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    LocationPageRoutingModule
+    GalleryPageRoutingModule
   ],
-  declarations: [LocationPage]
+  declarations: [GalleryPage]
 })
-export class LocationPageModule {}
+export class GalleryPageModule {}

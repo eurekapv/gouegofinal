@@ -23,7 +23,7 @@
 </ion-card> -->
 
 <ion-card mode="ios" button="true">
-  <img [src]="location.IMAGEURL" style="min-width: 288px;">
+  <img [src]="location.getUrlImage()" style="min-width: 288px;">
 
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button [color]="location.FAVORITE ? 'primary':'medium'" (click)="onClickFavorite()">

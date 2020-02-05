@@ -11,7 +11,17 @@
 
 <ion-content>
   <ion-card>
-    <img [src]="selectedLocation? selectedLocation.IMAGEURL: 'http://www.csstradivari.it/wp-content/uploads/2016/04/centro.jpg'">
+    <!-- <img [src]="selectedLocation.getUrlImage()"> -->
+
+
+
+    <ion-slides>
+      <ion-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
+        <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
+      </ion-slide>
+    </ion-slides>
+
+
   </ion-card>
   <ion-grid>
     <ion-row>
@@ -48,25 +58,35 @@
     <ion-item>
       <ion-icon name="pin" slot="start"></ion-icon>
       <ion-label>Indirizzo:</ion-label>
+      <ion-badge color="secondary">{{selectedLocation.COMUNE}}</ion-badge>
       <ion-badge color="secondary">{{selectedLocation.INDIRIZZO}}</ion-badge>
     </ion-item>
     <ion-item>
       <ion-icon name="medical" slot="start"></ion-icon>
       <ion-label>Campi:</ion-label>
-      <ion-badge color="secondary">da ricavare</ion-badge>
+    <ion-badge color="secondary">{{selectedLocation.getNumCampi()}}</ion-badge>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="selectedLocation.TELEFONO">
       <ion-icon name="call" slot="start"></ion-icon>
       <ion-label>Telefono:</ion-label>
-      <ion-badge color="secondary">da ricavare</ion-badge>
+      <ion-badge color="secondary">{{selectedLocation.TELEFONO}}</ion-badge>
     </ion-item>
-    <ion-item>
+
+    <ion-item *ngIf="selectedLocation.EMAIL">
+      <ion-icon name="mail" slot="start"></ion-icon>
+      <ion-label>E-Mail:</ion-label>
+      <ion-badge color="secondary">{{selectedLocation.EMAIL}}</ion-badge>
+    </ion-item>
+
+    <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
       <ion-icon name="information-circle-outline" slot="start"></ion-icon>
       <ion-label class="ion-text-wrap">
-        <h2>Descrizione:</h2>
-        <p>(da ricavare) dkkklfdslkdfjlskfjdlskfjslkdfjlskdfjslkdflskdjflskdlfskdjflskdjfslkdjflskdjlkfjdofiosijeiejlsijdlkfjosijleisjlkdjlfjlijsliejflskjflisjelisldkjfl</p>
+        <!-- <h2>Descrizione:</h2> -->
+        <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
       </ion-label>
     </ion-item>
   </ion-list>
+
+
   
 </ion-content>

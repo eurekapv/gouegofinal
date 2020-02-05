@@ -190,12 +190,39 @@ export class StartService {
         });
     }
     
-    // Ritorno Observable di una Area
+    // Ritorno Observable di una Location
     getLocation(id: string) {
       return this.listLocation
               .pipe(take(1), map( locations => {
                 return locations.find( loc => loc.ID == id)
               }));
+    }
+
+
+    /** Effettua la richiesta al server di una Location precisa
+     * @param idLocation Location scelta 
+     * 
+     */
+    requestLocationByID(idLocation: string) {
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'LOCATION';
+      const actualStartConfig = this._startConfig.getValue();
+
+      // In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('APPID',actualStartConfig.appId);
+      myHeaders = myHeaders.set('child-level',"2");
+
+      // Nei parametri imposto l'Area Operativa
+      let myParams = new HttpParams().set('ID', idLocation);
+
+      let myUrl = actualStartConfig.urlBase + '/' + doObject;
+
+
+      return this.apiService
+                  .httpGet(myUrl, myHeaders, myParams)
+                  .pipe(map(fullData => {
+                    return fullData.LOCATION
+                  }));
     }
 
   /** Richiesta delle Location di una Area */

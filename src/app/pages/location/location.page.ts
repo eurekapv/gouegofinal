@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
-import { Subscription } from 'rxjs';
+import { LocationImage } from 'src/app/models/locaton-image.model';
+import { ModalController } from '@ionic/angular';
+import { GalleryPageModule } from './gallery/gallery.module';
 
 @Component({
   selector: 'app-location',
@@ -11,10 +13,18 @@ import { Subscription } from 'rxjs';
 })
 export class LocationPage implements OnInit {
 
-  selectedLocation: Location;
-  changedLocation: Subscription;
+  selectedLocation = new Location();
 
-  constructor(private router: ActivatedRoute, private startService: StartService) { }
+  sliderOpts = {
+    zoom: false,
+    slidesPerView: 1.5,
+    centeredSlides: true,
+    spaceBetween: 20
+  };
+
+  constructor(private router: ActivatedRoute, 
+              private startService: StartService,
+              private modalCtrl: ModalController) { }
 
   ngOnInit() {
     let idLocation;
@@ -23,12 +33,28 @@ export class LocationPage implements OnInit {
       if (param.has('locationId')) 
       {
         idLocation = param.get('locationId');
-        this.changedLocation = this.startService.getLocation(idLocation).subscribe( element => {
-          this.selectedLocation = element;
 
-        })
+        //Faccio la richiesta al server
+        this.startService.requestLocationByID(idLocation).subscribe(element => {
+          if (element.length !== 0) {
+            console.log(element[0]);
+            this.selectedLocation.setJSONProperty(element[0]);
+          }
+        });
         
       }
     })
+  }
+
+  /** Apre il Preview di una immagine */
+  openPreview(img: LocationImage) {
+    console.log('Preview');
+    this.modalCtrl.create({
+      component: GalleryPageModule,
+      componentProps: {
+        imgLocation: img
+      }
+    })
+    .then(modal => modal.present());
   }
 }

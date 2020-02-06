@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
-import { ActionSheetController, ModalController } from '@ionic/angular';
+import { ActionSheetController } from '@ionic/angular';
 import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
 import { Router } from '@angular/router';
 import { Utente } from 'src/app/models/utente.model';
@@ -137,7 +137,7 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
-  /** Apertura Videata Modale Login */
+  /** Apertura Videata Login */
   openLogin() {
     this.router.navigate(['/','auth','login']);
   }

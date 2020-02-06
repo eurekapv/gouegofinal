@@ -10,7 +10,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { GalleryPageModule } from './pages/location/gallery/gallery.module';
+
 
 
 @NgModule({
@@ -20,8 +20,8 @@ import { GalleryPageModule } from './pages/location/gallery/gallery.module';
             FormsModule,
             HttpClientModule,
             IonicModule.forRoot(), 
-            AppRoutingModule,
-            GalleryPageModule
+            AppRoutingModule
+            
             ],
   providers: [
     StatusBar,

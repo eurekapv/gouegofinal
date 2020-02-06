@@ -16,5 +16,6 @@ import { GalleryPage } from './gallery.page';
     GalleryPageRoutingModule
   ],
   declarations: [GalleryPage]
+  
 })
 export class GalleryPageModule {}

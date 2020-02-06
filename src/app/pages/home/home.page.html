@@ -76,7 +76,10 @@
   </ion-grid>
 
   <div scrollX="true" *ngIf="listLocation.length>1">
-      <app-centri *ngFor="let locationItem of listLocation" [location]="locationItem"  [routerLink]="['/location', locationItem.ID]" ></app-centri>    
+      <app-centri 
+        *ngFor="let locationItem of listLocation" 
+        [location]="locationItem"  [routerLink]="['/location', locationItem.ID]" >
+      </app-centri>    
   </div>
 
 </ion-content>

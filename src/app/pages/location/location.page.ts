@@ -37,7 +37,6 @@ export class LocationPage implements OnInit {
         //Faccio la richiesta al server
         this.startService.requestLocationByID(idLocation).subscribe(element => {
           if (element.length !== 0) {
-            console.log(element[0]);
             this.selectedLocation.setJSONProperty(element[0]);
           }
         });

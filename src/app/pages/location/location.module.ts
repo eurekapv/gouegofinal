@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { LocationPageRoutingModule } from './location-routing.module';
 
 import { LocationPage } from './location.page';
+import { GalleryPageModule } from './gallery/gallery.module';
 
 
 @NgModule({
@@ -14,8 +15,11 @@ import { LocationPage } from './location.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    LocationPageRoutingModule
+    LocationPageRoutingModule,
+    GalleryPageModule
   ],
   declarations: [LocationPage]
+  
+  
 })
 export class LocationPageModule {}

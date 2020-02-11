@@ -9,6 +9,7 @@ import { CentriComponent } from '../../shared/components/centri/centri.component
 import { HomePage } from './home.page';
 import { ImpegniComponent } from 'src/app/shared/components/impegni/impegni.component';
 
+
 @NgModule({
   imports: [
     CommonModule,

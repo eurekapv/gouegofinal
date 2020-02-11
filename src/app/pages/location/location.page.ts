@@ -5,6 +5,7 @@ import { Location } from 'src/app/models/location.model';
 import { LocationImage } from 'src/app/models/locaton-image.model';
 import { ModalController } from '@ionic/angular';
 import { GalleryPageModule } from './gallery/gallery.module';
+import { AperturaLocation } from 'src/app/models/aperturalocation.model';
 
 @Component({
   selector: 'app-location',
@@ -14,11 +15,13 @@ import { GalleryPageModule } from './gallery/gallery.module';
 export class LocationPage implements OnInit {
 
   selectedLocation = new Location();
+  aperture: AperturaLocation[] = [];
 
   sliderOpts = {
     zoom: false,
     slidesPerView: 1.5,
-    centeredSlides: true,
+    //centeredSlides: true,
+    centeredSlidesBounds: true,
     spaceBetween: 20
   };
 
@@ -34,10 +37,14 @@ export class LocationPage implements OnInit {
       {
         idLocation = param.get('locationId');
 
-        //Faccio la richiesta al server
+        //Chiedo al Server le informazioni Location
         this.startService.requestLocationByID(idLocation).subscribe(element => {
           if (element.length !== 0) {
+            
+            //Imposto le informazioni della Location Selezionata
             this.selectedLocation.setJSONProperty(element[0]);
+            
+            console.log(this.selectedLocation);
           }
         });
         

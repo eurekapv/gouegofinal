@@ -1,5 +1,5 @@
 import { IDDocument } from './iddocument.model';
-import { Time } from '@angular/common';
+
 
 export enum TipoCorso {
     corso = 10,

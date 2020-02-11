@@ -8,6 +8,7 @@ import { LocationPageRoutingModule } from './location-routing.module';
 
 import { LocationPage } from './location.page';
 import { GalleryPageModule } from './gallery/gallery.module';
+import { ApertureComponent } from '../../shared/components/aperture/aperture.component';
 
 
 @NgModule({
@@ -18,7 +19,7 @@ import { GalleryPageModule } from './gallery/gallery.module';
     LocationPageRoutingModule,
     GalleryPageModule
   ],
-  declarations: [LocationPage]
+  declarations: [LocationPage, ApertureComponent]
   
   
 })

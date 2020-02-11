@@ -70,8 +70,6 @@ export class StartService {
       .subscribe(resultData => {
         // Sistemo l'oggetto di configurazione 
         // ed emetto un evento di Cambio
-        console.log('Autorizzazione ricevuta');
-        console.log(resultData);
 
         
         this.startConfig
@@ -132,8 +130,6 @@ export class StartService {
         }))
         .subscribe(resultData => {
 
-          console.log('Aree');
-          console.log(resultData);
 
           let idAreaSelected = ''; //Area da selezionare
 
@@ -245,9 +241,6 @@ export class StartService {
         }))
         .subscribe(resultData => {
 
-          console.log('Locations');
-          console.log(resultData);
-
           //Cancello le Location
           this._listLocation.next([]);
 
@@ -303,7 +296,7 @@ export class StartService {
     // Avviso del login
     this._userLogged.next(true);
 
-    console.log(account);
+ 
   }
 
   /** Esegue la disconnessione Account */

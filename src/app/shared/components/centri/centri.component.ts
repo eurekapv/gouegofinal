@@ -8,7 +8,7 @@ import { Location } from 'src/app/models/location.model';
 })
 export class CentriComponent implements OnInit {
 
-  @Input() location: Location=new Location;
+  @Input() location: Location = new Location();
 
   constructor() {
     

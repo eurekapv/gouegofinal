@@ -10,11 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <!-- <img [src]="selectedLocation.getUrlImage()"> -->
-
-
-
+  <ion-card >
     <ion-slides>
       <ion-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
         <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
@@ -81,10 +77,16 @@
     <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
       <ion-icon name="information-circle-outline" slot="start"></ion-icon>
       <ion-label class="ion-text-wrap">
-        <!-- <h2>Descrizione:</h2> -->
         <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
       </ion-label>
     </ion-item>
+
+    <div *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
+      <ion-list-header color="primary">
+        <ion-label>Orari Centro</ion-label>
+      </ion-list-header>
+      <app-aperture *ngFor="let apertura of selectedLocation.APERTURALOCATION" [myApertura]="apertura"></app-aperture>
+    </div>
   </ion-list>
 
 

@@ -37,7 +37,7 @@ export class AperturaLocation extends IDDocument {
             this.ALLE2 = this.getDateFromTimeString(data.ALLE2);
         }
 
-        console.log(this);
+        
 
     }
 
@@ -69,7 +69,7 @@ export class AperturaLocation extends IDDocument {
         }
 
         returnDate.setHours(ore,minuti,secondi);
-        console.log(returnDate);
+        
         return returnDate;
     }
 

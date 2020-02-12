@@ -29,9 +29,7 @@
           if (Array.isArray(dataObject[element]) == false) {
             _this[element] = dataObject[element];
           }
-          else {
-            console.log('Array ' + element);
-          }
+          
 
       });
 

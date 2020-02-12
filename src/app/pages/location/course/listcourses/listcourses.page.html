@@ -1,0 +1,43 @@
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Corsi</ion-title>
+
+    <ion-buttons slot="primary">
+      <ion-button *ngIf="receivedSport" (click)="switchFilter()">
+        <ion-icon 
+          name="color-wand"
+          color="primary"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+
+  <ion-item *ngIf="showFilter">
+    <ion-label>Attività</ion-label>
+    <ion-select value="brown" okText="Conferma" cancelText="Annulla">
+
+      <ion-select-option value="all">Tutti</ion-select-option>
+      
+      <ion-select-option value="blonde">Blonde</ion-select-option>
+      <ion-select-option value="black">Black</ion-select-option>
+      <ion-select-option value="red">Red</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <app-card-course></app-card-course>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

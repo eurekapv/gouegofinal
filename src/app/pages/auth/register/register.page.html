@@ -1,4 +1,98 @@
-<ion-header >
+
+<ion-content  class="contentPrinc">
+  <ion-grid style="height: 100%;">
+    <ion-row class="ion-align-items-center" style="height: 100%;">
+      <ion-col sizeSm="8" offsetSm="2" sizeLg="4" offsetLg="4">
+        <ion-card class="cardPrincipale" *ngIf="stato==pageState.REGISTRATION">
+          
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-back-button defaultHref="/"></ion-back-button>
+              </ion-buttons>
+              <ion-title>
+                <!-- {{startConfig?.companyName | titlecase }} -->
+                Gioca con noi
+              </ion-title>
+            </ion-toolbar>
+          </ion-header>
+
+          
+          <ion-card-content >            
+            <img [src]="startConfig.urlLogoMenu">
+            <form [formGroup]="formRegister">
+              <ion-list>
+                <ion-item>
+                  <ion-icon name="contact" slot="start"></ion-icon>
+                  <ion-input type="text" placeholder="Nome" formControlName="name"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-icon name="contact" slot="start"></ion-icon>
+                  <ion-input type="text" placeholder="Cognome" formControlName="surname" ></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-icon name="at" slot="start"></ion-icon>
+                  <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-icon name="key" slot="start"></ion-icon>
+                  <ion-input type="password" placeholder="Password" formControlName="psw"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-icon name="call" slot="start"></ion-icon>
+                  <ion-input type="nuber" placeholder="Cellulare" formControlName="telephone" ></ion-input>
+                </ion-item>
+              </ion-list>
+              <ion-button class="btnRegister"  color="primary" fill="outline" expand="block" [disabled]="!formRegister.valid" (click)="onClickProsegui()">
+                prosegui
+              </ion-button>
+            </form>
+          </ion-card-content>
+            
+          <ion-footer>
+            <ion-row>
+              <ion-col class="ion-text-center">
+                Hai già un account?
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col class="ion-text-center">
+                <a routerLink="/auth/login" routerDirection="root">Login</a>
+              </ion-col>
+            </ion-row>
+
+          </ion-footer>
+
+        </ion-card>
+        <ion-card class="cardPrincipale" *ngIf="stato==pageState.CONFIRM">
+          <ion-card-content>
+            <form [formGroup]="formConfig">
+              <ion-input  inputmode="numeric" formControlName="c1"></ion-input>
+              <ion-input type="text" placeholder="Cognome" formControlName="c2" ></ion-input>
+              <ion-input type="email" placeholder="E-Mail" formControlName="c3"></ion-input>
+              <ion-input type="password" placeholder="Password" formControlName="c4"></ion-input>
+              <ion-input type="nuber" placeholder="Cellulare" formControlName="c5" ></ion-input>
+
+
+              <ion-button class="btnRegister"  color="primary" fill="outline" expand="block" [disabled]="!formRegister.valid" (click)="onClickProsegui()">
+                registrati
+              </ion-button>
+            </form>
+          </ion-card-content>          
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid >
+</ion-content>
+
+
+
+
+
+
+
+<!-- <ion-header >
   <ion-toolbar color="light">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
@@ -18,33 +112,11 @@
     </ion-avatar>
     </ion-segment>
     <h1 class="titolo" >Benvenuto!</h1>
-    <form [formGroup]="form">
-      <ion-list>
-      <ion-item>
-        <ion-icon name="contact" slot="start"></ion-icon>
-        <ion-input type="text" placeholder="Nome" formControlName="name"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="contact" slot="start"></ion-icon>
-        <ion-input type="text" placeholder="Cognome" formControlName="surname" ></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="at" slot="start"></ion-icon>
-        <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="key" slot="start"></ion-icon>
-        <ion-input type="password" placeholder="Password" formControlName="psw"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="call" slot="start"></ion-icon>
-        <ion-input type="nuber" placeholder="Cellulare" formControlName="telephone" ></ion-input>
-      </ion-item>
-    </ion-list>
-  </form>
   <ion-button color="primary" fill="outline" expand="block" class="btnRegistrati" [disabled]="!form.valid" (click)="onClickRegister()">
     Registrati
   </ion-button>
   
 
-</ion-content>
+</ion-content> -->
+
+

@@ -11,7 +11,7 @@ export class LabelGiornoPipe implements PipeTransform {
       case 1:
         label = 'domenica';
         break;
-      case 2:
+      case 1:
         label = 'lunedi\'';
         break;
       case 3:

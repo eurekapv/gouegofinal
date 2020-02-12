@@ -30,7 +30,6 @@ export class Utente extends IDDocument {
     IDLOCATION: string;
     RUOLO: number;
     MANSIONE: Mansione;
-    ACTIVATIONCODE: string; //5 Cifre
 
     constructor() {
         super();

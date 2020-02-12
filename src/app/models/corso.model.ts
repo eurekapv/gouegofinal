@@ -13,7 +13,8 @@ export class Corso extends IDDocument {
     TIPO: TipoCorso;
 
 
-    /*agginte da A.C.
+    /*
+    agginte da A.C.
     ORARIOINIZIO: Time;
     DURATA: number;
     NUMLEZIONI: number;

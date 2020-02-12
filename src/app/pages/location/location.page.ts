@@ -4,8 +4,8 @@ import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
 import { LocationImage } from 'src/app/models/locaton-image.model';
 import { ModalController } from '@ionic/angular';
-import { GalleryPageModule } from './gallery/gallery.module';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
+import { GalleryPage } from './gallery/gallery.page';
 
 @Component({
   selector: 'app-location',
@@ -55,8 +55,9 @@ export class LocationPage implements OnInit {
   /** Apre il Preview di una immagine */
   openPreview(img: LocationImage) {
     console.log('Preview');
+
     this.modalCtrl.create({
-      component: GalleryPageModule,
+      component: GalleryPage,
       componentProps: {
         imgLocation: img
       }

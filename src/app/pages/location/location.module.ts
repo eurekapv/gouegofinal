@@ -7,8 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { LocationPageRoutingModule } from './location-routing.module';
 
 import { LocationPage } from './location.page';
-import { GalleryPageModule } from './gallery/gallery.module';
+
 import { ApertureComponent } from '../../shared/components/aperture/aperture.component';
+import { GalleryPage } from './gallery/gallery.page';
 
 
 @NgModule({
@@ -16,10 +17,11 @@ import { ApertureComponent } from '../../shared/components/aperture/aperture.com
     CommonModule,
     FormsModule,
     IonicModule,
-    LocationPageRoutingModule,
-    GalleryPageModule
+    LocationPageRoutingModule
+    
   ],
-  declarations: [LocationPage, ApertureComponent]
+  declarations: [LocationPage, ApertureComponent, GalleryPage],
+  entryComponents: [GalleryPage]
   
   
 })

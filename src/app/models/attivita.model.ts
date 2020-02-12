@@ -1,11 +1,12 @@
 import { IDDocument } from './iddocument.model';
+import { SettoreAttivita } from './valuelist.model';
 
 
-export enum SettoreAttivita {
-    settoreCorso = 10,
-    settorePrenotazione = 20,
-    settoreTorneo = 30
-}
+// export enum SettoreAttivita {
+//     settoreCorso = 10,
+//     settorePrenotazione = 20,
+//     settoreTorneo = 30
+// }
 
 export class Attivita extends IDDocument {
 

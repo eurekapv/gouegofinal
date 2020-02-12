@@ -1,10 +1,11 @@
 import { IDDocument } from './iddocument.model';
+import { TipoSport} from '../models/valuelist.model';
 
-export enum TipoSport {
-    gruppo =  10,
-    coppia = 20,
-    individuale = 30
-}
+// export enum TipoSport {
+//     gruppo =  10,
+//     coppia = 20,
+//     individuale = 30
+// }
 
 export class Sport extends IDDocument {
     

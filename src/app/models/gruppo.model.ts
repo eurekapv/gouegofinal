@@ -1,9 +1,10 @@
 import { IDDocument } from './iddocument.model';
+import { TipoSocieta } from '../models/valuelist.model';
 
-export enum TipoSocieta {
-    sportiva = 10,
-    formazione = 20
-  }
+// export enum TipoSocieta {
+//     sportiva = 10,
+//     formazione = 20
+//   }
 
 export class Gruppo extends IDDocument {
 

@@ -7,6 +7,17 @@ export class CorsoScheduler extends IDDocument {
     IDCAMPO: string;
     DATA: Date;
     VALUEGIORNO: number;
-    
+    ORAINIZIO: Date;
+    ORELEZIONI: number;
+    DATAORAINIZIO: Date;
+    DATAORAFINE: Date;
+    MULTIPLA: boolean;
 
+
+
+    constructor() {
+        super();
+    }
+
+    
 }

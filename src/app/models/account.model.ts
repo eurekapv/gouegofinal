@@ -5,6 +5,7 @@ import { Mansione, Ruolo } from './valuelist.model';
 
 export class Account extends IDDocument {
 
+    IDREF: string;
     COGNOME: string;
     NOME: string;
     NOMINATIVO: string;

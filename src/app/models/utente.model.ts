@@ -1,5 +1,6 @@
 import { IDDocument } from './iddocument.model';
 import { Sesso } from './valuelist.model';
+import { UtenteLivello } from './utentelivello.model';
 
 export class Utente extends IDDocument {
     COGNOME: string;
@@ -20,6 +21,7 @@ export class Utente extends IDDocument {
     IDAREAOPERATIVA: string;
     IDLOCATION: string;
     AVATAR: string;
+    UTENTILIVELLI: UtenteLivello[];
 
     constructor() {
         super();
@@ -27,5 +29,39 @@ export class Utente extends IDDocument {
 
     setJSONProperty(data: any) {
         super.setJSONProperty(data);
+
+        //Sistemo le collection
+        this.setCollectionLivelli(data);
+    }
+
+    /**
+     * Imposta le collection dell'oggetto
+     * @param data JSON Received
+     */
+    setCollection(data: any) {
+
+        //Cancelli i livelli    
+        this.UTENTILIVELLI = [];
+
+
+        if (data.UTENTELIVELLO) {
+            this.setCollectionLivelli(data);
+        }
+    }
+
+
+    /**
+     * Crea gli oggetti UTENTILIVELLI
+     * @param data JSON Received
+     */
+    private setCollectionLivelli(data: any) {
+        
+
+        data.UTENTELIVELLO.forEach(element => {
+            let newLevel = new UtenteLivello();
+
+            newLevel.setJSONProperty(element);
+            this.UTENTILIVELLI.push(newLevel);
+        });
     }
 }

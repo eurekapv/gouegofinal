@@ -1,9 +1,66 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>edit-account</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/account"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Modifica Profilo</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <form [formGroup]="form">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Nome</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Cognome</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Sesso</ion-label>
+        <ion-select>
+          <ion-select-option>Sesso</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Data di nascita</ion-label>
+        <ion-datetime></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Provincia di nascita</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Comune di nascita</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Provincia di residenza</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Comune di residenza</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Indirizzo</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Cap</ion-label>
+        <ion-input type="tel" inputmode="tel" maxlength="5"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Codice fiscale</ion-label>
+        <ion-input></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating" disabled>Cellulare</ion-label>
+        <ion-input type="tel" inputmode="tel"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button fill="outline" expand="block" >Conferma</ion-button>
+  </form>
 </ion-content>

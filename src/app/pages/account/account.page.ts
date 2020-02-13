@@ -53,4 +53,8 @@ export class AccountPage implements OnInit {
       })
   }
 
+  async takePicture()
+{
+  const picture=await Camera
+}
 }

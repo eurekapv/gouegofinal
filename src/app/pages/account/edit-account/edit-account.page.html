@@ -12,53 +12,53 @@
     <ion-list>
       <ion-item>
         <ion-label position="floating">Nome</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="nome"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Cognome</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="cognome"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Sesso</ion-label>
-        <ion-select>
+        <ion-select formControlName="sesso">
           <ion-select-option>Sesso</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Data di nascita</ion-label>
-        <ion-datetime></ion-datetime>
+        <ion-datetime formControlName="nascita"></ion-datetime>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Provincia di nascita</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="provNascita"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Comune di nascita</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="comNascita"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Provincia di residenza</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="provResidenza"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Comune di residenza</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="comResidenza"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Indirizzo</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="indResidenza"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Cap</ion-label>
-        <ion-input type="tel" inputmode="tel" maxlength="5"></ion-input>
+        <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Codice fiscale</ion-label>
-        <ion-input></ion-input>
+        <ion-input formControlName="cf"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating" disabled>Cellulare</ion-label>
-        <ion-input type="tel" inputmode="tel"></ion-input>
+        <ion-input disabled type="tel" inputmode="tel" formControlName="cell"></ion-input>
       </ion-item>
     </ion-list>
     <ion-button fill="outline" expand="block" >Conferma</ion-button>

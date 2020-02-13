@@ -15,26 +15,16 @@ import { Account } from 'src/app/models/account.model';
 export class EditAccountPage implements OnInit {
 
   form: FormGroup;
-  utente:Utente=new Utente;
-  account: Account=new Account;
 
-  accountListen:Subscription;
+  utente:Utente=new Utente();
   utenteListen: Subscription;
 
   constructor(
       private startService : StartService
     ) {
 
-      this.startService.account.subscribe(data=>{
-        this.account=data;
-        //console.log(data);
-        if (this.account.IDREF) {
-          console.log("bp");
-          this.startService.requestUtente(this.account.IDREF);
-          this.startService.utente.subscribe(data=>{
-            this.utente=data;
-          })          
-        }
+      this.startService.utente.subscribe(data=>{
+        this.utente =data;        
       })
 
 
@@ -48,6 +38,7 @@ export class EditAccountPage implements OnInit {
 
   createForm()
   {
+    console.log(this.utente.NOME);
     this.form=new FormGroup({
       nome:new FormControl(this.utente.NOME, {
         updateOn:'change',
@@ -93,7 +84,7 @@ export class EditAccountPage implements OnInit {
         updateOn:'change',
         validators: []
       }),
-      cell:new FormControl(null, {
+      cell:new FormControl(this.utente.MOBILENUMBER, {
         updateOn:'change',
         validators: []
       }),

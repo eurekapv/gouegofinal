@@ -9,6 +9,22 @@
         padding-top: 15px;
         padding-bottom: 15px;
     }
+    
+}
+
+.cardConfirm
+{
+    ion-col
+    {
+        padding-top: 3.5vh;
+        padding-bottom: 3.5vh;
+    }
+    p
+    {
+        cursor: pointer;
+        font-weight: 500;
+    }
+
 }
 
 .contentPrinc
@@ -26,8 +42,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', end
 
 .btnRegister
 {
-    margin-top: 5vh;
-    margin-bottom: 8vh;
+    
 }
 
 
@@ -64,7 +79,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', end
             display:inline;
             border-radius:15px;
             margin:2px;
-            border:3px solid var(--ion-color-primary);
+            border:3px solid var(--ion-color-warning);
 
             text-align:center;
             font-family: Arial, Helvetica, sans-serif;
@@ -82,13 +97,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', end
         color:white;
     }
 
-
-    // .myInput
-    // {
-    //     font-family: Arial, Helvetica, sans-serif;
-    //     font-size: 30px;
-
-    // }
 
 
 

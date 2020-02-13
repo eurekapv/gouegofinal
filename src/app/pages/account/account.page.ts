@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Utente } from 'src/app/models/utente.model';
+import { Account } from 'src/app/models/account.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { AlertController, NavController } from '@ionic/angular';
@@ -11,7 +11,7 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class AccountPage implements OnInit {
 
-  docUtente: Utente;
+  docUtente: Account;
   accountListen: Subscription;
 
   constructor(private startSrv: StartService,

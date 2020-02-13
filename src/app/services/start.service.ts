@@ -8,7 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { Area } from '../models/area.model';
 import { Location } from '../models/location.model';
-import { Utente } from '../models/utente.model';
+import { Account } from '../models/account.model';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
 import { CourseService } from './course.service';
@@ -27,8 +27,8 @@ export class StartService {
   private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
   private _listAree = new BehaviorSubject<Area[]>([]);
   private _listLocation = new BehaviorSubject<Location[]>([]);
-  private _userLogged = new BehaviorSubject<boolean>(false);
-  private _account = new BehaviorSubject<Utente>(new Utente());
+  private _accountLogged = new BehaviorSubject<boolean>(false);
+  private _account = new BehaviorSubject<Account>(new Account());
 
 
   get startConfig() {
@@ -44,8 +44,8 @@ export class StartService {
   }
 
   // Espone se l'utente è loggato 
-  get userLogged() {
-    return this._userLogged.asObservable();
+  get accountLogged() {
+    return this._accountLogged.asObservable();
   }
 
   // Espone l'account 
@@ -295,15 +295,15 @@ export class StartService {
   /** Esegue la connessione con i dati account ricevuti */
   loginAccount(account: any) {
     //Imposto il nuovo Account
-    let newUtente = new Utente();
+    let newAccount = new Account();
 
-    newUtente.setJSONProperty(account);
+    newAccount.setJSONProperty(account);
 
     // Imposto il nuovo utente
-    this._account.next(newUtente);
+    this._account.next(newAccount);
 
     // Avviso del login
-    this._userLogged.next(true);
+    this._accountLogged.next(true);
 
  
   }
@@ -311,7 +311,7 @@ export class StartService {
   /** Esegue la disconnessione Account */
   logOffAccount() {
     // Avviso del login
-    this._userLogged.next(false);
+    this._accountLogged.next(false);
   }
 //#endregion
   

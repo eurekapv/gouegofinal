@@ -10,7 +10,7 @@ import { ActionSheetController } from '@ionic/angular';
 import { Attivita  } from 'src/app/models/attivita.model';
 import { SettoreAttivita, ValueList } from '../../models/valuelist.model';
 import { Router } from '@angular/router';
-import { Utente } from 'src/app/models/utente.model';
+import { Account } from 'src/app/models/account.model';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +28,7 @@ export class HomePage implements OnInit, OnDestroy{
   userLoggedListen : Subscription;
 
   //Account Loggato
-  account: Utente;
+  account: Account;
   accountListen: Subscription;
 
   // Elenco delle Aree
@@ -81,7 +81,7 @@ export class HomePage implements OnInit, OnDestroy{
     })
 
     //Sottoscrivo all'ascolto di un utente loggato
-    this.userLoggedListen = this.startService.userLogged.subscribe( element => {
+    this.userLoggedListen = this.startService.accountLogged.subscribe( element => {
       this.userLogged = element;
     });
 

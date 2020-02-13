@@ -1,9 +1,9 @@
 import { IDDocument } from './iddocument.model';
-import { Mansione, Ruolo } from '../models/valuelist.model';
+import { Mansione, Ruolo } from './valuelist.model';
 
 
 
-export class Utente extends IDDocument {
+export class Account extends IDDocument {
 
     COGNOME: string;
     NOME: string;

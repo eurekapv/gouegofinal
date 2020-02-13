@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { Utente } from 'src/app/models/utente.model';
+import { Account } from 'src/app/models/account.model';
 import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
@@ -23,7 +23,7 @@ export class RegisterPage implements OnInit {
   //per utilizzare l'enum nell'html
   pageState: typeof PageState=PageState;
 
-  docUtente= new Utente;
+  docUtente= new Account;
   formRegister: FormGroup;
   formConfirm: FormGroup;
 

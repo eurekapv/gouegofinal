@@ -6,7 +6,7 @@ import { tap, delay } from 'rxjs/operators';
 import { StartService } from './start.service';
 import { ApicallService } from './apicall.service';
 
-import { Utente } from '../models/utente.model';
+import { Account } from '../models/account.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 
 @Injectable({

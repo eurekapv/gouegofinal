@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Utente } from 'src/app/models/utente.model';
+import { Account } from 'src/app/models/account.model';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
@@ -9,7 +9,7 @@ import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/fo
 })
 export class EditLoginPage implements OnInit {
 
-  docUtente:Utente
+  docUtente:Account
   form: FormGroup
 
 

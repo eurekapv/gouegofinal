@@ -112,8 +112,6 @@ export class Location extends IDDocument {
       // Riazzero e ricreo le aperture
       this.APERTURALOCATION = [];
 
-      
-
       //Sistemazione Immagini Location
       if (data.LOCATIONIMAGE) {
         this.setCollectionLocationImage(data);

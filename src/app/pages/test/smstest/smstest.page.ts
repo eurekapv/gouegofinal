@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-course',
-  templateUrl: './course.page.html',
-  styleUrls: ['./course.page.scss'],
+  selector: 'app-smstest',
+  templateUrl: './smstest.page.html',
+  styleUrls: ['./smstest.page.scss'],
 })
-export class CoursePage implements OnInit {
+export class SmstestPage implements OnInit {
 
   OTP: string[] = [];
   showOTPInput: boolean = false;
@@ -13,6 +13,7 @@ export class CoursePage implements OnInit {
   email = '';
   password = '';
   autoTab = false;
+  
 
   constructor() { }
 

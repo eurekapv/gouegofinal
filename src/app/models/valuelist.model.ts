@@ -181,4 +181,10 @@ export enum Condition {
     diverso = '#'
 }
 
+
+export enum RequestState {
+    noRequest = 0,
+    waitingReply = 1,
+    executed = 2
+}
 //#endregion

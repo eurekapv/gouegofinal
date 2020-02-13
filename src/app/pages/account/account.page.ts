@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Account } from 'src/app/models/account.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { AlertController, NavController } from '@ionic/angular';
+import { Utente } from 'src/app/models/utente.model';
 
 @Component({
   selector: 'app-account',
@@ -11,13 +11,13 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class AccountPage implements OnInit {
 
-  docUtente: Account;
-  accountListen: Subscription;
+  docUtente: Utente;
+  docUtenteListen: Subscription;
 
   constructor(private startSrv: StartService,
               private alertCtrl: AlertController,
               private navCtrl: NavController) { 
-    this.accountListen = this.startSrv.account.subscribe(element => {
+    this.docUtenteListen = this.startSrv.utente.subscribe(element => {
       this.docUtente = element;
     });
   }

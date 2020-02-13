@@ -10,7 +10,7 @@ import { ActionSheetController } from '@ionic/angular';
 import { Attivita  } from 'src/app/models/attivita.model';
 import { SettoreAttivita, ValueList } from '../../models/valuelist.model';
 import { Router } from '@angular/router';
-import { Account } from 'src/app/models/account.model';
+import { Utente } from 'src/app/models/utente.model';
 
 @Component({
   selector: 'app-home',
@@ -27,9 +27,9 @@ export class HomePage implements OnInit, OnDestroy{
   userLogged: boolean;
   userLoggedListen : Subscription;
 
-  //Account Loggato
-  account: Account;
-  accountListen: Subscription;
+  //Utente Loggato
+  docUtente: Utente;
+  docUtenteListen: Subscription;
 
   // Elenco delle Aree
   listAree: Area[] = [];
@@ -81,13 +81,13 @@ export class HomePage implements OnInit, OnDestroy{
     })
 
     //Sottoscrivo all'ascolto di un utente loggato
-    this.userLoggedListen = this.startService.accountLogged.subscribe( element => {
+    this.userLoggedListen = this.startService.utenteLogged.subscribe( element => {
       this.userLogged = element;
     });
 
     //Sottoscrivo all'ascolto dell'Account
-    this.accountListen = this.startService.account.subscribe(element => {
-      this.account = element;
+    this.docUtenteListen = this.startService.utente.subscribe(element => {
+      this.docUtente = element;
     })
 
     
@@ -199,8 +199,8 @@ export class HomePage implements OnInit, OnDestroy{
   //Utente Loggato
   if (this.userLogged) {
     // Account Presente
-    if (this.account) {
-        retCaption = this.account.NOMINATIVO ? this.account.NOMINATIVO : captionAccedi      
+    if (this.docUtente) {
+        retCaption = this.docUtente.NOMINATIVO ? this.docUtente.NOMINATIVO : captionAccedi      
     }
   }
 
@@ -215,8 +215,8 @@ export class HomePage implements OnInit, OnDestroy{
   //Utente Loggato
   if (this.userLogged) {
     // Account Presente
-    if (this.account) {
-        retIcon = this.account.NOMINATIVO ? 'list-box' : iconAccedi      
+    if (this.docUtente) {
+        retIcon = this.docUtente.NOMINATIVO ? 'list-box' : iconAccedi      
     }
   }
 

@@ -5,7 +5,7 @@ import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { LoadingController, ToastController, NavController, IonInput } from '@ionic/angular';
-import { AccountService } from 'src/app/services/account.service';
+
 
 @Component({
   selector: 'app-register',
@@ -35,7 +35,6 @@ export class RegisterPage implements OnInit {
   constructor(
     private startService: StartService,
     private loadingCtrl: LoadingController,
-    private accountService: AccountService,
     private toastCtrl: ToastController,
     private navCtrl: NavController
   ) { 
@@ -127,25 +126,7 @@ export class RegisterPage implements OnInit {
           // //Creo il loading
           // element.present();
 
-          // //qui andrà chiamato il servizio per effettuare la registrazione
-          // this.accountService
-          //   .requestAuthorization(this.form.value.username, this.form.value.password)
-          //   .subscribe(dataResult => {
 
-          //       //Chiudo lo Spinner
-          //       element.dismiss();
-
-          //       // E' Arrivata una risposta NEGATIVA
-          //       if (dataResult.RESULT === 0) {
-          //         this.showMessage(dataResult.MESSAGE);
-          //       }
-          //       else {
-          //         //REGISTRAZIONE ACCETTATA
-          //         //Resetto la form
-          //         this.form.reset();
-                  
-          //       }
-          //   })
             this.stato=PageState.CONFIRM;
         })
     }

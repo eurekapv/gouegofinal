@@ -45,7 +45,28 @@ const routes: Routes = [
   {
     path: 'location',
     redirectTo: 'home', pathMatch: 'full'
+  },
+  {
+    path: 'listcourses/:locationId',
+    loadChildren: () => import('./pages/location/course/listcourses/listcourses.module').then( m => m.ListcoursesPageModule)
+  },
+  {
+    path: 'listcourses',
+    redirectTo: 'home', pathMatch: 'full'
+  },
+  {
+    path: 'detailcourse',
+    redirectTo: 'home', pathMatch: 'full'
+  },
+  {
+    path: 'detailcourse/:courseId',
+    loadChildren: () => import('./pages/location/course/detailcourse/course.module').then( m => m.CoursePageModule)
+  },
+  {
+    path: 'smstest',
+    loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
   }
+
   
 ];
 

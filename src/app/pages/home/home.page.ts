@@ -7,7 +7,8 @@ import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController } from '@ionic/angular';
-import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
+import { Attivita  } from 'src/app/models/attivita.model';
+import { SettoreAttivita, ValueList } from '../../models/valuelist.model';
 import { Router } from '@angular/router';
 import { Utente } from 'src/app/models/utente.model';
 
@@ -134,8 +135,11 @@ export class HomePage implements OnInit, OnDestroy{
     else {
       // Apro il Login
       this.openLogin();
+      
     }
   }
+
+
 
   /** Apertura Videata Login */
   openLogin() {

@@ -1,10 +1,11 @@
 import { IDDocument } from './iddocument.model';
 import { Location } from '../models/location.model';
+import { TipoArea } from '../models/valuelist.model';
 
-export enum TipoArea {
-    areaGruppo = 10,
-    areaIndipendente = 20
-} 
+// export enum TipoArea {
+//     areaGruppo = 10,
+//     areaIndipendente = 20
+// } 
 
 export class Area extends IDDocument {
     IDGRUPPOSPORTIVO: string;

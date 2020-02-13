@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Attivita, SettoreAttivita } from 'src/app/models/attivita.model';
+import { Attivita } from 'src/app/models/attivita.model';
+import { SettoreAttivita } from '../../../models/valuelist.model';
 
 @Component({
   selector: 'app-impegni',

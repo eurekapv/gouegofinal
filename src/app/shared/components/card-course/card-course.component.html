@@ -1,3 +1,96 @@
-<p>
-  card-course works!
-</p>
+        <ion-card>
+          <ion-card-header color="secondary" class="SmallPadding">
+            <ion-item color="transparent" lines="none">
+              <ion-icon name="clipboard" size="large"></ion-icon>
+              <ion-title>Nome del Corso</ion-title>
+            </ion-item>
+            <!--ion-segment>
+              <ion-segment-button mode="md" class="SegBtn" checked layout="icon-start" disabled="ture">
+                <ion-icon name="time" class="SmallMargin"></ion-icon>
+                <label>15.30</label>
+              </ion-segment-button>
+              <ion-segment-button  mode="md" class="SegBtn" checked layout="icon-start" disabled="true">
+                <ion-icon name="infinite" class="SmallMargin"></ion-icon>
+                <label>2 ore</label>
+              </ion-segment-button>
+              <ion-segment-button  mode="md" class="SegBtn" checked layout="icon-start" disabled="true">
+                <label>30 lezioni</label>
+              </ion-segment-button>
+            </ion-segment-->
+            <ion-grid>
+              <ion-row>
+                <ion-col text-center>
+                  <ion-chip class="Chip" >
+                    <ion-icon class="Icon" name="time"></ion-icon>
+                    <ion-label color="dark">15.30</ion-label>
+                  </ion-chip>
+                </ion-col>
+                <ion-col text-center>
+                  <ion-chip class="Chip">
+                    <ion-icon class="Icon" name="infinite"></ion-icon>
+                    <ion-label>1,5 Ore</ion-label>
+                  </ion-chip>
+                </ion-col>
+                <ion-col text-center>
+                  <ion-chip class="Chip">
+                    <ion-label>30 Lezioni</ion-label>
+                  </ion-chip>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-header>
+          <ion-card-content class="TabPadding">
+            <ion-segment>
+              <ion-button color="secondary" size="small">L</ion-button>
+              <ion-button color="secondary" size="small" fill="outline">
+                M
+              </ion-button>
+              <ion-button color="secondary" size="small" fill="outline">
+                M
+              </ion-button>
+              <ion-button color="secondary" size="small" fill="outline">
+                G
+              </ion-button>
+              <ion-button color="secondary" size="small">V</ion-button>
+              <ion-button color="secondary" size="small" fill="outline">
+                S
+              </ion-button>
+              <ion-button color="secondary" size="small" fill="outline">
+                D
+              </ion-button>
+            </ion-segment>
+            <!--ion-segment>
+                  <ion-segment-button color="secondary" size="small">LU</ion-segment-button>
+                  <ion-segment-button color="secondary" size="small" fill="outline">MA</ion-segment-button>
+                  <ion-segment-button color="secondary" size="small" fill="outline">ME</ion-segment-button>
+                  <ion-segment-button color="secondary" size="small" fill="outline">GI</ion-segment-button>
+                  <ion-segment-button color="secondary" size="small">VE</ion-segment-button>
+                  <ion-segment-button color="secondary" size="small" fill="outline">SA</ion-segment-button>
+                  <ion-segment-button color="secondary" size="small" fill="outline">DO</ion-segment-button>
+            </ion-segment-->
+            <ion-list lines="none" class="SmallPadding">
+              <ion-item>
+                <ion-icon name="stats"></ion-icon>
+                <ion-label class="SmallMargin">Livello:</ion-label>
+                <ion-badge color="secondary">Intermedio 1</ion-badge>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="bookmark"></ion-icon>
+                <ion-label class="SmallMargin">Età:</ion-label>
+                <ion-badge color="secondary">Intermedio 1</ion-badge>
+              </ion-item>
+              <ion-item>
+                <ion-icon name="transgender"></ion-icon>
+                <ion-label class="SmallMargin">Genere:</ion-label>
+                <ion-badge color="secondary">Intermedio 1</ion-badge>
+              </ion-item>
+            </ion-list>
+            <ion-segment>
+                <ion-button color="secondary" fill="outline">
+                <ion-icon name="calendar"></ion-icon>
+                <ion-label>Inizia il: 10/11/2019</ion-label>
+              </ion-button>
+            </ion-segment>
+          </ion-card-content>
+        </ion-card>
+

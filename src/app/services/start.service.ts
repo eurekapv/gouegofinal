@@ -9,6 +9,7 @@ import { StartConfiguration } from '../models/start-configuration.model';
 import { Area } from '../models/area.model';
 import { Location } from '../models/location.model';
 import { Utente } from '../models/utente.model';
+import { SportService } from './sport.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,10 @@ export class StartService {
     return this._account.asObservable();
   }
 
-  constructor(private apiService: ApicallService) { }
+
+
+  constructor(private apiService: ApicallService,
+    private sportService: SportService) { }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
@@ -306,4 +310,22 @@ export class StartService {
   }
 //#endregion
   
+
+//#region SPORT SERVICE
+
+get listSport() {
+  return this.sportService.listSport;
+}
+
+
+requestSport() {
+  const actualStartConfig = this._startConfig.getValue();
+
+  this.sportService
+      .request(actualStartConfig);
+
+  
+            
+}
+//#endregion
 }

@@ -5,7 +5,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Utente } from '../models/utente.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
-import { RequestState } from '../models/valuelist.model';
+
 
 
 @Injectable({
@@ -47,13 +47,8 @@ export class UtenteService {
         return data.UTENTE
       }))
       .subscribe( resultData => {
-
-        let newUtente = new Utente();
-        newUtente.setJSONProperty(resultData);
-
-        this._utente.next(newUtente);
-
-      })
+        this.loginSuccessfull(resultData);
+      });
   }
 
 
@@ -112,5 +107,6 @@ export class UtenteService {
   logoff() {
     this._utenteLoggato.next(false);
   }
+
 
 }

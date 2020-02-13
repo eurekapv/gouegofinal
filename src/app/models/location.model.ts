@@ -109,6 +109,9 @@ export class Location extends IDDocument {
      */
     setCollection(data: any) {
       
+      // Riazzero e ricreo le aperture
+      this.APERTURALOCATION = [];
+
       //Sistemazione Immagini Location
       if (data.LOCATIONIMAGE) {
         this.setCollectionLocationImage(data);
@@ -170,8 +173,7 @@ export class Location extends IDDocument {
      */
     private setCollectionAperturaLocation(data: any) {
       if (data.APERTURALOCATION) {
-        // Riazzero e ricreo le aperture
-        this.APERTURALOCATION = [];
+
 
         data.APERTURALOCATION.forEach(elApertura => {
           let newDay = new AperturaLocation();

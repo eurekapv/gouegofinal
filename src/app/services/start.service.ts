@@ -10,6 +10,9 @@ import { Area } from '../models/area.model';
 import { Location } from '../models/location.model';
 import { Utente } from '../models/utente.model';
 import { SportService } from './sport.service';
+import { CategoriaetaService } from './categoriaeta.service';
+import { CourseService } from './course.service';
+import { FilterCorsi } from '../models/filtercorsi.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +56,9 @@ export class StartService {
 
 
   constructor(private apiService: ApicallService,
-    private sportService: SportService) { }
+    private sportService: SportService,
+    private categoriaEtaService: CategoriaetaService,
+    private corsoService: CourseService) { }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
@@ -325,6 +330,44 @@ requestSport() {
       .request(actualStartConfig);
 
   
+            
+}
+//#endregion
+
+//#region CATEGORIAETA
+
+get listCategoriaEta() {
+  return this.categoriaEtaService.listCategorieEta;
+}
+
+/**
+ * Richiede al server le Categorie Eta
+ */
+requestCategorieEta() {
+  const actualStartConfig = this._startConfig.getValue();
+
+  this.categoriaEtaService
+      .request(actualStartConfig);
+            
+}
+//#endregion
+
+
+//#region CORSO
+
+get listCorsi() {
+  return this.corsoService.listCorsi;
+}
+
+/**
+ * Richiede al server le Categorie Eta
+ * @param filter Filtri da applicare in ricerca
+ */
+requestCorsi(filter: FilterCorsi) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  this.corsoService
+      .request(actualStartConfig, filter);
             
 }
 //#endregion

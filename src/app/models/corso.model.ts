@@ -1,22 +1,7 @@
 import { IDDocument } from './iddocument.model';
-import {  TipoCorso, StatoCorso} from '../models/valuelist.model';
-
-// export enum TipoCorso {
-//     corso = 10,
-//     provaGratuita = 20
-// }
-
-// export enum StatoCorso {
-//   inserito = 10,
-//   inValutazione = 20,
-//   confermato = 30,
-//   iscrizioniAperte = 40,
-//   inEsecuzione = 50,
-//   eseguito = 60,
-//   annullato = 80
-// }
-
-
+import {  TipoCorso, StatoCorso, TargetSesso } from '../models/valuelist.model';
+import { FilterCorsi } from './filtercorsi.model';
+import { HttpParams } from '@angular/common/http';
 
 export class Corso extends IDDocument {
 
@@ -40,6 +25,7 @@ export class Corso extends IDDocument {
     GIORNIPREVISTI: string;
     ISCRIZIONEDAL: Date;
     ISCRIZIONEAL: Date;
+    TARGETSESSO: TargetSesso;
 
 
 
@@ -51,10 +37,29 @@ export class Corso extends IDDocument {
     NUMLEZIONI: number;
     */
 
-
-
-
     constructor() {
       super();
     }
+
+    /**
+     * Imposta le proprietà nell'oggetto
+     * @param data JSON Received
+     */
+    setJSONProperty(data: any) {
+      super.setJSONProperty(data);
+    }
+
+    /**
+     * Ritorna un oggetto HttpParams con i parametri
+     * @param filter Filtro impostato
+     */
+    static getHttpParams(filter: FilterCorsi): HttpParams {
+      let myParams: HttpParams;
+
+      return myParams;
+    }
+
+
+
+
 }

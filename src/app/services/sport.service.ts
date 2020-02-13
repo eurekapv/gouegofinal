@@ -53,7 +53,7 @@ export class SportService {
         console.log(resultData);
 
 
-      })
+      });
 
   }
 

@@ -59,6 +59,14 @@ export enum Ruolo {
     cliente = 50
 }
 
+export enum TargetSesso {
+    maschile = 10,
+    femminile = 20,
+    maschileFemminile = 30
+}
+
+
+
 
 export class ValueList {
 
@@ -122,3 +130,15 @@ export class ValueList {
 
     
 }
+
+//#region LISTE VALORI INTERNE
+//Liste non presenti in GOUEGO
+
+export enum Condition {
+    uguale = '=',
+    maggiore = '>',
+    minore = '<',
+    diverso = '#'
+}
+
+//#endregion

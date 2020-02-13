@@ -21,15 +21,15 @@
 
 <ion-content>
 
-  <ion-item *ngIf="showFilter">
+  <ion-item *ngIf="showFilter" color="secondary">
     <ion-label>Attività</ion-label>
-    <ion-select value="brown" okText="Conferma" cancelText="Annulla">
+    <ion-select value="all" okText="Conferma" cancelText="Annulla">
 
       <ion-select-option value="all">Tutti</ion-select-option>
-      
-      <ion-select-option value="blonde">Blonde</ion-select-option>
-      <ion-select-option value="black">Black</ion-select-option>
-      <ion-select-option value="red">Red</ion-select-option>
+      <ion-select-option *ngFor="let sport of collSport"
+      value="sport.ID">
+      {{sport.DENOMINAZIONE}}
+      </ion-select-option>
     </ion-select>
   </ion-item>
 

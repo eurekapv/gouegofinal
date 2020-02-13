@@ -40,7 +40,7 @@
                 </ion-item>
                 <ion-item>
                   <ion-icon name="call" slot="start"></ion-icon>
-                  <ion-input type="nuber" placeholder="Cellulare" formControlName="telephone" ></ion-input>
+                  <ion-input type="tel" inputmode="tel" placeholder="Cellulare" formControlName="telephone" ></ion-input>
                 </ion-item>
               </ion-list>
               <ion-button class="btnRegister"  color="primary" fill="outline" expand="block" [disabled]="!formRegister.valid" (click)="onClickProsegui()">
@@ -64,18 +64,36 @@
 
           </ion-footer>
 
-        </ion-card>
+        </ion-card>    
+        
+        
         <ion-card class="cardPrincipale" *ngIf="stato==pageState.CONFIRM">
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-back-button defaultHref="/"></ion-back-button>
+              </ion-buttons>
+              <ion-title>
+                Gioca con noi
+              </ion-title>
+            </ion-toolbar>
+          </ion-header>
           <ion-card-content>
-            <form [formGroup]="formConfig">
-              <ion-input  inputmode="numeric" formControlName="c1"></ion-input>
-              <ion-input type="text" placeholder="Cognome" formControlName="c2" ></ion-input>
-              <ion-input type="email" placeholder="E-Mail" formControlName="c3"></ion-input>
-              <ion-input type="password" placeholder="Password" formControlName="c4"></ion-input>
-              <ion-input type="nuber" placeholder="Cellulare" formControlName="c5" ></ion-input>
-
-
-              <ion-button class="btnRegister"  color="primary" fill="outline" expand="block" [disabled]="!formRegister.valid" (click)="onClickProsegui()">
+            <img [src]="startConfig.urlLogoMenu">
+            <h2 class="ion-text-center ion-padding-vertical">Inserisci il codice che ti abbiamo inviato tramite SMS</h2>
+            <form [formGroup]="formConfirm">
+              <div class="activation-popup-code">            
+                  <div class="code-liste">
+                    <ion-segment>
+                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
+                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
+                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
+                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
+                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
+                    </ion-segment>
+                  </div>
+              </div>
+              <ion-button class="btnRegister"  color="primary" fill="outline" expand="block" [disabled]="!formConfirm.valid" (click)="onClickRegister()">
                 registrati
               </ion-button>
             </form>

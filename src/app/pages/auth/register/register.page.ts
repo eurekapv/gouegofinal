@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { Utente } from 'src/app/models/utente.model';
 import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
-import { LoadingController, ToastController, NavController } from '@ionic/angular';
+import { LoadingController, ToastController, NavController, IonInput } from '@ionic/angular';
 import { AccountService } from 'src/app/services/account.service';
 
 @Component({
@@ -13,13 +13,19 @@ import { AccountService } from 'src/app/services/account.service';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
+  
+  @ViewChild('c1',{static:false}) c1;
+  @ViewChild('c2',{static:false}) c2;
+  @ViewChild('c3',{static:false}) c3;
+  @ViewChild('c4',{static:false}) c4;
+  @ViewChild('c5',{static:false}) c5;
 
   //per utilizzare l'enum nell'html
   pageState: typeof PageState=PageState;
 
   docUtente= new Utente;
   formRegister: FormGroup;
-  formConfig: FormGroup;
+  formConfirm: FormGroup;
 
   startConfig:StartConfiguration
   startListen: Subscription;
@@ -37,11 +43,10 @@ export class RegisterPage implements OnInit {
     this.startListen = this.startService.startConfig.subscribe( element => {
       this.startConfig = element;
     });
-    
   }
   
   ngOnInit() {
-    this.stato=PageState.CONFIRM;
+    this.stato=PageState.REGISTRATION;
     this.createForm();
   }
 
@@ -74,27 +79,27 @@ export class RegisterPage implements OnInit {
     })
 
     //form di conferma codice
-    this.formConfig=new FormGroup({
+    this.formConfirm=new FormGroup({
       c1: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       }),
       c2: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       }),
       c3: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       }),
       c4: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       }),
       c5: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
-      }),
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+      })
     })
 
   }
@@ -146,7 +151,29 @@ export class RegisterPage implements OnInit {
     }
   }
 
+  onClickRegister()
+  {
+    if(this.formConfirm.valid)
+    {
+    }
+  }
 
+  changeFocus(evento)
+  {
+    let id=evento['target']['id'];
+  
+      if (id==1)
+      this.c2.setFocus();
+      else if (id==2)
+      this.c3.setFocus();
+      else if (id==3)
+      this.c4.setFocus();
+      else if (id==4)
+      this.c5.setFocus();      
+    
+  }
+  
+  
   async showMessage(myMessage: string) {
     const toast = await this.toastCtrl
       .create({

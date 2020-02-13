@@ -13,6 +13,7 @@ import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
 import { CourseService } from './course.service';
 import { FilterCorsi } from '../models/filtercorsi.model';
+import { UtenteService } from './utente.service';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,8 @@ export class StartService {
   constructor(private apiService: ApicallService,
     private sportService: SportService,
     private categoriaEtaService: CategoriaetaService,
-    private corsoService: CourseService) { }
+    private corsoService: CourseService,
+    private utenteService: UtenteService) { }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
@@ -368,6 +370,25 @@ requestCorsi(filter: FilterCorsi) {
 
   this.corsoService
       .request(actualStartConfig, filter);
+            
+}
+//#endregion
+
+//#region UTENTE
+
+get utente() {
+  return this.utenteService.utente;
+}
+
+/**
+ * Richiede al server i dati Utente
+ * @param idUtente IDUtente
+ */
+requestUtente(idUtente: string) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  this.utenteService
+      .request(actualStartConfig, idUtente);
             
 }
 //#endregion

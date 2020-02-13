@@ -1,3 +1,5 @@
+import { IDDocument } from './iddocument.model';
+
 export enum TipoArea {
     areaGruppo = 10,
     areaIndipendente = 20
@@ -75,6 +77,19 @@ export enum Sesso {
 
 export class ValueList {
 
+    value: any;
+    description: any;
+
+    /**
+     * 
+     * @param valore Valore Elemento
+     * @param descrizione Descrizione
+     */
+    constructor(valore: any, descrizione: any) {
+        this.value = valore;
+        this.description = descrizione;
+    }
+
     /**
      * Decodifica un valore da una lista valori
      * @param objEnum Lista Valori da utilizzare
@@ -133,7 +148,27 @@ export class ValueList {
         return retLabel;
     }
 
-    
+    /**
+     * Dato un Enum (Lista Valori) Torna un Array con elementi
+     * value - description
+     * @param objEnum Nome della Lista Valori desiderata
+     */
+    static getArray(objEnum: any) : ValueList[] {
+        let retElements: ValueList[] = [];
+
+        Object.keys(objEnum).forEach(key => {
+            if (IDDocument.isNumber(key) == false) {
+                let field = key;
+                let value = objEnum[field];
+                let decodifica = ValueList.decode(objEnum, value);
+                let element = new ValueList(value, decodifica);
+
+                retElements.push(element);
+            }
+        });
+
+        return retElements;
+    }
 }
 
 //#region LISTE VALORI INTERNE

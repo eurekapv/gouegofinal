@@ -57,7 +57,19 @@
       }
     }
 
+    //#region FUNZIONI STATICHE
+    
+    /**
+     * Ritorna TRUE / FALSE a seconda se un elemento è Numerico o No
+     * @param value Valore da controllare
+     */
+    static isNumber(value: string | number): boolean
+    {
+      return ((value != null) &&
+              (value !== '') &&
+              !isNaN(Number(value.toString())));
+    }
 
-
+    //#endregion
   }
   

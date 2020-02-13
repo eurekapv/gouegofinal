@@ -4,6 +4,7 @@ import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { Sport } from 'src/app/models/sport.model';
 import { StartService } from 'src/app/services/start.service';
+import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 
 @Component({
   selector: 'app-listcourses',
@@ -53,7 +54,7 @@ export class ListcoursesPage implements OnInit {
 
 
   switchFilter() {
-    this.showFilter = !this.showFilter;
+    this.showFilter = !this.showFilter;    
   }
 
 }

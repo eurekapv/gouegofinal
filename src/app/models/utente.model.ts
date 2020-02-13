@@ -14,6 +14,7 @@ export class Utente extends IDDocument {
     PROVINCIA: string;
     ISOSTATO: string;
     NATOIL: Date;
+    NATOA: string;
     SESSO: Sesso;
     CODICEFISCALE: string;
     IDAREAOPERATIVA: string;

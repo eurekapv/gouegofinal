@@ -65,6 +65,11 @@ export enum TargetSesso {
     maschileFemminile = 30
 }
 
+export enum Sesso {
+    maschio = 10,
+    femmina = 20
+}
+
 
 
 

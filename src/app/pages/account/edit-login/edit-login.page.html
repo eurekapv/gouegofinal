@@ -1,9 +1,30 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>edit-login</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/account"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Modifica Credenziali</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <form [formGroup]="form">
+    <ion-list lines >
+      <ion-item lines="none"> 
+        <ion-label position="floating">Vecchia Password</ion-label>
+        <ion-input type="password" inputmode="password" formControlName="oldPsw"></ion-input>
+      </ion-item>
+      <ion-item-divider color="light" lines="none"></ion-item-divider>
+      <ion-item >
+        <ion-label position="floating" >Nuova Password</ion-label>
+        <ion-input type="password" inputmode="password" formControlName="newPsw1"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Conferma Password</ion-label>
+        <ion-input type="password" inputmode="password" formControlName="newPsw2"></ion-input>
+      </ion-item>
+      <ion-item lines="none" *ngIf="showPswMessage()"><ion-label><p>Attenzione, le password non coincidono</p></ion-label></ion-item>
+    </ion-list>
+    <ion-button fill="outline" expand="block" class="ion-padding-vertical" [disabled]="!form.valid" >Conferma</ion-button>
+  </form>
 </ion-content>

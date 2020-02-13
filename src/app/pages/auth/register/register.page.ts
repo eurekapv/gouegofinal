@@ -46,7 +46,7 @@ export class RegisterPage implements OnInit {
   }
   
   ngOnInit() {
-    this.stato=PageState.REGISTRATION;
+    this.stato=PageState.CONFIRM;
     this.createForm();
   }
 
@@ -155,6 +155,7 @@ export class RegisterPage implements OnInit {
   {
     if(this.formConfirm.valid)
     {
+      this.stato=PageState.WELCOME;
     }
   }
 
@@ -184,10 +185,19 @@ export class RegisterPage implements OnInit {
       toast.present();
   }
 
+  onClickReinvia()
+  {
+    //richiesta di reinvio codice al servers
+    console.log('dfkfsl');
+  } 
+
 }
 
 enum PageState
 {
   REGISTRATION =10,
-  CONFIRM = 20
+  CONFIRM = 20,
+  WELCOME = 30
 }
+
+

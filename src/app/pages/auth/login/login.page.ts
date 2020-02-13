@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
 import { LoadingController, ToastController, NavController } from '@ionic/angular';
-import { AccountService } from '../../../services/account.service';
+import { StartService } from '../../../services/start.service';
 
 
 @Component({
@@ -17,13 +17,14 @@ export class LoginPage implements OnInit {
   form: FormGroup;
 
   
+  
 
   constructor(
     
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController, 
-    private accountService: AccountService,
-    private navCtrl: NavController) { }
+    private navCtrl: NavController, 
+    private startService: StartService) { }
 
   ngOnInit() {
     this.createForm();
@@ -64,8 +65,8 @@ export class LoginPage implements OnInit {
           //Creo il loading
           element.present();
 
-          // Chiamo il Servizio Account per eseguire l'autorizzazione
-          this.accountService
+          // Chiamo il Servizio per eseguire l'autorizzazione
+          this.startService
             .requestAuthorization(this.form.value.username, this.form.value.password)
             .subscribe(dataResult => {
 

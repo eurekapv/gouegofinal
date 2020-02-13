@@ -8,7 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { Area } from '../models/area.model';
 import { Location } from '../models/location.model';
-import { Account } from '../models/account.model';
+import { Utente } from '../models/utente.model';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
 import { CourseService } from './course.service';
@@ -28,8 +28,9 @@ export class StartService {
   private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
   private _listAree = new BehaviorSubject<Area[]>([]);
   private _listLocation = new BehaviorSubject<Location[]>([]);
-  private _accountLogged = new BehaviorSubject<boolean>(false);
-  private _account = new BehaviorSubject<Account>(new Account());
+  
+  //private _utenteLogged = new BehaviorSubject<boolean>(false);
+  //private _utente = new BehaviorSubject<Utente>(new Utente());
 
 
   get startConfig() {
@@ -44,15 +45,7 @@ export class StartService {
     return this._listLocation.asObservable();
   }
 
-  // Espone se l'utente è loggato 
-  get accountLogged() {
-    return this._accountLogged.asObservable();
-  }
 
-  // Espone l'account 
-  get account() {
-    return this._account.asObservable();
-  }
 
 
 
@@ -296,16 +289,16 @@ export class StartService {
   
   /** Esegue la connessione con i dati account ricevuti */
   loginAccount(account: any) {
-    //Imposto il nuovo Account
-    let newAccount = new Account();
+    // //Imposto il nuovo Account
+    // let newAccount = new Utente();
 
-    newAccount.setJSONProperty(account);
+    // newAccount.setJSONProperty(account);
 
-    // Imposto il nuovo utente
-    this._account.next(newAccount);
+    // // Imposto il nuovo utente
+    // this._utente.next(newAccount);
 
-    // Avviso del login
-    this._accountLogged.next(true);
+    // // Avviso del login
+    // this._utenteLogged.next(true);
 
  
   }
@@ -313,7 +306,7 @@ export class StartService {
   /** Esegue la disconnessione Account */
   logOffAccount() {
     // Avviso del login
-    this._accountLogged.next(false);
+    // this._utenteLogged.next(false);
   }
 //#endregion
   
@@ -379,6 +372,27 @@ requestCorsi(filter: FilterCorsi) {
 get utente() {
   return this.utenteService.utente;
 }
+
+// Espone se l'utente è loggato 
+get utenteLogged() {
+  return this.utenteService.utenteLoggato;
+}
+
+/**
+ * Effettua la richiesta 
+ * @param username Username Utente
+ * @param password Password Utente
+ */
+requestAuthorization(username: string, 
+                    password: string) {
+
+  const actualStartConfig = this._startConfig.getValue();
+
+  return this.utenteService.requestAuthorization(actualStartConfig, username, password);
+
+}
+
+
 
 /**
  * Richiede al server i dati Utente

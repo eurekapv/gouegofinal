@@ -22,4 +22,8 @@ export class Account extends IDDocument {
     constructor() {
         super();
     }
+
+    setJSONProperty(data: any) {
+        super.setJSONProperty(data);
+    }
 }

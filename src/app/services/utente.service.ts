@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Utente } from '../models/utente.model';
 import { ApicallService } from './apicall.service';
@@ -41,8 +41,11 @@ export class UtenteService {
       }))
       .subscribe( resultData => {
 
-        this._utente.next(resultData);
-        
+        let newUtente = new Utente();
+        newUtente.setJSONProperty(resultData);
+
+        this._utente.next(newUtente);
+
       })
   }
 

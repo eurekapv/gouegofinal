@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
     <ion-title>Modifica Credenziali</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button fill="clear" (click)="onSubmit()" [disabled]="!form.valid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -25,6 +30,5 @@
       </ion-item>
       <ion-item lines="none" *ngIf="showPswMessage()"><ion-label><p>Attenzione, le password non coincidono</p></ion-label></ion-item>
     </ion-list>
-    <ion-button fill="outline" expand="block" class="ion-padding-vertical" [disabled]="!form.valid" >Conferma</ion-button>
   </form>
 </ion-content>

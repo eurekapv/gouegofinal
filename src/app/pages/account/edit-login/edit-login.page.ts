@@ -9,7 +9,7 @@ import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/fo
 })
 export class EditLoginPage implements OnInit {
 
-  docUtente:Account
+  docUtente:Account=new Account;
   form: FormGroup
 
 
@@ -25,15 +25,15 @@ export class EditLoginPage implements OnInit {
   {
     this.form= new FormGroup({
       oldPsw: new FormControl(null,{
-        updateOn: 'blur',
+        updateOn: 'change',
         validators:[Validators.required]
       }),
       newPsw1: new FormControl(null,{
-        updateOn: 'blur',
+        updateOn: 'change',
         validators:[Validators.required]
       }),
       newPsw2: new FormControl(null,{
-        updateOn: 'blur',
+        updateOn: 'change',
         validators:[Validators.required]
       })
     },
@@ -42,7 +42,6 @@ export class EditLoginPage implements OnInit {
 
   pswValidator(c:AbstractControl):{invalid:boolean}
   {
-      console.log(c.get('newPsw1').value)
       if ((c.get('newPsw1').value==c.get('newPsw2').value))
       {
         return
@@ -70,7 +69,9 @@ export class EditLoginPage implements OnInit {
     if (this.form.valid)
      {
       this.docUtente.INPUTPASSWORD=this.form.value.newPsw1;
+      console.log(this.docUtente);
       //faccio richiesta di cambio psw
+      
      }
   }
   

@@ -16,10 +16,11 @@ export class EditAccountPage implements OnInit {
 
   form: FormGroup; 
 
-  sessi:Sesso[]=[];
 
   utente:Utente=new Utente();
   utenteListen: Subscription;
+
+  listSesso: ValueList[]=[];
 
   constructor(
       private startService : StartService
@@ -28,6 +29,10 @@ export class EditAccountPage implements OnInit {
       this.startService.utente.subscribe(data=>{
         this.utente =data;        
       })
+
+
+    this.listSesso=ValueList.getArray(Sesso);
+      
 
    }
 
@@ -63,6 +68,14 @@ export class EditAccountPage implements OnInit {
         updateOn:'change',
         validators: []
       }),
+      statoNascita:new FormControl(null, {
+        updateOn:'change',
+        validators: []
+      }),
+      capNascita:new FormControl(null, {
+        updateOn:'change',
+        validators: []
+      }),
       provResidenza:new FormControl(this.utente.PROVINCIA, {
         updateOn:'change',
         validators: []
@@ -79,16 +92,44 @@ export class EditAccountPage implements OnInit {
         updateOn:'change',
         validators: []
       }),
+      statoResidenza:new FormControl(this.utente.ISOSTATO, {
+        updateOn:'change',
+        validators: []
+      }),
       cf:new FormControl(this.utente.CODICEFISCALE, {
         updateOn:'change',
         validators: []
       }),
-      cell:new FormControl(this.utente.MOBILENUMBER, {
+      cell:new FormControl({value: this.utente.MOBILENUMBER, disabled: true}, {
         updateOn:'change',
         validators: []
       }),
-
+      email:new FormControl({value: this.utente.EMAIL, disabled: true}, {
+        updateOn:'change',
+        validators: []
+      }),
     })
+  }
+
+  onSubmit()
+  {
+    if (this.form.valid)
+    {
+      this.utente.NOME=this.form.value.nome;
+      this.utente.COGNOME=this.form.value.cognome;
+      this.utente.SESSO=this.form.value.sesso;
+      this.utente.NATOIL=this.form.value.nascita;
+      //this.utente.NATOPROV=this.form.value.provNascita;
+      this.utente.NATOA=this.form.value.comNascita;
+      this.utente.PROVINCIA=this.form.value.provResidenza;
+      this.utente.COMUNE=this.form.value.comResidenza;
+      this.utente.INDIRIZZO=this.form.value.indResidenza;
+      this.utente.CAP=this.form.value.capResidenza;
+      this.utente.CODICEFISCALE=this.form.value.cf;
+      this.utente.MOBILENUMBER=this.form.value.cell;
+      console.log(this.utente);
+      //richiesta di aggiornamento al server
+    }
   }
 
 }

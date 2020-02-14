@@ -27,11 +27,7 @@
       // Gli elementi di tipo Array non li copio
       arProperty.forEach(element => {
           if (Array.isArray(dataObject[element]) == false) {
-
-            
               _this[element] = dataObject[element];
-            
-
           }
           
 

@@ -14,6 +14,7 @@ import { CategoriaetaService } from './categoriaeta.service';
 import { CourseService } from './course.service';
 import { FilterCorsi } from '../models/filtercorsi.model';
 import { UtenteService } from './utente.service';
+import { LivelloService } from './livello.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,8 @@ export class StartService {
     private sportService: SportService,
     private categoriaEtaService: CategoriaetaService,
     private corsoService: CourseService,
-    private utenteService: UtenteService) { }
+    private utenteService: UtenteService,
+    private livelloService: LivelloService) { }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
@@ -290,16 +292,34 @@ get listSport() {
   return this.sportService.listSport;
 }
 
-
-requestSport() {
+/**
+ * Richiedo al servizio gli Sport
+ * @param withLivelli Scaricamento con Livelli 
+ */
+requestSport(withLivelli?:boolean) {
   const actualStartConfig = this._startConfig.getValue();
 
   this.sportService
-      .request(actualStartConfig);
-
-  
+      .request(actualStartConfig, withLivelli);
             
 }
+//#endregion
+
+//#region LIVELLI
+get listLivelli() {
+  return this.livelloService.listLivelli;
+}
+
+/**
+ * Richiedo al servizio i Livelli
+ */
+requestLivelli() {
+  const actualStartConfig = this._startConfig.getValue();
+
+  this.livelloService
+    .request(actualStartConfig);
+}
+
 //#endregion
 
 //#region CATEGORIAETA

@@ -16,17 +16,25 @@ export class Utente extends IDDocument {
     ISOSTATO: string;
     NATOIL: Date;
     NATOA: string;
+    NATOCAP: string;
+    NATOPROV: string;
+    NATOISOSTATO: string;
     SESSO: Sesso;
     CODICEFISCALE: string;
     IDAREAOPERATIVA: string;
     IDLOCATION: string;
     AVATAR: string;
+    NEWSLETTER: boolean;
+    PROFILAZIONEINTERNA: boolean;
+    PROFILAZIONEESTERNA: boolean;
     UTENTILIVELLI: UtenteLivello[];
 
     constructor() {
         super();
 
         this.UTENTILIVELLI = [];
+        this.PROFILAZIONEESTERNA = false;
+        this.PROFILAZIONEINTERNA = false;
     }
 
     setJSONProperty(data: any) {

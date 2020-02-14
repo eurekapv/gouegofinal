@@ -63,7 +63,8 @@ export class UtenteService {
                         password: string) {
     const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
                                        'X-HTTP-Method-Override':'VERIFICALOGINMOB', 
-                                       'APPID':config.appId
+                                       'APPID':config.appId,
+                                       'child-level': '2'
                                       });
 
     const myParams = new HttpParams().set('Username', username).append('Password', password);

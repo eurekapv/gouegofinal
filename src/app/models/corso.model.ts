@@ -1,5 +1,6 @@
 import { IDDocument } from './iddocument.model';
-import {  TipoCorso, StatoCorso, TargetSesso } from '../models/valuelist.model';
+import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni } from '../models/valuelist.model';
+import { Settimana } from './settimana.model';
 
 
 export class Corso extends IDDocument {
@@ -43,6 +44,27 @@ export class Corso extends IDDocument {
       super.setJSONProperty(data);
     }
 
+    /**
+     * Crea un Array di tipo Settimana con le giornate previste per il corso
+     * @param language Lingua
+     */
+    getArraySettimana(language?: Language): Settimana[] {
+      let myWeek = Settimana.getArray(false, language);
+      let arGiorni = this.GIORNIPREVISTI.split(';');
+
+      //Ciclo nei giorni
+      arGiorni.forEach(charGiorno => {
+
+        let index = parseInt(charGiorno.trim());
+
+        if (index >= Giorni.domenica && index <= Giorni.sabato) {
+            Settimana.selectDayArray(index, myWeek);
+        }
+      });
+
+
+      return myWeek;
+    }
 
 
 

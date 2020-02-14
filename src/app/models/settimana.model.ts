@@ -11,7 +11,11 @@ export class Settimana {
     color: string;
 
     constructor(indexDay: number, language?: Language) {
+
         this.index = indexDay;
+        this.selected = false;
+        this.color = 'primary';
+
         this.setAllLabel(language);
     }
 
@@ -159,6 +163,23 @@ export class Settimana {
 
         return myWeek;
     }
+
+
+    /**
+     * Imposta a selected un determinato giorno della settimana presente nell'array
+     * @param indexDay Indice del Giorno da selezionare
+     * @param myWeek Array Settimanale
+     */
+    static selectDayArray(indexDay: number, myWeek: Settimana[]) {
+        if (myWeek) {
+            myWeek.forEach(element => {
+                if (element.index == indexDay) {
+                    element.selected = true;
+                }
+            });
+        }
+    }
+
 
     /**
      * Ritorna in modalità rapida la label del Giorno

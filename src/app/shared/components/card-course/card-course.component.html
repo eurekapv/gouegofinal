@@ -1,22 +1,12 @@
         <ion-card>
-          <ion-card-header color="secondary" class="SmallPadding">
+          <ion-card-header color="primary" class="SmallPadding">
             <ion-item color="transparent" lines="none">
-              <ion-icon name="clipboard" size="large"></ion-icon>
+              
             <ion-title>{{myCorso.DENOMINAZIONE}}</ion-title>
             </ion-item>
-            <!--ion-segment>
-              <ion-segment-button mode="md" class="SegBtn" checked layout="icon-start" disabled="ture">
-                <ion-icon name="time" class="SmallMargin"></ion-icon>
-                <label>15.30</label>
-              </ion-segment-button>
-              <ion-segment-button  mode="md" class="SegBtn" checked layout="icon-start" disabled="true">
-                <ion-icon name="infinite" class="SmallMargin"></ion-icon>
-                <label>2 ore</label>
-              </ion-segment-button>
-              <ion-segment-button  mode="md" class="SegBtn" checked layout="icon-start" disabled="true">
-                <label>30 lezioni</label>
-              </ion-segment-button>
-            </ion-segment-->
+          </ion-card-header>
+
+
             <ion-grid>
               <ion-row>
                 <ion-col text-center>
@@ -28,7 +18,7 @@
                 <ion-col text-center>
                   <ion-chip class="Chip">
                     <ion-icon class="Icon" name="infinite"></ion-icon>
-                    <ion-label>{{myCorso.ORELEZIONE}} Ore</ion-label>
+                  <ion-label>{{myCorso.ORELEZIONE}} Ore</ion-label>
                   </ion-chip>
                 </ion-col>
                 <ion-col text-center>
@@ -38,36 +28,25 @@
                 </ion-col>
               </ion-row>
             </ion-grid>
-          </ion-card-header>
+          
+
+
+          <!-- GIORNATE -->
+          <div id="giornate" class="ion-padding-top ion-padding-bottom">
+            <table style="width: 100%;">
+              <tr>
+                <td *ngFor="let giorno of myCorso._SETTIMANA">
+                  <ion-button color="secondary" size="small" [fill]="giorno.selected ?'solid':'outline'">
+                    {{giorno.xsLabel | uppercase}}
+                  </ion-button>
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
           <ion-card-content class="TabPadding">
-            <ion-segment>
-              <ion-button color="secondary" size="small">L</ion-button>
-              <ion-button color="secondary" size="small" fill="outline">
-                M
-              </ion-button>
-              <ion-button color="secondary" size="small" fill="outline">
-                M
-              </ion-button>
-              <ion-button color="secondary" size="small" fill="outline">
-                G
-              </ion-button>
-              <ion-button color="secondary" size="small">V</ion-button>
-              <ion-button color="secondary" size="small" fill="outline">
-                S
-              </ion-button>
-              <ion-button color="secondary" size="small" fill="outline">
-                D
-              </ion-button>
-            </ion-segment>
-            <!--ion-segment>
-                  <ion-segment-button color="secondary" size="small">LU</ion-segment-button>
-                  <ion-segment-button color="secondary" size="small" fill="outline">MA</ion-segment-button>
-                  <ion-segment-button color="secondary" size="small" fill="outline">ME</ion-segment-button>
-                  <ion-segment-button color="secondary" size="small" fill="outline">GI</ion-segment-button>
-                  <ion-segment-button color="secondary" size="small">VE</ion-segment-button>
-                  <ion-segment-button color="secondary" size="small" fill="outline">SA</ion-segment-button>
-                  <ion-segment-button color="secondary" size="small" fill="outline">DO</ion-segment-button>
-            </ion-segment-->
+
             <ion-list lines="none" class="SmallPadding">
               <ion-item>
                 <ion-icon name="stats"></ion-icon>

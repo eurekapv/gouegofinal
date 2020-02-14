@@ -13,18 +13,21 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 export class SportService {
 
   private _listSport = new BehaviorSubject<Sport[]>([]);
+  private _loaded: boolean; //Sport sono stati richiesti al server e sono caricati in memoria
 
   get listSport() {
     return this._listSport.asObservable();
   }
 
-  constructor(private apiService: ApicallService) { }
+  constructor(private apiService: ApicallService) { 
+    this._loaded = false;
+  }
 
   /**
    * Richiede al server l'elenco delle Attività
    * @param config Parametri configurazione chiamata
    */
-  request(config: StartConfiguration) {
+  request(config: StartConfiguration, withLivelli?:boolean) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'SPORT';
 
@@ -34,26 +37,36 @@ export class SportService {
     let myParams = new HttpParams().set('LivelloAutorizzazione','0');
     let myUrl = config.urlBase + '/' + doObject;
 
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-        return data.SPORT
-      }))
-      .subscribe(resultData => {
+    if (withLivelli) {
+      //Richiedo di caricare anche i livelli
+      myHeaders = myHeaders.append('only-level','-1');
+    }
 
-
-        resultData.forEach(element => {
-
-          let newSport = new Sport();
-          newSport.setJSONProperty(element);
-          this.addSport(newSport);
-          
+    /*Non ho ancora caricato dal server*/
+    if (!this._loaded) {
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+          return data.SPORT
+        }))
+        .subscribe(resultData => {
+  
+          //Arrivati dal server
+          this._loaded = true;
+  
+          resultData.forEach(element => {
+  
+            let newSport = new Sport();
+            newSport.setJSONProperty(element);
+            this.addSport(newSport);
+            
+          });
         });
-
-        console.log(resultData);
-
-
-      });
+    }
+    else {
+      //Già caricati dal server
+      
+    }
 
   }
 
@@ -69,6 +82,9 @@ export class SportService {
     
       
   }
+
+
+  
 
 
 }

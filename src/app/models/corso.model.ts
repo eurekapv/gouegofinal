@@ -27,6 +27,7 @@ export class Corso extends IDDocument {
     ISCRIZIONEAL: Date;
     TARGETSESSO: TargetSesso;
 
+    _SETTIMANA: Settimana[]; //Giorni della Settimana del Corso
 
     DURATA: number;
 
@@ -41,14 +42,18 @@ export class Corso extends IDDocument {
      * @param data JSON Received
      */
     setJSONProperty(data: any) {
+      //Chiamo IDDOcument
       super.setJSONProperty(data);
+
+      //Sistemo la Settimana in italiano
+      this.setSettimana(Language.italiano);
     }
 
     /**
-     * Crea un Array di tipo Settimana con le giornate previste per il corso
+     * Ritorna un'altra Settimana in un'altra lingua
      * @param language Lingua
      */
-    getArraySettimana(language?: Language): Settimana[] {
+    getTranslateSettimana(language?: Language): Settimana[] {
       let myWeek = Settimana.getArray(false, language);
       let arGiorni = this.GIORNIPREVISTI.split(';');
 
@@ -64,6 +69,25 @@ export class Corso extends IDDocument {
 
 
       return myWeek;
+    }
+
+    /**
+     * Crea un Array di tipo Settimana con le giornate previste per il corso
+     * @param language Lingua
+     */
+    setSettimana(language?: Language) {
+      this._SETTIMANA = Settimana.getArray(false, language);
+      let arGiorni = this.GIORNIPREVISTI.split(';');
+
+      //Ciclo nei giorni
+      arGiorni.forEach(charGiorno => {
+
+        let index = parseInt(charGiorno.trim());
+
+        if (index >= Giorni.domenica && index <= Giorni.sabato) {
+            Settimana.selectDayArray(index, this._SETTIMANA);
+        }
+      });
     }
 
 

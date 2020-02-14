@@ -1,5 +1,6 @@
 import { IDDocument } from './iddocument.model';
 import { TipoSport} from '../models/valuelist.model';
+import { Livello } from '../models/livello.model';
 
 // export enum TipoSport {
 //     gruppo =  10,
@@ -13,9 +14,50 @@ export class Sport extends IDDocument {
     TIPOLOGIA:      TipoSport;
     PARTECIPANTI:   number;
     ICONA:          string; // Formato Icon-Sport non Ionic Icon
+    LIVELLO:        Livello[]; //Livelli dello sport
+
 
     constructor() {
         super();
+
+        this.LIVELLO = [];
+    }
+
+    setJSONProperty(data: any) {
+        super.setJSONProperty(data);
+
+        this.setCollection(data);
+    }
+
+    /**
+     * Imposta le collection
+     * @param data JSON Received
+     */
+    setCollection(data:any) {
+
+        this.LIVELLO = [];
+
+        if (data.LIVELLO) {
+            this.setCollectionLivello(data.LIVELLO);
+        }
+
+    }
+
+
+    /**
+     * Imposta la collection dei Livelli
+     * @param data JSON Received
+     */
+    setCollectionLivello(dataLivello: any) {
+
+        dataLivello.forEach(elLivello => {
+
+            let newLivello = new Livello();
+            newLivello.setJSONProperty(dataLivello);
+
+            this.LIVELLO.push(newLivello);
+
+        });
     }
 }
 

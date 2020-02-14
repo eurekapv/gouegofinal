@@ -100,6 +100,8 @@ export class UtenteService {
     //Riemetto Utente
     this._utenteLoggato.next(true);
     this._utente.next(newUtente);
+
+
   }
 
   /**
@@ -109,5 +111,6 @@ export class UtenteService {
     this._utenteLoggato.next(false);
   }
 
+  
 
 }

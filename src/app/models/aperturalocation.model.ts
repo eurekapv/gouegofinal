@@ -1,7 +1,9 @@
 import { IDDocument } from './iddocument.model';
+import { Language } from './valuelist.model';
+import { Settimana } from './settimana.model';
 
 export class AperturaLocation extends IDDocument {
-    GIORNO: number;
+    GIORNO: number; //Da scemo ho messo da 1 a 7
     APERTOCHIUSO: boolean;
     DALLE1: Date;
     ALLE1: Date;
@@ -20,6 +22,9 @@ export class AperturaLocation extends IDDocument {
         
 
         super.setJSONProperty(data);
+
+        //Il Giorno che arriva base 1 lo sposto a base 0
+        this.GIORNO = this.GIORNO - 1;
 
         if (data.DALLE1) {
             this.DALLE1 = this.getDateFromTimeString(data.DALLE1);
@@ -76,31 +81,9 @@ export class AperturaLocation extends IDDocument {
 
 
     /** Ritorna l'etichetta del giorno */
-    getLabel() {
-        let label = '';
-        switch (this.GIORNO) {
-        case 1:
-            label = 'domenica';
-            break;
-        case 2:
-            label = 'lunedi\'';
-            break;
-        case 3:
-            label = 'martedi\'';
-            break;
-        case 4:
-            label = 'mercoledi\'';
-            break;
-        case 5:
-            label = 'giovedi\'';
-            break;        
-        case 6:
-            label = 'venerdi\'';
-            break;        
-        case 7:
-            label = 'sabato';
-            break;                
-        }
+    getLabel(language?: Language) {
+
+        let label = Settimana.getLabel(this.GIORNO, language);
 
         return label;
     }

@@ -1,7 +1,6 @@
 import { IDDocument } from './iddocument.model';
 import {  TipoCorso, StatoCorso, TargetSesso } from '../models/valuelist.model';
-import { FilterCorsi } from './filtercorsi.model';
-import { HttpParams } from '@angular/common/http';
+
 
 export class Corso extends IDDocument {
 
@@ -22,20 +21,15 @@ export class Corso extends IDDocument {
     IDAREAOPERATIVA: string;
     IDLOCATION: string;
     IDCAMPO: string;
-    GIORNIPREVISTI: string;
+    GIORNIPREVISTI: string; //Stringa separata da ; con indice dei giorni
     ISCRIZIONEDAL: Date;
     ISCRIZIONEAL: Date;
     TARGETSESSO: TargetSesso;
 
 
-
-
-    /*
-    agginte da A.C.
-    ORARIOINIZIO: Time;
     DURATA: number;
-    NUMLEZIONI: number;
-    */
+
+
 
     constructor() {
       super();
@@ -49,15 +43,10 @@ export class Corso extends IDDocument {
       super.setJSONProperty(data);
     }
 
-    /**
-     * Ritorna un oggetto HttpParams con i parametri
-     * @param filter Filtro impostato
-     */
-    static getHttpParams(filter: FilterCorsi): HttpParams {
-      let myParams: HttpParams;
 
-      return myParams;
-    }
+
+
+
 
 
 

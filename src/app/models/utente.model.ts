@@ -25,13 +25,17 @@ export class Utente extends IDDocument {
 
     constructor() {
         super();
+
+        this.UTENTILIVELLI = [];
     }
 
     setJSONProperty(data: any) {
         super.setJSONProperty(data);
 
+        this.UTENTILIVELLI = [];
+
         //Sistemo le collection
-        this.setCollectionLivelli(data);
+        this.setCollection(data);
     }
 
     /**
@@ -40,11 +44,7 @@ export class Utente extends IDDocument {
      */
     setCollection(data: any) {
 
-        //Cancelli i livelli    
-        this.UTENTILIVELLI = [];
-
-
-        if (data.UTENTELIVELLO) {
+        if (data.hasOwnProperty('UTENTELIVELLO') && data.UTENTELIVELLO !== undefined) {
             this.setCollectionLivelli(data);
         }
     }

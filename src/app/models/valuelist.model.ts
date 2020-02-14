@@ -72,6 +72,23 @@ export enum Sesso {
     femmina = 20
 }
 
+export enum Language {
+    italiano = 'ITA',
+    inglese = 'ENG',
+    spagnolo = 'ESP',
+    francese = 'FR'
+}
+
+export enum Giorni {
+    domenica = 0,
+    lunedi = 1,
+    martedi = 2,
+    mercoledi = 3,
+    giovedi = 4,
+    venerdi = 5,
+    sabato = 6
+}
+
 
 
 

@@ -2,7 +2,7 @@
           <ion-card-header color="secondary" class="SmallPadding">
             <ion-item color="transparent" lines="none">
               <ion-icon name="clipboard" size="large"></ion-icon>
-              <ion-title>Nome del Corso</ion-title>
+            <ion-title>{{myCorso.DENOMINAZIONE}}</ion-title>
             </ion-item>
             <!--ion-segment>
               <ion-segment-button mode="md" class="SegBtn" checked layout="icon-start" disabled="ture">
@@ -22,18 +22,18 @@
                 <ion-col text-center>
                   <ion-chip class="Chip" >
                     <ion-icon class="Icon" name="time"></ion-icon>
-                    <ion-label color="dark">15.30</ion-label>
+                  <ion-label color="dark">{{myCorso.ORAINIZIO}}</ion-label>
                   </ion-chip>
                 </ion-col>
                 <ion-col text-center>
                   <ion-chip class="Chip">
                     <ion-icon class="Icon" name="infinite"></ion-icon>
-                    <ion-label>1,5 Ore</ion-label>
+                    <ion-label>{{myCorso.ORELEZIONE}} Ore</ion-label>
                   </ion-chip>
                 </ion-col>
                 <ion-col text-center>
                   <ion-chip class="Chip">
-                    <ion-label>30 Lezioni</ion-label>
+                  <ion-label>{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Lezioni':'Lezione'}}</ion-label>
                   </ion-chip>
                 </ion-col>
               </ion-row>

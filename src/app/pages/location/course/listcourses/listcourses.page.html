@@ -7,11 +7,8 @@
     <ion-title>Corsi</ion-title>
 
     <ion-buttons slot="primary">
-      <ion-button *ngIf="receivedSport" (click)="switchFilter()">
-        <ion-icon 
-          name="color-wand"
-          color="primary"
-        ></ion-icon>
+      <ion-button>
+        Filtra
       </ion-button>
     </ion-buttons>
 
@@ -21,23 +18,79 @@
 
 <ion-content>
 
-  <ion-item *ngIf="showFilter" color="secondary">
-    <ion-label>Attività</ion-label>
-    <ion-select value="all" okText="Conferma" cancelText="Annulla">
+  <div *ngIf="!spinnerCorsi">
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let corso of listCorsi" sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
+          <app-card-course [myCorso]="corso"></app-card-course>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 
-      <ion-select-option value="all">Tutti</ion-select-option>
-      <ion-select-option *ngFor="let sport of collSport"
-      value="sport.ID">
-      {{sport.DENOMINAZIONE}}
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
+  <!-- Skeleton screen -->
+<div *ngIf="spinnerCorsi">
+  <div class="ion-padding custom-skeleton">
+    <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+    <ion-skeleton-text animated></ion-skeleton-text>
+    <ion-skeleton-text animated style="width: 88%"></ion-skeleton-text>
+    <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+    <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+  </div>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <app-card-course></app-card-course>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-thumbnail slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-skeleton-text animated style="width: 27px; height: 27px" slot="start"></ion-skeleton-text>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
+        <p>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</div>
+
 </ion-content>

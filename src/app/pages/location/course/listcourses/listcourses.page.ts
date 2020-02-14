@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
-import { Sport } from 'src/app/models/sport.model';
-import { StartService } from 'src/app/services/start.service';
-import { ValueList, Sesso } from 'src/app/models/valuelist.model';
+
+import { Corso } from '../../../../models/corso.model';
+import { StartService } from '../../../../services/start.service';
+
 
 @Component({
   selector: 'app-listcourses',
@@ -14,20 +14,20 @@ import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 export class ListcoursesPage implements OnInit {
 
   idLocation = '';
-  collCorsi: Corso[] = [];
-  listenCollCorsi: Subscription;
-  collSport: Sport[]=[];
-  listenCollSport: Subscription;
+  listCorsi: Corso[] = [];
+  corsiListen: Subscription;
+    
+  //Spinner di ricezione corsi
+  spinnerCorsi = true;
   
-  receivedSport: boolean;
-  receiveCorsi: boolean;
-  showFilter: boolean;
-  selectedSport: Sport;
 
-  constructor(private router: ActivatedRoute, private startService: StartService) { 
-    this.receivedSport = false;
-    this.receiveCorsi = false;
-    this.showFilter = false;
+  constructor(private router: ActivatedRoute, 
+              private startService: StartService
+              ) { 
+    
+    //Attivazione Spinner Ricezione corsi
+    this.spinnerCorsi = true;
+
   }
 
   ngOnInit() {
@@ -37,24 +37,28 @@ export class ListcoursesPage implements OnInit {
       
       if (param.has('locationId')) 
       {
+        //Recupero del Location ID
         this.idLocation = param.get('locationId');
         
-        //Chiedo gli Sport presenti
-        this.startService.requestSport();
+        //Impostazione della Location come filtro        
+        this.startService.initFilterCorsi(this.idLocation);
 
-        //Mi metto in ascolto 
-        this.listenCollSport = this.startService.listSport.subscribe(element => {
-          this.collSport = element;
-          this.receivedSport = true;
-        });
+        //Richiedo i corsi
+        this.startService.requestCorsi();
+
+        //Mi sottoscrivo alla ricezione
+        this.corsiListen = this.startService.listCorsi.subscribe (element => {
+          this.spinnerCorsi = false;
+          this.listCorsi = element;
+        })
+
+
       }
 
     })
   }
 
 
-  switchFilter() {
-    this.showFilter = !this.showFilter;    
-  }
+
 
 }

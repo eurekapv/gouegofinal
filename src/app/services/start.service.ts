@@ -29,10 +29,7 @@ export class StartService {
   private _listAree = new BehaviorSubject<Area[]>([]);
   private _listLocation = new BehaviorSubject<Location[]>([]);
   
-  //private _utenteLogged = new BehaviorSubject<boolean>(false);
-  //private _utente = new BehaviorSubject<Utente>(new Utente());
-
-
+  
   get startConfig() {
     return this._startConfig.asObservable();
   }
@@ -285,31 +282,7 @@ export class StartService {
   }
   //#endregion
 
-//#region ACCOUNT
-  
-  /** Esegue la connessione con i dati account ricevuti */
-  loginAccount(account: any) {
-    // //Imposto il nuovo Account
-    // let newAccount = new Utente();
 
-    // newAccount.setJSONProperty(account);
-
-    // // Imposto il nuovo utente
-    // this._utente.next(newAccount);
-
-    // // Avviso del login
-    // this._utenteLogged.next(true);
-
- 
-  }
-
-  /** Esegue la disconnessione Account */
-  logOffAccount() {
-    // Avviso del login
-    // this._utenteLogged.next(false);
-  }
-//#endregion
-  
 
 //#region SPORT SERVICE
 
@@ -349,16 +322,33 @@ requestCategorieEta() {
 
 
 //#region CORSO
-
+/**
+ * Elenco Corsi 
+ */
 get listCorsi() {
   return this.corsoService.listCorsi;
+}
+
+/**
+ * Ritorno il filtro corsi impostato nel servizio
+ */
+get filterCorsi() {
+  return this.corsoService.filterCorsi;
+}
+
+/**
+ * Inizializza i filtri con la location
+ * @param idLocation ID Location 
+ */
+initFilterCorsi(idLocation: string) {
+  this.corsoService.initFilterCorsi(idLocation);
 }
 
 /**
  * Richiede al server le Categorie Eta
  * @param filter Filtri da applicare in ricerca
  */
-requestCorsi(filter: FilterCorsi) {
+requestCorsi(filter?: FilterCorsi) {
   const actualStartConfig = this._startConfig.getValue();
 
   this.corsoService
@@ -376,6 +366,13 @@ get utente() {
 // Espone se l'utente è loggato 
 get utenteLogged() {
   return this.utenteService.utenteLoggato;
+}
+
+/** Esegue la disconnessione */
+logOffAccount() {
+  // Avviso del login
+  this.utenteService.logoff();
+  
 }
 
 /**

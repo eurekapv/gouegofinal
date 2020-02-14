@@ -1,9 +1,34 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>sportlevels</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/account"></ion-back-button>
+    </ion-buttons>
+    <ion-title>I tuoi livelli</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngFor="let livello of utente.UTENTILIVELLI" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0">
+        <ion-card class="card-livello">
+            <h2 class="ion-text-center">{{ livello.DESCRSPORT }}</h2>
+          <ion-card-content>
+              <ion-row>
+                <ion-col size="12">
+                  <img  src="/assets/trophy2.png">
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <div class="level-label">
+                    <h1 class="ion-text-center">{{ livello.DESCRLIVELLO }}</h1>
+                  </div>
+                </ion-col>
+              </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

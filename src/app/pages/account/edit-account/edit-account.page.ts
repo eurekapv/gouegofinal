@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 import { Utente } from 'src/app/models/utente.model';
 import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
@@ -42,7 +42,7 @@ export class EditAccountPage implements OnInit {
 
   createForm()
   {
-    console.log(this.utente.NOME);
+    console.log(this.utente);
     this.form=new FormGroup({
       nome:new FormControl(this.utente.NOME, {
         updateOn:'change',
@@ -60,19 +60,19 @@ export class EditAccountPage implements OnInit {
         updateOn:'change',
         validators: []
       }),
-      provNascita:new FormControl(null, {
+      provNascita:new FormControl(this.utente.NATOPROV, {
         updateOn:'change',
         validators: []
       }),
-      comNascita:new FormControl(null, {
+      comNascita:new FormControl(this.utente.NATOA, {
         updateOn:'change',
         validators: []
       }),
-      statoNascita:new FormControl(null, {
+      statoNascita:new FormControl(this.utente.NATOISOSTATO, {
         updateOn:'change',
         validators: []
       }),
-      capNascita:new FormControl(null, {
+      capNascita:new FormControl(this.utente.NATOCAP, {
         updateOn:'change',
         validators: []
       }),
@@ -119,14 +119,18 @@ export class EditAccountPage implements OnInit {
       this.utente.COGNOME=this.form.value.cognome;
       this.utente.SESSO=this.form.value.sesso;
       this.utente.NATOIL=this.form.value.nascita;
-      //this.utente.NATOPROV=this.form.value.provNascita;
+      this.utente.NATOPROV=this.form.value.provNascita;
       this.utente.NATOA=this.form.value.comNascita;
       this.utente.PROVINCIA=this.form.value.provResidenza;
+      this.utente.NATOISOSTATO=this.form.value.statoNascita;
+      this.utente.NATOCAP=this.form.value.capNascita;
       this.utente.COMUNE=this.form.value.comResidenza;
       this.utente.INDIRIZZO=this.form.value.indResidenza;
       this.utente.CAP=this.form.value.capResidenza;
       this.utente.CODICEFISCALE=this.form.value.cf;
       this.utente.MOBILENUMBER=this.form.value.cell;
+      this.utente.ISOSTATO=this.form.value.statoResidenza;
+      this.utente.EMAIL=this.form.value.email;
       console.log(this.utente);
       //richiesta di aggiornamento al server
     }

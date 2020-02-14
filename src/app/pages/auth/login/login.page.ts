@@ -33,11 +33,11 @@ export class LoginPage implements OnInit {
   createForm() {
     this.form = new FormGroup({
       username: new FormControl(null, {
-        updateOn: 'blur',
+        updateOn: 'change',
         validators: [Validators.required]
       }),
       password: new FormControl(null, {
-        updateOn: 'blur',
+        updateOn: 'change',
         validators: [Validators.required]
       })
     });

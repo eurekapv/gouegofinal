@@ -105,8 +105,6 @@ export class ValueList {
             // Ora trasformo la label
             label = ValueList.convert(label);
         }
-
-        
         return label;
     }
 

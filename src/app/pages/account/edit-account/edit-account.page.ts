@@ -14,7 +14,9 @@ import { Account } from 'src/app/models/account.model';
 })
 export class EditAccountPage implements OnInit {
 
-  form: FormGroup;
+  form: FormGroup; 
+
+  sessi:Sesso[]=[];
 
   utente:Utente=new Utente();
   utenteListen: Subscription;
@@ -26,9 +28,6 @@ export class EditAccountPage implements OnInit {
       this.startService.utente.subscribe(data=>{
         this.utente =data;        
       })
-
-
-
 
    }
 

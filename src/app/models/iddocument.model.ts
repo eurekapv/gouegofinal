@@ -13,6 +13,13 @@
     }
 
 
+    get inserted(): boolean {
+      return this.do_inserted;
+    }
+
+    get deleted(): boolean {
+      return this.do_deleted;
+    }
   
     newID() {
       return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

@@ -44,6 +44,7 @@ export class HomePage implements OnInit, OnDestroy{
 
   // L'area viene recuperata dal subscribe
   selectedArea: Area;
+  selectedAreaListen: Subscription;
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
@@ -53,31 +54,25 @@ export class HomePage implements OnInit, OnDestroy{
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
       .subscribe(element => {
-
         this.startConfig = element;
-
-        //C'è un'area selezionata
-        if (element.idAreaSelected) {
-          
-          console.log('Area arrivata');
-
-          //Chiedo al servizio il documento dell'Area Selezionata
-          this.startService.getArea(element.idAreaSelected).subscribe(elArea => {
-            this.selectedArea = elArea;
-          });
-        } 
       });
     
     // Sottoscrivo alla ricezione delle Aree
-    this.listAreeListen = this.startService.listAree.subscribe(aree => {
-      this.listAree = aree;
-      
+    this.listAreeListen = this.startService.listAree
+       .subscribe(aree => {
+          this.listAree = aree;
+    });
+
+    //Mi sottoscrivo alla ricezione della Area Selezionata
+    this.selectedAreaListen = this.startService.areaSelected
+        .subscribe( areaSel => {
+            this.selectedArea = areaSel;
     });
 
     // Sottoscrivo alla ricezione delle Locations
-    this.listLocationListen = this.startService.listLocation.subscribe(locations => {
-      this.listLocation = locations;
-      
+    this.listLocationListen = this.startService.listLocation
+        .subscribe(locations => {
+          this.listLocation = locations;
     })
 
     //Sottoscrivo all'ascolto di un utente loggato
@@ -124,6 +119,19 @@ export class HomePage implements OnInit, OnDestroy{
     if (this.listLocation) {
       this.listLocationListen.unsubscribe();
     }
+
+    if (this.selectedAreaListen) {
+      this.selectedAreaListen.unsubscribe();
+    }
+
+    if (this.userLoggedListen) {
+      this.userLoggedListen.unsubscribe();
+    }
+
+    if (this.docUtenteListen) {
+      this.docUtenteListen.unsubscribe();
+    }
+
   }
 
 
@@ -157,11 +165,8 @@ export class HomePage implements OnInit, OnDestroy{
         text: iterator.DENOMINAZIONE,
         icon: 'pin',
         handler: ()=>{
-        
           //Chiedo al servizio di cambiare l'Area Selezionata
-          this.startService.changeIdAreaSelected(iterator.ID);
-          // Non devo fare niente altro, il servizio emette l'evento di cambio e aggiorna tutto
-
+          this.startService.selectAreaByID(iterator.ID);
         }
       }
 

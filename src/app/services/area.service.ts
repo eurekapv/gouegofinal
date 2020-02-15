@@ -1,0 +1,109 @@
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
+
+import { Area } from '../models/area.model';
+import { ApicallService } from './apicall.service';
+import { StartConfiguration } from '../models/start-configuration.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AreaService {
+
+  //Elenco Aree
+  _listAree = new BehaviorSubject<Area[]>([]);
+  _areaSelected = new BehaviorSubject<Area>(new Area);
+
+  get listAree() {
+    return this._listAree.asObservable();
+  }
+
+  get areaSelected() {
+    return this._areaSelected.asObservable();
+  }
+
+  constructor(private apiService: ApicallService) { }
+
+
+  /**
+   * Richiede le Aree legate al Gruppo, ed imposta 
+   * sia la Lista delle Aree che un Area Selezionata
+   * 
+   * @param config Parametri di configurazione
+   */
+  request(config: StartConfiguration) {
+    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    const doObject = 'AREAOPERATIVA';
+    
+    // In Testata c'e' sempre l'AppId
+    myHeaders = myHeaders.set('APPID',config.appId);
+    // Nei parametri imposto il gruppo Sportivo
+    let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+    this.apiService
+      .httpGet(myUrl, myHeaders, myParams)
+      .pipe(map(fullData => {
+        return fullData.AREAOPERATIVA
+      }))
+      .subscribe(resultData => {
+
+          //Ricreo l'array di Aree
+          this._listAree.next([]);
+
+          //Aggiungo i valori
+          this._addMultipleAree(resultData, true);
+      });
+
+  }
+
+  /**
+   * Aggiunge un insieme di elementi all'array delle aree
+   * @param dataJSON JSON Received
+   * @param firstSelect Seleziona il primo elemento e rendilo come Area Selezionata
+   */
+  private _addMultipleAree(dataJSON: any, firstSelect: boolean) {
+    let count = 0;
+
+    if (dataJSON) {
+      dataJSON.forEach(element => {
+        let newArea = new Area();
+        newArea.setJSONProperty(element);
+
+        //Primo Giro e mi richiede di selezionare
+        if (firstSelect && count == 0) {
+          this._areaSelected.next(newArea);
+        }
+
+        this.listAree
+          .pipe(take(1))
+          .subscribe( collAree => {
+            this._listAree.next( collAree.concat(newArea));
+          });
+
+        count++;
+      });
+    }
+  }
+
+  /**
+   * Seleziona l'area richiesta per ID
+   * @param idArea ID Area da Selezionare
+   */
+  selectAreaByID(idArea: string) {
+    let arElement = this._listAree.getValue();
+
+    let elSelected = arElement.find(element => {
+      return element.ID == idArea;
+    });
+
+    if (elSelected) {
+      //Ememtto la modifica
+      this._areaSelected.next(elSelected);
+    }
+  }
+
+}

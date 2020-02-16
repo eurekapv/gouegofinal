@@ -22,6 +22,14 @@ export class LivelloService {
   get listLivelli() {
     return this._listLivelli.asObservable();
   }
+  
+    /**
+   * Ritorna la lista non in modalità Observable
+   */
+  get actualListLivelli() {
+    return this._listLivelli.getValue();
+  }  
+
 
 
   /**

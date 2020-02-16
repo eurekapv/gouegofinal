@@ -13,8 +13,8 @@ import { StartConfiguration } from '../models/start-configuration.model';
 export class AreaService {
 
   //Elenco Aree
-  _listAree = new BehaviorSubject<Area[]>([]);
-  _areaSelected = new BehaviorSubject<Area>(new Area);
+  private _listAree = new BehaviorSubject<Area[]>([]);
+  private _areaSelected = new BehaviorSubject<Area>(new Area);
 
   get listAree() {
     return this._listAree.asObservable();

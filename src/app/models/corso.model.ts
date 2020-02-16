@@ -9,8 +9,10 @@ export class Corso extends IDDocument {
     SIGLACALENDARIO: string;
     TIPO: TipoCorso;
     IDLIVELLOENTRATA: string;
+    _DESCRLIVELLOENTRATA: string;
     IDLIVELLOFINALE: string;
     IDSPORT: string;
+    _DESCRSPORT: string;
     NUMEROLEZIONI: number;
     NUMPARTECIPANTI: number;
     MAXPARTECIPANTI: number;
@@ -26,7 +28,8 @@ export class Corso extends IDDocument {
     ISCRIZIONEDAL: Date;
     ISCRIZIONEAL: Date;
     TARGETSESSO: TargetSesso;
-
+    IDCATEGORIEETA: string;
+    _DESCRCATEGORIEETA: string;
     _SETTIMANA: Settimana[]; //Giorni della Settimana del Corso
 
     DURATA: number;
@@ -35,6 +38,10 @@ export class Corso extends IDDocument {
 
     constructor() {
       super();
+
+      this._DESCRCATEGORIEETA = ''
+      this._DESCRLIVELLOENTRATA = '';
+      this._DESCRSPORT = '';
     }
 
     /**
@@ -90,8 +97,42 @@ export class Corso extends IDDocument {
       });
     }
 
+    //Esegue la decodifica della proprieta
+    //Tutte le proprietà hanno la chiave 
+    //in un campo dnominato IDXYZ 
+    //e decodificate in campi _DESCRXYZ
 
+    /**
+     * 
+     * @param propertyToDecode Nome della proprietà da decodificare
+     * @param listDecode Lista con gli elementi
+     * @param propertyLookup Nome della proprieta a cui attingere la decodifica
+     */
+    lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
+      let namePropertyIDX = propertyToDecode;
+      let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
+      let _this = this;
+      
 
+      //Proprieta Indice e Descrizione presenti
+      if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
+        if (listDecode && propertyLookup) {
+
+          let element = listDecode.find(value => {
+            return value.ID == _this[namePropertyIDX]
+          });
+
+          if (element) {
+            if (element.hasOwnProperty(propertyLookup)) {
+              _this[namePropertyDESCR] = element[propertyLookup];
+            }
+          }
+
+        }
+      }
+      
+
+    }
 
 
 

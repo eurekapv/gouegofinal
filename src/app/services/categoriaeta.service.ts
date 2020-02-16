@@ -18,6 +18,13 @@ export class CategoriaetaService {
     return this._listCategorieEta.asObservable();
   }
 
+    /**
+   * Ritorna la lista non in modalità Observable
+   */
+  get actualListCategorieEta() {
+    return this._listCategorieEta.getValue();
+  }
+
   constructor(private apiService: ApicallService) { }
 
   /**
@@ -26,7 +33,7 @@ export class CategoriaetaService {
    */
   request(config: StartConfiguration) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'CATEGORIAETA';
+    const doObject = 'CATEGORIEETA';
 
     //In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('APPID',config.appId);
@@ -37,7 +44,7 @@ export class CategoriaetaService {
     this.apiService
       .httpGet(myUrl, myHeaders, myParams)
       .pipe(map(data => {
-        return data.CATEGORIAETA
+        return data.CATEGORIEETA
       }))
       .subscribe(
          resultData => {

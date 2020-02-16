@@ -20,6 +20,7 @@ export class AppComponent {
   showSplash = true;
   startConfig: StartConfiguration;
   listenStartConfig: Subscription;
+  listenAppReady: Subscription;
 
   constructor(
     private platform: Platform,
@@ -35,19 +36,25 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide(); // Nasconde l'immagine statica
 
-      //Mi Sottoscrivo per ricevere la configurazione iniziale
+      this.listenAppReady = this.startService.appReady
+                                  .subscribe(valueReady => {
+                                    if (valueReady) {
+                                      //Ambiente pronto
+                                      //Termino lo Splash
+                                      this.showSplash = false;
+
+                                      //Tolgo la sottoscrizione
+                                      if (this.listenAppReady) {
+                                        this.listenAppReady.unsubscribe();
+                                      }
+                                    }
+                                  });
+
+      //Mi Sottoscrivo per ricevere la configurazione
        this.listenStartConfig = this.startService.startConfig
                       .subscribe(element => {
-                          // Solo se mi dicono che l'ambiente è pronto
-                          if (element.ready) {
-                                //Memorizzo per la visualizzazione del Menu
-                                this.startConfig = element;
-                                //Termino lo Splash
-                                this.showSplash = false;
-
-                                //Tolgo la sottoscrizione
-                                this.listenStartConfig.unsubscribe();
-                          }
+                            //Memorizzo per la visualizzazione del Menu
+                            this.startConfig = element;
                         });
 
       // Richiedo l'autorizzazione

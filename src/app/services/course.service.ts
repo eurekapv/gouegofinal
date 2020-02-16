@@ -7,6 +7,9 @@ import { Corso } from '../models/corso.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { FilterCorsi } from '../models/filtercorsi.model';
+import { Sport } from '../models/sport.model';
+import { Livello } from '../models/livello.model';
+import { CategoriaEta } from '../models/categoriaeta.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +18,10 @@ export class CourseService {
 
   private _listCorsi = new BehaviorSubject<Corso[]>([]);
   private _filterCorsi: FilterCorsi;
+  private _decodeListSport: Sport[];
+  private _decodeListLivelli: Livello[];
+  private _decodeListEta: CategoriaEta[];
+
 
   get listCorsi() {
     return this._listCorsi.asObservable();
@@ -26,6 +33,18 @@ export class CourseService {
 
   set filterCorsi(value: FilterCorsi) {
     this._filterCorsi = value;
+  }
+
+  set decodeListSport(value: Sport[]) {
+    this._decodeListSport = value;
+  }
+
+  set decodeListLivelli(value: Livello[]) {
+    this._decodeListLivelli = value;
+  }
+
+  set decodeListEta(value: CategoriaEta[]) {
+    this._decodeListEta = value;
   }
 
   /**
@@ -43,6 +62,7 @@ export class CourseService {
    * Utilizzare il documento di Filtro per richiedere dati filtrati
    * @param config Parametri di configurazione
    * @param filter Filtri da applicare in ricerca
+   * @param listDecode Oggetto con le liste per decodificare un corso
    */
   request(config: StartConfiguration, filter?: FilterCorsi) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
@@ -76,6 +96,17 @@ export class CourseService {
 
           let newCorso = new Corso();
           newCorso.setJSONProperty(element);
+          //Decodifico i campi chiave
+          newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
+
+          //Decodifico i campi chiave
+          newCorso.lookup('IDCATEGORIAETA', this._decodeListEta, 'DESCTOOLTIP');
+
+          //Decodifico i campi chiave
+          newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
+
+          console.log(newCorso);
+
           this.addCorso(newCorso);
 
         });

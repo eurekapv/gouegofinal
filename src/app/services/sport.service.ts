@@ -19,6 +19,14 @@ export class SportService {
     return this._listSport.asObservable();
   }
 
+
+  /**
+   * Ritorna la lista non in modalità Observable
+   */
+  get actualListSport() {
+    return this._listSport.getValue();
+  }
+
   constructor(private apiService: ApicallService) { 
     this._loaded = false;
   }

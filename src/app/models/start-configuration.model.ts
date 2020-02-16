@@ -52,7 +52,7 @@ export class StartConfiguration {
 
     }
 
-    // Utilizzato al termine di una chiamta di 
+    // Utilizzato al termine di una chiamata di 
     // Autorizzazione
     setGruppoAuthorization(responseData: any) {
         // Inizializzo il Gruppo

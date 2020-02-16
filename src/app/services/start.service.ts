@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
@@ -16,6 +16,7 @@ import { FilterCorsi } from '../models/filtercorsi.model';
 import { UtenteService } from './utente.service';
 import { LivelloService } from './livello.service';
 import { AreaService } from './area.service';
+import { LocationService } from './location.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,20 +30,17 @@ export class StartService {
   */
   private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
   
-  private _listLocation = new BehaviorSubject<Location[]>([]);
-  
-  
+  /* Valorizzata a TRUE quando l'app è pronta a partire */
+  private _appReady = new BehaviorSubject<boolean>(false);
+  private listenLocation: Subscription;
+
+  get appReady() {
+    return this._appReady.asObservable();
+  }
+
   get startConfig() {
     return this._startConfig.asObservable();
   }
-
-
-
-  get listLocation() {
-    return this._listLocation.asObservable();
-  }
-
-
 
 
 
@@ -52,11 +50,8 @@ export class StartService {
     private corsoService: CourseService,
     private utenteService: UtenteService,
     private livelloService: LivelloService,
-    private areaService: AreaService) { 
-
-      // Mi iscrivo alle modifiche dell'Area Selezionata
-      this.onChangeAreaSelezionata();
-
+    private areaService: AreaService,
+    private locationService: LocationService) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -78,31 +73,52 @@ export class StartService {
       .subscribe(resultData => {
         // Sistemo l'oggetto di configurazione 
         // ed emetto un evento di Cambio
+        this.onAuthorizationGrant(resultData);
 
-        
-        this.startConfig
-          .pipe(take(1))
-          .subscribe( element => {
-            //Imposta l'autorizzazione dal gruppo
-            element.setGruppoAuthorization(resultData);
-            //Emetto l'evento di cambio
-            this._startConfig.next(element);            
-
-            //Passo a richiedere le Aree
-            this.requestAree();
-
-          });
       });
       
 
       
   }
 
+  //Autorizzazione ricevuta
+  onAuthorizationGrant(JSONGruppo: any) {
+    let elStartConfig = this._startConfig.getValue();
+
+    console.log('Autorizzazione ricevuta');
+
+    //Sistemazione del Gruppo nell'oggetto di configurazione
+    elStartConfig.setGruppoAuthorization(JSONGruppo);
+
+    //Emetto l'evento di cambio
+    this._startConfig.next(elStartConfig);
+
+    //Passo a richiedere le Aree
+    this.requestAree();
+
+    // Mi iscrivo alle modifiche dell'Area Selezionata
+    this.onChangeAreaSelezionata();
+
+    //Operazioni ulteriori a seguito dell'autorizzazione
+    this.onAfterAuthorization();
+  }
+
+
+  /**
+   * Alcune operazioni a seguito dell'autorizzazioni
+   */
+  onAfterAuthorization() {
+    // 1- CHIEDO ELENCO SPORT, LIVELLI, CATEGORIEETA che mi servono sempre
+    let elStartConfig = this._startConfig.getValue();
+
+    this.sportService.request(elStartConfig, false);
+    this.livelloService.request(elStartConfig);
+    this.categoriaEtaService.request(elStartConfig);
+
+  }
 
   //#region AREE
-
-
-    // NUOVA VERSIONE
+    
     /**
      * Area Selezionata
      */
@@ -141,6 +157,7 @@ export class StartService {
      * Metodo per sottoscriversi al cambiamento dell'area selezionata
      */
     onChangeAreaSelezionata() {
+
       this.areaService.areaSelected
           .subscribe(newAreaSelected => {
             //Cambiando Area selezionata
@@ -148,7 +165,32 @@ export class StartService {
 
             //Se il documento è in stato inserted non è ancora arrivato dal server
             if (!newAreaSelected.inserted) {
+              
+              //Richiedo al server le Location
               this.requestLocation(newAreaSelected.ID);
+
+              //Chiedo la situazione dell' AppReady
+              let actualAppReady = this._appReady.getValue();
+              if (!actualAppReady) {
+                //Applicazione non ancora pronta
+
+                //Mi sottoscrivo per capire quando posso partire
+                //appena sono arrivate le location
+                this.listenLocation = this.locationService.listLocation
+                      .subscribe(data => {
+                        if (data.length !== 0) {
+                          //App entra in stato pronto
+                          this._appReady.next(true);
+
+                          console.log('Avvio AppReady');
+
+                          //Dopo che l'app è partita in questo contento non 
+                          //mi serve piu sapere lo state Location
+                          this.listenLocation.unsubscribe();
+                        }
+                });
+              }
+
             }
           })
     }
@@ -158,108 +200,34 @@ export class StartService {
   //#endregion
 
   //#region LOCATIONS
-    //Aggiunge una location
-    addLocation(objLocation: Location) {
-      this.listLocation
-        .pipe(take(1))
-        .subscribe( locations => {
-          this._listLocation.next( locations.concat(objLocation))
-        });
-    }
-    
-    // Ritorno Observable di una Location
-    getLocation(id: string) {
-      return this.listLocation
-              .pipe(take(1), map( locations => {
-                return locations.find( loc => loc.ID == id)
-              }));
-    }
+  
 
-
-    /** Effettua la richiesta al server di una Location precisa
-     * @param idLocation Location scelta 
-     * 
-     */
-    requestLocationByID(idLocation: string) {
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-      const doObject = 'LOCATION';
-      const actualStartConfig = this._startConfig.getValue();
-
-      // In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('APPID',actualStartConfig.appId);
-      myHeaders = myHeaders.set('child-level',"2");
-
-      // Nei parametri imposto l'Area Operativa
-      let myParams = new HttpParams().set('ID', idLocation);
-
-      let myUrl = actualStartConfig.urlBase + '/' + doObject;
-
-
-      return this.apiService
-                  .httpGet(myUrl, myHeaders, myParams)
-                  .pipe(map(fullData => {
-                    return fullData.LOCATION
-                  }));
-    }
-
-  /** Richiesta delle Location di una Area */
-  requestLocation(idArea: string) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'LOCATION';
-    const actualStartConfig = this._startConfig.getValue();
-
-    // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',actualStartConfig.appId);
-    // Nei parametri imposto l'Area Operativa
-    let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
-
-    let myUrl = actualStartConfig.urlBase + '/' + doObject;
-
-    this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(fullData => {
-          return fullData.LOCATION
-        }))
-        .subscribe(resultData => {
-
-          //Cancello le Location
-          this._listLocation.next([]);
-
-
-          // Ciclo sull'Array
-          for (let index = 0; index < resultData.length; index++) {
-            const element = resultData[index];
-
-
-            // Creo un Oggetto Location e lo aggiungo
-            let newLocation = new Location();
-            newLocation.setJSONProperty(element);
-            newLocation.setOriginal();
-
-            this.addLocation(newLocation);
-
-          }
-
-          //Posso far partire l'applicazione
-          if (resultData.length !== 0) {
-
-            // Memorizzo l'Area nell'oggetto
-            this.startConfig
-            .pipe(take(1))
-            .subscribe( element => {
-
-                // Applicazione Pronta
-                element.ready = true;
-                console.log('Ambiente Pronto');
-                //Riemetto l'evento
-                this._startConfig.next(element);
-              
-            });
-          }
-        });
-
-    
+  get listLocation() {
+    //return this._listLocation.asObservable();
+    return this.locationService.listLocation;
   }
+
+  /**
+   * Richiesta al server di tutte le location dell'area
+   * @param idArea Area selezionata
+   */
+  requestLocation(idArea: string) {
+    const actualStartConfig = this._startConfig.getValue();
+    
+    this.locationService.requestByIdArea(actualStartConfig, idArea);
+  }
+
+  /** Effettua la richiesta al server di una Location precisa
+   * @param idLocation Location scelta 
+   * 
+   */
+  requestLocationByID(idLocation: string) {
+    const actualStartConfig = this._startConfig.getValue();
+    
+    return this.locationService.requestLocationByID(actualStartConfig, idLocation);
+  }
+
+  
   //#endregion
 
 
@@ -348,9 +316,20 @@ initFilterCorsi(idLocation: string) {
  */
 requestCorsi(filter?: FilterCorsi) {
   const actualStartConfig = this._startConfig.getValue();
+  const listSport = this.sportService.actualListSport;
+  const listCategoriaEta = this.categoriaEtaService.actualListCategorieEta;
+  const listLivelli = this.livelloService.actualListLivelli;
 
+
+  //Preparo il Servizio Corsi con le liste di decodifica
+  this.corsoService.decodeListEta = listCategoriaEta;
+  this.corsoService.decodeListLivelli = listLivelli;
+  this.corsoService.decodeListSport = listSport;
+
+  //Chiamo il servizio per il recupero corsi
   this.corsoService
-      .request(actualStartConfig, filter);
+      .request(actualStartConfig, 
+               filter);
             
 }
 //#endregion

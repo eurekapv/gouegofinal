@@ -1,4 +1,4 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument, TypeDefinition } from './iddocument.model';
 import { SettoreAttivita } from './valuelist.model';
 
 
@@ -19,4 +19,34 @@ export class Attivita extends IDDocument {
         super();
     }
     
+    /**
+     * Classe per eseguire un reflect sulla base del nome del campo
+     * @param fieldName Nome del Campo
+     */
+    describerType(fieldName): TypeDefinition {
+        let retType = TypeDefinition.char;
+        
+        switch (fieldName) {
+  
+          case 'SETTORE':
+            retType = TypeDefinition.number;
+            break;
+  
+          case 'DATAORAINIZIO':
+            retType = TypeDefinition.dateTime;
+            break;
+
+          case 'DATAORAFINE':
+            retType = TypeDefinition.dateTime;
+            break;            
+  
+          default:
+            retType = TypeDefinition.char;
+            break;
+  
+        }
+  
+        return retType
+  
+      }    
 }

@@ -17,11 +17,36 @@
 
 
 <ion-content>
+  
+  <div *ngIf="spinnerCorsi">
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+
+  <ion-segment 
+      *ngIf="userLogged && !spinnerCorsi" 
+      class="ion-padding-top ion-padding-horizontal"
+       (ionChange)="onChangeSegmentCorsi($event)"
+       color="medium"
+       value="corsiall">
+    <ion-segment-button value="corsiall">
+      <ion-label>Tutti</ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button value="corsiforme">
+      <ion-label>Mio Livello</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
   <div *ngIf="!spinnerCorsi">
     <ion-grid>
       <ion-row>
-        <ion-col *ngFor="let corso of listCorsi" sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
+        <ion-col *ngFor="let corso of listCorsi" 
+                  sizeXs="12" 
+                  sizeSm="6"  
+                  offsetSm="3" 
+                  sizeLg="4" 
+                  offsetLg="4"
+                  >
           <app-card-course [myCorso]="corso"></app-card-course>
         </ion-col>
       </ion-row>

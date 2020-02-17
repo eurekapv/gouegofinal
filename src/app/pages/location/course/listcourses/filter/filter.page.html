@@ -1,0 +1,28 @@
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Filtri</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list-header>
+    <ion-label>
+      Categoria Età
+    </ion-label>
+    <ion-button fill="outline" *ngIf="">Rimuovi</ion-button>
+  </ion-list-header>
+
+  <ion-item>
+    <ion-label>Età</ion-label>
+    <ion-select [compareWith]="compareWithCatEta" ([ngModel])="myFilter.IDCATEGORIAETA">
+      <ion-select-option *ngFor="let catEta of listCatEta">
+        {{catEta.DESCTOOLTIP}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-content>

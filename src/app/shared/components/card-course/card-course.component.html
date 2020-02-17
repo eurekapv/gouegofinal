@@ -1,75 +1,74 @@
-        <ion-card>
-          <ion-card-header color="primary" class="SmallPadding">
-            <ion-item color="transparent" lines="none">
-              
-            <ion-title>{{myCorso.DENOMINAZIONE}}</ion-title>
-            </ion-item>
-          </ion-card-header>
+<ion-card class="ion-no-margin ion-margin-horizontal">
+  <ion-card-header>
+  <ion-card-subtitle>{{myCorso._DESCRSPORT}}</ion-card-subtitle>
+    <ion-card-title>{{myCorso.DENOMINAZIONE}}</ion-card-title>
+  </ion-card-header>
 
+  <ion-card-content class="ion-no-padding">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4">
+          <ion-button size="small" color="medium" >
+            <ion-icon name="time" slot="start"></ion-icon>
+            {{myCorso.ORAINIZIO | date:'h:mm'}}
+          </ion-button>
+        </ion-col>
 
-            <ion-grid>
-              <ion-row>
-                <ion-col text-center>
-                  <ion-chip class="Chip" >
-                    <ion-icon class="Icon" name="time"></ion-icon>
-                  <ion-label color="dark">{{myCorso.ORAINIZIO}}</ion-label>
-                  </ion-chip>
-                </ion-col>
-                <ion-col text-center>
-                  <ion-chip class="Chip">
-                    <ion-icon class="Icon" name="infinite"></ion-icon>
-                  <ion-label>{{myCorso.ORELEZIONE}} Ore</ion-label>
-                  </ion-chip>
-                </ion-col>
-                <ion-col text-center>
-                  <ion-chip class="Chip">
-                  <ion-label>{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Lezioni':'Lezione'}}</ion-label>
-                  </ion-chip>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          
+        <ion-col size="4">
+          <ion-button size="small" color="medium">
+            <ion-icon name="infinite" slot="start"></ion-icon>
+            {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
+          </ion-button>
+        </ion-col>
 
+        <ion-col size="4">
+          <ion-button size="small" color="medium">
+            <ion-icon name="refresh" slot="start"></ion-icon>
+            {{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Lezioni':'Lezione'}}
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
 
-          <!-- GIORNATE -->
-          <div id="giornate" class="ion-padding-top ion-padding-bottom">
-            <table style="width: 100%;">
-              <tr>
-                <td *ngFor="let giorno of myCorso._SETTIMANA">
-                  <ion-button color="secondary" size="small" [fill]="giorno.selected ?'solid':'outline'">
-                    {{giorno.xsLabel | uppercase}}
-                  </ion-button>
-                </td>
-              </tr>
-            </table>
-          </div>
-          
+  <ion-card-content class="ion-no-padding">
+    <div id="giornate" class="ion-padding">
+      <table style="width: 100%;">
+        <tr>
+          <td *ngFor="let giorno of myCorso._SETTIMANA">
+            <ion-button color="secondary" size="small" [fill]="giorno.selected ?'solid':'outline'">
+              {{giorno.xsLabel | uppercase}}
+            </ion-button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </ion-card-content>
 
-          <ion-card-content class="TabPadding">
+  <ion-item>
+    <ion-icon name="stats" slot="start" color="danger"></ion-icon>
+  <ion-label>{{myCorso._DESCRLIVELLOENTRATA?myCorso._DESCRLIVELLOENTRATA:'Tutti i Livelli'}}</ion-label>
+  </ion-item>
 
-            <ion-list lines="none" class="SmallPadding">
-              <ion-item>
-                <ion-icon name="stats"></ion-icon>
-                <ion-label class="SmallMargin">Livello:</ion-label>
-                <ion-badge color="secondary">Intermedio 1</ion-badge>
-              </ion-item>
-              <ion-item>
-                <ion-icon name="bookmark"></ion-icon>
-                <ion-label class="SmallMargin">Età:</ion-label>
-                <ion-badge color="secondary">Intermedio 1</ion-badge>
-              </ion-item>
-              <ion-item>
-                <ion-icon name="transgender"></ion-icon>
-                <ion-label class="SmallMargin">Genere:</ion-label>
-                <ion-badge color="secondary">Intermedio 1</ion-badge>
-              </ion-item>
-            </ion-list>
-            <ion-segment>
-                <ion-button color="secondary" fill="outline">
-                <ion-icon name="calendar"></ion-icon>
-                <ion-label>Inizia il: 10/11/2019</ion-label>
-              </ion-button>
-            </ion-segment>
-          </ion-card-content>
-        </ion-card>
+  <ion-item>
+    <ion-icon name="bookmark" slot="start" color="danger"></ion-icon>
+    <ion-label>{{myCorso._DESCRCATEGORIEETA?myCorso._DESCRCATEGORIEETA:'Per tutte le età'}}</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon name="transgender" slot="start" color="danger"></ion-icon>
+    <ion-label>{{getLabelTargetSesso()}}</ion-label>
+  </ion-item>
+
+  <ion-card-content>
+    <ion-button color="medium" expand="block" >
+      <ion-icon name="calendar" slot="start"></ion-icon>
+      Inizia il 
+      {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}
+    </ion-button>
+  </ion-card-content>
+
+</ion-card>
+
+        
 

@@ -1,4 +1,4 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument, TypeDefinition } from './iddocument.model';
 
 export class CorsoScheduler extends IDDocument {
     IDCORSO: string;
@@ -19,5 +19,39 @@ export class CorsoScheduler extends IDDocument {
         super();
     }
 
-    
+        /**
+     * Classe per eseguire un reflect sulla base del nome del campo
+     * @param fieldName Nome del Campo
+     */
+     describerType(fieldName): TypeDefinition {
+        let retType = TypeDefinition.char;
+        let arNumber = ['VALUEGIORNO','ORELEZIONI'];
+        let arDate = ['DATA'];
+        let arTime = ['ORAINIZIO'];
+        let arDateTime = ['DATAORAINIZIO', 'DATAORAFINE']
+        let arBoolean = ['MULTIPLA'];
+        
+        if (arNumber.includes(fieldName)) {
+          retType = TypeDefinition.number
+        }
+        else if (arDate.includes(fieldName)) {
+          retType = TypeDefinition.date
+        }
+        else if (arTime.includes(fieldName)) {
+          retType = TypeDefinition.time
+        }
+        else if (arDateTime.includes(fieldName)) {
+            retType = TypeDefinition.dateTime
+        }  
+        else if (arBoolean.includes(fieldName)) {
+            retType = TypeDefinition.boolean
+        }               
+        else {
+            retType = TypeDefinition.char;
+        }
+  
+        return retType
+  
+      }    
+  
 }

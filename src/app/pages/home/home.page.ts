@@ -46,6 +46,9 @@ export class HomePage implements OnInit, OnDestroy{
   selectedArea: Area;
   selectedAreaListen: Subscription;
 
+  idAreaFav: string;
+  listenIdAreaFav: Subscription;
+
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
               private router: Router
@@ -83,7 +86,7 @@ export class HomePage implements OnInit, OnDestroy{
     //Sottoscrivo all'ascolto dell'Account
     this.docUtenteListen = this.startService.utente.subscribe(element => {
       this.docUtente = element;
-    })
+    });
 
     
 

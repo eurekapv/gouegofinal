@@ -10,6 +10,7 @@ import { FilterCorsi } from '../models/filtercorsi.model';
 import { Sport } from '../models/sport.model';
 import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
+import { Utente } from '../models/utente.model';
 
 @Injectable({
   providedIn: 'root'
@@ -48,11 +49,13 @@ export class CourseService {
   }
 
   /**
-   * Inizializza il filtro dei corsi
+   * Inizializza e ritorna il filtro dei corsi
    * @param idLocation Location da utilizzare
    */
-  initFilterCorsi(idLocation: string) {
+  newFilterCorsi(idLocation: string) {
     this._filterCorsi = new FilterCorsi(idLocation);
+
+    return this._filterCorsi;
   }
 
   constructor(private apiService: ApicallService) { }
@@ -61,10 +64,9 @@ export class CourseService {
    * Effettua una chiamata al server per il recupero dei corsi
    * Utilizzare il documento di Filtro per richiedere dati filtrati
    * @param config Parametri di configurazione
-   * @param filter Filtri da applicare in ricerca
-   * @param listDecode Oggetto con le liste per decodificare un corso
+   * @param docUser Documento Utente loggato. Se presente i corsi vengono proposti solo quelli validi all'utente
    */
-  request(config: StartConfiguration, filter?: FilterCorsi) {
+  request(config: StartConfiguration, docUser?:Utente) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'CORSO';
     let filterUsed: FilterCorsi;
@@ -73,14 +75,7 @@ export class CourseService {
     myHeaders = myHeaders.set('APPID',config.appId);
     let myUrl = config.urlBase + '/' + doObject;  
 
-    if (filter) {
-      filterUsed = filter;
-    }
-    else {
-      filterUsed = this._filterCorsi;
-    }
-
-    let myParams = this.getHttpParamsFilter(filterUsed);
+    let myParams = this.getHttpParamsFilter(this._filterCorsi);
     
     //Elimino i corsi presenti
     this.emptyCorsi();

@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: ListcoursesPage
+  },
+  {
+    path: 'filter',
+    loadChildren: () => import('./filter/filter.module').then( m => m.FilterPageModule)
   }
 ];
 

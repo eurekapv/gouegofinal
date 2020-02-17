@@ -15,6 +15,7 @@ export class UtenteService {
 
   private _utente = new BehaviorSubject<Utente>(new Utente);
   private _utenteLoggato = new BehaviorSubject<boolean>(false);
+  private _idAreaFAV = new BehaviorSubject<string>(''); //Avvisa di cambiare l'Area Operativa
   
 
   get utente() {
@@ -25,6 +26,14 @@ export class UtenteService {
     return this._utenteLoggato.asObservable();
   }
 
+  /**
+   * Area Favorita dall'utente
+   */
+  get idAreaFAV() {
+    return this._idAreaFAV.asObservable();
+  }
+
+ 
   constructor(private apiService: ApicallService) { }
 
   /**
@@ -97,11 +106,17 @@ export class UtenteService {
     let newUtente = new Utente();
     newUtente.setJSONProperty(JSonUtente);
 
-    //Riemetto Utente
-    this._utenteLoggato.next(true);
+    //Emetto Utente
     this._utente.next(newUtente);
 
+    //Emetto il Boolean TRUE di Log
+    this._utenteLoggato.next(true);
 
+    //Utente ha una area preferita
+    if (newUtente.IDAREAOPERATIVA) {
+      //Dovrei posizionarlo
+      this._idAreaFAV.next(newUtente.IDAREAOPERATIVA);
+    }
   }
 
   /**

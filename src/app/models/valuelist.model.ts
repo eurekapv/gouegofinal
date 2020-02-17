@@ -92,6 +92,8 @@ export enum Giorni {
 
 
 
+
+
 export class ValueList {
 
     value: any;
@@ -202,4 +204,11 @@ export enum RequestState {
     waitingReply = 1,
     executed = 2
 }
+
+export enum SegmentCorsi {
+    tutti = 10,
+    mioLivello = 20
+}
+
+
 //#endregion

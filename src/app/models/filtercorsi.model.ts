@@ -9,7 +9,9 @@ export class FilterCorsi {
     _CONDITIONDATAFINE: Condition;
     TARGETSESSO: TargetSesso;
     IDCATEGORIAETA: string;
+    _DESCRCATEGORIAETA
     IDSPORT: string;
+    _DESCRSPORT: string;
     TIPO: TipoCorso;
     _ISCRIZIONIAPERTE: boolean;
 

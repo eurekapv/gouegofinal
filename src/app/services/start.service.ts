@@ -303,18 +303,18 @@ get filterCorsi() {
 }
 
 /**
- * Inizializza i filtri con la location
+ * Inizializza e ritorna nuovi Filtri con l'impostazione della location
  * @param idLocation ID Location 
  */
-initFilterCorsi(idLocation: string) {
-  this.corsoService.initFilterCorsi(idLocation);
+newFilterCorsi(idLocation: string) {
+  return this.corsoService.newFilterCorsi(idLocation);
 }
 
 /**
  * Richiede al server le Categorie Eta
- * @param filter Filtri da applicare in ricerca
+ * @param docUser Documento Utente per estrarre corsi solo dedicati all'utente
  */
-requestCorsi(filter?: FilterCorsi) {
+requestCorsi(docUser?:Utente) {
   const actualStartConfig = this._startConfig.getValue();
   const listSport = this.sportService.actualListSport;
   const listCategoriaEta = this.categoriaEtaService.actualListCategorieEta;
@@ -329,12 +329,13 @@ requestCorsi(filter?: FilterCorsi) {
   //Chiamo il servizio per il recupero corsi
   this.corsoService
       .request(actualStartConfig, 
-               filter);
+               docUser);
             
 }
 //#endregion
 
 //#region UTENTE
+
 
 get utente() {
   return this.utenteService.utente;
@@ -344,6 +345,7 @@ get utente() {
 get utenteLogged() {
   return this.utenteService.utenteLoggato;
 }
+
 
 /** Esegue la disconnessione */
 logOffAccount() {
@@ -362,8 +364,25 @@ requestAuthorization(username: string,
 
   const actualStartConfig = this._startConfig.getValue();
 
-  return this.utenteService.requestAuthorization(actualStartConfig, username, password);
+  //Mi metto in ascolto per i cambi di Area Favorite a seguito della login
+  this.onChangeAreaFavListener();
 
+  return this.utenteService
+            .requestAuthorization(actualStartConfig, username, password);
+
+}
+
+/**
+ * Ascolta il cambio dell'idAreaChange 
+ */
+onChangeAreaFavListener() {
+  this.utenteService.idAreaFAV.subscribe(value => {
+    //Se arriva un'area favorita, procedo con il cambio
+    if (value) {
+      //Cambio dell'area
+      this.selectAreaByID(value);
+    }
+  })
 }
 
 

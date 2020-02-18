@@ -1,11 +1,8 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
 import { Location } from '../models/location.model';
 import { TipoArea } from '../models/valuelist.model';
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
-// export enum TipoArea {
-//     areaGruppo = 10,
-//     areaIndipendente = 20
-// } 
 
 export class Area extends IDDocument {
     IDGRUPPOSPORTIVO: string;
@@ -22,6 +19,36 @@ export class Area extends IDDocument {
       super();
       this.LOCATIONS = [];
     }
+
+    /**
+    * Ritorna il descrittore della Struttura Campi
+    */
+    getDescriptor(): Descriptor {
+      let objDescriptor = new Descriptor();
+      let arString = ['IDGRUPPOSPORTIVO',
+                      'DENOMINAZIONE',
+                      'INDIRIZZO',
+                      'CAP',
+                      'COMUNE',
+                      'PROVINCIA',
+                      'ISOSTATO'];
+      let arNumber = ['TIPOAREA'];
+      let arBoolean = [];
+      let arDate = [];
+      let arDateTime =[];
+      let arTime = [];
+      let arCollection = ['LOCATIONS'];
+
+      objDescriptor.addMultiple(arString, TypeDefinition.char);
+      objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+      objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+      objDescriptor.addMultiple(arDate, TypeDefinition.date);
+      objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+      objDescriptor.addMultiple(arTime, TypeDefinition.time);
+      objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+      
+      return objDescriptor;
+  }
 
     /**
      * Classe per eseguire un reflect sulla base del nome del campo

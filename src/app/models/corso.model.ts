@@ -1,7 +1,7 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
 import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni } from '../models/valuelist.model';
 import { Settimana } from './settimana.model';
-
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
 export class Corso extends IDDocument {
 
@@ -43,6 +43,52 @@ export class Corso extends IDDocument {
       this._DESCRLIVELLOENTRATA = '';
       this._DESCRSPORT = '';
     }
+
+          /**
+    * Ritorna il descrittore della Struttura Campi
+    */
+   getDescriptor(): Descriptor {
+    let objDescriptor = new Descriptor();
+    let arString = ['DENOMINAZIONE',
+                    'SIGLACALENDARIO',
+                    'IDLIVELLOENTRATA',
+                    '_DESCRLIVELLOENTRATA',
+                    'IDLIVELLOFINALE',
+                    'IDSPORT',
+                    '_DESCRSPORT',
+                    'IDAREAOPERATIVA',
+                    'IDLOCATION',
+                    'IDCAMPO',
+                    'GIORNIPREVISTI',
+                    'IDCATEGORIEETA',
+                    '_DESCRCATEGORIEETA'
+                    ];
+    let arNumber = ['TIPO',
+                    'NUMEROLEZIONI',
+                    'NUMPARTECIPANTI',
+                    'MAXPARTECIPANTI',
+                    'STATO',
+                    'TARGETSESSO',
+                    'DURATA'
+                   ];
+    let arDecimal = ['ORELEZIONE'];
+    let arBoolean = [];
+    let arDate = ['DATAINIZIO','DATAFINE','ISCRIZIONEDAL','ISCRIZIONEAL'];
+    let arDateTime =[];
+    let arTime = ['ORAINIZIO'];
+    let arCollection = ['_SETTIMANA'];
+
+    objDescriptor.addMultiple(arString, TypeDefinition.char);
+    objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+    objDescriptor.addMultiple(arDecimal, TypeDefinition.numberDecimal);
+    objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+    objDescriptor.addMultiple(arDate, TypeDefinition.date);
+    objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+    objDescriptor.addMultiple(arTime, TypeDefinition.time);
+    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    
+    return objDescriptor;
+}    
 
     /**
      * Classe per eseguire un reflect sulla base del nome del campo
@@ -127,7 +173,7 @@ export class Corso extends IDDocument {
 
     //Esegue la decodifica della proprieta
     //Tutte le proprietà hanno la chiave 
-    //in un campo dnominato IDXYZ 
+    //in un campo denominato IDXYZ 
     //e decodificate in campi _DESCRXYZ
 
     /**

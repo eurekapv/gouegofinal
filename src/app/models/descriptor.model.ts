@@ -1,0 +1,80 @@
+export enum TypeDefinition {
+    undefined = 'undefined',
+    char = 'String',
+    date = 'Date',
+    dateTime = 'DateTime',
+    time = 'Time',
+    number = 'Number',
+    numberDecimal = 'Float',
+    boolean = 'boolean',
+    collection = 'collection'
+}
+
+/**
+ * Classe di associazione NomeCampo -> Tipologia
+ */
+export class TypeReflector {
+    fieldName: string;
+    fieldType: TypeDefinition;
+
+    constructor(campoName: string, campoType: TypeDefinition) {
+        this.fieldName = campoName;
+        this.fieldType = campoType;
+
+    }
+}
+
+/**
+ * Classe per Tipizzare intere classi
+ */
+export class  Descriptor{
+    fields: TypeReflector[] = [];
+
+    constructor() {
+        this.add('ID',TypeDefinition.char);
+        this.add('do_updated', TypeDefinition.boolean);
+        this.add('do_loaded', TypeDefinition.boolean);
+        this.add('do_inserted', TypeDefinition.boolean);
+        this.add('do_deleted', TypeDefinition.boolean);
+    }
+    /**
+     * Aggiunge un Campo/Tipo all'insieme
+     * @param campoName Nome Campo
+     * @param campoType Tipo Campo
+     */
+    add(campoName: string, campoType: TypeDefinition) {
+        let typeR = new TypeReflector(campoName, campoType);
+        this.fields.push(typeR);
+    }
+
+    /**
+     * Aggiunge un array di NomiCampo alla stessa tipologia
+     * @param arrayCampoName Array con tutti nomi dei campi
+     * @param campoType Tipologia da associare
+     */
+    addMultiple(arrayCampoName:string[], campoType: TypeDefinition) {
+        if (arrayCampoName) {
+            arrayCampoName.forEach(element => {
+                this.add(element, campoType);
+            });
+        }
+    }
+
+    /**
+     * Con un nome campo torna la tipologia associata
+     * @param campoName Nome del Campo
+     */
+    getType(campoName: string): TypeDefinition {
+        let retType = TypeDefinition.undefined;
+
+        let elType = this.fields.find(element => {
+            return element.fieldName == campoName;
+        });
+
+        if (elType) {
+            retType = elType.fieldType;
+        }
+
+        return retType;
+    }
+}

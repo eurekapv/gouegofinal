@@ -1,8 +1,8 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
 import { LocationImage } from './locaton-image.model';
 import { Campo } from './campo.model';
 import { AperturaLocation } from './aperturalocation.model';
-
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
 export class Location extends IDDocument {
 
@@ -36,6 +36,42 @@ export class Location extends IDDocument {
       this.setStandardCover();
       
     }
+
+
+            /**
+    * Ritorna il descrittore della Struttura Campi
+    */
+   getDescriptor(): Descriptor {
+    let objDescriptor = new Descriptor();
+    let arString = ['IDAREAOPERATIVA',
+                    'DENOMINAZIONE',
+                    'INDIRIZZO',
+                    'CAP',
+                    'COMUNE',
+                    'PROVINCIA',
+                    'ISOSTATO',
+                    'IMAGEURL',
+                    'DESCRIZIONEMOB',
+                    'TELEFONO',
+                    'EMAIL'
+                    ];
+    let arNumber = [];
+    let arBoolean = ['FAVORITE','CANBOOK'];
+    let arDate = [];
+    let arDateTime =[];
+    let arTime = [];
+    let arCollection = ['LOCATIONIMAGE','CAMPO','APERTURALOCATION'];
+
+    objDescriptor.addMultiple(arString, TypeDefinition.char);
+    objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+    objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+    objDescriptor.addMultiple(arDate, TypeDefinition.date);
+    objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+    objDescriptor.addMultiple(arTime, TypeDefinition.time);
+    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    
+    return objDescriptor;
+}
 
     /**
      * Classe per eseguire un reflect sulla base del nome del campo

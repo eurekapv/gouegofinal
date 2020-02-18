@@ -1,5 +1,5 @@
 import { TargetSesso, TipoCorso, Condition } from './valuelist.model';
-import { HttpParams } from '@angular/common/http';
+
 
 // Proprietà per Filtraggio Corsi
 export class FilterCorsi {
@@ -8,16 +8,17 @@ export class FilterCorsi {
     DATAFINE: Date;
     _CONDITIONDATAFINE: Condition;
     TARGETSESSO: TargetSesso;
-    IDCATEGORIAETA: string;
-    _DESCRCATEGORIAETA
+    IDCATEGORIEETA: string;
+    _DESCRCATEGORIEETA: string;
     IDSPORT: string;
     _DESCRSPORT: string;
     TIPO: TipoCorso;
-    _ISCRIZIONIAPERTE: boolean;
+    _CHECKISCRIZIONEAPERTA: boolean;
 
 
     constructor(idLoc: string) {
         this.IDLOCATION = idLoc;
+        this._CHECKISCRIZIONEAPERTA = false;
     }
 
 

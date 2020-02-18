@@ -7,6 +7,8 @@ import { StartService } from '../../../../services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi } from 'src/app/models/valuelist.model';
 import { FilterCorsi } from 'src/app/models/filtercorsi.model';
+import { ModalController } from '@ionic/angular';
+import { FilterPage } from './filter/filter.page';
 
 
 @Component({
@@ -22,8 +24,8 @@ export class ListcoursesPage implements OnInit {
   userLogged = false; //Utente loggato ricavato dal servizio
   listenUserLogged: Subscription; 
   docUser: Utente; //Informazioni utente loggato
-
   listenDocUser: Subscription;
+
   filtriCorsi: FilterCorsi;
 
   preferList: SegmentCorsi; 
@@ -33,7 +35,8 @@ export class ListcoursesPage implements OnInit {
   
 
   constructor(private router: ActivatedRoute, 
-              private startService: StartService
+              private startService: StartService,
+              private mdlController: ModalController
               ) { 
     
     //Attivazione Spinner Ricezione corsi
@@ -124,5 +127,33 @@ export class ListcoursesPage implements OnInit {
     
   }
 
+  goToFilter() {
+    this.mdlController
+      .create({
+        component: FilterPage,
+        componentProps: {
+          'myFilter': {...this.filtriCorsi}
+        }
+      })
+      .then(formModal => {
+        formModal.present();
 
+        formModal.onWillDismiss().then((objReceived:any)=> {
+          if (objReceived.data.dismissFilter) {
+            //Mi è arrivato un filtro da applicare
+            this.onModalNewFilter(objReceived.data.dismissFilter);
+          }
+        });
+      });
+  }
+
+  /**
+   * Arrivo di nuovi filtri dalla modale
+   * @param filter Filtri impostati nella modale
+   */
+  onModalNewFilter(filter: FilterCorsi) {
+    this.filtriCorsi = filter;
+    this.startService.filterCorsi = filter;
+    this.requestCorsi();
+  }
 }

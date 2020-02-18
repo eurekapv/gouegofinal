@@ -1,12 +1,4 @@
-export enum TypeDefinition {
-  char = 'String',
-  date = 'Date',
-  dateTime = 'DateTime',
-  time = 'Time',
-  number = 'Number',
-  boolean = 'boolean',
-  collection = 'collection'
-}
+import { TypeDefinition, Descriptor } from '../models/descriptor.model';
  
   export class IDDocument {
     ID: string;
@@ -33,10 +25,111 @@ export enum TypeDefinition {
     newID() {
       return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
+
+    /**
+     * Metodo Overrable
+     */
+    getDescriptor(): Descriptor {
+      let objDescriptor = new Descriptor();
+      return objDescriptor;
+    }
+
+    /**
+     * Metodo Overrable
+     */
+    describerType(fieldName): TypeDefinition {
+      let retType = TypeDefinition.char;
+
+      return retType
+
+  } 
   
+     // Imposta le proprietà basiche dell'oggetto via JSON
+     setJSONProperty(dataObject: any) {
+      let _this = this;
+      let arProperty = Object.keys(dataObject);
+      let fakeDate = new Date();
+      let stringValue = '';
+
+      //Chiedo il Descrittore della classe
+      let objDescriptor = _this.getDescriptor();
   
+      // Gli elementi di tipo Array non li copio
+      arProperty.forEach(element => {
+          if (Array.isArray(dataObject[element]) == false) {
+
+              //Chiedo il Tipo del Campo con il descriptor
+              let tipoCampo = objDescriptor.getType(element);
+
+              if (tipoCampo !== TypeDefinition.undefined) {
+                switch (tipoCampo) {
+
+                  case TypeDefinition.boolean:
+                    _this[element] = parseInt(dataObject[element],10);
+                    break;
+                
+                  case TypeDefinition.number:
+                    _this[element] = parseInt(dataObject[element],10);
+                    break;
+
+                  case TypeDefinition.numberDecimal:
+                    _this[element] = parseFloat(dataObject[element]);
+                    break;
+
+                  case TypeDefinition.time:
+                    //Campo di tipo ORA
+                    stringValue = dataObject[element]; //Valore Stringa
+
+                    //Non ho dentro il giorno ma solo l'ora
+                    if (!stringValue.includes('-') || stringValue.includes(':')) {
+                      stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
+                      _this[element] = new Date(stringValue);  
+                    }
+                    else {
+                      //Gia presente sia Data che Ora
+                      _this[element] = new Date(stringValue);
+                    }
+
+                    break;
+
+                  case TypeDefinition.date:
+                    //E' una data
+                    _this[element] = new Date(dataObject[element]);
+                    break;
+
+                  case TypeDefinition.dateTime:
+                    //Campo di tipo ORA
+                    stringValue = dataObject[element]; //Valore Stringa
+
+                    //Non ho dentro il giorno ma solo l'ora
+                    if (!stringValue.includes('-') || stringValue.includes(':')) {
+                      stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
+                      _this[element] = new Date(stringValue);  
+                    }
+                    else {
+                      //Gia presente sia Data che Ora
+                      _this[element] = new Date(stringValue);
+                    }
+
+                    break;
+
+                  default:
+                    _this[element] = dataObject[element] + '';
+                    break;
+                }
+
+              }
+              
+             
+          }
+          
+
+      });
+
+    }
+
     // Imposta le proprietà basiche dell'oggetto via JSON
-    setJSONProperty(dataObject: any) {
+    setJSONProperty2(dataObject: any) {
       let _this = this;
       let arProperty = Object.keys(dataObject);
       let fakeDate = new Date();
@@ -45,8 +138,8 @@ export enum TypeDefinition {
       arProperty.forEach(element => {
           if (Array.isArray(dataObject[element]) == false) {
 
+              //Con la funzione describer conosco il tipo del campo
               let tipoCampo = _this.describerType(element);
-
               
               //INFORMAZIONE DI TIPO DATA O DATA ORA
               if ([TypeDefinition.date,TypeDefinition.dateTime, TypeDefinition.time].includes(tipoCampo)) {
@@ -87,25 +180,9 @@ export enum TypeDefinition {
 
     }
 
-    describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
 
-      return retType
 
-  } 
 
-    /**
-     * Vorrei riuscire a capire il tipo dell'elemento presente nel JSON
-     * @param nameElement Nome dell'Elemento
-     * @param value Valore Elemento
-     */
-    jsonDefineType(obj: IDDocument, nameElement: string, value: any): TypeDefinition {
-      let typeData: TypeDefinition;
-
-      typeData = obj.describerType(nameElement);
-
-      return typeData;
-    }
 
     //Formatta una data passata in ISO (Solo la parte data)
     formatDateISO(data: Date) {

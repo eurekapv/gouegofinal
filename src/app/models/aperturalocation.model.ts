@@ -1,6 +1,7 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
 import { Language } from './valuelist.model';
 import { Settimana } from './settimana.model';
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
 export class AperturaLocation extends IDDocument {
     GIORNO: number; //Da scemo ho messo da 1 a 7
@@ -13,6 +14,30 @@ export class AperturaLocation extends IDDocument {
     constructor() {
         super();
     }
+
+    
+    /**
+     * Ritorna il descrittore della Struttura Campi
+     */
+    getDescriptor(): Descriptor {
+        let objDescriptor = new Descriptor();
+        let arString = [];
+        let arNumber = ['GIORNO'];
+        let arBoolean = ['APERTOCHIUSO'];
+        let arDate = [];
+        let arDateTime =[];
+        let arTime = ['DALLE1','DALLE2','ALLE1','ALLE2'];
+
+        objDescriptor.addMultiple(arString, TypeDefinition.char);
+        objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+        objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+        objDescriptor.addMultiple(arDate, TypeDefinition.date);
+        objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+        objDescriptor.addMultiple(arTime, TypeDefinition.time);
+        
+        return objDescriptor;
+    }
+
 
     /**
      * Classe per eseguire un reflect sulla base del nome del campo
@@ -43,25 +68,6 @@ export class AperturaLocation extends IDDocument {
 
         //Il Giorno che arriva base 1 lo sposto a base 0
         this.GIORNO = this.GIORNO - 1;
-
-        if (data.DALLE1) {
-            this.DALLE1 = this.getDateFromTimeString(data.DALLE1);
-        }
-
-        if (data.ALLE1) {
-            this.ALLE1 = this.getDateFromTimeString(data.ALLE1);
-        }
-
-        if (data.DALLE2) {
-            this.DALLE2 = this.getDateFromTimeString(data.DALLE2);
-        }
-
-        if (data.ALLE2) {
-            this.ALLE2 = this.getDateFromTimeString(data.ALLE2);
-        }
-
-        
-
     }
 
 

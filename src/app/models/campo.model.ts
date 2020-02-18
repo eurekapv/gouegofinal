@@ -1,13 +1,7 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
 import { TipoCampo } from '../models/valuelist.model';
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
-// export enum TipoCampo {
-//     campo = 10,
-//     aulaIndividuale = 100,
-//     aulaMultipla = 110,
-//     sala = 200,
-//     salone = 210
-// } 
 
 export class Campo extends IDDocument {
     
@@ -24,6 +18,35 @@ export class Campo extends IDDocument {
     super();
 
   }
+
+      /**
+    * Ritorna il descrittore della Struttura Campi
+    */
+   getDescriptor(): Descriptor {
+    let objDescriptor = new Descriptor();
+    let arString = ['IDAREAOPERATIVA',
+                    'IDLOCATION',
+                    'IDSPORT',
+                    'DENOMINAZIONE',
+                    'DIMENSIONI'
+                    ];
+    let arNumber = ['TIPOLOGIA'];
+    let arBoolean = [];
+    let arDate = [];
+    let arDateTime =[];
+    let arTime = [];
+    let arCollection = [];
+
+    objDescriptor.addMultiple(arString, TypeDefinition.char);
+    objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+    objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+    objDescriptor.addMultiple(arDate, TypeDefinition.date);
+    objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+    objDescriptor.addMultiple(arTime, TypeDefinition.time);
+    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    
+    return objDescriptor;
+}
 
 
     /**

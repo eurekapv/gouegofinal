@@ -8,6 +8,7 @@ import { ListcoursesPageRoutingModule } from './listcourses-routing.module';
 
 import { ListcoursesPage } from './listcourses.page';
 import { CardCourseComponent } from 'src/app/shared/components/card-course/card-course.component';
+import { FilterPage } from './filter/filter.page';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { CardCourseComponent } from 'src/app/shared/components/card-course/card-
     IonicModule,
     ListcoursesPageRoutingModule
   ],
-  declarations: [ListcoursesPage, CardCourseComponent]
+  declarations: [ListcoursesPage, CardCourseComponent, FilterPage],
+  entryComponents: [FilterPage]
 })
 export class ListcoursesPageModule {}

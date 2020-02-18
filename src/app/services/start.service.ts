@@ -303,12 +303,20 @@ get filterCorsi() {
 }
 
 /**
+ * Imposta i filtri corsi nel servizio
+ */
+set filterCorsi(value: FilterCorsi) {
+  this.corsoService.filterCorsi = value;
+}
+
+/**
  * Inizializza e ritorna nuovi Filtri con l'impostazione della location
  * @param idLocation ID Location 
  */
 newFilterCorsi(idLocation: string) {
   return this.corsoService.newFilterCorsi(idLocation);
 }
+
 
 /**
  * Richiede al server le Categorie Eta

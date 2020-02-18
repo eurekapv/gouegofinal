@@ -1,6 +1,6 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
 import { SettoreAttivita } from './valuelist.model';
-
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
 export class Attivita extends IDDocument {
 
@@ -18,6 +18,36 @@ export class Attivita extends IDDocument {
     constructor() {
         super();
     }
+
+      /**
+    * Ritorna il descrittore della Struttura Campi
+    */
+   getDescriptor(): Descriptor {
+    let objDescriptor = new Descriptor();
+    let arString = ['DENOMINAZIONE',
+                    'IDREFER',
+                    'IDAREA',
+                    'IDLOCATION',
+                    'IDCAMPO',
+                    'IDSPORT',
+                    'DESCRIZIONE'];
+    let arNumber = ['SETTORE'];
+    let arBoolean = [];
+    let arDate = [];
+    let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
+    let arTime = [];
+    let arCollection = [];
+
+    objDescriptor.addMultiple(arString, TypeDefinition.char);
+    objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+    objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+    objDescriptor.addMultiple(arDate, TypeDefinition.date);
+    objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+    objDescriptor.addMultiple(arTime, TypeDefinition.time);
+    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    
+    return objDescriptor;
+}
     
     /**
      * Classe per eseguire un reflect sulla base del nome del campo

@@ -1,28 +1,119 @@
 <ion-header no-border>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-
+    
     <ion-title>Filtri</ion-title>
-
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="closeFilter()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list-header>
     <ion-label>
-      Categoria Età
+      Ricerca corsi per
     </ion-label>
-    <ion-button fill="outline" *ngIf="">Rimuovi</ion-button>
   </ion-list-header>
 
+  <!-- TARGET SESSO-->
   <ion-item>
-    <ion-label>Età</ion-label>
-    <ion-select [compareWith]="compareWithCatEta" ([ngModel])="myFilter.IDCATEGORIAETA">
-      <ion-select-option *ngFor="let catEta of listCatEta">
+    <ion-label position="floating">Target</ion-label>
+    <ion-select [compareWith]="compareWithSelect" 
+                [(ngModel)]="myFilter.TARGETSESSO"
+                interface="popover"
+                placeHolder="tutti">
+      <ion-select-option 
+        *ngFor="let itemTarget of listTargetSesso"
+        [value]="itemTarget.value">
+        {{itemTarget.description}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>  
+
+  <!-- CATEGORIA ETA -->
+  <ion-item>
+    <ion-label position="floating">Età</ion-label>
+    <ion-select [compareWith]="compareWithSelect" 
+                [(ngModel)]="myFilter.IDCATEGORIEETA"
+                interface="popover"
+                placeHolder="tutte">
+      <ion-select-option 
+        *ngFor="let catEta of listCatEta"
+        [value]="catEta.ID"
+        >
         {{catEta.DESCTOOLTIP}}
       </ion-select-option>
     </ion-select>
   </ion-item>
+
+    <!-- SPORT --> 
+    <ion-item>
+      <ion-label position="floating">Attività</ion-label>
+      <ion-select [compareWith]="compareWithSelect" 
+                  [(ngModel)]="myFilter.IDSPORT"
+                  interface="popover"
+                  placeHolder="tutte">
+        <ion-select-option 
+            *ngFor="let itemSport of listSport"
+            [value]="itemSport.ID">
+          {{itemSport.DENOMINAZIONE}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- TIPOLOGIA --> 
+    <ion-item>
+      <ion-label position="floating">Tipologia</ion-label>
+      <ion-select [compareWith]="compareWithSelect" 
+                  [(ngModel)]="myFilter.TIPO"
+                  interface="popover"
+                  placeHolder="tutti">
+        <ion-select-option 
+            *ngFor="let itemTipo of listTipoCorso"
+            [value]="itemTipo.value">
+          {{itemTipo.description}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- DATA CORSO --> 
+    <ion-item>
+      <ion-label position="floating">Disponibili da</ion-label>
+      <ion-datetime 
+          displayFormat="DD/MM/YYYY" 
+          [(ngModel)]="myFilter.DATAFINE"
+          placeHolder="oggi">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Con Iscrizioni Aperte</ion-label>
+      <ion-checkbox 
+        color="primary" 
+        slot="end"
+        [(ngModel)]="myFilter._CHECKISCRIZIONEAPERTA"></ion-checkbox>
+    </ion-item>
+
+    <ion-button 
+      color="danger" 
+      fill="outline" 
+      expand="block"
+      size="small"
+      class="ion-margin-top ion-margin-horizontal"
+      (click)="emptyFilter()">
+      Svuota Filtri
+    </ion-button>  
 </ion-content>
+
+<ion-footer>
+      <ion-button 
+          color="primary" 
+          fill="solid" 
+          expand="block"
+          (click)="applyFilter()">
+        Applica
+      </ion-button>  
+</ion-footer>

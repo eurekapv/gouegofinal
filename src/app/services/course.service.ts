@@ -22,6 +22,7 @@ export class CourseService {
   private _decodeListSport: Sport[];
   private _decodeListLivelli: Livello[];
   private _decodeListEta: CategoriaEta[];
+  
 
 
   get listCorsi() {
@@ -49,7 +50,7 @@ export class CourseService {
   }
 
   /**
-   * Inizializza e ritorna il filtro dei corsi
+   * Inizializza e ritorna una copia del filtro dei corsi
    * @param idLocation Location da utilizzare
    */
   newFilterCorsi(idLocation: string) {
@@ -87,24 +88,26 @@ export class CourseService {
       }))
       .subscribe( resultData => {
 
-        resultData.forEach(element => {
-
-          let newCorso = new Corso();
-          newCorso.setJSONProperty(element);
-          //Decodifico i campi chiave
-          newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
-
-          //Decodifico i campi chiave
-          newCorso.lookup('IDCATEGORIAETA', this._decodeListEta, 'DESCTOOLTIP');
-
-          //Decodifico i campi chiave
-          newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
-
-          console.log(newCorso);
-
-          this.addCorso(newCorso);
-
-        });
+        if (resultData) {
+          resultData.forEach(element => {
+  
+            let newCorso = new Corso();
+            newCorso.setJSONProperty(element);
+            //Decodifico i campi chiave
+            newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
+  
+            //Decodifico i campi chiave
+            newCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
+  
+            //Decodifico i campi chiave
+            newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
+  
+            console.log(newCorso);
+  
+            this.addCorso(newCorso);
+  
+          });
+        }
       })
   }
 
@@ -129,13 +132,22 @@ export class CourseService {
 
           /* Per la DATAFINE applico la condizione se è presente*/
           if (value == 'DATAFINE') {
+
             if (filter._CONDITIONDATAFINE) {
               value = filter._CONDITIONDATAFINE + value;
             }
+            
           }
 
           //Aggiungo il parametro
           myParams = myParams.append(nameProperty, value);
+        }
+      }
+      else if (nameProperty = '_CHECKISCRIZIONEAPERTA') {
+        if (filter[nameProperty]) {
+          //devo includere la ricerca 
+          //per avere solo i corsi con iscrizione aperta
+          
         }
       }
     });

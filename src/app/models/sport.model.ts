@@ -1,12 +1,9 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
 import { TipoSport} from '../models/valuelist.model';
 import { Livello } from '../models/livello.model';
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
-// export enum TipoSport {
-//     gruppo =  10,
-//     coppia = 20,
-//     individuale = 30
-// }
+
 
 export class Sport extends IDDocument {
     
@@ -22,6 +19,32 @@ export class Sport extends IDDocument {
 
         this.LIVELLO = [];
     }
+
+    /**
+    * Ritorna il descrittore della Struttura Campi
+    */
+   getDescriptor(): Descriptor {
+    let objDescriptor = new Descriptor();
+    let arString = ['DENOMINAZIONE',
+                    'ICONA'
+                    ];
+    let arNumber = ['TIPOLOGIA','PARTECIPANTI'];
+    let arBoolean = [];
+    let arDate = [];
+    let arDateTime =[];
+    let arTime = [];
+    let arCollection = ['LIVELLO'];
+
+    objDescriptor.addMultiple(arString, TypeDefinition.char);
+    objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+    objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+    objDescriptor.addMultiple(arDate, TypeDefinition.date);
+    objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+    objDescriptor.addMultiple(arTime, TypeDefinition.time);
+    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    
+    return objDescriptor;
+}    
 
     /**
      * Classe per eseguire un reflect sulla base del nome del campo

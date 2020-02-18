@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Sport } from 'src/app/models/sport.model';
 import { CategoriaEta } from 'src/app/models/categoriaeta.model';
 import { Subscription } from 'rxjs';
 import { FilterCorsi } from 'src/app/models/filtercorsi.model';
+import { ValueList, TargetSesso, TipoCorso } from 'src/app/models/valuelist.model';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-filter',
@@ -12,13 +14,18 @@ import { FilterCorsi } from 'src/app/models/filtercorsi.model';
 })
 export class FilterPage implements OnInit, OnDestroy {
 
+  @Input() myFilter: FilterCorsi;
+
   listSport: Sport[];
   listCatEta: CategoriaEta[];
   listenSport: Subscription;
   listenCatEta: Subscription;
-  myFilter: FilterCorsi;
 
-  constructor(private startService: StartService) { 
+  listTargetSesso: ValueList[] = [];
+  listTipoCorso: ValueList[] = [];
+
+  constructor(private startService: StartService,
+              private mdlController: ModalController) { 
 
     this.listenSport = this.startService.listSport.subscribe(listElements => {
       this.listSport = listElements;
@@ -28,7 +35,8 @@ export class FilterPage implements OnInit, OnDestroy {
       this.listCatEta = listElements;
     });
 
-    this.myFilter = this.startService.filterCorsi;
+    this.listTargetSesso = ValueList.getArray(TargetSesso);
+    this.listTipoCorso = ValueList.getArray(TipoCorso);
   }
 
 
@@ -45,10 +53,40 @@ export class FilterPage implements OnInit, OnDestroy {
     }
   }
 
-  compareWithFnCatEta = (o1, o2) => {
-    return o1 && o2 ? o1.ID === o2.ID : o1 === o2;
+  compareWithFn = (o1, o2) => {
+    return o1 && o2 ? o1 === o2 : o1 === o2;
   };
 
-  compareWithCatEta = this.compareWithFnCatEta;
+  compareWithSelect = this.compareWithFn;
 
+
+  /**
+   * Chiudo la videata Annullando tutto
+   */
+  closeFilter() {
+    this.mdlController.dismiss({
+      'dismissFilter': undefined
+    });
+  }
+
+  /**
+   * Chiudo la videata applicando i filtri impostati
+   */
+  applyFilter() {
+    this.mdlController.dismiss({
+      'dismissFilter': this.myFilter
+    });
+  }
+
+  /**
+   * Svuota tutti i filtri, tranne la location
+   */
+  emptyFilter() {
+    this.myFilter.TARGETSESSO = null;
+    this.myFilter.TIPO = null;
+    this.myFilter.DATAFINE = null;
+    this.myFilter.IDSPORT = null;
+    this.myFilter.IDCATEGORIEETA = null;
+    this.myFilter.CHECKISCRIZIONEAPERTA = false;
+  }
 }

@@ -1,4 +1,5 @@
-import { IDDocument, TypeDefinition } from './iddocument.model';
+import { IDDocument } from './iddocument.model';
+import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
 export class UtenteLivello extends IDDocument {
     IDSPORT: string;
@@ -11,6 +12,33 @@ export class UtenteLivello extends IDDocument {
         super();
     }
 
+    /**
+    * Ritorna il descrittore della Struttura Campi
+    */
+   getDescriptor(): Descriptor {
+        let objDescriptor = new Descriptor();
+        let arString = ['IDSPORT',
+                        'IDLIVELLO',
+                        'DESCRSPORT',
+                        'DESCRLIVELLO'
+                        ];
+        let arNumber = [];
+        let arBoolean = [];
+        let arDate = [];
+        let arDateTime =[];
+        let arTime = [];
+        let arCollection = [];
+
+        objDescriptor.addMultiple(arString, TypeDefinition.char);
+        objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+        objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+        objDescriptor.addMultiple(arDate, TypeDefinition.date);
+        objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
+        objDescriptor.addMultiple(arTime, TypeDefinition.time);
+        objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+        
+        return objDescriptor;
+    }    
     /**
      * Imposta le proprietà
      * @param data JSON Ricevere

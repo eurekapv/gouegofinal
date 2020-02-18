@@ -9,3 +9,9 @@ table {
 #giornate {
     background-color: var(--ion-color-light);
 }
+
+.contentLezioni {
+    display: flex;
+    justify-content: flex-end;
+    background-color: var(--ion-color-light);
+}

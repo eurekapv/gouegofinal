@@ -7,29 +7,31 @@
   <ion-card-content class="ion-no-padding">
     <ion-grid>
       <ion-row>
-        <ion-col size="4">
-          <ion-button size="small" color="medium" >
+        <ion-col size="6" size-sm="6">
+          <ion-button size="small" color="medium" expand="block">
             <ion-icon name="time" slot="start"></ion-icon>
             {{myCorso.ORAINIZIO | date:'h:mm'}}
           </ion-button>
         </ion-col>
 
-        <ion-col size="4">
-          <ion-button size="small" color="medium">
+        <ion-col size="6" size-sm="6">
+          <ion-button size="small" color="medium" expand="block">
             <ion-icon name="infinite" slot="start"></ion-icon>
             {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
           </ion-button>
         </ion-col>
 
-        <ion-col size="4">
+        <!-- <ion-col size="4" size-sm="6">
           <ion-button size="small" color="medium">
             <ion-icon name="refresh" slot="start"></ion-icon>
-            {{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Lezioni':'Lezione'}}
+            {{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Meets':'Meet'}}
           </ion-button>
-        </ion-col>
+        </ion-col> -->
       </ion-row>
     </ion-grid>
   </ion-card-content>
+
+
 
   <ion-card-content class="ion-no-padding">
     <div id="giornate" class="ion-padding">
@@ -43,7 +45,14 @@
         </tr>
       </table>
     </div>
+      <!-- NUMERO LEZIONI-->
+    <div class="contentLezioni ion-margin-horizontal">
+      <h6>
+        <em>{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</em>
+      </h6>
+    </div>
   </ion-card-content>
+
 
   <ion-item>
     <ion-icon name="stats" slot="start" color="danger"></ion-icon>

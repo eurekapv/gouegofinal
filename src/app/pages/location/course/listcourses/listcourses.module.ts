@@ -9,6 +9,7 @@ import { ListcoursesPageRoutingModule } from './listcourses-routing.module';
 import { ListcoursesPage } from './listcourses.page';
 import { CardCourseComponent } from 'src/app/shared/components/card-course/card-course.component';
 import { FilterPage } from './filter/filter.page';
+import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 
 
 @NgModule({
@@ -18,7 +19,7 @@ import { FilterPage } from './filter/filter.page';
     IonicModule,
     ListcoursesPageRoutingModule
   ],
-  declarations: [ListcoursesPage, CardCourseComponent, FilterPage],
-  entryComponents: [FilterPage]
+  declarations: [ListcoursesPage, CardCourseComponent, FilterPage, CalendarPage],
+  entryComponents: [FilterPage, CalendarPage]
 })
 export class ListcoursesPageModule {}

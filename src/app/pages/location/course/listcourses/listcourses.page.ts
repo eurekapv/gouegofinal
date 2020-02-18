@@ -9,6 +9,7 @@ import { SegmentCorsi } from 'src/app/models/valuelist.model';
 import { FilterCorsi } from 'src/app/models/filtercorsi.model';
 import { ModalController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
+import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 
 
 @Component({
@@ -156,4 +157,28 @@ export class ListcoursesPage implements OnInit {
     this.startService.filterCorsi = filter;
     this.requestCorsi();
   }
+
+  onClickCardDetail(corso: Corso) {
+    console.log(corso);
+  }
+
+  /* ****** CALENDAR ******** */
+  onClickCardCalendar(corso: Corso) {
+    /* Apro in modale il calendario */
+    this.mdlController
+    .create({
+      component: CalendarPage,
+      componentProps: {
+        'myCorso': corso
+      }
+    })
+    .then(formModal => {
+      formModal.present();
+    });
+
+  }
+
+
+
+
 }

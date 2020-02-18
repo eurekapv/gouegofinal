@@ -47,12 +47,15 @@
                   sizeLg="4" 
                   offsetLg="4"
                   >
-          <app-card-course [myCorso]="corso"></app-card-course>
+          <app-card-course 
+              [myCorso]="corso" 
+              (clickCalendar)="onClickCardCalendar($event)"
+              (clickDetail)="onClickCardDetail($event)"></app-card-course>
         </ion-col>
       </ion-row>
     </ion-grid>
 
-    <ion-grid class="ion-nocorsi" *ngIf="listCorsi.length === 0">
+    <ion-grid class="ion-nocorsi" *ngIf="listCorsi.length === 0 && !spinnerCorsi">
       <ion-row>
         <ion-col>
           <ion-label>Non ho trovato corsi</ion-label>

@@ -34,7 +34,7 @@
 
 
   <ion-card-content class="ion-no-padding">
-    <div id="giornate" class="ion-padding">
+    <div id="giornate" class="ion-padding" (click)="goToCalendar()">
       <table style="width: 100%;">
         <tr>
           <td *ngFor="let giorno of myCorso._SETTIMANA">
@@ -46,7 +46,7 @@
       </table>
     </div>
       <!-- NUMERO LEZIONI-->
-    <div class="contentLezioni ion-margin-horizontal">
+    <div class="contentLezioni ion-margin-horizontal" (click)="goToCalendar()">
       <h6>
         <em>{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</em>
       </h6>
@@ -70,7 +70,7 @@
   </ion-item>
 
   <ion-card-content>
-    <ion-button color="medium" expand="block" >
+    <ion-button color="medium" expand="block" (click)="goToDetail()">
       <ion-icon name="calendar" slot="start"></ion-icon>
       Inizia il 
       {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}

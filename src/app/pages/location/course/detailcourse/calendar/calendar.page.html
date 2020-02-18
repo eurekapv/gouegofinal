@@ -1,0 +1,32 @@
+<ion-header no-border>
+  <ion-toolbar>
+    
+    <ion-title>{{myCorso.DENOMINAZIONE}}</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="closeCalendar()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list-header>
+      <h5>
+        <ion-icon name="calendar" slot="start"></ion-icon>
+        Programmazione
+      </h5>
+  </ion-list-header>
+
+</ion-content>
+
+<ion-footer>
+  <ion-button 
+      color="primary" 
+      fill="solid" 
+      expand="block"
+      (click)="closeCalendar()">
+    Chiudi
+  </ion-button>  
+</ion-footer>

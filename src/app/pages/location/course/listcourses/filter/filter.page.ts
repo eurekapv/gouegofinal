@@ -87,6 +87,6 @@ export class FilterPage implements OnInit, OnDestroy {
     this.myFilter.DATAFINE = null;
     this.myFilter.IDSPORT = null;
     this.myFilter.IDCATEGORIEETA = null;
-    this.myFilter.CHECKISCRIZIONEAPERTA = false;
+    this.myFilter._CHECKISCRIZIONEAPERTA = false;
   }
 }

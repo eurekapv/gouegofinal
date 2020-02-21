@@ -22,4 +22,8 @@ export class CentriComponent implements OnInit {
     this.location.FAVORITE=!this.location.FAVORITE;
   }
 
+  onClickPrenota() {
+    
+  }
+
 }

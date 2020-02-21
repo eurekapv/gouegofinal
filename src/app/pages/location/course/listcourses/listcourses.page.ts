@@ -32,7 +32,7 @@ export class ListcoursesPage implements OnInit {
   preferList: SegmentCorsi; 
 
   //Spinner di ricezione corsi
-  spinnerCorsi = true;
+  ricevuti = false;
   
 
   constructor(private router: ActivatedRoute, 
@@ -40,8 +40,8 @@ export class ListcoursesPage implements OnInit {
               private mdlController: ModalController
               ) { 
     
-    //Attivazione Spinner Ricezione corsi
-    this.spinnerCorsi = true;
+    //In attesa dei corsi
+    this.ricevuti = false;
 
     //Richiedo l'utente e se è loggato
     this.listenUserLogged = this.startService.utenteLogged.subscribe(value => {
@@ -78,7 +78,8 @@ export class ListcoursesPage implements OnInit {
 
         //Mi sottoscrivo alla ricezione
         this.corsiListen = this.startService.listCorsi.subscribe (element => {
-          this.spinnerCorsi = false;
+          //Corsi sono stati ricevuti
+          this.ricevuti = true;
           this.listCorsi = element;
         })
 
@@ -95,12 +96,12 @@ export class ListcoursesPage implements OnInit {
     switch (this.preferList) {
       case SegmentCorsi.tutti:
           //Richiedo i corsi
-          this.spinnerCorsi = true;
+          this.ricevuti = false;
           this.startService.requestCorsi();
           break;
       case SegmentCorsi.mioLivello:
           //Richiedo i corsi con il documento utente per effettuare i filtri
-          this.spinnerCorsi = true;
+          this.ricevuti = false;
           this.startService.requestCorsi(this.docUser);
           break;
 

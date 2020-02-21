@@ -1,24 +1,25 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{selectedLocation.DENOMINAZIONE}}
+      {{selectedLocation.DENOMINAZIONE|titlecase}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <!-- GALLERY IMAGES -->
   <ion-card >
     <ion-slides>
       <ion-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
         <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
       </ion-slide>
     </ion-slides>
-
-
   </ion-card>
+
+  <!-- BUTTON OPERAZIONI -->
   <ion-grid>
     <ion-row>
       <ion-col size="4" >
@@ -50,45 +51,122 @@
       </ion-col>     
     </ion-row>
   </ion-grid>
-  <ion-list >
-    <ion-item>
-      <ion-icon name="pin" slot="start"></ion-icon>
-      <ion-label>Indirizzo:</ion-label>
-      <ion-badge color="secondary">{{selectedLocation.COMUNE}}</ion-badge>
-      <ion-badge color="secondary">{{selectedLocation.INDIRIZZO}}</ion-badge>
-    </ion-item>
-    <ion-item>
-      <ion-icon name="medical" slot="start"></ion-icon>
-      <ion-label>Campi:</ion-label>
-    <ion-badge color="secondary">{{selectedLocation.getNumCampi()}}</ion-badge>
-    </ion-item>
-    <ion-item *ngIf="selectedLocation.TELEFONO">
-      <ion-icon name="call" slot="start"></ion-icon>
-      <ion-label>Telefono:</ion-label>
-      <ion-badge color="secondary">{{selectedLocation.TELEFONO}}</ion-badge>
-    </ion-item>
 
-    <ion-item *ngIf="selectedLocation.EMAIL">
-      <ion-icon name="mail" slot="start"></ion-icon>
-      <ion-label>E-Mail:</ion-label>
-      <ion-badge color="secondary">{{selectedLocation.EMAIL}}</ion-badge>
-    </ion-item>
 
-    <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
-      <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-      <ion-label class="ion-text-wrap">
-        <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
-      </ion-label>
-    </ion-item>
-
-    <div *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
-      <ion-list-header color="primary">
-        <ion-label>Orari Centro</ion-label>
+  <ion-list>
+    <!-- INFO CENTRO-->
+    <div id="loc-info">
+      <ion-list-header color="warning">
+        <ion-label color="light">
+          <ion-icon 
+            name="information-circle" 
+            slot="start"></ion-icon>
+          Info Centro
+        </ion-label>
       </ion-list-header>
-      <app-aperture *ngFor="let apertura of selectedLocation.APERTURALOCATION" [myApertura]="apertura"></app-aperture>
+
+      <!-- DESCRIZIONE MOB -->
+      <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
+        <ion-icon 
+            name="information-circle-outline" 
+            slot="start" 
+            color="primary">
+        </ion-icon>
+
+        <ion-label class="ion-text-wrap">
+          <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
+        </ion-label>
+
+      </ion-item>
+
+      <!-- NUMERO CAMPI -->
+      <ion-item *ngIf="selectedLocation.getNumCampi() !== 0" button
+        (click)="onClickOpenCampi()">
+        <ion-icon 
+            name="medical" 
+            slot="start" 
+            color="primary">
+        </ion-icon>
+
+        <ion-label>{{ selectedLocation.getNumCampi() > 1 ? 'Campi disponibili':'Campo disponibile' }}</ion-label>
+        <ion-badge color="primary">{{selectedLocation.getNumCampi()}}</ion-badge>
+
+      </ion-item>
+
+      <!-- COMUNE -->
+      <ion-item *ngIf="selectedLocation.COMUNE">
+        <ion-icon 
+            name="home" 
+            slot="start" 
+            color="primary"></ion-icon>
+        <ion-label>{{selectedLocation.COMUNE}}</ion-label>
+      </ion-item>
+
+      <!-- INDIRIZZO -->
+      <ion-item *ngIf="selectedLocation.INDIRIZZO">
+        <ion-icon 
+          name="navigate" 
+          slot="start" 
+          color="primary">
+        </ion-icon>
+
+        <ion-label>
+          {{selectedLocation.INDIRIZZO}}
+        </ion-label>
+
+      </ion-item>
+
+
     </div>
+
+    <!-- CONTATTI TEL E EMAIL -->
+    <div 
+        id="loc-info" 
+        *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL"> 
+
+      <ion-list-header color="warning">
+
+        <ion-label color="light">
+          <ion-icon name="megaphone" slot="start"></ion-icon>
+          Contatti
+        </ion-label>
+
+      </ion-list-header>
+
+      <ion-item *ngIf="selectedLocation.TELEFONO">
+        <ion-icon 
+          name="call" 
+          slot="start" 
+          color="primary"></ion-icon>
+        <ion-label>{{selectedLocation.TELEFONO}}</ion-label>
+      </ion-item>
+  
+      <ion-item *ngIf="selectedLocation.EMAIL">
+        <ion-icon 
+          name="mail" 
+          slot="start" 
+          color="primary">
+        </ion-icon>
+        
+        <ion-label>{{selectedLocation.EMAIL}}</ion-label>
+      </ion-item>
+    </div>
+
+    <!-- ORARI CENTRO -->
+    <div id="loc-orari" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
+      <ion-list-header color="warning">
+        <ion-label color="light">
+          <ion-icon name="time" slot="start"></ion-icon>
+          Orari Centro
+        </ion-label>
+      </ion-list-header>
+      <app-aperture 
+          *ngFor="let apertura of selectedLocation.APERTURALOCATION" 
+          [myApertura]="apertura">
+      </app-aperture>
+
+    </div>
+
   </ion-list>
-
-
   
 </ion-content>

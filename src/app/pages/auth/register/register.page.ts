@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { Account } from 'src/app/models/account.model';
-import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl  } from '@angular/forms';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
-import { LoadingController, ToastController, NavController, IonInput } from '@ionic/angular';
+import { LoadingController, ToastController, NavController } from '@ionic/angular';
 
 
 @Component({
@@ -45,7 +45,7 @@ export class RegisterPage implements OnInit {
   }
   
   ngOnInit() {
-    this.stato=PageState.CONFIRM;
+    this.stato=PageState.REGISTRATION;
     this.createForm();
   }
 
@@ -65,17 +65,29 @@ export class RegisterPage implements OnInit {
       }),
       email: new FormControl(null, {
         updateOn: 'change',
-        validators: [Validators.required]
+        validators: [Validators.required, Validators.email]
       }),
       psw: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),
+      verifyPsw: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required]
+      }),      
       telephone: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),
-    })
+      chkPrivacy: new FormControl(false, {
+        updateOn: 'change',
+        validators: [Validators.requiredTrue]
+      }),
+      chkNewsletter: new FormControl(true, {
+        updateOn: 'change',
+        validators: []
+      })      
+    }, this.pswValidator);
 
     //form di conferma codice
     this.formConfirm=new FormGroup({
@@ -101,6 +113,18 @@ export class RegisterPage implements OnInit {
       })
     })
 
+  }
+
+  pswValidator(c:AbstractControl):{invalid:boolean}
+  {
+      if ((c.get('verifyPsw').value==c.get('psw').value))
+      {
+        return
+      }
+      else
+      {
+        return {invalid: true};
+      }
   }
 
   onClickProsegui()

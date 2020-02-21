@@ -1,40 +1,27 @@
 import { IDDocument } from './iddocument.model';
-import { SettoreAttivita } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
-export class Attivita extends IDDocument {
-
-    DENOMINAZIONE:  string;
-    SETTORE:        SettoreAttivita;
-    IDREFER:        string; //ID Riferimento
-    IDAREA:         string;
-    IDLOCATION:     string;
-    IDCAMPO:        string;
-    DATAORAINIZIO:  Date;
-    DATAORAFINE:    Date;
-    IDSPORT:        string; //Sport - Attività di riferimento
-    DESCRIZIONE:    string;
+export class CampoSport extends IDDocument {
+    IDCAMPO: string;
+    IDSPORT: string;
+    DESCRSPORT: string;
 
     constructor() {
         super();
     }
 
-      /**
+    /**
     * Ritorna il descrittore della Struttura Campi
     */
    getDescriptor(): Descriptor {
     let objDescriptor = new Descriptor();
-    let arString = ['DENOMINAZIONE',
-                    'IDREFER',
-                    'IDAREA',
-                    'IDLOCATION',
-                    'IDCAMPO',
+    let arString = ['IDCAMPO',
                     'IDSPORT',
-                    'DESCRIZIONE'];
-    let arNumber = ['SETTORE'];
+                    'DESCRSPORT'];
+    let arNumber = [];
     let arBoolean = [];
     let arDate = [];
-    let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
+    let arDateTime =[];
     let arTime = [];
     let arCollection = [];
 
@@ -48,5 +35,4 @@ export class Attivita extends IDDocument {
     
     return objDescriptor;
 }
-       
 }

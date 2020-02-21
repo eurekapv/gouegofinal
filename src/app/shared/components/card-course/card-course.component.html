@@ -1,40 +1,35 @@
 <ion-card class="ion-no-margin ion-margin-horizontal">
+  <!-- SPORT E NOME CORSO-->
   <ion-card-header>
   <ion-card-subtitle>{{myCorso._DESCRSPORT}}</ion-card-subtitle>
     <ion-card-title>{{myCorso.DENOMINAZIONE}}</ion-card-title>
   </ion-card-header>
 
+  <!-- ORA INIZIO E DURATA-->
   <ion-card-content class="ion-no-padding">
-    <ion-grid>
+    <ion-grid class="orari-cnt">
       <ion-row>
         <ion-col size="6" size-sm="6">
-          <ion-button size="small" color="medium" expand="block">
+          <ion-button size="small" color="primary" expand="block">
             <ion-icon name="time" slot="start"></ion-icon>
             {{myCorso.ORAINIZIO | date:'h:mm'}}
           </ion-button>
         </ion-col>
 
         <ion-col size="6" size-sm="6">
-          <ion-button size="small" color="medium" expand="block">
+          <ion-button size="small" color="primary" expand="block">
             <ion-icon name="infinite" slot="start"></ion-icon>
             {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
           </ion-button>
         </ion-col>
-
-        <!-- <ion-col size="4" size-sm="6">
-          <ion-button size="small" color="medium">
-            <ion-icon name="refresh" slot="start"></ion-icon>
-            {{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Meets':'Meet'}}
-          </ion-button>
-        </ion-col> -->
       </ion-row>
     </ion-grid>
   </ion-card-content>
 
 
-
-  <ion-card-content class="ion-no-padding">
-    <div id="giornate" class="ion-padding" (click)="goToCalendar()">
+  <!-- BOX GIORNATE -->
+  <ion-card-content class="ion-no-padding giornate">
+    <div class="ion-padding" (click)="goToCalendar()">
       <table style="width: 100%;">
         <tr>
           <td *ngFor="let giorno of myCorso._SETTIMANA">
@@ -46,14 +41,17 @@
       </table>
     </div>
       <!-- NUMERO LEZIONI-->
-    <div class="contentLezioni ion-margin-horizontal" (click)="goToCalendar()">
+    <div 
+        class="contentLezioni ion-margin-horizontal" 
+        (click)="goToCalendar()"
+        *ngIf="myCorso.NUMEROLEZIONI">
       <h6>
         <em>{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</em>
       </h6>
     </div>
   </ion-card-content>
 
-
+  <!-- LISTA INFORMAZIONI LIVELLO, ETA, SESSO-->
   <ion-item>
     <ion-icon name="stats" slot="start" color="danger"></ion-icon>
   <ion-label>{{myCorso._DESCRLIVELLOENTRATA?myCorso._DESCRLIVELLOENTRATA:'Tutti i Livelli'}}</ion-label>
@@ -69,8 +67,9 @@
     <ion-label>{{getLabelTargetSesso()}}</ion-label>
   </ion-item>
 
+  <!-- PULSANTE FOOTER -->
   <ion-card-content>
-    <ion-button color="medium" expand="block" (click)="goToDetail()">
+    <ion-button color="warning" expand="block" (click)="goToDetail()">
       <ion-icon name="calendar" slot="start"></ion-icon>
       Inizia il 
       {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}

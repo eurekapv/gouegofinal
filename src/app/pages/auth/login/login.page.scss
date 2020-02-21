@@ -1,35 +1,29 @@
-
-.cardPrincipale
-{
-    background-color: white;
+a {
+    text-decoration: none;
 }
 
-.btnLogin
+.btn-login
 {
     margin-top: 5vh;
-    margin-bottom: 8vh;
+    margin-bottom: 5vh;
 }
 
 
-.contentPrinc
-{
-    //Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100
-    //Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100
---background: #0cd1e8; // Old browsers
---background: -moz-linear-gradient(-45deg,  #0cd1e8 0%, #2989d8 50%, #0cd1e8 100%); // FF3.6-15 
---background: -webkit-linear-gradient(-45deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); // Chrome10-25,Safari5.1-6 
---background: linear-gradient(135deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); // W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ 
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', endColorstr='#0cd1e8',GradientType=1 ); // IE6-9 fallback on horizontal gradient
+// .contentPrinc
+// {
+//     //Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100
+//     //Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0cd1e8+0,2989d8+50,0cd1e8+100
+// --background: #0cd1e8; // Old browsers
+// --background: -moz-linear-gradient(-45deg,  #0cd1e8 0%, #2989d8 50%, #0cd1e8 100%); // FF3.6-15 
+// --background: -webkit-linear-gradient(-45deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); // Chrome10-25,Safari5.1-6 
+// --background: linear-gradient(135deg,  #0cd1e8 0%,#2989d8 50%,#0cd1e8 100%); // W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ 
+// filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', endColorstr='#0cd1e8',GradientType=1 ); // IE6-9 fallback on horizontal gradient
+// }
 
+.contentPrinc {
+    --background: var(--ion-back-auth);
+}
 
-}
-.logo
-{
-    // height:  auto;
-    // width: 70%;
-    // margin-left: auto;
-    // margin-right: auto;
-}
 
 .avatar
 {
@@ -42,6 +36,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0cd1e8', end
   width: 100%;
   text-align: center;
 }
+
+// ion-footer {
+//     background-color: var(--ion-color-warning);
+//     color: white
+// }
+
 
 
   

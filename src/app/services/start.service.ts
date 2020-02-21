@@ -17,6 +17,8 @@ import { UtenteService } from './utente.service';
 import { LivelloService } from './livello.service';
 import { AreaService } from './area.service';
 import { LocationService } from './location.service';
+import { CourseschedulerService } from './coursescheduler.service';
+import { CamposportService } from './camposport.service';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +53,9 @@ export class StartService {
     private utenteService: UtenteService,
     private livelloService: LivelloService,
     private areaService: AreaService,
-    private locationService: LocationService) { 
+    private locationService: LocationService,
+    private corsoCalendarioService: CourseschedulerService,
+    private campiSportService: CamposportService) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -231,6 +235,9 @@ export class StartService {
   //#endregion
 
 
+//#region CAMPISPORT
+
+//#endregion
 
 //#region SPORT SERVICE
 
@@ -339,6 +346,24 @@ requestCorsi(docUser?:Utente) {
       .request(actualStartConfig, 
                docUser);
             
+}
+
+
+/**
+ * Ritorna il calendario di un corso
+ */
+get calendarioCorso() {
+  return this.corsoCalendarioService.calendarioCorso;
+}
+
+/**
+ * Richiesto il calendario del corso
+ * @param idCorso Corso richiesto
+ */
+requestCalendarioCorso(idCorso: string) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  this.corsoCalendarioService.request(actualStartConfig, idCorso);
 }
 //#endregion
 

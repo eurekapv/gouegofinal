@@ -32,8 +32,12 @@
       </ion-row>
   
       <ion-row *ngIf="!myApertura.isOpen()">
-        <ion-col >
-          <ion-label>CHIUSO</ion-label>
+        <ion-col class="ion-text-center">
+          <ion-button 
+            size="small" 
+            color="danger" 
+            expand="full"
+            class="ion-no-margin">CHIUSO</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

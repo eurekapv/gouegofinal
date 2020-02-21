@@ -1,7 +1,13 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
     
-    <ion-title>{{myCorso.DENOMINAZIONE}}</ion-title>
+    <ion-title>{{myCorso.DENOMINAZIONE|titlecase}}</ion-title>
     
     <ion-buttons slot="end">
       <ion-button (click)="closeCalendar()">
@@ -12,12 +18,66 @@
 </ion-header>
 
 <ion-content>
-  <ion-list-header>
-      <h5>
-        <ion-icon name="calendar" slot="start"></ion-icon>
-        Programmazione
-      </h5>
-  </ion-list-header>
+    <!-- IN ATTESA RICEZIONE -->
+    <!-- SPINNER -->
+  <div *ngIf="!ricevuti" id="cal-spinner">
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+
+  <!-- RICEVUTI E PRESENTI -->
+  <ion-list *ngIf="ricevuti && calendarCorso.length !== 0" id="cal-find">
+    <ion-item *ngFor="let giornata of calendarCorso" class="ion-no-padding ion-no-margin" color="light">
+
+      <ion-col size="4" class="colGiorno">
+        <div class="contentGiorno ion-no-padding">
+          <h6>
+            {{giornata.DATA | date:'EEEE'}}
+          </h6>
+          <h2>
+            {{giornata.DATA | date:'dd'}}
+          </h2>
+          <h5>
+            {{giornata.DATA | date:'MMM' | uppercase}} '{{giornata.DATA | date:'yy'}}
+          </h5>          
+        </div>
+      </ion-col>
+
+      <ion-col size="8" class="colOrario">
+        <ion-card class="ion-no-margin ion-no-padding">
+          <ion-card-content class="ion-no-margin ion-no-padding" >
+            <ion-list class="ion-no-margin">
+              <ion-item lines="none" [color]="colorItem(giornata)">
+                <ion-icon name="play" slot="start"></ion-icon>
+                <ion-label> {{giornata.DATAORAINIZIO | date:'hh:mm'}}</ion-label>
+                
+              </ion-item>
+
+              <ion-item lines="none"  >
+                <ion-icon name="pause" slot="start"></ion-icon>
+                <ion-label> {{giornata.DATAORAFINE | date:'hh:mm'}}</ion-label>
+                <ion-badge [color]="colorItem(giornata)" slot="end">{{ giornata.ORELEZIONE }} h</ion-badge>
+              </ion-item>
+
+            </ion-list>
+
+
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+    </ion-item>
+  </ion-list>
+
+
+  <div 
+    *ngIf="ricevuti && calendarCorso.length === 0" 
+    id="cal-nofind-cnt">
+
+    <ion-label>Programmazione</ion-label>
+    <ion-label>non disponibile</ion-label>
+    
+  </div>
+
 
 </ion-content>
 

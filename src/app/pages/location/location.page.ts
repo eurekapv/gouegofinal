@@ -44,7 +44,7 @@ export class LocationPage implements OnInit {
             //Imposto le informazioni della Location Selezionata
             this.selectedLocation.setJSONProperty(element[0]);
             
-            
+            console.log(this.selectedLocation)
           }
         });
         
@@ -78,5 +78,9 @@ export class LocationPage implements OnInit {
 
   goToTornei() {
 
+  }
+
+  onClickOpenCampi() {
+    
   }
 }

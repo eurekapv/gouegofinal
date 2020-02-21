@@ -1,5 +1,5 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
@@ -8,7 +8,7 @@
 
     <ion-buttons slot="primary">
       <ion-button (click)="goToFilter()">
-        Filtra
+        <ion-icon name="search"></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -17,17 +17,21 @@
 
 
 <ion-content>
-  
-  <div *ngIf="spinnerCorsi">
+  <!-- IN RICERCA CORSI -->
+  <!-- CORSI NON RICEVUTI -->
+  <div *ngIf="!ricevuti" id="crs-spinner">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
   </div>
 
+  <!-- NON IN RICERCA - PER UTENTE LOGGATO -->
+  <!-- BOTTONI SEGMENTATI -->
   <ion-segment 
-      *ngIf="userLogged && !spinnerCorsi" 
+      *ngIf="userLogged && ricevuti" 
       class="ion-padding-top ion-padding-horizontal"
        (ionChange)="onChangeSegmentCorsi($event)"
        color="medium"
-       value="corsiall">
+       value="corsiall"
+       id="crs:button">
     <ion-segment-button value="corsiall">
       <ion-label>Tutti</ion-label>
     </ion-segment-button>
@@ -37,8 +41,10 @@
     </ion-segment-button>
   </ion-segment>
 
-  <div *ngIf="!spinnerCorsi">
-    <ion-grid *ngIf="listCorsi.length !== 0">
+  <!-- NON IN RICERCA E CORSI TROVATI -->
+  <!-- VISUALIZZAZIONE CORSI -->
+  <div *ngIf="ricevuti && listCorsi.length !== 0" id="crs-lista">
+    <ion-grid>
       <ion-row>
         <ion-col *ngFor="let corso of listCorsi" 
                   sizeXs="12" 
@@ -55,14 +61,15 @@
       </ion-row>
     </ion-grid>
 
-    <ion-grid class="ion-nocorsi" *ngIf="listCorsi.length === 0 && !spinnerCorsi">
-      <ion-row>
-        <ion-col>
-          <ion-label>Non ho trovato corsi</ion-label>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
 
+
+  </div>
+
+  <div *ngIf="ricevuti && listCorsi.length === 0" id="crs-nofind-cnt">
+
+    <ion-label>Nessun corso disponibile</ion-label>
+    <ion-label>Modifica i parametri</ion-label>
+    <ion-label>di Ricerca</ion-label>
   </div>
 
 

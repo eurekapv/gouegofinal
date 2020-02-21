@@ -187,13 +187,14 @@ export class HomePage implements OnInit, OnDestroy{
  //#region GESTIONE INTERFACCIA
  /** Ritorna il color a seconda dello stato di Login */
  btnFooterColor() {
-   let color = 'primary';
+
+   let color = 'warning';
   
     if (this.userLogged) {
-      color = 'success'
+      color = 'warning'
     }
     else {
-      color = 'secondary'
+      color = 'warning'
     }
 
     return color;

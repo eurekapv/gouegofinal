@@ -9,7 +9,7 @@ export class CorsoScheduler extends IDDocument {
     DATA: Date;
     VALUEGIORNO: number;
     ORAINIZIO: Date;
-    ORELEZIONI: number;
+    ORELEZIONE: number;
     DATAORAINIZIO: Date;
     DATAORAFINE: Date;
     MULTIPLA: boolean;
@@ -30,7 +30,7 @@ export class CorsoScheduler extends IDDocument {
                     'IDLOCATION',
                     'IDCAMPO'
                     ];
-    let arNumber = ['VALUEGIORNO','ORELEZIONI'];
+    let arNumber = ['VALUEGIORNO','ORELEZIONE'];
     let arBoolean = ['MULTIPLA'];
     let arDate = ['DATA'];
     let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
@@ -83,4 +83,10 @@ export class CorsoScheduler extends IDDocument {
   
       }    
   
+      /**
+       * Ritorna TRUE, FALSE a seconda se l'evento è passato o no
+       */
+      eventoPassato() {
+        return (new Date() > this.DATAORAFINE );
+      }
 }

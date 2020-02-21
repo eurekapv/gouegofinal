@@ -10,6 +10,7 @@ import { LocationPage } from './location.page';
 
 import { ApertureComponent } from '../../shared/components/aperture/aperture.component';
 import { GalleryPage } from './gallery/gallery.page';
+import { CampiPage } from './campi/campi.page';
 
 
 @NgModule({
@@ -20,8 +21,8 @@ import { GalleryPage } from './gallery/gallery.page';
     LocationPageRoutingModule
     
   ],
-  declarations: [LocationPage, ApertureComponent, GalleryPage],
-  entryComponents: [GalleryPage]
+  declarations: [LocationPage, ApertureComponent, GalleryPage, CampiPage],
+  entryComponents: [GalleryPage, CampiPage]
   
   
 })

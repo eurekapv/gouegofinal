@@ -1,6 +1,7 @@
 import { IDDocument } from './iddocument.model';
 import { TipoCampo } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { CampoSport } from './camposport.model';
 
 
 export class Campo extends IDDocument {
@@ -11,6 +12,7 @@ export class Campo extends IDDocument {
   DENOMINAZIONE: string;
   TIPOLOGIA: TipoCampo;
   DIMENSIONI: string;
+  CAMPOSPORT: CampoSport[];
 
 
 
@@ -35,7 +37,7 @@ export class Campo extends IDDocument {
     let arDate = [];
     let arDateTime =[];
     let arTime = [];
-    let arCollection = [];
+    let arCollection = ['CAMPOSPORT'];
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

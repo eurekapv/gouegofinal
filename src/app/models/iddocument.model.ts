@@ -69,11 +69,11 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
                     break;
                 
                   case TypeDefinition.number:
-                    _this[element] = parseInt(dataObject[element],10);
+                    _this[element] = +dataObject[element]; 
                     break;
 
                   case TypeDefinition.numberDecimal:
-                    _this[element] = parseFloat(dataObject[element]);
+                    _this[element] = +dataObject[element]; 
                     break;
 
                   case TypeDefinition.time:
@@ -81,7 +81,7 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
                     stringValue = dataObject[element]; //Valore Stringa
 
                     //Non ho dentro il giorno ma solo l'ora
-                    if (!stringValue.includes('-') || stringValue.includes(':')) {
+                    if (!stringValue.includes('-') && stringValue.includes(':')) {
                       stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
                       _this[element] = new Date(stringValue);  
                     }
@@ -102,7 +102,7 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
                     stringValue = dataObject[element]; //Valore Stringa
 
                     //Non ho dentro il giorno ma solo l'ora
-                    if (!stringValue.includes('-') || stringValue.includes(':')) {
+                    if (!stringValue.includes('-') && stringValue.includes(':')) {
                       stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
                       _this[element] = new Date(stringValue);  
                     }
@@ -128,65 +128,13 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
 
     }
 
-    // Imposta le proprietà basiche dell'oggetto via JSON
-    setJSONProperty2(dataObject: any) {
-      let _this = this;
-      let arProperty = Object.keys(dataObject);
-      let fakeDate = new Date();
-  
-      // Gli elementi di tipo Array non li copio
-      arProperty.forEach(element => {
-          if (Array.isArray(dataObject[element]) == false) {
-
-              //Con la funzione describer conosco il tipo del campo
-              let tipoCampo = _this.describerType(element);
-              
-              //INFORMAZIONE DI TIPO DATA O DATA ORA
-              if ([TypeDefinition.date,TypeDefinition.dateTime, TypeDefinition.time].includes(tipoCampo)) {
-
-                if (tipoCampo == TypeDefinition.date) {
-                  //E' una data
-                  _this[element] = new Date(dataObject[element]);
-                }
-                else if (tipoCampo == TypeDefinition.dateTime || tipoCampo == TypeDefinition.time) {
-                  //Campo di tipo ORA
-                  let stringValue : string = dataObject[element]; //Valore Stringa
-
-                    //Non ho dentro il giorno ma solo l'ora
-                    if (!stringValue.includes('-') || stringValue.includes(':')) {
-                      stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
-                      _this[element] = new Date(stringValue);
-
-                      
-                    }
-                    else {
-
-                      //Gia presente sia Data che Ora
-                      _this[element] = new Date(stringValue);
-                    }
-
-                }
-
-              }
-              else {
-                // Informazione Stringa
-                _this[element] = dataObject[element];
-              }
-              
-          }
-          
-
-      });
-
-    }
-
-
 
 
 
     //Formatta una data passata in ISO (Solo la parte data)
     formatDateISO(data: Date) {
-      let mese = (data.getMonth() + 1 <= 9) ? data.getMonth() + 1 : '0' + data.getMonth() + 1;
+      let intMese = data.getMonth() + 1;
+      let mese = (intMese > 9) ? (intMese + '') : ('0' + intMese);
       let format = [data.getFullYear(), mese, data.getDate()].join('-');
 
       return format;

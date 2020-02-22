@@ -182,31 +182,31 @@ export class Corso extends IDDocument {
      * @param listDecode Lista con gli elementi
      * @param propertyLookup Nome della proprieta a cui attingere la decodifica
      */
-    lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
-      let namePropertyIDX = propertyToDecode;
-      let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
-      let _this = this;
+    // lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
+    //   let namePropertyIDX = propertyToDecode;
+    //   let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
+    //   let _this = this;
       
 
-      //Proprieta Indice e Descrizione presenti
-      if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
-        if (listDecode && propertyLookup) {
+    //   //Proprieta Indice e Descrizione presenti
+    //   if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
+    //     if (listDecode && propertyLookup) {
 
-          let element = listDecode.find(value => {
-            return value.ID == _this[namePropertyIDX]
-          });
+    //       let element = listDecode.find(value => {
+    //         return value.ID == _this[namePropertyIDX]
+    //       });
 
-          if (element) {
-            if (element.hasOwnProperty(propertyLookup)) {
-              _this[namePropertyDESCR] = element[propertyLookup];
-            }
-          }
+    //       if (element) {
+    //         if (element.hasOwnProperty(propertyLookup)) {
+    //           _this[namePropertyDESCR] = element[propertyLookup];
+    //         }
+    //       }
 
-        }
-      }
+    //     }
+    //   }
       
 
-    }
+    // }
 
 
 

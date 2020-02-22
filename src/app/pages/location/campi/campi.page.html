@@ -1,9 +1,80 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>campi</ion-title>
+<ion-header no-border>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon name="pin"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    
+    <ion-title>{{myLocation.DENOMINAZIONE|titlecase}}</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
+
+
+  <!-- CAMPI PRESENTI -->
+  <div *ngIf="myLocation.CAMPO.length !== 0" >
+    <ion-list-header>
+      <h1 class="text-primary">Dove puoi giocare</h1>
+    </ion-list-header>
+
+    <ion-list *ngFor="let campo of myLocation.CAMPO">
+      <ion-item button (click)="switchExpansion(campo)">
+        <ion-icon 
+          color="primary"
+          name="medical"
+          slot="start"></ion-icon>
+
+        <ion-label>
+          <h2>
+            {{ campo.DENOMINAZIONE }}
+          </h2>
+          <h4>
+            {{campo.TIPOLOGIA | tipoCampo}} {{ campo.STRUTTURA | strutturaCampo }}
+          </h4>
+
+        </ion-label>
+
+        <ion-icon [name]="campo.selected ? 'arrow-dropup': 'arrow-dropdown'" 
+                  *ngIf="campo.CAMPOSPORT.length !== 0"></ion-icon>
+
+      </ion-item>
+    
+        <div *ngIf="campo.CAMPOSPORT.length !== 0 && campo.selected">
+          <ion-list>
+            <ion-item 
+              *ngFor="let camposport of campo.CAMPOSPORT" 
+              color="secondary" 
+              class="ion-no-margin">
+
+                <ion-icon name="radio-button-on" slot="start"></ion-icon>
+                <ion-label>
+                    {{ camposport._DESCRSPORT }}
+                </ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+    
+    </ion-list>
+
+  </div>
+
+  <div 
+    *ngIf="myLocation.CAMPO.length === 0" 
+    id="cam-nofind-cnt">
+
+    <ion-label>Caratteristiche Struttura</ion-label>
+    <ion-label>non disponibili</ion-label>
+    
+  </div>
 
 </ion-content>

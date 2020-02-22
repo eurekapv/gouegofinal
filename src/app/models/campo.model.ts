@@ -1,7 +1,8 @@
 import { IDDocument } from './iddocument.model';
-import { TipoCampo } from '../models/valuelist.model';
+import { TipoCampo, StrutturaCampo } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 import { CampoSport } from './camposport.model';
+
 
 
 export class Campo extends IDDocument {
@@ -12,13 +13,13 @@ export class Campo extends IDDocument {
   DENOMINAZIONE: string;
   TIPOLOGIA: TipoCampo;
   DIMENSIONI: string;
-  CAMPOSPORT: CampoSport[];
-
-
+  STRUTTURA: StrutturaCampo;
+  CAMPOSPORT: CampoSport[]; 
+  UTILIZZABILE: boolean; //Segnato come utilizzabile
+  DURATAOREMINIMA: number; //Se presente è la durata minima di prenotazione
 
   constructor() {
     super();
-
   }
 
       /**
@@ -32,8 +33,9 @@ export class Campo extends IDDocument {
                     'DENOMINAZIONE',
                     'DIMENSIONI'
                     ];
-    let arNumber = ['TIPOLOGIA'];
-    let arBoolean = [];
+    let arNumber = ['TIPOLOGIA', 'STRUTTURA'];
+    let arNumberDecimal = ['DURATAOREMINIMA'];
+    let arBoolean = ['UTILIZZABILE'];
     let arDate = [];
     let arDateTime =[];
     let arTime = [];
@@ -41,6 +43,7 @@ export class Campo extends IDDocument {
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
+    objDescriptor.addMultiple(arNumberDecimal, TypeDefinition.numberDecimal);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
     objDescriptor.addMultiple(arDate, TypeDefinition.date);
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
@@ -73,4 +76,13 @@ export class Campo extends IDDocument {
       return retType
 
     }  
+
+    //Aggiunge alla collection un campo Sport
+    addCampoSport(docCampoSport: CampoSport) {
+      if (!this.CAMPOSPORT) {
+        this.CAMPOSPORT = [];
+      }
+
+      this.CAMPOSPORT.push(docCampoSport);
+    }
 }

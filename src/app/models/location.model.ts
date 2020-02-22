@@ -3,6 +3,7 @@ import { LocationImage } from './locaton-image.model';
 import { Campo } from './campo.model';
 import { AperturaLocation } from './aperturalocation.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { CampoSport } from './camposport.model';
 
 export class Location extends IDDocument {
 
@@ -290,5 +291,32 @@ export class Location extends IDDocument {
       })
     }
 
+
+    /**
+     * Cicla su tutti i CAMPI presenti ed elimina 
+     * le informazioni CAMPOSPORT
+     */
+    emptyCampiSport() {
+
+      this.CAMPO.forEach(elCampo => {
+        elCampo.CAMPOSPORT = [];
+      })
+    }
+
+
+    /**
+     * 
+     * @param docCampoSport Campo Sport da aggiungere
+     * @param idCampo IDCampo da prelevare
+     */
+    addCampoSport(docCampoSport: CampoSport, idCampo: string) {
+      this.CAMPO.forEach(elCampo => {
+        if (elCampo.ID == idCampo) {
+          elCampo.addCampoSport(docCampoSport);
+        }
+      })
+    }
+
+    
 
 }

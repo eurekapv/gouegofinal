@@ -231,6 +231,21 @@ export class StartService {
     return this.locationService.requestLocationByID(actualStartConfig, idLocation);
   }
 
+  /**
+   * 
+   * @param selectedLocation Location richiesta
+   */
+  requestLocationCampiSport(selectedLocation: Location) {
+    const listSport = this.sportService.actualListSport;
+    const actualStartConfig = this._startConfig.getValue();
+
+    //Inietto nel servizio la decodifica della Lista Sport
+    this.locationService.decodeListSport = listSport;
+
+    return this.locationService
+                .syncInfoCampi(actualStartConfig, selectedLocation);
+  }
+
   
   //#endregion
 

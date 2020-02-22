@@ -6,6 +6,7 @@ import { LocationImage } from 'src/app/models/locaton-image.model';
 import { ModalController } from '@ionic/angular';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
 import { GalleryPage } from './gallery/gallery.page';
+import { CampiPage } from './campi/campi.page';
 
 @Component({
   selector: 'app-location',
@@ -57,7 +58,7 @@ export class LocationPage implements OnInit {
 
   /** Apre il Preview di una immagine */
   openPreview(img: LocationImage) {
-    console.log('Preview');
+    
 
     this.modalCtrl.create({
       component: GalleryPage,
@@ -80,7 +81,17 @@ export class LocationPage implements OnInit {
 
   }
 
+  /** Apertura modale dei campi */
   onClickOpenCampi() {
     
+    //Apertura modale della pagina dei campi
+    this.modalCtrl
+    .create({
+      component: CampiPage,
+      componentProps: {
+        myLocation: this.selectedLocation
+      }
+    })
+    .then(modal => modal.present());
   }
 }

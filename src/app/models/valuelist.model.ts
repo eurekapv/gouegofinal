@@ -89,6 +89,12 @@ export enum Giorni {
     sabato = 6
 }
 
+export enum StrutturaCampo {
+    coperto = 10,
+    scoperto = 20,
+    copertoScoperto = 30
+}
+
 
 
 

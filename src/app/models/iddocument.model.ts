@@ -7,10 +7,12 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
     do_loaded: boolean;
     do_inserted: boolean;
     do_deleted: boolean;
+    selected: boolean;
   
     constructor() {
         this.do_inserted = true;
         this.ID = this.newID();
+        this.selected = false;
     }
 
 
@@ -175,6 +177,47 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
               !isNaN(Number(value.toString())));
     }
 
+    //#endregion
+
+
+    //#region DECODIFICA PROPRIETA
+
+    //Esegue la decodifica della proprieta
+    //Tutte le proprietà hanno la chiave 
+    //in un campo denominato IDXYZ 
+    //e decodificate in campi _DESCRXYZ
+
+    /**
+     * 
+     * @param propertyToDecode Nome della proprietà da decodificare
+     * @param listDecode Lista con gli elementi
+     * @param propertyLookup Nome della proprieta a cui attingere la decodifica
+     */
+    lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
+      let namePropertyIDX = propertyToDecode;
+      let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
+      let _this = this;
+      
+
+      //Proprieta Indice e Descrizione presenti
+      if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
+        if (listDecode && propertyLookup) {
+
+          let element = listDecode.find(value => {
+            return value.ID == _this[namePropertyIDX]
+          });
+
+          if (element) {
+            if (element.hasOwnProperty(propertyLookup)) {
+              _this[namePropertyDESCR] = element[propertyLookup];
+            }
+          }
+
+        }
+      }
+      
+
+    }
     //#endregion
   }
 

@@ -32,3 +32,13 @@ import { AppRoutingModule } from './app-routing.module';
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+
+/**
+ * AGGIORNATI I MODULI A IONIC 5
+ * 
+ * Usare i due comandi:
+ * 
+ * npm update
+ * 
+ * npm install @ionic/angular@latest @ionic/angular-toolkit@latest --save
+ */

@@ -202,7 +202,8 @@
   }
 
   //VERSIONE AZZURRO CHIARO
-  :root {
+  //USO QUESTA
+  :root-azzurro-chiaro {
     --ion-color-primary: #329EE8;
     --ion-color-primary-rgb: 50,158,232;
     --ion-color-primary-contrast: #ffffff;
@@ -269,8 +270,8 @@
 
 
 
-/** Ionic CSS Variables **/
-:root-original {
+/** Ionic ORIGINAL CSS Variables **/
+:root {
   
   --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;

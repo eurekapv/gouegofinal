@@ -1,6 +1,6 @@
 import { IDDocument } from './iddocument.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
-import { Sport } from './sport.model';
+
 
 export class CampoSport extends IDDocument {
     IDCAMPO: string;

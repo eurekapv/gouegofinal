@@ -95,6 +95,11 @@ export enum StrutturaCampo {
     copertoScoperto = 30
 }
 
+export enum StatoSlot {
+    libero = 0,
+    occupato = 10,
+    chiuso = 20
+}
 
 
 

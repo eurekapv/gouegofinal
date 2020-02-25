@@ -2,11 +2,27 @@ import { NgModule } from '@angular/core';
 import { LabelGiornoPipe } from './label-giorno.pipe';
 import { StrutturaCampoPipe } from './struttura-campo.pipe';
 import { TipoCampoPipe } from './tipo-campo.pipe';
+import { SettoreAttivitaPipe } from './settore-attivita.pipe';
+import { TipoCorsoPipe } from './tipo-corso.pipe';
+import { TargetSessoPipe } from './target-sesso.pipe';
+import { StatoSlotPipe } from './stato-slot.pipe';
 
 @NgModule({
-    declarations: [LabelGiornoPipe, StrutturaCampoPipe, TipoCampoPipe],
+    declarations: [LabelGiornoPipe, 
+                   StrutturaCampoPipe, 
+                   TipoCampoPipe, 
+                   SettoreAttivitaPipe, 
+                   TipoCorsoPipe, 
+                   TargetSessoPipe, 
+                   StatoSlotPipe],
     imports: [],
-    exports: [LabelGiornoPipe, StrutturaCampoPipe, TipoCampoPipe]
+    exports: [LabelGiornoPipe, 
+              StrutturaCampoPipe, 
+              TipoCampoPipe, 
+              SettoreAttivitaPipe, 
+              TipoCorsoPipe,
+              TargetSessoPipe,
+              StatoSlotPipe]
 })
 export class PipesModule{}
 

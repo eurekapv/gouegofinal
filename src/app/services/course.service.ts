@@ -11,6 +11,7 @@ import { Sport } from '../models/sport.model';
 import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { Utente } from '../models/utente.model';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -102,7 +103,8 @@ export class CourseService {
             //Decodifico i campi chiave
             newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
   
-            console.log(newCorso);
+            LogApp.consoleLog('Nuovo Corso');
+            LogApp.consoleLog(newCorso);
   
             this.addCorso(newCorso);
   

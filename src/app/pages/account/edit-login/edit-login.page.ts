@@ -68,9 +68,10 @@ export class EditLoginPage implements OnInit {
   {
     if (this.form.valid)
      {
-      this.docUtente.INPUTPASSWORD=this.form.value.newPsw1;
-      console.log(this.docUtente);
-      //faccio richiesta di cambio psw
+      
+        this.docUtente.INPUTPASSWORD=this.form.value.newPsw1;
+      
+        //faccio richiesta di cambio psw
       
      }
   }

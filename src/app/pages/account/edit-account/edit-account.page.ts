@@ -42,7 +42,7 @@ export class EditAccountPage implements OnInit {
 
   createForm()
   {
-    console.log(this.utente);
+    
     this.form=new FormGroup({
       nome:new FormControl(this.utente.NOME, {
         updateOn:'change',
@@ -131,7 +131,7 @@ export class EditAccountPage implements OnInit {
       this.utente.MOBILENUMBER=this.form.value.cell;
       this.utente.ISOSTATO=this.form.value.statoResidenza;
       this.utente.EMAIL=this.form.value.email;
-      console.log(this.utente);
+
       //richiesta di aggiornamento al server
     }
   }

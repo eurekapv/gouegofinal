@@ -192,8 +192,7 @@ export class RegisterPage implements OnInit {
 
   onClickReinvia()
   {
-    //richiesta di reinvio codice al servers
-    console.log('dfkfsl');
+
   } 
 
 }

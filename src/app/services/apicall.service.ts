@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,8 @@ export class ApicallService {
 
 
   private _httpGet(url: string, reqHeaders: HttpHeaders, reqParams: HttpParams) {
-    console.log("Chiamata GET a " + url);
-
+    LogApp.consoleLog('Chiamata GET a ' + url);
+    
     //ritorno la get controllando l'errore
     return this.httpClient.get<any>(url, {
       headers: reqHeaders,

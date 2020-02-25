@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ValueList, StrutturaCampo } from 'src/app/models/valuelist.model';
+import { ValueList, StrutturaCampo } from '../../models/valuelist.model';
 
 @Pipe({
   name: 'strutturaCampo'

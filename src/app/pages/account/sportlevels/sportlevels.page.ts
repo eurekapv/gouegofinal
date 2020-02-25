@@ -21,7 +21,7 @@ export class SportlevelsPage implements OnInit {
    }
 
   ngOnInit() {
-    console.log(this.utente);
+    
   }
 
 }

@@ -6,7 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
 
 import { StartConfiguration } from '../models/start-configuration.model';
-import { Area } from '../models/area.model';
+
 import { Location } from '../models/location.model';
 import { Utente } from '../models/utente.model';
 import { SportService } from './sport.service';
@@ -19,6 +19,7 @@ import { AreaService } from './area.service';
 import { LocationService } from './location.service';
 import { CourseschedulerService } from './coursescheduler.service';
 import { CamposportService } from './camposport.service';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -89,7 +90,8 @@ export class StartService {
   onAuthorizationGrant(JSONGruppo: any) {
     let elStartConfig = this._startConfig.getValue();
 
-    console.log('Autorizzazione ricevuta');
+    //Scrivo in console
+    LogApp.consoleLog('Autorizzazione ricevuta');
 
     //Sistemazione del Gruppo nell'oggetto di configurazione
     elStartConfig.setGruppoAuthorization(JSONGruppo);
@@ -186,7 +188,7 @@ export class StartService {
                           //App entra in stato pronto
                           this._appReady.next(true);
 
-                          console.log('Avvio AppReady');
+                          LogApp.consoleLog('Avvio AppReady');
 
                           //Dopo che l'app è partita in questo contento non 
                           //mi serve piu sapere lo state Location

@@ -7,6 +7,7 @@ import { ModalController } from '@ionic/angular';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
 import { GalleryPage } from './gallery/gallery.page';
 import { CampiPage } from './campi/campi.page';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-location',
@@ -44,8 +45,10 @@ export class LocationPage implements OnInit {
             
             //Imposto le informazioni della Location Selezionata
             this.selectedLocation.setJSONProperty(element[0]);
+
+            LogApp.consoleLog('Location Selezionata');
+            LogApp.consoleLog(this.selectedLocation);
             
-            console.log(this.selectedLocation)
           }
         });
         

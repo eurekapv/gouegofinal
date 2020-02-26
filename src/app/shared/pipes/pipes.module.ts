@@ -6,6 +6,7 @@ import { SettoreAttivitaPipe } from './settore-attivita.pipe';
 import { TipoCorsoPipe } from './tipo-corso.pipe';
 import { TargetSessoPipe } from './target-sesso.pipe';
 import { StatoSlotPipe } from './stato-slot.pipe';
+import { StatoPrenotazionePipe } from './stato-prenotazione.pipe';
 
 @NgModule({
     declarations: [LabelGiornoPipe, 
@@ -14,7 +15,8 @@ import { StatoSlotPipe } from './stato-slot.pipe';
                    SettoreAttivitaPipe, 
                    TipoCorsoPipe, 
                    TargetSessoPipe, 
-                   StatoSlotPipe],
+                   StatoSlotPipe, 
+                   StatoPrenotazionePipe],
     imports: [],
     exports: [LabelGiornoPipe, 
               StrutturaCampoPipe, 
@@ -22,7 +24,8 @@ import { StatoSlotPipe } from './stato-slot.pipe';
               SettoreAttivitaPipe, 
               TipoCorsoPipe,
               TargetSessoPipe,
-              StatoSlotPipe]
+              StatoSlotPipe,
+              StatoPrenotazionePipe]
 })
 export class PipesModule{}
 

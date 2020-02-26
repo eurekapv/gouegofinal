@@ -21,6 +21,7 @@ import { CourseschedulerService } from './coursescheduler.service';
 import { CamposportService } from './camposport.service';
 import { LogApp } from '../models/log.model';
 import { Storage } from '@ionic/storage';
+import { PrenotazioneService } from './prenotazione.service';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,8 @@ export class StartService {
     private areaService: AreaService,
     private locationService: LocationService,
     private corsoCalendarioService: CourseschedulerService,
-    private campiSportService: CamposportService) { 
+    private campiSportService: CamposportService,
+    private prenotazioniService: PrenotazioneService) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -533,4 +535,28 @@ requestChangePassword(oldPsw:string, newPsw:string) {
 }
 
 //#endregion
+
+//#region 
+
+/**
+ * Lista Prenotazioni di tipo Observable
+ */
+get listPrenotazioni() {
+  return this.prenotazioniService.listPrenotazioni;
+}
+
+/**
+ * Richiede al server elenco di prenotazioni
+ * @param idUtente IDUtente Prenotazione
+ */
+requestPrenotazioniUtente(idUtente: string) {
+  const actualStartConfig = this._startConfig.getValue();
+  
+  //Richiedo i dati al servizio
+  this.prenotazioniService.request(actualStartConfig, idUtente);
+}
+
+//#endregion
+
+
 }

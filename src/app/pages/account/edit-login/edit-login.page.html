@@ -1,11 +1,24 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Modifica Credenziali</ion-title>
-    <ion-buttons slot="primary">
-      <ion-button fill="clear" (click)="onCancel()">
-        <ion-icon name="close"></ion-icon>
+
+    <ion-buttons slot="start">
+      <ion-button (click)="onCancel()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
+
+    <ion-title>Cambio Password</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button 
+          fill="clear" 
+          (click)="onSubmit()" 
+          [disabled]="!form.valid">
+
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
@@ -13,11 +26,7 @@
   <div class="titleicon">
     <img [src]="myUrlLogo"/>
   </div>
-
-    
-
   
-
   <form [formGroup]="form" class="ion-margin-horizontal">
     <ion-list>
       <!-- VECCHIA PASSWORD -->

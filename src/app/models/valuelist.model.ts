@@ -106,7 +106,11 @@ export enum TipoPrivateImage {
     brand = 20
 }
 
-
+export enum StatoPrenotazione {
+    confermata = 10,
+    daConfermare = 20,
+    disdetta = 30
+}
 
 
 

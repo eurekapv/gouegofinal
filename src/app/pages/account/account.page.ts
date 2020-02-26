@@ -98,16 +98,21 @@ openChangePassword() {
 
       /* Alla chiusura aggiorno le credenziali se necessario */
       formModal.onWillDismiss().then((objReceived:any) => {
-        if (objReceived.data.action == 'update') {
 
-          if (objReceived.data.pwd) {
-            //Devo aggiornare il cookie con le credenziali
-            let newPsw = objReceived.data.pwd;
-            
-            // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
-            this.startSrv.saveStorageUtente(this.docUtente.WEBLOGIN,newPsw);
+        if (objReceived) {
+          if (objReceived.data) {
+            if (objReceived.data.action == 'update') {
+    
+              if (objReceived.data.pwd) {
+                //Devo aggiornare il cookie con le credenziali
+                let newPsw = objReceived.data.pwd;
+                
+                // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
+                this.startSrv.saveStorageUtente(this.docUtente.WEBLOGIN,newPsw);
+              }
+    
+            }
           }
-
         }
       });
     })

@@ -54,28 +54,7 @@ export class Campo extends IDDocument {
 }
 
 
-    /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-     describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
-      
-      switch (fieldName) {
-
-        case 'TIPOLOGIA':
-          retType = TypeDefinition.number;
-          break;
-
-        default:
-          retType = TypeDefinition.char;
-          break;
-
-      }
-
-      return retType
-
-    }  
+ 
 
     //Aggiunge alla collection un campo Sport
     addCampoSport(docCampoSport: CampoSport) {

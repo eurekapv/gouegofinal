@@ -1,9 +1,11 @@
 import { IDDocument } from './iddocument.model';
+import { TipoPrivateImage } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 
-export class LocationImage extends IDDocument {
-    COVERIMAGE: boolean;
-    IMAGEURL: string;
+export class PrivateImage extends IDDocument {
+    TIPO: TipoPrivateImage;
+    FILENAMEESTENSIONE: string; //Percorso relativo di scaricamento 
+
 
     constructor() {
         super();
@@ -14,9 +16,9 @@ export class LocationImage extends IDDocument {
     */
    getDescriptor(): Descriptor {
     let objDescriptor = new Descriptor();
-    let arString = ['IMAGEURL'];
-    let arNumber = [];
-    let arBoolean = ['COVERIMAGE'];
+    let arString = ['FILENAMEESTENSIONE'];
+    let arNumber = ['TIPO'];
+    let arBoolean = [];
     let arDate = [];
     let arDateTime =[];
     let arTime = [];
@@ -31,8 +33,5 @@ export class LocationImage extends IDDocument {
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
     
     return objDescriptor;
-}    
-
-
-  
+} 
 }

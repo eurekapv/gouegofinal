@@ -63,10 +63,12 @@ export class StartService {
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
-    const myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    let myHeaders = new HttpHeaders({'Content-type':'application/json'});
     const actualStartConfig = this._startConfig.getValue();
     const myParams = new HttpParams().set('APPID', actualStartConfig.appId);
     const doObject = 'GRUPPOSPORTIVO';
+    //Aggiungo negli header la richiesta delle immagini
+    myHeaders = myHeaders.set('with-images','1');
 
     let myUrl = actualStartConfig.urlBase + '/' + doObject;
 
@@ -412,6 +414,7 @@ saveStorageUtente(username: string, passwd: string) {
   let strAccount = account.saveJSON(true);
 
   this.storageAccess.set('gouegoser',strAccount);
+  LogApp.consoleLog('Saved credential: ' + strAccount);
 }
 
 /**
@@ -515,5 +518,19 @@ requestUpdateUtente(docUtenteUpdate: Utente) {
 
   return this.utenteService.requestUpdateUtente(actualStartConfig, docUtenteUpdate);
 }
+
+/**
+ * Effettua la richiesta al server per il cambio della password
+ * Ritorna un Observable
+ * con {RESULT: 0/1, MESSAGE:''}
+ * @param oldPsw Password Attuale
+ * @param newPsw Nuova Password
+ */
+requestChangePassword(oldPsw:string, newPsw:string) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  return this.utenteService.requestChangePassword(actualStartConfig, oldPsw, newPsw);
+}
+
 //#endregion
 }

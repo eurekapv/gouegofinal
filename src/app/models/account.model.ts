@@ -28,20 +28,6 @@ export class Account extends IDDocument {
         super.setJSONProperty(data);
     }
 
-        /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-    describerType(fieldName): TypeDefinition {
-        let retType = TypeDefinition.char;
-        if (fieldName == 'RUOLO' || fieldName == 'MANSIONE') {
-          retType = TypeDefinition.number;
-        }
-  
-        return retType
-  
-    }
-
     /**
      * Ritorna il descrittore della Struttura Campi
      */

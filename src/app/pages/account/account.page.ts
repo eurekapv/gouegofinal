@@ -1,32 +1,51 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { AlertController, NavController, ModalController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
 import { EditLoginPage } from './edit-login/edit-login.page';
+import { StartConfiguration } from 'src/app/models/start-configuration.model';
 
 @Component({
   selector: 'app-account',
   templateUrl: './account.page.html',
   styleUrls: ['./account.page.scss'],
 })
-export class AccountPage implements OnInit {
+export class AccountPage implements OnInit, OnDestroy {
 
   docUtente: Utente;
   docUtenteListen: Subscription;
 
+  docConfig: StartConfiguration;
+  docConfigListen: Subscription;
+
   constructor(private startSrv: StartService,
               private alertCtrl: AlertController,
               private navCtrl: NavController,
-              private mdlController: ModalController) { 
+              private mdlController: ModalController
+              ) { 
     this.docUtenteListen = this.startSrv.utente.subscribe(element => {
       this.docUtente = element;
+    });
+
+    //Ricavo la configurazione
+    this.docConfigListen = this.startSrv.startConfig.subscribe(elConfig => {
+      this.docConfig = elConfig;
     });
   }
 
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    if (this.docUtenteListen) {
+      this.docUtenteListen.unsubscribe();
+    }
+
+    if (this.docConfigListen) {
+      this.docConfigListen.unsubscribe();
+    }
+  }
   // Chiedo se vuole veramente uscire
   requestLogout() {
     this.alertCtrl
@@ -60,12 +79,18 @@ export class AccountPage implements OnInit {
   //const picture=await Camera
 }
 
+/**
+ * Apertura Modale di Cambio Password
+ */
 openChangePassword() {
+  
+
   this.mdlController
     .create({
       component: EditLoginPage,
       componentProps: {
-        'myUser': this.docUtente
+        'myUser': this.docUtente,
+        'myUrlLogo': this.docConfig.getUrlIcon()
       }
     })
     .then(formModal => {
@@ -73,7 +98,17 @@ openChangePassword() {
 
       /* Alla chiusura aggiorno le credenziali se necessario */
       formModal.onWillDismiss().then((objReceived:any) => {
-        
+        if (objReceived.data.action == 'update') {
+
+          if (objReceived.data.pwd) {
+            //Devo aggiornare il cookie con le credenziali
+            let newPsw = objReceived.data.pwd;
+            
+            // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
+            this.startSrv.saveStorageUtente(this.docUtente.WEBLOGIN,newPsw);
+          }
+
+        }
       });
     })
 }

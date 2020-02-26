@@ -43,15 +43,7 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
       return objDescriptor;
     }
 
-    /**
-     * Metodo Overrable
-     */
-    describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
 
-      return retType
-
-  } 
   
      // Imposta le proprietà basiche dell'oggetto via JSON
      setJSONProperty(dataObject: any) {

@@ -50,32 +50,7 @@ export class Area extends IDDocument {
       return objDescriptor;
   }
 
-    /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-    describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
-      
-      switch (fieldName) {
 
-        case 'TIPO':
-          retType = TypeDefinition.number;
-          break;
-
-        case 'LOCATIONS':
-          retType = TypeDefinition.collection;
-          break;
-
-        default:
-          retType = TypeDefinition.char;
-          break;
-
-      }
-
-      return retType
-
-    }
 
 
     /**

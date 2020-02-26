@@ -101,6 +101,11 @@ export enum StatoSlot {
     chiuso = 20
 }
 
+export enum TipoPrivateImage {
+    icon = 10,
+    brand = 20
+}
+
 
 
 

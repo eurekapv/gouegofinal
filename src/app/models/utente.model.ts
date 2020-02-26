@@ -88,40 +88,7 @@ export class Utente extends IDDocument {
     return objDescriptor;
 }
 
-        /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-     describerType(fieldName): TypeDefinition {
-        let retType = TypeDefinition.char;
-        let arNumber = ['SESSO'];
-        let arDate = ['NATOIL'];
-        let arTime = [];
-        let arDateTime = []
-        let arBoolean = ['do_updated','do_loaded','do_inserted','do_deleted','NEWSLETTER', 'PROFILAZIONEINTERNA','PROFILAZIONEESTERNA' ];
-        
-        if (arNumber.includes(fieldName)) {
-          retType = TypeDefinition.number
-        }
-        else if (arDate.includes(fieldName)) {
-          retType = TypeDefinition.date
-        }
-        else if (arTime.includes(fieldName)) {
-          retType = TypeDefinition.time
-        }
-        else if (arDateTime.includes(fieldName)) {
-            retType = TypeDefinition.dateTime
-        }  
-        else if (arBoolean.includes(fieldName)) {
-            retType = TypeDefinition.boolean
-        }               
-        else {
-            retType = TypeDefinition.char;
-        }
-  
-        return retType
-  
-      }  
+
 
     setJSONProperty(data: any) {
         super.setJSONProperty(data);

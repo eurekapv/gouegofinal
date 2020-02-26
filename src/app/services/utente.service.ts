@@ -94,7 +94,7 @@ export class UtenteService {
                 // Avviso il servizio si impostare l'account
                 if (element.RESULT == -1) {
                   // User accettato
-                  this.loginSuccessfull(element.MESSAGE);
+                  this.loginSuccessfull(element.MESSAGE, username);
                 }
               }));
   }
@@ -103,9 +103,10 @@ export class UtenteService {
    * Utente loggato
    * @param JSonUtente Dati Utente
    */
-  private loginSuccessfull(JSonUtente: any) {
+  private loginSuccessfull(JSonUtente: any, webLogin?:string) {
     let newUtente = new Utente();
     newUtente.setJSONProperty(JSonUtente);
+    newUtente.WEBLOGIN = webLogin;
 
     //Emetto Utente
     this._utente.next(newUtente);
@@ -192,7 +193,24 @@ export class UtenteService {
     }
   }
 
+  requestChangePassword(config: StartConfiguration, oldPsw:string, newPsw:string) {
+    let actualUtente = this._utente.getValue();
+    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                       'X-HTTP-Method-Override':'CHANGEPWDMOB', 
+                                       'APPID':config.appId
+                                      });
 
+    const myParams = new HttpParams().set('GUIDUTENTE', actualUtente.ID).append('PWDATTUALE', oldPsw).append('PWDNUOVA',newPsw);
+    const doObject = 'ACCOUNT';
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+    
+    // Ritorno la chiamata
+    return this.apiService
+        .httpGet(myUrl, myHeaders, myParams)       
+
+  }
   
 
 }

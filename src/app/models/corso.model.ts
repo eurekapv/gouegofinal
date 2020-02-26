@@ -90,33 +90,7 @@ export class Corso extends IDDocument {
     return objDescriptor;
 }    
 
-    /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-     describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
-      let arNumber = ['TIPO','NUMEROLEZIONI', 'NUMPARTECIPANTI', 'MAXPARTECIPANTI', 
-                      'ORELEZIONE', 'STATO', 'TARGETSESSO', 'DURATA'];
-      let arDate = ['DATAINIZIO', 'DATAFINE', 'ISCRIZIONEDAL', 'ISCRIZIONEAL'];
-      let arTime = ['ORAINIZIO'];
-      
-      if (arNumber.includes(fieldName)) {
-        retType = TypeDefinition.number
-      }
-      else if (arDate.includes(fieldName)) {
-        retType = TypeDefinition.date
-      }
-      else if (arTime.includes(fieldName)) {
-        retType = TypeDefinition.time
-      }
-      else {
-        retType = TypeDefinition.char;
-      }
-
-      return retType
-
-    }    
+   
 
     /**
      * Imposta le proprietà nell'oggetto

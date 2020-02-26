@@ -1,6 +1,7 @@
 import { IDDocument } from './iddocument.model';
 import { TipoSocieta } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { PrivateImage } from './privateimage.model';
 
 
 export class Gruppo extends IDDocument {
@@ -14,11 +15,50 @@ export class Gruppo extends IDDocument {
     CODICEFISCALE: string;
     PARTITAIVA: string;
     APPID: string;
-    IMAGEBRAND: string;
     TIPOGRUPPO: TipoSocieta;
+    PRIVATEIMAGE: PrivateImage[];
   
     constructor() {
       super();
+      this.PRIVATEIMAGE = [];
+    }
+
+    /**
+     * Imposta le proprietà del documento
+     * @param data JSON Ricevuto
+     */
+    setJSONProperty(data: any) {
+      super.setJSONProperty(data);
+      
+      //Imposto le collection
+      this.setCollection(data);
+    }
+
+    /**
+     * Imposto le collection del doumento
+     * @param data JSON Ricevuto 
+     */
+    setCollection(data: any) {
+      this.PRIVATEIMAGE = [];
+
+      /** Ho delle immagini */
+      if (data.PRIVATEIMAGE) {
+        this.setCollectionprivateImage(data);
+      }
+    }
+
+    /**
+     * Collection PRIVATEIMAGE
+     * @param data JSON Ricevuto
+     */
+    setCollectionprivateImage(data: any) {
+      data.PRIVATEIMAGE.forEach(element => {
+
+        let newPrivateImage = new PrivateImage();
+        newPrivateImage.setJSONProperty(element);
+        this.PRIVATEIMAGE.push(newPrivateImage);
+      });
+
     }
 
         /**
@@ -34,15 +74,14 @@ export class Gruppo extends IDDocument {
                     'ISOSTATO',
                     'CODICEFISCALE',
                     'PARTITAIVA',
-                    'APPID',
-                    'IMAGEBRAND'
+                    'APPID'                   
                     ];
     let arNumber = ['TIPOGRUPPO'];
     let arBoolean = [];
     let arDate = [];
     let arDateTime =[];
     let arTime = [];
-    let arCollection = [];
+    let arCollection = ['PRIVATEIMAGE'];
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
@@ -54,18 +93,5 @@ export class Gruppo extends IDDocument {
     
     return objDescriptor;
 }
-    
-    /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-     describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
-      if (fieldName == 'TIPOGRUPPO') {
-        retType = TypeDefinition.number;
-      }
 
-      return retType
-
-    }
 }

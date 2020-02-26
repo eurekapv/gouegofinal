@@ -1,15 +1,15 @@
 <ion-header>
-  <ion-toolbar color="light">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Profilo</ion-title>
+    <ion-title>Scheda Personale</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div style="height: 1vh"></div>
-  <ion-item lines="none" color="secondary">
+  <ion-item lines="none" color="light">
     <ion-avatar slot="start" class="Avatar">
       <img src="assets/img/avatar.svg">
     </ion-avatar>
@@ -18,49 +18,76 @@
       <p>{{ docUtente.EMAIL }}</p>
     </ion-label>
   </ion-item>
-  <div style="height: 3vh"></div>
+  
   <ion-list>
-    <ion-item button="true" routerLink="edit-login" routerDirection="forward">
-      <ion-icon slot="start" name="key"></ion-icon>
-      <ion-label>
-        <h2>Credenziali</h2>
-        <p>Modifica la password di accesso</p>
-      </ion-label>
-    </ion-item>
+
     <ion-item button="true" routerLink="edit-account" routerDirection="forward">
-      <ion-icon slot="start" name="contact"></ion-icon>
+      <ion-icon 
+        slot="start" 
+        name="person-circle"
+        color="primary"></ion-icon>
       <ion-label>
-        <h2>Informazioni personali</h2>
+        <h2>Qualcosa su di te</h2>
         <p>Data e luogo di nascita, residenza, ecc..</p>
       </ion-label>
     </ion-item>
+
+    
+
+
+
     <ion-item button="true" routerLink="sportlevels" routerDirection="forward">
-      <ion-icon slot="start" name="stats"></ion-icon>
+      <ion-icon 
+        slot="start" 
+        name="stats-chart"
+        color="primary"></ion-icon>
       <ion-label>
-        <h2>Livelli di gioco</h2>
-        <p>Visualizza il tuo livello di gioco</p>
+        <h2>Livelli Sportivi</h2>
+        <p>Visualizza i tuoi livelli sportivi</p>
       </ion-label>
     </ion-item>
+
     <ion-item button="true" routerLink="documents" routerDirection="forward">
-      <ion-icon slot="start" name="copy"></ion-icon>
+      <ion-icon 
+        slot="start" 
+        name="copy"
+        color="primary"></ion-icon>
       <ion-label>
         <h2>Documenti</h2>
         <p>Visualizza e scarica i tuoi documenti</p>
       </ion-label>
     </ion-item>
+
     <ion-item button="true" routerLink="settings" routerDirection="forward">
-      <ion-icon slot="start" name="settings"></ion-icon>
+      <ion-icon 
+        slot="start" 
+        name="settings"
+        color="primary"></ion-icon>
       <ion-label>
         <h2>Opzioni</h2>
         <p>Quello che ci sarà nelle opzioni, ecc..</p>
       </ion-label>
     </ion-item>
 
+    <ion-item button="true" (click)="openChangePassword()">  
+      <ion-icon 
+        slot="start" 
+        name="key"
+        color="primary"></ion-icon>
+      <ion-label>
+        <h2>Security Access</h2>
+        <p>Cambia Password di accesso</p>
+      </ion-label>
+    </ion-item>
+
     <ion-item button="true" (click)="requestLogout()">
-      <ion-icon slot="start" name="log-out"></ion-icon>
+      <ion-icon 
+        slot="start" 
+        name="log-out"
+        color="primary"></ion-icon>
       <ion-label>
         <h2>Esci</h2>
-        <p>Disconnetti utente</p>
+        <p>Esegui il logout</p>
       </ion-label>
     </ion-item>
 

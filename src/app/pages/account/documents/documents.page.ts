@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StartService } from 'src/app/services/start.service';
 
 @Component({
   selector: 'app-documents',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DocumentsPage implements OnInit {
 
-  constructor() { }
+  /* DA IMPLEMENTARE L'OGGETTO, LA SUBSCRIPTION ETC */
+  listDocumenti = [];
+  inRichiesta = true;
+
+  constructor(private startService: StartService) { 
+    this.inRichiesta = true;
+  }
 
   ngOnInit() {
+    this.inRichiesta = false;
   }
 
 }

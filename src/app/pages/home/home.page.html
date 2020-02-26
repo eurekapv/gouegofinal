@@ -7,10 +7,13 @@
       {{startConfig?.companyName | titlecase }}
     </ion-title>
     <ion-buttons slot="primary">
-      <ion-button routerLink="/account" routerDirection="forward" *ngIf="userLogged">
+      <ion-button 
+          routerLink="/account" 
+          routerDirection="forward" 
+          *ngIf="userLogged">
         <ion-icon 
-          name="contact" 
-          [color]="btnFooterColor()">
+          name="person-circle-outline" 
+          class="btn-account">
         </ion-icon>
 
       </ion-button>
@@ -90,7 +93,9 @@
     expand="block" 
     size="large"
     (click)="onClickfooterButton()">
-      <ion-icon slot="start" name="{{btnFooterIcon()}}"></ion-icon>
+      <ion-icon 
+        slot="start" 
+        [name]="btnFooterIcon()"></ion-icon>
       {{btnFooterCaption()}}
     </ion-button>
 </ion-footer>

@@ -142,6 +142,7 @@ export class HomePage implements OnInit, OnDestroy{
   onClickfooterButton() {
     if (this.userLogged) {
       // Apro lo Storico
+
     }
     else {
       // Apro il Login
@@ -218,14 +219,14 @@ export class HomePage implements OnInit, OnDestroy{
 
  btnFooterIcon() {
   let retIcon = '';
-  const iconAccedi = 'log-in';
+  const iconAccedi = 'log-in-outline';
 
   retIcon = iconAccedi;
   //Utente Loggato
   if (this.userLogged) {
     // Account Presente
     if (this.docUtente) {
-        retIcon = this.docUtente.NOMINATIVO ? 'list-box' : iconAccedi      
+        retIcon = this.docUtente.NOMINATIVO ? 'list-circle-outline' : iconAccedi      
     }
   }
 

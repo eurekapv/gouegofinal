@@ -1,12 +1,9 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/account"></ion-back-button>
-    </ion-buttons>
+  <ion-toolbar color="primary">
     <ion-title>Modifica Credenziali</ion-title>
     <ion-buttons slot="primary">
-      <ion-button fill="clear" (click)="onSubmit()" [disabled]="!form.valid">
-        <ion-icon name="checkmark"></ion-icon>
+      <ion-button fill="clear" (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -32,3 +29,6 @@
     </ion-list>
   </form>
 </ion-content>
+<ion-footer>
+  <ion-button color="primary" expand="block" (click)="onSubmit()" [disabled]="!form.valid">Conferma</ion-button>
+</ion-footer>

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Account } from 'src/app/models/account.model';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { Utente } from 'src/app/models/utente.model';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-login',
@@ -9,21 +10,32 @@ import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/fo
 })
 export class EditLoginPage implements OnInit {
 
-  docUtente:Account=new Account;
-  form: FormGroup
+  //docUtente:Account=new Account;
+  @Input() myUser: Utente;
+
+  form: FormGroup;
 
 
-  constructor() {
-   }
-
+  constructor(private mdlController: ModalController) {
+  }
+  
   ngOnInit() {
     this.createFormGroup();
-
   }
+
+  /**
+   * Chiusura Videata senza Conferma
+   */
+  onCancel() {
+
+    this.mdlController
+        .dismiss({action:'none'});
+  }
+
 
   createFormGroup()
   {
-    this.form= new FormGroup({
+    this.form = new FormGroup({
       oldPsw: new FormControl(null,{
         updateOn: 'change',
         validators:[Validators.required]
@@ -69,7 +81,7 @@ export class EditLoginPage implements OnInit {
     if (this.form.valid)
      {
       
-        this.docUtente.INPUTPASSWORD=this.form.value.newPsw1;
+        //this.docUtente.INPUTPASSWORD=this.form.value.newPsw1;
       
         //faccio richiesta di cambio psw
       

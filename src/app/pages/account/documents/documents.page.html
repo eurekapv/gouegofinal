@@ -1,9 +1,25 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>documents</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/account"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Documentazione</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <!-- IN RICERCA  -->
+  <!-- NON RICEVUTI -->
+  <div *ngIf="inRichiesta" id="doc-spinner">
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div>
+
+  <!-- NON IN RICERCA  -->
+  <!-- NESSUN DOCUMENTO PRESENTE -->
+  <div *ngIf="!inRichiesta && listDocumenti.length === 0" class="nofind-cnt">
+
+    <ion-label>Nessun documento</ion-label>
+    <ion-label>disponibile</ion-label>
+  </div>
 
 </ion-content>

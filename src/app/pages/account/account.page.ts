@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, ModalController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
+import { EditLoginPage } from './edit-login/edit-login.page';
 
 @Component({
   selector: 'app-account',
@@ -16,7 +17,8 @@ export class AccountPage implements OnInit {
 
   constructor(private startSrv: StartService,
               private alertCtrl: AlertController,
-              private navCtrl: NavController) { 
+              private navCtrl: NavController,
+              private mdlController: ModalController) { 
     this.docUtenteListen = this.startSrv.utente.subscribe(element => {
       this.docUtente = element;
     });
@@ -57,4 +59,23 @@ export class AccountPage implements OnInit {
 {
   //const picture=await Camera
 }
+
+openChangePassword() {
+  this.mdlController
+    .create({
+      component: EditLoginPage,
+      componentProps: {
+        'myUser': this.docUtente
+      }
+    })
+    .then(formModal => {
+      formModal.present();
+
+      /* Alla chiusura aggiorno le credenziali se necessario */
+      formModal.onWillDismiss().then((objReceived:any) => {
+        
+      });
+    })
+}
+
 }

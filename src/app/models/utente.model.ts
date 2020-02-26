@@ -31,12 +31,18 @@ export class Utente extends IDDocument {
     PROFILAZIONEESTERNA: boolean;
     UTENTILIVELLI: UtenteLivello[];
 
-    constructor() {
-        super();
+    /**
+     * 
+     * @param noInit Non inizializzare il documento, ma crea solo istanza
+     */
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
 
-        this.UTENTILIVELLI = [];
-        this.PROFILAZIONEESTERNA = false;
-        this.PROFILAZIONEINTERNA = false;
+        if (!onlyInstance) {
+            this.UTENTILIVELLI = [];
+            this.PROFILAZIONEESTERNA = false;
+            this.PROFILAZIONEINTERNA = false;
+        }
     }
 
     /**
@@ -154,4 +160,49 @@ export class Utente extends IDDocument {
     }
 
 
+}
+
+export class storageUtente {
+    loginUser: string;
+    pwdUser: string;
+    cripted: boolean;
+
+    constructor(user: string, pwd: string) {
+        this.loginUser = user;
+        this.pwdUser = pwd;
+        this.cripted = false;
+    }
+
+    /**
+     * Salvo in Stringa JSON l'oggetto
+     */
+    saveJSON(crypt?: boolean): string {
+        let strReturn = '';
+        let myObj = new storageUtente(this.loginUser, this.pwdUser);
+
+        if (crypt) {
+            //Qui devo criptare utente e password
+            myObj.cripted = true;
+
+        }
+
+        strReturn = JSON.stringify(myObj);
+
+        return strReturn;
+    }
+
+    loadJSON(stringaJSON: string) {
+        let myObj = new storageUtente('','');
+        myObj = JSON.parse(stringaJSON);
+
+        if (myObj) {
+            if (myObj.cripted) {
+                //Devo decriptare username e password
+            }
+
+            this.loginUser = myObj.loginUser;
+            this.pwdUser = myObj.pwdUser;
+            this.cripted = myObj.cripted;
+        }
+    }
 }

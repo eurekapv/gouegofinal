@@ -1,14 +1,16 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="primary">
-      <ion-button fill="clear" (click)="onSubmit()" [disabled]="!form.valid" >
+      <ion-button fill="clear" 
+          (click)="onSubmit()" 
+          [disabled]="!form.valid">
         <ion-icon name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Informazioni personali</ion-title>
+    <ion-title>Qualcosa su di te</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -17,8 +19,11 @@
     <ion-list>
       <ion-item-group>
         <ion-item-divider color="light">
-          <ion-icon name="contact" slot="start"></ion-icon>
-          <ion-label>Dati Anagrafici</ion-label>
+          <ion-icon 
+            name="person-outline" 
+            slot="start"
+            color="primary"></ion-icon>
+          <ion-label>Come ti chiami ?</ion-label>
         </ion-item-divider>
         <ion-item>
           <ion-label position="floating">Nome</ion-label>
@@ -30,8 +35,12 @@
         </ion-item>
         <ion-item>
           <ion-label position="floating">Sesso</ion-label>
-          <ion-select formControlName="sesso">
-            <ion-select-option *ngFor="let sesso of listSesso">{{ sesso.description }}</ion-select-option>
+          <ion-select formControlName="sesso" interface="popover">
+            <ion-select-option 
+              *ngFor="let sesso of listSesso"
+              [value]="sesso.value">
+              {{ sesso.description }}
+            </ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item>
@@ -39,10 +48,14 @@
           <ion-input formControlName="cf"></ion-input>
         </ion-item >
       </ion-item-group>
+
       <ion-item-group>
         <ion-item-divider color="light">
-          <ion-icon name="home" slot="start"></ion-icon>
-          <ion-label>Dati Residenza</ion-label>
+          <ion-icon 
+            name="home-outline" 
+            slot="start"
+            color="primary"></ion-icon>
+          <ion-label>Dove vivi ?</ion-label>
         </ion-item-divider>
         <ion-item>
           <ion-label position="floating">Indirizzo</ion-label>
@@ -72,12 +85,16 @@
       </ion-item-group>
       <ion-item-group>
         <ion-item-divider color="light">
-          <ion-icon name="logo-reddit" slot="start"></ion-icon>
-          <ion-label>Dati Nascita</ion-label>
+          <ion-icon 
+            name="logo-reddit" 
+            slot="start"
+            color="primary"></ion-icon>
+          <ion-label>Quando sei nato ?</ion-label>
         </ion-item-divider>
         <ion-item>
           <ion-label position="floating">Data</ion-label>
-          <ion-datetime formControlName="nascita"></ion-datetime>
+          <ion-datetime formControlName="nascita" 
+                        displayFormat="DD-MM-YYYY"></ion-datetime>
         </ion-item>
         <ion-item>
           <ion-row>
@@ -102,19 +119,31 @@
       </ion-item-group>
       <ion-item-group>
         <ion-item-divider color="light">
-          <ion-icon name="call" slot="start"></ion-icon>
-          <ion-label>Dati di contatto</ion-label>
+          <ion-icon 
+            name="call-outline" 
+            slot="start"
+            color="primary"></ion-icon>
+          <ion-label>Cellulare e Email</ion-label>
         </ion-item-divider>
-        <ion-item>
-          <ion-label position="floating" disabled>Cellulare</ion-label>
-          <ion-input type="tel" inputmode="tel" formControlName="cell"></ion-input>
+        <ion-item button>
+          <ion-label>{{utente.MOBILENUMBER}}</ion-label>
+          <ion-badge color="success">VERIFIED</ion-badge>
         </ion-item>
-        <ion-item>
-          <ion-label position="floating">E-Mail</ion-label>
-          <ion-input inputMode="email" type="email" formControlName="email"></ion-input>
+        <ion-item button>
+          <ion-label>{{utente.EMAIL}}</ion-label>
+          <ion-badge color="success">VERIFIED</ion-badge>
         </ion-item>
         
       </ion-item-group>
     </ion-list>
   </form>
 </ion-content>
+<ion-footer>
+  <ion-button 
+      color="primary" 
+      expand="block" 
+      (click)="onSubmit()" 
+      [disabled]="!form.valid">
+    Conferma
+  </ion-button>
+</ion-footer>

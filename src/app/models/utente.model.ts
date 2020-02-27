@@ -31,12 +31,18 @@ export class Utente extends IDDocument {
     PROFILAZIONEESTERNA: boolean;
     UTENTILIVELLI: UtenteLivello[];
 
-    constructor() {
-        super();
+    /**
+     * 
+     * @param noInit Non inizializzare il documento, ma crea solo istanza
+     */
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
 
-        this.UTENTILIVELLI = [];
-        this.PROFILAZIONEESTERNA = false;
-        this.PROFILAZIONEINTERNA = false;
+        if (!onlyInstance) {
+            this.UTENTILIVELLI = [];
+            this.PROFILAZIONEESTERNA = false;
+            this.PROFILAZIONEINTERNA = false;
+        }
     }
 
     /**
@@ -82,40 +88,7 @@ export class Utente extends IDDocument {
     return objDescriptor;
 }
 
-        /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-     describerType(fieldName): TypeDefinition {
-        let retType = TypeDefinition.char;
-        let arNumber = ['SESSO'];
-        let arDate = ['NATOIL'];
-        let arTime = [];
-        let arDateTime = []
-        let arBoolean = ['do_updated','do_loaded','do_inserted','do_deleted','NEWSLETTER', 'PROFILAZIONEINTERNA','PROFILAZIONEESTERNA' ];
-        
-        if (arNumber.includes(fieldName)) {
-          retType = TypeDefinition.number
-        }
-        else if (arDate.includes(fieldName)) {
-          retType = TypeDefinition.date
-        }
-        else if (arTime.includes(fieldName)) {
-          retType = TypeDefinition.time
-        }
-        else if (arDateTime.includes(fieldName)) {
-            retType = TypeDefinition.dateTime
-        }  
-        else if (arBoolean.includes(fieldName)) {
-            retType = TypeDefinition.boolean
-        }               
-        else {
-            retType = TypeDefinition.char;
-        }
-  
-        return retType
-  
-      }  
+
 
     setJSONProperty(data: any) {
         super.setJSONProperty(data);
@@ -154,4 +127,49 @@ export class Utente extends IDDocument {
     }
 
 
+}
+
+export class storageUtente {
+    loginUser: string;
+    pwdUser: string;
+    cripted: boolean;
+
+    constructor(user: string, pwd: string) {
+        this.loginUser = user;
+        this.pwdUser = pwd;
+        this.cripted = false;
+    }
+
+    /**
+     * Salvo in Stringa JSON l'oggetto
+     */
+    saveJSON(crypt?: boolean): string {
+        let strReturn = '';
+        let myObj = new storageUtente(this.loginUser, this.pwdUser);
+
+        if (crypt) {
+            //Qui devo criptare utente e password
+            myObj.cripted = true;
+
+        }
+
+        strReturn = JSON.stringify(myObj);
+
+        return strReturn;
+    }
+
+    loadJSON(stringaJSON: string) {
+        let myObj = new storageUtente('','');
+        myObj = JSON.parse(stringaJSON);
+
+        if (myObj) {
+            if (myObj.cripted) {
+                //Devo decriptare username e password
+            }
+
+            this.loginUser = myObj.loginUser;
+            this.pwdUser = myObj.pwdUser;
+            this.cripted = myObj.cripted;
+        }
+    }
 }

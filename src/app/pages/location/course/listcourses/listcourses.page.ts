@@ -10,6 +10,7 @@ import { FilterCorsi } from 'src/app/models/filtercorsi.model';
 import { ModalController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
+import { LogApp } from 'src/app/models/log.model';
 
 
 @Component({
@@ -160,7 +161,9 @@ export class ListcoursesPage implements OnInit {
   }
 
   onClickCardDetail(corso: Corso) {
-    console.log(corso);
+    LogApp.consoleLog('Card Corso selezionata:');
+    LogApp.consoleLog(corso);
+    
   }
 
   /* ****** CALENDAR ******** */

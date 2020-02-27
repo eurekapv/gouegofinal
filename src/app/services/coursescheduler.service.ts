@@ -6,6 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { CorsoScheduler } from '../models/corsoscheduler.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -48,14 +49,17 @@ export class CourseschedulerService {
         return data.PIANIFICAZIONECORSO
       }))
       .subscribe( resultData => {
-        console.log(resultData);
+
+        LogApp.consoleLog(resultData);
+        
         if (resultData) {
           resultData.forEach(element => {
   
             let newCorsoCalendario = new CorsoScheduler();
             newCorsoCalendario.setJSONProperty(element);
 
-            console.log(newCorsoCalendario);
+            LogApp.consoleLog(newCorsoCalendario);
+            
   
             this.addCorsoCalendario(newCorsoCalendario);
   

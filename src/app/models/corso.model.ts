@@ -90,33 +90,7 @@ export class Corso extends IDDocument {
     return objDescriptor;
 }    
 
-    /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-     describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
-      let arNumber = ['TIPO','NUMEROLEZIONI', 'NUMPARTECIPANTI', 'MAXPARTECIPANTI', 
-                      'ORELEZIONE', 'STATO', 'TARGETSESSO', 'DURATA'];
-      let arDate = ['DATAINIZIO', 'DATAFINE', 'ISCRIZIONEDAL', 'ISCRIZIONEAL'];
-      let arTime = ['ORAINIZIO'];
-      
-      if (arNumber.includes(fieldName)) {
-        retType = TypeDefinition.number
-      }
-      else if (arDate.includes(fieldName)) {
-        retType = TypeDefinition.date
-      }
-      else if (arTime.includes(fieldName)) {
-        retType = TypeDefinition.time
-      }
-      else {
-        retType = TypeDefinition.char;
-      }
-
-      return retType
-
-    }    
+   
 
     /**
      * Imposta le proprietà nell'oggetto
@@ -182,31 +156,31 @@ export class Corso extends IDDocument {
      * @param listDecode Lista con gli elementi
      * @param propertyLookup Nome della proprieta a cui attingere la decodifica
      */
-    lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
-      let namePropertyIDX = propertyToDecode;
-      let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
-      let _this = this;
+    // lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
+    //   let namePropertyIDX = propertyToDecode;
+    //   let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
+    //   let _this = this;
       
 
-      //Proprieta Indice e Descrizione presenti
-      if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
-        if (listDecode && propertyLookup) {
+    //   //Proprieta Indice e Descrizione presenti
+    //   if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
+    //     if (listDecode && propertyLookup) {
 
-          let element = listDecode.find(value => {
-            return value.ID == _this[namePropertyIDX]
-          });
+    //       let element = listDecode.find(value => {
+    //         return value.ID == _this[namePropertyIDX]
+    //       });
 
-          if (element) {
-            if (element.hasOwnProperty(propertyLookup)) {
-              _this[namePropertyDESCR] = element[propertyLookup];
-            }
-          }
+    //       if (element) {
+    //         if (element.hasOwnProperty(propertyLookup)) {
+    //           _this[namePropertyDESCR] = element[propertyLookup];
+    //         }
+    //       }
 
-        }
-      }
+    //     }
+    //   }
       
 
-    }
+    // }
 
 
 

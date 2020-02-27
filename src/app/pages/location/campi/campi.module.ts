@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { CampiPageRoutingModule } from './campi-routing.module';
 
 import { CampiPage } from './campi.page';
+import { PipesModule } from '../../../shared/pipes/pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CampiPageRoutingModule
+    CampiPageRoutingModule,
+    PipesModule
   ],
   declarations: [CampiPage]
 })

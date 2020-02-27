@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Utente } from '../models/utente.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
+import { LogApp } from '../models/log.model';
 
 
 
@@ -93,7 +94,7 @@ export class UtenteService {
                 // Avviso il servizio si impostare l'account
                 if (element.RESULT == -1) {
                   // User accettato
-                  this.loginSuccessfull(element.MESSAGE);
+                  this.loginSuccessfull(element.MESSAGE, username);
                 }
               }));
   }
@@ -102,9 +103,10 @@ export class UtenteService {
    * Utente loggato
    * @param JSonUtente Dati Utente
    */
-  private loginSuccessfull(JSonUtente: any) {
+  private loginSuccessfull(JSonUtente: any, webLogin?:string) {
     let newUtente = new Utente();
     newUtente.setJSONProperty(JSonUtente);
+    newUtente.WEBLOGIN = webLogin;
 
     //Emetto Utente
     this._utente.next(newUtente);
@@ -126,6 +128,89 @@ export class UtenteService {
     this._utenteLoggato.next(false);
   }
 
+
+  /**
+   * Richiede al server l'aggiornamento dei dati Utente
+   * @param config Dati di configurazione
+   * @param docUtenteUpdate Documento Utente con dati modificati
+   */
+  requestUpdateUtente(config: StartConfiguration, docUtenteUpdate: Utente) {
+    let actualUtente = this._utente.getValue();
+    let docSendingUtente = new Utente(true); //Creo solo l'istanza del documento
+    let hasModifiche = false;
+    let myHeaders = new HttpHeaders({'Content-type':'application/json'});
+    let body = '';
+    const doObject = 'UTENTE';
+
+
+    //In Testata c'e' sempre l'AppId
+    myHeaders = myHeaders.set('APPID',config.appId);
+    let myUrl = config.urlBase + '/' + doObject;
+
+    //Devo impostare nel sendingUtente solo gli elementi modificati
+    hasModifiche = docSendingUtente.setWithChanges(actualUtente, docUtenteUpdate);
+
+    LogApp.consoleLog('Documento Attuale');
+    LogApp.consoleLog(actualUtente);
+
+    LogApp.consoleLog('Documento Modifica');
+    LogApp.consoleLog(docUtenteUpdate);
+
+    
+    if (hasModifiche) {
+      
+      //Body da inviare
+      body = docSendingUtente.toJSON();
+
+      LogApp.consoleLog('Invio Modifiche ');
+      LogApp.consoleLog(body);
+
+      //DEVO INVIARE LE MODIFICHE AL SERVER
+      //OTTENGO LA RISPOSTA COMPLETA
+      return this.apiService
+          .httpPut(myUrl,myHeaders, body)
+          .pipe(tap(element => {
+
+            //Sul server Dati Aggiornati, modifico in locale
+            if (element.status == 204 || element.status == 200) {
+              //Server Aggiornamento completato
+              //Aggiorno l'utente
+              actualUtente.setWithChanges(actualUtente, docUtenteUpdate);
+              //Riemetto l'utente
+              this._utente.next(actualUtente);
+
+            }
+
+          }));
+          
+    }
+    else {
+      //Creo un response con status = 200  
+      let myHttp = new BehaviorSubject<HttpResponse<Object>>(new HttpResponse({status: 200}));
+      
+      return myHttp.asObservable();
+
+    }
+  }
+
+  requestChangePassword(config: StartConfiguration, oldPsw:string, newPsw:string) {
+    let actualUtente = this._utente.getValue();
+    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                       'X-HTTP-Method-Override':'CHANGEPWDMOB', 
+                                       'APPID':config.appId
+                                      });
+
+    const myParams = new HttpParams().set('GUIDUTENTE', actualUtente.ID).append('PWDATTUALE', oldPsw).append('PWDNUOVA',newPsw);
+    const doObject = 'ACCOUNT';
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+    
+    // Ritorno la chiamata
+    return this.apiService
+        .httpGet(myUrl, myHeaders, myParams)       
+
+  }
   
 
 }

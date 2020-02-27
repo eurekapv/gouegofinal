@@ -1,4 +1,4 @@
-<ion-header no-border>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
@@ -11,7 +11,7 @@
 
 <ion-content>
   <!-- GALLERY IMAGES -->
-  <ion-card >
+  <ion-card class="ion-no-margin ion-no-padding backcolorcard">
     <ion-slides>
       <ion-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
         <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
@@ -19,119 +19,99 @@
     </ion-slides>
   </ion-card>
 
-  <!-- BUTTON OPERAZIONI -->
-  <ion-grid>
-    <ion-row>
-      <ion-col size="4" >
-        <ion-button expand="block" class="btn" fill="outline" (click)="goToPrenota()">
-          <div>
-            <ion-icon name="create" style="font-size: 25px;" ></ion-icon>
-            <br>
-            Prenota
-          </div>
-        </ion-button>
-      </ion-col>
-      <ion-col size="4" >
-        <ion-button expand="block" class="btn" fill="outline" [routerLink]="['/listcourses', selectedLocation.ID]">
-          <div>
-            <ion-icon name="school" style="font-size: 25px;" ></ion-icon>
-            <br>
-            Corsi
-          </div>
-        </ion-button>
-      </ion-col>
-      <ion-col size="4" >
-        <ion-button expand="block" class="btn" fill="outline" (click)="goToTornei()">
-          <div>
-            <ion-icon name="medal" style="font-size: 25px;" ></ion-icon>
-            <br>
-            Tornei
-          </div>
-        </ion-button>
-      </ion-col>     
-    </ion-row>
-  </ion-grid>
-
-
-  <ion-list>
-    <!-- INFO CENTRO-->
-    <div id="loc-info">
-      <ion-list-header color="warning">
-        <ion-label color="light">
-          <ion-icon 
-            name="information-circle" 
-            slot="start"></ion-icon>
-          Info Centro
-        </ion-label>
-      </ion-list-header>
-
-      <!-- DESCRIZIONE MOB -->
-      <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
-        <ion-icon 
-            name="information-circle-outline" 
-            slot="start" 
-            color="primary">
-        </ion-icon>
-
-        <ion-label class="ion-text-wrap">
-          <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
-        </ion-label>
-
-      </ion-item>
-
-      <!-- NUMERO CAMPI -->
-      <ion-item *ngIf="selectedLocation.getNumCampi() !== 0" button
-        (click)="onClickOpenCampi()">
-        <ion-icon 
-            name="medical" 
-            slot="start" 
-            color="primary">
-        </ion-icon>
-
-        <ion-label>{{ selectedLocation.getNumCampi() > 1 ? 'Campi disponibili':'Campo disponibile' }}</ion-label>
-        <ion-badge color="primary">{{selectedLocation.getNumCampi()}}</ion-badge>
-
-      </ion-item>
-
-      <!-- COMUNE -->
-      <ion-item *ngIf="selectedLocation.COMUNE">
-        <ion-icon 
-            name="home" 
-            slot="start" 
-            color="primary"></ion-icon>
-        <ion-label>{{selectedLocation.COMUNE}}</ion-label>
-      </ion-item>
-
-      <!-- INDIRIZZO -->
-      <ion-item *ngIf="selectedLocation.INDIRIZZO">
-        <ion-icon 
-          name="navigate" 
-          slot="start" 
-          color="primary">
-        </ion-icon>
-
+  <ion-list class="backcolorcard ion-list-margin-bottom">
+    
+    <ion-card *ngFor="let btn of listButtonCard">
+      <ion-item button="true" (click)="onClickButtonCard(btn)" lines="none">
+        <ion-icon [slot]="btn.sloticon" [name]="btn.nameicon" [color]="btn.color"></ion-icon>
         <ion-label>
-          {{selectedLocation.INDIRIZZO}}
+          <h1 class="ion-text-wrap">
+            {{ btn.title }}
+          </h1>
+          <h3 class="ion-text-wrap">
+            {{ btn.subtitle }}
+          </h3>
         </ion-label>
-
       </ion-item>
+    </ion-card>
+
+  </ion-list>
 
 
-    </div>
+  <ion-list class="ion-list-margin-bottom">
+    <!-- INFO CENTRO-->
+    <ion-item-group>
+
+        <ion-item-divider color="light">
+          <ion-label>
+            <h2>Info Centro</h2>
+          </ion-label>
+        </ion-item-divider>
+
+  
+        <!-- DESCRIZIONE MOB -->
+        <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
+          <ion-icon 
+              name="information-circle-outline" 
+              slot="start" 
+              color="primary">
+          </ion-icon>
+  
+          <ion-label class="ion-text-wrap">
+            <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
+          </ion-label>
+  
+        </ion-item>
+  
+        <!-- NUMERO CAMPI -->
+        <ion-item *ngIf="selectedLocation.getNumCampi() !== 0" button
+          (click)="onClickOpenCampi()">
+          <ion-icon 
+              name="medical" 
+              slot="start" 
+              color="primary">
+          </ion-icon>
+  
+          <ion-label>{{ selectedLocation.getNumCampi() > 1 ? 'Campi disponibili':'Campo disponibile' }}</ion-label>
+          <ion-badge color="primary">{{selectedLocation.getNumCampi()}}</ion-badge>
+  
+        </ion-item>
+  
+        <!-- COMUNE -->
+        <ion-item *ngIf="selectedLocation.COMUNE">
+          <ion-icon 
+              name="home" 
+              slot="start" 
+              color="primary"></ion-icon>
+          <ion-label>{{selectedLocation.COMUNE}}</ion-label>
+        </ion-item>
+  
+        <!-- INDIRIZZO -->
+        <ion-item *ngIf="selectedLocation.INDIRIZZO">
+          <ion-icon 
+            name="navigate" 
+            slot="start" 
+            color="primary">
+          </ion-icon>
+  
+          <ion-label>
+            {{selectedLocation.INDIRIZZO}}
+          </ion-label>
+  
+        </ion-item>
+  
+  
+      <!-- </div> -->
+
+    </ion-item-group>
 
     <!-- CONTATTI TEL E EMAIL -->
-    <div 
-        id="loc-info" 
-        *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL"> 
-
-      <ion-list-header color="warning">
-
-        <ion-label color="light">
-          <ion-icon name="megaphone" slot="start"></ion-icon>
-          Contatti
-        </ion-label>
-
-      </ion-list-header>
+    <ion-item-group *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL">
+      <ion-item-divider color="light">
+        
+        <ion-label><h2>Contatti</h2></ion-label>
+        
+      </ion-item-divider>
 
       <ion-item *ngIf="selectedLocation.TELEFONO">
         <ion-icon 
@@ -150,23 +130,26 @@
         
         <ion-label>{{selectedLocation.EMAIL}}</ion-label>
       </ion-item>
-    </div>
 
-    <!-- ORARI CENTRO -->
-    <div id="loc-orari" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
-      <ion-list-header color="warning">
-        <ion-label color="light">
-          <ion-icon name="time" slot="start"></ion-icon>
-          Orari Centro
-        </ion-label>
-      </ion-list-header>
-      <app-aperture 
-          *ngFor="let apertura of selectedLocation.APERTURALOCATION" 
-          [myApertura]="apertura">
-      </app-aperture>
+    </ion-item-group>
 
-    </div>
+
+        <!-- ORARI CENTRO -->
+        <ion-item-group id="loc-orari" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
+
+          <ion-item-divider color="light">
+            
+            <ion-label><h2>Orari Centro</h2></ion-label>
+          </ion-item-divider>
+
+          <app-aperture 
+                *ngFor="let apertura of selectedLocation.APERTURALOCATION" 
+                [myApertura]="apertura">
+          </app-aperture>
+
+        </ion-item-group>
 
   </ion-list>
   
 </ion-content>
+

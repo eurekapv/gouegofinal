@@ -6,9 +6,9 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
 
 import { StartConfiguration } from '../models/start-configuration.model';
-import { Area } from '../models/area.model';
+
 import { Location } from '../models/location.model';
-import { Utente } from '../models/utente.model';
+import { Utente, storageUtente } from '../models/utente.model';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
 import { CourseService } from './course.service';
@@ -19,6 +19,10 @@ import { AreaService } from './area.service';
 import { LocationService } from './location.service';
 import { CourseschedulerService } from './coursescheduler.service';
 import { CamposportService } from './camposport.service';
+import { LogApp } from '../models/log.model';
+import { Storage } from '@ionic/storage';
+import { PrenotazioneService } from './prenotazione.service';
+import { NewseventiService } from './newseventi.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +51,7 @@ export class StartService {
 
 
   constructor(private apiService: ApicallService,
+    private storageAccess: Storage,
     private sportService: SportService,
     private categoriaEtaService: CategoriaetaService,
     private corsoService: CourseService,
@@ -55,15 +60,19 @@ export class StartService {
     private areaService: AreaService,
     private locationService: LocationService,
     private corsoCalendarioService: CourseschedulerService,
-    private campiSportService: CamposportService) { 
+    private campiSportService: CamposportService,
+    private prenotazioniService: PrenotazioneService,
+    private newsEventiService: NewseventiService) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
-    const myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    let myHeaders = new HttpHeaders({'Content-type':'application/json'});
     const actualStartConfig = this._startConfig.getValue();
     const myParams = new HttpParams().set('APPID', actualStartConfig.appId);
     const doObject = 'GRUPPOSPORTIVO';
+    //Aggiungo negli header la richiesta delle immagini
+    myHeaders = myHeaders.set('with-images','1');
 
     let myUrl = actualStartConfig.urlBase + '/' + doObject;
 
@@ -78,7 +87,6 @@ export class StartService {
         // Sistemo l'oggetto di configurazione 
         // ed emetto un evento di Cambio
         this.onAuthorizationGrant(resultData);
-
       });
       
 
@@ -89,7 +97,8 @@ export class StartService {
   onAuthorizationGrant(JSONGruppo: any) {
     let elStartConfig = this._startConfig.getValue();
 
-    console.log('Autorizzazione ricevuta');
+    //Scrivo in console
+    LogApp.consoleLog('Autorizzazione ricevuta');
 
     //Sistemazione del Gruppo nell'oggetto di configurazione
     elStartConfig.setGruppoAuthorization(JSONGruppo);
@@ -118,6 +127,9 @@ export class StartService {
     this.sportService.request(elStartConfig, false);
     this.livelloService.request(elStartConfig);
     this.categoriaEtaService.request(elStartConfig);
+
+    // 2 - TENTO L'ACCESSO AUTOMATICO
+    this.loadStorageUtente();
 
   }
 
@@ -186,7 +198,7 @@ export class StartService {
                           //App entra in stato pronto
                           this._appReady.next(true);
 
-                          console.log('Avvio AppReady');
+                          LogApp.consoleLog('Avvio AppReady');
 
                           //Dopo che l'app è partita in questo contento non 
                           //mi serve piu sapere lo state Location
@@ -229,6 +241,21 @@ export class StartService {
     const actualStartConfig = this._startConfig.getValue();
     
     return this.locationService.requestLocationByID(actualStartConfig, idLocation);
+  }
+
+  /**
+   * 
+   * @param selectedLocation Location richiesta
+   */
+  requestLocationCampiSport(selectedLocation: Location) {
+    const listSport = this.sportService.actualListSport;
+    const actualStartConfig = this._startConfig.getValue();
+
+    //Inietto nel servizio la decodifica della Lista Sport
+    this.locationService.decodeListSport = listSport;
+
+    return this.locationService
+                .syncInfoCampi(actualStartConfig, selectedLocation);
   }
 
   
@@ -379,11 +406,65 @@ get utenteLogged() {
   return this.utenteService.utenteLoggato;
 }
 
+/**
+ * Memorizza nello storage username e password
+ * @param username Username da memorizzare
+ * @param pwd Password da memorizzare
+ */
+saveStorageUtente(username: string, passwd: string) {
+  let account = new storageUtente(username, passwd);
+  
+  //salvo le informazioni criptate
+  let strAccount = account.saveJSON(true);
+
+  this.storageAccess.set('gouegoser',strAccount);
+  LogApp.consoleLog('Saved credential: ' + strAccount);
+}
+
+/**
+ * Carica dallo Storage le credenziali utente memorizzate
+ * Se il recupero è corretto tenta anche il login
+ */
+loadStorageUtente() {
+  LogApp.consoleLog('Trying autologin');
+
+  //Chiedo di caricare l'impostazione
+  this.storageAccess
+      .get('gouegoser')
+      .then ((val) => {
+        //Credenziali memorizzate
+        if (val) {
+          let savedUser = new storageUtente('','');
+          savedUser.loadJSON(val);
+
+          if (savedUser.loginUser && savedUser.pwdUser) {
+            //Devo tentare di accedere
+            LogApp.consoleLog('AutoLogin ' + savedUser.loginUser + ' -> ' + savedUser.pwdUser);
+            //Faccio la richiesta al server
+            this.requestAuthorization(savedUser.loginUser, savedUser.pwdUser)
+                .subscribe (resultData => {
+                  if (resultData.MESSAGE !== 0) {
+                    //Son riuscito ad accedere correttamente
+                    // IN TEORIA NON DEVO FARE NULLA
+                    //CI PENSANO GLI ALTRI SUBSCRIBE
+                  }
+                });
+            
+          }
+        }
+      });
+}
+
+
+
 
 /** Esegue la disconnessione */
 logOffAccount() {
   // Avviso del login
   this.utenteService.logoff();
+
+  //Tolgo le credenziali memorizzate dallo storage
+  this.saveStorageUtente('','');
   
 }
 
@@ -431,5 +512,69 @@ requestUtente(idUtente: string) {
       .request(actualStartConfig, idUtente);
             
 }
+
+/**
+ * Richiedere al server l'operazione di Update Utente
+ * @param docUtenteUpdate Documento Utente con le modifiche da inviare
+ */
+requestUpdateUtente(docUtenteUpdate: Utente) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  return this.utenteService.requestUpdateUtente(actualStartConfig, docUtenteUpdate);
+}
+
+/**
+ * Effettua la richiesta al server per il cambio della password
+ * Ritorna un Observable
+ * con {RESULT: 0/1, MESSAGE:''}
+ * @param oldPsw Password Attuale
+ * @param newPsw Nuova Password
+ */
+requestChangePassword(oldPsw:string, newPsw:string) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  return this.utenteService.requestChangePassword(actualStartConfig, oldPsw, newPsw);
+}
+
 //#endregion
+
+//#region 
+
+/**
+ * Lista Prenotazioni di tipo Observable
+ */
+get listPrenotazioni() {
+  return this.prenotazioniService.listPrenotazioni;
+}
+
+/**
+ * Richiede al server elenco di prenotazioni
+ * @param idUtente IDUtente Prenotazione
+ */
+requestPrenotazioniUtente(idUtente: string) {
+  const actualStartConfig = this._startConfig.getValue();
+  
+  //Richiedo i dati al servizio
+  this.prenotazioniService.request(actualStartConfig, idUtente);
+}
+
+//#endregion
+
+//#region NEWS EVENTI
+get listNews() {
+  return this.newsEventiService.listNews;
+}
+
+/**
+ * Recupera le news dal server
+ * @param maxRecord Massimo Numero record restituiti (0 = Tutti)
+ */
+requestNews(idArea: string, maxRecord: number = 0) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  //Chiedo il recupero delle News
+  this.newsEventiService.request(actualStartConfig, idArea, maxRecord);
+}
+//#endregion
+
 }

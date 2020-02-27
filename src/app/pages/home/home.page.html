@@ -7,10 +7,13 @@
       {{startConfig?.companyName | titlecase }}
     </ion-title>
     <ion-buttons slot="primary">
-      <ion-button routerLink="/account" routerDirection="forward" *ngIf="userLogged">
+      <ion-button 
+          routerLink="/account" 
+          routerDirection="forward" 
+          *ngIf="userLogged">
         <ion-icon 
-          name="contact" 
-          [color]="btnFooterColor()">
+          name="person-circle-outline" 
+          class="btn-account">
         </ion-icon>
 
       </ion-button>
@@ -20,29 +23,32 @@
 </ion-header>
 
 <ion-content>
-  <div style="height: 2vh"></div>
-
-  <ion-item type="header" color="primary" lines="none" >
-    <ion-icon slot="start" name="clipboard" ></ion-icon>
-    <ion-label  class="">
-      <h2>Prossimi impegni</h2>
-    </ion-label>
-  </ion-item>
+ 
+  <!-- IMPEGNI -->
+  <!-- NESSUN IMPEGNO SCARICATO -->
+    
+  <ion-grid *ngIf="listImpegni.length===0" class="grid-impegni">
   
-  <ion-grid *ngIf="listImpegni.length===0" >
-    <ion-row>
-      <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
-        <ion-card class="ion-text-center">
-          <ion-card-content>
-            <ion-card-subtitle>Nessuna attività in programma</ion-card-subtitle>
-            <ion-button expand="block" color="primary">
-              <ion-icon slot="start" name="create"></ion-icon>
-              Prenota ora!
-            </ion-button>
-          </ion-card-content>
+    <ion-slides class="ion-no-padding ion-no-margin">
+      <ion-slide 
+          class="ion-no-padding ion-no-margin"
+          *ngFor="let btn of listButtonNoEvents"> 
+        <ion-card class="card-no-events">
+            <ion-item button="true" lines="none" (click)="onClickButtonNoEvents(btn)">
+              <ion-icon [slot]="btn.sloticon" [name]="btn.nameicon" [color]="btn.color"></ion-icon>
+              <ion-label>
+                <h2 class="ion-text-wrap">
+                  {{ btn.title }}
+                </h2>
+                <p class="ion-text-wrap">
+                  {{ btn.subtitle }}
+                </p>
+              </ion-label>
+            </ion-item>
         </ion-card>
-      </ion-col>
-    </ion-row>
+      </ion-slide>
+
+    </ion-slides>
   </ion-grid>
 
   <ion-grid *ngIf="listImpegni.length===1" >
@@ -57,30 +63,81 @@
     <app-impegni *ngFor="let item of listImpegni " [impegno]="item"></app-impegni>
   </div>
 
-  <ion-item type="header" lines="none" color="primary">
-    <ion-icon slot="start" name="map" ></ion-icon>
-    <ion-label class="">
+  <!-- AREA OPERATIVA -->
+  <!-- TITOLO AREA -->
+  <ion-item 
+      type="header" 
+      lines="none" 
+      color="danger">
+
+    <ion-icon 
+        slot="start" 
+        name="location-outline"></ion-icon>
+    <ion-label class="ion-text-nowrap">
       <h2>{{ selectedArea.COMUNE | titlecase }}</h2>
     </ion-label>
-    <ion-button slot="end" color="light" fill="outline" *ngIf="listAree.length>1" (click)='presentActionSheet()' >
+
+    <ion-button 
+        slot="end" 
+        color="light" 
+        fill="solid" 
+        *ngIf="listAree.length>1" 
+        (click)='presentActionSheet()'>
       Cambia
     </ion-button>  
   </ion-item>
 
-  <ion-grid *ngIf="listLocation.length===1" >
-    <ion-row>
-      <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
-        <app-centri [location]="listLocation[0]" [routerLink]="['/location', listLocation[0].ID]"></app-centri>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <!-- LOCATION -->
+  <div id="div-content">
 
-  <div scrollX="true" *ngIf="listLocation.length>1">
-      <app-centri 
-        *ngFor="let locationItem of listLocation" 
-        [location]="locationItem"  [routerLink]="['/location', locationItem.ID]" >
-      </app-centri>    
+    <ion-grid *ngIf="listLocation.length===1" >
+      <ion-row>
+        <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
+          <app-centri [location]="listLocation[0]" [routerLink]="['/location', listLocation[0].ID]"></app-centri>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  
+    <div scrollX="true" *ngIf="listLocation.length>1">
+        <app-centri 
+          *ngFor="let locationItem of listLocation" 
+          [location]="locationItem"  [routerLink]="['/location', locationItem.ID]" >
+        </app-centri>    
+    </div>
+
   </div>
+
+  <!-- NEWS ED EVENTI PROSSIMI-->
+  <!-- TITOLO -->
+  <ion-item 
+      type="header" 
+      lines="none" 
+      color="danger">
+
+      <ion-icon 
+          slot="start" 
+          name="game-controller-outline"></ion-icon>
+      <ion-label class="ion-text-nowrap">
+        <h2>News ed Eventi</h2>
+      </ion-label>
+      
+      <ion-button 
+          slot="end" 
+          color="light" 
+          fill="solid">
+        Tutti
+      </ion-button>  
+  </ion-item>
+  <!-- NEWS PRESENTI -->
+  <ion-list *ngIf="listNews.length !== 0">
+    <div *ngFor="let news of listNews">
+      <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
+    </div>
+  </ion-list>
+
+  <ion-list *ngIf="listNews.length === 0">
+      <app-news-eventi [myNews]="noNewsCard" (clickNews)="onClickNews(noNewsCard,$event)"></app-news-eventi>
+  </ion-list>
 
 </ion-content>
 
@@ -90,7 +147,9 @@
     expand="block" 
     size="large"
     (click)="onClickfooterButton()">
-      <ion-icon slot="start" name="{{btnFooterIcon()}}"></ion-icon>
+      <ion-icon 
+        slot="start" 
+        [name]="btnFooterIcon()"></ion-icon>
       {{btnFooterCaption()}}
     </ion-button>
 </ion-footer>

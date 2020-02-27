@@ -15,7 +15,7 @@ export class LoginPage implements OnInit {
 
   
   form: FormGroup;
-
+  iconColor = 'primary';
   
   
 
@@ -79,6 +79,9 @@ export class LoginPage implements OnInit {
                 }
                 else {
                   //LOGIN ACCETTATO
+                  
+                  // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
+                  this.startService.saveStorageUtente(this.form.value.username,this.form.value.password);
 
                   //Resetto la form
                   this.form.reset();

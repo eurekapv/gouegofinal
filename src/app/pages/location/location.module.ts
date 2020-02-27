@@ -11,6 +11,7 @@ import { LocationPage } from './location.page';
 import { ApertureComponent } from '../../shared/components/aperture/aperture.component';
 import { GalleryPage } from './gallery/gallery.page';
 import { CampiPage } from './campi/campi.page';
+import { PipesModule } from '../../shared/pipes/pipes.module';
 
 
 @NgModule({
@@ -18,10 +19,14 @@ import { CampiPage } from './campi/campi.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    LocationPageRoutingModule
+    LocationPageRoutingModule,
+    PipesModule
     
   ],
-  declarations: [LocationPage, ApertureComponent, GalleryPage, CampiPage],
+  declarations: [LocationPage, 
+                  ApertureComponent, 
+                  GalleryPage, 
+                  CampiPage],
   entryComponents: [GalleryPage, CampiPage]
   
   

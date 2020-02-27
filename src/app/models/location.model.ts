@@ -3,6 +3,7 @@ import { LocationImage } from './locaton-image.model';
 import { Campo } from './campo.model';
 import { AperturaLocation } from './aperturalocation.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { CampoSport } from './camposport.model';
 
 export class Location extends IDDocument {
 
@@ -73,40 +74,7 @@ export class Location extends IDDocument {
     return objDescriptor;
 }
 
-    /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-     describerType(fieldName): TypeDefinition {
-      let retType = TypeDefinition.char;
-      let arNumber = [];
-      let arDate = [];
-      let arTime = [];
-      let arDateTime = []
-      let arBoolean = ['FAVORITE', 'CANBOOK'];
-      
-      if (arNumber.includes(fieldName)) {
-        retType = TypeDefinition.number
-      }
-      else if (arDate.includes(fieldName)) {
-        retType = TypeDefinition.date
-      }
-      else if (arTime.includes(fieldName)) {
-        retType = TypeDefinition.time
-      }
-      else if (arDateTime.includes(fieldName)) {
-          retType = TypeDefinition.dateTime
-      }  
-      else if (arBoolean.includes(fieldName)) {
-          retType = TypeDefinition.boolean
-      }               
-      else {
-          retType = TypeDefinition.char;
-      }
-
-      return retType
-
-    }  
+  
 
     // Sovrascrivo il metodo IDDocument
     setJSONProperty(data: any) {
@@ -290,5 +258,32 @@ export class Location extends IDDocument {
       })
     }
 
+
+    /**
+     * Cicla su tutti i CAMPI presenti ed elimina 
+     * le informazioni CAMPOSPORT
+     */
+    emptyCampiSport() {
+
+      this.CAMPO.forEach(elCampo => {
+        elCampo.CAMPOSPORT = [];
+      })
+    }
+
+
+    /**
+     * 
+     * @param docCampoSport Campo Sport da aggiungere
+     * @param idCampo IDCampo da prelevare
+     */
+    addCampoSport(docCampoSport: CampoSport, idCampo: string) {
+      this.CAMPO.forEach(elCampo => {
+        if (elCampo.ID == idCampo) {
+          elCampo.addCampoSport(docCampoSport);
+        }
+      })
+    }
+
+    
 
 }

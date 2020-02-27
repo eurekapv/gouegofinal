@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Corso } from '../../../models/corso.model'
-import { Utente } from 'src/app/models/utente.model';
 import { ValueList, TargetSesso, Sesso } from 'src/app/models/valuelist.model';
 
 

@@ -5,10 +5,17 @@
 
 ion-slides {
     
-    background-color: floralwhite;
 
     img {
         padding-top: 10px;
         padding-bottom: 10px;
     }
+}
+
+.ion-list-margin-bottom {
+    margin-bottom: 2vmax;
+}
+
+.backcolorcard {
+    background-color: var(--ion-color-light-tint);
 }

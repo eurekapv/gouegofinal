@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Utente } from 'src/app/models/utente.model';
 import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
-import { Account } from 'src/app/models/account.model';
+import { NavController, ToastController, LoadingController } from '@ionic/angular';
 
 
 @Component({
@@ -12,27 +12,32 @@ import { Account } from 'src/app/models/account.model';
   templateUrl: './edit-account.page.html',
   styleUrls: ['./edit-account.page.scss'],
 })
-export class EditAccountPage implements OnInit {
+export class EditAccountPage implements OnInit, OnDestroy {
 
   form: FormGroup; 
-
 
   utente:Utente=new Utente();
   utenteListen: Subscription;
 
   listSesso: ValueList[]=[];
+  showLoading: boolean;
 
   constructor(
-      private startService : StartService
+      private startService : StartService,
+      private navCtr: NavController,
+      private toastCtr: ToastController,
+      private loadingController: LoadingController
     ) {
 
-      this.startService.utente.subscribe(data=>{
-        this.utente =data;        
-      })
+      //Chiedo al servizio i dati dell'utente
+      this.utenteListen = this.startService.utente.subscribe(data=>{
+          //Clono l'utente
+          this.utente = Object.create(data);        
 
+      });
 
-    this.listSesso=ValueList.getArray(Sesso);
-      
+      //Preparo un Array con le decodifiche del Sesso
+      this.listSesso=ValueList.getArray(Sesso);
 
    }
 
@@ -40,9 +45,15 @@ export class EditAccountPage implements OnInit {
     this.createForm();
   }
 
+  ngOnDestroy() {
+    if (this.utenteListen) {
+      this.utenteListen.unsubscribe();
+    }
+  }
+
   createForm()
   {
-    console.log(this.utente);
+    
     this.form=new FormGroup({
       nome:new FormControl(this.utente.NOME, {
         updateOn:'change',
@@ -52,11 +63,11 @@ export class EditAccountPage implements OnInit {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      sesso:new FormControl(ValueList.decode(Sesso, this.utente.SESSO), {
+      sesso:new FormControl(this.utente.SESSO, {
         updateOn:'change',
         validators: []
       }),
-      nascita:new FormControl(this.utente.NATOIL, {
+      nascita:new FormControl(this.utente.NATOIL.toISOString(), {
         updateOn:'change',
         validators: []
       }),
@@ -99,15 +110,7 @@ export class EditAccountPage implements OnInit {
       cf:new FormControl(this.utente.CODICEFISCALE, {
         updateOn:'change',
         validators: []
-      }),
-      cell:new FormControl({value: this.utente.MOBILENUMBER, disabled: true}, {
-        updateOn:'change',
-        validators: []
-      }),
-      email:new FormControl({value: this.utente.EMAIL, disabled: true}, {
-        updateOn:'change',
-        validators: []
-      }),
+      })
     })
   }
 
@@ -118,22 +121,84 @@ export class EditAccountPage implements OnInit {
       this.utente.NOME=this.form.value.nome;
       this.utente.COGNOME=this.form.value.cognome;
       this.utente.SESSO=this.form.value.sesso;
-      this.utente.NATOIL=this.form.value.nascita;
-      this.utente.NATOPROV=this.form.value.provNascita;
-      this.utente.NATOA=this.form.value.comNascita;
-      this.utente.PROVINCIA=this.form.value.provResidenza;
-      this.utente.NATOISOSTATO=this.form.value.statoNascita;
-      this.utente.NATOCAP=this.form.value.capNascita;
-      this.utente.COMUNE=this.form.value.comResidenza;
-      this.utente.INDIRIZZO=this.form.value.indResidenza;
-      this.utente.CAP=this.form.value.capResidenza;
       this.utente.CODICEFISCALE=this.form.value.cf;
-      this.utente.MOBILENUMBER=this.form.value.cell;
+
+      this.utente.INDIRIZZO=this.form.value.indResidenza;
+      this.utente.COMUNE=this.form.value.comResidenza;
+      this.utente.CAP=this.form.value.capResidenza;
+      this.utente.PROVINCIA=this.form.value.provResidenza;
       this.utente.ISOSTATO=this.form.value.statoResidenza;
-      this.utente.EMAIL=this.form.value.email;
-      console.log(this.utente);
-      //richiesta di aggiornamento al server
+
+      
+      if (this.form.value.nascita) {
+        this.utente.NATOIL = new Date(this.form.value.nascita);
+      }
+
+      
+
+      this.utente.NATOA=this.form.value.comNascita;
+      this.utente.NATOCAP=this.form.value.capNascita;
+      this.utente.NATOPROV=this.form.value.provNascita;
+      this.utente.NATOISOSTATO=this.form.value.statoNascita;
+      
+      //EMAIL E NUMERO DI TELEFONO NON LI MODIFICO MAI
+      
+
+      //USO IL LOADING CONTROLLER 
+      this.loadingController
+            .create({
+              message: 'Aggiornamento dati...',
+              spinner: 'bubbles'
+            })
+            .then (elLoading => {
+              // Mostro il loading
+              elLoading.present();
+
+              //richiesta di aggiornamento al server
+              this.startService
+                  .requestUpdateUtente(this.utente)
+                  .subscribe(result => {
+                      // Operazione effettuata
+                      elLoading.dismiss();
+                      //Aggiornamento corretto
+                      if ([200,204].includes(result.status)) {
+                            //Se la richiesta va a buon fine chiudo
+                            this.showMessage('Info Aggiornate');
+                            this.closePage();
+                      }
+                      else {
+                        this.showMessage('Ops..errore aggiornamento');
+                      }
+                  });
+              
+
+            });
+
     }
+  }
+
+  /**
+   * Chiudo e torno alla pagina Account
+   */
+  closePage() {
+    this.navCtr.navigateBack(['/','account']);
+  }
+
+  /**
+   * Visualizza un messaggio come Toast
+   * @param message Messaggio da mostrare
+   */
+  showMessage(message: string) {
+
+    //Creo un messaggio
+    this.toastCtr.create({
+      message: message,
+      duration: 3000
+    })
+    .then(tstMsg => {
+      tstMsg.present();
+    });
+
   }
 
 }

@@ -39,23 +39,6 @@ export class AperturaLocation extends IDDocument {
     }
 
 
-    /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-    describerType(fieldName): TypeDefinition {
-        //DEFUALT TIPO TIME
-        let retType = TypeDefinition.time;
-        if (fieldName == 'GIORNO') {
-          retType = TypeDefinition.number;
-        }
-        else if (fieldName == 'APERTOCHIUSO') {
-            retType = TypeDefinition.boolean
-        }
-  
-        return retType
-  
-      }
 
     /**
      * Sovrascrive metodo di IDDocument e lo amplia

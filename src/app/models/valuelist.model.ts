@@ -89,6 +89,34 @@ export enum Giorni {
     sabato = 6
 }
 
+export enum StrutturaCampo {
+    coperto = 10,
+    scoperto = 20,
+    copertoScoperto = 30
+}
+
+export enum StatoSlot {
+    libero = 0,
+    occupato = 10,
+    chiuso = 20
+}
+
+export enum TipoPrivateImage {
+    icon = 10,
+    brand = 20
+}
+
+export enum StatoPrenotazione {
+    confermata = 10,
+    daConfermare = 20,
+    disdetta = 30
+}
+
+export enum AmbitoNews {
+    corso = 10,
+    prenotazione = 20,
+    torneo = 30
+}
 
 
 

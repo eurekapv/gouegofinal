@@ -3,9 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
 import { LocationImage } from 'src/app/models/locaton-image.model';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
 import { GalleryPage } from './gallery/gallery.page';
+import { CampiPage } from './campi/campi.page';
+import { LogApp } from 'src/app/models/log.model';
+import { ButtonCard } from 'src/app/models/buttoncard.model';
 
 @Component({
   selector: 'app-location',
@@ -16,6 +19,8 @@ export class LocationPage implements OnInit {
 
   selectedLocation = new Location();
   aperture: AperturaLocation[] = [];
+  listButtonCard: ButtonCard[] = []; // Lista dei Bottoni
+  
 
   sliderOpts = {
     zoom: false,
@@ -27,7 +32,15 @@ export class LocationPage implements OnInit {
 
   constructor(private router: ActivatedRoute, 
               private startService: StartService,
-              private modalCtrl: ModalController) { }
+              private modalCtrl: ModalController, 
+              private navCtrl: NavController) {
+
+      //Imposto i bottoni da mostrare 
+      this.setButtonCard();
+
+  }
+
+
 
   ngOnInit() {
     let idLocation;
@@ -43,8 +56,10 @@ export class LocationPage implements OnInit {
             
             //Imposto le informazioni della Location Selezionata
             this.selectedLocation.setJSONProperty(element[0]);
+
+            LogApp.consoleLog('Location Selezionata');
+            LogApp.consoleLog(this.selectedLocation);
             
-            console.log(this.selectedLocation)
           }
         });
         
@@ -55,9 +70,16 @@ export class LocationPage implements OnInit {
     })
   }
 
+  setButtonCard() {
+    
+    // Recupero i Bottoni che devo mostrare in videata
+    this.listButtonCard = ButtonCard.getButtonActionLocation();
+
+  }
+
   /** Apre il Preview di una immagine */
   openPreview(img: LocationImage) {
-    console.log('Preview');
+    
 
     this.modalCtrl.create({
       component: GalleryPage,
@@ -68,19 +90,38 @@ export class LocationPage implements OnInit {
     .then(modal => modal.present());
   }
 
-  goToPrenota() {
+  /**
+   * Click sul bottone 
+   * @param btn Bottone utilizzato
+   */
+  onClickButtonCard(btn: ButtonCard) {
+    console.log('qui');
+    switch (btn.functionCod) {
+      case 'book':
+        //Prenotazioni
+        break;
+      case 'course':
+        // Corsi
+        this.navCtrl.navigateForward(['/','listcourses',this.selectedLocation.ID])
+        break;
+    
+      default:
+        break;
+    }
 
   }
 
-  goToCorsi() {
-
-  }
-
-  goToTornei() {
-
-  }
-
+  /** Apertura modale dei campi */
   onClickOpenCampi() {
     
+    //Apertura modale della pagina dei campi
+    this.modalCtrl
+    .create({
+      component: CampiPage,
+      componentProps: {
+        myLocation: this.selectedLocation
+      }
+    })
+    .then(modal => modal.present());
   }
 }

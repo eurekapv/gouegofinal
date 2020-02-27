@@ -47,16 +47,7 @@ export class UtenteLivello extends IDDocument {
         super.setJSONProperty(data);
     }
 
-            /**
-     * Classe per eseguire un reflect sulla base del nome del campo
-     * @param fieldName Nome del Campo
-     */
-    describerType(fieldName): TypeDefinition {
-        let retType = TypeDefinition.char;
   
-        return retType
-  
-    }  
 
 
 }

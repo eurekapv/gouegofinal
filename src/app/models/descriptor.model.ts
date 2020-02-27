@@ -22,6 +22,32 @@ export class TypeReflector {
         this.fieldType = campoType;
 
     }
+
+    /**
+     * Ritorna TRUE se il campo è parte di un servizio Documentale
+     * ID, do_deleted etc...
+     */
+    serviceField(): boolean {
+        let value = false;
+        let arServizi = ['ID','do_updated','do_loaded','do_inserted','do_deleted'];
+        if (arServizi.includes(this.fieldName)) {
+            value = true;
+        }
+        return value;
+    }
+
+    /**
+     * Ritorna TRUE se il campoè un campo presente anche sul server
+     */
+    nativeField(): boolean {
+        let value = true;
+        if (this.fieldName.substr(0,1) == '_') {
+            // I campi che iniziano con _ sono privati di solito di Lookup
+            value = false;
+        }
+
+        return value;
+    }
 }
 
 /**
@@ -77,4 +103,6 @@ export class  Descriptor{
 
         return retType;
     }
+
+    
 }

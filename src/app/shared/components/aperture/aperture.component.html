@@ -1,38 +1,36 @@
-<!-- <ion-item>
-  <ion-icon name="calendar" slot="start"></ion-icon>
-
-  {{ myApertura.getLabel() | titlecase}}
-</ion-item> -->
-
-
-
-<ion-row padding-start>
-  <ion-col size="6" >
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          {{ myApertura.getLabel() | titlecase}}
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+<ion-row class="ion-padding-start ion-align-items-center row-border">
+  <ion-col size="6">
+    {{ myApertura.getLabel() | titlecase}}
   </ion-col>
 
-  <ion-col size="6" >
-    <ion-grid>
-      <ion-row *ngIf="myApertura.DALLE1">
-        <ion-col class="ion-text-end">
-          {{ myApertura.DALLE1 | date:'h:mm a'}} - {{ myApertura.ALLE1 | date:'h:mm a'}}
+  <ion-col size="6" class="ion-no-padding">
+    
+      <ion-row *ngIf="myApertura.DALLE1" class="ion-no-padding">
+        <ion-col class="ion-text-center ion-no-padding">
+
+          <ion-chip [color]="colorChip">
+            <ion-icon 
+                name="time"></ion-icon>
+            <ion-label>{{ myApertura.DALLE1 | date:'HH:mm'}} - {{ myApertura.ALLE1 | date:'HH:mm'}}</ion-label>
+          </ion-chip>
+        </ion-col>
+
+      </ion-row>
+  
+      <ion-row *ngIf="myApertura.DALLE2" class="ion-no-padding">
+        <ion-col class="ion-text-center ion-no-padding">
+
+          <ion-chip [color]="colorChip">
+            <ion-icon 
+                name="time"></ion-icon>
+            <ion-label>{{ myApertura.DALLE2 | date:'HH:mm'}} - {{ myApertura.ALLE2 | date:'HH:mm'}}</ion-label>
+          </ion-chip>
+
         </ion-col>
       </ion-row>
   
-      <ion-row *ngIf="myApertura.DALLE2">
-        <ion-col class="ion-text-end">
-          {{ myApertura.DALLE2 | date:'h:mm a'}} - {{ myApertura.ALLE2 | date:'h:mm a'}}
-        </ion-col>
-      </ion-row>
-  
-      <ion-row *ngIf="!myApertura.isOpen()">
-        <ion-col class="ion-text-center">
+      <ion-row *ngIf="!myApertura.isOpen()" class="ion-no-padding">
+        <ion-col class="ion-text-center ion-no-padding">
           <ion-button 
             size="small" 
             color="danger" 
@@ -40,10 +38,12 @@
             class="ion-no-margin">CHIUSO</ion-button>
         </ion-col>
       </ion-row>
-    </ion-grid>
+    
 
   </ion-col>
 
 </ion-row>
+
+
 
 

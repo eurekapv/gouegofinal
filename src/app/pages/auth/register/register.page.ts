@@ -31,6 +31,7 @@ export class RegisterPage implements OnInit {
   startListen: Subscription;
   stato: PageState;
 
+  iconColor = 'primary';
   
   constructor(
     private startService: StartService,
@@ -192,8 +193,7 @@ export class RegisterPage implements OnInit {
 
   onClickReinvia()
   {
-    //richiesta di reinvio codice al servers
-    console.log('dfkfsl');
+
   } 
 
 }

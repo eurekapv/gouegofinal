@@ -11,7 +11,7 @@
 
 <ion-content>
   <!-- GALLERY IMAGES -->
-  <ion-card >
+  <ion-card class="ion-no-margin ion-no-padding backcolorcard">
     <ion-slides>
       <ion-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
         <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
@@ -19,41 +19,26 @@
     </ion-slides>
   </ion-card>
 
-  <!-- BUTTON OPERAZIONI -->
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6">
-        <ion-button expand="block" class="btn" fill="outline" (click)="goToPrenota()">
-          <div>
-            <ion-icon name="create" style="font-size: 25px;" ></ion-icon>
-            <br>
-            Prenota
-          </div>
-        </ion-button>
-      </ion-col>
-      <ion-col size="6" >
-        <ion-button expand="block" class="btn" fill="outline" [routerLink]="['/listcourses', selectedLocation.ID]">
-          <div>
-            <ion-icon name="school" style="font-size: 25px;" ></ion-icon>
-            <br>
-            Corsi
-          </div>
-        </ion-button>
-      </ion-col>
-      <!-- <ion-col size="4" >
-        <ion-button expand="block" class="btn" fill="outline" (click)="goToTornei()">
-          <div>
-            <ion-icon name="medal" style="font-size: 25px;" ></ion-icon>
-            <br>
-            Tornei
-          </div>
-        </ion-button> 
-      </ion-col>   -->  
-    </ion-row>
-  </ion-grid>
+  <ion-list class="backcolorcard ion-list-margin-bottom">
+    
+    <ion-card *ngFor="let btn of listButtonCard">
+      <ion-item button="true" (click)="onClickButtonCard(btn)" lines="none">
+        <ion-icon [slot]="btn.sloticon" [name]="btn.nameicon" [color]="btn.color"></ion-icon>
+        <ion-label>
+          <h1 class="ion-text-wrap">
+            {{ btn.title }}
+          </h1>
+          <h3 class="ion-text-wrap">
+            {{ btn.subtitle }}
+          </h3>
+        </ion-label>
+      </ion-item>
+    </ion-card>
+
+  </ion-list>
 
 
-  <ion-list>
+  <ion-list class="ion-list-margin-bottom">
     <!-- INFO CENTRO-->
     <ion-item-group>
 

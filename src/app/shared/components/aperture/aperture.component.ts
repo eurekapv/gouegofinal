@@ -10,6 +10,8 @@ import { AperturaLocation } from '../../../models/aperturalocation.model';
 export class ApertureComponent implements OnInit {
 
   @Input() myApertura: AperturaLocation = new AperturaLocation();
+  colorChip = 'primary';
+
   constructor() { }
 
   ngOnInit() {}

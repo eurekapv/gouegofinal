@@ -8,7 +8,7 @@
       <ion-row *ngIf="myApertura.DALLE1" class="ion-no-padding">
         <ion-col class="ion-text-center ion-no-padding">
 
-          <ion-chip color="success">
+          <ion-chip [color]="colorChip">
             <ion-icon 
                 name="time"></ion-icon>
             <ion-label>{{ myApertura.DALLE1 | date:'HH:mm'}} - {{ myApertura.ALLE1 | date:'HH:mm'}}</ion-label>
@@ -20,7 +20,7 @@
       <ion-row *ngIf="myApertura.DALLE2" class="ion-no-padding">
         <ion-col class="ion-text-center ion-no-padding">
 
-          <ion-chip color="success">
+          <ion-chip [color]="colorChip">
             <ion-icon 
                 name="time"></ion-icon>
             <ion-label>{{ myApertura.DALLE2 | date:'HH:mm'}} - {{ myApertura.ALLE2 | date:'HH:mm'}}</ion-label>

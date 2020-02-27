@@ -31,6 +31,7 @@ export class RegisterPage implements OnInit {
   startListen: Subscription;
   stato: PageState;
 
+  iconColor = 'primary';
   
   constructor(
     private startService: StartService,

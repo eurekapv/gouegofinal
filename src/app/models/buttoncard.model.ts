@@ -36,5 +36,42 @@ export class ButtonCard {
         return arButton;
     }
 
+    /**
+     * Ritorna i Buttoni da mostrare nella Home 
+     * nella parte dedicata agli Eventi in programma, 
+     * quando non sono presenti eventi
+     * @param userLogged Utente è loggato
+     */
+    static getButtonHomeNoEvents(userLogged: boolean): ButtonCard[] {
+        let arButton: ButtonCard[] = [];
+        let newBtn: ButtonCard;
+
+        /** UTENTE LOGGATO, SENZA EVENTI */
+        if (userLogged) {
+            newBtn = new ButtonCard();
+            newBtn.title = 'Nessun evento in programma';
+            newBtn.subtitle = 'organizza un incontro con i tuoi amici';
+            newBtn.nameicon = 'calendar-outline';
+            newBtn.sloticon = "start";
+            newBtn.color = "primary";
+            newBtn.iconLink = true;
+            newBtn.functionCod = 'noevents';
     
+            arButton.push(newBtn);
+        }
+        else {
+            newBtn = new ButtonCard();
+            newBtn.title = 'Registrati o accedi';
+            newBtn.subtitle = 'crea il tuo account o accedi';
+            newBtn.nameicon = 'person-add-outline';
+            newBtn.sloticon = "start";
+            newBtn.color = "primary";
+            newBtn.iconLink = true;
+            newBtn.functionCod = 'register';
+    
+            arButton.push(newBtn);
+        }
+
+        return arButton;
+    }
 }

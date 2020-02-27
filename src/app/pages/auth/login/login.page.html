@@ -2,32 +2,35 @@
   <ion-grid style="height: 100%;">
     <ion-row class="ion-align-items-center" style="height: 100%;">
       <ion-col sizeSm="8" offsetSm="2" sizeLg="4" offsetLg="4">
+        
         <form [formGroup]="form">
 
-          <ion-card color="light">
+          <ion-card>
             <ion-header>
-              <ion-toolbar color="warning">
+              <ion-toolbar color="primary">
                 <ion-buttons slot="start">
                   <ion-back-button defaultHref="/"></ion-back-button>
                 </ion-buttons>
                 <ion-title>
-                  <!-- {{startConfig?.companyName | titlecase }} -->
                   Gioca con noi
                 </ion-title>
               </ion-toolbar>
             </ion-header>
 
-            <img src="assets/img/sport2_mini.png" alt="ion">
+            <img 
+              src="assets/img/sport2_mini.png" 
+              alt="ion"
+              >
 
             <ion-card-content >
               
-              <ion-item color="light">
-                <ion-icon slot="start" name="person" color="warning"></ion-icon>
+              <ion-item>
+                <ion-icon slot="start" name="person" [color]="iconColor"></ion-icon>
                 <ion-input inputmode="email" type="email" placeholder="Username" formControlName="username" ></ion-input>
               </ion-item>
 
-              <ion-item color="light">
-                <ion-icon slot="start" name="key" color="warning"></ion-icon>
+              <ion-item>
+                <ion-icon slot="start" name="key" [color]="iconColor"></ion-icon>
                 <ion-input inputmode="text" type="password" placeholder="Password" formControlName="password"></ion-input>
               </ion-item>
 

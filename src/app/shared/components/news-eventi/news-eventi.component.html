@@ -1,0 +1,27 @@
+<ion-card>
+  <ion-item [button]="!myNews.do_inserted" (click)="onClickNews()" lines="none">
+
+    <ion-avatar 
+        slot="start"
+        *ngIf="myNews.LINKIMAGE">
+      <img [src]="myNews.LINKIMAGE">
+    </ion-avatar>
+
+    <ion-icon 
+      *ngIf = "!myNews.LINKIMAGE"
+      slot="start" [name]="myNews._NAMEICON" [color]="myNews._COLOR"></ion-icon>
+    
+    <ion-label>
+      <h3 class="ion-text-wrap">
+        {{ myNews.TITLE }}
+      </h3>
+
+      <p class="ion-text-wrap" *ngIf="myNews.SUBTITLE">
+        {{ myNews.SUBTITLE }}
+      </p>
+      <p *ngIf="myNews.PUBBLICATADAL" color="medium" class="ion-text-right ion-padding-horizontal">
+        <em>{{ myNews.PUBBLICATADAL | date : 'dd/MM/yyyy' }}</em>
+      </p>
+    </ion-label>
+  </ion-item>
+</ion-card>

@@ -11,6 +11,9 @@ import { Attivita  } from 'src/app/models/attivita.model';
 import { SettoreAttivita, ValueList } from '../../models/valuelist.model';
 import { Router } from '@angular/router';
 import { Utente } from 'src/app/models/utente.model';
+import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { NewsEventi } from 'src/app/models/newseventi.model';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-home',
@@ -49,10 +52,21 @@ export class HomePage implements OnInit, OnDestroy{
   idAreaFav: string;
   listenIdAreaFav: Subscription;
 
+  listButtonNoEvents: ButtonCard[] = []; //Bottoni da mostrare in assenza di eventi
+
+  //Oggetti per le News
+  noNewsCard: NewsEventi;
+  listNews: NewsEventi[] = [];
+  listNewsListen: Subscription;
+
+
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
               private router: Router
               ) {
+
+    //Recupero la card che dice che non ci sono eventi
+    this.noNewsCard = NewsEventi.getNoNews();
  
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
@@ -69,7 +83,13 @@ export class HomePage implements OnInit, OnDestroy{
     //Mi sottoscrivo alla ricezione della Area Selezionata
     this.selectedAreaListen = this.startService.areaSelected
         .subscribe( areaSel => {
+            //Cambio Area Selezionata
             this.selectedArea = areaSel;
+            //Richiesta nuove News
+            if (this.selectedArea) {
+              this.startService.requestNews(this.selectedArea.ID, 3);
+            }
+
     });
 
     // Sottoscrivo alla ricezione delle Locations
@@ -81,6 +101,9 @@ export class HomePage implements OnInit, OnDestroy{
     //Sottoscrivo all'ascolto di un utente loggato
     this.userLoggedListen = this.startService.utenteLogged.subscribe( element => {
       this.userLogged = element;
+
+      //Reimposto i Bottoni NoEvents poichè dipende se loggato o no
+      this.setButtonNoEvents();
     });
 
     //Sottoscrivo all'ascolto dell'Account
@@ -88,8 +111,57 @@ export class HomePage implements OnInit, OnDestroy{
       this.docUtente = element;
     });
 
-    
+    /** Sottoscrizione alle news, qui copio sempre al massimo 3 News */
+    this.listNewsListen = this.startService.listNews.subscribe(listNews => {
+      this.listNews = listNews.filter((news,index) => {
+          return (index < 3);
+      })
+    });
 
+    
+    //Impostazione Iniziale dei Bottoni relativi a NoEvents
+    this.setButtonNoEvents();
+  }
+
+  ionViewDidEnter() {
+    if (this.selectedArea) {
+      if (!this.selectedArea.do_inserted) {
+        //Richiesta delle News
+        this.startService.requestNews(this.selectedArea.ID, 3);
+      }
+    }
+  }
+
+  /** Imposta i bottoni in caso di mancanza eventi */
+  setButtonNoEvents() {
+    //Recupero i bottoni da mostrare, a seconda sia loggato o no
+    this.listButtonNoEvents = ButtonCard.getButtonHomeNoEvents(this.userLogged);
+  }
+
+  /**
+   * Evento click su bottone No Events
+   * @param btn Bottone cliccato
+   */
+  onClickButtonNoEvents(btn: ButtonCard) {
+    if (btn) {
+      switch (btn.functionCod) {
+        case 'register':
+            // Apro il Login
+            this.openLogin();
+          break;
+      
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
+   * Evento Click sulla News
+   * @param news News selezionata
+   */
+  onClickNews(news: NewsEventi) {
+    console.log(news);
   }
 
   _testAddImpegni() {
@@ -135,6 +207,10 @@ export class HomePage implements OnInit, OnDestroy{
       this.docUtenteListen.unsubscribe();
     }
 
+
+    if (this.listNewsListen) {
+      this.listNewsListen.unsubscribe();
+    }
   }
 
 
@@ -189,15 +265,15 @@ export class HomePage implements OnInit, OnDestroy{
  /** Ritorna il color a seconda dello stato di Login */
  btnFooterColor() {
 
-   let color = 'warning';
+   let color = 'primary';
   
     if (this.userLogged) {
-      color = 'warning'
+      color = 'success'
     }
     else {
-      color = 'warning'
+      color = 'primary'
     }
-
+    
     return color;
  }
 

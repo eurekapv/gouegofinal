@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CentriComponent } from '../../shared/components/centri/centri.component'
-
 
 import { HomePage } from './home.page';
+
+import { CentriComponent } from '../../shared/components/centri/centri.component'
 import { ImpegniComponent } from 'src/app/shared/components/impegni/impegni.component';
-import { EditLoginPage } from '../account/edit-login/edit-login.page';
+import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-eventi.component';
+
 
 
 @NgModule({
@@ -23,6 +24,6 @@ import { EditLoginPage } from '../account/edit-login/edit-login.page';
       }
     ])
   ],
-  declarations: [HomePage, CentriComponent, ImpegniComponent]
+  declarations: [HomePage, CentriComponent, ImpegniComponent, NewsEventiComponent]
 })
 export class HomePageModule {}

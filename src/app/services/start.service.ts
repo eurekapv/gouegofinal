@@ -22,6 +22,7 @@ import { CamposportService } from './camposport.service';
 import { LogApp } from '../models/log.model';
 import { Storage } from '@ionic/storage';
 import { PrenotazioneService } from './prenotazione.service';
+import { NewseventiService } from './newseventi.service';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +61,8 @@ export class StartService {
     private locationService: LocationService,
     private corsoCalendarioService: CourseschedulerService,
     private campiSportService: CamposportService,
-    private prenotazioniService: PrenotazioneService) { 
+    private prenotazioniService: PrenotazioneService,
+    private newsEventiService: NewseventiService) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -558,5 +560,21 @@ requestPrenotazioniUtente(idUtente: string) {
 
 //#endregion
 
+//#region NEWS EVENTI
+get listNews() {
+  return this.newsEventiService.listNews;
+}
+
+/**
+ * Recupera le news dal server
+ * @param maxRecord Massimo Numero record restituiti (0 = Tutti)
+ */
+requestNews(idArea: string, maxRecord: number = 0) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  //Chiedo il recupero delle News
+  this.newsEventiService.request(actualStartConfig, idArea, maxRecord);
+}
+//#endregion
 
 }

@@ -1,17 +1,26 @@
-<ion-card mode="ios" button="true">
-  <img [src]="location.getUrlImage()" style="min-width: 288px;">
+<ion-card 
+      mode="ios" 
+      button="true">
 
-  <ion-fab vertical="top" horizontal="end" slot="fixed">
+  <img 
+    [src]="location.getUrlImage()">
+
+  <!-- <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button 
         [color]="location.FAVORITE ? 'primary':'medium'" 
         (click)="onClickFavorite(); $event.stopPropagation();">
       <ion-icon name="heart"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab horizontal="start" vertical="top">
-    <ion-button color="warning" size="default" (click)="onClickPrenota(); $event.stopPropagation();">
-      <ion-icon slot="start" name="create">
+    <ion-button 
+        color="success" 
+        size="large" 
+        (click)="onClickPrenota(); $event.stopPropagation();">
+      <ion-icon 
+          slot="start" 
+          name="calendar-outline">
       </ion-icon>
       Prenota
     </ion-button>
@@ -20,13 +29,10 @@
 
   <ion-card-header >
     <ion-card-subtitle>
-      <div *ngIf="location.COMUNE || location.INDIRIZZO">
-        <ion-icon name="pin" color="medium"></ion-icon>
-        <span *ngIf="location.COMUNE">{{ location.COMUNE }}</span>
-        <span *ngIf="location.COMUNE && location.INDIRIZZO"> - </span>
-        <span *ngIf="location.INDIRIZZO">{{ location.INDIRIZZO }}</span>
+      <div *ngIf="location.INDIRIZZO">
+        <span>{{ location.INDIRIZZO }}</span>
       </div>
-      <div *ngIf="!location.COMUNE && !location.INDIRIZZO">
+      <div *ngIf="!location.INDIRIZZO">
         Centro Sportivo
       </div>
     </ion-card-subtitle>

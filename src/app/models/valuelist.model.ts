@@ -112,6 +112,14 @@ export enum StatoPrenotazione {
     disdetta = 30
 }
 
+export enum AmbitoNews {
+    corso = 10,
+    prenotazione = 20,
+    torneo = 30
+}
+
+
+
 
 
 export class ValueList {

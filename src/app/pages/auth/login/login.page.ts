@@ -15,7 +15,7 @@ export class LoginPage implements OnInit {
 
   
   form: FormGroup;
-
+  iconColor = 'primary';
   
   
 

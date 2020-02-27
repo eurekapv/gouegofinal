@@ -136,10 +136,15 @@ export class StartService {
   //#region AREE
     
     /**
-     * Area Selezionata
+     * Area Selezionata, in versione Observable
      */
     get areaSelected() {
       return this.areaService.areaSelected;
+    }
+
+    /** Area Selezionata non Observable */
+    get areaSelectedValue() {
+      return this.areaService.areaSelectedValue;
     }
 
     /**
@@ -575,6 +580,17 @@ requestNews(idArea: string, maxRecord: number = 0) {
   //Chiedo il recupero delle News
   this.newsEventiService.request(actualStartConfig, idArea, maxRecord);
 }
+
+  /** Effettua la richiesta al servizio di una news
+   * @param idNews News scelta 
+   * 
+   */
+  requestNewsByID(idNews: string) {
+    
+    
+    return this.newsEventiService.getNewsById(idNews);
+    
+  }
 //#endregion
 
 }

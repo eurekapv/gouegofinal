@@ -124,7 +124,8 @@
       <ion-button 
           slot="end" 
           color="light" 
-          fill="solid">
+          fill="solid"
+          (click)="onClickShowAllNews()">
         Tutti
       </ion-button>  
   </ion-item>
@@ -139,6 +140,9 @@
       <app-news-eventi [myNews]="noNewsCard" (clickNews)="onClickNews(noNewsCard,$event)"></app-news-eventi>
   </ion-list>
 
+  <!-- SE VOLESSI IL LOGIN CIRCULAR DEVO METTERLO QUA -->
+  <!-- <app-circular></app-circular> -->
+
 </ion-content>
 
 <ion-footer>
@@ -152,4 +156,5 @@
         [name]="btnFooterIcon()"></ion-icon>
       {{btnFooterCaption()}}
     </ion-button>
+    
 </ion-footer>

@@ -8,8 +8,8 @@ import { HomePage } from './home.page';
 
 import { CentriComponent } from '../../shared/components/centri/centri.component'
 import { ImpegniComponent } from 'src/app/shared/components/impegni/impegni.component';
+import { CircularComponent } from 'src/app/shared/components/circular/circular.component';
 import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-eventi.component';
-
 
 
 @NgModule({
@@ -24,6 +24,12 @@ import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-
       }
     ])
   ],
-  declarations: [HomePage, CentriComponent, ImpegniComponent, NewsEventiComponent]
+  declarations: [HomePage, 
+                 CentriComponent, 
+                 ImpegniComponent, 
+                 NewsEventiComponent,
+                 CircularComponent],
+  exports: [NewsEventiComponent]
+  
 })
 export class HomePageModule {}

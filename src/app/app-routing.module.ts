@@ -65,6 +65,15 @@ const routes: Routes = [
   {
     path: 'smstest',
     loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
+  },  
+  {
+    path: 'news/:newsId',
+    loadChildren: () => import('./pages/newsdetail/newsdetail.module').then( m => m.NewsdetailPageModule)
+  }
+  ,  
+  {
+    path: 'news',
+    loadChildren: () => import('./pages/news/news.module').then( m => m.NewsPageModule)
   }
 
   

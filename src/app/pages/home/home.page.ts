@@ -132,6 +132,8 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
+  //#region EVENTI PERSONALI
+
   /** Imposta i bottoni in caso di mancanza eventi */
   setButtonNoEvents() {
     //Recupero i bottoni da mostrare, a seconda sia loggato o no
@@ -156,6 +158,14 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
+  //#endregion
+
+  //#region NEWS ED EVENTI AZIENDA
+
+  onClickShowAllNews() {
+    this.router.navigate(['/','news']);
+  }
+
   /**
    * Evento Click sulla News
    * @param news News selezionata
@@ -163,6 +173,8 @@ export class HomePage implements OnInit, OnDestroy{
   onClickNews(news: NewsEventi) {
     console.log(news);
   }
+
+  //#endregion
 
   _testAddImpegni() {
     //visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare

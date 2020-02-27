@@ -67,7 +67,7 @@ export class LocationPage implements OnInit {
       else {
 
       }
-    })
+    });
   }
 
   setButtonCard() {

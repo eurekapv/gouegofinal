@@ -145,45 +145,29 @@ export class Corso extends IDDocument {
       });
     }
 
-    //Esegue la decodifica della proprieta
-    //Tutte le proprietà hanno la chiave 
-    //in un campo denominato IDXYZ 
-    //e decodificate in campi _DESCRXYZ
-
     /**
-     * 
-     * @param propertyToDecode Nome della proprietà da decodificare
-     * @param listDecode Lista con gli elementi
-     * @param propertyLookup Nome della proprieta a cui attingere la decodifica
+     * Serve per capire sulla card cosa scrivere e quale data mettere
+     * next -> Inizia il DATAINIZIO
+     * during -> Termina il DATAFINE
+     * stop -> Concluso il DATAFINE
      */
-    // lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
-    //   let namePropertyIDX = propertyToDecode;
-    //   let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
-    //   let _this = this;
-      
+    tempoCorso() {
+      let adesso = new Date();
+      let value = "";
 
-    //   //Proprieta Indice e Descrizione presenti
-    //   if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
-    //     if (listDecode && propertyLookup) {
+      if (this.DATAINIZIO > adesso) {
+        value = "next";
+      }
+      else if (this.DATAFINE > adesso) {
+        value = "during";
+      }
+      else {
+        value = "stop";
+      }
 
-    //       let element = listDecode.find(value => {
-    //         return value.ID == _this[namePropertyIDX]
-    //       });
+      return value;
+    }
 
-    //       if (element) {
-    //         if (element.hasOwnProperty(propertyLookup)) {
-    //           _this[namePropertyDESCR] = element[propertyLookup];
-    //         }
-    //       }
-
-    //     }
-    //   }
-      
-
-    // }
-
-
-
-
+    
 
 }

@@ -5,7 +5,8 @@ export class ButtonCard {
     sloticon: string;
     color: string;
     iconLink: boolean;
-    functionCod: string; 
+    functionCod: string;
+
 
     static getButtonActionLocation(): ButtonCard[] {
         let arButton: ButtonCard[] = [];
@@ -54,7 +55,7 @@ export class ButtonCard {
             newBtn.nameicon = 'calendar-outline';
             newBtn.sloticon = "start";
             newBtn.color = "primary";
-            newBtn.iconLink = true;
+            newBtn.iconLink = false;
             newBtn.functionCod = 'noevents';
     
             arButton.push(newBtn);

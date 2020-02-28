@@ -7,17 +7,28 @@
 
   <!-- ORA INIZIO E DURATA-->
   <ion-card-content class="ion-no-padding">
-    <ion-grid class="orari-cnt">
+    <ion-grid>
       <ion-row>
         <ion-col size="6" size-sm="6">
-          <ion-button size="small" color="primary" expand="block">
+          <ion-button 
+              size="small" 
+              color="primary" 
+              expand="block" 
+              fill="outline"
+              (click)="goToCalendar()">
+
             <ion-icon name="time" slot="start"></ion-icon>
             {{myCorso.ORAINIZIO | date:'h:mm'}}
           </ion-button>
         </ion-col>
 
         <ion-col size="6" size-sm="6">
-          <ion-button size="small" color="primary" expand="block">
+          <ion-button 
+            size="small" 
+            color="primary" 
+            expand="block" 
+            fill="outline"
+            (click)="goToCalendar()">
             <ion-icon name="infinite" slot="start"></ion-icon>
             {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
           </ion-button>
@@ -28,12 +39,15 @@
 
 
   <!-- BOX GIORNATE -->
-  <ion-card-content class="ion-no-padding giornate">
-    <div class="ion-padding" (click)="goToCalendar()">
+  <ion-card-content class="ion-no-padding">
+    <div class="div-giornate" (click)="goToCalendar()">
       <table style="width: 100%;">
         <tr>
           <td *ngFor="let giorno of myCorso._SETTIMANA">
-            <ion-button color="secondary" size="small" [fill]="giorno.selected ?'solid':'outline'">
+            <ion-button 
+                [color]="giorno.selected? 'primary':'secondary'" 
+                size="small" 
+                [fill]="giorno.selected ?'solid':'outline'">
               {{giorno.xsLabel | uppercase}}
             </ion-button>
           </td>
@@ -53,28 +67,44 @@
 
   <!-- LISTA INFORMAZIONI LIVELLO, ETA, SESSO-->
   <ion-item>
-    <ion-icon name="stats" slot="start" color="danger"></ion-icon>
+    <ion-icon 
+        name="stats-chart-outline" 
+        slot="start" 
+        [color]="iconColor"></ion-icon>
   <ion-label>{{myCorso._DESCRLIVELLOENTRATA?myCorso._DESCRLIVELLOENTRATA:'Tutti i Livelli'}}</ion-label>
   </ion-item>
 
   <ion-item>
-    <ion-icon name="bookmark" slot="start" color="danger"></ion-icon>
+    <ion-icon 
+        name="bookmark-outline" 
+        slot="start" 
+        [color]="iconColor"></ion-icon>
     <ion-label>{{myCorso._DESCRCATEGORIEETA?myCorso._DESCRCATEGORIEETA:'Per tutte le età'}}</ion-label>
   </ion-item>
 
-  <ion-item>
-    <ion-icon name="transgender" slot="start" color="danger"></ion-icon>
+  <ion-item lines="none">
+    <ion-icon 
+      name="transgender-outline" 
+      slot="start" 
+      [color]="iconColor"></ion-icon>
     <ion-label>{{getLabelTargetSesso()}}</ion-label>
   </ion-item>
 
-  <!-- PULSANTE FOOTER -->
-  <ion-card-content>
-    <ion-button color="warning" expand="block" (click)="goToDetail()">
-      <ion-icon name="calendar" slot="start"></ion-icon>
-      Inizia il 
-      {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}
-    </ion-button>
-  </ion-card-content>
+  <ion-footer>
+    <ion-row>
+      <ion-col 
+          size="12" 
+          size-sm="12">
+        <ion-button expand="block">
+          <p *ngIf="myCorso.tempoCorso()=='next'">Inizia il {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
+          <p *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+          <p *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-footer>
+
+
 
 </ion-card>
 

@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+    </ion-buttons> -->
     <ion-title>
       {{startConfig?.companyName | titlecase }}
     </ion-title>
@@ -28,26 +28,13 @@
   <!-- NESSUN IMPEGNO SCARICATO -->
     
   <ion-grid *ngIf="listImpegni.length===0" class="grid-impegni">
-  
-    <ion-slides class="ion-no-padding ion-no-margin">
+
+      <ion-slides class="ion-no-padding ion-no-margin">
       <ion-slide 
           class="ion-no-padding ion-no-margin"
           *ngFor="let btn of listButtonNoEvents"> 
-        <ion-card class="card-no-events">
-            <ion-item button="true" lines="none" (click)="onClickButtonNoEvents(btn)">
-              <ion-icon [slot]="btn.sloticon" [name]="btn.nameicon" [color]="btn.color"></ion-icon>
-              <ion-label>
-                <h2 class="ion-text-wrap">
-                  {{ btn.title }}
-                </h2>
-                <p class="ion-text-wrap">
-                  {{ btn.subtitle }}
-                </p>
-              </ion-label>
-            </ion-item>
-        </ion-card>
+          <app-button-card class="small-button-card" (clickElement)="onClickButtonNoEvents($event)" [smallVersion]="true" [myButtonCard]="btn"></app-button-card>
       </ion-slide>
-
     </ion-slides>
   </ion-grid>
 

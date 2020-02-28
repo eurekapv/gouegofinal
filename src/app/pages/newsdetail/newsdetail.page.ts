@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class NewsdetailPage implements OnInit {
 
-  selectedNews: NewsEventi = new NewsEventi();
+  myNews: NewsEventi = new NewsEventi();
   
   loading: boolean;
 
@@ -32,13 +32,20 @@ export class NewsdetailPage implements OnInit {
         idNews = param.get('newsId');
 
         //Richiedo la News che mi serve
-        this.selectedNews = this.startService.requestNewsByID(idNews);
+        this.myNews = this.startService.requestNewsByID(idNews);
         
       }
       else {
         this.router.navigate(['/']);
       }
     });
+  }
+
+  /**
+   * Apre il link della News
+   */
+  onClickReadNews() {
+
   }
 
 }

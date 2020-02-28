@@ -19,9 +19,13 @@
     </ion-slides>
   </ion-card>
 
-  <ion-list class="backcolorcard ion-list-margin-bottom">
-    
-    <ion-card *ngFor="let btn of listButtonCard">
+  <!-- BUTTON CARD PRENOTAZIONE E CORSI -->
+  <ion-list class="backcolorcard ion-list-margin-bottom ion-no-margin ion-no-padding">
+    <div class="ion-no-margin ion-no-padding" *ngFor="let btn of listButtonCard">
+      <app-button-card [smallVersion]="false" [myButtonCard]="btn" (clickElement)="onClickButtonCard($event)"></app-button-card>
+    </div>
+
+    <!-- <ion-card *ngFor="let btn of listButtonCard">
       <ion-item button="true" (click)="onClickButtonCard(btn)" lines="none">
         <ion-icon [slot]="btn.sloticon" [name]="btn.nameicon" [color]="btn.color"></ion-icon>
         <ion-label>
@@ -33,7 +37,7 @@
           </h3>
         </ion-label>
       </ion-item>
-    </ion-card>
+    </ion-card> -->
 
   </ion-list>
 

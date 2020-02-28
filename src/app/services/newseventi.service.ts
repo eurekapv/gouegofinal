@@ -8,6 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { NewsEventi } from '../models/newseventi.model';
 import { IDDocument } from '../models/iddocument.model';
+import { element } from 'protractor';
 
 
 
@@ -78,7 +79,13 @@ export class NewseventiService {
     this.listNews
       .pipe(take(1))
       .subscribe (collNews => {
-        this._listNews.next( collNews.concat(objNews));
+        let findElement = collNews.find(element => {
+          return element.ID == objNews.ID
+        });
+
+        if (!findElement) {
+          this._listNews.next( collNews.concat(objNews));
+        }
       })
   }
   
@@ -119,7 +126,7 @@ export class NewseventiService {
   private _requestServerById(config: StartConfiguration, idNews: string) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'NEWSEVENTO';
-    const filterDateTime = this.getFilterDateTime();
+    
 
     //In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('APPID',config.appId);

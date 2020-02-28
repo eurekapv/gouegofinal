@@ -6,14 +6,14 @@ import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, NavController } from '@ionic/angular';
 import { Attivita  } from 'src/app/models/attivita.model';
-import { SettoreAttivita, ValueList } from '../../models/valuelist.model';
-import { Router } from '@angular/router';
+import { SettoreAttivita } from '../../models/valuelist.model';
+
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEventi } from 'src/app/models/newseventi.model';
-import { element } from 'protractor';
+
 
 @Component({
   selector: 'app-home',
@@ -62,7 +62,7 @@ export class HomePage implements OnInit, OnDestroy{
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
-              private router: Router
+              private navController: NavController
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -163,7 +163,7 @@ export class HomePage implements OnInit, OnDestroy{
   //#region NEWS ED EVENTI AZIENDA
 
   onClickShowAllNews() {
-    this.router.navigate(['/','news']);
+    this.navController.navigateForward(['/','news']);
   }
 
   /**
@@ -171,7 +171,13 @@ export class HomePage implements OnInit, OnDestroy{
    * @param news News selezionata
    */
   onClickNews(news: NewsEventi) {
-    console.log(news);
+    if (news) {
+      //Le News insert non sono vere, non posso aprirle
+      if (!news.do_inserted) {
+        this.navController.navigateForward(['/','news',news.ID]);
+      }
+    }
+    
   }
 
   //#endregion
@@ -243,7 +249,7 @@ export class HomePage implements OnInit, OnDestroy{
 
   /** Apertura Videata Login */
   openLogin() {
-    this.router.navigate(['/','auth','login']);
+    this.navController.navigateForward(['/','auth','login']);
   }
 
   /** funzione per mostrare il popup di scelta campo */

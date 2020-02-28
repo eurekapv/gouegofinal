@@ -3,6 +3,7 @@ import { NewsEventi } from 'src/app/models/newseventi.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Area } from 'src/app/models/area.model';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-news',
@@ -21,7 +22,8 @@ export class NewsPage implements OnInit, OnDestroy {
 
   myEvent: any;
 
-  constructor(private startService: StartService) { 
+  constructor(private startService: StartService,
+              private navController: NavController) { 
 
     //Recupero la card che dice che non ci sono eventi
     this.noNewsCard = NewsEventi.getNoNews();
@@ -59,6 +61,9 @@ export class NewsPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Richiesta al servizio delle News
+   */
   requestNews() {
     if (this.areaSelected) {
       if (this.areaSelected.ID) {
@@ -83,7 +88,16 @@ export class NewsPage implements OnInit, OnDestroy {
     // }, 2000);
   }
 
+  /**
+   * Apre in modalità dettaglio la news
+   * @param news News da leggere
+   */
   onClickNews(news: NewsEventi) {
-
+    if (news) {
+      // Le news Inserted sono finte, non posso aprirle
+      if (!news.do_inserted) {
+        this.navController.navigateForward(['/','news',news.ID]);
+      }
+    }
   }
 }

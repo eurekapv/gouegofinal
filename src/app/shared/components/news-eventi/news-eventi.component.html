@@ -1,11 +1,9 @@
 <ion-card>
   <ion-item [button]="!myNews.do_inserted" (click)="onClickNews()" lines="none">
 
-    <ion-avatar 
-        slot="start"
-        *ngIf="myNews.LINKIMAGE">
-      <img [src]="myNews.LINKIMAGE">
-    </ion-avatar>
+    <ion-thumbnail slot="start" *ngIf="myNews.LINKIMAGE">
+      <ion-img [src]="myNews.LINKIMAGE"></ion-img>
+    </ion-thumbnail>
 
     <ion-icon 
       *ngIf = "!myNews.LINKIMAGE"

@@ -2,6 +2,7 @@ import { IDDocument } from './iddocument.model';
 import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni } from '../models/valuelist.model';
 import { Settimana } from './settimana.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { CorsoProgramma } from './corsoprogramma.model';
 
 export class Corso extends IDDocument {
 
@@ -31,8 +32,8 @@ export class Corso extends IDDocument {
     IDCATEGORIEETA: string;
     _DESCRCATEGORIEETA: string;
     _SETTIMANA: Settimana[]; //Giorni della Settimana del Corso
-
     DURATA: number;
+    CORSOPROGRAMMA: CorsoProgramma[];
 
 
 
@@ -42,6 +43,7 @@ export class Corso extends IDDocument {
       this._DESCRCATEGORIEETA = ''
       this._DESCRLIVELLOENTRATA = '';
       this._DESCRSPORT = '';
+      this.CORSOPROGRAMMA = [];
     }
 
           /**
@@ -102,6 +104,65 @@ export class Corso extends IDDocument {
 
       //Sistemo la Settimana in italiano
       this.setSettimana(Language.italiano);
+
+      this.setCollection(data);
+
+    }
+
+    /**
+     * Sistema le collection se presenti
+     * @param data JSON Ricevuto
+     */
+    setCollection(data: any) {
+      this.CORSOPROGRAMMA = [];
+
+      if (data.CORSOPROGRAMMA) {
+        this.setCollectionCorsoProgramma(data.CORSOPROGRAMMA);
+      }
+    }
+
+    /**
+     * Imposta la collection CorsoProgramma
+     * @param arPROGRAMMA JSON Ricevuti
+     */
+    setCollectionCorsoProgramma(arPROGRAMMA: any[]) {
+
+      this.CORSOPROGRAMMA = [];
+
+      if (arPROGRAMMA) {
+        arPROGRAMMA.forEach(element => {
+          
+          // Ricerco se esiste già
+          let newProgramma = this.getCorsoProgrammaByID(element.ID);
+
+          //Non esiste lo creo nuovo
+          if (!newProgramma) {
+
+            newProgramma = new CorsoProgramma();
+            newProgramma.setJSONProperty(element);
+            this.CORSOPROGRAMMA.push(newProgramma);
+
+          }
+          else {
+            //Reimposto i valori
+            newProgramma.setJSONProperty(element);
+          }
+
+
+        })
+      }
+    }
+
+    /**
+     * Ritorna l'elemento di Corso Programma che corrisponde con ID
+     */
+    getCorsoProgrammaByID(idCorsoProgramma): CorsoProgramma {
+        // Ricerco se esiste già
+        let newProgramma = this.CORSOPROGRAMMA.find(elProgramma => {
+          return elProgramma.ID == idCorsoProgramma
+        });
+
+        return newProgramma;
     }
 
     /**
@@ -168,6 +229,28 @@ export class Corso extends IDDocument {
       return value;
     }
 
-    
+    /**
+     * Ritorna una icona a seconda del tipo Corso
+     */
+    getIcon() {
+      let nameIcon= 'ribbon';
+
+      switch (this.TIPO) {
+        case TipoCorso.corso:
+          nameIcon = 'ribbon';
+          break;
+        
+        case TipoCorso.provaGratuita: 
+          nameIcon = 'trail-sign';
+          break;
+      
+        default:
+          nameIcon = 'ribbon';
+          break;
+      }
+
+      return nameIcon;
+      
+    }
 
 }

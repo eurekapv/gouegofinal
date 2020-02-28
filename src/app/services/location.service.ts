@@ -177,6 +177,18 @@ export class LocationService {
                 }));
   }
 
+
+  /**
+   * Ritorna la Location presente in memoria
+   * @param idLocation Location cercata
+   */
+  findLocationByID(idLocation: string) {
+    let arLocation = this._listLocation.getValue();
+    
+    return arLocation.find(element => {
+      return element.ID == idLocation
+    });
+  }
   //#endregion
 
 }

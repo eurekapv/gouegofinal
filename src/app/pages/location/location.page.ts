@@ -43,7 +43,7 @@ export class LocationPage implements OnInit {
 
 
   ngOnInit() {
-    let idLocation;
+    let idLocation = '';
     this.router.paramMap.subscribe( param => {
       
       if (param.has('locationId')) 
@@ -65,7 +65,7 @@ export class LocationPage implements OnInit {
         
       }
       else {
-
+        this.navCtrl.navigateForward(['/']);
       }
     });
   }

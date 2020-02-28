@@ -23,6 +23,7 @@ import { LogApp } from '../models/log.model';
 import { Storage } from '@ionic/storage';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
+import { Corso } from '../models/corso.model';
 
 @Injectable({
   providedIn: 'root'
@@ -249,6 +250,15 @@ export class StartService {
   }
 
   /**
+   * Cerca nel servizio la Location desiderata
+   * NON OBSERVABLE
+   * @param idLocation IDLocation cercata
+   */
+  findLocationByID(idLocation: string) {
+    return this.locationService.findLocationByID(idLocation);
+  }
+
+  /**
    * 
    * @param selectedLocation Location richiesta
    */
@@ -396,6 +406,18 @@ requestCalendarioCorso(idCorso: string) {
   const actualStartConfig = this._startConfig.getValue();
 
   this.corsoCalendarioService.request(actualStartConfig, idCorso);
+}
+
+
+//Ritorna il corso selezionato nel servizio
+get selectedCorso() {
+  return this.corsoService.selectedCorso;
+}
+
+//Richiede il programma del Corso
+requestCorsoProgramma(idCorso: string) {
+  const actualStartConfig = this._startConfig.getValue();
+  this.corsoService.requestCorsoProgramma(actualStartConfig, idCorso);
 }
 //#endregion
 

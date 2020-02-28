@@ -95,7 +95,8 @@
       <ion-col 
           size="12" 
           size-sm="12">
-        <ion-button expand="block">
+        <ion-button expand="block" (click)="goToDetail()">
+          <ion-icon name="play-outline" slot="end" color="primary"></ion-icon>
           <p *ngIf="myCorso.tempoCorso()=='next'">Inizia il {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
           <p *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
           <p *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>

@@ -23,11 +23,15 @@ export class CourseService {
   private _decodeListSport: Sport[];
   private _decodeListLivelli: Livello[];
   private _decodeListEta: CategoriaEta[];
-  
+  private _selectedCorso = new BehaviorSubject<Corso>(new Corso());
 
 
   get listCorsi() {
     return this._listCorsi.asObservable();
+  }
+
+  get selectedCorso() {
+    return this._selectedCorso.asObservable();
   }
 
   get filterCorsi() {
@@ -50,6 +54,8 @@ export class CourseService {
     this._decodeListEta = value;
   }
 
+
+
   /**
    * Inizializza e ritorna una copia del filtro dei corsi
    * @param idLocation Location da utilizzare
@@ -71,7 +77,7 @@ export class CourseService {
   request(config: StartConfiguration, docUser?:Utente) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'CORSO';
-    let filterUsed: FilterCorsi;
+    
 
     //In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('APPID',config.appId);
@@ -175,5 +181,39 @@ export class CourseService {
    */
   emptyCorsi() {
     this._listCorsi.next([]);
+  }
+
+  /**
+   * Chiama il server per il recupero del programma di corso, alla ricezione emette le modifiche
+   * su selectedCorso di tipo Observable
+   * @param config Configurazione Call
+   * @param idCorso idCorso di cui far richiesta
+   */
+  requestCorsoProgramma(config: StartConfiguration, idCorso: string) {
+    
+    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    const doObject = 'CORSOPROGRAMMA';
+    
+    //In Testata c'e' sempre l'AppId
+    myHeaders = myHeaders.set('APPID',config.appId);
+    let myUrl = config.urlBase + '/' + doObject; 
+    let myParams = new HttpParams().set('IDCORSO', idCorso);
+
+    this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+            return data.CORSOPROGRAMMA
+        }))
+        .subscribe(returnData => {
+            let myCorso = this._listCorsi.getValue().find(element => {
+              return (element.ID == idCorso)
+            });
+            if (myCorso) {
+              //Imposto la collection
+              myCorso.setCollectionCorsoProgramma(returnData);
+              this._selectedCorso.next(myCorso);
+            }
+        })
+
   }
 }

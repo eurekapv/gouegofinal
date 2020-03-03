@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { SlotTime } from 'src/app/models/imdb/slottime.model';
+import { LogApp } from 'src/app/models/log.model';
+
 
 @Component({
   selector: 'app-smstest',
@@ -14,8 +17,21 @@ export class SmstestPage implements OnInit {
   password = '';
   autoTab = false;
   
+  timeSlots: SlotTime[]; //Slot Tempo
 
-  constructor() { }
+
+  constructor() {
+    this.createSlotTime();
+   }
+
+
+  createSlotTime() {
+    this.timeSlots = SlotTime.getArrayStandardSlot({anno:2020, mese: 3, giorno: 2}, 
+                                  {ore:10, minuti:0}, 
+                                  {ore:15, minuti:0},
+                                  30);
+    LogApp.consoleLog(this.timeSlots);
+  }
 
   ngOnInit() {
   }

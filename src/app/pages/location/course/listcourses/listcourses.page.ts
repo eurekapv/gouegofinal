@@ -54,7 +54,7 @@ export class ListcoursesPage implements OnInit {
     //Richiedo lo User
     this.listenDocUser = this.startService.utente.subscribe(element => {
       this.docUser = element;
-    })
+    });
 
     //Mostro tutti i corsi
     this.preferList = SegmentCorsi.tutti;

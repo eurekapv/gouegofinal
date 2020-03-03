@@ -17,6 +17,7 @@ export class LocationService {
 
   private _listLocation = new BehaviorSubject<Location[]>([]);
   private _decodeListSport: Sport[]; //Lista di Decodifica degli Sport
+  private _activeLocation = new BehaviorSubject<Location>(new Location());
 
   get listLocation() {
     return this._listLocation.asObservable();
@@ -24,6 +25,10 @@ export class LocationService {
 
   set decodeListSport(value: Sport[]) {
     this._decodeListSport = value;
+  }
+
+  get activeLocation() {
+    return this._activeLocation.asObservable();
   }
 
   constructor(private apiService:ApicallService) { }
@@ -81,11 +86,23 @@ export class LocationService {
     let myUrl = config.urlBase + '/' + doObject;
 
 
-    return this.apiService
+    this.apiService
                 .httpGet(myUrl, myHeaders, myParams)
-                .pipe(map(fullData => {
-                  return fullData.LOCATION
-                }));
+                .pipe(map(fullData => {                
+                  return fullData.LOCATION;
+                }))
+                .subscribe(resultData => {
+                  let locReturn: Location;
+                  console.log('Richiesta');
+                  if (resultData && resultData.length !== 0) {
+                    
+                    locReturn = new Location();
+                    locReturn.setJSONProperty(resultData[0]);
+                    
+                    //Emetto evento di cambio
+                    this._activeLocation.next(locReturn);
+                  }                  
+                });
   }
 
   /**

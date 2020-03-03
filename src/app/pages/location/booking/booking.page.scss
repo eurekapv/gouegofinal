@@ -1,0 +1,22 @@
+ion-content {
+    --background: var(--ion-back-booking);
+  }
+
+ion-segment {
+  --background: white;
+}
+
+.item-campo {
+  --background: var(--ion-back-booking);
+
+  h6 {
+    color: #999999;
+  }
+}
+
+ion-slide {
+  ion-item {
+    width: 100%;
+  }
+}
+

@@ -236,13 +236,28 @@ export class HomePage implements OnInit, OnDestroy{
   onClickfooterButton() {
     if (this.userLogged) {
       // Apro lo Storico
-
     }
     else {
       // Apro il Login
       this.openLogin();
       
     }
+  }
+
+  /**
+   * Prenotazione
+   * @param location Location Selezionata
+   */
+  onClickPrenota(location: Location) {
+    this.navController.navigateForward(['/','location',location.ID,'booking']);
+  }
+
+  /**
+   * Scheda Location
+   * @param location Location selezionata
+   */
+  onClickLocation(location: Location) {
+    this.navController.navigateForward(['/','location',location.ID]);
   }
 
 

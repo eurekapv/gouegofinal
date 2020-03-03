@@ -284,6 +284,52 @@ export class Location extends IDDocument {
       })
     }
 
-    
+    /**
+     * Ritorna l'oggetto Campo che nell'array risulta successivo a quello rappresentato da idCampo
+     * Undefined se non ci sono elementi o elementi successivi a quello selezionato
+     * @param idCampo IDCampo Attuale
+     */
+    getNextCampo(idCampo: string = '') {
+      let myCampo: Campo;
+      let isNext = false;
+
+      if (this.CAMPO) {
+        for (let index = 0; index < this.CAMPO.length; index++) {
+          const elCampo = this.CAMPO[index];
+
+          //Senza idCampo il primo che trovo va bene
+          if (!idCampo) {
+            myCampo = elCampo;
+            break;
+          }
+          else if (isNext) {
+            //Questo è quello che mi serve
+            myCampo = elCampo;
+            break;
+          }
+          else if (elCampo.ID == idCampo) {
+            //Sarà il prossimo che devo usare
+            isNext = true;
+          }
+
+        }
+
+      }
+
+      return myCampo;
+    }
+
+    /**
+     * Ritorna un campo partendo dal suo Indice
+     * @param indexZeroBase Indice del campo Zero Base
+     */
+    getCampoByIndex(indexZeroBase: number) {
+      let myCampo: Campo;
+      if (this.CAMPO)  {
+        myCampo = this.CAMPO[indexZeroBase];
+      }
+
+      return myCampo;
+    }
 
 }

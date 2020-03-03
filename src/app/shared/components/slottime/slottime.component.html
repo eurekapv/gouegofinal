@@ -1,0 +1,41 @@
+<ion-card>
+  
+    <ion-row class="ion-align-items-center">
+      <ion-col size="2" size-xs = "3" id="col-orari">
+        <ion-grid class="ion-no-margin">
+          <ion-row >
+            <ion-col>
+              <div class="ion-text-center">
+                <span class="orario-black">
+                {{ mySlot.START | date : "HH:mm" }}
+                </span>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+
+            <ion-col>
+              <div class="ion-text-center">
+                <span class="orario-light">
+                  {{ mySlot.END | date : "HH:mm" }}
+                </span>
+              </div>
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+      <ion-col
+          size-xs = "9" 
+          size = "10"
+          id="col-slot"
+          class="ion-padding-horizontal">
+        <ion-button 
+            expand="block" 
+            [ngClass] = "getClassButton()"
+            [disabled]="getDisableButton()">
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  
+</ion-card>

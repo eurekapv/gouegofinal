@@ -1,6 +1,7 @@
 <ion-card 
       mode="ios" 
-      button="true">
+      button="true"
+      (click)="onClickLocation($event); $event.stopPropagation();">
 
   <img 
     [src]="location.getUrlImage()">

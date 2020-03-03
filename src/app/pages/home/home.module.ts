@@ -11,6 +11,8 @@ import { ImpegniComponent } from 'src/app/shared/components/impegni/impegni.comp
 
 import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-eventi.component';
 import { ButtonCardComponent } from 'src/app/shared/components/button-card/button-card.component';
+import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.component';
+import { CalendarscrollComponent } from 'src/app/shared/components/calendarscroll/calendarscroll.component';
 
 
 @NgModule({
@@ -29,9 +31,11 @@ import { ButtonCardComponent } from 'src/app/shared/components/button-card/butto
                  CentriComponent, 
                  ImpegniComponent, 
                  NewsEventiComponent,
-                 ButtonCardComponent
+                 ButtonCardComponent,
+                 SlottimeComponent,
+                 CalendarscrollComponent
                  ],
-  exports: [NewsEventiComponent, ButtonCardComponent]
+  exports: [NewsEventiComponent, ButtonCardComponent, SlottimeComponent, CalendarscrollComponent]
   
 })
 export class HomePageModule {}

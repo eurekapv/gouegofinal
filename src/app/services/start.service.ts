@@ -23,7 +23,7 @@ import { LogApp } from '../models/log.model';
 import { Storage } from '@ionic/storage';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
-import { Corso } from '../models/corso.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -225,8 +225,14 @@ export class StartService {
   
 
   get listLocation() {
-    //return this._listLocation.asObservable();
     return this.locationService.listLocation;
+  }
+
+  /**
+   * Ritorna la location attiva
+   */
+  get activeLocation() {
+    return this.locationService.activeLocation;
   }
 
   /**
@@ -246,7 +252,7 @@ export class StartService {
   requestLocationByID(idLocation: string) {
     const actualStartConfig = this._startConfig.getValue();
     
-    return this.locationService.requestLocationByID(actualStartConfig, idLocation);
+    this.locationService.requestLocationByID(actualStartConfig, idLocation);
   }
 
   /**

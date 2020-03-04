@@ -14,7 +14,10 @@
     </ion-fab-button>
   </ion-fab> -->
 
-  <ion-fab horizontal="start" vertical="top">
+  <ion-fab 
+    horizontal="start" 
+    vertical="top"
+    *ngIf="location.ENABLEPRENOTAZIONI">
     <ion-button 
         color="success" 
         size="large" 

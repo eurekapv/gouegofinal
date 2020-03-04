@@ -64,7 +64,11 @@ export class LocationPage implements OnInit, OnDestroy {
             if (!this.selectedLocation.do_inserted) {
 
               LogApp.consoleLog('Location Selezionata');
-              LogApp.consoleLog(this.selectedLocation);
+              //LogApp.consoleLog(this.selectedLocation);
+
+              /** Imposto i Bottoni Card */
+              this.setButtonCard();
+
 
             }
           });
@@ -85,7 +89,8 @@ export class LocationPage implements OnInit, OnDestroy {
   setButtonCard() {
     
     // Recupero i Bottoni che devo mostrare in videata
-    this.listButtonCard = ButtonCard.getButtonActionLocation();
+    // A seconda se posso Prenotare nella location oppure no
+    this.listButtonCard = ButtonCard.getButtonActionLocation(this.selectedLocation.ENABLEPRENOTAZIONI);
 
   }
 

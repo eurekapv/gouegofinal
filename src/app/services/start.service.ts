@@ -276,9 +276,22 @@ export class StartService {
     this.locationService.decodeListSport = listSport;
 
     return this.locationService
-                .syncInfoCampi(actualStartConfig, selectedLocation);
+               .syncInfoCampi(actualStartConfig, selectedLocation);
   }
 
+
+  /**
+   * Ritorna il template Week con tutti i giorni della settimana e gli SlotTime da applicare
+   * in una prenotazione
+   * (Schema di Default che andrà successivamente attualizzato con le info di occupazione e
+   * chiusura specifica per festività etc)
+   * @param docLocation Location richiesta
+   */
+  getTemplateSlotWeek(docLocation: Location) {
+
+    return this.locationService.getTemplateSlotWeek(docLocation);
+
+  }
   
   //#endregion
 

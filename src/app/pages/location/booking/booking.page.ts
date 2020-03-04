@@ -7,6 +7,7 @@ import { Location } from 'src/app/models/location.model';
 import { Subscription } from 'rxjs';
 import { Campo } from 'src/app/models/campo.model';
 import { Utente } from 'src/app/models/utente.model';
+import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
 
 @Component({
   selector: 'app-booking',
@@ -33,6 +34,7 @@ export class BookingPage implements OnInit, OnDestroy {
   ricevuti: boolean; //Dati Ricevuti
   bookable: boolean; //Ho ricevuto dei campi, quindi potrei effettuare prenotazioni
 
+  templateWeekSlot: SlotWeek = new SlotWeek(); //Template con gli slotTime settimanali
   
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
   
@@ -70,6 +72,9 @@ export class BookingPage implements OnInit, OnDestroy {
 
                 /* Se ho la location */
                 if (this.selectedLocation && !this.selectedLocation.do_inserted ) {
+
+                  //RECUPERO IL TEMPLATE WEEK SLOT TIME
+                  this.getTemplateWeek(this.selectedLocation);
 
                   // Ho ricevuto i dati
                   this.ricevuti = true;
@@ -161,6 +166,19 @@ export class BookingPage implements OnInit, OnDestroy {
 
     //Richiedo le occupazioni
     this.getOccupazioni();
+  }
+
+
+  /**
+   * Recupera il template Week Slot Time per la generazione degli slot di prenotazioni
+   * @param docLocation Location prenotazione
+   */
+  getTemplateWeek(docLocation: Location) {
+    console.log('Ora');
+    
+    this.templateWeekSlot = this.startService.getTemplateSlotWeek(docLocation);
+
+    console.log(this.templateWeekSlot);
   }
 
   /**

@@ -7,11 +7,13 @@ export class SlotDay {
     ENDTIME:    Date;
     SLOTTIMES:  SlotTime[];
     APERTOCHIUSO: boolean;
+    _TEMPLATELOCK: boolean; 
     
     
     constructor() {
         this.SLOTTIMES = [];
         this.APERTOCHIUSO = true;
+        this._TEMPLATELOCK = true; //Il giorno è ancora bloccato in quanto solo template e non attualizzato (Non posso prenotare nulla ancora)
 
         this.setStandardTime();
     }

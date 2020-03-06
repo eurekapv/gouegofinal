@@ -12,6 +12,7 @@ export class SlottimeComponent implements OnInit {
   @Input() mySlot: SlotTime;
   @Output() clickSlot = new EventEmitter<SlotTime>();
   @Input() captionBtn = ''; //Caption da visualizzare nel bottone
+  @Input() readOnly = false; //Gli slot sono ReadOnly
 
   constructor() { }
 
@@ -19,20 +20,25 @@ export class SlottimeComponent implements OnInit {
 
   getClassButton() {
     let myClass = '';
-    if (this.mySlot.STATO == StatoSlot.occupato || this.mySlot.STATO == StatoSlot.chiuso) {
-      myClass = 'slot-busy';
+    if (this.readOnly) {
+      myClass = "slot-read-only";
     }
     else {
-      // Button utilizzabile
-      if (this.mySlot.SELECTED) {
-        myClass = 'slot-selected';
+      if (this.mySlot.STATO == StatoSlot.occupato || this.mySlot.STATO == StatoSlot.chiuso) {
+        myClass = 'slot-busy';
       }
       else {
-        myClass = 'slot-free';
+        // Button utilizzabile
+        if (this.mySlot.SELECTED) {
+          myClass = 'slot-selected';
+        }
+        else {
+          myClass = 'slot-free';
+        }
       }
     }
 
-    console.log(myClass);
+    
 
     return myClass;
   }
@@ -40,7 +46,8 @@ export class SlottimeComponent implements OnInit {
   getDisableButton() {
 
     let disable = false;
-    if (this.mySlot.STATO == StatoSlot.occupato || this.mySlot.STATO == StatoSlot.chiuso) {
+
+    if (this.mySlot.STATO == StatoSlot.occupato || this.mySlot.STATO == StatoSlot.chiuso || this.readOnly) {
       disable = true;
     }
 

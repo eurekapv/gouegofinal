@@ -23,6 +23,8 @@ import { LogApp } from '../models/log.model';
 import { Storage } from '@ionic/storage';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
+import { SlotoccupazioneService } from './slotoccupazione.service';
+import { SlotDay } from '../models/imdb/slotday.model';
 
 
 @Injectable({
@@ -63,7 +65,8 @@ export class StartService {
     private corsoCalendarioService: CourseschedulerService,
     private campiSportService: CamposportService,
     private prenotazioniService: PrenotazioneService,
-    private newsEventiService: NewseventiService) { 
+    private newsEventiService: NewseventiService,
+    private slotOccupazioneService: SlotoccupazioneService ) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -632,6 +635,32 @@ requestNews(idArea: string, maxRecord: number = 0) {
     return this.newsEventiService.getNewsById(idNews);
     
   }
+//#endregion
+
+//#region OCCUPAZIONE CAMPI
+get docOccupazione() {
+  return this.slotOccupazioneService.docOccupazione;
+}
+
+/**
+ * Il servizio prende il template dello Slot, richiede al server i dati di occupazione, 
+ * corregge il templateSlotDay e lo ripropone come Observable
+ * @param templateSlotDay Template della Giornata 
+ * @param idLocation Location
+ * @param idCampo Campo
+ * @param dataGiorno Giorno richiesto
+ */
+requestSlotOccupazioni(templateSlotDay: SlotDay,
+                       idLocation:string, 
+                       idCampo: string, 
+                       dataGiorno: Date) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  //Faccio la richiesta dei dati al servizio
+  this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, idLocation, idCampo, dataGiorno);
+
+}
+
 //#endregion
 
 }

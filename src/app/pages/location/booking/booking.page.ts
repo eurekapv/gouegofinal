@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { Campo } from 'src/app/models/campo.model';
 import { Utente } from 'src/app/models/utente.model';
 import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
+import { SlotDay } from 'src/app/models/imdb/slotday.model';
 
 @Component({
   selector: 'app-booking',
@@ -27,15 +28,17 @@ export class BookingPage implements OnInit, OnDestroy {
   subUserLogged: Subscription;  
   
   docUtente: Utente;
-  subDocUtente: Subscription;
-
-  bookDay = new Date(); //Giorno di Pianificazione
+  subDocUtente: Subscription; 
 
   ricevuti: boolean; //Dati Ricevuti
   bookable: boolean; //Ho ricevuto dei campi, quindi potrei effettuare prenotazioni
 
-  templateWeekSlot: SlotWeek = new SlotWeek(); //Template con gli slotTime settimanali
+  templateWeekSlot: SlotWeek = new SlotWeek(); //Template con gli slotTime settimanali relativi alla location
   
+  actualBookDay = new Date(); //Giorno di Pianificazione
+  actualSlotDay: SlotDay; //E' lo Slot Day attualmente in visualizzazione
+  subActualSlotDay: Subscription;
+
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
   
 
@@ -49,6 +52,8 @@ export class BookingPage implements OnInit, OnDestroy {
 
     this.ricevuti = false;
     this.bookable = false;
+
+
     
   }
 
@@ -87,10 +92,13 @@ export class BookingPage implements OnInit, OnDestroy {
                   this.selectedCampo = this.selectedLocation.getNextCampo();
                   this.bookable = (this.selectedCampo?true:false);
 
-                  // Imposto il campo
+                  //Se è presente un campo posso iniziare ad ottenere gli SlotTime
                   if (this.selectedCampo) {
-                    this.docPrenotazione.newPrenotazioneSetIDCampo(this.selectedCampo.ID);
+                    //Richiedo le occupazioni
+                    this.getOccupazioni();
                   }
+
+                  
 
                 }
                 
@@ -106,6 +114,11 @@ export class BookingPage implements OnInit, OnDestroy {
           this.subDocUtente = this.startService.utente.subscribe(element => {
             this.docUtente = element;
           });
+
+          // Mi metto in ascolto di variazioni di Slot attuale
+          this.subActualSlotDay = this.startService.docOccupazione.subscribe(elActualDay => {
+            this.actualSlotDay = elActualDay;
+          })
           
         }
         else {
@@ -125,6 +138,10 @@ export class BookingPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.subSelectedLocation) {
       this.subSelectedLocation.unsubscribe();
+    }
+
+    if (this.subActualSlotDay) {
+      this.subActualSlotDay.unsubscribe();
     }
   }
 
@@ -182,10 +199,27 @@ export class BookingPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Recupero le occupazioni
+   * Recupero le occupazioni quando
+   * 1) CAMBIA IL CAMPO
+   * 2) CAMBIA IL GIORNO
+   * 
+   * Procedura: 
+   * a) Viene cercato nel templateWeek lo SlotDay e viene applicata una copia a actualSlotDay
+   * b) Viene chiamato il servizio passando actualSlotDay
+   * c) il servizio chiama il server, e mi ritorna actualSlotDay come Observable
+   * 
    */
   getOccupazioni() {
+    //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata
+    this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay);
 
+    //Step b) Chiamo il servizio
+    this.startService.requestSlotOccupazioni(this.actualSlotDay, 
+                                             this.selectedLocation.ID, 
+                                             this.selectedCampo.ID, 
+                                             this.actualBookDay);
+
+    //Ora tutto avviene in modalità asincrona
   }
 
 }

@@ -41,6 +41,28 @@ export class SlotWeek {
     }
 
     /**
+     * Ritorna una copia di uno SlotDay 
+     * 
+     * @param dataGiorno Data richiesta
+     */
+    getCopySlotDay(dataGiorno: Date): SlotDay {
+
+        let weekDay = dataGiorno.getDay();
+        let myCopySlot: SlotDay;
+        let mySlot: SlotDay;
+
+        mySlot = this.SLOTDAYS.find(element => {
+                        return element.WEEKDAY == weekDay
+                        });
+        if (mySlot) {
+            myCopySlot = Object.assign({},mySlot);
+        }
+
+        return myCopySlot;
+                
+    }
+
+    /**
      * Crea per ogni giornata, tutti gli slot time
      */
     createSlotTimeDays() {

@@ -9,7 +9,7 @@ import { StartConfiguration } from '../models/start-configuration.model';
 import { Sport } from '../models/sport.model';
 import { CampoSport } from '../models/camposport.model';
 import { SlotWeek } from '../models/imdb/slotweek.model';
-import { ValueList, Giorni } from '../models/valuelist.model';
+
 
 
 @Injectable({

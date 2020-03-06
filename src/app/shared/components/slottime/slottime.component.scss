@@ -5,6 +5,8 @@ ion-card {
     min-height: 50px;
     margin-left: 16px;
     margin-right: 16px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 #col-orari {
@@ -47,11 +49,17 @@ ion-card {
 
 .slot-free {
     //Background of the button
-    --background: var(--ion-color-success-tint);
+    --background: lightgreen;
+    //var(--ion-color-success-tint);
 }
 
 .slot-selected {
         //Background of the button
         --background: var(--ion-color-primary);
+}
+
+.slot-read-only {
+    --background: lightgray;
+    
 }
 

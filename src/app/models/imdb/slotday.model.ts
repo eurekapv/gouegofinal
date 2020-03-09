@@ -18,6 +18,28 @@ export class SlotDay {
         this.setStandardTime();
     }
 
+
+    /**
+     * Copia tutte le proprietà dall'oggetto passato
+     * @param oldObject Oggetto da cui copiare
+     */
+    copyFrom(oldObject: SlotDay) {
+        this.WEEKDAY = oldObject.WEEKDAY;
+        this.STARTTIME = oldObject.STARTTIME;
+        this.ENDTIME = oldObject.ENDTIME;
+        this.APERTOCHIUSO = oldObject.APERTOCHIUSO;
+        this._TEMPLATELOCK = oldObject._TEMPLATELOCK;
+        this.SLOTTIMES = [];
+
+        oldObject.SLOTTIMES.forEach(elSlotTime => {
+            let slot = new SlotTime(elSlotTime.START, elSlotTime.END);
+            slot.SELECTED = elSlotTime.SELECTED;
+            slot.STATO = elSlotTime.STATO;
+
+            this.SLOTTIMES.push(slot);
+        })
+    }
+
     setStandardTime() {
 
         let adesso = new Date();
@@ -56,6 +78,19 @@ export class SlotDay {
             
             this.SLOTTIMES = SlotTime.getArrayStandardSlot(myData, myStart, myEnd, minutiSlot);
             
+        }
+    }
+
+    /**
+     * Imposta tutti i figli SlotTime applicando a START e END lo stesso orario ma sulla data passata
+     * @param nuovaData Nuova Data da applicare
+     */
+    changeDateInSlotTime(nuovaData: Date) {
+        
+        if (this.SLOTTIMES) {
+            this.SLOTTIMES.forEach(elSlotTime => {
+                elSlotTime.changeDateInSlotTime(nuovaData);
+            });
         }
     }
     

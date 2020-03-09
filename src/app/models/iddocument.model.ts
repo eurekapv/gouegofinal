@@ -1,4 +1,5 @@
 import { TypeDefinition, Descriptor } from '../models/descriptor.model';
+import { MyDateTime } from './mydatetime.model';
  
   export class IDDocument {
     ID: string;
@@ -131,24 +132,19 @@ import { TypeDefinition, Descriptor } from '../models/descriptor.model';
 
 
 
+    
 
     //Formatta una data passata in ISO (Solo la parte data)
     formatDateISO(data: Date) {
-      let intMese = data.getMonth() + 1;
-      let mese = (intMese > 9) ? (intMese + '') : ('0' + intMese);
-      let format = [data.getFullYear(), mese, data.getDate()].join('-');
+      
+      let format = MyDateTime.formatDateISO(data);
 
       return format;
     }
 
     //Formatta una data passata in ISO (Data e Ora)
     formatDateTimeISO(data: Date) {
-      let prefixDate = this.formatDateISO(data);
-      let ore = (data.getHours() > 9) ? (data.getHours() + '') : ('0' + data.getHours());
-      let minuti = (data.getMinutes() > 9) ? (data.getMinutes() + '') : ('0' + data.getMinutes());
-      let secondi = (data.getSeconds() > 9) ? (data.getSeconds() + '') : ('0' + data.getSeconds());
-      let final = prefixDate + ' ' + ore + ':' + minuti + ':' + secondi;
-
+      let final = MyDateTime.formatDateTimeISO(data);
       return final;
     }
 

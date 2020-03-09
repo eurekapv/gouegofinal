@@ -44,8 +44,9 @@ export class SlotWeek {
      * Ritorna una copia di uno SlotDay 
      * 
      * @param dataGiorno Data richiesta
+     * @param changeTimeDate Se impostata a TRUE viene cambiata la data presente negli slottime impostando la data Giorno
      */
-    getCopySlotDay(dataGiorno: Date): SlotDay {
+    getCopySlotDay(dataGiorno: Date, changeTimeDate?: boolean): SlotDay {
 
         let weekDay = dataGiorno.getDay();
         let myCopySlot: SlotDay;
@@ -55,8 +56,20 @@ export class SlotWeek {
                         return element.WEEKDAY == weekDay
                         });
         if (mySlot) {
-            myCopySlot = Object.assign({},mySlot);
+            //Creo un nuovo oggetto e copio tutte le proprietà
+            myCopySlot = new SlotDay();
+            myCopySlot.copyFrom(mySlot);
+
+            
+            
+
+            /* TUTTI GLI SLOTTIMES DEVONO RICEVERE LA STESSA GIORNATA */
+            if (changeTimeDate) {
+                myCopySlot.changeDateInSlotTime(dataGiorno);
+            }
         }
+
+
 
         return myCopySlot;
                 

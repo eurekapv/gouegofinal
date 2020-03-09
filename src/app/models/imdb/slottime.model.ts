@@ -1,5 +1,6 @@
 import { StatoSlot } from '../valuelist.model';
 import * as moment from "moment";
+import { MyDateTime } from '../mydatetime.model';
 
 
 /**
@@ -59,6 +60,26 @@ export class SlotTime {
         }
 
         return arSlots;
+    }
+
+    /**
+     * Imposta a START e END l'orario presente ma sulla data passata
+     * @param nuovaData Nuova data da applicare
+     */
+    changeDateInSlotTime(nuovaData: Date) {
+        if (nuovaData) {
+            if (this.START) {
+                //Aggiorno la data 
+                this.START = MyDateTime.changeDateInTime(nuovaData, this.START);
+                
+            }
+
+            if (this.END) {
+                //Aggiorno la data 
+                this.END = MyDateTime.changeDateInTime(nuovaData, this.END);
+                
+            }
+        }
     }
     
 }

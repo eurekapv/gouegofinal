@@ -181,6 +181,8 @@ export class BookingPage implements OnInit, OnDestroy {
     console.log('Nuova data selezionata');
     console.log(newDate);
 
+    this.actualBookDay = newDate;
+
     //Richiedo le occupazioni
     this.getOccupazioni();
   }
@@ -191,11 +193,9 @@ export class BookingPage implements OnInit, OnDestroy {
    * @param docLocation Location prenotazione
    */
   getTemplateWeek(docLocation: Location) {
-    console.log('Ora');
     
     this.templateWeekSlot = this.startService.getTemplateSlotWeek(docLocation);
-
-    console.log(this.templateWeekSlot);
+    
   }
 
   /**
@@ -210,13 +210,13 @@ export class BookingPage implements OnInit, OnDestroy {
    * 
    */
   getOccupazioni() {
-    //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata
-    this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay);
+    //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata (TRUE-> Chiedo di aggiornare la data su tutti i record figli SLOTTIME)
+    this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
 
     //Step b) Chiamo il servizio
     this.startService.requestSlotOccupazioni(this.actualSlotDay, 
-                                             this.selectedLocation.ID, 
-                                             this.selectedCampo.ID, 
+                                             this.selectedLocation, 
+                                             this.selectedCampo, 
                                              this.actualBookDay);
 
     //Ora tutto avviene in modalità asincrona

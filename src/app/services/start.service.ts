@@ -3,12 +3,9 @@ import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
+import { Storage } from '@ionic/storage';
+
 import { ApicallService } from './apicall.service';
-
-import { StartConfiguration } from '../models/start-configuration.model';
-
-import { Location } from '../models/location.model';
-import { Utente, storageUtente } from '../models/utente.model';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
 import { CourseService } from './course.service';
@@ -19,12 +16,17 @@ import { AreaService } from './area.service';
 import { LocationService } from './location.service';
 import { CourseschedulerService } from './coursescheduler.service';
 import { CamposportService } from './camposport.service';
-import { LogApp } from '../models/log.model';
-import { Storage } from '@ionic/storage';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
 import { SlotoccupazioneService } from './slotoccupazione.service';
+
+import { StartConfiguration } from '../models/start-configuration.model';
+
+import { Location } from '../models/location.model';
+import { Utente, storageUtente } from '../models/utente.model';
+import { LogApp } from '../models/log.model';
 import { SlotDay } from '../models/imdb/slotday.model';
+import { Campo } from '../models/campo.model';
 
 
 @Injectable({
@@ -488,7 +490,7 @@ loadStorageUtente() {
 
           if (savedUser.loginUser && savedUser.pwdUser) {
             //Devo tentare di accedere
-            LogApp.consoleLog('AutoLogin ' + savedUser.loginUser + ' -> ' + savedUser.pwdUser);
+            
             //Faccio la richiesta al server
             this.requestAuthorization(savedUser.loginUser, savedUser.pwdUser)
                 .subscribe (resultData => {
@@ -496,6 +498,8 @@ loadStorageUtente() {
                     //Son riuscito ad accedere correttamente
                     // IN TEORIA NON DEVO FARE NULLA
                     //CI PENSANO GLI ALTRI SUBSCRIBE
+                    LogApp.consoleLog('AutoLogin passed');
+
                   }
                 });
             
@@ -651,13 +655,13 @@ get docOccupazione() {
  * @param dataGiorno Giorno richiesto
  */
 requestSlotOccupazioni(templateSlotDay: SlotDay,
-                       idLocation:string, 
-                       idCampo: string, 
+                       docLocation: Location, 
+                       docCampo: Campo, 
                        dataGiorno: Date) {
   const actualStartConfig = this._startConfig.getValue();
 
   //Faccio la richiesta dei dati al servizio
-  this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, idLocation, idCampo, dataGiorno);
+  this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, docLocation, docCampo, dataGiorno);
 
 }
 

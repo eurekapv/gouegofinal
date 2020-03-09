@@ -97,7 +97,7 @@ export class LocationService {
                 }))
                 .subscribe(resultData => {
                   let locReturn: Location;
-                  console.log('Richiesta');
+                  
                   if (resultData && resultData.length !== 0) {
                     
                     locReturn = new Location();
@@ -244,7 +244,8 @@ export class LocationService {
       if (elApertura.APERTOCHIUSO) {
 
         daySlot.APERTOCHIUSO = true;
-      
+        
+        //Imposto orari standard di apertura
         daySlot.setStandardTime();
 
         //Ora devo recuperare ora iniziale e finale definite sulla apertura location

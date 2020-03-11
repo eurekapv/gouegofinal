@@ -33,7 +33,9 @@
         <ion-button 
             expand="block" 
             [ngClass] = "getClassButton()"
-            [disabled]="getDisableButton()">
+            [disabled]="getDisableButton()"
+            (click)="chooseSlot()">
+            {{ getCaptionButton() }}
         </ion-button>
       </ion-col>
     </ion-row>

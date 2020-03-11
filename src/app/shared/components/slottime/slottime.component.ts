@@ -29,7 +29,7 @@ export class SlottimeComponent implements OnInit {
       }
       else {
         // Button utilizzabile
-        if (this.mySlot.SELECTED) {
+        if (this.mySlot.selected) {
           myClass = 'slot-selected';
         }
         else {
@@ -52,6 +52,30 @@ export class SlottimeComponent implements OnInit {
     }
 
     return disable;
+  }
+
+  getCaptionButton() {
+    let caption = '';
+    if (!this.readOnly) {
+      if (this.mySlot.selected) {
+        caption = this.captionBtn;
+      }
+      else {
+        switch (this.mySlot.STATO) {
+          case StatoSlot.occupato:
+            caption = 'occupato'
+            break;
+          case StatoSlot.chiuso:
+            caption = 'chiuso'
+            break;
+        
+          default:
+            break;
+        }
+      }
+    }
+
+    return caption;
   }
 
   /**

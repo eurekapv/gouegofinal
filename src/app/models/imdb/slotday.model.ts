@@ -1,5 +1,5 @@
 import { SlotTime } from './slottime.model';
-
+import { PrenotazionePianificazione } from '../prenotazionepianificazione.model';
 
 export class SlotDay {
     WEEKDAY:    number;
@@ -33,7 +33,7 @@ export class SlotDay {
 
         oldObject.SLOTTIMES.forEach(elSlotTime => {
             let slot = new SlotTime(elSlotTime.START, elSlotTime.END);
-            slot.SELECTED = elSlotTime.SELECTED;
+            slot.selected = elSlotTime.selected;
             slot.STATO = elSlotTime.STATO;
 
             this.SLOTTIMES.push(slot);
@@ -92,6 +92,115 @@ export class SlotDay {
                 elSlotTime.changeDateInSlotTime(nuovaData);
             });
         }
+    }
+
+    /**
+     * Effettua le operazioni per il cambio selezione di uno slot
+     * @param idSlotTime SlotTime in cambiamento selection
+     */
+    changeSelectionSlotTime(actualSlot: SlotTime): PrenotazionePianificazione  {
+        
+        let newState: boolean;
+        let contaSelected: number; 
+        let findSlot: boolean;
+        let findStart: boolean;
+        let docPianificazione: PrenotazionePianificazione;
+        
+        if (actualSlot) {
+            newState = !actualSlot.selected; //Il nuovo stato che assumerà lo Slot
+
+            //Se il nuovo stato è disattivare, posso farlo
+            if (newState == false) {
+                
+                contaSelected = 0; 
+                findSlot = false;
+                
+                //Se prima dello Slot da disattivare ci fossero elementi selezionati, 
+                // allora devo disattivare lo slot richiesto e tutti i seguenti
+                this.SLOTTIMES.forEach(element => {
+                    if (element.ID == actualSlot.ID) {
+                        findSlot = true;
+                        element.selected = false;
+                    }
+                    else if (!findSlot && element.selected) {
+                        contaSelected++;
+                    }
+                    else if (findSlot && contaSelected > 0) {
+                        element.selected = false;
+                    }
+                    
+
+                })
+
+            }
+            else { 
+                contaSelected = 0;
+                findSlot = false;
+                //Se il nuovo Stato è ATTIVARE devo effettuare l'operazione 
+                //controllando le altre selezioni
+                //Le selezioni massime possono essere solo 2
+                this.SLOTTIMES.forEach(element => {
+
+                    //Elemento selezionato
+                    if (element.selected) {
+                        //Se ne ho già selezionato 1, devo disattivare questo
+
+                        if ((contaSelected >= 1 && !findSlot) || (findSlot && contaSelected !== 1) ) {
+                            element.selected = false;
+                        }
+                        else {
+                            contaSelected++;
+                        }
+                    }
+                    else if (element.ID == actualSlot.ID) {
+                        element.selected = true;
+                        findSlot = true;
+
+                        contaSelected++;
+                    }
+                });
+
+                //Ora se ci sono 2 selezione posso selezionare tutto cio' che sta in mezzo
+                if (contaSelected == 2) {
+                    findStart = false;
+                    for (let index = 0; index < this.SLOTTIMES.length; index++) {
+                        const element = this.SLOTTIMES[index];
+                        if (element.selected && findStart) {
+                            //Ho finito di selezionare - esco
+                            break;
+                        }
+                        else if (element.selected && !findStart) {
+                            //Inizia adesso la selezione
+                            findStart = true;
+                        }
+                        else if (findStart) {
+                            //Ho trovato l'inizio e non ho ancora finito
+                            element.selected = true;
+                        }
+                    }
+                    
+                }
+
+            }
+        }
+
+        return docPianificazione;
+        
+    }
+
+    /**
+     * Cerca e ritorna uno SlotTime per id
+     * @param idSlotTime id dello slottime da ricercare
+     */
+    findSlotTimeById(idSlotTime: string) {
+        let findSlot: SlotTime;
+        if (idSlotTime) {
+            findSlot = this.SLOTTIMES.find(element => {
+                return element.ID == idSlotTime;
+            })
+        }
+
+        return findSlot;
     }
     
 }

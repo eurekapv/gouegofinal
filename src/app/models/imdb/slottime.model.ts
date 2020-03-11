@@ -1,24 +1,26 @@
 import { StatoSlot } from '../valuelist.model';
 import * as moment from "moment";
 import { MyDateTime } from '../mydatetime.model';
+import { IDDocument } from '../iddocument.model';
 
 
 /**
  * Classe che identifica una linea oraria di una prenotazione (slot)
  */
-export class SlotTime {
+export class SlotTime extends IDDocument {
+    
     START: Date;
     END: Date;
     STATO: StatoSlot;
-    SELECTED: boolean;
-
-    
+        
     
     constructor(inizioTime: Date, fineTime: Date) {
+
+        super();
         this.START = inizioTime;
         this.END = fineTime;
-        this.SELECTED = false;
         this.STATO = StatoSlot.libero;
+
     }
 
 

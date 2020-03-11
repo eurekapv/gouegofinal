@@ -53,21 +53,30 @@ export class SlotoccupazioneService {
 
     const doObject = 'CAMPO';
     const strData = moment(dataGiorno).format('YYYY-MM-DD');
-    let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
-    myParams = myParams.append('guidLocation', docLocation.ID);
-    myParams = myParams.append('guidCampo', docCampo.ID);
-    myParams = myParams.append('dataGiorno',strData);
 
-    let myUrl = config.urlBase + '/' + doObject;
+    if (docLocation && docCampo)  {
+      let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
+      myParams = myParams.append('guidLocation', docLocation.ID);
+      myParams = myParams.append('guidCampo', docCampo.ID);
+      myParams = myParams.append('dataGiorno',strData);
+  
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      this.apiCall
+          .httpGet(myUrl,myHeaders,myParams)
+          .subscribe(resultData => {
+  
+            
+            //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
+            this.syncResult(resultData, templateSlotDay);
+          });
+    }
+    else {
 
-    this.apiCall
-        .httpGet(myUrl,myHeaders,myParams)
-        .subscribe(resultData => {
+      this._docOccupazione.next(templateSlotDay);
+      
+    }
 
-          
-          //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
-          this.syncResult(resultData, templateSlotDay);
-        });
 
   } 
   
@@ -143,7 +152,7 @@ export class SlotoccupazioneService {
 
           result = MyDateTime.dateTimeInside(docSlot.START, docSlot.END, elLock.START, elLock.END);
 
-          console.log(result);
+          
           if (result) {
             //SLOT OCCUPATO
             findInSlotLock = true;

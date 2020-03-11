@@ -102,7 +102,7 @@
             sizeMd="6"
             sizeSm="12"
             sizeXs="12">
-          <app-slottime  [mySlot]="slot" [readOnly]="actualSlotDay._TEMPLATELOCK"></app-slottime>
+          <app-slottime  [mySlot]="slot" [readOnly]="actualSlotDay._TEMPLATELOCK" (clickSlot)="myClickSlot($event)"></app-slottime>
         </ion-col>
       </ion-row>
     </ion-grid>

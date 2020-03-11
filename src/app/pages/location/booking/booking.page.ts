@@ -9,6 +9,8 @@ import { Campo } from 'src/app/models/campo.model';
 import { Utente } from 'src/app/models/utente.model';
 import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
 import { SlotDay } from 'src/app/models/imdb/slotday.model';
+import { SlotTime } from 'src/app/models/imdb/slottime.model';
+import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 
 @Component({
   selector: 'app-booking',
@@ -19,7 +21,7 @@ export class BookingPage implements OnInit, OnDestroy {
 
   idLocation = '';
   versionBooking = 'manual'; //Versione di Booking (Automatico, Manuale)
-  docPrenotazione: Prenotazione;
+  // docPrenotazione: Prenotazione;
   selectedLocation: Location;
   subSelectedLocation: Subscription;
   selectedCampo: Campo;
@@ -37,6 +39,10 @@ export class BookingPage implements OnInit, OnDestroy {
   
   actualBookDay = new Date(); //Giorno di Pianificazione
   actualSlotDay: SlotDay; //E' lo Slot Day attualmente in visualizzazione
+  actualCaptionButtonSelected = ''; //E' il testo visualizato sul bottone selezionato
+  actualPlanning: PrenotazionePianificazione = new PrenotazionePianificazione(); //E' la pianificazione attuale che l'utente vorrebbe prenotare
+
+
   subActualSlotDay: Subscription;
 
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
@@ -47,15 +53,16 @@ export class BookingPage implements OnInit, OnDestroy {
               private navController: NavController) { 
 
     // Creo una nuova prenotazione
-    this.docPrenotazione = new Prenotazione();
-    this.docPrenotazione.newPrenotazioneInit();
+    // this.docPrenotazione = new Prenotazione();
+    // this.docPrenotazione.newPrenotazioneInit();
 
     this.ricevuti = false;
     this.bookable = false;
 
-
     
   }
+
+
 
   ngOnInit() {
 
@@ -84,9 +91,9 @@ export class BookingPage implements OnInit, OnDestroy {
                   // Ho ricevuto i dati
                   this.ricevuti = true;
 
-                  //Inizializzo il documento con Area e Location
-                  this.docPrenotazione.newPrenotazioneSetArea(this.selectedLocation.IDAREAOPERATIVA);
-                  this.docPrenotazione.newPrenotazioneSetLocation(this.selectedLocation.ID);
+                  // //Inizializzo il documento con Area e Location
+                  // this.docPrenotazione.newPrenotazioneSetArea(this.selectedLocation.IDAREAOPERATIVA);
+                  // this.docPrenotazione.newPrenotazioneSetLocation(this.selectedLocation.ID);
 
                   //Prelevo il primo campo disponibile
                   this.selectedCampo = this.selectedLocation.getNextCampo();
@@ -195,7 +202,7 @@ export class BookingPage implements OnInit, OnDestroy {
   getTemplateWeek(docLocation: Location) {
     
     this.templateWeekSlot = this.startService.getTemplateSlotWeek(docLocation);
-    
+
   }
 
   /**
@@ -221,5 +228,25 @@ export class BookingPage implements OnInit, OnDestroy {
 
     //Ora tutto avviene in modalità asincrona
   }
+
+
+
+
+  /**
+   * E' stato cliccato uno slot tempo
+   * @param slotClicked SlotTime Cliccato
+   */
+  myClickSlot(slotClicked: SlotTime) {
+    
+    if (slotClicked) {
+      
+      this.actualSlotDay.changeSelectionSlotTime(slotClicked);
+
+    }
+    
+  }
+
+
+
 
 }

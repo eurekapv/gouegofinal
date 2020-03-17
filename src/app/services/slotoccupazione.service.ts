@@ -13,6 +13,7 @@ import { DateSlotLock, TimeLock } from '../models/dateslotlock.model';
 import { SlotTime } from '../models/imdb/slottime.model';
 import { StatoSlot } from '../models/valuelist.model';
 import { MyDateTime } from '../models/mydatetime.model';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,7 @@ export class SlotoccupazioneService {
           docCampo: Campo, 
           dataGiorno: Date) {
 
-  console.log('Richiesta dati occupazione');
+  
   
 
   const myHeaders = new HttpHeaders({'Content-type':'application/json', 
@@ -55,6 +56,9 @@ export class SlotoccupazioneService {
     const strData = moment(dataGiorno).format('YYYY-MM-DD');
 
     if (docLocation && docCampo)  {
+      LogApp.consoleLog('Dati Occupazione: RICHIESTA');
+      LogApp.consoleLog(`Guid Location: ${docLocation.ID} - GuidCampo: ${docCampo.ID} - Data: ${strData}`);
+
       let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
       myParams = myParams.append('guidLocation', docLocation.ID);
       myParams = myParams.append('guidCampo', docCampo.ID);
@@ -65,13 +69,18 @@ export class SlotoccupazioneService {
       this.apiCall
           .httpGet(myUrl,myHeaders,myParams)
           .subscribe(resultData => {
-  
             
+            LogApp.consoleLog('Dati Occupazione: RISPOSTA');
+            LogApp.consoleLog(resultData);
+
             //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
             this.syncResult(resultData, templateSlotDay);
           });
     }
     else {
+
+      LogApp.consoleLog('Dati Occupazione: RICHIESTA FAILED');
+      LogApp.consoleLog('Manca' + (!docLocation?'Location':'') + ' ' + (!docCampo?'Campo':''));
 
       this._docOccupazione.next(templateSlotDay);
       

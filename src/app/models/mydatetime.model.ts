@@ -75,6 +75,21 @@ static dateTimeInside(startCheck: Date, endCheck: Date, minDateTime:Date, maxDat
 
 }
 
+/**
+ * Calcola il numero di Ore intercorse tra le due date ore
+ * @param startDate Data Ora Iniziale (Inferiore)
+ * @param endDate Data Ora Finale (Superiore)
+ */
+static durataOre(startDate: Date, endDate: Date): number {
+    let ore = 0;
+    if (startDate && endDate) {
+        let mStart = moment(startDate);
+        let mEnd = moment(endDate);
+        ore = mEnd.diff(mStart, 'hours', true);
+    }
+
+    return ore;
+}
 
 
 }

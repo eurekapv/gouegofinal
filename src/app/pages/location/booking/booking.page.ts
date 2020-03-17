@@ -167,9 +167,10 @@ export class BookingPage implements OnInit, OnDestroy {
    * Ha cambiato il campo
    */
   onDidChangeCampo(e: any) {
-    //Indice Slide è Uno Base
+    
+    //Indice Slide è Zero Base
     this.sliderCampi.getActiveIndex().then((index: number) => {
-      index -= 1;
+      
       //Ricavo il campo selezionato
       this.selectedCampo = this.selectedLocation.getCampoByIndex(index);
 
@@ -239,14 +240,36 @@ export class BookingPage implements OnInit, OnDestroy {
   myClickSlot(slotClicked: SlotTime) {
     
     if (slotClicked) {
-      
-      this.actualSlotDay.changeSelectionSlotTime(slotClicked);
-
+      //Cambio il Planning attuale visualizzato
+      this.actualPlanning = this.actualSlotDay.changeSelectionSlotTime(slotClicked);
+      console.log(this.actualPlanning);
     }
     
   }
 
 
+  /**
+   * il Footer contiene la prenotazione attiva che uno sta implementando
+   * Viene visualizzato solo se c'e' una prenotazione attiva
+   * cioè se sono presenti le DATAORAINIZIO e DATAORAFINE
+   */
+  visibleFooter()  {
+    let visible = false;
+    if (this.actualPlanning) {
+      if (this.actualPlanning.DATAORAINIZIO && this.actualPlanning.DATAORAFINE) {
+        visible = true;
+      }
+    }
+
+    return visible;
+  }
+
+  /**
+   * Evento Click sul pulsante di prenotazione presente nel footer
+   */
+  myClickPrenota(dataPrenotazione: PrenotazionePianificazione) {
+    
+  }
 
 
 }

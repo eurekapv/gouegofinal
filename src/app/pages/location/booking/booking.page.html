@@ -117,6 +117,9 @@
 
 
 </ion-content>
-<ion-footer >
-
+<!-- PRENOTAZIONE SELEZIONATA -->
+<ion-footer *ngIf="visibleFooter()">
+  <app-footbooked 
+    [myPrenotaPianifica]="actualPlanning" 
+    (clickPrenota)="myClickPrenota($event)"></app-footbooked>
 </ion-footer>

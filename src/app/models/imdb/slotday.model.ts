@@ -1,5 +1,6 @@
 import { SlotTime } from './slottime.model';
 import { PrenotazionePianificazione } from '../prenotazionepianificazione.model';
+import { MyDateTime } from '../mydatetime.model';
 
 export class SlotDay {
     WEEKDAY:    number;
@@ -182,10 +183,46 @@ export class SlotDay {
                 }
 
             }
+
         }
+        //Lo faccio fuori dagli If cosi creo sempre un oggetto
+        //Qui cerco di creare un oggetto di PrenotazionePianificazione da restituire
+        docPianificazione = this.getPrenotazionePianificazione();
+
 
         return docPianificazione;
         
+    }
+
+
+    getPrenotazionePianificazione(): PrenotazionePianificazione {
+        let docPianificazione: PrenotazionePianificazione;
+        let findStart = false;
+
+        docPianificazione = new PrenotazionePianificazione();
+
+        /**Devo cercare il primo selezionato e l'ultimo */
+        if (this.SLOTTIMES) {
+
+            this.SLOTTIMES.forEach(elSlot => {
+                if (elSlot.selected) {
+                    if (findStart) {
+                        docPianificazione.DATAORAFINE = elSlot.END;
+                        docPianificazione.DURATAORE = MyDateTime.durataOre(docPianificazione.DATAORAINIZIO, docPianificazione.DATAORAFINE);
+                    }
+                    else {
+                        findStart = true;
+                        docPianificazione.DATAORAINIZIO = elSlot.START;
+                        docPianificazione.DATAORAFINE = elSlot.END;
+                        docPianificazione.DURATAORE = MyDateTime.durataOre(docPianificazione.DATAORAINIZIO, docPianificazione.DATAORAFINE);
+                    }
+                }
+            });
+
+            
+        }
+
+        return docPianificazione;
     }
 
     /**

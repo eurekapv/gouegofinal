@@ -13,6 +13,7 @@ import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-
 import { ButtonCardComponent } from 'src/app/shared/components/button-card/button-card.component';
 import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.component';
 import { CalendarscrollComponent } from 'src/app/shared/components/calendarscroll/calendarscroll.component';
+import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbooked.component';
 
 
 @NgModule({
@@ -33,9 +34,10 @@ import { CalendarscrollComponent } from 'src/app/shared/components/calendarscrol
                  NewsEventiComponent,
                  ButtonCardComponent,
                  SlottimeComponent,
-                 CalendarscrollComponent
+                 CalendarscrollComponent,
+                 FootbookedComponent
                  ],
-  exports: [NewsEventiComponent, ButtonCardComponent, SlottimeComponent, CalendarscrollComponent]
+  exports: [NewsEventiComponent, ButtonCardComponent, SlottimeComponent, CalendarscrollComponent, FootbookedComponent]
   
 })
 export class HomePageModule {}

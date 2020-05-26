@@ -23,7 +23,6 @@
           <ion-label>Automatico</ion-label>
       </ion-segment-button>
     </ion-segment>
-
     <!-- ITEM DEL CAMPO -->
     <ion-list *ngIf="ricevuti && bookable" 
         class="item-campo ion-no-padding">
@@ -49,10 +48,7 @@
                   slot="end"
                   *ngIf="i+1 < selectedLocation?.CAMPO.length">
               </ion-icon>
-  
-              
             </ion-item>
-  
           </ion-slide>    
         </ion-slides>
     </ion-list>

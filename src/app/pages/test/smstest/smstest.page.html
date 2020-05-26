@@ -1,7 +1,18 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button  defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Pagina di TEST</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-slottime *ngFor="let slot of timeSlots" [mySlot]="slot"></app-slottime>
+</ion-content>
 
 
-
-<ion-content no-padding>
+<!-- <ion-content no-padding>
   <div class="main">
     <ion-card no-margin>
       <ion-card-content>
@@ -25,12 +36,12 @@
               padding-horizontal clear-input="true"></ion-input>
           </ion-col>
         </ion-row>
-        <!-- <ion-row *ngIf="showOTPInput">
+        <ion-row *ngIf="showOTPInput">
           <ion-col>
             <ion-input clearInput type="tel" [(ngModel)]="OTP" maxlength="6" class="otpinput" padding-horizontal>
             </ion-input>
           </ion-col>
-        </ion-row> -->
+        </ion-row>
         <ion-row *ngIf="showOTPInput" class="OTP-border">
           <ion-col>
             <div>
@@ -150,5 +161,5 @@
       Gouego
     </ion-title>
   </ion-toolbar>
-</ion-footer>
+</ion-footer> -->
 

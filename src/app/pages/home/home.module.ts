@@ -8,8 +8,12 @@ import { HomePage } from './home.page';
 
 import { CentriComponent } from '../../shared/components/centri/centri.component'
 import { ImpegniComponent } from 'src/app/shared/components/impegni/impegni.component';
-import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-eventi.component';
 
+import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-eventi.component';
+import { ButtonCardComponent } from 'src/app/shared/components/button-card/button-card.component';
+import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.component';
+import { CalendarscrollComponent } from 'src/app/shared/components/calendarscroll/calendarscroll.component';
+import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbooked.component';
 
 
 @NgModule({
@@ -24,6 +28,16 @@ import { NewsEventiComponent } from 'src/app/shared/components/news-eventi/news-
       }
     ])
   ],
-  declarations: [HomePage, CentriComponent, ImpegniComponent, NewsEventiComponent]
+  declarations: [HomePage, 
+                 CentriComponent, 
+                 ImpegniComponent, 
+                 NewsEventiComponent,
+                 ButtonCardComponent,
+                 SlottimeComponent,
+                 CalendarscrollComponent,
+                 FootbookedComponent
+                 ],
+  exports: [NewsEventiComponent, ButtonCardComponent, SlottimeComponent, CalendarscrollComponent, FootbookedComponent]
+  
 })
 export class HomePageModule {}

@@ -7,13 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { CoursePageRoutingModule } from './course-routing.module';
 
 import { CoursePage } from './course.page';
+import { ListcoursesPageModule } from '../listcourses/listcourses.module';
+import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CoursePageRoutingModule
+    CoursePageRoutingModule,
+    ListcoursesPageModule,
+    PipesModule
   ],
   declarations: [CoursePage]
 })

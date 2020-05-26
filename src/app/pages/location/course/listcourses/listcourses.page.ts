@@ -7,7 +7,7 @@ import { StartService } from '../../../../services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi } from 'src/app/models/valuelist.model';
 import { FilterCorsi } from 'src/app/models/filtercorsi.model';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 import { LogApp } from 'src/app/models/log.model';
@@ -38,7 +38,8 @@ export class ListcoursesPage implements OnInit {
 
   constructor(private router: ActivatedRoute, 
               private startService: StartService,
-              private mdlController: ModalController
+              private mdlController: ModalController,
+              private navController: NavController
               ) { 
     
     //In attesa dei corsi
@@ -53,7 +54,7 @@ export class ListcoursesPage implements OnInit {
     //Richiedo lo User
     this.listenDocUser = this.startService.utente.subscribe(element => {
       this.docUser = element;
-    })
+    });
 
     //Mostro tutti i corsi
     this.preferList = SegmentCorsi.tutti;
@@ -161,9 +162,7 @@ export class ListcoursesPage implements OnInit {
   }
 
   onClickCardDetail(corso: Corso) {
-    LogApp.consoleLog('Card Corso selezionata:');
-    LogApp.consoleLog(corso);
-    
+    this.navController.navigateForward(['/','detailcourse',corso.ID]);
   }
 
   /* ****** CALENDAR ******** */

@@ -24,6 +24,11 @@ export class AreaService {
     return this._areaSelected.asObservable();
   }
 
+  /** Ritorna il valore attuale dell'area selezionata */
+  get areaSelectedValue() {
+    return this._areaSelected.getValue();
+  }
+
   constructor(private apiService: ApicallService) { }
 
 

@@ -15,7 +15,7 @@ export class CardCourseComponent implements OnInit {
   @Input() myCorso = new Corso();
   @Output() clickCalendar = new EventEmitter<Corso>();
   @Output() clickDetail = new EventEmitter<Corso>();
-
+  iconColor = 'primary';
 
   ngOnInit() {}
 

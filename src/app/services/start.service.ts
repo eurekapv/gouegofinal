@@ -3,12 +3,9 @@ import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
+import { Storage } from '@ionic/storage';
+
 import { ApicallService } from './apicall.service';
-
-import { StartConfiguration } from '../models/start-configuration.model';
-
-import { Location } from '../models/location.model';
-import { Utente, storageUtente } from '../models/utente.model';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
 import { CourseService } from './course.service';
@@ -19,10 +16,18 @@ import { AreaService } from './area.service';
 import { LocationService } from './location.service';
 import { CourseschedulerService } from './coursescheduler.service';
 import { CamposportService } from './camposport.service';
-import { LogApp } from '../models/log.model';
-import { Storage } from '@ionic/storage';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
+import { SlotoccupazioneService } from './slotoccupazione.service';
+
+import { StartConfiguration } from '../models/start-configuration.model';
+
+import { Location } from '../models/location.model';
+import { Utente, storageUtente } from '../models/utente.model';
+import { LogApp } from '../models/log.model';
+import { SlotDay } from '../models/imdb/slotday.model';
+import { Campo } from '../models/campo.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +67,8 @@ export class StartService {
     private corsoCalendarioService: CourseschedulerService,
     private campiSportService: CamposportService,
     private prenotazioniService: PrenotazioneService,
-    private newsEventiService: NewseventiService) { 
+    private newsEventiService: NewseventiService,
+    private slotOccupazioneService: SlotoccupazioneService ) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -136,10 +142,15 @@ export class StartService {
   //#region AREE
     
     /**
-     * Area Selezionata
+     * Area Selezionata, in versione Observable
      */
     get areaSelected() {
       return this.areaService.areaSelected;
+    }
+
+    /** Area Selezionata non Observable */
+    get areaSelectedValue() {
+      return this.areaService.areaSelectedValue;
     }
 
     /**
@@ -219,8 +230,14 @@ export class StartService {
   
 
   get listLocation() {
-    //return this._listLocation.asObservable();
     return this.locationService.listLocation;
+  }
+
+  /**
+   * Ritorna la location attiva
+   */
+  get activeLocation() {
+    return this.locationService.activeLocation;
   }
 
   /**
@@ -240,7 +257,16 @@ export class StartService {
   requestLocationByID(idLocation: string) {
     const actualStartConfig = this._startConfig.getValue();
     
-    return this.locationService.requestLocationByID(actualStartConfig, idLocation);
+    this.locationService.requestLocationByID(actualStartConfig, idLocation);
+  }
+
+  /**
+   * Cerca nel servizio la Location desiderata
+   * NON OBSERVABLE
+   * @param idLocation IDLocation cercata
+   */
+  findLocationByID(idLocation: string) {
+    return this.locationService.findLocationByID(idLocation);
   }
 
   /**
@@ -255,9 +281,22 @@ export class StartService {
     this.locationService.decodeListSport = listSport;
 
     return this.locationService
-                .syncInfoCampi(actualStartConfig, selectedLocation);
+               .syncInfoCampi(actualStartConfig, selectedLocation);
   }
 
+
+  /**
+   * Ritorna il template Week con tutti i giorni della settimana e gli SlotTime da applicare
+   * in una prenotazione
+   * (Schema di Default che andrà successivamente attualizzato con le info di occupazione e
+   * chiusura specifica per festività etc)
+   * @param docLocation Location richiesta
+   */
+  getTemplateSlotWeek(docLocation: Location) {
+
+    return this.locationService.getTemplateSlotWeek(docLocation);
+
+  }
   
   //#endregion
 
@@ -392,6 +431,18 @@ requestCalendarioCorso(idCorso: string) {
 
   this.corsoCalendarioService.request(actualStartConfig, idCorso);
 }
+
+
+//Ritorna il corso selezionato nel servizio
+get selectedCorso() {
+  return this.corsoService.selectedCorso;
+}
+
+//Richiede il programma del Corso
+requestCorsoProgramma(idCorso: string) {
+  const actualStartConfig = this._startConfig.getValue();
+  this.corsoService.requestCorsoProgramma(actualStartConfig, idCorso);
+}
 //#endregion
 
 //#region UTENTE
@@ -439,7 +490,7 @@ loadStorageUtente() {
 
           if (savedUser.loginUser && savedUser.pwdUser) {
             //Devo tentare di accedere
-            LogApp.consoleLog('AutoLogin ' + savedUser.loginUser + ' -> ' + savedUser.pwdUser);
+            
             //Faccio la richiesta al server
             this.requestAuthorization(savedUser.loginUser, savedUser.pwdUser)
                 .subscribe (resultData => {
@@ -447,6 +498,8 @@ loadStorageUtente() {
                     //Son riuscito ad accedere correttamente
                     // IN TEORIA NON DEVO FARE NULLA
                     //CI PENSANO GLI ALTRI SUBSCRIBE
+                    LogApp.consoleLog('AutoLogin passed');
+
                   }
                 });
             
@@ -575,6 +628,43 @@ requestNews(idArea: string, maxRecord: number = 0) {
   //Chiedo il recupero delle News
   this.newsEventiService.request(actualStartConfig, idArea, maxRecord);
 }
+
+  /** Effettua la richiesta al servizio di una news
+   * @param idNews News scelta 
+   * 
+   */
+  requestNewsByID(idNews: string) {
+    
+    
+    return this.newsEventiService.getNewsById(idNews);
+    
+  }
+//#endregion
+
+//#region OCCUPAZIONE CAMPI
+get docOccupazione() {
+  return this.slotOccupazioneService.docOccupazione;
+}
+
+/**
+ * Il servizio prende il template dello Slot, richiede al server i dati di occupazione, 
+ * corregge il templateSlotDay e lo ripropone come Observable
+ * @param templateSlotDay Template della Giornata 
+ * @param idLocation Location
+ * @param idCampo Campo
+ * @param dataGiorno Giorno richiesto
+ */
+requestSlotOccupazioni(templateSlotDay: SlotDay,
+                       docLocation: Location, 
+                       docCampo: Campo, 
+                       dataGiorno: Date) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  //Faccio la richiesta dei dati al servizio
+  this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, docLocation, docCampo, dataGiorno);
+
+}
+
 //#endregion
 
 }

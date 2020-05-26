@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
@@ -9,15 +9,18 @@ import { GalleryPage } from './gallery/gallery.page';
 import { CampiPage } from './campi/campi.page';
 import { LogApp } from 'src/app/models/log.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-location',
   templateUrl: './location.page.html',
   styleUrls: ['./location.page.scss'],
 })
-export class LocationPage implements OnInit {
+export class LocationPage implements OnInit, OnDestroy {
 
   selectedLocation = new Location();
+  subSelectedLocation: Subscription;
+
   aperture: AperturaLocation[] = [];
   listButtonCard: ButtonCard[] = []; // Lista dei Bottoni
   
@@ -43,7 +46,7 @@ export class LocationPage implements OnInit {
 
 
   ngOnInit() {
-    let idLocation;
+    let idLocation = '';
     this.router.paramMap.subscribe( param => {
       
       if (param.has('locationId')) 
@@ -51,29 +54,43 @@ export class LocationPage implements OnInit {
         idLocation = param.get('locationId');
 
         //Chiedo al Server le informazioni Location
-        this.startService.requestLocationByID(idLocation).subscribe(element => {
-          if (element.length !== 0) {
-            
-            //Imposto le informazioni della Location Selezionata
-            this.selectedLocation.setJSONProperty(element[0]);
+        this.startService.requestLocationByID(idLocation);
+        
+        //Ricevo le info della Location
+        this.subSelectedLocation = this.startService.activeLocation
+          .subscribe(element => {
 
-            LogApp.consoleLog('Location Selezionata');
-            LogApp.consoleLog(this.selectedLocation);
-            
-          }
-        });
+            this.selectedLocation = element;
+            if (!this.selectedLocation.do_inserted) {
+
+              LogApp.consoleLog('Location Selezionata');
+              //LogApp.consoleLog(this.selectedLocation);
+
+              /** Imposto i Bottoni Card */
+              this.setButtonCard();
+
+
+            }
+          });
         
       }
       else {
-
+        this.navCtrl.navigateForward(['/']);
       }
-    })
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subSelectedLocation) {
+      this.subSelectedLocation.unsubscribe();
+    }
   }
 
   setButtonCard() {
     
     // Recupero i Bottoni che devo mostrare in videata
-    this.listButtonCard = ButtonCard.getButtonActionLocation();
+    // A seconda se posso Prenotare nella location oppure no
+    this.listButtonCard = ButtonCard.getButtonActionLocation(this.selectedLocation.ENABLEPRENOTAZIONI);
 
   }
 
@@ -99,6 +116,7 @@ export class LocationPage implements OnInit {
     switch (btn.functionCod) {
       case 'book':
         //Prenotazioni
+        this.navCtrl.navigateForward(['/','location',this.selectedLocation.ID,'booking']);
         break;
       case 'course':
         // Corsi

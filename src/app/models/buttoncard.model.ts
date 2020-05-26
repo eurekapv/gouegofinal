@@ -5,22 +5,29 @@ export class ButtonCard {
     sloticon: string;
     color: string;
     iconLink: boolean;
-    functionCod: string; 
+    functionCod: string;
 
-    static getButtonActionLocation(): ButtonCard[] {
+
+    /**
+     * Ritorna i Botton Action per la location
+     * @param canBooking E' possibile prenotare ?
+     */
+    static getButtonActionLocation(canBooking?:boolean): ButtonCard[] {
         let arButton: ButtonCard[] = [];
         let newBtn: ButtonCard;
 
-        newBtn = new ButtonCard();
-        newBtn.title = 'Prenota un campo';
-        newBtn.subtitle = 'organizza un incontro e invita i tuoi amici';
-        newBtn.nameicon = 'chatbubbles-outline';
-        newBtn.sloticon = "start";
-        newBtn.color = "primary";
-        newBtn.iconLink = true;
-        newBtn.functionCod = 'book';
-
-        arButton.push(newBtn);
+        if (canBooking) {
+            newBtn = new ButtonCard();
+            newBtn.title = 'Prenota un campo';
+            newBtn.subtitle = 'organizza un incontro e invita i tuoi amici';
+            newBtn.nameicon = 'chatbubbles-outline';
+            newBtn.sloticon = "start";
+            newBtn.color = "primary";
+            newBtn.iconLink = true;
+            newBtn.functionCod = 'book';
+    
+            arButton.push(newBtn);
+        }
 
         newBtn = new ButtonCard();
         newBtn.title = 'Impara con noi';
@@ -54,7 +61,7 @@ export class ButtonCard {
             newBtn.nameicon = 'calendar-outline';
             newBtn.sloticon = "start";
             newBtn.color = "primary";
-            newBtn.iconLink = true;
+            newBtn.iconLink = false;
             newBtn.functionCod = 'noevents';
     
             arButton.push(newBtn);

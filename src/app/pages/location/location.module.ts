@@ -12,6 +12,7 @@ import { ApertureComponent } from '../../shared/components/aperture/aperture.com
 import { GalleryPage } from './gallery/gallery.page';
 import { CampiPage } from './campi/campi.page';
 import { PipesModule } from '../../shared/pipes/pipes.module';
+import { HomePageModule } from '../home/home.module';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { PipesModule } from '../../shared/pipes/pipes.module';
     FormsModule,
     IonicModule,
     LocationPageRoutingModule,
-    PipesModule
+    PipesModule,
+    HomePageModule
     
   ],
   declarations: [LocationPage, 

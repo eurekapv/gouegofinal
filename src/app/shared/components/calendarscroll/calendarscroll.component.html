@@ -1,0 +1,27 @@
+<ion-grid class="ion-no-padding ion-no-margin">
+  <ion-row class="ion-text-center">
+    <ion-col class="ion-no-padding ion-no-margin">
+      <a (click)="showPickerDate()"><h5>{{ activeDay | date: "MMMM yyyy" | titlecase}}</h5></a>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="ion-no-margin ion-padding-horizontal">
+  <ion-slides [options]="sliderOpts">
+    <ion-slide *ngFor="let day of listDay">
+
+
+        <ion-button 
+            class="ion-no-padding ion-no-margin"
+            shape="round" 
+            size = "large"
+            [fill]="getFillButton(day)" 
+            color="primary"
+            (click)="onClickButton(day)">
+          {{ day }}
+        </ion-button>
+
+
+    </ion-slide>
+  </ion-slides>
+  </ion-row>
+</ion-grid>

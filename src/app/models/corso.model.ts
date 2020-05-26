@@ -2,6 +2,7 @@ import { IDDocument } from './iddocument.model';
 import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni } from '../models/valuelist.model';
 import { Settimana } from './settimana.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { CorsoProgramma } from './corsoprogramma.model';
 
 export class Corso extends IDDocument {
 
@@ -31,8 +32,8 @@ export class Corso extends IDDocument {
     IDCATEGORIEETA: string;
     _DESCRCATEGORIEETA: string;
     _SETTIMANA: Settimana[]; //Giorni della Settimana del Corso
-
     DURATA: number;
+    CORSOPROGRAMMA: CorsoProgramma[];
 
 
 
@@ -42,6 +43,7 @@ export class Corso extends IDDocument {
       this._DESCRCATEGORIEETA = ''
       this._DESCRLIVELLOENTRATA = '';
       this._DESCRSPORT = '';
+      this.CORSOPROGRAMMA = [];
     }
 
           /**
@@ -102,6 +104,65 @@ export class Corso extends IDDocument {
 
       //Sistemo la Settimana in italiano
       this.setSettimana(Language.italiano);
+
+      this.setCollection(data);
+
+    }
+
+    /**
+     * Sistema le collection se presenti
+     * @param data JSON Ricevuto
+     */
+    setCollection(data: any) {
+      this.CORSOPROGRAMMA = [];
+
+      if (data.CORSOPROGRAMMA) {
+        this.setCollectionCorsoProgramma(data.CORSOPROGRAMMA);
+      }
+    }
+
+    /**
+     * Imposta la collection CorsoProgramma
+     * @param arPROGRAMMA JSON Ricevuti
+     */
+    setCollectionCorsoProgramma(arPROGRAMMA: any[]) {
+
+      this.CORSOPROGRAMMA = [];
+
+      if (arPROGRAMMA) {
+        arPROGRAMMA.forEach(element => {
+          
+          // Ricerco se esiste già
+          let newProgramma = this.getCorsoProgrammaByID(element.ID);
+
+          //Non esiste lo creo nuovo
+          if (!newProgramma) {
+
+            newProgramma = new CorsoProgramma();
+            newProgramma.setJSONProperty(element);
+            this.CORSOPROGRAMMA.push(newProgramma);
+
+          }
+          else {
+            //Reimposto i valori
+            newProgramma.setJSONProperty(element);
+          }
+
+
+        })
+      }
+    }
+
+    /**
+     * Ritorna l'elemento di Corso Programma che corrisponde con ID
+     */
+    getCorsoProgrammaByID(idCorsoProgramma): CorsoProgramma {
+        // Ricerco se esiste già
+        let newProgramma = this.CORSOPROGRAMMA.find(elProgramma => {
+          return elProgramma.ID == idCorsoProgramma
+        });
+
+        return newProgramma;
     }
 
     /**
@@ -145,45 +206,51 @@ export class Corso extends IDDocument {
       });
     }
 
-    //Esegue la decodifica della proprieta
-    //Tutte le proprietà hanno la chiave 
-    //in un campo denominato IDXYZ 
-    //e decodificate in campi _DESCRXYZ
+    /**
+     * Serve per capire sulla card cosa scrivere e quale data mettere
+     * next -> Inizia il DATAINIZIO
+     * during -> Termina il DATAFINE
+     * stop -> Concluso il DATAFINE
+     */
+    tempoCorso() {
+      let adesso = new Date();
+      let value = "";
+
+      if (this.DATAINIZIO > adesso) {
+        value = "next";
+      }
+      else if (this.DATAFINE > adesso) {
+        value = "during";
+      }
+      else {
+        value = "stop";
+      }
+
+      return value;
+    }
 
     /**
-     * 
-     * @param propertyToDecode Nome della proprietà da decodificare
-     * @param listDecode Lista con gli elementi
-     * @param propertyLookup Nome della proprieta a cui attingere la decodifica
+     * Ritorna una icona a seconda del tipo Corso
      */
-    // lookup(propertyToDecode: string, listDecode: any[], propertyLookup: string) {
-    //   let namePropertyIDX = propertyToDecode;
-    //   let namePropertyDESCR = '_DESCR' +  namePropertyIDX.substring(2, namePropertyIDX.length);
-    //   let _this = this;
+    getIcon() {
+      let nameIcon= 'ribbon';
+
+      switch (this.TIPO) {
+        case TipoCorso.corso:
+          nameIcon = 'ribbon';
+          break;
+        
+        case TipoCorso.provaGratuita: 
+          nameIcon = 'trail-sign';
+          break;
       
+        default:
+          nameIcon = 'ribbon';
+          break;
+      }
 
-    //   //Proprieta Indice e Descrizione presenti
-    //   if (_this.hasOwnProperty(namePropertyIDX) && _this.hasOwnProperty(namePropertyDESCR)) {
-    //     if (listDecode && propertyLookup) {
-
-    //       let element = listDecode.find(value => {
-    //         return value.ID == _this[namePropertyIDX]
-    //       });
-
-    //       if (element) {
-    //         if (element.hasOwnProperty(propertyLookup)) {
-    //           _this[namePropertyDESCR] = element[propertyLookup];
-    //         }
-    //       }
-
-    //     }
-    //   }
+      return nameIcon;
       
-
-    // }
-
-
-
-
+    }
 
 }

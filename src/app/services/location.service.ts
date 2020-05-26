@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, take, max } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Location } from '../models/location.model';
@@ -8,6 +8,8 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { Sport } from '../models/sport.model';
 import { CampoSport } from '../models/camposport.model';
+import { SlotWeek } from '../models/imdb/slotweek.model';
+
 
 
 @Injectable({
@@ -17,6 +19,9 @@ export class LocationService {
 
   private _listLocation = new BehaviorSubject<Location[]>([]);
   private _decodeListSport: Sport[]; //Lista di Decodifica degli Sport
+  private _activeLocation = new BehaviorSubject<Location>(new Location());
+  //VARIABILI PER PRENOTAZIONI
+
 
   get listLocation() {
     return this._listLocation.asObservable();
@@ -24,6 +29,10 @@ export class LocationService {
 
   set decodeListSport(value: Sport[]) {
     this._decodeListSport = value;
+  }
+
+  get activeLocation() {
+    return this._activeLocation.asObservable();
   }
 
   constructor(private apiService:ApicallService) { }
@@ -81,11 +90,23 @@ export class LocationService {
     let myUrl = config.urlBase + '/' + doObject;
 
 
-    return this.apiService
+    this.apiService
                 .httpGet(myUrl, myHeaders, myParams)
-                .pipe(map(fullData => {
-                  return fullData.LOCATION
-                }));
+                .pipe(map(fullData => {                
+                  return fullData.LOCATION;
+                }))
+                .subscribe(resultData => {
+                  let locReturn: Location;
+                  
+                  if (resultData && resultData.length !== 0) {
+                    
+                    locReturn = new Location();
+                    locReturn.setJSONProperty(resultData[0]);
+                    
+                    //Emetto evento di cambio
+                    this._activeLocation.next(locReturn);
+                  }                  
+                });
   }
 
   /**
@@ -177,6 +198,78 @@ export class LocationService {
                 }));
   }
 
+
+  /**
+   * Ritorna la Location presente in memoria
+   * @param idLocation Location cercata
+   */
+  findLocationByID(idLocation: string) {
+    let arLocation = this._listLocation.getValue();
+    
+    return arLocation.find(element => {
+      return element.ID == idLocation
+    });
+  }
   //#endregion
 
+
+  //#region PRENOTAZIONE
+
+  /**
+   * Data la Location, ritorna il template settimanale con gli slot time da applicare 
+   * (Default Slot Time)
+   * Andranno poi attualizzati ulteriormente
+   * @param docLocation Location da utilizzare
+   */
+  getTemplateSlotWeek(docLocation: Location): SlotWeek {
+    let weekTemplate = new SlotWeek();
+    
+    weekTemplate.IDAREAOPERATIVA = docLocation.IDAREAOPERATIVA;
+    weekTemplate.IDLOCATION = docLocation.ID;
+
+    if (docLocation.MINUTISLOTPRENOTAZIONE) {
+      weekTemplate.SLOTMINUTES = docLocation.MINUTISLOTPRENOTAZIONE;
+    }
+
+    //Inizializzo con i giorni
+    weekTemplate.initDays();
+
+    //Ciclo sulle Aperture Location per poter impostare l'orario minimo e massimo per ogni giorno
+    docLocation.APERTURALOCATION.forEach(elApertura => {
+      
+      let daySlot = weekTemplate.getSlotDay(elApertura.GIORNO);
+      let minDateTime: Date;
+      let maxDateTime: Date;
+      //APERTO
+      if (elApertura.APERTOCHIUSO) {
+
+        daySlot.APERTOCHIUSO = true;
+        
+        //Imposto orari standard di apertura
+        daySlot.setStandardTime();
+
+        //Ora devo recuperare ora iniziale e finale definite sulla apertura location
+        minDateTime = elApertura.getOrario('min');
+        maxDateTime = elApertura.getOrario('max');
+
+        //Imposto gli orari di inizio e fine se ci sono
+        if (minDateTime && maxDateTime) {
+          daySlot.STARTTIME = minDateTime;
+          daySlot.ENDTIME = maxDateTime;
+        }
+
+      }
+      else {
+        daySlot.APERTOCHIUSO = false;
+      }
+      
+    });
+
+    //Ora per tutti i giorni del template devo creare tutti gli slottime
+    weekTemplate.createSlotTimeDays();
+
+    return weekTemplate;
+  }
+
+  //#endregion
 }

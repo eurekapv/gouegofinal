@@ -98,4 +98,33 @@ export class AperturaLocation extends IDDocument {
     isOpen() {
         return this.APERTOCHIUSO;
     }
+
+    /**
+     * Ritorna l'orario impostato minore o maggiore di apertura o chiusura
+     * UNDEFINED se non trovato oppure se la Location è chiusa
+     * @param type min || max a seconda se su vuole l'orario inferiore o superiore
+     */
+    getOrario(type: string) {
+        let value: Date;
+        if (this.APERTOCHIUSO) {
+            if (type == 'min') {
+                if (this.DALLE1) {
+                    value = this.DALLE1;
+                }
+                else if (this.DALLE2) {
+                    value = this.DALLE2;
+                }
+            }
+            else if (type == 'max') {
+                if (this.ALLE2) {
+                    value = this.ALLE2;
+                }
+                else if (this.ALLE1) {
+                    value = this.ALLE1;
+                }
+            }
+        }
+
+        return value;
+    }
 }

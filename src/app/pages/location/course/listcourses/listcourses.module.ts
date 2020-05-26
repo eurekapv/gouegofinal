@@ -20,6 +20,8 @@ import { CalendarPage } from '../detailcourse/calendar/calendar.page';
     ListcoursesPageRoutingModule
   ],
   declarations: [ListcoursesPage, CardCourseComponent, FilterPage, CalendarPage],
-  entryComponents: [FilterPage, CalendarPage]
+  entryComponents: [FilterPage, CalendarPage],
+  exports: [CalendarPage]
+  
 })
 export class ListcoursesPageModule {}

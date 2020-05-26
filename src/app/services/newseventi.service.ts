@@ -8,6 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { NewsEventi } from '../models/newseventi.model';
 import { IDDocument } from '../models/iddocument.model';
+import { element } from 'protractor';
 
 
 
@@ -78,7 +79,13 @@ export class NewseventiService {
     this.listNews
       .pipe(take(1))
       .subscribe (collNews => {
-        this._listNews.next( collNews.concat(objNews));
+        let findElement = collNews.find(element => {
+          return element.ID == objNews.ID
+        });
+
+        if (!findElement) {
+          this._listNews.next( collNews.concat(objNews));
+        }
       })
   }
   
@@ -95,4 +102,54 @@ export class NewseventiService {
 
     return strAdesso;
   }
+
+  /** Recupera una News e la torna Observable, 
+   *
+   * @param config Configurazione
+   * @param idNews News ricercata
+   * */
+  getNewsById(idNews: string) {
+    let news = this._listNews
+                      .getValue()
+                      .find(element => {
+                        return (element.ID == idNews)
+                      });
+
+    return news;
+  }
+
+  /**
+   * Richiede al server la news
+   * @param config Dati configurazione
+   * @param idNews News da richiedere al server
+   */
+  private _requestServerById(config: StartConfiguration, idNews: string) {
+    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    const doObject = 'NEWSEVENTO';
+    
+
+    //In Testata c'e' sempre l'AppId
+    myHeaders = myHeaders.set('APPID',config.appId);
+    let myUrl = config.urlBase + '/' + doObject;  
+
+    //Nei Parametri imposto l'area richiesta
+    let myParams = new HttpParams().set('ID',idNews);
+    
+
+    return this.apiService
+      .httpGet(myUrl, myHeaders, myParams)
+      .pipe(map(data => {
+          
+            let arReturn = [];
+            if (data.NEWSEVENTO) {
+              arReturn = data.NEWSEVENTO;
+            }
+
+            return arReturn;
+          
+      }))
+      .pipe(take(1))
+
+  }
+
 }

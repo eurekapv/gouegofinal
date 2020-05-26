@@ -16,10 +16,11 @@ export class Location extends IDDocument {
     ISOSTATO: string;
     IMAGEURL: string;
     FAVORITE: boolean;
-    CANBOOK: boolean;
     DESCRIZIONEMOB: string;
     TELEFONO: string;
     EMAIL: string;
+    ENABLEPRENOTAZIONI: boolean;
+    MINUTISLOTPRENOTAZIONE: number;
     LOCATIONIMAGE: LocationImage[];
     CAMPO: Campo[];
     APERTURALOCATION: AperturaLocation[];
@@ -32,6 +33,8 @@ export class Location extends IDDocument {
       this.LOCATIONIMAGE = [];
       this.CAMPO = [];
       this.APERTURALOCATION = [];
+      this.ENABLEPRENOTAZIONI = false;
+      this.MINUTISLOTPRENOTAZIONE = 30;
 
       // Imposto una cover standard
       this.setStandardCover();
@@ -56,8 +59,8 @@ export class Location extends IDDocument {
                     'TELEFONO',
                     'EMAIL'
                     ];
-    let arNumber = [];
-    let arBoolean = ['FAVORITE','CANBOOK'];
+    let arNumber = ['MINUTISLOTPRENOTAZIONE'];
+    let arBoolean = ['FAVORITE','ENABLEPRENOTAZIONI'];
     let arDate = [];
     let arDateTime =[];
     let arTime = [];
@@ -284,6 +287,52 @@ export class Location extends IDDocument {
       })
     }
 
-    
+    /**
+     * Ritorna l'oggetto Campo che nell'array risulta successivo a quello rappresentato da idCampo
+     * Undefined se non ci sono elementi o elementi successivi a quello selezionato
+     * @param idCampo IDCampo Attuale
+     */
+    getNextCampo(idCampo: string = '') {
+      let myCampo: Campo;
+      let isNext = false;
+
+      if (this.CAMPO) {
+        for (let index = 0; index < this.CAMPO.length; index++) {
+          const elCampo = this.CAMPO[index];
+
+          //Senza idCampo il primo che trovo va bene
+          if (!idCampo) {
+            myCampo = elCampo;
+            break;
+          }
+          else if (isNext) {
+            //Questo è quello che mi serve
+            myCampo = elCampo;
+            break;
+          }
+          else if (elCampo.ID == idCampo) {
+            //Sarà il prossimo che devo usare
+            isNext = true;
+          }
+
+        }
+
+      }
+
+      return myCampo;
+    }
+
+    /**
+     * Ritorna un campo partendo dal suo Indice
+     * @param indexZeroBase Indice del campo Zero Base
+     */
+    getCampoByIndex(indexZeroBase: number) {
+      let myCampo: Campo;
+      if (this.CAMPO)  {
+        myCampo = this.CAMPO[indexZeroBase];
+      }
+
+      return myCampo;
+    }
 
 }

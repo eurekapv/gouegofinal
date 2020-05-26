@@ -6,14 +6,14 @@ import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, NavController } from '@ionic/angular';
 import { Attivita  } from 'src/app/models/attivita.model';
-import { SettoreAttivita, ValueList } from '../../models/valuelist.model';
-import { Router } from '@angular/router';
+import { SettoreAttivita } from '../../models/valuelist.model';
+
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEventi } from 'src/app/models/newseventi.model';
-import { element } from 'protractor';
+
 
 @Component({
   selector: 'app-home',
@@ -62,7 +62,7 @@ export class HomePage implements OnInit, OnDestroy{
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
-              private router: Router
+              private navController: NavController
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -132,6 +132,8 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
+  //#region EVENTI PERSONALI
+
   /** Imposta i bottoni in caso di mancanza eventi */
   setButtonNoEvents() {
     //Recupero i bottoni da mostrare, a seconda sia loggato o no
@@ -156,13 +158,29 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
+  //#endregion
+
+  //#region NEWS ED EVENTI AZIENDA
+
+  onClickShowAllNews() {
+    this.navController.navigateForward(['/','news']);
+  }
+
   /**
    * Evento Click sulla News
    * @param news News selezionata
    */
   onClickNews(news: NewsEventi) {
-    console.log(news);
+    if (news) {
+      //Le News insert non sono vere, non posso aprirle
+      if (!news.do_inserted) {
+        this.navController.navigateForward(['/','news',news.ID]);
+      }
+    }
+    
   }
+
+  //#endregion
 
   _testAddImpegni() {
     //visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
@@ -221,7 +239,6 @@ export class HomePage implements OnInit, OnDestroy{
   onClickfooterButton() {
     if (this.userLogged) {
       // Apro lo Storico
-
     }
     else {
       // Apro il Login
@@ -230,11 +247,27 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
+  /**
+   * Prenotazione
+   * @param location Location Selezionata
+   */
+  onClickPrenota(location: Location) {
+    this.navController.navigateForward(['/','location',location.ID,'booking']);
+  }
+
+  /**
+   * Scheda Location
+   * @param location Location selezionata
+   */
+  onClickLocation(location: Location) {
+    this.navController.navigateForward(['/','location',location.ID]);
+  }
+
 
 
   /** Apertura Videata Login */
   openLogin() {
-    this.router.navigate(['/','auth','login']);
+    this.navController.navigateForward(['/','auth','login']);
   }
 
   /** funzione per mostrare il popup di scelta campo */

@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+ion-card {
+    background-color: white;
+    min-height: 50px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#col-orari {
+    border-right-style: solid;
+    border-width: thin;
+    border-color: #eff1f8;
+    
+}
+
+.orario-black {
+    font-family: Roboto;
+    font-size: medium;
+    color: black;
+}
+
+.orario-light {
+    font-family: Roboto;
+    font-size: medium;
+    color: #9da2b3;
+}
+
+.slot-busy {
+    //Background of the button
+    --background: var(--ion-color-danger);
+    /*
+    //Background of the button when pressed. Note: setting this will interfere with the Material Design ripple.
+    --background-activated:
+    //Opacity of the button when pressed
+    --background-activated-opacity:
+    //Background of the button when focused with the tab key
+    --background-focused	
+    //Opacity of the button when focused with the tab key
+    --background-focused-opacity
+    //Background of the button on hover
+    --background-hover	
+    //Opacity of the background on hover
+    --background-hover-opacity
+    */
+}
+
+.slot-free {
+    //Background of the button
+    --background: lightgreen;
+    //var(--ion-color-success-tint);
+}
+
+.slot-selected {
+        //Background of the button
+        --background: var(--ion-color-primary);
+}
+
+.slot-read-only {
+    --background: lightgray;
+    
+}
+

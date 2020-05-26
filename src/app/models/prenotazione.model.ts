@@ -20,7 +20,82 @@ export class Prenotazione extends IDDocument {
         super();
 
         this.PRENOTAZIONEPIANIFICAZIONE = [];
+        
     }
+
+
+    /**
+     * Inizializza per una nuova prenotazione
+     */
+    initNewPrenotazione(idArea: string, idLocation: string) {
+        let newPianificazione = new PrenotazionePianificazione();
+
+        //Imposta i parametri nell'oggetto e crea 1 Pianificazione
+        this.IDAREAOPERATIVA = idArea;
+        this.DATA = new Date();
+
+        newPianificazione.IDAREAOPERATIVA = idArea;
+        newPianificazione.IDLOCATION = idLocation;
+        this.PRENOTAZIONEPIANIFICAZIONE.push(newPianificazione);
+    }
+
+    //#region INIZIALIZZAZIONE NUOVA PRENOTAZIONE
+
+    /**
+     * Preparazione di una nuova prenotazione
+     */
+    newPrenotazioneInit() {
+        let newPianificazione = new PrenotazionePianificazione();
+        this.DATA = new Date();
+
+        this.PRENOTAZIONEPIANIFICAZIONE.push(newPianificazione);
+
+    }
+    /**
+     * Impostazione Area
+     * @param idArea Area da applicare
+     */
+    newPrenotazioneSetArea(idArea: string) {
+        let docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
+        this.IDAREAOPERATIVA = idArea;
+        docPianificazione.IDAREAOPERATIVA = idArea;
+    }
+
+
+    /**
+     * Impostazione Location
+     * @param idLocation Location da applicare
+     */
+    newPrenotazioneSetLocation(idLocation: string) {
+        let docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
+        docPianificazione.IDLOCATION = idLocation;
+    }   
+    
+    /**
+     * Impostazione Utente 
+     * @param idUtente Utente che prenota
+     */
+    newPrenotazioneSetUtente(idUtente: string) {
+        this.IDUTENTE = idUtente;
+    }
+
+    /**
+     * Imposta il campo nella prenotazione
+     * @param idCampo Campo selezionato
+     */
+    newPrenotazioneSetIDCampo(idCampo: string) {
+        let docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
+        docPianificazione.IDCAMPO = idCampo;
+    }    
+
+    /**
+     * Ritorna il primo documento di pianificazione presente
+     */
+    getPianificazione() {
+        return this.PRENOTAZIONEPIANIFICAZIONE[0];
+    }
+
+    //#endregion
 
     setJSONProperty(data: any) {
         super.setJSONProperty(data);

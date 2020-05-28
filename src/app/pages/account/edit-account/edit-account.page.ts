@@ -67,7 +67,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
         updateOn:'change',
         validators: []
       }),
-      nascita:new FormControl(this.utente.NATOIL.toISOString(), {
+      nascita:new FormControl((this.utente.NATOIL ? this.utente.NATOIL.toISOString(): this.utente.NATOIL), {
         updateOn:'change',
         validators: []
       }),

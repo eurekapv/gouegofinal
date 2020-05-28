@@ -224,14 +224,11 @@ export class HomePage implements OnInit, OnDestroy{
     if (this.docUtenteListen) {
       this.docUtenteListen.unsubscribe();
     }
-<<<<<<< HEAD
-=======
 
 
     if (this.listNewsListen) {
       this.listNewsListen.unsubscribe();
     }
->>>>>>> 8a23d4b6613f0658965b9614595c9c50b22c4fb3
   }
 
 

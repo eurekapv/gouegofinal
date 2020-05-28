@@ -227,7 +227,11 @@ export class BookingPage implements OnInit, OnDestroy {
                                              this.selectedCampo, 
                                              this.actualBookDay);
 
+    //Step c) Creo un nuovo oggetto di prentoazione
+    this.actualPlanning = new PrenotazionePianificazione();
+
     //Ora tutto avviene in modalità asincrona
+
   }
 
 
@@ -268,7 +272,15 @@ export class BookingPage implements OnInit, OnDestroy {
    * Evento Click sul pulsante di prenotazione presente nel footer
    */
   myClickPrenota(dataPrenotazione: PrenotazionePianificazione) {
-    
+    console.log(this.selectedLocation);
+    console.log(this.selectedCampo);
+    console.log(dataPrenotazione);
+
+    //Impostiamo Location e Campo
+    dataPrenotazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
+    dataPrenotazione.IDLOCATION = this.selectedLocation.ID;
+    dataPrenotazione.IDCAMPO = this.selectedCampo.ID;
+
   }
 
 

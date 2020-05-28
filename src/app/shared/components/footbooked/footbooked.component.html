@@ -4,7 +4,7 @@
       <ion-icon slot="start" name="calendar" color="danger"></ion-icon>
       <ion-label>
         <h2>
-          {{ myPrenotaPianifica?.DATAORAINIZIO | date: "EEEE dd MMMM yyyy" | titlecase }}
+          {{ myPrenotaPianifica?.DATAORAINIZIO | date: "EEE dd MMMM yyyy" | titlecase }}
         </h2>
         <p>
           dalle {{ myPrenotaPianifica?.DATAORAINIZIO | date : "HH:mm" }} alle {{ myPrenotaPianifica?.DATAORAFINE | date : "HH:mm" }}

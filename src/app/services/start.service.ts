@@ -647,20 +647,8 @@ requestPrenotazioniUtente(idUtente: string) {
 }
 
 
-/**
- * Richiede al servizio prenotazione un oggetto della prenotazione attuale
- */
-get actualPianificazione() {
-  return this.prenotazioniService.actualPianificazione;
-}
 
-/**
- * Invia al servizio prenotazione il documento
- * @param docPrenotazione Documento da memorizzare
- */
-setActualPrenotazione(docPrenotazione:PrenotazionePianificazione){
-  this.prenotazioniService.setActualPrenotazione(docPrenotazione);
-}
+
 //#endregion
 
 //#region NEWS EVENTI

@@ -8,6 +8,7 @@ import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { Location } from 'src/app/models/location.model';
 import { Utente } from 'src/app/models/utente.model';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 
 
 @Component({
@@ -17,7 +18,12 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 })
 export class BookingsummaryPage implements OnInit {
 
+  //Prenotazione Master
   activePrenotazione: Prenotazione;
+  //Elemento 1 di Pianificazione contenuta in activePrenotazione
+  docPianificazione: PrenotazionePianificazione;
+
+
   subActivePrenotazione: Subscription;
   selectedLocation: Location;
   
@@ -68,6 +74,8 @@ export class BookingsummaryPage implements OnInit {
         this.subActivePrenotazione = this.startService.activePrenotazione.subscribe(elPrenotazione => {
           //Recupero la prenotazione
           this.activePrenotazione = elPrenotazione;
+          //Recupero la Pianificazione
+          this.docPianificazione = this.activePrenotazione.getPianificazione();
 
           //Id Book è diverso da quello in arrivo dalla prenotazione
           if (this.idPrenotazione != this.activePrenotazione.ID) {

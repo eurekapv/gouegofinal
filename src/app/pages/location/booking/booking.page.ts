@@ -40,10 +40,11 @@ export class BookingPage implements OnInit, OnDestroy {
   actualBookDay = new Date(); //Giorno di Pianificazione
   actualSlotDay: SlotDay; //E' lo Slot Day attualmente in visualizzazione
   actualCaptionButtonSelected = ''; //E' il testo visualizato sul bottone selezionato
-  actualPlanning: PrenotazionePianificazione = new PrenotazionePianificazione(); //E' la pianificazione attuale che l'utente vorrebbe prenotare
   
   //Prenotazione Attiva
   activePrenotazione: Prenotazione;
+  //Singola Data Pianificata
+  actualPlanning: PrenotazionePianificazione = new PrenotazionePianificazione(); //E' la pianificazione attuale che l'utente vorrebbe prenotare
   
   subActualPlanning: Subscription;
   subActualSlotDay: Subscription;
@@ -59,8 +60,8 @@ export class BookingPage implements OnInit, OnDestroy {
     this.ricevuti = false;
     this.bookable = false;
 
-    //Chiedo il documento di Planning al servizio
-    this.actualPlanning = this.startService.actualPianificazione;
+    //Creo un documento di Pianificazione
+    this.actualPlanning = new PrenotazionePianificazione;
     
   }
 

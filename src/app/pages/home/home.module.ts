@@ -37,7 +37,11 @@ import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbo
                  CalendarscrollComponent,
                  FootbookedComponent
                  ],
-  exports: [NewsEventiComponent, ButtonCardComponent, SlottimeComponent, CalendarscrollComponent, FootbookedComponent]
+  exports: [NewsEventiComponent, 
+            ButtonCardComponent, 
+            SlottimeComponent, 
+            CalendarscrollComponent, 
+            FootbookedComponent]
   
 })
 export class HomePageModule {}

@@ -50,7 +50,7 @@ export class CoursePage implements OnInit, OnDestroy {
       //Controllo se l'utente è loggato
       this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
         this.userLogged = element;
-      })      
+      });     
     }
     else {
       this.navCtrl.navigateForward(['/']);

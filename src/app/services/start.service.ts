@@ -471,7 +471,7 @@ saveStorageUtente(username: string, passwd: string) {
   let strAccount = account.saveJSON(true);
 
   this.storageAccess.set('gouegoser',strAccount);
-  LogApp.consoleLog('Saved credential: ' + strAccount);
+  LogApp.consoleLog('Saved credential');
 }
 
 /**
@@ -593,7 +593,40 @@ requestChangePassword(oldPsw:string, newPsw:string) {
 
 //#endregion
 
-//#region 
+//#region PRENOTAZIONE
+
+/**
+ * Prenotazione Attiva
+ */
+get activePrenotazione() {
+  return this.prenotazioniService.activePrenotazione;
+}
+
+/**
+ * Chiede al servizio di inizializzare una nuova Prenotazione
+ * @param idArea IDArea da impostare
+ */
+initActivePrenotazione(idArea: string) {
+  this.prenotazioniService.initActivePrenotazione(idArea);
+}
+
+/**
+ * Chiede al servizio di impostare la pianificazione
+ * @param docPianificazione Pianificazione da impostare
+ */
+setPianificazioneSingola(docPianificazione: PrenotazionePianificazione) {
+  this.prenotazioniService.setPianificazioneSingola(docPianificazione);
+}
+
+/**
+ * Chiede al servizio di impostare l'utente
+ * @param idUtente Utente da applicare
+ */
+setIDUtenteActivePrenotazione(docUtente: Utente) {
+  this.prenotazioniService.setIDUtenteActivePrenotazione(docUtente);
+}
+
+
 
 /**
  * Lista Prenotazioni di tipo Observable
@@ -617,8 +650,8 @@ requestPrenotazioniUtente(idUtente: string) {
 /**
  * Richiede al servizio prenotazione un oggetto della prenotazione attuale
  */
-get actualPrenotazione() {
-  return this.prenotazioniService.actualPrenotazione;
+get actualPianificazione() {
+  return this.prenotazioniService.actualPianificazione;
 }
 
 /**

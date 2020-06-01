@@ -27,16 +27,27 @@ export class Prenotazione extends IDDocument {
     /**
      * Inizializza per una nuova prenotazione
      */
-    initNewPrenotazione(idArea: string, idLocation: string) {
-        let newPianificazione = new PrenotazionePianificazione();
-
-        //Imposta i parametri nell'oggetto e crea 1 Pianificazione
+    initNewPrenotazione(idArea: string) {
+        
+        //Imposta i parametri nell'oggetto
         this.IDAREAOPERATIVA = idArea;
         this.DATA = new Date();
+    }
 
-        newPianificazione.IDAREAOPERATIVA = idArea;
-        newPianificazione.IDLOCATION = idLocation;
-        this.PRENOTAZIONEPIANIFICAZIONE.push(newPianificazione);
+    /**
+     * UTILIZZATA
+     * Imposta come oggetto di Pianificazione, quello passato
+     * @param docPianificazione Nuovo oggetto di pianificazione
+     */
+    setPianificazioneSingola(docPianificazione) {
+        if (docPianificazione) {
+            if (this.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
+                this.PRENOTAZIONEPIANIFICAZIONE[0] = docPianificazione;
+            }
+            else {
+                this.PRENOTAZIONEPIANIFICAZIONE.push(docPianificazione);
+            }
+        }
     }
 
     //#region INIZIALIZZAZIONE NUOVA PRENOTAZIONE
@@ -55,38 +66,35 @@ export class Prenotazione extends IDDocument {
      * Impostazione Area
      * @param idArea Area da applicare
      */
-    newPrenotazioneSetArea(idArea: string) {
-        let docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
+    SetArea(idArea: string) {
+        
         this.IDAREAOPERATIVA = idArea;
-        docPianificazione.IDAREAOPERATIVA = idArea;
+
+        if (this.PRENOTAZIONEPIANIFICAZIONE) {
+            this.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
+                element.IDAREAOPERATIVA = idArea;
+            }); 
+        }
+        
     }
 
 
-    /**
-     * Impostazione Location
-     * @param idLocation Location da applicare
-     */
-    newPrenotazioneSetLocation(idLocation: string) {
-        let docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
-        docPianificazione.IDLOCATION = idLocation;
-    }   
-    
+     
     /**
      * Impostazione Utente 
      * @param idUtente Utente che prenota
      */
-    newPrenotazioneSetUtente(idUtente: string) {
+    setUtente(idUtente: string, _nominativo: string) {
         this.IDUTENTE = idUtente;
+        if (_nominativo) {
+            this.NOMINATIVO = _nominativo;
+        }
+        else {
+            this.NOMINATIVO = '';
+        }
     }
 
-    /**
-     * Imposta il campo nella prenotazione
-     * @param idCampo Campo selezionato
-     */
-    newPrenotazioneSetIDCampo(idCampo: string) {
-        let docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
-        docPianificazione.IDCAMPO = idCampo;
-    }    
+   
 
     /**
      * Ritorna il primo documento di pianificazione presente

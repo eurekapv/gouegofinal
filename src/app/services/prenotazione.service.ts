@@ -5,6 +5,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { ApicallService } from './apicall.service';
 import { Prenotazione } from '../models/prenotazione.model';
+import { Utente } from '../models/utente.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 
@@ -14,14 +15,70 @@ import { PrenotazionePianificazione } from '../models/prenotazionepianificazione
 export class PrenotazioneService {
 
   private _listPrenotazioni = new BehaviorSubject<Prenotazione[]>([]);
-  private _actualPrenotazione = new PrenotazionePianificazione;
+  private _actualPianificazione = new PrenotazionePianificazione;
+  private _activePrenotazione = new BehaviorSubject<Prenotazione>(new Prenotazione());
+
+
+  /** Prenotazione */
+  get activePrenotazione() {
+    return this._activePrenotazione.asObservable();
+  }
+
+  
+  /**
+   * Inizializza la prenotazione con l'AREA
+   * @param idArea Area Operativa
+   */
+  initActivePrenotazione(idArea: string) {
+    this.activePrenotazione
+      .pipe(take(1))
+      .subscribe( elPrenotazione => {
+        elPrenotazione = new Prenotazione();
+        elPrenotazione.initNewPrenotazione(idArea);
+
+        this._activePrenotazione.next(elPrenotazione);
+      });
+      
+  }
+
+  /**
+   * Imposta la Pianificazione Singola
+   * @param docPianificazione Pianificazione da impostare
+   */
+  setPianificazioneSingola(docPianificazione: PrenotazionePianificazione) {
+    this.activePrenotazione
+      .pipe(take(1))
+      .subscribe( elPrenotazione => {
+          elPrenotazione.setPianificazioneSingola(docPianificazione);
+          this._activePrenotazione.next(elPrenotazione);
+      });
+  }
+
+  /**
+   * 
+   */
+  setIDUtenteActivePrenotazione(docUtente: Utente) {
+    this.activePrenotazione
+    .pipe(take(1))
+    .subscribe( elPrenotazione => {
+        elPrenotazione.setUtente(docUtente.ID, docUtente.NOMINATIVO);
+
+        this._activePrenotazione.next(elPrenotazione);
+    });
+  }
+
+
+
+
+
+
 
   get listPrenotazioni() {
     return this._listPrenotazioni.asObservable();
   }
 
-  get actualPrenotazione() {
-    return this._actualPrenotazione;
+  get actualPianificazione() {
+    return this._actualPianificazione;
   }
 
 
@@ -61,7 +118,7 @@ export class PrenotazioneService {
   }
 
   setActualPrenotazione(docPrenotazione:PrenotazionePianificazione){
-    this._actualPrenotazione = docPrenotazione;
+    this._actualPianificazione = docPrenotazione;
   }
 
 }

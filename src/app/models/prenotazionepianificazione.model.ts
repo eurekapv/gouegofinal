@@ -8,6 +8,7 @@ export class PrenotazionePianificazione extends IDDocument {
     IDLOCATION: string;
     IDSPORT: string;
     IDCAMPO: string;
+    _DESCRCAMPO: string;
     DATAORAINIZIO: Date;
     ANNO: number;
     DATAORAFINE: Date;

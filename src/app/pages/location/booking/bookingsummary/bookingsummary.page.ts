@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
-import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
-import { not } from '@angular/compiler/src/output/output_ast';
+
 import { Subscription } from 'rxjs';
+import { Prenotazione } from 'src/app/models/prenotazione.model';
+import { Location } from 'src/app/models/location.model';
+import { Utente } from 'src/app/models/utente.model';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+
 
 @Component({
   selector: 'app-bookingsummary',
@@ -13,7 +17,18 @@ import { Subscription } from 'rxjs';
 })
 export class BookingsummaryPage implements OnInit {
 
-  actualPrenotazione: PrenotazionePianificazione;
+  activePrenotazione: Prenotazione;
+  subActivePrenotazione: Subscription;
+  selectedLocation: Location;
+  
+  userLogged: boolean;      //TRUE-FALSE: Utente Loggato
+  subUserLogged: Subscription;  
+  
+  docUtente: Utente;
+  subDocUtente: Subscription; 
+
+  idPrenotazione = '';
+  idLocation = '';
   
   constructor(private startService:StartService,
               private router: ActivatedRoute,
@@ -22,30 +37,48 @@ export class BookingsummaryPage implements OnInit {
   }
 
   ngOnInit() {
-    let idBook = '';
-    let idLocation = '';
+    
+    
     let result = true;
 
     this.router.paramMap.subscribe( param => {
       
       if (param.has('locationId')) {
-        idLocation = param.get('locationId');
-        console.log('Location: ' + idLocation);
+        this.idLocation = param.get('locationId');
+        
+        // Chiedo Location
+        this.selectedLocation = this.startService.findLocationByID(this.idLocation);        
       }
+
+      //Controllo dell'utente loggato
+      this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
+              this.userLogged = element;
+      });
+
+      //Richiedo lo User
+      this.subDocUtente = this.startService.utente.subscribe(element => {
+        this.docUtente = element;
+      });
+
 
       if (param.has('bookId')) 
       {
-        idBook = param.get('bookId');
+        this.idPrenotazione = param.get('bookId');
 
-        this.actualPrenotazione = this.startService.actualPrenotazione;
+        this.subActivePrenotazione = this.startService.activePrenotazione.subscribe(elPrenotazione => {
+          //Recupero la prenotazione
+          this.activePrenotazione = elPrenotazione;
 
-        console.log('Attuale');
-        console.log(this.actualPrenotazione);
+          //Id Book è diverso da quello in arrivo dalla prenotazione
+          if (this.idPrenotazione != this.activePrenotazione.ID) {
+            this.onBookIdWrong();
+          }
+          else {
+            console.log(this.activePrenotazione);
+          }
 
-        //Id Book è diverso da quello in arrivo dalla prenotazione
-        if (idBook !== this.actualPrenotazione.ID) {
-          result = false;
-        }
+        });   
+
         
       }
       else {
@@ -53,15 +86,23 @@ export class BookingsummaryPage implements OnInit {
       }
       
       if (!result) {
-        if (idLocation.length !== 0) {
-          this.navCtrl.navigateForward(['/','location',idLocation,'booking']);
-        }
-        else {
-          this.navCtrl.navigateForward(['/']);
-        }
+        this.onBookIdWrong();
       }
 
     });
   }
 
+  /**
+   * Book ID Errato devo uscire
+   */
+  onBookIdWrong() {
+    if (this.idLocation.length !== 0) {
+      this.navCtrl.navigateForward(['/','location',this.idLocation,'booking']);
+    }
+    else {
+      this.navCtrl.navigateForward(['/']);
+    }
+  }
 }
+
+

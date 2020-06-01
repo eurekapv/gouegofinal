@@ -10,6 +10,7 @@ import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
 import { SlotDay } from 'src/app/models/imdb/slotday.model';
 import { SlotTime } from 'src/app/models/imdb/slottime.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
+import { Prenotazione } from 'src/app/models/prenotazione.model';
 
 @Component({
   selector: 'app-booking',
@@ -20,7 +21,7 @@ export class BookingPage implements OnInit, OnDestroy {
 
   idLocation = '';
   versionBooking = 'manual'; //Versione di Booking (Automatico, Manuale)
-  // docPrenotazione: Prenotazione;
+  
   selectedLocation: Location;
   subSelectedLocation: Subscription;
   selectedCampo: Campo;
@@ -41,9 +42,12 @@ export class BookingPage implements OnInit, OnDestroy {
   actualCaptionButtonSelected = ''; //E' il testo visualizato sul bottone selezionato
   actualPlanning: PrenotazionePianificazione = new PrenotazionePianificazione(); //E' la pianificazione attuale che l'utente vorrebbe prenotare
   
+  //Prenotazione Attiva
+  activePrenotazione: Prenotazione;
   
   subActualPlanning: Subscription;
   subActualSlotDay: Subscription;
+  subActivePrenotazione: Subscription;
 
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
   
@@ -56,7 +60,7 @@ export class BookingPage implements OnInit, OnDestroy {
     this.bookable = false;
 
     //Chiedo il documento di Planning al servizio
-    this.actualPlanning = this.startService.actualPrenotazione;
+    this.actualPlanning = this.startService.actualPianificazione;
     
   }
 
@@ -119,7 +123,12 @@ export class BookingPage implements OnInit, OnDestroy {
           // Mi metto in ascolto di variazioni di Slot attuale
           this.subActualSlotDay = this.startService.docOccupazione.subscribe(elActualDay => {
             this.actualSlotDay = elActualDay;
-          })
+          });
+
+          //Ascolto documento di Prenotazione
+          this.subActualSlotDay = this.startService.activePrenotazione.subscribe(elPrenotazione => {
+            this.activePrenotazione = elPrenotazione;
+          });
           
         }
         else {
@@ -144,6 +153,10 @@ export class BookingPage implements OnInit, OnDestroy {
     if (this.subActualSlotDay) {
       this.subActualSlotDay.unsubscribe();
     }
+
+    if (this.subActivePrenotazione) {
+      this.subActivePrenotazione.unsubscribe();
+    }    
 
 
   }
@@ -242,7 +255,7 @@ export class BookingPage implements OnInit, OnDestroy {
     if (slotClicked) {
       //Cambio il Planning attuale visualizzato
       this.actualPlanning = this.actualSlotDay.changeSelectionSlotTime(slotClicked);
-      console.log(this.actualPlanning);
+      
     }
     
   }
@@ -267,25 +280,42 @@ export class BookingPage implements OnInit, OnDestroy {
   /**
    * Evento Click sul pulsante di prenotazione presente nel footer
    */
-  myClickPrenota(docPrenotazione: PrenotazionePianificazione) {
-    console.log(this.selectedLocation);
-    console.log(this.selectedCampo);
-    console.log(docPrenotazione);
+  myClickPrenota(docPianificazione: PrenotazionePianificazione) {
+    
+    if (!this.userLogged) {
+      //Deve prima loggarsi
+      console.log('Utente non loggato');
+    }
+    else {
+      //Inizializzo con i dati di Prenotazione
+      //this.activePrenotazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
+      
+      this.startService.initActivePrenotazione(this.selectedLocation.IDAREAOPERATIVA);
+      this.startService.setIDUtenteActivePrenotazione(this.docUtente);
 
-    //Impostiamo Location e Campo
-    docPrenotazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
-    docPrenotazione.IDLOCATION = this.selectedLocation.ID;
-    docPrenotazione.IDCAMPO = this.selectedCampo.ID;
+      //Impostiamo Location e Campo
+      docPianificazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
+      docPianificazione.IDLOCATION = this.selectedLocation.ID;
+      docPianificazione.IDCAMPO = this.selectedCampo.ID;
+      docPianificazione._DESCRCAMPO = this.selectedCampo.DENOMINAZIONE;
 
-    //Invio il documento al servizio
-    this.startService.setActualPrenotazione(docPrenotazione);
+      this.startService.setPianificazioneSingola(docPianificazione);
 
-    this.goToFinalizza();
+      this.goToFinalizza();
+    }
+    
+
   }
 
 
   goToFinalizza() {
-    this.navController.navigateForward(['/','location',this.selectedLocation.ID,'booking','bookingsummary',this.actualPlanning.ID]);
+    console.log(this.activePrenotazione);
+
+    //this.navController.navigateForward(['/','location',this.selectedLocation.ID,'booking','bookingsummary',this.actualPlanning.ID]);
+    this.navController.navigateForward(['/','location',
+                                              this.selectedLocation.ID,
+                                            'booking','bookingsummary',
+                                            this.activePrenotazione.ID]);
   }
 
 }

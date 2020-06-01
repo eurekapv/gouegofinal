@@ -7,7 +7,6 @@ import { ModalController, NavController } from '@ionic/angular';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
 import { GalleryPage } from './gallery/gallery.page';
 import { CampiPage } from './campi/campi.page';
-import { LogApp } from 'src/app/models/log.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Subscription } from 'rxjs';
 
@@ -62,9 +61,6 @@ export class LocationPage implements OnInit, OnDestroy {
 
             this.selectedLocation = element;
             if (!this.selectedLocation.do_inserted) {
-
-              LogApp.consoleLog('Location Selezionata');
-              //LogApp.consoleLog(this.selectedLocation);
 
               /** Imposto i Bottoni Card */
               this.setButtonCard();

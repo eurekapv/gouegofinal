@@ -39,4 +39,4 @@ export class PlayerNumberComponent implements OnInit {
 export enum typeIcon {
   player=10,
   add=20
-}
+} 

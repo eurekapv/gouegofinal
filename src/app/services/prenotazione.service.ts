@@ -15,13 +15,17 @@ import { PrenotazionePianificazione } from '../models/prenotazionepianificazione
 export class PrenotazioneService {
 
   private _listPrenotazioni = new BehaviorSubject<Prenotazione[]>([]);
-  private _actualPianificazione = new PrenotazionePianificazione;
   private _activePrenotazione = new BehaviorSubject<Prenotazione>(new Prenotazione());
 
+  constructor(private apiService: ApicallService) { }
 
   /** Prenotazione */
   get activePrenotazione() {
     return this._activePrenotazione.asObservable();
+  }
+
+  get listPrenotazioni() {
+    return this._listPrenotazioni.asObservable();
   }
 
   
@@ -69,23 +73,6 @@ export class PrenotazioneService {
 
 
 
-
-
-
-
-  get listPrenotazioni() {
-    return this._listPrenotazioni.asObservable();
-  }
-
-  get actualPianificazione() {
-    return this._actualPianificazione;
-  }
-
-
-
-  constructor(private apiService: ApicallService) { }
-
-
   /**
    * 
    * @param config Parametri di configurazione
@@ -113,12 +100,19 @@ export class PrenotazioneService {
   }
 
 
-  private _addMultiplePrenotazioni(dataJSON: any) {
+  /**
+   * Richiesta al Server il calcolo dell'importo
+   * @param config Parametri di Configurazione
+   */
+  requestImporto(config: StartConfiguration) {
+    this.activePrenotazione
+    .pipe(take(1))
+    .subscribe( elPrenotazione => {
+        //Qui Effettuo la chiamata al server per richiedere i conteggi
 
+        //this._activePrenotazione.next(elPrenotazione);
+    });
   }
 
-  setActualPrenotazione(docPrenotazione:PrenotazionePianificazione){
-    this._actualPianificazione = docPrenotazione;
-  }
 
 }

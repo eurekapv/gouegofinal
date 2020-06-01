@@ -16,13 +16,23 @@ export class Prenotazione extends IDDocument {
     TOTALE: number;
     PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
 
+    _READY: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
+                     //si puo' procedere al pagamento finale
+
     constructor() {
         super();
+        this.IMPORTO = 0;
+        this.INCASSATO = 0;
+        this.RESIDUO = 0;
+        this.TOTALE = 0;
+        this.IMPOSTA = 0;
+        this._READY = false;
 
         this.PRENOTAZIONEPIANIFICAZIONE = [];
         
     }
 
+    //#region INIZIALIZZAZIONE NUOVA PRENOTAZIONE
 
     /**
      * Inizializza per una nuova prenotazione
@@ -50,18 +60,8 @@ export class Prenotazione extends IDDocument {
         }
     }
 
-    //#region INIZIALIZZAZIONE NUOVA PRENOTAZIONE
+    
 
-    /**
-     * Preparazione di una nuova prenotazione
-     */
-    newPrenotazioneInit() {
-        let newPianificazione = new PrenotazionePianificazione();
-        this.DATA = new Date();
-
-        this.PRENOTAZIONEPIANIFICAZIONE.push(newPianificazione);
-
-    }
     /**
      * Impostazione Area
      * @param idArea Area da applicare
@@ -100,7 +100,11 @@ export class Prenotazione extends IDDocument {
      * Ritorna il primo documento di pianificazione presente
      */
     getPianificazione() {
-        return this.PRENOTAZIONEPIANIFICAZIONE[0];
+        let docPianificazione: PrenotazionePianificazione;
+        if (this.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
+            docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
+        }
+        return docPianificazione;
     }
 
     //#endregion

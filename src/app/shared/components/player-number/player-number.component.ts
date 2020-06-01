@@ -11,10 +11,10 @@ export class PlayerNumberComponent implements OnInit {
   //@Input() numPlayer: Number;
   numPlayer: Number = 4;
   maxPlayerIcon: Number= 6;
+
   @Output() changeNumPlayer= new EventEmitter<Number>();
   
-  
-  
+   
   icone : Number[] = [];
   
   constructor() {

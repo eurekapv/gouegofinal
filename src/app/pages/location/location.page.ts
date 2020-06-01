@@ -120,7 +120,7 @@ export class LocationPage implements OnInit, OnDestroy {
         break;
       case 'course':
         // Corsi
-        this.navCtrl.navigateForward(['/','listcourses',this.selectedLocation.ID])
+        this.navCtrl.navigateForward(['/','listcourses',this.selectedLocation.ID]);
         break;
     
       default:

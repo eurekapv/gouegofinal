@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, IonSlides } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
@@ -41,8 +40,9 @@ export class BookingPage implements OnInit, OnDestroy {
   actualSlotDay: SlotDay; //E' lo Slot Day attualmente in visualizzazione
   actualCaptionButtonSelected = ''; //E' il testo visualizato sul bottone selezionato
   actualPlanning: PrenotazionePianificazione = new PrenotazionePianificazione(); //E' la pianificazione attuale che l'utente vorrebbe prenotare
-
-
+  
+  
+  subActualPlanning: Subscription;
   subActualSlotDay: Subscription;
 
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
@@ -52,13 +52,11 @@ export class BookingPage implements OnInit, OnDestroy {
               private startService:StartService,
               private navController: NavController) { 
 
-    // Creo una nuova prenotazione
-    // this.docPrenotazione = new Prenotazione();
-    // this.docPrenotazione.newPrenotazioneInit();
-
     this.ricevuti = false;
     this.bookable = false;
 
+    //Chiedo il documento di Planning al servizio
+    this.actualPlanning = this.startService.actualPrenotazione;
     
   }
 
@@ -90,10 +88,6 @@ export class BookingPage implements OnInit, OnDestroy {
 
                   // Ho ricevuto i dati
                   this.ricevuti = true;
-
-                  // //Inizializzo il documento con Area e Location
-                  // this.docPrenotazione.newPrenotazioneSetArea(this.selectedLocation.IDAREAOPERATIVA);
-                  // this.docPrenotazione.newPrenotazioneSetLocation(this.selectedLocation.ID);
 
                   //Prelevo il primo campo disponibile
                   this.selectedCampo = this.selectedLocation.getNextCampo();
@@ -150,6 +144,8 @@ export class BookingPage implements OnInit, OnDestroy {
     if (this.subActualSlotDay) {
       this.subActualSlotDay.unsubscribe();
     }
+
+
   }
 
 
@@ -227,8 +223,8 @@ export class BookingPage implements OnInit, OnDestroy {
                                              this.selectedCampo, 
                                              this.actualBookDay);
 
-    //Step c) Creo un nuovo oggetto di prentoazione
-    this.actualPlanning = new PrenotazionePianificazione();
+    //Step c) Creo un nuovo oggetto di prenotazione
+    this.actualPlanning = new PrenotazionePianificazione;
 
     //Ora tutto avviene in modalità asincrona
 
@@ -271,17 +267,25 @@ export class BookingPage implements OnInit, OnDestroy {
   /**
    * Evento Click sul pulsante di prenotazione presente nel footer
    */
-  myClickPrenota(dataPrenotazione: PrenotazionePianificazione) {
+  myClickPrenota(docPrenotazione: PrenotazionePianificazione) {
     console.log(this.selectedLocation);
     console.log(this.selectedCampo);
-    console.log(dataPrenotazione);
+    console.log(docPrenotazione);
 
     //Impostiamo Location e Campo
-    dataPrenotazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
-    dataPrenotazione.IDLOCATION = this.selectedLocation.ID;
-    dataPrenotazione.IDCAMPO = this.selectedCampo.ID;
+    docPrenotazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
+    docPrenotazione.IDLOCATION = this.selectedLocation.ID;
+    docPrenotazione.IDCAMPO = this.selectedCampo.ID;
 
+    //Invio il documento al servizio
+    this.startService.setActualPrenotazione(docPrenotazione);
+
+    this.goToFinalizza();
   }
 
+
+  goToFinalizza() {
+    this.navController.navigateForward(['/','location',this.selectedLocation.ID,'booking','bookingsummary',this.actualPlanning.ID]);
+  }
 
 }

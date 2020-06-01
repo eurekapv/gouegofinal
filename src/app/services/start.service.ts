@@ -27,6 +27,7 @@ import { Utente, storageUtente } from '../models/utente.model';
 import { LogApp } from '../models/log.model';
 import { SlotDay } from '../models/imdb/slotday.model';
 import { Campo } from '../models/campo.model';
+import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 
 
 @Injectable({
@@ -44,6 +45,7 @@ export class StartService {
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
   private listenLocation: Subscription;
+
 
   get appReady() {
     return this._appReady.asObservable();
@@ -611,12 +613,29 @@ requestPrenotazioniUtente(idUtente: string) {
   this.prenotazioniService.request(actualStartConfig, idUtente);
 }
 
+
+/**
+ * Richiede al servizio prenotazione un oggetto della prenotazione attuale
+ */
+get actualPrenotazione() {
+  return this.prenotazioniService.actualPrenotazione;
+}
+
+/**
+ * Invia al servizio prenotazione il documento
+ * @param docPrenotazione Documento da memorizzare
+ */
+setActualPrenotazione(docPrenotazione:PrenotazionePianificazione){
+  this.prenotazioniService.setActualPrenotazione(docPrenotazione);
+}
 //#endregion
 
 //#region NEWS EVENTI
 get listNews() {
   return this.newsEventiService.listNews;
 }
+
+
 
 /**
  * Recupera le news dal server

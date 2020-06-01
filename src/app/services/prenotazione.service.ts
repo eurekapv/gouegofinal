@@ -6,6 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
 import { Prenotazione } from '../models/prenotazione.model';
 import { StartConfiguration } from '../models/start-configuration.model';
+import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,17 @@ import { StartConfiguration } from '../models/start-configuration.model';
 export class PrenotazioneService {
 
   private _listPrenotazioni = new BehaviorSubject<Prenotazione[]>([]);
+  private _actualPrenotazione = new PrenotazionePianificazione;
 
   get listPrenotazioni() {
     return this._listPrenotazioni.asObservable();
   }
+
+  get actualPrenotazione() {
+    return this._actualPrenotazione;
+  }
+
+
 
   constructor(private apiService: ApicallService) { }
 
@@ -51,4 +59,9 @@ export class PrenotazioneService {
   private _addMultiplePrenotazioni(dataJSON: any) {
 
   }
+
+  setActualPrenotazione(docPrenotazione:PrenotazionePianificazione){
+    this._actualPrenotazione = docPrenotazione;
+  }
+
 }

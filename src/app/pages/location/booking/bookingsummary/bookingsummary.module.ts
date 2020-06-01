@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { BookingsummaryPageRoutingModule } from './bookingsummary-routing.module';
 
 import { BookingsummaryPage } from './bookingsummary.page';
+import { HomePageModule } from 'src/app/pages/home/home.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    BookingsummaryPageRoutingModule
+    BookingsummaryPageRoutingModule,
+    HomePageModule
   ],
   declarations: [BookingsummaryPage]
 })

@@ -1,3 +1,32 @@
-<p>
-  player-number works!
-</p>
+<ion-card>
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="3"class="right-border ion-text-center">
+          <ion-row>
+            <ion-col size="12"  class="ion-no-padding">
+              <ion-icon name="person-circle" color="primary" class="players"></ion-icon>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" class="ion-no-padding">
+              <ion-label>{{numPlayer}} Giocatori</ion-label>
+            </ion-col>
+          </ion-row>
+      </ion-col>
+      <ion-col size="6">
+              <ion-grid>
+                <ion-row>
+                  <ion-col size="4" *ngFor="let icona of icone" class="ion-no-padding" >
+                    <ion-icon class="players" name="person-circle" [color]="icona<numPlayer? 'primary' : 'light'"></ion-icon>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+      </ion-col>
+      <ion-col size="3">
+        <ion-icon name="add-circle" class="add" button [color]="numPlayer>maxPlayerIcon? 'primary' : 'light'"></ion-icon>
+      </ion-col>
+      
+    </ion-row>
+  </ion-grid>
+
+</ion-card>

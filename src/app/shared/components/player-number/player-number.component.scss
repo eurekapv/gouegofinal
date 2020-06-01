@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+ion-card {
+    background-color: white;
+    min-height: 50px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.right-border {
+    border-right-style: solid;
+    border-width: thin;
+    border-color: #eff1f8;
+    
+}
+
+.orario-black {
+    font-family: Roboto;
+    font-size: medium;
+    color: black;
+}
+
+.orario-light {
+    font-family: Roboto;
+    font-size: medium;
+    color: #9da2b3;
+}
+.players{
+    height: 50px;
+    width: 50px;
+}
+.add{
+    height: 70px;
+    width: 70px;
+}
+
+
+
+

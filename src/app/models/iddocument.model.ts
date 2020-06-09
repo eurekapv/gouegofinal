@@ -45,6 +45,129 @@ import { MyDateTime } from './mydatetime.model';
     }
 
 
+    /**
+     * Esporta l'oggetto in JSON
+     * @param dataObject Oggetto da esportare
+     * @param clearProperty Elimina le proprietà tipiche del documento (selected, do_insert etc)
+     */
+    exportToJSON(clearDOProperty: boolean) {
+      let _this = this;
+      let arProperty = Object.keys(_this);
+      //Chiedo il Descrittore della classe
+      let objDescriptor = _this.getDescriptor();
+      let strJSON = '';
+      let doProperty = ['do_updated',' do_loaded','do_inserted','do_deleted','selected'];
+      let row = '';
+      
+
+      arProperty.forEach(element => {
+
+        //Inizio la riga con l'elemento
+        row = '\"' + element + '\"' + ':';
+
+        //Proprietà Basica non di tipo Array
+        if (Array.isArray(_this[element]) == true) {
+          //Qui gestisco l'Array
+
+        }
+        else {
+          let skip = false;
+          //Vuole eliminare le proprietà DO
+          if (clearDOProperty) {
+            if (doProperty.includes(element)) {
+              skip = true;
+            }
+          }
+
+          //Proseguo con l'esportazione
+          if (!skip) {
+
+              //Chiedo il Tipo del Campo con il descriptor
+              let tipoCampo = objDescriptor.getType(element);
+
+              if (tipoCampo !== TypeDefinition.undefined && _this[element]!== undefined) {
+
+                switch (tipoCampo) {
+
+                  case TypeDefinition.boolean:
+                    row += parseInt(_this[element],10);
+                    break;
+                
+                  case TypeDefinition.number:
+                    row += _this[element]; 
+                    break;
+
+                  case TypeDefinition.numberDecimal:
+                    row += _this[element]; 
+                    break;
+
+                  case TypeDefinition.time:
+                    //E' un orario
+                    row += this.formatDateTimeISO(_this[element]);
+                    break;
+
+                  case TypeDefinition.date:
+                    //E' una data
+                    row += this.formatDateISO(_this[element]);
+                    break;
+
+                  case TypeDefinition.dateTime:
+                    //Campo di tipo DATAORA
+                    row += this.formatDateTimeISO(_this[element]);
+                    break;
+                  case TypeDefinition.char:
+                    row += '\"' + _this[element] + '\"';
+                    break;
+
+                  default:
+                    row += _this[element];
+                    break;
+                }
+
+              } 
+              else {
+                row += 'null';
+              }   
+              
+              
+              if (strJSON.length !== 0) {
+                strJSON += ', ';
+              }
+
+              strJSON += row;
+          }
+
+        }
+      });
+
+      strJSON = '{' + strJSON + '}';
+      
+      return strJSON;
+    }
+
+    /**
+     * Ritorna il documento in Stringa JSON
+     */
+    toJSON() {
+      let strJSON = '';
+      let _this = {...this};
+      let arKeys = Object.keys(_this);
+
+      /** Ciclo sulle proprietà */
+      /* Ho il problema di formattazione Data/Ora che INDE lo vuole come YYYY-MM-DD hh:nn:ss */
+      arKeys.forEach(element => {
+        if (_this[element] instanceof Date) {
+          //Se è di tipo data lo cambio formattandolo in ISODATETIME
+          _this[element] = this.formatDateTimeISO(_this[element]);
+        }
+      });
+
+      // Ora eseguo lo stringify
+      strJSON = JSON.stringify(_this);
+
+      return strJSON;
+    }
+
   
      // Imposta le proprietà basiche dell'oggetto via JSON
      setJSONProperty(dataObject: any) {
@@ -233,28 +356,7 @@ import { MyDateTime } from './mydatetime.model';
       return hasModifiche;
     }
 
-    /**
-     * Ritorna il documento in Stringa JSON
-     */
-    toJSON() {
-      let strJSON = '';
-      let _this = {...this};
-      let arKeys = Object.keys(_this);
 
-      /** Ciclo sulle proprietà */
-      /* Ho il problema di formattazione Data/Ora che INDE lo vuole come YYYY-MM-DD hh:nn:ss */
-      arKeys.forEach(element => {
-        if (_this[element] instanceof Date) {
-          //Se è di tipo data lo cambio formattandolo in ISODATETIME
-          _this[element] = this.formatDateTimeISO(_this[element]);
-        }
-      });
-
-      // Ora eseguo lo stringify
-      strJSON = JSON.stringify(_this);
-
-      return strJSON;
-    }
 
     /**
      * Modificatore dell'esportazione JSON per le Date

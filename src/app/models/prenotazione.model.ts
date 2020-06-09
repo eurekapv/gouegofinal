@@ -14,9 +14,10 @@ export class Prenotazione extends IDDocument {
     RESIDUO: number;
     IMPOSTA: number;
     TOTALE: number;
+    MSGINVALID: string;
     PRENOTAZIONIPIANIFICAZIONE: PrenotazionePianificazione[];
 
-    _READY: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
+    ISVALID: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
                      //si puo' procedere al pagamento finale
 
     constructor() {
@@ -26,8 +27,8 @@ export class Prenotazione extends IDDocument {
         this.RESIDUO = 0;
         this.TOTALE = 0;
         this.IMPOSTA = 0;
-        this._READY = false;
-
+        this.ISVALID = false;
+        this.MSGINVALID = '';
         this.PRENOTAZIONIPIANIFICAZIONE = [];
         
     }
@@ -135,7 +136,7 @@ export class Prenotazione extends IDDocument {
     }
 
     /**
-     * Ritorna il descrittore della Struttura Campi
+     * Ritorna il descrittore della Prenotazione
      */
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
@@ -143,10 +144,11 @@ export class Prenotazione extends IDDocument {
                         'IDUTENTE',
                         'NOMINATIVO',
                         'MOBILENUMBER',
-                        'IDTIPOPAGAMENTO'];
+                        'IDTIPOPAGAMENTO',
+                        'MSGINVALID'];
         let arNumber = [];
         let arNumberDecimal = ['IMPORTO','INCASSATO','RESIDUO','IMPOSTA','TOTALE'];
-        let arBoolean = [];
+        let arBoolean = ['ISVALID'];
         let arDate = ['DATA'];
         let arDateTime =[];
         let arTime = [];
@@ -160,6 +162,15 @@ export class Prenotazione extends IDDocument {
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
         
         return objDescriptor;
+    }
+
+
+    /**
+     * Esporta l'oggetto in formato JSON
+     * Cancella le proprietà non utilizzate e non richieste
+     */
+    exportToJSON(clearProperty: boolean) {
+        return super.exportToJSON(clearProperty);
     }
 
     

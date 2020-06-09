@@ -293,8 +293,8 @@ export class BookingPage implements OnInit, OnDestroy {
       console.log('Utente non loggato');
     }
     else {
+
       //Inizializzo con i dati di Prenotazione
-      //this.activePrenotazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
       
       this.startService.initActivePrenotazione(this.selectedLocation.IDAREAOPERATIVA);
       this.startService.setIDUtenteActivePrenotazione(this.docUtente);
@@ -308,48 +308,15 @@ export class BookingPage implements OnInit, OnDestroy {
       //Indico al servizio di memorizzarsi la Pianificazione per poterla passare alle altre pagine
       this.startService.setPianificazioneSingola(docPianificazione);
 
-      //this.calcolaTotale();
+      this.calcolaTotale();
 
-      this.goToFinalizza();
+      //this.goToFinalizza();
     }
     
 
   }
 
-  // /**
-  //  * Richiede al server il calcolo degli importi della prenotazione
-  //  */
-  // calcolaTotale() {
-  //   this.loadingController
-  //       .create({
-  //         message: 'Verifica Prenotazione...',
-  //         spinner: 'bubbles'
-  //       })
-  //       .then (elLoading => {
-  //         //Mostro il loading
-  //         elLoading.present();
-
-  //         //Chiedo al server di calcolare l'importo
-  //         this.startService
-  //             .requestImportoPrenotazione()
-  //             // .pipe(
-
-  //             //   catchError(this.handleError)
-  //             // )
-  //             .subscribe(myPrenotazione => {
-  //               //Chiudo il loading
-  //               elLoading.dismiss();
-  //               //Devo controllare cosa mi è arrivato
-  //               LogApp.consoleLog('In arrivo dal Server');
-  //               LogApp.consoleLog(myPrenotazione);
-
-  //               this.goToFinalizza();
-  //             });
-  //       });
-    
-  // }
-
-    /**
+   /**
    * Richiede al server il calcolo degli importi della prenotazione
    */
   calcolaTotale() {
@@ -378,7 +345,7 @@ export class BookingPage implements OnInit, OnDestroy {
                 LogApp.consoleLog(myPrenotazione);
 
                 this.goToFinalizza();
-                
+
               }, error => {
                 //Chiudo il loading
                 elLoading.dismiss();

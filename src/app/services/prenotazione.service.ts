@@ -118,13 +118,16 @@ export class PrenotazioneService {
     let myUrl = config.urlBase + '/' + doObject;
     // let myBody = JSON.stringify(docPrenotazione);
 
+    let myBody = docPrenotazione.exportToJSON(true);
+
+    console.log(myBody);
+
     return this.apiService
-          .httpPost(myUrl,myHeaders, myParams, docPrenotazione)
+          .httpPost(myUrl,myHeaders, myParams, myBody)
           .pipe(map(fullData => {
             return fullData.PRENOTAZIONE;
           }));
 
-      //this._activePrenotazione.next(docPrenotazione);
     }
 
 

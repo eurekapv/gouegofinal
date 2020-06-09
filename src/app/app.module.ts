@@ -50,7 +50,7 @@ export class AppModule {}
  * N.B. Notare che non ci sono le graffe in localeIt (è un nome di fantasia)
  * 
  * registerLocaleData(localeIt,'it');
- * 3) Fuori da NgModule o Class registrare il nome di fantasi 
+ * 3) Fuori da NgModule o Class registrare il nome di fantasia
  * con la sigla che Angular usa per la lingua (it per italiano, etc)
  * 
  * {provide: LOCALE_ID, useValue: 'it' }

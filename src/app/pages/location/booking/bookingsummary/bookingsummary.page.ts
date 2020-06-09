@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { Location } from 'src/app/models/location.model';
 import { Utente } from 'src/app/models/utente.model';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 
 
@@ -83,6 +82,7 @@ export class BookingsummaryPage implements OnInit {
           }
           else {
             console.log(this.activePrenotazione);
+            console.log(this.docPianificazione);
           }
 
         });   

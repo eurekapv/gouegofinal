@@ -1,3 +1,53 @@
 .griglia-principale{
+    >ion-row{
+        >ion-col{
+            padding:0px;
+        }
+    }
+
+}
+
+h6
+{
+    margin-top: 5px;
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+h4
+{
+    margin-top: 4px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+
+.left-col
+{
+    border-right-style: solid;
+    border-width: thin;
+    border-color: #eff1f8;
+}
+ion-checkbox
+{
+    margin:10px;
+}
+p{
+    font-size: 13px;
+}
+
+.col-prezzo
+{
+    margin: 10px;
+    margin-top: 20px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-width: thin;
+    border-color: #eff1f8;
+}
+
+ion-button.full-buttons{
+    margin-left:10px;
+    margin-right:10px;
 
 }

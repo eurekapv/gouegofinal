@@ -308,7 +308,9 @@ export class BookingPage implements OnInit, OnDestroy {
       //Indico al servizio di memorizzarsi la Pianificazione per poterla passare alle altre pagine
       this.startService.setPianificazioneSingola(docPianificazione);
 
-      this.calcolaTotale();
+      //this.calcolaTotale();
+
+      this.goToFinalizza();
     }
     
 

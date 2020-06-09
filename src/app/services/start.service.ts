@@ -40,7 +40,11 @@ export class StartService {
     testingMode = TRUE (verra chiamato un localhost e non gouego)
     secureProtocol = FALSE (chiamata http e non https)
   */
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  //Versione Production
+  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+
+  //Versione LocalTest
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
   
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
@@ -624,6 +628,16 @@ setPianificazioneSingola(docPianificazione: PrenotazionePianificazione) {
  */
 setIDUtenteActivePrenotazione(docUtente: Utente) {
   this.prenotazioniService.setIDUtenteActivePrenotazione(docUtente);
+}
+
+/**
+ * Richiede al servizio il calcolo 
+ * della Prenotazione
+ * Se _callback è una funzione, viene eseguita al termine
+ */
+requestImportoPrenotazione() {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.prenotazioniService.requestImporto(actualStartConfig);
 }
 
 

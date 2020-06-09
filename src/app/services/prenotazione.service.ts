@@ -105,14 +105,18 @@ export class PrenotazioneService {
    * @param config Parametri di Configurazione
    */
   requestImporto(config: StartConfiguration) {
-    this.activePrenotazione
-    .pipe(take(1))
-    .subscribe( elPrenotazione => {
-        //Qui Effettuo la chiamata al server per richiedere i conteggi
+    let docPrenotazione = this._activePrenotazione.getValue();
+    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                       'X-HTTP-Method-Override':'GIVEIMPORTOPRENOTAZIONE', 
+                                       'APPID':config.appId
+                                      });
 
-        //this._activePrenotazione.next(elPrenotazione);
-    });
-  }
+    const doObject = 'PRENOTAZIONE';
+    let myUrl = config.urlBase + '/' + doObject;
+
+
+      //this._activePrenotazione.next(docPrenotazione);
+    }
 
 
 }

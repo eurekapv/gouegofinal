@@ -161,4 +161,6 @@ export class Prenotazione extends IDDocument {
         
         return objDescriptor;
     }
+
+    
 }

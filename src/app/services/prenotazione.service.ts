@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
@@ -102,18 +102,27 @@ export class PrenotazioneService {
 
   /**
    * Richiesta al Server il calcolo dell'importo
+   * Metodo Statico: MOBBOOKINGTOTALE
+   * Body contiene il JSON del documento
    * @param config Parametri di Configurazione
    */
   requestImporto(config: StartConfiguration) {
     let docPrenotazione = this._activePrenotazione.getValue();
     const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                       'X-HTTP-Method-Override':'GIVEIMPORTOPRENOTAZIONE', 
+                                       'X-HTTP-Method-Override':'MOBBOOKINGTOTALE', 
                                        'APPID':config.appId
                                       });
+    let myParams = new HttpParams();                                      
 
     const doObject = 'PRENOTAZIONE';
     let myUrl = config.urlBase + '/' + doObject;
+    // let myBody = JSON.stringify(docPrenotazione);
 
+    return this.apiService
+          .httpPost(myUrl,myHeaders, myParams, docPrenotazione)
+          .pipe(map(fullData => {
+            return fullData.PRENOTAZIONE;
+          }));
 
       //this._activePrenotazione.next(docPrenotazione);
     }

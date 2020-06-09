@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, IonSlides } from '@ionic/angular';
+import { NavController, IonSlides, LoadingController, ToastController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
-import { Subscription } from 'rxjs';
+import { throwError, Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Campo } from 'src/app/models/campo.model';
 import { Utente } from 'src/app/models/utente.model';
 import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
@@ -11,6 +12,8 @@ import { SlotDay } from 'src/app/models/imdb/slotday.model';
 import { SlotTime } from 'src/app/models/imdb/slottime.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
+import { LogApp } from 'src/app/models/log.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-booking',
@@ -55,7 +58,9 @@ export class BookingPage implements OnInit, OnDestroy {
 
   constructor(private router: ActivatedRoute, 
               private startService:StartService,
-              private navController: NavController) { 
+              private navController: NavController,
+              private loadingController: LoadingController,
+              private toastCtrl: ToastController) { 
 
     this.ricevuti = false;
     this.bookable = false;
@@ -300,14 +305,96 @@ export class BookingPage implements OnInit, OnDestroy {
       docPianificazione.IDCAMPO = this.selectedCampo.ID;
       docPianificazione._DESCRCAMPO = this.selectedCampo.DENOMINAZIONE;
 
+      //Indico al servizio di memorizzarsi la Pianificazione per poterla passare alle altre pagine
       this.startService.setPianificazioneSingola(docPianificazione);
 
-      this.goToFinalizza();
+      this.calcolaTotale();
     }
     
 
   }
 
+  // /**
+  //  * Richiede al server il calcolo degli importi della prenotazione
+  //  */
+  // calcolaTotale() {
+  //   this.loadingController
+  //       .create({
+  //         message: 'Verifica Prenotazione...',
+  //         spinner: 'bubbles'
+  //       })
+  //       .then (elLoading => {
+  //         //Mostro il loading
+  //         elLoading.present();
+
+  //         //Chiedo al server di calcolare l'importo
+  //         this.startService
+  //             .requestImportoPrenotazione()
+  //             // .pipe(
+
+  //             //   catchError(this.handleError)
+  //             // )
+  //             .subscribe(myPrenotazione => {
+  //               //Chiudo il loading
+  //               elLoading.dismiss();
+  //               //Devo controllare cosa mi è arrivato
+  //               LogApp.consoleLog('In arrivo dal Server');
+  //               LogApp.consoleLog(myPrenotazione);
+
+  //               this.goToFinalizza();
+  //             });
+  //       });
+    
+  // }
+
+    /**
+   * Richiede al server il calcolo degli importi della prenotazione
+   */
+  calcolaTotale() {
+    this.loadingController
+        .create({
+          message: 'Verifica Prenotazione...',
+          spinner: 'bubbles'
+        })
+        .then (elLoading => {
+          //Mostro il loading
+          elLoading.present();
+
+          //Chiedo al server di calcolare l'importo
+          this.startService
+              .requestImportoPrenotazione()
+              .pipe(
+                catchError(this.handleError)
+              )
+              .subscribe(myPrenotazione => {
+
+                //Chiudo il loading
+                elLoading.dismiss();
+
+                //Devo controllare cosa mi è arrivato
+                LogApp.consoleLog('In arrivo dal Server');
+                LogApp.consoleLog(myPrenotazione);
+
+                this.goToFinalizza();
+                
+              }, error => {
+                //Chiudo il loading
+                elLoading.dismiss();
+                this.showMessage(error);
+              });
+        });
+    
+  }
+
+  /**
+   * 
+   * @param loadingElement 
+   */
+  closeLoading(loadingElemnt: HTMLIonLoadingElement) {
+    if (loadingElemnt) {
+      loadingElemnt.dismiss();
+    }
+  }
 
   goToFinalizza() {
     console.log(this.activePrenotazione);
@@ -318,5 +405,38 @@ export class BookingPage implements OnInit, OnDestroy {
                                             'booking','bookingsummary',
                                             this.activePrenotazione.ID]);
   }
+
+  /**
+   * Visualizza un messaggio come Toast
+   * @param message Messaggio da mostrare
+   */
+  showMessage(message: string) {
+
+    //Creo un messaggio
+    this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    })
+    .then(tstMsg => {
+      tstMsg.present();
+    });
+
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('Errore di chiamata:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(
+        `Errore Backend Codice ${error.status}, ` +
+        `Body: ${error.error}`);
+    }
+    // return an observable with a user-facing error message
+      return throwError('Si sono verificati errori. Riprovare AHIME.');
+  };
+
 
 }

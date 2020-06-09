@@ -33,7 +33,8 @@ export class ApicallService {
   httpPost(url: string, 
             header: HttpHeaders, 
             params: HttpParams, 
-            body: any) {
+            body: any
+            ) {
     return this._httpPost(url, header, params, body);
   }
 
@@ -81,10 +82,11 @@ export class ApicallService {
   private _httpPost(url: string, 
                     reqHeaders: HttpHeaders, 
                     reqParams: HttpParams, 
-                    reqBody: any) {
+                    reqBody: any
+                    ) {
     LogApp.consoleLog('Chiamata POST a ' + url);
 
-    return this.httpClient.post(url, reqBody, {
+    return this.httpClient.post<any>(url, reqBody, {
                                         headers: reqHeaders,
                                         params: reqParams
                                 })

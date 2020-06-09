@@ -1,9 +1,32 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>bookingsummary</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Finalizza</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <app-player-number></app-player-number>
+  <div style="background-color:#EFF1F8" >
+    <div class="ion-text-center">
+      <ion-button color="danger" >
+        Aspetta, voglio modificare
+      </ion-button>
+    </div>
+    <ion-grid class="griglia-principale">
+      <ion-row>
+        <ion-col>
+          LA MIA SCELTA
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-card>dddddddd</ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <app-player-number [numPlayer]="docPianificazione.NUMPARTECIPANTI" (changeNumPlayer)="onChangedNumPlayer($event)" ></app-player-number>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>

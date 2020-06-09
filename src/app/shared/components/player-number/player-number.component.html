@@ -1,10 +1,10 @@
 <ion-card>
   <ion-grid>
     <ion-row class="ion-align-items-center">
-      <ion-col size="3"class="right-border ion-text-center">
+      <ion-col size="3"class="ion-text-center ion-no-padding">
           <ion-row>
             <ion-col size="12"  class="ion-no-padding">
-              <ion-icon name="person-circle" color="primary" class="players"></ion-icon>
+              <ion-icon name="person-circle" color="primary" class="player-indicator-icon"></ion-icon>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -13,17 +13,23 @@
             </ion-col>
           </ion-row>
       </ion-col>
-      <ion-col size="6">
-              <ion-grid>
+      <ion-col size="7" class="left-border ion-no-padding">
+              <ion-grid class="ion-no-padding">
                 <ion-row>
-                  <ion-col size="4" *ngFor="let icona of icone" class="ion-no-padding" >
-                    <ion-icon class="players" name="person-circle" [color]="icona<numPlayer? 'primary' : 'light'" (click)="onClickPlayer(icona, $event)"></ion-icon>
+                  <ion-col size="4" *ngFor="let icona of icone" class="ion-no-padding">
+                    <ion-button class="player-buttons" [color]="icona<=numPlayer? 'primary' : 'light'" shape="round" (click)="onClickPlayer(icona, $event)">
+                      <ion-icon  class="player-icons" name="person" slot="icon-only"></ion-icon>
+                    </ion-button>
+                    <!-- <ion-icon button="true" class="players" name="person-circle" [color]="icona<=numPlayer? 'primary' : 'light'" (click)="onClickPlayer(icona, $event)"></ion-icon> -->
                   </ion-col>
                 </ion-row>
               </ion-grid>
       </ion-col>
-      <ion-col size="3">
-        <ion-icon name="add-circle" class="add" button [color]="numPlayer>maxPlayerIcon? 'primary' : 'light'" (click)="onClickPlusPlayer()"></ion-icon>
+      <ion-col size="2" class="ion-no-padding">
+        <ion-button class="add-buttons" [color]="numPlayer>maxPlayerIcon? 'primary' : 'light'" shape="round" (click)="onClickPlusPlayer()">
+          <ion-icon  class="add-icons" name="add"></ion-icon>
+        </ion-button>
+        <!-- <ion-icon name="add-circle" class="add" button [color]="numPlayer>maxPlayerIcon? 'primary' : 'light'" (click)="onClickPlusPlayer()"></ion-icon> -->
       </ion-col>
       
     </ion-row>

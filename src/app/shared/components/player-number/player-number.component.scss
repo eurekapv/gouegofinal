@@ -2,15 +2,10 @@
 
 ion-card {
     background-color: white;
-    min-height: 50px;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
 
-.right-border {
-    border-right-style: solid;
+.left-border {
+    border-left-style: solid;
     border-width: thin;
     border-color: #eff1f8;
     
@@ -27,15 +22,29 @@ ion-card {
     font-size: medium;
     color: #9da2b3;
 }
-.players{
+.player-buttons{
+    height:50px;
+    width: 50px;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.add-buttons
+{
     height: 50px;
     width: 50px;
 }
-.add{
-    height: 70px;
-    width: 70px;
+.add-icons{
+    min-width: 30px;
+}
+.player-icons
+{
+    min-width:20px;
 }
 
-
+.player-indicator-icon
+{
+    height: 50px;
+    width: 50px;
+}
 
 

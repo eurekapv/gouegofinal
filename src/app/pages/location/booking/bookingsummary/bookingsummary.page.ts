@@ -111,6 +111,13 @@ export class BookingsummaryPage implements OnInit {
       this.navCtrl.navigateForward(['/']);
     }
   }
+
+  onChangedNumPlayer(nPlayer: number)
+  {
+    console.log(nPlayer);
+    this.docPianificazione.NUMPARTECIPANTI=nPlayer;
+  }
+
 }
 
 

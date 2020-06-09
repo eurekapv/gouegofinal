@@ -14,7 +14,7 @@ export class Prenotazione extends IDDocument {
     RESIDUO: number;
     IMPOSTA: number;
     TOTALE: number;
-    PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
+    PRENOTAZIONIPIANIFICAZIONE: PrenotazionePianificazione[];
 
     _READY: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
                      //si puo' procedere al pagamento finale
@@ -28,7 +28,7 @@ export class Prenotazione extends IDDocument {
         this.IMPOSTA = 0;
         this._READY = false;
 
-        this.PRENOTAZIONEPIANIFICAZIONE = [];
+        this.PRENOTAZIONIPIANIFICAZIONE = [];
         
     }
 
@@ -51,11 +51,11 @@ export class Prenotazione extends IDDocument {
      */
     setPianificazioneSingola(docPianificazione) {
         if (docPianificazione) {
-            if (this.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
-                this.PRENOTAZIONEPIANIFICAZIONE[0] = docPianificazione;
+            if (this.PRENOTAZIONIPIANIFICAZIONE.length !== 0) {
+                this.PRENOTAZIONIPIANIFICAZIONE[0] = docPianificazione;
             }
             else {
-                this.PRENOTAZIONEPIANIFICAZIONE.push(docPianificazione);
+                this.PRENOTAZIONIPIANIFICAZIONE.push(docPianificazione);
             }
         }
     }
@@ -70,8 +70,8 @@ export class Prenotazione extends IDDocument {
         
         this.IDAREAOPERATIVA = idArea;
 
-        if (this.PRENOTAZIONEPIANIFICAZIONE) {
-            this.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
+        if (this.PRENOTAZIONIPIANIFICAZIONE) {
+            this.PRENOTAZIONIPIANIFICAZIONE.forEach(element => {
                 element.IDAREAOPERATIVA = idArea;
             }); 
         }
@@ -101,8 +101,8 @@ export class Prenotazione extends IDDocument {
      */
     getPianificazione() {
         let docPianificazione: PrenotazionePianificazione;
-        if (this.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
-            docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
+        if (this.PRENOTAZIONIPIANIFICAZIONE.length !== 0) {
+            docPianificazione = this.PRENOTAZIONIPIANIFICAZIONE[0];
         }
         return docPianificazione;
     }
@@ -117,7 +117,7 @@ export class Prenotazione extends IDDocument {
 
     setCollection(data: any) {
 
-        this.PRENOTAZIONEPIANIFICAZIONE = [];
+        this.PRENOTAZIONIPIANIFICAZIONE = [];
 
         if (data.PRENOTAZIONEPIANIFICAZIONE) {
             this.setCollectionPianificazioni(data);
@@ -129,7 +129,7 @@ export class Prenotazione extends IDDocument {
             let newPianificazione = new PrenotazionePianificazione();
 
             newPianificazione.setJSONProperty(element);
-            this.PRENOTAZIONEPIANIFICAZIONE.push(newPianificazione);
+            this.PRENOTAZIONIPIANIFICAZIONE.push(newPianificazione);
             
         })
     }

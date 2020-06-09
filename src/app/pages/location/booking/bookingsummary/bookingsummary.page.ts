@@ -9,6 +9,7 @@ import { Location } from 'src/app/models/location.model';
 import { Utente } from 'src/app/models/utente.model';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
+import { switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -35,6 +36,9 @@ export class BookingsummaryPage implements OnInit {
 
   idPrenotazione = '';
   idLocation = '';
+
+  //accettazione delle condizioni di vendita
+  disclaimer: boolean =false;
   
   constructor(private startService:StartService,
               private router: ActivatedRoute,
@@ -43,7 +47,7 @@ export class BookingsummaryPage implements OnInit {
   }
 
   ngOnInit() {
-    
+    this.disclaimer=false;
     
     let result = true;
 
@@ -83,6 +87,8 @@ export class BookingsummaryPage implements OnInit {
           }
           else {
             console.log(this.activePrenotazione);
+            console.log(this.docPianificazione);
+            console.log(this.selectedLocation);
           }
 
         });   
@@ -116,6 +122,11 @@ export class BookingsummaryPage implements OnInit {
   {
     console.log(nPlayer);
     this.docPianificazione.NUMPARTECIPANTI=nPlayer;
+  }
+   
+  back()
+  {
+    this.navCtrl.pop();
   }
 
 }

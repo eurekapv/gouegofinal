@@ -6,20 +6,47 @@
 
 <ion-content>
   <div style="background-color:#EFF1F8" >
-    <div class="ion-text-center">
-      <ion-button color="danger" >
-        Aspetta, voglio modificare
-      </ion-button>
-    </div>
     <ion-grid class="griglia-principale">
       <ion-row>
         <ion-col>
-          LA MIA SCELTA
+          <ion-button color="danger" expand="block" class="full-buttons" (click)="back()">
+            Aspetta, voglio modificare
+          </ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-card>dddddddd</ion-card>
+          <ion-card>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="3" class="ion-text-center left-col">
+                  <h6 class="ion-no-margin">{{ docPianificazione.DATAORAINIZIO | date: "EEE" | uppercase}}</h6>
+                  <h4 class="ion-no-margin">{{docPianificazione.DATAORAINIZIO | date: "dd"}}</h4>
+                </ion-col>
+                <ion-col size="9">
+                  <h4>{{docPianificazione._DESCRCAMPO}}</h4>
+                  <h6>{{selectedLocation.INDIRIZZO|titlecase}}</h6>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-card>
+            <ion-grid>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="3" class="ion-text-center left-col">
+                  <h6 class="ion-no-margin">{{ docPianificazione.DATAORAINIZIO | date: "HH:mm" | uppercase}}</h6>
+                  <h6 class="ion-no-margin">{{docPianificazione.DATAORAFINE | date: "HH:mm"}}</h6>
+                </ion-col>
+                <ion-col size="9">
+                  <h5 class="ion-no-margin">{{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE!=1? "Ore":"Ora"}}</h5>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -27,6 +54,41 @@
           <app-player-number [numPlayer]="docPianificazione.NUMPARTECIPANTI" (changeNumPlayer)="onChangedNumPlayer($event)" ></app-player-number>
         </ion-col>
       </ion-row>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2">
+          <ion-checkbox [(ngModel)]="disclaimer" ></ion-checkbox>
+        </ion-col>
+        <ion-col><p>Letto e approvato le <a href="">condizioni di vendita</a></p></ion-col>
+      </ion-row>
     </ion-grid>
   </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="col-prezzo">
+        <ion-row>
+          <ion-col size="9"class="ion-no-padding">
+            <h5>TOTALE</h5>
+          </ion-col>
+          <ion-col size="3"class="ion-no-padding">
+            <h5>{{activePrenotazione.TOTALE | currency: "EUR"}}</h5>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button color="light" expand="block" class="full-buttons">
+          Pagamento
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button color="primary" expand="block" class="full-buttons" [disabled]="!disclaimer">
+          Conferma Prenotazione
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

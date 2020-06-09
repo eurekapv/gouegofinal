@@ -8,13 +8,12 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class PlayerNumberComponent implements OnInit {
   
-  //@Input() numPlayer: Number;
-  numPlayer: Number = 4;
+  @Input() numPlayer: Number;
   maxPlayerIcon: Number= 6;
+
   @Output() changeNumPlayer= new EventEmitter<Number>();
-  
-  
-  
+  @Output() plusPlayer= new EventEmitter<any>();
+   
   icone : Number[] = [];
   
   constructor() {
@@ -32,6 +31,23 @@ export class PlayerNumberComponent implements OnInit {
     {
       this.icone[index] = index;
     }
+  }
+
+  /**
+   * Invia alla pagina il nuovo numero player
+   * @param nPlayer Numero Player
+   */
+  onClickPlayer(nPlayer)
+  {
+    this.changeNumPlayer.emit(nPlayer);
+  }
+
+  /**
+   * invia alla pagina la richiesta di aggiunta giocatori
+   */
+  onClickPlusPlayer()
+  {
+    this.plusPlayer.emit();
   }
   
 }

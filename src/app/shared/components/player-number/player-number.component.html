@@ -17,13 +17,13 @@
               <ion-grid>
                 <ion-row>
                   <ion-col size="4" *ngFor="let icona of icone" class="ion-no-padding" >
-                    <ion-icon class="players" name="person-circle" [color]="icona<numPlayer? 'primary' : 'light'"></ion-icon>
+                    <ion-icon class="players" name="person-circle" [color]="icona<numPlayer? 'primary' : 'light'" (click)="onClickPlayer(icona, $event)"></ion-icon>
                   </ion-col>
                 </ion-row>
               </ion-grid>
       </ion-col>
       <ion-col size="3">
-        <ion-icon name="add-circle" class="add" button [color]="numPlayer>maxPlayerIcon? 'primary' : 'light'"></ion-icon>
+        <ion-icon name="add-circle" class="add" button [color]="numPlayer>maxPlayerIcon? 'primary' : 'light'" (click)="onClickPlusPlayer()"></ion-icon>
       </ion-col>
       
     </ion-row>

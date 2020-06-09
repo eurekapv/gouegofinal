@@ -24,6 +24,7 @@ export class PrenotazionePianificazione extends IDDocument {
 
     constructor() {
         super();
+        this.NUMPARTECIPANTI = 1;
     }
 
     setJSONProperty(data: any) {

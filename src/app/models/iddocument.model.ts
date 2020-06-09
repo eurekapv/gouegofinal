@@ -47,18 +47,32 @@ import { MyDateTime } from './mydatetime.model';
 
     /**
      * Esporta l'oggetto in JSON
-     * @param dataObject Oggetto da esportare
-     * @param clearProperty Elimina le proprietà tipiche del documento (selected, do_insert etc)
+     * @param clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
+     * @param clearPKProperty Non esporta la Chiave primaria
      */
-    exportToJSON(clearDOProperty: boolean) {
+    exportToJSON(clearDOProperty: boolean, clearPKProperty: boolean) {
       let _this = this;
       let arProperty = Object.keys(_this);
       //Chiedo il Descrittore della classe
       let objDescriptor = _this.getDescriptor();
       let strJSON = '';
       let doProperty = ['do_updated',' do_loaded','do_inserted','do_deleted','selected'];
+      let propExclud = [];
       let row = '';
       
+
+      // Vuole eliminare anche le chiavi Primarie, le aggiungo all'Array
+      if (clearDOProperty) {
+        //Popolo l'array propExclud con le doProperty
+        doProperty.forEach(element => {
+          propExclud.push(element);
+        });
+      }
+
+      //Se vuole non esportare la chiave primaria la aggiungo all'Array esclusioni
+      if (clearPKProperty) {
+        propExclud.push('ID');
+      }
 
       arProperty.forEach(element => {
 
@@ -68,13 +82,38 @@ import { MyDateTime } from './mydatetime.model';
         //Proprietà Basica non di tipo Array
         if (Array.isArray(_this[element]) == true) {
           //Qui gestisco l'Array
+          let arElements = _this[element];
+          let strArray = '';
+          let strElArray = '';
+          
+          //Ciclo sugli elementi
+          for (let index = 0; index < arElements.length; index++) {
+            let element: IDDocument;
+             element = arElements[index];
+             strElArray = element.exportToJSON(clearDOProperty, clearPKProperty);
+             if (strArray.length !== 0) {
+                strArray += ', '
+             }
+             strArray += strElArray;
+          }
 
+          row += '[' + strArray + ']';
+
+          if (strJSON.length !== 0) {
+            strJSON += ', ';
+          }
+
+          strJSON += row;
         }
         else {
           let skip = false;
-          //Vuole eliminare le proprietà DO
-          if (clearDOProperty) {
-            if (doProperty.includes(element)) {
+          //Vuole eliminare le proprietà DO e private e/o le chiavi primarie
+          if (propExclud.length !== 0) {
+            if (propExclud.includes(element)) {
+              skip = true;
+            }
+            else if (clearDOProperty && element.startsWith('_')) {
+              //Siccome vuole eliminare le DOProperty tolgo anche le proprieta se private
               skip = true;
             }
           }
@@ -85,12 +124,12 @@ import { MyDateTime } from './mydatetime.model';
               //Chiedo il Tipo del Campo con il descriptor
               let tipoCampo = objDescriptor.getType(element);
 
-              if (tipoCampo !== TypeDefinition.undefined && _this[element]!== undefined) {
+              if (tipoCampo !== TypeDefinition.undefined && (_this[element]!== undefined)) {
 
                 switch (tipoCampo) {
 
                   case TypeDefinition.boolean:
-                    row += parseInt(_this[element],10);
+                    row += _this[element];
                     break;
                 
                   case TypeDefinition.number:
@@ -103,17 +142,17 @@ import { MyDateTime } from './mydatetime.model';
 
                   case TypeDefinition.time:
                     //E' un orario
-                    row += this.formatDateTimeISO(_this[element]);
+                    row += '\"' + this.formatDateTimeISO(_this[element]) + '\"';
                     break;
 
                   case TypeDefinition.date:
                     //E' una data
-                    row += this.formatDateISO(_this[element]);
+                    row += '\"' + this.formatDateISO(_this[element]) + '\"';
                     break;
 
                   case TypeDefinition.dateTime:
                     //Campo di tipo DATAORA
-                    row += this.formatDateTimeISO(_this[element]);
+                    row += '\"' + this.formatDateTimeISO(_this[element]) + '\"' ;
                     break;
                   case TypeDefinition.char:
                     row += '\"' + _this[element] + '\"';
@@ -141,7 +180,7 @@ import { MyDateTime } from './mydatetime.model';
       });
 
       strJSON = '{' + strJSON + '}';
-      
+
       return strJSON;
     }
 

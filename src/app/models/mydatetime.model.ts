@@ -4,8 +4,10 @@ export class MyDateTime {
 //Formatta una data passata in ISO (Solo la parte data)
 static formatDateISO(data: Date) {
     let intMese = data.getMonth() + 1;
+    let intGiorno = data.getDate();
     let mese = (intMese > 9) ? (intMese + '') : ('0' + intMese);
-    let format = [data.getFullYear(), mese, data.getDate()].join('-');
+    let giorno = (intGiorno > 9) ? (intGiorno + '') : ('0' + intGiorno);
+    let format = [data.getFullYear(), mese, giorno].join('-');
 
     return format;
     }

@@ -85,9 +85,11 @@ export class BookingsummaryPage implements OnInit {
             this.onBookIdWrong();
           }
           else {
+            /*
             console.log(this.activePrenotazione);
             console.log(this.docPianificazione);
             console.log(this.selectedLocation);
+            */
           }
 
         });   

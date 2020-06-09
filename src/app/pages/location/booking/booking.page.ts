@@ -310,7 +310,7 @@ export class BookingPage implements OnInit, OnDestroy {
 
       this.calcolaTotale();
 
-      //this.goToFinalizza();
+      
     }
     
 
@@ -340,10 +340,6 @@ export class BookingPage implements OnInit, OnDestroy {
                 //Chiudo il loading
                 elLoading.dismiss();
 
-                //Devo controllare cosa mi è arrivato
-                LogApp.consoleLog('In arrivo dal Server');
-                LogApp.consoleLog(myPrenotazione);
-
                 this.goToFinalizza();
 
               }, error => {
@@ -366,9 +362,7 @@ export class BookingPage implements OnInit, OnDestroy {
   }
 
   goToFinalizza() {
-    console.log(this.activePrenotazione);
-
-    //this.navController.navigateForward(['/','location',this.selectedLocation.ID,'booking','bookingsummary',this.actualPlanning.ID]);
+    
     this.navController.navigateForward(['/','location',
                                               this.selectedLocation.ID,
                                             'booking','bookingsummary',

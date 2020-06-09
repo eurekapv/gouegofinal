@@ -8,6 +8,7 @@ import { Prenotazione } from '../models/prenotazione.model';
 import { Utente } from '../models/utente.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -112,19 +113,25 @@ export class PrenotazioneService {
                                        'X-HTTP-Method-Override':'MOBBOOKINGTOTALE', 
                                        'APPID':config.appId
                                       });
-    let myParams = new HttpParams();                                      
+    let myParams = new HttpParams(); 
+    const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
 
     const doObject = 'PRENOTAZIONE';
     let myUrl = config.urlBase + '/' + doObject;
-    // let myBody = JSON.stringify(docPrenotazione);
+    
+    //Creo il JSON del documento , eliminando le proprietà do e private (true) e le chiavi primarie(true)
+    let myBodyJSON = docPrenotazione.exportToJSON(true, true);
+    //Il parametro inviato nel body deve essere strutturato cosi
+    // { "nomeParametro" : { oggetto exportato JSON } }
+    let myBody = '{' + '\"' + paramName + '\"' + ':' + myBodyJSON + '}';
 
-    let myBody = docPrenotazione.exportToJSON(true);
-
-    console.log(myBody);
+    LogApp.consoleLog('Invio a MOBBOOKINGTOTALE ' + myBody);
+    
 
     return this.apiService
           .httpPost(myUrl,myHeaders, myParams, myBody)
           .pipe(map(fullData => {
+            console.log(fullData);
             return fullData.PRENOTAZIONE;
           }));
 

@@ -335,4 +335,38 @@ export class Location extends IDDocument {
       return myCampo;
     }
 
+
+    /**
+     * Ritorna l'indirizzo della Location nel formato
+     * Indirizzo - Citta
+     * @param shortVersion Versione ridotta con Indirizzo se presente, oppure Citta
+     */
+    getAddressLocation(shortVersion: boolean) {
+      let value = '';
+      if (shortVersion) {
+        if (this.INDIRIZZO.length !== 0)  {
+          value = this.INDIRIZZO;
+        }
+        else if (this.COMUNE.length !== 0) {
+          value = this.COMUNE;
+        }
+      }
+      else {
+        if (this.INDIRIZZO.length !== 0)  {
+          value = this.INDIRIZZO;
+        }
+
+        if (this.COMUNE.length !== 0) {
+          if (value.length !== 0) {
+            value += ' - ';
+          }
+
+          value += this.COMUNE;
+        }
+
+      }
+
+      return value;
+    }
+
 }

@@ -646,6 +646,16 @@ requestImportoPrenotazione() {
   return this.prenotazioniService.requestImporto(actualStartConfig);
 }
 
+//Mantiene nel servizio il campo per una rilettura futura
+setSelectedCampoPrenotazione(value: Campo) {
+  this.prenotazioniService.selectedCampo = value;
+}
+
+//Recupera nel servizio Prenotazione il campo salvato in precedenza
+getSelectedCampoPrenotazione() {
+  return this.prenotazioniService.selectedCampo;
+}
+
 
 
 /**

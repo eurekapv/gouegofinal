@@ -4,6 +4,8 @@ ion-card-header {
 
 ion-card {
     width: max-content;
+    max-width: 300px;
+    min-width: 300px;
 
     img {
         width: 100%;

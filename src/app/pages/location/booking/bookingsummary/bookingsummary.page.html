@@ -24,8 +24,8 @@
                   <h4 class="ion-no-margin">{{docPianificazione.DATAORAINIZIO | date: "dd"}}</h4>
                 </ion-col>
                 <ion-col size="9">
-                  <h4>{{docPianificazione._DESCRCAMPO}}</h4>
-                  <h6>{{selectedLocation.INDIRIZZO|titlecase}}</h6>
+                  <h4>{{selectedCampo!.DENOMINAZIONE}}</h4>
+                  <h6>{{getAddressLocation()|titlecase}}</h6>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -38,7 +38,7 @@
             <ion-grid>
               <ion-row class="ion-align-items-center">
                 <ion-col size="3" class="ion-text-center left-col">
-                  <h6 class="ion-no-margin">{{ docPianificazione.DATAORAINIZIO | date: "HH:mm" | uppercase}}</h6>
+                  <h6 class="ion-no-margin">{{docPianificazione.DATAORAINIZIO | date: "HH:mm" | uppercase}}</h6>
                   <h6 class="ion-no-margin">{{docPianificazione.DATAORAFINE | date: "HH:mm"}}</h6>
                 </ion-col>
                 <ion-col size="9">
@@ -85,7 +85,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button color="primary" expand="block" class="full-buttons" [disabled]="!disclaimer">
+        <ion-button color="primary" expand="block" class="full-buttons" [disabled]="!disclaimer || !activePrenotazione.ISVALID ">
           Conferma Prenotazione
         </ion-button>
       </ion-col>

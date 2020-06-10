@@ -9,6 +9,7 @@ import { Utente } from '../models/utente.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 import { LogApp } from '../models/log.model';
+import { Campo } from '../models/campo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class PrenotazioneService {
 
   private _listPrenotazioni = new BehaviorSubject<Prenotazione[]>([]);
   private _activePrenotazione = new BehaviorSubject<Prenotazione>(new Prenotazione());
+  private _selectedCampo: Campo;
 
   constructor(private apiService: ApicallService) { }
 
@@ -27,6 +29,15 @@ export class PrenotazioneService {
 
   get listPrenotazioni() {
     return this._listPrenotazioni.asObservable();
+  }
+
+  //Memorizzo il campo selezionato
+  set selectedCampo(value: Campo) {
+    this._selectedCampo = value;
+  }
+
+  get selectedCampo() {
+    return this._selectedCampo;
   }
 
   // Imposta come attiva la Prenotazione passata

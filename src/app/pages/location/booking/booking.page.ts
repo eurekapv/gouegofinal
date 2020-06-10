@@ -308,6 +308,9 @@ export class BookingPage implements OnInit, OnDestroy {
       //Indico al servizio di memorizzarsi la Pianificazione per poterla passare alle altre pagine
       this.startService.setPianificazioneSingola(docPianificazione);
 
+      //Indico al servizio di mantenere (non Observable) le info del campo selezionato
+      this.startService.setSelectedCampoPrenotazione(this.selectedCampo);
+
       this.calcolaTotale();
 
       
@@ -336,13 +339,15 @@ export class BookingPage implements OnInit, OnDestroy {
                 catchError(this.handleError)
               )
               .subscribe(resultData => {
-
+                console.log('Ricevuti Prenotazione');
+                console.log(resultData);
                 //Chiudo il loading
                 elLoading.dismiss();
 
                 //Converto il documento ricevuto
                 let newPrenotazione = Prenotazione.getPrenotazioneFromJson(resultData);
-                
+                console.log('AfterCalcolaTotale prenotazione');
+                LogApp.consoleLog(newPrenotazione);
 
                 // Risposta corretta del server
                 if (newPrenotazione.ISVALID === true) {

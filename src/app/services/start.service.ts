@@ -28,6 +28,7 @@ import { LogApp } from '../models/log.model';
 import { SlotDay } from '../models/imdb/slotday.model';
 import { Campo } from '../models/campo.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
+import { Prenotazione } from '../models/prenotazione.model';
 
 
 @Injectable({
@@ -606,6 +607,11 @@ get activePrenotazione() {
   return this.prenotazioniService.activePrenotazione;
 }
 
+//Passo al servizio una prenotazione e la imposto nel servizio
+setActivePrenotazione(value: Prenotazione) {
+  this.prenotazioniService.setActivePrenotazione(value);
+}
+
 /**
  * Chiede al servizio di inizializzare una nuova Prenotazione
  * @param idArea IDArea da impostare
@@ -659,6 +665,8 @@ requestPrenotazioniUtente(idUtente: string) {
   //Richiedo i dati al servizio
   this.prenotazioniService.request(actualStartConfig, idUtente);
 }
+
+
 
 
 

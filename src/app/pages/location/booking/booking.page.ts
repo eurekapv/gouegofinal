@@ -335,12 +335,31 @@ export class BookingPage implements OnInit, OnDestroy {
               .pipe(
                 catchError(this.handleError)
               )
-              .subscribe(myPrenotazione => {
+              .subscribe(resultData => {
 
                 //Chiudo il loading
                 elLoading.dismiss();
 
-                this.goToFinalizza();
+                //Converto il documento ricevuto
+                let newPrenotazione = Prenotazione.getPrenotazioneFromJson(resultData);
+                
+
+                // Risposta corretta del server
+                if (newPrenotazione.ISVALID === true) {
+                  //Invio al servizio il documento
+                  this.startService.setActivePrenotazione(newPrenotazione);
+
+                  //Procedo al passaggio di finalizzazione
+                  this.goToFinalizza();
+                }
+                else {
+                  LogApp.consoleLog('Prenotazione Invalida');
+                  LogApp.consoleLog(newPrenotazione);
+
+                  let msg = (newPrenotazione.MSGINVALID ? newPrenotazione.MSGINVALID: 'Errore comunicazione imprevisto');
+                  this.showMessage(msg);
+                }
+
 
               }, error => {
                 //Chiudo il loading

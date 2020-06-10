@@ -15,7 +15,7 @@ export class Prenotazione extends IDDocument {
     IMPOSTA: number;
     TOTALE: number;
     MSGINVALID: string;
-    PRENOTAZIONIPIANIFICAZIONE: PrenotazionePianificazione[];
+    PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
 
     ISVALID: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
                      //si puo' procedere al pagamento finale
@@ -29,7 +29,7 @@ export class Prenotazione extends IDDocument {
         this.IMPOSTA = 0;
         this.ISVALID = false;
         this.MSGINVALID = '';
-        this.PRENOTAZIONIPIANIFICAZIONE = [];
+        this.PRENOTAZIONEPIANIFICAZIONE = [];
         
     }
 
@@ -52,11 +52,11 @@ export class Prenotazione extends IDDocument {
      */
     setPianificazioneSingola(docPianificazione) {
         if (docPianificazione) {
-            if (this.PRENOTAZIONIPIANIFICAZIONE.length !== 0) {
-                this.PRENOTAZIONIPIANIFICAZIONE[0] = docPianificazione;
+            if (this.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
+                this.PRENOTAZIONEPIANIFICAZIONE[0] = docPianificazione;
             }
             else {
-                this.PRENOTAZIONIPIANIFICAZIONE.push(docPianificazione);
+                this.PRENOTAZIONEPIANIFICAZIONE.push(docPianificazione);
             }
         }
     }
@@ -71,8 +71,8 @@ export class Prenotazione extends IDDocument {
         
         this.IDAREAOPERATIVA = idArea;
 
-        if (this.PRENOTAZIONIPIANIFICAZIONE) {
-            this.PRENOTAZIONIPIANIFICAZIONE.forEach(element => {
+        if (this.PRENOTAZIONEPIANIFICAZIONE) {
+            this.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
                 element.IDAREAOPERATIVA = idArea;
             }); 
         }
@@ -102,8 +102,8 @@ export class Prenotazione extends IDDocument {
      */
     getPianificazione() {
         let docPianificazione: PrenotazionePianificazione;
-        if (this.PRENOTAZIONIPIANIFICAZIONE.length !== 0) {
-            docPianificazione = this.PRENOTAZIONIPIANIFICAZIONE[0];
+        if (this.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
+            docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
         }
         return docPianificazione;
     }
@@ -118,7 +118,7 @@ export class Prenotazione extends IDDocument {
 
     setCollection(data: any) {
 
-        this.PRENOTAZIONIPIANIFICAZIONE = [];
+        this.PRENOTAZIONEPIANIFICAZIONE = [];
 
         if (data.PRENOTAZIONEPIANIFICAZIONE) {
             this.setCollectionPianificazioni(data);
@@ -130,7 +130,7 @@ export class Prenotazione extends IDDocument {
             let newPianificazione = new PrenotazionePianificazione();
 
             newPianificazione.setJSONProperty(element);
-            this.PRENOTAZIONIPIANIFICAZIONE.push(newPianificazione);
+            this.PRENOTAZIONEPIANIFICAZIONE.push(newPianificazione);
             
         })
     }
@@ -171,9 +171,19 @@ export class Prenotazione extends IDDocument {
      * @param clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
      * @param clearPKProperty Non esporta la Chiave primaria
      */
-    exportToJSON(clearDOProperty: boolean, clearPKProperty:boolean) {
-        return super.exportToJSON(clearDOProperty, clearPKProperty);
+    exportToJSON(clearDOProperty: boolean, clearPKProperty:boolean, clearPrivateProperty: boolean) {
+        return super.exportToJSON(clearDOProperty, clearPKProperty, clearPrivateProperty);
     }
 
+    /**
+     * Converte il JSON ricevuto e ritorna una Prenotazione
+     * @param JsonData Dati JSON ricevuti
+     */
+    static getPrenotazioneFromJson(JsonData: string): Prenotazione {
+        let newPrenotazione = new Prenotazione();
+        newPrenotazione.setJSONProperty(JsonData);
+  
+        return newPrenotazione;
+      }
     
 }

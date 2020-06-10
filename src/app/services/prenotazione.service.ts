@@ -29,6 +29,11 @@ export class PrenotazioneService {
     return this._listPrenotazioni.asObservable();
   }
 
+  // Imposta come attiva la Prenotazione passata
+  setActivePrenotazione(value: Prenotazione) {
+    this._activePrenotazione.next(value);
+  }
+
   
   /**
    * Inizializza la prenotazione con l'AREA
@@ -111,16 +116,20 @@ export class PrenotazioneService {
     let docPrenotazione = this._activePrenotazione.getValue();
     const myHeaders = new HttpHeaders({'Content-type':'application/json', 
                                        'X-HTTP-Method-Override':'MOBBOOKINGTOTALE', 
+                                       'child-level': '999',
                                        'APPID':config.appId
                                       });
     let myParams = new HttpParams(); 
     const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
-
+    //Quali proprietà non voglio esportare
+    const noExportDO = false;
+    const noExportPK = true;
+    const noExportPrivate = true;
     const doObject = 'PRENOTAZIONE';
     let myUrl = config.urlBase + '/' + doObject;
     
     //Creo il JSON del documento , eliminando le proprietà do e private (true) e le chiavi primarie(true)
-    let myBodyJSON = docPrenotazione.exportToJSON(true, true);
+    let myBodyJSON = docPrenotazione.exportToJSON(noExportDO, noExportPK, noExportPrivate);
     //Il parametro inviato nel body deve essere strutturato cosi
     // { "nomeParametro" : { oggetto exportato JSON } }
     let myBody = '{' + '\"' + paramName + '\"' + ':' + myBodyJSON + '}';
@@ -131,11 +140,12 @@ export class PrenotazioneService {
     return this.apiService
           .httpPost(myUrl,myHeaders, myParams, myBody)
           .pipe(map(fullData => {
-            console.log(fullData);
-            return fullData.PRENOTAZIONE;
+            //fulldata è già l'oggetto Prenotazione
+            return fullData;
           }));
 
     }
+
 
 
 }

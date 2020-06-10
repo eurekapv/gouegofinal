@@ -48,7 +48,7 @@ export class PrenotazionePianificazione extends IDDocument {
                         'IDSPORT',
                         'IDCAMPO',
                         'GUIDSERIE'];
-        let arNumber = ['ANNO','NUMPARTECIPENTI'];
+        let arNumber = ['ANNO','NUMPARTECIPANTI'];
         let arNumberDecimal = ['DURATAORE',
                                'IMPONIBILE',
                                'INCASSATO',

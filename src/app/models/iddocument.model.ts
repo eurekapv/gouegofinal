@@ -49,8 +49,9 @@ import { MyDateTime } from './mydatetime.model';
      * Esporta l'oggetto in JSON
      * @param clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
      * @param clearPKProperty Non esporta la Chiave primaria
+     * @param clearPrivateProperty Non esporta le proprietà private
      */
-    exportToJSON(clearDOProperty: boolean, clearPKProperty: boolean) {
+    exportToJSON(clearDOProperty: boolean, clearPKProperty: boolean, clearPrivateProperty: boolean) {
       let _this = this;
       let arProperty = Object.keys(_this);
       //Chiedo il Descrittore della classe
@@ -90,7 +91,7 @@ import { MyDateTime } from './mydatetime.model';
           for (let index = 0; index < arElements.length; index++) {
             let element: IDDocument;
              element = arElements[index];
-             strElArray = element.exportToJSON(clearDOProperty, clearPKProperty);
+             strElArray = element.exportToJSON(clearDOProperty, clearPKProperty, clearPrivateProperty);
              if (strArray.length !== 0) {
                 strArray += ', '
              }
@@ -112,7 +113,7 @@ import { MyDateTime } from './mydatetime.model';
             if (propExclud.includes(element)) {
               skip = true;
             }
-            else if (clearDOProperty && element.startsWith('_')) {
+            else if (clearPrivateProperty && element.startsWith('_')) {
               //Siccome vuole eliminare le DOProperty tolgo anche le proprieta se private
               skip = true;
             }
@@ -229,7 +230,15 @@ import { MyDateTime } from './mydatetime.model';
                 switch (tipoCampo) {
 
                   case TypeDefinition.boolean:
-                    _this[element] = parseInt(dataObject[element],10);
+                    let value = parseInt(dataObject[element],10);
+                    if (value === -1) {
+                      _this[element] = true;  
+                    }
+                    else {
+                      _this[element] = false;
+                    }
+
+                    // _this[element] = parseInt(dataObject[element],10);
                     break;
                 
                   case TypeDefinition.number:

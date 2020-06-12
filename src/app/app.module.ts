@@ -12,6 +12,10 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { registerLocaleData } from '@angular/common';
+
+import { QRCodeModule } from 'angularx-qrcode';
+
+
 import localeIt from '@angular/common/locales/it';
 
 registerLocaleData(localeIt,'it');
@@ -24,8 +28,8 @@ registerLocaleData(localeIt,'it');
             HttpClientModule,
             IonicModule.forRoot(), 
             IonicStorageModule.forRoot(),
-            AppRoutingModule
-            
+            AppRoutingModule,
+            QRCodeModule            
             ],
   providers: [
     StatusBar,

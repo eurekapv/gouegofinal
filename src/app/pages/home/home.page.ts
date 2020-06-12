@@ -236,6 +236,7 @@ export class HomePage implements OnInit, OnDestroy{
   onClickfooterButton() {
     if (this.userLogged) {
       // Apro lo Storico
+      this.openHistory();
     }
     else {
       // Apro il Login
@@ -265,6 +266,13 @@ export class HomePage implements OnInit, OnDestroy{
   /** Apertura Videata Login */
   openLogin() {
     this.navController.navigateForward(['/','auth','login']);
+  }
+
+  /**
+   * Apre la pagina di History
+   */
+  openHistory() {
+    this.navController.navigateForward(['/', 'historylist']);
   }
 
   /** funzione per mostrare il popup di scelta campo */

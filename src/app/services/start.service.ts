@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, Observable } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Storage } from '@ionic/storage';

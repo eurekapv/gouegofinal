@@ -82,3 +82,15 @@ export class AppModule {}
  npm install moment --save
 
  */
+
+ /*
+ 12-06-2020
+ Aggiunto il modulo per visualizzare qrcode da https://www.npmjs.com/package/angularx-qrcode
+ # Angular 8 and Ionic
+npm install angularx-qrcode@~2.1.2 --save
+
+oppure 
+
+# Angular 9 and Ionic
+npm install angularx-qrcode --save
+ */

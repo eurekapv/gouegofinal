@@ -9,10 +9,10 @@
 
 <ion-content>
   <div class="ion-text-center div-qr">
-      <qrcode class="qrcode" [qrdata]="'fkalfkjalfalskdjflkdfjlkd'"></qrcode>
+      <qrcode [qrdata]="docPianificazione.ID"></qrcode>
   </div>
-  <div class="ion-text-center">
-    <ion-button fill="clear" size="large">
+  <div class="ion-text-center div-btns">
+    <ion-button layout="icon-top" fill="clear" size="large" disabled>
       <ion-icon name="trash-outline"></ion-icon>
     </ion-button>
     <ion-button fill="clear" size="large">
@@ -22,4 +22,42 @@
       <ion-icon name="share-social-outline"></ion-icon>
     </ion-button>
   </div>
+  <ion-list lines="none">
+    <ion-item>
+      <ion-label>
+        <h2>{{docPianificazione.DATAORAINIZIO| date : 'fullTime'}}</h2>
+        <p>{{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} - </p>
+      </ion-label>
+      <ion-chip color="primary">
+        {{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE>1? 'Ore':'Ora'}} 
+      </ion-chip>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h1>Campo {{selectedCampo}}</h1>
+        <p>{{selectedLocation}}</p>
+      </ion-label>
+      <ion-chip color="primary">
+        {{docPianificazione.NUMPARTECIPANTI}}
+        <ion-icon name="person"></ion-icon>
+      </ion-chip>
+    </ion-item>
+    <ion-item color="light">
+      PAGAMENTO:
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label slot="start">
+        Importo:
+      </ion-label>
+      <ion-label slot="end">
+        {{activePrenotazione.TOTALE | currency}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
+<ion-footer>
+      <ion-button expand="block">
+        Paga Ora
+      </ion-button>
+
+</ion-footer>

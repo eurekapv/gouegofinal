@@ -1,11 +1,17 @@
 .div-qr
 {
     background-color:#CEE9E7 ;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top:6vh;
+    padding-bottom:6vh;
 }
-.qrcode
+
+.div-btns
 {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(228, 228, 228);
+    border-bottom-width:1px;
+}
+.btn-pay
+{
+    margin-top:4vh;
 }

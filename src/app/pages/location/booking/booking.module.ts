@@ -8,6 +8,7 @@ import { BookingPageRoutingModule } from './booking-routing.module';
 
 import { BookingPage } from './booking.page';
 import { HomePageModule } from '../../home/home.module';
+import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { HomePageModule } from '../../home/home.module';
     BookingPageRoutingModule,
     HomePageModule
   ],
-  declarations: [BookingPage]
+  declarations: [BookingPage, BookingsummaryPage],
+  entryComponents: [BookingsummaryPage]
 })
 export class BookingPageModule {}

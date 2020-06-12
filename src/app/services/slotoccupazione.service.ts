@@ -56,8 +56,8 @@ export class SlotoccupazioneService {
     const strData = moment(dataGiorno).format('YYYY-MM-DD');
 
     if (docLocation && docCampo)  {
-      LogApp.consoleLog('Dati Occupazione: RICHIESTA');
-      LogApp.consoleLog(`Guid Location: ${docLocation.ID} - GuidCampo: ${docCampo.ID} - Data: ${strData}`);
+      // LogApp.consoleLog('Dati Occupazione: RICHIESTA');
+      // LogApp.consoleLog(`Guid Location: ${docLocation.ID} - GuidCampo: ${docCampo.ID} - Data: ${strData}`);
 
       let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
       myParams = myParams.append('guidLocation', docLocation.ID);
@@ -70,8 +70,8 @@ export class SlotoccupazioneService {
           .httpGet(myUrl,myHeaders,myParams)
           .subscribe(resultData => {
             
-            LogApp.consoleLog('Dati Occupazione: RISPOSTA');
-            LogApp.consoleLog(resultData);
+            // LogApp.consoleLog('Dati Occupazione: RISPOSTA');
+            // LogApp.consoleLog(resultData);
 
             //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
             this.syncResult(resultData, templateSlotDay);
@@ -99,10 +99,6 @@ export class SlotoccupazioneService {
     let srvResult = new DateSlotLock();
     srvResult.setJSONProperty(resultDataServer);
 
-    console.log('Server JSON');
-    console.log(resultDataServer);
-    console.log('Object Transformation');
-    console.log(srvResult);
 
     /**Informazioni occupazioni ricevute */
     if (srvResult.RESULT) {

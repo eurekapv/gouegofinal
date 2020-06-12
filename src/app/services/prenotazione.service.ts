@@ -145,8 +145,7 @@ export class PrenotazioneService {
     // { "nomeParametro" : { oggetto exportato JSON } }
     let myBody = '{' + '\"' + paramName + '\"' + ':' + myBodyJSON + '}';
 
-    LogApp.consoleLog('Invio a MOBBOOKINGTOTALE ' + myBody);
-    
+       
 
     return this.apiService
           .httpPost(myUrl,myHeaders, myParams, myBody)

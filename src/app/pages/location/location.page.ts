@@ -82,6 +82,7 @@ export class LocationPage implements OnInit, OnDestroy {
     }
   }
 
+
   setButtonCard() {
     
     // Recupero i Bottoni che devo mostrare in videata

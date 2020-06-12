@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, LoadingController, ToastController } from '@ionic/angular';
+import { NavController, LoadingController, ToastController, NavParams, ModalController } from '@ionic/angular';
 
 import { Subscription } from 'rxjs';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
@@ -51,6 +51,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               private navCtrl: NavController,
               private loadingController: LoadingController,
               private toastCtrl: ToastController,
+              private navParams: NavParams, private modalCtrl: ModalController
               ) {
 
   }
@@ -60,6 +61,60 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     
     let result = true;
 
+    //#region MODALE
+    /* VERSIONE MODALE*/
+      this.idLocation = this.navParams.get('locationId');
+      if (this.idLocation.length !== 0) {
+        // Chiedo Location
+        this.selectedLocation = this.startService.findLocationByID(this.idLocation);        
+          
+        if (!this.selectedLocation) {
+          result = false;
+        }
+      }
+      else {
+        result = false;
+      }
+
+      if (result) {
+        this.idPrenotazione = this.navParams.get('bookId');
+
+        //IDPrenotazione presente
+        if (this.idPrenotazione) {
+  
+          //Recupero la prenotazione 
+          this.recuperaPrenotazione();
+        }
+        else {
+          result = false;
+        }
+      }
+
+      if (result) {
+        //Controllo dell'utente loggato
+        this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
+                this.userLogged = element;
+        });
+  
+        //Richiedo lo User
+        this.subDocUtente = this.startService.utente.subscribe(element => {
+          this.docUtente = element;
+        });
+  
+        //Recupero il campo selezionato
+        this.selectedCampo = this.startService.getSelectedCampoPrenotazione();
+      }
+
+
+
+      //Si sono verificati errori
+      if (!result) {
+        this.onBookIdWrong();
+      }
+
+    //#endregion
+
+    /* VERSIONE FULL SCREEN
     this.router.paramMap.subscribe( param => {
       
       if (param.has('locationId')) {
@@ -122,20 +177,22 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       }
 
     });
+
+    */
   }
 
   ngOnDestroy() {
-    // if (this.subUserLogged) {
-    //   this.subUserLogged.unsubscribe();
-    // }
+    if (this.subUserLogged) {
+      this.subUserLogged.unsubscribe();
+    }
 
-    // if (this.subActivePrenotazione) {
-    //   this.subActivePrenotazione.unsubscribe();
-    // }
+    if (this.subActivePrenotazione) {
+      this.subActivePrenotazione.unsubscribe();
+    }
 
-    // if (this.subDocUtente) {
-    //   this.subDocUtente.unsubscribe();
-    // }
+    if (this.subDocUtente) {
+      this.subDocUtente.unsubscribe();
+    }
 
   }
 
@@ -172,12 +229,20 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     this.showMessage('Errore dati prenotazione');
 
+    close();
     if (this.idLocation.length !== 0) {
       this.navCtrl.navigateForward(['/','location',this.idLocation,'booking']);
     }
     else {
       this.navCtrl.navigateForward(['/']);
     }
+  }
+
+  /**
+   * Chiude la modale 
+   */
+  closeModal() {
+    this.modalCtrl.dismiss();
   }
 
   //E' cambiato il numero dei giocatori
@@ -235,11 +300,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
         
       });
   }
-   
-  back()
-  {
-    this.navCtrl.pop();
-  }
 
 
    /**
@@ -284,8 +344,14 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   
   onAfterSavePrenotazione()
   {
+    
+    //1) Chiudere la modale
+    this.closeModal();
+    //2) Andare alla History sulla scheda
     this.navCtrl.navigateRoot(['historylist/booking',this.activePrenotazione.ID])
   }
+
+
 }
 
 

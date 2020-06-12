@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, IonSlides, LoadingController, ToastController } from '@ionic/angular';
+import { NavController, IonSlides, LoadingController, ToastController, ModalController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianifica
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { LogApp } from 'src/app/models/log.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 
 @Component({
   selector: 'app-booking',
@@ -60,7 +61,8 @@ export class BookingPage implements OnInit, OnDestroy {
               private startService:StartService,
               private navController: NavController,
               private loadingController: LoadingController,
-              private toastCtrl: ToastController) { 
+              private toastCtrl: ToastController,
+              private modalCtrl: ModalController) { 
 
     this.ricevuti = false;
     this.bookable = false;
@@ -75,6 +77,7 @@ export class BookingPage implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.router.paramMap.subscribe(param => {
+      
       
       if (param.has('locationId')) {
 
@@ -93,6 +96,7 @@ export class BookingPage implements OnInit, OnDestroy {
                 /* Se ho la location */
                 if (this.selectedLocation && !this.selectedLocation.do_inserted ) {
 
+
                   //RECUPERO IL TEMPLATE WEEK SLOT TIME
                   this.getTemplateWeek(this.selectedLocation);
 
@@ -108,8 +112,6 @@ export class BookingPage implements OnInit, OnDestroy {
                     //Richiedo le occupazioni
                     this.getOccupazioni();
                   }
-
-                  
 
                 }
                 
@@ -132,10 +134,14 @@ export class BookingPage implements OnInit, OnDestroy {
           });
 
           //Ascolto documento di Prenotazione
-          this.subActualSlotDay = this.startService.activePrenotazione.subscribe(elPrenotazione => {
+          //Sia la prima volta che entra nel OnInit
+          //Esegue tutte le colte che la prenotazione cambia
+          this.subActivePrenotazione = this.startService.activePrenotazione.subscribe(elPrenotazione => {
             this.activePrenotazione = elPrenotazione;
+              console.log(this.activePrenotazione);
           });
-          
+
+
         }
         else {
           // Dico che non posso prenotare
@@ -152,15 +158,27 @@ export class BookingPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    
+
     if (this.subSelectedLocation) {
       this.subSelectedLocation.unsubscribe();
     }
+
+    if (this.subUserLogged) {
+      this.subUserLogged.unsubscribe();
+    }
+
+    if (this.subDocUtente) {
+      this.subDocUtente.unsubscribe();
+    }    
+
 
     if (this.subActualSlotDay) {
       this.subActualSlotDay.unsubscribe();
     }
 
     if (this.subActivePrenotazione) {
+
       this.subActivePrenotazione.unsubscribe();
     }    
 
@@ -173,7 +191,6 @@ export class BookingPage implements OnInit, OnDestroy {
    * @param value Modifica della versione
    */
   onChangeVersion(value: string) {
-    console.log(value);
     this.versionBooking = value;
   }
 
@@ -196,14 +213,14 @@ export class BookingPage implements OnInit, OnDestroy {
     
   }
 
+  
+
   /**
    * E' stata selezionata un'altra data
    * @param newDate Nuova Data
    */
   onChangeBookDay(newDate: Date) {
-    console.log('Nuova data selezionata');
-    console.log(newDate);
-
+    
     this.actualBookDay = newDate;
 
     //Richiedo le occupazioni
@@ -289,8 +306,10 @@ export class BookingPage implements OnInit, OnDestroy {
   myClickPrenota(docPianificazione: PrenotazionePianificazione) {
     
     if (!this.userLogged) {
+
       //Deve prima loggarsi
       console.log('Utente non loggato');
+
     }
     else {
 
@@ -339,15 +358,13 @@ export class BookingPage implements OnInit, OnDestroy {
                 catchError(this.handleError)
               )
               .subscribe(resultData => {
-                console.log('Ricevuti Prenotazione');
-                console.log(resultData);
+                
                 //Chiudo il loading
                 elLoading.dismiss();
 
                 //Converto il documento ricevuto
                 let newPrenotazione = Prenotazione.getPrenotazioneFromJson(resultData);
-                console.log('AfterCalcolaTotale prenotazione');
-                LogApp.consoleLog(newPrenotazione);
+                
 
                 // Risposta corretta del server
                 if (newPrenotazione.ISVALID === true) {
@@ -358,9 +375,7 @@ export class BookingPage implements OnInit, OnDestroy {
                   this.goToFinalizza();
                 }
                 else {
-                  LogApp.consoleLog('Prenotazione Invalida');
-                  LogApp.consoleLog(newPrenotazione);
-
+                  
                   let msg = (newPrenotazione.MSGINVALID ? newPrenotazione.MSGINVALID: 'Errore comunicazione imprevisto');
                   this.showMessage(msg);
                 }
@@ -375,22 +390,27 @@ export class BookingPage implements OnInit, OnDestroy {
     
   }
 
-  /**
-   * 
-   * @param loadingElement 
-   */
-  closeLoading(loadingElemnt: HTMLIonLoadingElement) {
-    if (loadingElemnt) {
-      loadingElemnt.dismiss();
-    }
-  }
 
+  /**
+   * E' tutto a posto e posso spostarmi alla pagina di Finalizza Prenotazione
+   */
   goToFinalizza() {
-    
+    /* VERSIONE MODALE */
+    this.modalCtrl.create({
+      component: BookingsummaryPage,
+      componentProps: {
+        bookId: this.activePrenotazione.ID,
+        locationId : this.selectedLocation.ID
+      }
+    })
+    .then(modal => modal.present());
+
+    /* VERSIONE PAGINA FULLSCREEN
     this.navController.navigateForward(['/','location',
                                               this.selectedLocation.ID,
                                             'booking','bookingsummary',
                                             this.activePrenotazione.ID]);
+    */                                            
   }
 
   /**
@@ -410,6 +430,10 @@ export class BookingPage implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * Gestore errori http
+   * @param error Errore http rilevato
+   */
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

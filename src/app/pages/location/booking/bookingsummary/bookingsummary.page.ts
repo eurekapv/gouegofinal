@@ -278,8 +278,12 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   onConfirm()
   {
     //operazioni di submit
-
-    this.navCtrl.navigateRoot(['historylist',this.activePrenotazione.ID])
+    this.onAfterSavePrenotazione()
+  }
+  
+  onAfterSavePrenotazione()
+  {
+    this.navCtrl.navigateRoot(['historylist/booking',this.activePrenotazione.ID])
   }
 }
 

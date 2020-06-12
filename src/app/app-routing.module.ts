@@ -28,8 +28,12 @@ const routes: Routes = [
         loadChildren: () => import('./pages/history/historylist/historylist.module').then( m => m.HistorylistPageModule)
       },
       {
-        path: ':historyId',
-        loadChildren: () => import('./pages/history/historydetail/historydetail.module').then( m => m.HistorydetailPageModule)
+        path: 'booking/:historyId',
+        loadChildren: () => import('./pages/history/historybook/historybook.module').then( m => m.HistorybookPageModule)
+      },
+      {
+        path: 'course/:historyId',
+        loadChildren: () => import('./pages/history/historycourse/historycourse.module').then( m => m.HistorycoursePageModule)
       }
 
     ]
@@ -79,6 +83,7 @@ const routes: Routes = [
     path: 'test',
     loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
   }
+
 
   
 ];

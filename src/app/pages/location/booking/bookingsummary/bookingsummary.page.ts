@@ -50,7 +50,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               private router: ActivatedRoute,
               private navCtrl: NavController,
               private loadingController: LoadingController,
-              private toastCtrl: ToastController) {
+              private toastCtrl: ToastController,
+              ) {
 
   }
 

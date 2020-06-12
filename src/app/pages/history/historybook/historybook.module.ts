@@ -8,12 +8,18 @@ import { HistorybookPageRoutingModule } from './historybook-routing.module';
 
 import { HistorybookPage } from './historybook.page';
 
+import { QRCodeModule } from 'angularx-qrcode'
+
+
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HistorybookPageRoutingModule
+    HistorybookPageRoutingModule,
+    QRCodeModule
+      
   ],
   declarations: [HistorybookPage]
 })

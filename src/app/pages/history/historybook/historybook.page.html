@@ -1,9 +1,25 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Dettaglio Storico</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/historylist">    </ion-back-button>
+    </ion-buttons>
+    <ion-title>Conferma Prenotazione</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <div class="ion-text-center div-qr">
+      <qrcode class="qrcode" [qrdata]="'fkalfkjalfalskdjflkdfjlkd'"></qrcode>
+  </div>
+  <div class="ion-text-center">
+    <ion-button fill="clear" size="large">
+      <ion-icon name="trash-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" size="large">
+      <ion-icon name="mail-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" size="large">
+      <ion-icon name="share-social-outline"></ion-icon>
+    </ion-button>
+  </div>
 </ion-content>

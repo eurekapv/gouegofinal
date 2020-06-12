@@ -274,6 +274,13 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     return value;
   }
+  
+  onConfirm()
+  {
+    //operazioni di submit
+
+    this.navCtrl.navigateRoot(['historylist',this.activePrenotazione.ID])
+  }
 }
 
 

@@ -11,11 +11,11 @@ import { Campo } from 'src/app/models/campo.model';
 })
 export class HistorybookPage implements OnInit {
 
-  activePrenotazione: Prenotazione;
+  activePrenotazione: Prenotazione = new Prenotazione;
   subActivePrenotazione: Subscription;
 
   //Elemento 1 di Pianificazione contenuta in activePrenotazione
-  docPianificazione: PrenotazionePianificazione;
+  docPianificazione: PrenotazionePianificazione = new PrenotazionePianificazione;
 
  //Location selezionata
   selectedLocation: Location;

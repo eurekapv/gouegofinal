@@ -60,9 +60,16 @@ export class StartConfiguration {
         }
         else {
             //Modalità Server
-            this._urlDomain = 'www.gouego.com/gouegoapi';
-            this._urlFileServer = 'www.gouego.com/gouego';
+            // this._urlDomain = 'www.gouego.com/gouegoapi';
+            // this._urlFileServer = 'www.gouego.com/gouego';
+            
+            //Modalità temporanea per vecchio server
+            this._urlProtocol = 'http';
+            this._urlDomain='52.29.237.67:8084/gouegoapi';
+            this._urlFileServer='52.29.237.67:8084/gouego';
+
         }
+        
 
 
     }

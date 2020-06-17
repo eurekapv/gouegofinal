@@ -31,7 +31,7 @@ export class CamposportService {
     const doObject = 'CAMPOSPORT';
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     //Nei Parametri imposto IDCampo
     let myParams = new HttpParams().set('IDCAMPO',idCampo);
     let myUrl = config.urlBase + '/' + doObject;

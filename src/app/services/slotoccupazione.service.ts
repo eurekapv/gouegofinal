@@ -49,7 +49,7 @@ export class SlotoccupazioneService {
 
   const myHeaders = new HttpHeaders({'Content-type':'application/json', 
                                        'X-HTTP-Method-Override':'GETDATESLOTLOCK', 
-                                       'APPID':config.appId
+                                       'appid':config.appId
                                       });
 
     const doObject = 'CAMPO';

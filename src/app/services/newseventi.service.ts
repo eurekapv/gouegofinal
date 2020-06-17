@@ -38,7 +38,7 @@ export class NewseventiService {
     const filterDateTime = this.getFilterDateTime();
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;  
 
     //Nei Parametri imposto l'area richiesta
@@ -129,7 +129,7 @@ export class NewseventiService {
     
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;  
 
     //Nei Parametri imposto l'area richiesta

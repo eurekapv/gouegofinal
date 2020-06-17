@@ -60,13 +60,14 @@ export class CalendarscrollComponent implements OnInit {
   setStartSlide() {
       //Prendo il giorno attivo -1
       let startSlide = this.activeDay.getDate() - 1;
-      //Sottraggo 5 per dare più respiro
-      startSlide -= 5;
+      //Sottraggo 2 per dare più respiro
+      startSlide -= 2;
       if (startSlide < 0) {
         startSlide = 0
       }
 
       this.sliderOpts.initialSlide = startSlide;
+      console.log('StartSlide: ' + startSlide);
   }
 
 

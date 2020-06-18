@@ -449,5 +449,10 @@ export class BookingPage implements OnInit, OnDestroy {
       return throwError('Si sono verificati errori. Riprovare AHIME.');
   };
 
+  onClickSport()
+  {
+    
+  }
+
 
 }

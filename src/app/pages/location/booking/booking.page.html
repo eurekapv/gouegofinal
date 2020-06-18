@@ -24,6 +24,11 @@
       </ion-segment-button>
     </ion-segment> -->
     <!-- ITEM DEL CAMPO -->
+    
+    <ion-item button class="item-campo" (click)="onClickSport()">
+      <ion-icon color="primary" slot="start" name="basketball"></ion-icon>
+      <ion-label class="label-header">sdfsdfjslfdk</ion-label>
+    </ion-item>
     <ion-list *ngIf="ricevuti && bookable" 
         class="item-campo ion-no-padding">
   
@@ -38,7 +43,7 @@
                   name="location" 
                   slot="start" 
                   color="primary"></ion-icon>
-              <ion-label>
+              <ion-label class="label-header">
                 <h2>{{ campo.DENOMINAZIONE }}</h2>
                 <h6>{{ selectedLocation.INDIRIZZO }}</h6>
               </ion-label>

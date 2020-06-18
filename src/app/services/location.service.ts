@@ -49,7 +49,7 @@ export class LocationService {
     const doObject = 'LOCATION';
     
     // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     // Nei parametri imposto l'Area Operativa
     let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
 
@@ -81,7 +81,7 @@ export class LocationService {
     const doObject = 'LOCATION';
 
     // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     myHeaders = myHeaders.set('child-level',"2");
 
     // Nei parametri imposto l'Area Operativa
@@ -182,7 +182,7 @@ export class LocationService {
     const doObject = 'CAMPOSPORT';
 
     // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     //myHeaders = myHeaders.set('child-level',"2");
 
     // Nei parametri imposto il Campo

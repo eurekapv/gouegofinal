@@ -41,7 +41,7 @@ export class LivelloService {
     const doObject = 'LIVELLO';
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     //Nei Parametri imposto il LivelloAutorizzazione
     let myParams = new HttpParams().set('LivelloAutorizzazione','0');
     let myUrl = config.urlBase + '/' + doObject;

@@ -47,7 +47,7 @@ export class UtenteService {
     const doObject = 'UTENTE';
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myParams = new HttpParams().set('ID',idUtente);
     let myUrl = config.urlBase + '/' + doObject;
 
@@ -73,7 +73,7 @@ export class UtenteService {
                         password: string) {
     const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
                                        'X-HTTP-Method-Override':'VERIFICALOGINMOB', 
-                                       'APPID':config.appId,
+                                       'appid':config.appId,
                                        'child-level': '2'
                                       });
 
@@ -144,7 +144,7 @@ export class UtenteService {
 
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;
 
     //Devo impostare nel sendingUtente solo gli elementi modificati
@@ -197,7 +197,7 @@ export class UtenteService {
     let actualUtente = this._utente.getValue();
     const myHeaders = new HttpHeaders({'Content-type':'application/json', 
                                        'X-HTTP-Method-Override':'CHANGEPWDMOB', 
-                                       'APPID':config.appId
+                                       'appid':config.appId
                                       });
 
     const myParams = new HttpParams().set('GUIDUTENTE', actualUtente.ID).append('PWDATTUALE', oldPsw).append('PWDNUOVA',newPsw);

@@ -3,7 +3,10 @@ import { Corso } from 'src/app/models/corso.model';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { NavController } from '@ionic/angular';
-import { stringify } from 'querystring';
+import { Utente } from 'src/app/models/utente.model';
+import { throwError, Subscription } from 'rxjs';
+import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
+import { StartService } from 'src/app/services/start.service';
 
 @Component({
   selector: 'app-historylist',
@@ -12,20 +15,45 @@ import { stringify } from 'querystring';
 })
 export class HistorylistPage implements OnInit {
 
+  docUtente: Utente;
+  subDocUtente: Subscription;
+
+  listUtentePrenotazione: UtentePrenotazione[];
+  subListUtentePrenotazioni: Subscription;
+
   selectedView: string='prenotazioni';
   listCorsi: Corso[]=[];
+
+
+  //NON UTILIZZARE QUESTE VARIABILI//
   listPrenotazioni: Prenotazione[]=[];
   listPrenotazioniPianificazione: PrenotazionePianificazione[]=[]
-  today : Date;
+  //NON UTILIZZARE LE VARIABILI SOPRA//
+
+  today = new Date();
 
   constructor(
-    private navCtrl:NavController
+    private navCtrl:NavController,
+    private startService:StartService
   ) { }
 
   ngOnInit() {
-      this.today=new Date;
+    this.subDocUtente = this.startService.utente
+                          .subscribe  (elDocUtente => {
+                              this.docUtente = elDocUtente;
+                              //Utente arrivato
+                              if (this.docUtente) {
+                                this.subListUtentePrenotazioni = this.startService.listUtentePrenotazioni.subscribe(
+                                  collPrenotazioni => {
+                                    this.listUtentePrenotazione = collPrenotazioni;
+                                  }
+                                )
+                              }
+                          });
 
-      this.initProva(4);
+
+
+      //this.initProva(4);
   }
 
   onChangeSegment(value)
@@ -33,6 +61,7 @@ export class HistorylistPage implements OnInit {
     this.selectedView=value.detail.value;
   }
 
+  
   initProva(num)
   {
     let corsoProva : Corso;

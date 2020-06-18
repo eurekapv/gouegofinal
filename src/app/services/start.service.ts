@@ -29,6 +29,7 @@ import { SlotDay } from '../models/imdb/slotday.model';
 import { Campo } from '../models/campo.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 import { Prenotazione } from '../models/prenotazione.model';
+import { UtenteprenotazioneService } from './utenteprenotazione.service';
 
 
 @Injectable({
@@ -61,7 +62,6 @@ export class StartService {
   }
 
 
-
   constructor(private apiService: ApicallService,
     private storageAccess: Storage,
     private sportService: SportService,
@@ -75,7 +75,8 @@ export class StartService {
     private campiSportService: CamposportService,
     private prenotazioniService: PrenotazioneService,
     private newsEventiService: NewseventiService,
-    private slotOccupazioneService: SlotoccupazioneService ) { 
+    private slotOccupazioneService: SlotoccupazioneService,
+    private utentePrenotazioneService: UtenteprenotazioneService ) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -658,22 +659,31 @@ getSelectedCampoPrenotazione() {
 
 
 
-/**
- * Lista Prenotazioni di tipo Observable
- */
-get listPrenotazioni() {
-  return this.prenotazioniService.listPrenotazioni;
-}
+// /**
+//  * Lista Prenotazioni di tipo Observable
+//  */
+// get listPrenotazioni() {
+//   return this.prenotazioniService.listPrenotazioni;
+// }
+
+// UTENTE PRENOTAZIONI
 
 /**
- * Richiede al server elenco di prenotazioni
+ * Richiede al server elenco di prenotazioni di un utente
  * @param idUtente IDUtente Prenotazione
  */
-requestPrenotazioniUtente(idUtente: string) {
+requestUtentePrenotazioni(idUtente: string) {
   const actualStartConfig = this._startConfig.getValue();
   
   //Richiedo i dati al servizio
-  this.prenotazioniService.request(actualStartConfig, idUtente);
+  this.utentePrenotazioneService.request(actualStartConfig, idUtente);
+}
+
+/**
+ * Lista Prenotazioni di tipo Observable
+ */
+get listUtentePrenotazioni() {
+  return this.utentePrenotazioneService.listUtentePrenotazione;
 }
 
 

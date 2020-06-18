@@ -33,7 +33,7 @@ export class CourseschedulerService {
     const doObject = 'PIANIFICAZIONECORSO';
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;  
 
     //Nei Parametri imposto il corso richiesto

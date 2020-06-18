@@ -43,7 +43,7 @@ export class AreaService {
     const doObject = 'AREAOPERATIVA';
     
     // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     // Nei parametri imposto il gruppo Sportivo
     let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
 

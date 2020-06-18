@@ -8,7 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { NewsEventi } from '../models/newseventi.model';
 import { IDDocument } from '../models/iddocument.model';
-import { element } from 'protractor';
+
 
 
 
@@ -38,7 +38,7 @@ export class NewseventiService {
     const filterDateTime = this.getFilterDateTime();
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;  
 
     //Nei Parametri imposto l'area richiesta
@@ -129,7 +129,7 @@ export class NewseventiService {
     
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;  
 
     //Nei Parametri imposto l'area richiesta

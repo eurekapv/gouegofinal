@@ -348,7 +348,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     //1) Chiudere la modale
     this.closeModal();
     //2) Andare alla History sulla scheda
-    this.navCtrl.navigateRoot(['historylist/booking',this.activePrenotazione.ID])
+    this.navCtrl.navigateRoot(['historylist/booking',this.docPianificazione.ID])
   }
 
 

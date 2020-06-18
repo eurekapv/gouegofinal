@@ -12,7 +12,6 @@ import { SlotDay } from 'src/app/models/imdb/slotday.model';
 import { SlotTime } from 'src/app/models/imdb/slottime.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
-import { LogApp } from 'src/app/models/log.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 

@@ -100,7 +100,7 @@ export class PrenotazioneService {
     const doObject = 'PRENOTAZIONE';
     
     // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     // Nei parametri imposto il gruppo Sportivo
     let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
 
@@ -128,7 +128,7 @@ export class PrenotazioneService {
     const myHeaders = new HttpHeaders({'Content-type':'application/json', 
                                        'X-HTTP-Method-Override':'MOBBOOKINGTOTALE', 
                                        'child-level': '999',
-                                       'APPID':config.appId
+                                       'appid':config.appId
                                       });
     let myParams = new HttpParams(); 
     const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi

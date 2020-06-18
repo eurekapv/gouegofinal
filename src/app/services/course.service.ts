@@ -80,7 +80,7 @@ export class CourseService {
     
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;  
 
     let myParams = this.getHttpParamsFilter(this._filterCorsi);
@@ -195,7 +195,7 @@ export class CourseService {
     const doObject = 'CORSOPROGRAMMA';
     
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('APPID',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject; 
     let myParams = new HttpParams().set('IDCORSO', idCorso);
 

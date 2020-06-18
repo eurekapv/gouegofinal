@@ -34,8 +34,8 @@
     </ion-item>
     <ion-item>
       <ion-label>
-        <h1>Campo {{selectedCampo}}</h1>
-        <p>{{selectedLocation}}</p>
+        <h1>Campo {{selectedCampo.DENOMINAZIONE}}</h1>
+        <p>{{selectedLocation.INDIRIZZO}}</p>
       </ion-label>
       <ion-chip color="primary">
         {{docPianificazione.NUMPARTECIPANTI}}
@@ -50,7 +50,7 @@
         Importo:
       </ion-label>
       <ion-label slot="end">
-        {{activePrenotazione.TOTALE | currency}}
+        {{activePrenotazione.TOTALE | currency : 'EUR'}}
       </ion-label>
     </ion-item>
   </ion-list>

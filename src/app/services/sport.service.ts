@@ -14,10 +14,19 @@ export class SportService {
 
   private _listSport = new BehaviorSubject<Sport[]>([]);
   private _loaded: boolean; //Sport sono stati richiesti al server e sono caricati in memoria
+  private _listLocationSport = new BehaviorSubject<Sport[]>([]);
 
+  //Lista di tutti gli sport presenti in Gouego
   get listSport() {
     return this._listSport.asObservable();
   }
+
+  //Lista degli sport presenti in una location
+  get listLocationSport() {
+    return this._listLocationSport.asObservable();
+  }
+
+
 
 
   /**
@@ -66,7 +75,7 @@ export class SportService {
   
             let newSport = new Sport();
             newSport.setJSONProperty(element);
-            this.addSport(newSport);
+            this.add2ListSport(newSport);
             
           });
         });
@@ -79,8 +88,8 @@ export class SportService {
   }
 
 
-  //Aggiunge una attivita
-  addSport(objSport: Sport) {
+  //Aggiunge una attivita alla lista globale
+  add2ListSport(objSport: Sport) {
 
     this.listSport
       .pipe(take(1))
@@ -88,11 +97,61 @@ export class SportService {
         this._listSport.next( collSport.concat(objSport))
       });
     
-      
   }
 
 
-  
+  /**
+   * Richiede le attività praticate in una location
+   * Sottoscriversi all'oggetto listLocationSport per ricevere i risultati
+   * 
+   * @param config Dati configurazione
+   * @param idLocation Location
+   */
+  requestLocationSport(config: StartConfiguration, idLocation: string) {
+      const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
+                         'X-HTTP-Method-Override':'getSportLocation', 
+                         'appid':config.appId,
+                         'child-level': '1'
+                        });
+
+    const myParams = new HttpParams().set('idLocation', idLocation);
+    const doObject = 'SPORT';
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+    //Svuoto gli attuali
+    this._listLocationSport.next([]);
+
+    // Effettuo la chiamata
+    return this.apiService
+               .httpGet(myUrl, myHeaders, myParams)
+               .pipe(map(data => {
+                      return data.SPORT
+                    }))
+               .subscribe(resultData => {
+
+                    resultData.forEach(element => {
+      
+                      let newSport = new Sport();
+                      newSport.setJSONProperty(element);
+                      this.add2ListLocationSport(newSport);
+                      
+                    });
+
+               });
+    }
+
+
+    //Aggiunge una attivita alla lista globale
+    add2ListLocationSport(objSport: Sport) {
+
+      this.listLocationSport
+            .pipe(take(1))
+            .subscribe( collSport => {
+                  this._listLocationSport.next( collSport.concat(objSport))
+            });
+      
+    }
 
 
 }

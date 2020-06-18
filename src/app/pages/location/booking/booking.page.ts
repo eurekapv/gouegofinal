@@ -25,7 +25,10 @@ export class BookingPage implements OnInit, OnDestroy {
 
   idLocation = '';
   versionBooking = 'manual'; //Versione di Booking (Automatico, Manuale)
-  
+
+  listLocationSport: Sport[] = [];  //Lista Sport presenti sulla Location
+  subListLocationSport: Subscription;
+
   selectedLocation: Location;
   subSelectedLocation: Subscription;
   selectedCampo: Campo;
@@ -55,6 +58,7 @@ export class BookingPage implements OnInit, OnDestroy {
   subActivePrenotazione: Subscription;
 
   selectedSport: Sport; //lo sport selezionato
+
   availableFields: Campo[]=[]; //un array dei soli campi per lo sport selezionato
 
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
@@ -79,10 +83,7 @@ export class BookingPage implements OnInit, OnDestroy {
   //inoltre, anche l'elenco sport è sbagliato, perchè prende dentro quelli di tutte le aree operative
   updateAvailableFields()
   {
-    console.log(this.selectedLocation.CAMPO);
-    this.availableFields=this.selectedLocation.CAMPO.filter((data)=>{
-      return data.IDSPORT==this.selectedSport.ID;
-    })
+
   }
 
   ngOnInit() {
@@ -92,13 +93,37 @@ export class BookingPage implements OnInit, OnDestroy {
       
       if (param.has('locationId')) {
 
+        //Location sulla barra
         this.idLocation = param.get('locationId');
 
         if (this.idLocation) {
 
-          // Chiedo Location e Campi
+          //Chiedo al server gli Sport praticati nella location
+          this.startService.requestLocationSport(this.idLocation);
+
+          //Mi sottoscrivo alla ricezione degli Sport praticati
+          this.subListLocationSport = this.startService.listLocationSport.subscribe(resultData => {
+            
+            this.listLocationSport = resultData;
+            //Prendo il primo e lo seleziono
+            if (this.listLocationSport) {
+
+              if (this.listLocationSport.length !== 0) {
+                this.selectedSport = this.listLocationSport[0];
+              }
+              else {
+                this.selectedSport = undefined;
+              }
+            }
+            else {
+              this.selectedSport = undefined;
+            }
+          });
+
+          // Chiedo al server Location e Campi
           this.startService.requestLocationByID(this.idLocation);
 
+          //Mi sottoscrivo alla ricezione
           this.subSelectedLocation = this.startService.activeLocation
               .subscribe(dataLocation => {
                 // Chiedo la Location
@@ -128,6 +153,8 @@ export class BookingPage implements OnInit, OnDestroy {
                 
               });
 
+
+          
           
           //Controllo dell'utente loggato
           this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
@@ -192,7 +219,11 @@ export class BookingPage implements OnInit, OnDestroy {
     if (this.subActivePrenotazione) {
 
       this.subActivePrenotazione.unsubscribe();
-    }    
+    }   
+    
+    if (this.subListLocationSport) {
+      this.subListLocationSport.unsubscribe();
+    }
 
 
   }

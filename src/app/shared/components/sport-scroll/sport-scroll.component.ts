@@ -12,14 +12,12 @@ export class SportScrollComponent implements OnInit {
 
   @Input() selectedSport: Sport;
   @Output() sportChanged= new EventEmitter<Sport>();
-
-
-  sportList:Sport[]=[];
-  subSportList: Subscription;
+  @Input() sportList:Sport[];
+  
 
   sliderOpts={
       slidesPerView: 2.5,
-      spaceBetween: 10,
+      spaceBetween: 4,
       initialSlide: 0, //Dovrei farla variabile
       // Responsive breakpoints   
      breakpoints: {  
@@ -39,7 +37,14 @@ export class SportScrollComponent implements OnInit {
         640: {       
            slidesPerView: 2.5,       
            spaceBetween: 1     
-        } 
+        },
+
+        1024: {
+          slidesPerView: 2.5,       
+          spaceBetween: 1  
+        }
+
+
     
      } 
     }
@@ -47,31 +52,6 @@ export class SportScrollComponent implements OnInit {
   constructor(private startService: StartService) { }
 
   ngOnInit() {
-    //this.initProva();
-    this.subSportList=this.startService.listSport.subscribe(data=>{
-      this.sportList=data;
-      this.selectedSport=this.sportList[0];
-    })
-
-    this.startService.requestSport();
-
-
-  }
-
-  initProva()
-  {
-    let a =new Sport();
-    a.DENOMINAZIONE='Calcio';
-    this.sportList.push(a);
-    a =new Sport();
-    a.DENOMINAZIONE='Basket';
-    this.sportList.push(a);
-    a =new Sport();
-    a.DENOMINAZIONE='Pallavolo';
-    this.sportList.push(a);
-    a =new Sport();
-    a.DENOMINAZIONE='Beach Volley';
-    this.sportList.push(a);
     
   }
 

@@ -315,6 +315,9 @@ export class StartService {
 
 //#region SPORT SERVICE
 
+/**
+ * Proprietà Collection tutti gli sport
+ */
 get listSport() {
   return this.sportService.listSport;
 }
@@ -330,6 +333,30 @@ requestSport(withLivelli?:boolean) {
       .request(actualStartConfig, withLivelli);
             
 }
+
+/**
+ * Proprietà per gli Sport di una Location
+ */
+get listLocationSport() {
+  return this.sportService.listLocationSport;
+}
+
+/**
+ * Richiede al server i dati degli Sport in una location
+ * @param config Dati configurazione
+ * @param idLocation idLocation selezionata
+ */
+requestLocationSport(idLocation: string) {
+  const actualStartConfig = this._startConfig.getValue();
+
+  //Effettuo la chiamata
+  this.sportService.requestLocationSport(actualStartConfig, idLocation);
+}
+
+
+
+
+
 //#endregion
 
 //#region LIVELLI

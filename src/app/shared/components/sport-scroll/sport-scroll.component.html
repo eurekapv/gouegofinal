@@ -2,10 +2,15 @@
 <div class="item-sports ion-text-center" *ngIf="sportList.length<=2">
       <ion-button *ngFor="let sport of sportList" [fill]="sport==selectedSport? 'solid':'outline'" size="small" (click)="onChangeSport(sport)">{{sport.DENOMINAZIONE}}</ion-button>
 </div>
+
 <div class="item-sports" *ngIf="sportList.length>2">
   <ion-slides [options]="sliderOpts" class="ion-text-center">
     <ion-slide *ngFor="let sport of sportList" >
-      <ion-button [fill]="sport==selectedSport? 'solid':'outline'" size="small" size="small" (click)="onChangeSport(sport)">{{sport.DENOMINAZIONE}} </ion-button>
+      <ion-button [fill]="sport==selectedSport? 'solid':'outline'" 
+                  size="large" 
+                  expand = "full"
+                  (click)="onChangeSport(sport)">{{sport.DENOMINAZIONE}} 
+      </ion-button>
     </ion-slide>
   </ion-slides>
 </div>

@@ -30,7 +30,7 @@
       <ion-icon color="primary" slot="start" name="basketball"></ion-icon>
       <ion-label class="label-header">sdfsdfjslfdk</ion-label>
     </ion-item> -->
-    <app-sport-scroll [selectedSport]="selectedSport" (sportChanged)="onSportChange($event)"></app-sport-scroll>
+    <app-sport-scroll [selectedSport]="selectedSport" [sportList]="listLocationSport" (sportChanged)="onSportChange($event)"></app-sport-scroll>
     <ion-list *ngIf="ricevuti && bookable" 
         class="item-campo ion-no-padding">
   

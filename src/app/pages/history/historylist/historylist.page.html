@@ -43,7 +43,7 @@
   </ion-list>
   <!-- Lista prenotazioni -->
   <ion-list *ngIf="selectedView=='prenotazioni'">
-    <ion-item button *ngFor="let prenotazione of listPrenotazioniPianificazione" (click)="onClickPrenotazione(prenotazione)">
+    <ion-item button *ngFor="let prenotazione of listUtentePrenotazione" (click)="onClickPrenotazione(prenotazione)">
       <ion-icon name="calendar" slot="start"[color]="prenotazione.DATAORAFINE<today? 'light': 'primary'"></ion-icon>
       <ion-label>
         <h2>{{prenotazione.DATAORAINIZIO | date : 'dd/MM/yyyy - HH:mm'}}</h2>

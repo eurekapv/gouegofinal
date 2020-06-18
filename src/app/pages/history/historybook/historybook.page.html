@@ -3,57 +3,68 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/historylist">    </ion-back-button>
     </ion-buttons>
-    <ion-title>Conferma Prenotazione</ion-title>
+    <ion-title>Prenotazione</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="ion-text-center div-qr">
-      <qrcode [qrdata]="docPianificazione.ID"></qrcode>
+    <!-- IN ATTESA DATI  -->
+    <!-- DATI  NON RICEVUTI -->
+    <div *ngIf="showSpinner" id="crs-spinner">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
+
+  <div *ngIf="!showSpinner">
+    <div class="ion-text-center div-qr">
+        <qrcode [qrdata]="docPianificazione.ID"></qrcode>
+    </div>
+    <div class="ion-text-center div-btns">
+      <ion-button layout="icon-top" fill="clear" size="large" disabled>
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" size="large">
+        <ion-icon name="mail-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" size="large">
+        <ion-icon name="share-social-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <ion-list lines="none">
+      <ion-item>
+        <ion-label>
+          <h2>{{docPianificazione.DATAORAINIZIO| date : 'fullTime'}}</h2>
+          <p>{{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} - </p>
+        </ion-label>
+        <ion-chip color="primary">
+          {{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE>1? 'Ore':'Ora'}} 
+        </ion-chip>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h1>Campo {{selectedCampo.DENOMINAZIONE}}</h1>
+          <p>{{selectedLocation.INDIRIZZO}}</p>
+        </ion-label>
+        <ion-chip color="primary">
+          {{docPianificazione.NUMPARTECIPANTI}}
+          <ion-icon name="person"></ion-icon>
+        </ion-chip>
+      </ion-item>
+      <ion-item color="light">
+        PAGAMENTO:
+      </ion-item>
+      <ion-item lines="full">
+        <ion-label slot="start">
+          Importo:
+        </ion-label>
+        <ion-label slot="end">
+          {{activePrenotazione.TOTALE | currency : 'EUR'}}
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
   </div>
-  <div class="ion-text-center div-btns">
-    <ion-button layout="icon-top" fill="clear" size="large" disabled>
-      <ion-icon name="trash-outline"></ion-icon>
-    </ion-button>
-    <ion-button fill="clear" size="large">
-      <ion-icon name="mail-outline"></ion-icon>
-    </ion-button>
-    <ion-button fill="clear" size="large">
-      <ion-icon name="share-social-outline"></ion-icon>
-    </ion-button>
-  </div>
-  <ion-list lines="none">
-    <ion-item>
-      <ion-label>
-        <h2>{{docPianificazione.DATAORAINIZIO| date : 'fullTime'}}</h2>
-        <p>{{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} - </p>
-      </ion-label>
-      <ion-chip color="primary">
-        {{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE>1? 'Ore':'Ora'}} 
-      </ion-chip>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        <h1>Campo {{selectedCampo.DENOMINAZIONE}}</h1>
-        <p>{{selectedLocation.INDIRIZZO}}</p>
-      </ion-label>
-      <ion-chip color="primary">
-        {{docPianificazione.NUMPARTECIPANTI}}
-        <ion-icon name="person"></ion-icon>
-      </ion-chip>
-    </ion-item>
-    <ion-item color="light">
-      PAGAMENTO:
-    </ion-item>
-    <ion-item lines="full">
-      <ion-label slot="start">
-        Importo:
-      </ion-label>
-      <ion-label slot="end">
-        {{activePrenotazione.TOTALE | currency : 'EUR'}}
-      </ion-label>
-    </ion-item>
-  </ion-list>
+
+
 </ion-content>
 <ion-footer>
       <ion-button expand="block">

@@ -53,15 +53,58 @@ export class Campo extends IDDocument {
     return objDescriptor;
 }
 
+// Sovrascrivo il metodo IDDocument
+setJSONProperty(data: any) {
+  //Chiamo il metodo IDDocument
+  super.setJSONProperty(data);
+
+  //Chiamo il metodo per le collection
+  this.setCollection(data);
+}
+
+/**
+ * Imposta le collection dell'oggetto, con i reali oggetti tipizzati
+ * @param data JSON Received
+ */
+setCollection(data: any) {
+  
+  // Riazzero e ricreo
+  this.CAMPOSPORT = [];
+
+  //Sistemazione Immagini Location
+  if (data.CAMPOSPORT) {
+    this.setCollectionCampoSport(data);
+  }
+
+}
+
+/**
+ * Inizializza la collection Apertura Location con oggetto tipizzati
+ * @param data JSON Received
+ */
+private setCollectionCampoSport(data: any) {
+  if (data.CAMPOSPORT) {
+
+
+    data.CAMPOSPORT.forEach(elCampoSport => {
+      let newCampoSport = new CampoSport();
+      newCampoSport.setJSONProperty(elCampoSport);
+
+      this.CAMPOSPORT.push(newCampoSport);
+    });
+  }
+}
 
  
 
-    //Aggiunge alla collection un campo Sport
-    addCampoSport(docCampoSport: CampoSport) {
-      if (!this.CAMPOSPORT) {
-        this.CAMPOSPORT = [];
-      }
+//Aggiunge alla collection un campo Sport
+addCampoSport(docCampoSport: CampoSport) {
+  if (!this.CAMPOSPORT) {
+    this.CAMPOSPORT = [];
+  }
 
-      this.CAMPOSPORT.push(docCampoSport);
-    }
+  this.CAMPOSPORT.push(docCampoSport);
+}
+
+
 }

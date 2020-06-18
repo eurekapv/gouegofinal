@@ -17,36 +17,36 @@ export class SportScrollComponent implements OnInit {
 
   sliderOpts={
       slidesPerView: 2.5,
-      spaceBetween: 4,
+      spaceBetween: 0,
       initialSlide: 0, //Dovrei farla variabile
       // Responsive breakpoints   
-     breakpoints: {  
+    //  breakpoints: {  
      
-        // when window width is <= 320px     
-        320: {       
-           slidesPerView: 2.5,
-           spaceBetween: 1     
-        },     
-        // when window width is <= 480px     
-        480: {       
-           slidesPerView: 2.5,       
-           spaceBetween: 6     
-        },   
+    //     // when window width is <= 320px     
+    //     320: {       
+    //        slidesPerView: 2.5,
+    //        spaceBetween: 1     
+    //     },     
+    //     // when window width is <= 480px     
+    //     480: {       
+    //        slidesPerView: 2.5,       
+    //        spaceBetween: 6     
+    //     },   
     
-        // when window width is <= 640px     
-        640: {       
-           slidesPerView: 2.5,       
-           spaceBetween: 1     
-        },
+    //     // when window width is <= 640px     
+    //     640: {       
+    //        slidesPerView: 2.5,       
+    //        spaceBetween: 1     
+    //     },
 
-        1024: {
-          slidesPerView: 2.5,       
-          spaceBetween: 1  
-        }
+    //     1024: {
+    //       slidesPerView: 2.5,       
+    //       spaceBetween: 1  
+    //     }
 
 
     
-     } 
+    //  } 
     }
 
   constructor(private startService: StartService) { }

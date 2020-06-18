@@ -38,16 +38,21 @@ export class HistorylistPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log('Entriamo qui');
     this.subDocUtente = this.startService.utente
                           .subscribe  (elDocUtente => {
                               this.docUtente = elDocUtente;
                               //Utente arrivato
                               if (this.docUtente) {
+                                //Mi sottoscrivo alla ricezione delle prenotazioni
                                 this.subListUtentePrenotazioni = this.startService.listUtentePrenotazioni.subscribe(
                                   collPrenotazioni => {
                                     this.listUtentePrenotazione = collPrenotazioni;
+                                    console.log(this.listUtentePrenotazione);
                                   }
-                                )
+                                );
+
+                                this.startService.requestUtentePrenotazioni(this.docUtente.ID);
                               }
                           });
 

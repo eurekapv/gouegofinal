@@ -98,7 +98,8 @@ export class HistorylistPage implements OnInit {
    */
   onClickPrenotazione(selectedPrenotazione:UtentePrenotazione)
   {
-    this.navCtrl.navigateForward(['/','historylist','booking',selectedPrenotazione.ID])
+    console.log(selectedPrenotazione.IDPRENOTAZIONE);
+    this.navCtrl.navigateForward(['/','historylist','booking',selectedPrenotazione.IDPRENOTAZIONE])
   }
 
 }

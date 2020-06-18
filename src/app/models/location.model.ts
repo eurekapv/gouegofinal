@@ -170,6 +170,7 @@ export class Location extends IDDocument {
       }
     }
 
+    
 
     /**
      * Inizializza la collection CAMPO con i dati ricevuti tipizzando gli oggetti

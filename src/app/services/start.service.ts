@@ -52,7 +52,7 @@ export class StartService {
   private _appReady = new BehaviorSubject<boolean>(false);
   private listenLocation: Subscription;
 
-
+  
   get appReady() {
     return this._appReady.asObservable();
   }
@@ -684,6 +684,14 @@ getSelectedCampoPrenotazione() {
   return this.prenotazioniService.selectedCampo;
 }
 
+/**
+ * Richiede al server una Prenotazione
+ * @param idPrenotazione idPrenotazione Padre
+ */
+requestPrenotazioneById(idPrenotazione: string, numLivelli: number) {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.prenotazioniService.requestById(actualStartConfig, idPrenotazione, numLivelli);
+}
 
 
 // /**
@@ -705,6 +713,10 @@ requestUtentePrenotazioni(idUtente: string) {
   //Richiedo i dati al servizio
   this.utentePrenotazioneService.request(actualStartConfig, idUtente);
 }
+
+
+
+
 
 /**
  * Lista Prenotazioni di tipo Observable

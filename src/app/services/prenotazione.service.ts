@@ -91,11 +91,11 @@ export class PrenotazioneService {
 
 
   /**
-   * 
+   * Richiesta elenco Prenotazioni
    * @param config Parametri di configurazione
    * @param idUtente idUtente
    */
-  request(config: StartConfiguration, idUtente: string) {
+  request(config: StartConfiguration) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'PRENOTAZIONE';
     
@@ -114,6 +114,44 @@ export class PrenotazioneService {
       .subscribe( resultData => {
         console.log(resultData);
       });
+  }
+
+
+  /**
+   * Richiede una prenotazione al server
+   * @param config Dati configurazione
+   * @param idPrenotazione IdPrenotazione 
+   */
+  requestById(config: StartConfiguration, idPrenotazione: string, numLivelli: number) {
+    let myHeaders = new HttpHeaders({'Content-type':'text/plain'}).append('child-level', numLivelli + '');
+    const doObject = 'PRENOTAZIONE';
+    
+    // In Testata c'e' sempre l'AppId
+    myHeaders = myHeaders.set('appid',config.appId);
+    // Nei parametri imposto idPrenotazion richiesto
+    let myParams = new HttpParams().set('ID',idPrenotazione);
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+    return this.apiService
+      .httpGet(myUrl, myHeaders, myParams)
+      .pipe(map(fullData => {
+
+        let docPrenotazione: Prenotazione;
+
+        if (fullData) {
+          if (fullData.hasOwnProperty('PRENOTAZIONE')) {
+            let collPrenotazioni = fullData.PRENOTAZIONE;
+            if (collPrenotazioni.length !== 0) {
+
+              docPrenotazione = new Prenotazione();
+              docPrenotazione.setJSONProperty(collPrenotazioni[0]);
+
+            }
+          }
+        }
+        return docPrenotazione
+      }));
   }
 
 

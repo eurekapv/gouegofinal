@@ -14,6 +14,7 @@ import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianifica
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
+import { Sport } from 'src/app/models/sport.model';
 
 @Component({
   selector: 'app-booking',
@@ -53,6 +54,9 @@ export class BookingPage implements OnInit, OnDestroy {
   subActualSlotDay: Subscription;
   subActivePrenotazione: Subscription;
 
+  selectedSport: Sport; //lo sport selezionato
+  availableFields: Campo[]=[]; //un array dei soli campi per lo sport selezionato
+
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
   
 
@@ -71,7 +75,15 @@ export class BookingPage implements OnInit, OnDestroy {
     
   }
 
-
+  //#FIXME il filtro non funziona perchè mancano gli sport praticabili all'interno dei campi
+  //inoltre, anche l'elenco sport è sbagliato, perchè prende dentro quelli di tutte le aree operative
+  updateAvailableFields()
+  {
+    console.log(this.selectedLocation.CAMPO);
+    this.availableFields=this.selectedLocation.CAMPO.filter((data)=>{
+      return data.IDSPORT==this.selectedSport.ID;
+    })
+  }
 
   ngOnInit() {
 
@@ -154,6 +166,7 @@ export class BookingPage implements OnInit, OnDestroy {
         this.navController.navigateForward(['/']);
       }
     })
+    this.updateAvailableFields();
   }
 
   ngOnDestroy() {
@@ -448,9 +461,10 @@ export class BookingPage implements OnInit, OnDestroy {
       return throwError('Si sono verificati errori. Riprovare AHIME.');
   };
 
-  onClickSport()
+  onSportChange(newSport)
   {
-    
+    this.selectedSport=newSport;
+    this.updateAvailableFields();
   }
 
 

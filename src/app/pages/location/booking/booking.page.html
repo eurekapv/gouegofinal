@@ -23,12 +23,14 @@
           <ion-label>Automatico</ion-label>
       </ion-segment-button>
     </ion-segment> -->
+
     <!-- ITEM DEL CAMPO -->
     
-    <ion-item button class="item-campo" (click)="onClickSport()">
+    <!-- <ion-item button class="item-campo" (click)="onClickSport()">
       <ion-icon color="primary" slot="start" name="basketball"></ion-icon>
       <ion-label class="label-header">sdfsdfjslfdk</ion-label>
-    </ion-item>
+    </ion-item> -->
+    <app-sport-scroll [selectedSport]="selectedSport" (sportChanged)="onSportChange($event)"></app-sport-scroll>
     <ion-list *ngIf="ricevuti && bookable" 
         class="item-campo ion-no-padding">
   

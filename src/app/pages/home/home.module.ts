@@ -15,6 +15,7 @@ import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.c
 import { CalendarscrollComponent } from 'src/app/shared/components/calendarscroll/calendarscroll.component';
 import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbooked.component';
 import { PlayerNumberComponent } from 'src/app/shared/components/player-number/player-number.component';
+import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/sport-scroll.component';
 
 
 @NgModule({
@@ -37,14 +38,16 @@ import { PlayerNumberComponent } from 'src/app/shared/components/player-number/p
                  SlottimeComponent,
                  CalendarscrollComponent,
                  FootbookedComponent,
-                 PlayerNumberComponent
+                 PlayerNumberComponent,
+                 SportScrollComponent
                  ],
   exports: [NewsEventiComponent,
             ButtonCardComponent,
             SlottimeComponent, 
             CalendarscrollComponent, 
             FootbookedComponent,
-            PlayerNumberComponent]
+            PlayerNumberComponent,
+            SportScrollComponent]
   
 })
 export class HomePageModule {}

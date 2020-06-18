@@ -82,7 +82,7 @@ export class LocationService {
 
     // In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('appid',config.appId);
-    myHeaders = myHeaders.set('child-level',"2");
+    myHeaders = myHeaders.set('child-level',"3");
 
     // Nei parametri imposto l'Area Operativa
     let myParams = new HttpParams().set('ID', idLocation);

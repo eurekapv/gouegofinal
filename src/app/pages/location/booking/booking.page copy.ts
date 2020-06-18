@@ -83,20 +83,8 @@ export class BookingPage implements OnInit, OnDestroy {
   //inoltre, anche l'elenco sport è sbagliato, perchè prende dentro quelli di tutte le aree operative
   updateAvailableFields()
   {
-      this.availableFields=this.selectedLocation.CAMPO.filter(el=>{
-        let trovato =false;
-        for (const iterator of el.CAMPOSPORT) {
-          if (iterator.IDSPORT==this.selectedSport.ID)
-          {
-            trovato=true;
-            break;
-          }
-          return trovato;
-        }
-      })
-      console.log(this.availableFields);
-  }
 
+  }
 
   ngOnInit() {
 
@@ -140,12 +128,10 @@ export class BookingPage implements OnInit, OnDestroy {
               .subscribe(dataLocation => {
                 // Chiedo la Location
                 this.selectedLocation = dataLocation;
-                
+
                 /* Se ho la location */
                 if (this.selectedLocation && !this.selectedLocation.do_inserted ) {
-                  console.log('bp');
-                  console.log(this.selectedLocation.CAMPO);
-                  
+
 
                   //RECUPERO IL TEMPLATE WEEK SLOT TIME
                   this.getTemplateWeek(this.selectedLocation);
@@ -207,7 +193,7 @@ export class BookingPage implements OnInit, OnDestroy {
         this.navController.navigateForward(['/']);
       }
     })
-    
+    this.updateAvailableFields();
   }
 
   ngOnDestroy() {

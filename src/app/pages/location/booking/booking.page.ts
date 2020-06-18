@@ -91,10 +91,9 @@ export class BookingPage implements OnInit, OnDestroy {
             trovato=true;
             break;
           }
-          return trovato;
         }
+        return trovato;
       })
-      console.log(this.availableFields);
   }
 
 
@@ -143,8 +142,7 @@ export class BookingPage implements OnInit, OnDestroy {
                 
                 /* Se ho la location */
                 if (this.selectedLocation && !this.selectedLocation.do_inserted ) {
-                  console.log('bp');
-                  console.log(this.selectedLocation.CAMPO);
+                  this.updateAvailableFields();
                   
 
                   //RECUPERO IL TEMPLATE WEEK SLOT TIME

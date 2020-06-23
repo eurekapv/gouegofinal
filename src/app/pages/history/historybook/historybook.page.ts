@@ -19,16 +19,51 @@ export class HistorybookPage implements OnInit, OnDestroy {
   activePrenotazione: Prenotazione;
   subActivePrenotazione: Subscription;
 
-  //Elemento 1 di Pianificazione contenuta in activePrenotazione
-  docPianificazione: PrenotazionePianificazione;
-
  //Location selezionata
   selectedLocation: Location = new Location();
   
   //Campo in versione normale
   selectedCampo: Campo = new Campo();
   idPrenotazione: string;
+  idPianificazione: string;
+  historyId: string;
+
   showSpinner = true;
+
+  sliderOpts={
+    slidesPerView: 1,
+    spaceBetween: 0,
+    initialSlide: 0, 
+        //Dovrei farla variabile
+        // Responsive breakpoints   
+        //  breakpoints: {  
+   
+        //     // when window width is <= 320px     
+        //     320: {       
+        //        slidesPerView: 2.5,
+        //        spaceBetween: 1     
+        //     },     
+        //     // when window width is <= 480px     
+        //     480: {       
+        //        slidesPerView: 2.5,       
+        //        spaceBetween: 6     
+        //     },   
+        
+        //     // when window width is <= 640px     
+        //     640: {       
+        //        slidesPerView: 2.5,       
+        //        spaceBetween: 1     
+        //     },
+
+        //     1024: {
+        //       slidesPerView: 2.5,       
+        //       spaceBetween: 1  
+        //     }
+
+
+        
+        //  } 
+  }
 
 
   constructor(private router: ActivatedRoute,
@@ -38,42 +73,68 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   //In paramMap leggo IDPrenotazione
   ngOnInit() {
-       
+    let result = true;
+
     this.showSpinner = true;
 
     this.router.paramMap.subscribe(param => {
       if (param.has('historyId')) {
-        this.idPrenotazione = param.get('historyId');
 
-        if (this.idPrenotazione.length !== 0) {
+        //HistoryID è formato da IDPrenotazione + '-' + IDPianificazione
+        this.historyId = param.get('historyId');
 
-          //Carico dal server la prenotazione e le collection figlie 999
-          this.subActivePrenotazione = this.startService.requestPrenotazioneById(this.idPrenotazione, 999).subscribe (docPrenotazione => {
-
-            this.activePrenotazione = docPrenotazione;
-            //Non mi sono arrivati i dati
-            if (!this.activePrenotazione) {
-              this.goBack();
-            }
-            else {
-              if (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
-                this.docPianificazione = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
-                this.showSpinner = false;
-              }
-              else {
-                this.goBack();      
-              }
-            }
-          });
+        if (this.historyId.length !== 0) {
+          result = this.requestByHistoryId(this.historyId);
         }
         else {
-          this.goBack();
+          result = false;
         }
       }
       else {
+        result = false;
+      }
+
+      if (!result) {
         this.goBack();
       }
     });
+
+  }
+
+  /**
+   * Richiedo le informazioni con historyID
+   * @param historyId HistoryId
+   */
+  requestByHistoryId(historyId: string) {
+    let result = true;
+    let idPren = '';
+    let idPian = '';
+
+    if (historyId.length !== 0) {
+      idPren = historyId.substr(0,36);
+      idPian = historyId.substr(37,36);
+
+      if (idPren.length !== 36 || idPian.length !== 36) {
+        result = false;
+      }
+      else {
+        this.idPrenotazione = idPren;
+        this.idPianificazione = idPian;
+
+        //Chiedo la Prenotazione
+        this.subActivePrenotazione = this.startService.requestPrenotazioneById(this.idPrenotazione, 999)
+                                         .subscribe (docPrenotazione => {
+                                                  this.activePrenotazione = docPrenotazione;
+                                                  this.showSpinner = false;
+                                                  });
+      }
+    }
+    else {
+      result = false;
+    }
+
+
+    return result;
 
   }
 

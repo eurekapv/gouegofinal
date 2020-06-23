@@ -98,8 +98,11 @@ export class HistorylistPage implements OnInit {
    */
   onClickPrenotazione(selectedPrenotazione:UtentePrenotazione)
   {
+    //Concateno IDPrenotazione con IDPianificazione
+    let historyId = selectedPrenotazione.IDPRENOTAZIONE + '-' + selectedPrenotazione.ID;
+
     console.log(selectedPrenotazione.IDPRENOTAZIONE);
-    this.navCtrl.navigateForward(['/','historylist','booking',selectedPrenotazione.IDPRENOTAZIONE])
+    this.navCtrl.navigateForward(['/','historylist','booking',historyId])
   }
 
 }

@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Corso } from 'src/app/models/corso.model';
-import { Prenotazione } from 'src/app/models/prenotazione.model';
-import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
-import { NavController, LoadingController } from '@ionic/angular';
+
+import { NavController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
-import { throwError, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { StartService } from 'src/app/services/start.service';
 
@@ -104,5 +103,7 @@ export class HistorylistPage implements OnInit {
     console.log(selectedPrenotazione.IDPRENOTAZIONE);
     this.navCtrl.navigateForward(['/','historylist','booking',historyId])
   }
+
+
 
 }

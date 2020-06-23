@@ -75,3 +75,4 @@ export class UtentePrenotazione extends IDDocument {
         return objDescriptor;
     }
 }
+

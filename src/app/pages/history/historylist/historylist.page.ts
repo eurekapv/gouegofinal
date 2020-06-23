@@ -6,8 +6,7 @@ import { Utente } from 'src/app/models/utente.model';
 import { Subscription } from 'rxjs';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { StartService } from 'src/app/services/start.service';
-import { Settimana } from 'src/app/models/settimana.model';
-import { Language } from 'src/app/models/valuelist.model';
+
 import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
 
 
@@ -25,23 +24,35 @@ export class HistorylistPage implements OnInit {
   subListUtentePrenotazioni: Subscription;
 
   selectedView: string='prenotazioni';
-  listUtenteCorsi: Utenteiscrizione[]=[];
+
+  listUtenteCorsi: Utenteiscrizione[];
+  subListUtenteIscrizioni: Subscription;
 
   //Mostra il loading
   receivedPrenotazioni: boolean;
   receivedCorsi: boolean;
 
+  //Eventi dei Refresh
+  eventRefresherPrenotazioni: any;
+  eventRefresherIscrizioni: any;
+
+
   today = new Date();
 
   constructor(
     private navCtrl:NavController,
-    private startService:StartService
-    
+    private startService:StartService    
   ) { }
 
   ngOnInit() {
     this.receivedPrenotazioni = false;
     this.receivedCorsi = false;
+
+    //Mi sottoscrivo alla ricezione Prenotazioni e Iscrizioni Corsi
+    //Verranno richiesti successivamente
+    this.sottoscrizionePrenotazioni();
+    this.sottoscrizioneIscrizioni()
+
 
     //Richiesta utente attuale
     this.subDocUtente = this.startService.utente
@@ -49,17 +60,38 @@ export class HistorylistPage implements OnInit {
                               this.docUtente = elDocUtente;
                               //Utente arrivato
                               if (this.docUtente) {
-                                //Non ho ancora ricevuto nulla
-                                this.receivedPrenotazioni = false;
-                                //Richiedo le Prenotazioni
-                                this.startService.requestUtentePrenotazioni(this.docUtente.ID);
-                                //Mi sottoscrivo alla ricezione
-                                this.sottoscrizionePrenotazioni();
+                                this.requestPrenotazioni();
                               }
                           });
-    //TODO da rimuovere
-    this.initCorsiProva()
 
+  }
+
+  /**
+   * Richiede al server le Prenotazioni
+   */
+  requestPrenotazioni() {
+    if (this.docUtente) {
+      if (this.docUtente.ID) {
+        //Segno di non aver ancora ricevuto nulla
+        this.receivedPrenotazioni = false;
+        //Richiedo le Prenotazioni
+        this.startService.requestUtentePrenotazioni(this.docUtente.ID);
+      }
+    }
+  }
+
+    /**
+   * Richiede al server le Iscrizioni Corso
+   */
+  requestIscrizioni() {
+    if (this.docUtente) {
+      if (this.docUtente.ID) {
+        //Segno di non aver ancora ricevuto nulla
+        this.receivedCorsi = false;
+        //Richiedo le Iscrizioni
+        this.startService.requestUtenteIscrizioni(this.docUtente.ID);
+      }
+    }
   }
 
   /**
@@ -72,9 +104,61 @@ export class HistorylistPage implements OnInit {
                                           .subscribe(collPrenotazioni => {
                                               this.listUtentePrenotazione = collPrenotazioni;                                
                                               this.receivedPrenotazioni = true;
+
+                                              //Disattivo il refresh se rimasto attivo
+                                              if (this.eventRefresherPrenotazioni) {
+                                                if (this.eventRefresherPrenotazioni.target) {
+                                                  this.eventRefresherPrenotazioni.target.complete();
+                                                  this.eventRefresherPrenotazioni = null;
+                                                }
+                                              }
+                                          }, error => {
+                                              //Avvisare dell'errore
+
+                                              //Disattivo il refresh se rimasto attivo
+                                              this.receivedPrenotazioni = true;
+
+                                              if (this.eventRefresherPrenotazioni) {
+                                                if (this.eventRefresherPrenotazioni.target) {
+                                                  this.eventRefresherPrenotazioni.target.complete();
+                                                  this.eventRefresherPrenotazioni = null;
+                                                }
+                                              }                                            
                                           }
       );
   }
+
+    /**
+   * Esegue la sottoscrizione ai dati Prenotazioni
+   * @param idUtente Utente richiesta
+   */
+  sottoscrizioneIscrizioni() {
+      
+    this.subListUtenteIscrizioni = this.startService.listUtenteIscrizioni
+                                        .subscribe(collIscrizioni => {
+                                            this.listUtenteCorsi = collIscrizioni;                                
+                                            this.receivedCorsi = true;
+
+                                            if (this.eventRefresherIscrizioni) {
+                                              if (this.eventRefresherIscrizioni.target) {
+                                                this.eventRefresherIscrizioni.target.complete();
+                                                this.eventRefresherIscrizioni = null;
+                                              }
+                                            }
+                                        }, error => {
+                                              //Avvisare dell'errore
+                                              
+                                              this.receivedCorsi = true;
+
+                                              if (this.eventRefresherIscrizioni) {
+                                                if (this.eventRefresherIscrizioni.target) {
+                                                  this.eventRefresherIscrizioni.target.complete();
+                                                  this.eventRefresherIscrizioni = null;
+                                                }
+                                              }                                       
+                                          }
+    );
+}
 
   /**
    * 
@@ -83,6 +167,17 @@ export class HistorylistPage implements OnInit {
   onChangeSegment(value)
   {
     this.selectedView=value.detail.value;
+    switch (this.selectedView) {
+      case 'prenotazioni':
+        this.requestPrenotazioni();
+        break;
+      case 'corsi':
+        this.requestIscrizioni();
+        break;
+    
+      default:
+        break;
+    }
   }
 
   
@@ -106,8 +201,28 @@ export class HistorylistPage implements OnInit {
     //Concateno IDPrenotazione con IDPianificazione
     let historyId = selectedPrenotazione.IDPRENOTAZIONE + '-' + selectedPrenotazione.ID;
 
-    console.log(selectedPrenotazione.IDPRENOTAZIONE);
     this.navCtrl.navigateForward(['/','historylist','booking',historyId])
+  }
+
+  //Richiesta di Refresh
+  doRefresh(event) {
+
+    
+    switch (this.selectedView) {
+      case 'prenotazioni':
+          this.eventRefresherPrenotazioni = event;
+          this.requestPrenotazioni();
+        break;
+
+      case 'corsi':
+        this.eventRefresherIscrizioni = event;
+        this.requestIscrizioni();
+        break;
+    
+      default:
+        break;
+    }
+
   }
 
 
@@ -116,7 +231,7 @@ export class HistorylistPage implements OnInit {
   {
     for (let i=0; i<4; i++)
     {
-      let utenteCorso = new Utenteiscrizione;
+      let utenteCorso = new Utenteiscrizione();
       utenteCorso.DENOMINAZIONECORSO ='Base 2';
       utenteCorso.GIORNIPREVISTI='1';
       utenteCorso.DENOMINAZIONESPORT ="Beach Volley";

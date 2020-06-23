@@ -8,6 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { UtentePrenotazione } from '../models/utenteprenotazione.model';
 import { IDDocument } from '../models/iddocument.model';
+import * as moment from "moment";
 
 @Injectable({
   providedIn: 'root'
@@ -84,7 +85,7 @@ export class UtenteprenotazioneService {
         if (!findElement) {
           this._listUtentePrenotazione.next( collUtentePrenotazione.concat(objUtentePrenotazione));
         }
-      })
+      });
   }
 
 
@@ -94,7 +95,13 @@ export class UtenteprenotazioneService {
   getFilterDateTime(): string {
     let adesso = new Date();
     let newDoc = new IDDocument();
-    let strAdesso = newDoc.formatDateTimeISO(adesso);
+    let startDate = new Date(adesso.getFullYear(),0,1);
+    let strAdesso = '';
+    if (adesso.getMonth() < 6) {
+      startDate = new Date((adesso.getFullYear()) - 1, 5, 1);
+    }
+
+    strAdesso = newDoc.formatDateTimeISO(startDate);
 
     strAdesso = '>' + strAdesso;
 

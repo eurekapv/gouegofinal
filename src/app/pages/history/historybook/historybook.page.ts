@@ -127,9 +127,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
                                                   this.activePrenotazione = docPrenotazione;
                                                   this.showSpinner = false;
-                                                  this.sliderOpts.initialSlide=this.getIndexPianificazione();
+                                                  this.sliderOpts.initialSlide=this.activePrenotazione.getIndexPianificazione(this.idPianificazione);
 
-                                                  console.log("ho dato alle slideropts" +  this.getIndexPianificazione());                                                  });
+                                                  console.log("ho dato alle slideropts" +  this.activePrenotazione.getIndexPianificazione(this.idPianificazione));                                                  });
       }
     }
     else {
@@ -172,28 +172,5 @@ export class HistorybookPage implements OnInit, OnDestroy {
     });
 
   }
-  //devo trovare nell'array l'indice della pianificazione effettivamente selezionata
-  getIndexPianificazione()
-  {
-    let indexPianificazione=0;
-    // console.log(this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
-    // for (let i=0; i<this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length; i++) {
-    //   {
-    //     console.log("bp" + this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
 
-    //     if (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[i].ID==this.idPianificazione)
-    //     indexPianificazione=i;
-    //     break;
-    //   }
-      
-    // }
-
-    console.log('Eccoli');
-    for (let index = 0; index < this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length; index++) {
-      const element = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[index];
-      
-      
-    }
-    return indexPianificazione;
-  }
 }

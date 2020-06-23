@@ -8,7 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { UtentePrenotazione } from '../models/utenteprenotazione.model';
 import { IDDocument } from '../models/iddocument.model';
-import * as moment from "moment";
+
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class UtenteprenotazioneService {
   /**
    * 
    * @param config Dati configurazione
-   * @param idArea Area richiesta
+   * @param idUtente Utente che effettua richiesta
    * @param maxRecord Max Record da recuperare
    */
   request(config: StartConfiguration, idUtente: string, maxRecord: number = 0) {

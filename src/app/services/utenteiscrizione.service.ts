@@ -1,9 +1,107 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Utenteiscrizione } from '../models/utenteiscrizione.model';
+import { ApicallService } from './apicall.service';
+import { StartConfiguration } from '../models/start-configuration.model';
+import { map, take } from 'rxjs/operators';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { IDDocument } from '../models/iddocument.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtenteiscrizioneService {
 
-  constructor() { }
+  private _listUtenteIscrizione = new BehaviorSubject<Utenteiscrizione[]>([]);
+
+  get listUtenteIscrizione() {
+    return this._listUtenteIscrizione.asObservable();
+  }
+
+  constructor(private apiService: ApicallService) { }
+
+   /**
+   * 
+   * @param config Dati configurazione
+   * @param idUtente Utente che effettua richiesta
+   * @param maxRecord Max Record da recuperare
+   */
+  request(config: StartConfiguration, idUtente: string, maxRecord: number = 0) {
+    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    const doObject = 'UTENTEISCRIZIONE';
+    const filterDateTime = this.getFilterDateTime();
+
+    //In Testata c'e' sempre l'AppId
+    myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
+    let myUrl = config.urlBase + '/' + doObject;  
+
+    //Nei Parametri imposto l'area richiesta
+    let myParams = new HttpParams().set('IDUTENTE',idUtente);
+    myParams = myParams.append('DATAISCRIZIONE',filterDateTime);
+    myParams = myParams.append('$top', (maxRecord + '') );
+
+    //Elimino gli attuali
+    this._listUtenteIscrizione.next([]);
+
+    this.apiService
+      .httpGet(myUrl, myHeaders, myParams)
+      .pipe(map(data => {
+          
+            let arReturn = [];
+            if (data.UTENTEISCRIZIONE) {
+              arReturn = data.UTENTEISCRIZIONE;
+            }
+
+            return arReturn;
+          
+      }))
+      .subscribe (resultData => {
+
+          resultData.forEach(element => {
+            let newUtenteIscrizione = new Utenteiscrizione();
+            newUtenteIscrizione.setJSONProperty(element);
+            this.addUtenteIscrizione(newUtenteIscrizione);
+          });
+      })
+  }
+
+  /**
+   * Aggiunge all'elenco una prenotazione dell'utente
+   * @param objUtenteIscrizione Prenotazione da aggiungere
+   */
+  addUtenteIscrizione(objUtenteIscrizione: Utenteiscrizione) {
+    this.listUtenteIscrizione
+      .pipe(take(1))
+      .subscribe (collUtenteIscrizione => {
+        let findElement = collUtenteIscrizione.find(element => {
+          return element.ID == objUtenteIscrizione.ID
+        });
+
+        if (!findElement) {
+          this._listUtenteIscrizione.next( collUtenteIscrizione.concat(objUtenteIscrizione));
+        }
+      });
+  }
+
+
+    /**
+   * Crea il Parametro Filtro per il campo
+   */
+  getFilterDateTime(): string {
+    let adesso = new Date();
+    let newDoc = new IDDocument();
+    let startDate = new Date(adesso.getFullYear(),0,1);
+    let strAdesso = '';
+    if (adesso.getMonth() < 6) {
+      startDate = new Date((adesso.getFullYear()) - 1, 5, 1);
+    }
+
+    strAdesso = newDoc.formatDateTimeISO(startDate);
+
+    strAdesso = '>' + strAdesso;
+
+    return strAdesso;
+  }
+
+
 }

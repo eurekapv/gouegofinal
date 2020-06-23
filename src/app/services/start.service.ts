@@ -30,6 +30,7 @@ import { Campo } from '../models/campo.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 import { Prenotazione } from '../models/prenotazione.model';
 import { UtenteprenotazioneService } from './utenteprenotazione.service';
+import { UtenteiscrizioneService } from './utenteiscrizione.service';
 
 
 @Injectable({
@@ -76,7 +77,8 @@ export class StartService {
     private prenotazioniService: PrenotazioneService,
     private newsEventiService: NewseventiService,
     private slotOccupazioneService: SlotoccupazioneService,
-    private utentePrenotazioneService: UtenteprenotazioneService ) { 
+    private utentePrenotazioneService: UtenteprenotazioneService,
+    private utenteIscrizioneService: UtenteiscrizioneService ) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -693,15 +695,11 @@ requestPrenotazioneById(idPrenotazione: string, numLivelli: number) {
   return this.prenotazioniService.requestById(actualStartConfig, idPrenotazione, numLivelli);
 }
 
+//#endregion
 
-// /**
-//  * Lista Prenotazioni di tipo Observable
-//  */
-// get listPrenotazioni() {
-//   return this.prenotazioniService.listPrenotazioni;
-// }
 
-// UTENTE PRENOTAZIONI
+//#region UtentePrenotazione
+
 
 /**
  * Richiede al server elenco di prenotazioni di un utente
@@ -725,10 +723,30 @@ get listUtentePrenotazioni() {
   return this.utentePrenotazioneService.listUtentePrenotazione;
 }
 
+//#endregion
 
 
+//#region UtenteIscrizione
 
 
+/**
+ * Richiede al server elenco di Iscrizioni ai corsi di un utente
+ * @param idUtente IDUtente
+ */
+requestUtenteIscrizioni(idUtente: string) {
+  const actualStartConfig = this._startConfig.getValue();
+  
+  //Richiedo i dati al servizio
+  this.utenteIscrizioneService.request(actualStartConfig, idUtente);
+}
+
+
+/**
+ * Lista Iscrizioni Corsi di tipo Observable
+ */
+get listUtenteIscrizioni() {
+  return this.utenteIscrizioneService.listUtenteIscrizione;
+}
 
 //#endregion
 

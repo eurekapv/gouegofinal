@@ -6,6 +6,8 @@ import { Utente } from 'src/app/models/utente.model';
 import { Subscription } from 'rxjs';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { StartService } from 'src/app/services/start.service';
+import { Settimana } from 'src/app/models/settimana.model';
+import { Language } from 'src/app/models/valuelist.model';
 
 @Component({
   selector: 'app-historylist',
@@ -21,7 +23,7 @@ export class HistorylistPage implements OnInit {
   subListUtentePrenotazioni: Subscription;
 
   selectedView: string='prenotazioni';
-  listUtenteCorsi: Corso[]=[];
+  listUtenteCorsi;
 
   //Mostra il loading
   receivedPrenotazioni: boolean;
@@ -53,6 +55,8 @@ export class HistorylistPage implements OnInit {
                                 this.sottoscrizionePrenotazioni();
                               }
                           });
+    //TODO da rimuovere
+    this.initCorsiProva()
 
   }
 
@@ -102,6 +106,22 @@ export class HistorylistPage implements OnInit {
 
     console.log(selectedPrenotazione.IDPRENOTAZIONE);
     this.navCtrl.navigateForward(['/','historylist','booking',historyId])
+  }
+
+  initCorsiProva()
+  {
+    for (let i=0; i<4; i++)
+    {
+      let corso = new Corso()
+      corso.DENOMINAZIONE='Base 2';
+      corso._SETTIMANA.push(new Settimana(3, Language.italiano));
+      corso._DESCRSPORT="Beach Volley";
+      corso.DATAINIZIO=new Date();
+
+
+      this.listUtenteCorsi.push(corso);
+    }
+    console.log(this.listUtenteCorsi);
   }
 
 

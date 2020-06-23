@@ -27,7 +27,7 @@
         <ion-label>trovata</ion-label>
       </div>
 
-        <!-- Lista corsi -->
+        <!-- PARTE CORSI -->
         <ion-list *ngIf="receivedCorsi && listUtentePrenotazione!.length !== 0">
           <ion-item button *ngFor="let corso of listUtenteCorsi" (click)="onClickCorso(corso)" >
             <ion-buttons slot="start">
@@ -57,6 +57,7 @@
         </ion-list>
   </div>
 
+  <!-- PARTE PRENOTAZIONI -->
   <div class="contentExpand" *ngIf="selectedView=='prenotazioni'">
       <!-- IN ATTESA DATI  -->
       <!-- DATI  NON RICEVUTI -->

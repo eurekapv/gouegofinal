@@ -185,5 +185,20 @@ export class Prenotazione extends IDDocument {
   
         return newPrenotazione;
       }
+
+      /**
+       * Ritorna l'indice dell'oggetto pianificazione con id specificato
+       * @param id l'id dell'oggetto pianificazione
+       */
+      getIndexPianificazione(id: string):number
+      {
+        for (let index = 0; index < this.PRENOTAZIONEPIANIFICAZIONE.length; index++) {
+            const element = this.PRENOTAZIONEPIANIFICAZIONE[index];
+            if (element.ID==id)
+            {
+                return index;
+            }  
+        }
+      }
     
 }

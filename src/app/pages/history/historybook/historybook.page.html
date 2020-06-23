@@ -42,7 +42,7 @@
           </ion-item>
           <ion-item>
             <ion-label>
-              <h2>{{docPianificazione.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'}}</h2>
+              <h2>{{docPianificazione.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'|titlecase}}</h2>
               <p>dalle {{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} alle {{docPianificazione.DATAORAFINE | date : 'HH:mm'}} </p>
             </ion-label>
             <ion-chip color="primary">
@@ -70,7 +70,7 @@
       <ion-label slot="start">
         Importo:
       </ion-label>
-      <ion-label slot="end">
+      <ion-label style="text-align: right;">
         {{activePrenotazione.TOTALE | currency : 'EUR'}}
       </ion-label>
     </ion-item>

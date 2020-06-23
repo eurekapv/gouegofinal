@@ -124,9 +124,11 @@ export class HistorybookPage implements OnInit, OnDestroy {
         //Chiedo la Prenotazione
         this.subActivePrenotazione = this.startService.requestPrenotazioneById(this.idPrenotazione, 999)
                                          .subscribe (docPrenotazione => {
+
                                                   this.activePrenotazione = docPrenotazione;
                                                   this.showSpinner = false;
                                                   this.sliderOpts.initialSlide=this.getIndexPianificazione();
+
                                                   console.log("ho dato alle slideropts" +  this.getIndexPianificazione());                                                  });
       }
     }
@@ -174,14 +176,22 @@ export class HistorybookPage implements OnInit, OnDestroy {
   getIndexPianificazione()
   {
     let indexPianificazione=0;
-    console.log(this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
-    for (let i=0; i<this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length; i++) {
-      {
-        console.log("bp" + this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
-        if (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[i].ID==this.idPianificazione)
-        indexPianificazione=i;
-        break;
-      }
+    // console.log(this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
+    // for (let i=0; i<this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length; i++) {
+    //   {
+    //     console.log("bp" + this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
+
+    //     if (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[i].ID==this.idPianificazione)
+    //     indexPianificazione=i;
+    //     break;
+    //   }
+      
+    // }
+
+    console.log('Eccoli');
+    for (let index = 0; index < this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length; index++) {
+      const element = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[index];
+      
       
     }
     return indexPianificazione;

@@ -38,7 +38,9 @@
               {
                 "input": "src/global.scss"
               },
-              "node_modules/sportsfont/css/sports.css"
+              {
+                "input": "node_modules/sportsfont/css/sports.css"
+              }
             ],
             "scripts": []
           },

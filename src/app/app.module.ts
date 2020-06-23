@@ -18,6 +18,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 
 import localeIt from '@angular/common/locales/it';
 
+
 registerLocaleData(localeIt,'it');
 
 @NgModule({
@@ -81,6 +82,8 @@ export class AppModule {}
  
  npm install moment --save
 
+ Aggiunte Icone Sport Font
+npm install sportsfont
  */
 
  /*

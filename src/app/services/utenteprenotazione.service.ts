@@ -37,7 +37,7 @@ export class UtenteprenotazioneService {
     const filterDateTime = this.getFilterDateTime();
 
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
+    myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
     let myUrl = config.urlBase + '/' + doObject;  
 
     //Nei Parametri imposto l'area richiesta

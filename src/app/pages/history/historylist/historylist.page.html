@@ -34,24 +34,24 @@
               <ion-grid class="ion-no-padding">
                 <ion-row class="ion-no-padding">
                   <ion-col class="ion-no-padding ion-text-center">
-                    <ion-icon name="school" class="icon-school" [color]="corso.DATAFINE<today? 'primary': 'light'"></ion-icon>
+                    <ion-icon name="school" class="icon-school" [color]="corso.DATAFINECORSO<today? 'primary': 'light'"></ion-icon>
                   </ion-col>
                 </ion-row>
                 <ion-row class="ion-no-padding">
                   <ion-col class="ion-no-padding ion-text-center">
-                    <p class="icon-text ion-no-margin">{{corso.DATAFINE<today? 'Fino al':'Dal'}}</p>
-                    <p class="icon-text">{{corso.DATAFINE<today? (corso.DATAINIZIO | date: 'dd/LL/yy'): (corso.DATAFINE|date: 'dd/LL/yy')}}</p>
+                    <p class="icon-text ion-no-margin">{{corso.DATAFINECORSO<today? 'Fino al':'Dal'}}</p>
+                    <p class="icon-text">{{corso.DATAFINECORSO<today? (corso.DATAINIZIOCORSO | date: 'dd/LL/yy'): (corso.DATAFINECORSO|date: 'dd/LL/yy')}}</p>
                   </ion-col>
                 </ion-row>
               </ion-grid>
             </ion-buttons>
             <ion-label>
-              <h2>{{corso._DESCRLIVELLOENTRATA}} - {{corso._DESCRSPORT}}</h2>
-              <p *ngFor="let giorno of corso._SETTIMANA">{{giorno}} </p>
+              <h2>{{corso.DENOMINAZIONECORSO}} - {{corso.DENOMINAZIONESPORT}}</h2>
+              <p *ngFor="let giorno of corso.GIORNIPREVISTI">{{giorno|giorniPrevisti}} </p>
               <h3>Milano, Via Lorenteggio 238</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
             </ion-label>
             <ion-chip color="primary">
-              {{corso.ORAINIZIO | date: 'HH:mm'}}
+              {{corso.DATAINIZIOCORSO | date: 'HH:mm'}}
             </ion-chip>
           </ion-item>
         </ion-list>
@@ -94,9 +94,8 @@
       </ion-list>
 
   </div>
-
-
 </ion-content>
+
 <ion-footer>
   <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)">
     <ion-segment-button class="ion-no-padding" value="prenotazioni" layout="icon-start">

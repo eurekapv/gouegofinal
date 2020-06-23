@@ -8,6 +8,8 @@ import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { StartService } from 'src/app/services/start.service';
 import { Settimana } from 'src/app/models/settimana.model';
 import { Language } from 'src/app/models/valuelist.model';
+import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
+
 
 @Component({
   selector: 'app-historylist',
@@ -23,7 +25,7 @@ export class HistorylistPage implements OnInit {
   subListUtentePrenotazioni: Subscription;
 
   selectedView: string='prenotazioni';
-  listUtenteCorsi;
+  listUtenteCorsi: Utenteiscrizione[]=[];
 
   //Mostra il loading
   receivedPrenotazioni: boolean;
@@ -108,18 +110,21 @@ export class HistorylistPage implements OnInit {
     this.navCtrl.navigateForward(['/','historylist','booking',historyId])
   }
 
+
+  //TODO Eliminare
   initCorsiProva()
   {
     for (let i=0; i<4; i++)
     {
-      let corso = new Corso()
-      corso.DENOMINAZIONE='Base 2';
-      corso._SETTIMANA.push(new Settimana(3, Language.italiano));
-      corso._DESCRSPORT="Beach Volley";
-      corso.DATAINIZIO=new Date();
-
-
-      this.listUtenteCorsi.push(corso);
+      let utenteCorso = new Utenteiscrizione;
+      utenteCorso.DENOMINAZIONECORSO ='Base 2';
+      utenteCorso.GIORNIPREVISTI='1';
+      utenteCorso.DENOMINAZIONESPORT ="Beach Volley";
+      utenteCorso.DATAINIZIOCORSO =new Date();
+      utenteCorso.INDIRIZZOLOCATION="Via Lorenteggio 238";
+      utenteCorso.COMUNELOCATION="Milano";
+      this.listUtenteCorsi.push(utenteCorso);
+      this.receivedCorsi=true;
     }
     console.log(this.listUtenteCorsi);
   }

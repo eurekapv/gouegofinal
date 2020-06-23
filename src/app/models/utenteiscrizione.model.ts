@@ -1,5 +1,6 @@
 import { IDDocument } from './iddocument.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import {  TipoCorso } from '../models/valuelist.model';
 
 export class Utenteiscrizione extends IDDocument {
 
@@ -9,6 +10,7 @@ export class Utenteiscrizione extends IDDocument {
         DENOMINAZIONECORSO:    string;
         DATAINIZIOCORSO:       Date;
         DATAFINECORSO:         Date;
+        GIORNIPREVISTI:        string;
         IDUTENTE:              string; //
         DATAISCRIZIONE:        Date;
         ANNOISCRIZIONE:        number;
@@ -54,7 +56,8 @@ export class Utenteiscrizione extends IDDocument {
                         'DENOMINAZIONECAMPO',
                         'IDTIPOPAGAMENTO',
                         'DESCRTIPOPAGAMENTO',
-                        'CODICEALFA'
+                        'CODICEALFA',
+                        'GIORNIPREVISTI'
                         ];
         let arNumber = ['TIPOCORSO','ANNOISCRIZIONE','CODICEINT','STATOISCRIZIONE'];
         let arNumberDecimal = ['IMPORTO','VERSATO','RESIDUO'];
@@ -73,4 +76,28 @@ export class Utenteiscrizione extends IDDocument {
         
         return objDescriptor;
     }
+
+     /**
+     * Ritorna una icona a seconda del tipo Corso
+     */
+    getIcon() {
+        let nameIcon= 'ribbon';
+  
+        switch (this.TIPOCORSO) {
+          case TipoCorso.corso:
+            nameIcon = 'ribbon';
+            break;
+          
+          case TipoCorso.provaGratuita: 
+            nameIcon = 'trail-sign';
+            break;
+        
+          default:
+            nameIcon = 'ribbon';
+            break;
+        }
+  
+        return nameIcon;
+        
+      }
 }

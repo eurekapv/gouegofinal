@@ -18,6 +18,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 
 import localeIt from '@angular/common/locales/it';
 
+
 registerLocaleData(localeIt,'it');
 
 @NgModule({

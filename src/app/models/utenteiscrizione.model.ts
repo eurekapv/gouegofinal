@@ -11,7 +11,7 @@ export class Utenteiscrizione extends IDDocument {
         DATAINIZIOCORSO:       Date;
         ORAINIZIOCORSO:        Date;
         DATAFINECORSO:         Date;
-        ORAFINECORSO:          Date;
+        ORELEZIONE:            number;
         GIORNIPREVISTI:        string;
         IDUTENTE:              string; //
         DATAISCRIZIONE:        Date;
@@ -62,10 +62,10 @@ export class Utenteiscrizione extends IDDocument {
                         'GIORNIPREVISTI'
                         ];
         let arNumber = ['TIPOCORSO','ANNOISCRIZIONE','CODICEINT','STATOISCRIZIONE'];
-        let arNumberDecimal = ['IMPORTO','VERSATO','RESIDUO'];
+        let arNumberDecimal = ['IMPORTO','VERSATO','RESIDUO','ORELEZIONE'];
         let arBoolean = [];
         let arDate = ['DATAINIZIOCORSO','DATAFINECORSO','DATAISCRIZIONE'];
-        let arDateTime =['ORAINIZIOCORSO','ORAFINECORSO'];
+        let arDateTime =['ORAINIZIOCORSO'];
         let arTime = [];
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);

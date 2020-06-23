@@ -33,7 +33,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
   sliderOpts={
     slidesPerView: 1,
     spaceBetween: 0,
-    initialSlide: 0, 
+    initialSlide: 0 
         //Dovrei farla variabile
         // Responsive breakpoints   
         //  breakpoints: {  
@@ -126,7 +126,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                          .subscribe (docPrenotazione => {
                                                   this.activePrenotazione = docPrenotazione;
                                                   this.showSpinner = false;
-                                                  });
+                                                  this.sliderOpts.initialSlide=this.getIndexPianificazione();
+                                                  console.log("ho dato alle slideropts" +  this.getIndexPianificazione());                                                  });
       }
     }
     else {
@@ -168,5 +169,21 @@ export class HistorybookPage implements OnInit, OnDestroy {
       tstMsg.present();
     });
 
+  }
+  //devo trovare nell'array l'indice della pianificazione effettivamente selezionata
+  getIndexPianificazione()
+  {
+    let indexPianificazione=0;
+    console.log(this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
+    for (let i=0; i<this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length; i++) {
+      {
+        console.log("bp" + this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0]);
+        if (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[i].ID==this.idPianificazione)
+        indexPianificazione=i;
+        break;
+      }
+      
+    }
+    return indexPianificazione;
   }
 }

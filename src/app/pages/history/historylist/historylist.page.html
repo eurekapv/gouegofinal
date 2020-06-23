@@ -85,7 +85,7 @@
 
           <ion-label>
             <h2>{{prenotazione.DATAORAINIZIO | date : 'EEE dd/MM/yyyy - HH:mm' | titlecase}}</h2>
-            <p>Milano, Via Lorenteggio 238</p> <!--anche qui manca decodifica centro sportivo-->
+            <p>{{prenotazione.INDIRIZZOLOCATION}}</p> <!--anche qui manca decodifica centro sportivo-->
           </ion-label>
           <ion-chip color="primary">{{prenotazione.DURATAORE}} {{prenotazione.DURATAORE==1? 'Ora' : 'Ore'}}</ion-chip>
         </ion-item>

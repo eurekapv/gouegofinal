@@ -81,6 +81,8 @@ export class AppModule {}
  
  npm install moment --save
 
+ Aggiunte Icone Sport Font
+npm install sportsfont
  */
 
  /*

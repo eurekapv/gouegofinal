@@ -79,8 +79,7 @@ export class BookingPage implements OnInit, OnDestroy {
     
   }
 
-  //#FIXME il filtro non funziona perchè mancano gli sport praticabili all'interno dei campi
-  //inoltre, anche l'elenco sport è sbagliato, perchè prende dentro quelli di tutte le aree operative
+  
   updateAvailableFields()
   {
       this.availableFields=this.selectedLocation.CAMPO.filter(el=>{

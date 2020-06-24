@@ -108,5 +108,16 @@ npm install angularx-qrcode --save
         // Call the element loader after the platform has been bootstrapped
         defineCustomElements(window);
 
+
+CAPACITOR
+ionic integrations enable capacitor
+
+//Verifica e aggiornamento versione capacitor Core e CLI
+npm install @capacitor/cli@latest
+npm install @capacitor/core@latest
+
+npm install @capacitor/ios@latest
+npm install @capacitor/android@latest
+
         
  */

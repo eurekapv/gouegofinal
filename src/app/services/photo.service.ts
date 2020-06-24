@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Plugins, CameraResultType, Capacitor, FilesystemDirectory, CameraPhoto, CameraSource } from '@capacitor/core';
+import { Platform } from '@ionic/angular';
 
 const {Camera, Filesystem, Storage} = Plugins;
 
@@ -10,9 +11,10 @@ export class PhotoService {
 
   public photos: Photo[] = [];
   private PHOTO_STORAGE: string = 'photos';
+  private platform: Platform;
 
   //Cerca nell'array la foto dell'account
-  get myAccountPhoto() {
+  get myAccountPhoto(): Photo {
     let myPhoto: Photo;
 
     if (this.photos) {
@@ -24,7 +26,16 @@ export class PhotoService {
     return myPhoto;
   }
 
-  constructor() { }
+  constructor(platform: Platform) {
+    this.platform = platform;
+
+    if (this.platform.is('hybrid')) {
+      console.log('Hibrida');
+    }
+    else {
+      console.log('Desktop');
+    }
+   }
 
   public async addNewToGallery(typePhoto: PhotoType) {
     //Take a photo
@@ -40,7 +51,7 @@ export class PhotoService {
     //Inserisco nell'array
     this.photos.unshift(savedImageFile);
 
-    //Scrivo nello storage
+    //Scrivo nello storage l'array delle Photos
     Storage.set({
       key: this.PHOTO_STORAGE,
       value: JSON.stringify(this.photos.map(p => {
@@ -58,11 +69,19 @@ export class PhotoService {
   }
 
   //Salvataggio immagini
+  /**
+   * Salvataggio immagini
+   * Su Mobile 
+   * set filepath to the result of the writeFile() operation - savedFile.uri. 
+   * When setting the webviewPath, use the special Capacitor.convertFileSrc()
+   * 
+   * @param cameraPhoto 
+   * @param typePhoto 
+   */
   private async savePicture(cameraPhoto: CameraPhoto, typePhoto:PhotoType): Promise<Photo> {
-
     // Convert photo to base64 format, required by Filesystem API to save
     const base64Data = await this.readAsBase64(cameraPhoto);
-  
+
     // Write the file to the data directory
     const fileName = new Date().getTime() + '.jpeg';
     const savedFile = await Filesystem.writeFile({
@@ -70,23 +89,45 @@ export class PhotoService {
       data: base64Data,
       directory: FilesystemDirectory.Data
     });
-  
-    // Use webPath to display the new image instead of base64 since it's
-    // already loaded into memory
-    return {
-      type: typePhoto,
-      filepath: fileName,
-      webviewPath: cameraPhoto.webPath
-    };
 
+    if (this.platform.is('hybrid')) {
+      // Display the new image by rewriting the 'file://' path to HTTP
+      // Details: https://ionicframework.com/docs/building/webview#file-protocol
+      return {
+        type: typePhoto,
+        filepath: savedFile.uri,
+        webviewPath: Capacitor.convertFileSrc(savedFile.uri),
+      };
+    }
+    else {
+      // Use webPath to display the new image instead of base64 since it's
+      // already loaded into memory
+      return {
+        type: typePhoto,
+        filepath: fileName,
+        webviewPath: cameraPhoto.webPath
+      };
+    }
   }
 
+
   private async readAsBase64(cameraPhoto: CameraPhoto) {
-    // Fetch the photo, read as a blob, then convert to base64 format
-    const response = await fetch(cameraPhoto.webPath!);
-    const blob = await response.blob();
-  
-    return await this.convertBlobToBase64(blob) as string;  
+    //hybrid detect Cordova, Capacitor
+    if (this.platform.is('hybrid')) {
+      const file = await Filesystem.readFile({
+        path: cameraPhoto.path
+      });
+
+      return file.data;
+    }
+    else {
+      // Recupero la foto come Blob e la converto in Base64
+      const response = await fetch(cameraPhoto.webPath!);
+      const blob = await response.blob();
+    
+      return await this.convertBlobToBase64(blob) as string;  
+    }
+
   }
   
   convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
@@ -104,7 +145,7 @@ export class PhotoService {
     // Retrieve cached photo array data
     const photos = await Storage.get({ key: this.PHOTO_STORAGE });
     this.photos = JSON.parse(photos.value) || [];
-  
+    
     // Display the photo by reading into base64 format
     for (let photo of this.photos) {
     // Read each saved photo's data from the Filesystem
@@ -120,7 +161,7 @@ export class PhotoService {
   
 }
 
-interface Photo {
+export interface Photo {
   type: PhotoType;
   filepath: string;
   webviewPath: string;

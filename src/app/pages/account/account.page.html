@@ -11,7 +11,7 @@
   <div style="height: 1vh"></div>
   <ion-item lines="none" color="light">
     <ion-avatar slot="start" class="Avatar" (click)="onClickAvatar()">
-      <img src="assets/img/avatar.svg">
+      <img [src]="sourceAvatar">
     </ion-avatar>
     <ion-label class="ion-text-wrap">
       <h1>{{ docUtente?.NOMINATIVO }}</h1>

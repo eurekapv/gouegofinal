@@ -5,7 +5,7 @@ import { AlertController, NavController, ModalController } from '@ionic/angular'
 import { Utente } from 'src/app/models/utente.model';
 import { EditLoginPage } from './edit-login/edit-login.page';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { PhotoService, PhotoType } from 'src/app/services/photo.service';
+import { PhotoService, PhotoType, Photo } from 'src/app/services/photo.service';
 
 @Component({
   selector: 'app-account',
@@ -19,6 +19,8 @@ export class AccountPage implements OnInit, OnDestroy {
 
   docConfig: StartConfiguration;
   docConfigListen: Subscription;
+
+  myPhoto: Photo;
 
   constructor(private startSrv: StartService,
               private alertCtrl: AlertController,
@@ -37,6 +39,14 @@ export class AccountPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    //Chiedo di caricare le immagini
+    let photoLoaded = this.photoService.loadSaved();
+
+    photoLoaded.then(() => {
+      //Richiedo l'immagine account
+      this.myPhoto = this.photoService.myAccountPhoto;
+      
+    })
   }
 
   ngOnDestroy() {
@@ -49,12 +59,28 @@ export class AccountPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Ritorna il src da applicare all'avatar
+   */
+  get sourceAvatar() {
+    let src = 'assets/img/avatar.svg'
+    if (this.myPhoto) {
+      src = this.myPhoto.base64;
+    }
+
+    return src;
+  }
+
 
   /**
    * Effettuato il click sull'avatar
    */
   onClickAvatar() {
-    this.photoService.addNewToGallery(PhotoType.account);
+    let addGallery = this.photoService.addNewToGallery(PhotoType.account);
+    addGallery.then(() => {
+      //Richiedo l'immagine account
+      this.myPhoto = this.photoService.myAccountPhoto;
+    });
   }
 
 
@@ -86,10 +112,7 @@ export class AccountPage implements OnInit, OnDestroy {
       })
   }
 
-  async takePicture()
-{
-  //const picture=await Camera
-}
+
 
 /**
  * Apertura Modale di Cambio Password

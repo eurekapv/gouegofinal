@@ -13,6 +13,7 @@ import { SettoreAttivita } from '../../models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEventi } from 'src/app/models/newseventi.model';
+import { PopoverController } from '@ionic/angular';
 
 
 @Component({
@@ -62,7 +63,8 @@ export class HomePage implements OnInit, OnDestroy{
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
-              private navController: NavController
+              private navController: NavController,
+              private popController: PopoverController
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -280,12 +282,20 @@ export class HomePage implements OnInit, OnDestroy{
    */
   showSceltaCentro() {
     if (this.startService.isDesktop) {
-      console.log('Sono in desktop')
+      this.presentPopover();
     }
     else {
       this.presentActionSheet();
     }
   }
+
+  /**
+   * Versione Desktop Scelta Centro
+   */
+  async presentPopover() {
+
+  }
+
 
   /** funzione per mostrare il popup di scelta campo */
   async presentActionSheet()

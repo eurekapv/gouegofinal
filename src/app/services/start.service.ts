@@ -66,16 +66,7 @@ export class StartService {
 
   //Ritorna se l'applicazione sta girando su desktop
   get isDesktop() {
-    let isDesk = false;
-    let arPlatform = this.platformService.platforms();
-
-    //torna sempre android, mobile, mobileweb anche se sono su desktop
-    if (arPlatform) {
-      arPlatform.forEach(element => {
-        console.log(element);
-      });
-    }
-    return isDesk;
+    return !this.platformService.is('hybrid');
   }
 
 

@@ -138,7 +138,7 @@ export class HistorylistPage implements OnInit {
                                         .subscribe(collIscrizioni => {
                                             this.listUtenteCorsi = collIscrizioni;                                
                                             this.receivedCorsi = true;
-
+                                            console.log(this.listUtenteCorsi);
                                             if (this.eventRefresherIscrizioni) {
                                               if (this.eventRefresherIscrizioni.target) {
                                                 this.eventRefresherIscrizioni.target.complete();
@@ -227,22 +227,22 @@ export class HistorylistPage implements OnInit {
 
 
   //TODO Eliminare
-  initCorsiProva()
-  {
-    for (let i=0; i<4; i++)
-    {
-      let utenteCorso = new Utenteiscrizione();
-      utenteCorso.DENOMINAZIONECORSO ='Base 2';
-      utenteCorso.GIORNIPREVISTI='1';
-      utenteCorso.DENOMINAZIONESPORT ="Beach Volley";
-      utenteCorso.DATAINIZIOCORSO =new Date();
-      utenteCorso.INDIRIZZOLOCATION="Via Lorenteggio 238";
-      utenteCorso.COMUNELOCATION="Milano";
-      this.listUtenteCorsi.push(utenteCorso);
-      this.receivedCorsi=true;
-    }
-    console.log(this.listUtenteCorsi);
-  }
+  // initCorsiProva()
+  // {
+  //   for (let i=0; i<4; i++)
+  //   {
+  //     let utenteCorso = new Utenteiscrizione();
+  //     utenteCorso.DENOMINAZIONECORSO ='Base 2';
+  //     utenteCorso.GIORNIPREVISTI='1';
+  //     utenteCorso.DENOMINAZIONESPORT ="Beach Volley";
+  //     utenteCorso.DATAINIZIOCORSO =new Date();
+  //     utenteCorso.INDIRIZZOLOCATION="Via Lorenteggio 238";
+  //     utenteCorso.COMUNELOCATION="Milano";
+  //     this.listUtenteCorsi.push(utenteCorso);
+  //     this.receivedCorsi=true;
+  //   }
+  //   console.log(this.listUtenteCorsi);
+  // }
 
 
 

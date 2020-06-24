@@ -9,11 +9,21 @@ export class GiorniPrevistiPipe implements PipeTransform {
 
   //Il Pipe serve a trasformare una sequenza di numeri che rappresentano giorni
   //ad esempio 2;3;4 nel rispettivo stringa Martedi, Mercoledi, Giovedi
+  //I giorni previsti sono in versione C# 1 = Dom, 2 Lun, etc
+  //Qui li passo in versione JS che sono zero-base
+
   transform(value: string, language: Language, ...args: any[]): string {
     let strDay = '';
-    let arGiorni = value.split(';');
+    let arGiorni = [];
     let valueReturn = '';
     let smallVersion = false;
+    let indexDay = 0;
+
+    if (value !== undefined) {
+      if (value.length !== 0) {
+        arGiorni = value.split(';');
+      }
+    }
 
     if (arGiorni.length !== 0) {
 
@@ -24,11 +34,28 @@ export class GiorniPrevistiPipe implements PipeTransform {
 
       //Ciclo sui giorni e li decodifico
       arGiorni.forEach(element => {
-        
-        strDay =(smallVersion ? Settimana.getsmallLabel(parseInt(element), language) : Settimana.getLabel(parseInt(element), language));
-        if (valueReturn.length !== 0)  {
-          valueReturn += ', ';
+        try {
+            indexDay = parseInt(element);
+            indexDay--;
+
+            if (smallVersion) {
+              strDay = Settimana.getsmallLabel(indexDay, language);
+            }
+            else {
+              strDay = Settimana.getLabel(indexDay, language);
+            }
+    
+            
+            if (valueReturn.length !== 0)  {
+              valueReturn += ', ';
+            }
+
+            valueReturn += strDay;
+
+        } catch (error) {
+          console.log('Error Parse');
         }
+        
       
       });
     }

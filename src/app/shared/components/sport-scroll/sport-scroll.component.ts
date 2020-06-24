@@ -52,7 +52,12 @@ export class SportScrollComponent implements OnInit {
   constructor(private startService: StartService) { }
 
   ngOnInit() {
-    
+
+  }
+
+  ionViewDidEnter()
+  {
+
   }
 
   onChangeSport(newSport: Sport)

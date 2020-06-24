@@ -83,6 +83,17 @@ export class Sport extends IDDocument {
             this.LIVELLO.push(newLivello);
 
         });
+    };
+
+
+    //FIXME: bisogna capire come ritornare il dato, perchè così non gli piace
+    get FULLICONA()
+    {
+        let fullIcona:String;
+        if (this.ICONA){
+            fullIcona= '&#x'+this.ICONA+';'
+        }
+        return fullIcona;
     }
 }
 

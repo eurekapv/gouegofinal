@@ -264,10 +264,10 @@ export class StartService {
    * @param idLocation Location scelta 
    * 
    */
-  requestLocationByID(idLocation: string) {
+  requestLocationByID(idLocation: string, _numLivelli?:number) {
     const actualStartConfig = this._startConfig.getValue();
     
-    this.locationService.requestLocationByID(actualStartConfig, idLocation);
+    this.locationService.requestLocationByID(actualStartConfig, idLocation, _numLivelli);
   }
 
   /**

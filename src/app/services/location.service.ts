@@ -76,13 +76,17 @@ export class LocationService {
    * @param idLocation Location scelta 
    * 
    */
-  requestLocationByID(config: StartConfiguration, idLocation: string) {
+  requestLocationByID(config: StartConfiguration, idLocation: string, _numLivelli?:number) {
     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'LOCATION';
 
+    if (!_numLivelli) {
+      _numLivelli = 0;
+    }
+
     // In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('appid',config.appId);
-    myHeaders = myHeaders.set('child-level',"3");
+    myHeaders = myHeaders.set('child-level',_numLivelli + '');
 
     // Nei parametri imposto l'Area Operativa
     let myParams = new HttpParams().set('ID', idLocation);

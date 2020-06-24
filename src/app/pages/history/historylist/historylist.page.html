@@ -16,8 +16,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  
-  
+  <!-- PARTE CORSI -->
   <div class="contentExpand" *ngIf="selectedView=='corsi'">
       <!-- IN ATTESA DATI  -->
       <!-- DATI  NON RICEVUTI -->
@@ -31,7 +30,6 @@
         <ion-label>trovata</ion-label>
       </div>
 
-        <!-- PARTE CORSI -->
         <ion-list *ngIf="receivedCorsi && listUtentePrenotazione!.length !== 0">
           <ion-item button *ngFor="let corso of listUtenteCorsi" (click)="onClickCorso(corso)" >
             <ion-buttons slot="start">
@@ -51,11 +49,11 @@
             </ion-buttons>
             <ion-label>
               <h2>{{corso.DENOMINAZIONECORSO}} - {{corso.DENOMINAZIONESPORT}}</h2>
-              <p *ngFor="let giorno of corso.GIORNIPREVISTI">{{giorno|giorniPrevisti}} </p>
-              <h3>Milano, Via Lorenteggio 238</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
+              <p>{{corso.GIORNIPREVISTI|giorniPrevisti: 'ITA'}} </p>
+              <h3>{{corso.COMUNELOCATION|titlecase}}, {{corso.INDIRIZZOLOCATION|titlecase}}</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
             </ion-label>
             <ion-chip color="primary">
-              {{corso.DATAINIZIOCORSO | date: 'HH:mm'}}
+              {{corso.ORAINIZIOCORSO|date: 'HH:mm'}}
             </ion-chip>
           </ion-item>
         </ion-list>
@@ -101,7 +99,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)">
+  <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)" mode="md">
     <ion-segment-button class="ion-no-padding" value="prenotazioni" layout="icon-start">
       <ion-icon name="calendar"></ion-icon>
       Prenotazioni

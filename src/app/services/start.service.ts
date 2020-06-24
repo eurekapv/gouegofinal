@@ -69,6 +69,7 @@ export class StartService {
     let isDesk = false;
     let arPlatform = this.platformService.platforms();
 
+    //torna sempre android, mobile, mobileweb anche se sono su desktop
     if (arPlatform) {
       arPlatform.forEach(element => {
         console.log(element);

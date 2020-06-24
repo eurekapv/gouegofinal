@@ -81,7 +81,7 @@ export class LocationService {
     const doObject = 'LOCATION';
 
     if (!_numLivelli) {
-      _numLivelli = 0;
+      _numLivelli = 3;
     }
 
     // In Testata c'e' sempre l'AppId

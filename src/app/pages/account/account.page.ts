@@ -5,6 +5,7 @@ import { AlertController, NavController, ModalController } from '@ionic/angular'
 import { Utente } from 'src/app/models/utente.model';
 import { EditLoginPage } from './edit-login/edit-login.page';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
+import { PhotoService, PhotoType } from 'src/app/services/photo.service';
 
 @Component({
   selector: 'app-account',
@@ -22,7 +23,8 @@ export class AccountPage implements OnInit, OnDestroy {
   constructor(private startSrv: StartService,
               private alertCtrl: AlertController,
               private navCtrl: NavController,
-              private mdlController: ModalController
+              private mdlController: ModalController,
+              private photoService: PhotoService
               ) { 
     this.docUtenteListen = this.startSrv.utente.subscribe(element => {
       this.docUtente = element;
@@ -46,6 +48,16 @@ export class AccountPage implements OnInit, OnDestroy {
       this.docConfigListen.unsubscribe();
     }
   }
+
+
+  /**
+   * Effettuato il click sull'avatar
+   */
+  onClickAvatar() {
+    this.photoService.addNewToGallery(PhotoType.account);
+  }
+
+
   // Chiedo se vuole veramente uscire
   requestLogout() {
     this.alertCtrl

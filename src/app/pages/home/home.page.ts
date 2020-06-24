@@ -275,6 +275,18 @@ export class HomePage implements OnInit, OnDestroy{
     this.navController.navigateForward(['/', 'historylist']);
   }
 
+  /**
+   * Visualizza le form per la scelta del centro
+   */
+  showSceltaCentro() {
+    if (this.startService.isDesktop) {
+      console.log('Sono in desktop')
+    }
+    else {
+      this.presentActionSheet();
+    }
+  }
+
   /** funzione per mostrare il popup di scelta campo */
   async presentActionSheet()
   {
@@ -284,7 +296,7 @@ export class HomePage implements OnInit, OnDestroy{
     for (const iterator of this.listAree) {
       singleButton={
         text: iterator.DENOMINAZIONE,
-        icon: 'pin',
+        icon: 'location-outline',
         handler: ()=>{
           //Chiedo al servizio di cambiare l'Area Selezionata
           this.startService.selectAreaByID(iterator.ID);
@@ -295,7 +307,7 @@ export class HomePage implements OnInit, OnDestroy{
     }
     const actionSheet = await this.actionSheetController.create
     ({
-      header: 'Scegli il Centro',
+      header: 'Scegli la Sede',
       buttons: buttonsArray      
     });
     await actionSheet.present();

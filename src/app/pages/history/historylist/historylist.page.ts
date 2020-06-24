@@ -63,8 +63,6 @@ export class HistorylistPage implements OnInit {
                                 this.requestPrenotazioni();
                               }
 
-                              //TEST CREO UN GUID
-                              console.log('GUID: ' + this.docUtente.newID());
                           });
 
   }

@@ -370,4 +370,40 @@ export class Location extends IDDocument {
       return value;
     }
 
+
+    /**
+     * Cerca nella collection dei campi, verificando se lo Sport passato come parametro, puo' essere
+     * giocato e ritorna un Array dei Campi Consentiti
+     * @param isSport 
+     */
+    getAvalaibleFields(idSport: string) {
+      let arCampi = [];
+      if (idSport) {
+        if (this.CAMPO) {
+
+            arCampi = this.CAMPO.filter( el => {
+                let trovato =false;
+                if (el.CAMPOSPORT) {
+
+                  for (const iterator of el.CAMPOSPORT) {
+
+                    if (iterator.IDSPORT == idSport) {
+                      trovato=true;
+                      break;
+                    }
+
+                  }
+
+                }
+              return trovato;
+            });
+
+        }
+      }
+
+      return arCampi;
+    }
+
+    
+
 }

@@ -15,6 +15,7 @@ import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { Sport } from 'src/app/models/sport.model';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-booking',
@@ -127,61 +128,15 @@ export class BookingPage implements OnInit, OnDestroy {
           //Chiedo al server gli Sport praticati nella location
           this.startService.requestLocationSport(this.idLocation);
 
-          //Mi sottoscrivo alla ricezione degli Sport praticati
-          this.subListLocationSport = this.startService.listLocationSport.subscribe(resultData => {
-            
-            this.listLocationSport = resultData;
-            //Prendo il primo e lo seleziono
-            if (this.listLocationSport) {
+          //Mi sottoscrivo alla ricezione degli Sport
+          this.sottoscrizioneListaSport();
 
-              if (this.listLocationSport.length !== 0) {
-                this.selectedSport = this.listLocationSport[0];
-              }
-              else {
-                this.selectedSport = undefined;
-              }
-            }
-            else {
-              this.selectedSport = undefined;
-            }
-          });
-
-          // Chiedo al server Location e Campi
-          this.startService.requestLocationByID(this.idLocation);
+          // Chiedo al server Location, Campi e CampiSport (3 Livelli)
+          this.startService.requestLocationByID(this.idLocation, 3);
 
           //Mi sottoscrivo alla ricezione
-          this.subSelectedLocation = this.startService.activeLocation
-              .subscribe(dataLocation => {
-                // Chiedo la Location
-                this.selectedLocation = dataLocation;
-                
-                /* Se ho la location */
-                if (this.selectedLocation && !this.selectedLocation.do_inserted ) {
-                  this.updateAvailableFields();
-                  
-
-                  //RECUPERO IL TEMPLATE WEEK SLOT TIME
-                  this.getTemplateWeek(this.selectedLocation);
-
-                  // Ho ricevuto i dati
-                  this.ricevuti = true;
-
-                  //Prelevo il primo campo disponibile
-                  this.selectedCampo = this.selectedLocation.getNextCampo();
-                  this.bookable = (this.selectedCampo?true:false);
-
-                  //Se è presente un campo posso iniziare ad ottenere gli SlotTime
-                  if (this.selectedCampo) {
-                    //Richiedo le occupazioni
-                    this.getOccupazioni();
-                  }
-
-                }
-                
-              });
-
-
-          
+          this.sottoscrizioneLocationCampi();
+         
           
           //Controllo dell'utente loggato
           this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
@@ -223,6 +178,7 @@ export class BookingPage implements OnInit, OnDestroy {
     
   }
 
+
   ngOnDestroy() {
     
 
@@ -255,6 +211,66 @@ export class BookingPage implements OnInit, OnDestroy {
 
   }
 
+  /*
+  Sottoscrivo alla ricezione di Location e Campi
+  */
+  private sottoscrizioneLocationCampi() {
+
+    this.subSelectedLocation = this.startService.activeLocation
+      .subscribe(dataLocation => {
+        // Chiedo la Location
+        this.selectedLocation = dataLocation;
+
+        /* Se ho la location */
+        if (this.selectedLocation && !this.selectedLocation.do_inserted) {
+
+          //RECUPERO IL TEMPLATE WEEK SLOT TIME
+          this.getTemplateWeek(this.selectedLocation);
+
+          // Ho ricevuto i dati
+          this.ricevuti = true;
+
+          //Recupero Campi, e Occupazioni
+          this.onRefresh();
+
+        }
+
+      });
+  }
+
+
+
+  /**
+   * Chiamata per sottoscriversi alla ricezione degli Sport praticati nella location
+   */
+  private sottoscrizioneListaSport() {
+
+    //Mi sottoscrivo alla ricezione degli Sport praticati
+    this.subListLocationSport = this.startService.listLocationSport
+          .subscribe(resultData => {
+                //Popolo Lista degli Sport
+                this.listLocationSport = resultData;
+
+                //Prendo il primo e lo seleziono
+                if (this.listLocationSport) {
+            
+                  if (this.listLocationSport.length !== 0) {
+                    this.selectedSport = this.listLocationSport[0];
+                  }
+                  else {
+                    this.selectedSport = undefined;
+                  }
+                }
+                else {
+                  this.selectedSport = undefined;
+                }
+
+                //Chiedo di eseguire il refresh dell'Interfaccia, dove recupero i campi legati allo sport e le occupazioni
+                this.onRefresh();
+            });
+  }
+
+
 
   /**
    * Manual o Auto
@@ -266,7 +282,37 @@ export class BookingPage implements OnInit, OnDestroy {
 
 
   /**
-   * Ha cambiato il campo
+   * Evento che occorre quando cambia lo Sport Selezionato
+   * 1) Attribuzione di una nuova collection di Campi
+   * 2) this.selectedCampo viene impostato al 1 Campo disponibile
+   * 3) Rielaborazione degli Slot e di tutto il resto
+   */
+  onRefresh() {
+    
+    if (this.selectedSport) {
+
+      //this.selectedLocation è la Location, che contiene la Collection dei Campi, con dentro i CampiSport
+      this.availableFields = this.selectedLocation.getAvalaibleFields(this.selectedSport.ID);
+
+      //Seleziono come Campo il primo disponibile
+      if (this.availableFields.length !== 0) {
+        this.selectedCampo = this.availableFields[0];
+      }
+
+      if (this.selectedCampo) {
+
+        this.bookable = (this.selectedCampo?true:false);
+
+        //Richiesta delle nuove occupazioni e impostazione nuova Pianificazione
+        this.getOccupazioni();
+      }
+    }
+
+
+  }
+
+  /**
+   * Ha cambiato il campo nello Slide
    */
   onDidChangeCampo(e: any) {
     
@@ -274,10 +320,15 @@ export class BookingPage implements OnInit, OnDestroy {
     this.sliderCampi.getActiveIndex().then((index: number) => {
       
       //Ricavo il campo selezionato
-      this.selectedCampo = this.selectedLocation.getCampoByIndex(index);
+      if (index <= this.availableFields.length) {
 
-      //Richiedo le occupazioni
-      this.getOccupazioni();
+        this.selectedCampo = this.availableFields[index];
+        //Richiedo le occupazioni
+        this.getOccupazioni();
+
+      }
+
+      
     });
     
     
@@ -295,6 +346,19 @@ export class BookingPage implements OnInit, OnDestroy {
 
     //Richiedo le occupazioni
     this.getOccupazioni();
+  }
+
+  /**
+   * Al cambio dello Sport devo rieseguire un Refresh della UI
+   * @param newSport Oggetto del Nuovo Sport
+   */
+  onChangeSport(newSport)
+  {
+    if (newSport) {
+      this.selectedSport=newSport;
+      this.onRefresh();
+    }
+    
   }
 
 
@@ -518,12 +582,6 @@ export class BookingPage implements OnInit, OnDestroy {
     // return an observable with a user-facing error message
       return throwError('Si sono verificati errori. Riprovare AHIME.');
   };
-
-  onSportChange(newSport)
-  {
-    this.selectedSport=newSport;
-    this.updateAvailableFields();
-  }
 
 
 }

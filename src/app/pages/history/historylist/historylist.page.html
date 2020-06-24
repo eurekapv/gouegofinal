@@ -48,7 +48,7 @@
               </ion-grid>
             </ion-buttons>
             <ion-label>
-              <h2>{{corso.DENOMINAZIONECORSO}}</h2>
+              <h1>{{corso.DENOMINAZIONECORSO}}</h1>
               <h2>{{corso.DENOMINAZIONESPORT}}</h2>
               <p>{{corso.GIORNIPREVISTI|giorniPrevisti: 'ITA'|titlecase}} </p>
               <h3>{{corso.COMUNELOCATION|titlecase}}, {{corso.INDIRIZZOLOCATION|titlecase}}</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
@@ -89,8 +89,9 @@
           
 
           <ion-label>
-            <h2>{{prenotazione.DATAORAINIZIO | date : 'EEE dd/MM/yyyy - HH:mm' | titlecase}}</h2>
-            <p>{{prenotazione.INDIRIZZOLOCATION}}</p> <!--anche qui manca decodifica centro sportivo-->
+            <p>{{prenotazione.DATAORAINIZIO | date : 'dd/MM/yyyy'}}</p>
+            <h1>{{prenotazione.DATAORAINIZIO | date: 'EEEE'|titlecase}} ore {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}</h1>
+            <h3>{{(prenotazione.COMUNELOCATION +', '+ prenotazione.INDIRIZZOLOCATION)|titlecase}}</h3> <!--anche qui manca decodifica centro sportivo-->
           </ion-label>
           <ion-chip color="primary">{{prenotazione.DURATAORE}} {{prenotazione.DURATAORE==1? 'Ora' : 'Ore'}}</ion-chip>
         </ion-item>

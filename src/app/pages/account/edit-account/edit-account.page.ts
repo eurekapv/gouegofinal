@@ -5,6 +5,7 @@ import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { NavController, ToastController, LoadingController } from '@ionic/angular';
+import { MyDateTime } from 'src/app/models/mydatetime.model';
 
 
 @Component({
@@ -21,6 +22,8 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
   listSesso: ValueList[]=[];
   showLoading: boolean;
+
+  today:string; //questo serve per impostare la data di nascita max ad oggi
 
   constructor(
       private startService : StartService,
@@ -42,6 +45,8 @@ export class EditAccountPage implements OnInit, OnDestroy {
    }
 
   ngOnInit() {
+    this.today=MyDateTime.formatDateISO(new Date);
+    console.log(this.today);
     this.createForm();
   }
 

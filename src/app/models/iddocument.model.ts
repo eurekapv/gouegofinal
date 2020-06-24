@@ -31,10 +31,53 @@ import { MyDateTime } from './mydatetime.model';
     get deleted(): boolean {
       return this.do_deleted;
     }
+
+
+    /**
+     * Cerca nel documento la proprietà icone o iconasport e ne calcola 
+     * la stringa esadecimale
+     */
+    get htmlIconHex() {
+      let value = '';
+      let valueIcon = '';
+      if (this.hasOwnProperty('IDSPORT')) {
+        if (this.hasOwnProperty('ICONASPORT')) {
+          value = this['ICONASPORT'];
+        }
+      }
+      else if (this.hasOwnProperty('ICONA')) {
+        value = this['ICONA'];
+      }
+
+      if (value.length == 0) {
+        value = 'e830'
+      }
+
+      valueIcon = '&#x' + value + ';'
   
-    newID() {
-      return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      return valueIcon;
     }
+
+  
+    // newID() {
+    //   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // }
+
+    
+
+    
+    //Generazione GUID
+    newID() {
+      let strValue = '10000000-1000-4000-8000-100000000000';
+      let guid = strValue.replace(/[018]/g, c =>
+        (parseInt(c) ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> parseInt(c) / 4).toString(16));
+
+      guid = guid.toUpperCase();
+
+      
+      return guid;
+    }
+    
 
     /**
      * Metodo Overrable
@@ -460,6 +503,11 @@ import { MyDateTime } from './mydatetime.model';
 
     }
     //#endregion
+
+
+    
+
+
   }
 
 

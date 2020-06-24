@@ -14,6 +14,7 @@ export class Area extends IDDocument {
     PROVINCIA: string;
     ISOSTATO: string;
     LOCATIONS: Location[];
+    
   
     constructor() {
       super();

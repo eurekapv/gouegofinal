@@ -457,6 +457,7 @@ export class BookingPage implements OnInit, OnDestroy {
       docPianificazione.IDLOCATION = this.selectedLocation.ID;
       docPianificazione.IDCAMPO = this.selectedCampo.ID;
       docPianificazione._DESCRCAMPO = this.selectedCampo.DENOMINAZIONE;
+      docPianificazione._DESCRSPORT = this.selectedSport.DENOMINAZIONE;
 
       //Indico al servizio di memorizzarsi la Pianificazione per poterla passare alle altre pagine
       this.startService.setPianificazioneSingola(docPianificazione);

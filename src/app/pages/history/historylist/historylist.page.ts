@@ -62,6 +62,9 @@ export class HistorylistPage implements OnInit {
                               if (this.docUtente) {
                                 this.requestPrenotazioni();
                               }
+
+                              //TEST CREO UN GUID
+                              console.log('GUID: ' + this.docUtente.newID());
                           });
 
   }

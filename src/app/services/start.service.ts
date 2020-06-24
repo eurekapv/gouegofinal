@@ -31,6 +31,8 @@ import { PrenotazionePianificazione } from '../models/prenotazionepianificazione
 import { Prenotazione } from '../models/prenotazione.model';
 import { UtenteprenotazioneService } from './utenteprenotazione.service';
 import { UtenteiscrizioneService } from './utenteiscrizione.service';
+import { Platform } from '@ionic/angular';
+import { element } from 'protractor';
 
 
 @Injectable({
@@ -62,8 +64,22 @@ export class StartService {
     return this._startConfig.asObservable();
   }
 
+  //Ritorna se l'applicazione sta girando su desktop
+  get isDesktop() {
+    let isDesk = false;
+    let arPlatform = this.platformService.platforms();
 
-  constructor(private apiService: ApicallService,
+    if (arPlatform) {
+      arPlatform.forEach(element => {
+
+      });
+    }
+    return isDesk;
+  }
+
+
+  constructor(private platformService: Platform,
+    private apiService: ApicallService,
     private storageAccess: Storage,
     private sportService: SportService,
     private categoriaEtaService: CategoriaetaService,

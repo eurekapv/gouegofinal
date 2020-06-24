@@ -71,7 +71,7 @@ export class StartService {
 
     if (arPlatform) {
       arPlatform.forEach(element => {
-
+        console.log(element);
       });
     }
     return isDesk;

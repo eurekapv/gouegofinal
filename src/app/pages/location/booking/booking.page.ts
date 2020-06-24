@@ -80,19 +80,35 @@ export class BookingPage implements OnInit, OnDestroy {
   }
 
   
+  /**
+   * Crea l'array con i soli Campi dove è possibile effettuare l'attività selezionata
+   */
   updateAvailableFields()
   {
-      this.availableFields=this.selectedLocation.CAMPO.filter(el=>{
-        let trovato =false;
-        for (const iterator of el.CAMPOSPORT) {
-          if (iterator.IDSPORT==this.selectedSport.ID)
-          {
-            trovato=true;
-            break;
+     if (this.selectedLocation) {
+      if (this.selectedLocation.CAMPO) {
+
+        this.availableFields = this.selectedLocation.CAMPO.filter( el=> {
+          let trovato =false;
+
+          if (this.selectedSport) {
+
+            for (const iterator of el.CAMPOSPORT) {
+              if (iterator.IDSPORT==this.selectedSport.ID)
+              {
+                trovato=true;
+                break;
+              }
+            }
+
           }
-        }
-        return trovato;
-      })
+          
+          return trovato;
+        });
+
+
+      }
+     }
   }
 
 

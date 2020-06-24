@@ -5,8 +5,14 @@ ion-segment-button>ion-icon
 
 h1
 {
-    font-size: 19px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+h2
+{
+    font-size: 14px;
+    font-weight: 500;
 }
 
 h3
@@ -21,11 +27,6 @@ h3
     min-height: 40px;
 }
 
-h2
-{
-    font-size: 18px;
-    font-weight: 600;
-}
 
 .icon-text
 {
@@ -38,3 +39,4 @@ h2
 .contentExpand {
     height: 100%;
 }
+

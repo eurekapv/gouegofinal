@@ -56,8 +56,8 @@ export class ButtonCard {
         /** UTENTE LOGGATO, SENZA EVENTI */
         if (userLogged) {
             newBtn = new ButtonCard();
-            newBtn.title = 'Nessun evento in programma';
-            newBtn.subtitle = 'organizza un incontro con i tuoi amici';
+            newBtn.title = 'Nessun appuntamento previsto';
+            newBtn.subtitle = 'Organizza un incontro con i tuoi amici';
             newBtn.nameicon = 'calendar-outline';
             newBtn.sloticon = "start";
             newBtn.color = "primary";

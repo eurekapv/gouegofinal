@@ -85,20 +85,6 @@ export class Sport extends IDDocument {
         });
     };
 
-
-    get FULLICONA()
-    {
-        let fullIcona:String;
-        if (this.ICONA){
-            fullIcona= '&#x'+this.ICONA+';'
-        }
-        else
-        {
-            //icona di default se l'icona non è presente
-            fullIcona='&#xe830;'
-        }
-        return fullIcona;
-    }
 }
 
 /*

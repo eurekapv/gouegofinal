@@ -25,7 +25,7 @@ export class GiorniPrevistiPipe implements PipeTransform {
       //Ciclo sui giorni e li decodifico
       arGiorni.forEach(element => {
         
-        strDay =(smallVersion ? Settimana.getsmallLabel(parseInt(element), language) :Settimana.getLabel(parseInt(element), language));
+        strDay =(smallVersion ? Settimana.getsmallLabel(parseInt(element), language) : Settimana.getLabel(parseInt(element), language));
         if (valueReturn.length !== 0)  {
           valueReturn += ', ';
         }

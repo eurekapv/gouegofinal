@@ -15,8 +15,7 @@
         <ion-grid>
           <ion-row class="ion-align-items-center">
             <ion-col size="4">
-              <i class="sport-icon">&#xe805;</i>
-              <i class="sport-icon">{{sport.FULLICONA}}</i>
+              <i class="icon-sport"><span [innerHTML]="sport.FULLICONA"></span></i>
             </ion-col>
             <ion-col>
               <ion-label><h3 class="text-sport">{{sport.DENOMINAZIONE}}</h3></ion-label>

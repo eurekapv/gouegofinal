@@ -48,8 +48,9 @@
               </ion-grid>
             </ion-buttons>
             <ion-label>
-              <h2>{{corso.DENOMINAZIONECORSO}} - {{corso.DENOMINAZIONESPORT}}</h2>
-              <p>{{corso.GIORNIPREVISTI|giorniPrevisti: 'ITA'}} </p>
+              <h2>{{corso.DENOMINAZIONECORSO}}</h2>
+              <h2>{{corso.DENOMINAZIONESPORT}}</h2>
+              <p>{{corso.GIORNIPREVISTI|giorniPrevisti: 'ITA'|titlecase}} </p>
               <h3>{{corso.COMUNELOCATION|titlecase}}, {{corso.INDIRIZZOLOCATION|titlecase}}</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
             </ion-label>
             <ion-chip color="primary">

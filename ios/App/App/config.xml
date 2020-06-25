@@ -3,25 +3,15 @@
   <access origin="*" />
   
   <feature name="CardIO">
-    <param name="android-package" value="io.card.cordova.sdk.CardIOCordovaPlugin"/>
+    <param name="ios-package" value="CardIOCordovaPlugin" onload="false"/>
   </feature>
 
   <feature name="PayPalMobile">
-    <param name="android-package" value="com.paypal.cordova.sdk.PayPalMobileCordovaPlugin"/>
+    <param name="ios-package" value="PayPalMobileCordovaPlugin" onload="true"/>
   </feature>
 
   <feature name="Device">
-    <param name="android-package" value="org.apache.cordova.device.Device"/>
-  </feature>
-
-  <feature name="StatusBar">
-    <param name="android-package" value="org.apache.cordova.statusbar.StatusBar"/>
-    <param name="onload" value="true"/>
-  </feature>
-
-  <feature name="Whitelist">
-    <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin"/>
-    <param name="onload" value="true"/>
+    <param name="ios-package" value="CDVDevice"/>
   </feature>
 
   

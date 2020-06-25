@@ -13,6 +13,7 @@ import { SettoreAttivita } from '../../models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEventi } from 'src/app/models/newseventi.model';
+import { PopoverController } from '@ionic/angular';
 
 
 @Component({
@@ -62,7 +63,8 @@ export class HomePage implements OnInit, OnDestroy{
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
-              private navController: NavController
+              private navController: NavController,
+              private popController: PopoverController
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -275,6 +277,22 @@ export class HomePage implements OnInit, OnDestroy{
     this.navController.navigateForward(['/', 'historylist']);
   }
 
+  /**
+   * Visualizza le form per la scelta del centro
+   */
+  showSceltaCentro(ev:any) {
+    //Per ora faccio uguale, vediamo poi se vale la pena 
+    //cambiare per il desktop
+    if (this.startService.isDesktop) {
+      this.presentActionSheet();
+    }
+    else {
+      this.presentActionSheet();
+    }
+  }
+
+
+
   /** funzione per mostrare il popup di scelta campo */
   async presentActionSheet()
   {
@@ -284,7 +302,7 @@ export class HomePage implements OnInit, OnDestroy{
     for (const iterator of this.listAree) {
       singleButton={
         text: iterator.DENOMINAZIONE,
-        icon: 'pin',
+        icon: 'location-outline',
         handler: ()=>{
           //Chiedo al servizio di cambiare l'Area Selezionata
           this.startService.selectAreaByID(iterator.ID);
@@ -295,7 +313,7 @@ export class HomePage implements OnInit, OnDestroy{
     }
     const actionSheet = await this.actionSheetController.create
     ({
-      header: 'Scegli il Centro',
+      header: 'Scegli la Sede',
       buttons: buttonsArray      
     });
     await actionSheet.present();

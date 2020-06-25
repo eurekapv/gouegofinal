@@ -97,3 +97,27 @@ oppure
 # Angular 9 and Ionic
 npm install angularx-qrcode --save
  */
+
+ /* 24-06-2020
+ Per usare il Capacitor Plugin Camera (nel browser) ho installato Ionic PWA Elements Library
+ npm install @ionic/pwa-elements
+
+ Nel file src/main.ts ho importato e definito
+
+        import { defineCustomElements } from '@ionic/pwa-elements/loader';
+        // Call the element loader after the platform has been bootstrapped
+        defineCustomElements(window);
+
+
+CAPACITOR
+ionic integrations enable capacitor
+
+//Verifica e aggiornamento versione capacitor Core e CLI
+npm install @capacitor/cli@latest
+npm install @capacitor/core@latest
+
+npm install @capacitor/ios@latest
+npm install @capacitor/android@latest
+
+        
+ */

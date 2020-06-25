@@ -1,5 +1,6 @@
 import { IDDocument } from './iddocument.model';
 
+
 export enum TipoArea {
     areaGruppo = 10,
     areaIndipendente = 20

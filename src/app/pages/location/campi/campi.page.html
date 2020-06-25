@@ -6,7 +6,6 @@
       </ion-button>
     </ion-buttons>
 
-    
     <ion-title>{{myLocation.DENOMINAZIONE|titlecase}}</ion-title>
     
     <ion-buttons slot="end">
@@ -17,21 +16,19 @@
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
-
-
-
   <!-- CAMPI PRESENTI -->
   <div *ngIf="myLocation.CAMPO.length !== 0" >
-    <ion-list-header>
-      <h1 class="text-primary">Dove puoi giocare</h1>
+    <ion-list-header color="light">
+      <h1 class="text-primary">I nostri campi:</h1>
     </ion-list-header>
 
-    <ion-list *ngFor="let campo of myLocation.CAMPO">
+    <ion-list class="ion-no-padding" lines="full" *ngFor="let campo of myLocation.CAMPO">
       <ion-item button (click)="switchExpansion(campo)">
         <ion-icon 
           color="primary"
-          name="medical"
+          name="send"
           slot="start"></ion-icon>
 
         <ion-label>
@@ -44,24 +41,22 @@
 
         </ion-label>
 
-        <ion-icon [name]="campo.selected ? 'arrow-dropup': 'arrow-dropdown'" 
+        <ion-icon [name]="!campo.selected ? 'chevron-down': 'chevron-up'" 
                   *ngIf="campo.CAMPOSPORT.length !== 0"></ion-icon>
 
       </ion-item>
     
         <div *ngIf="campo.CAMPOSPORT.length !== 0 && campo.selected">
-          <ion-list>
-            <ion-item 
+            <ion-item  
               *ngFor="let camposport of campo.CAMPOSPORT" 
-              color="secondary" 
-              class="ion-no-margin">
-
-                <ion-icon name="radio-button-on" slot="start"></ion-icon>
+              color="light" 
+              class="ion-no-margin"
+              lines="full">
+                  <i slot="start" class="icon-sport"><span [innerHTML]="getIconSport(camposport)"></span></i>
                 <ion-label>
-                    {{ camposport._DESCRSPORT }}
+                   <h3>{{ camposport._DESCRSPORT }}</h3>
                 </ion-label>
             </ion-item>
-          </ion-list>
         </div>
     
     </ion-list>

@@ -4,7 +4,10 @@ import { StartService } from 'src/app/services/start.service';
 import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Campo } from 'src/app/models/campo.model';
+import { Sport } from 'src/app/models/sport.model'
+import { CampoSport } from 'src/app/models/camposport.model';
 
+  
 @Component({
   selector: 'app-campi',
   templateUrl: './campi.page.html',
@@ -14,6 +17,7 @@ export class CampiPage implements OnInit, OnDestroy {
 
   @Input() myLocation: Location;
   listenLocation: Subscription;
+  listSport: Sport[]=[];
 
   constructor(private startService: StartService, 
               private mdlController: ModalController) { }
@@ -25,6 +29,7 @@ export class CampiPage implements OnInit, OnDestroy {
                                             .subscribe(filledLocation => {
                       this.myLocation = filledLocation;
     });
+    this.listSport=this.startService.actualListSport;
   }
 
   ngOnDestroy() {
@@ -47,5 +52,17 @@ export class CampiPage implements OnInit, OnDestroy {
     campo.selected = !campo.selected;
   }
 
+  getIconSport(campoSport: CampoSport){
+    let icona='';
+    for (const iterator of this.listSport) {
+      if (campoSport.IDSPORT==iterator.ID)
+      {
+        icona=iterator.htmlIconHex;
+        break;
+      }
+    }
+    console.log(icona);
+    return icona;
+  }
 
 }

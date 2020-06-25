@@ -32,7 +32,7 @@ import { Prenotazione } from '../models/prenotazione.model';
 import { UtenteprenotazioneService } from './utenteprenotazione.service';
 import { UtenteiscrizioneService } from './utenteiscrizione.service';
 import { Platform } from '@ionic/angular';
-import { element } from 'protractor';
+
 
 
 @Injectable({
@@ -330,6 +330,13 @@ export class StartService {
  */
 get listSport() {
   return this.sportService.listSport;
+}
+
+/**
+ * Lista degli sport in modalità non observable
+ */
+get actualListSport() {
+  return this.sportService.actualListSport;
 }
 
 /**

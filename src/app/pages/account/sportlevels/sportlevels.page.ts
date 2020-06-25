@@ -3,6 +3,9 @@ import { Utente } from 'src/app/models/utente.model';
 import { Subscription } from 'rxjs';
 import { UtenteService } from 'src/app/services/utente.service';
 import { StartService } from 'src/app/services/start.service';
+import { Plugins } from '@capacitor/core';
+const { Share } = Plugins;
+
 
 @Component({
   selector: 'app-sportlevels',
@@ -22,6 +25,18 @@ export class SportlevelsPage implements OnInit {
 
   ngOnInit() {
     
+  }
+
+
+  //TODO da testare su mobile
+  async onShare()
+  {
+    let provaShare= await Share.share({
+      title: 'Titolo di prova',
+      text: 'Testo di prova',
+      url: 'http://www.gouego.com',
+      dialogTitle: 'condividi con gli amici'
+    })
   }
 
 }

@@ -1,8 +1,17 @@
-<ion-card class="ion-no-margin ion-margin-horizontal">
+<ion-card  class="ion-no-margin ion-margin-horizontal" button (click)="goToDetail()">
   <!-- SPORT E NOME CORSO-->
-  <ion-card-header>
-  <ion-card-subtitle>{{myCorso._DESCRSPORT}}</ion-card-subtitle>
-    <ion-card-title>{{myCorso.DENOMINAZIONE}}</ion-card-title>
+  <ion-card-header >
+    <ion-grid class="ion-no-padding">
+      <ion-row class="ion-no-padding ion-align-items-center">
+        <ion-col size="2" class="ion-no-padding">
+          <i class="sport-icon"><span [innerHTML]="getSportIcon(myCorso)" ></span> </i>
+        </ion-col>
+        <ion-col size="10" class="ion-no-padding">
+          <ion-card-subtitle>{{myCorso._DESCRSPORT}}</ion-card-subtitle>
+          <ion-card-title>{{myCorso.DENOMINAZIONE}}</ion-card-title>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-card-header>
 
   <!-- ORA INIZIO E DURATA-->
@@ -15,7 +24,7 @@
               color="primary" 
               expand="block" 
               fill="outline"
-              (click)="goToCalendar()">
+              >
 
             <ion-icon name="time" slot="start"></ion-icon>
             {{myCorso.ORAINIZIO | date:'h:mm'}}
@@ -28,7 +37,7 @@
             color="primary" 
             expand="block" 
             fill="outline"
-            (click)="goToCalendar()">
+            >
             <ion-icon name="infinite" slot="start"></ion-icon>
             {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
           </ion-button>
@@ -40,12 +49,12 @@
 
   <!-- BOX GIORNATE -->
   <ion-card-content class="ion-no-padding">
-    <div class="div-giornate" (click)="goToCalendar()">
+    <div class="div-giornate ion-text-center" >
       <table style="width: 100%;">
         <tr>
           <td *ngFor="let giorno of myCorso._SETTIMANA">
             <ion-button 
-                [color]="giorno.selected? 'primary':'secondary'" 
+                [color]="giorno.selected? 'primary': 'secondary'" 
                 size="small" 
                 [fill]="giorno.selected ?'solid':'outline'">
               {{giorno.xsLabel | uppercase}}
@@ -57,7 +66,7 @@
       <!-- NUMERO LEZIONI-->
     <div 
         class="contentLezioni ion-margin-horizontal" 
-        (click)="goToCalendar()"
+        
         *ngIf="myCorso.NUMEROLEZIONI">
       <h6>
         <em>{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</em>
@@ -95,12 +104,9 @@
       <ion-col 
           size="12" 
           size-sm="12">
-        <ion-button expand="block" (click)="goToDetail()">
-          <ion-icon name="play-outline" slot="end" color="primary"></ion-icon>
-          <p *ngIf="myCorso.tempoCorso()=='next'">Inizia il {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
-          <p *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
-          <p *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
-        </ion-button>
+          <p class="footer" *ngIf="myCorso.tempoCorso()=='next'">Inizia il {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
       </ion-col>
     </ion-row>
   </ion-footer>

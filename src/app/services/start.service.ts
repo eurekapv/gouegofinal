@@ -339,6 +339,15 @@ get actualListSport() {
   return this.sportService.actualListSport;
 }
 
+//TODO CONTROLLARE
+/**
+ * Dato l'id di uno sport, ritorna l'icona
+ * @param id l'id dello sport
+ */
+getSportIcon(id:string){
+  return this.sportService.getIconaSport(id);
+}
+
 /**
  * Richiedo al servizio gli Sport
  * @param withLivelli Scaricamento con Livelli 

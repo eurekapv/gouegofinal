@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Corso } from '../../../models/corso.model'
 import { ValueList, TargetSesso, Sesso } from 'src/app/models/valuelist.model';
+import { StartService } from 'src/app/services/start.service'
+import { Sport } from 'src/app/models/sport.model';
 
 
 @Component({
@@ -10,14 +12,17 @@ import { ValueList, TargetSesso, Sesso } from 'src/app/models/valuelist.model';
 })
 export class CardCourseComponent implements OnInit {
 
-  constructor() { }
+  constructor(private startService: StartService) { }
 
   @Input() myCorso = new Corso();
-  @Output() clickCalendar = new EventEmitter<Corso>();
   @Output() clickDetail = new EventEmitter<Corso>();
   iconColor = 'primary';
 
-  ngOnInit() {}
+  sportList:Sport[]=[];
+
+  ngOnInit() {
+    this.sportList=this.startService.actualListSport;
+  }
 
   getLabelTargetSesso() {
     let toDecode = TargetSesso.maschileFemminile;
@@ -32,13 +37,26 @@ export class CardCourseComponent implements OnInit {
     return label;
   }
 
-  goToCalendar() {
-    //Emetto l'evento per andare al calendario giornate
-    this.clickCalendar.emit(this.myCorso);
-  }
+  // goToCalendar() {
+  //   //Emetto l'evento per andare al calendario giornate
+  //   this.clickCalendar.emit(this.myCorso);
+  // }
 
   goToDetail() {
     //Emetto l'evento per andare al dettaglio corso
+    console.log(this.myCorso);
     this.clickDetail.emit(this.myCorso);
+  }
+
+  //TODO controllare!
+  /**
+   * Dato un oggetto corso, ritorna la stringa dell'icona corrispondente
+   * @param corso L'oggetto corso
+   */
+  getSportIcon (corso: Corso)
+  {
+    if (corso){
+      return this.startService.getSportIcon(corso.IDSPORT);
+    }
   }
 }

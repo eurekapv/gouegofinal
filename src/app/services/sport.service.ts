@@ -36,6 +36,26 @@ export class SportService {
     return this._listSport.getValue();
   }
 
+  //TODO CONTROLLARE
+  /**
+   * Dato l'id di uno sport, restituisce la stringa dell'icona associata
+   * @param id l'id dello sport
+   */
+  getIconaSport(id: string){
+    let listSport =this._listSport.getValue();
+    let icona='';
+    if(listSport){
+      for (const sport of listSport) {
+        if (id==sport.ID)
+        {
+          icona=sport.htmlIconHex;
+          break;
+        } 
+      }
+    }
+    return icona;
+  }
+
   constructor(private apiService: ApicallService) { 
     this._loaded = false;
   }

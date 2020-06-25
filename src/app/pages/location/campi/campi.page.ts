@@ -52,17 +52,16 @@ export class CampiPage implements OnInit, OnDestroy {
     campo.selected = !campo.selected;
   }
 
+
+  //TODO CONTROLLARE
+  /**
+   * Dato un oggetto campo, chiama il servizio e ritorna l'icona
+   * @param campoSport L'oggetto campo
+   */
   getIconSport(campoSport: CampoSport){
-    let icona='';
-    for (const iterator of this.listSport) {
-      if (campoSport.IDSPORT==iterator.ID)
-      {
-        icona=iterator.htmlIconHex;
-        break;
-      }
+    if (campoSport){
+      return this.startService.getSportIcon(campoSport.IDSPORT);
     }
-    console.log(icona);
-    return icona;
   }
 
 }

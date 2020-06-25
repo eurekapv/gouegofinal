@@ -28,7 +28,7 @@ export class SportlevelsPage implements OnInit {
   }
 
 
-  //TODO da testare su mobile
+  //TODO share da testare su mobile
   async onShare()
   {
     let provaShare= await Share.share({

@@ -104,4 +104,13 @@ export class CoursePage implements OnInit, OnDestroy {
   onClickIscrizione() {
 
   }
+
+  /**
+   * chiama il servizio passandogli l'id dell'oggetto corso, e restituisce la stringa dell'icona
+   * @param corso l'oggetto corso per cui si richiede l'icona
+   */
+  getIcon(corso:Corso)
+  {
+    return this.startService.getSportIcon(corso.IDSPORT);
+  }
 }

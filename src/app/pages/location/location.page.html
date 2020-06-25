@@ -117,7 +117,7 @@
         
       </ion-item-divider>
 
-      <ion-item *ngIf="selectedLocation.TELEFONO">
+      <ion-item button *ngIf="selectedLocation.TELEFONO" [href]="'tel:'+selectedLocation.EMAIL">
         <ion-icon 
           name="call" 
           slot="start" 
@@ -125,7 +125,7 @@
         <ion-label>{{selectedLocation.TELEFONO}}</ion-label>
       </ion-item>
   
-      <ion-item *ngIf="selectedLocation.EMAIL">
+      <ion-item button *ngIf="selectedLocation.EMAIL" [href]="'mailto:'+selectedLocation.EMAIL">
         <ion-icon 
           name="mail" 
           slot="start" 

@@ -280,21 +280,17 @@ export class HomePage implements OnInit, OnDestroy{
   /**
    * Visualizza le form per la scelta del centro
    */
-  showSceltaCentro() {
+  showSceltaCentro(ev:any) {
+    //Per ora faccio uguale, vediamo poi se vale la pena 
+    //cambiare per il desktop
     if (this.startService.isDesktop) {
-      this.presentPopover();
+      this.presentActionSheet();
     }
     else {
       this.presentActionSheet();
     }
   }
 
-  /**
-   * Versione Desktop Scelta Centro
-   */
-  async presentPopover() {
-
-  }
 
 
   /** funzione per mostrare il popup di scelta campo */

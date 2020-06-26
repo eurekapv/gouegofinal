@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="primary">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" ios="close" md="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Pagamento Paypal</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- <ion-grid text-center>
+    <ion-row>
+      <ion-col>
+        Use this Pay button in your PWA's payment page with the attached logic.
+      </ion-col>
+    </ion-row>
+  </ion-grid> -->
+  <ion-card class="welcome-card">
+    <ion-img src="/assets/img/paypal.jpg"></ion-img>
+    <ion-card-header>
+      <ion-card-subtitle>in attesa del pagamento</ion-card-subtitle>
+      <ion-card-title>PayPal</ion-card-title>
+      <ion-row>
+        <ion-col>
+          Totale da pagare
+        </ion-col>
+        <ion-col>
+          {{currencyIcon}}{{paymentAmount}}
+        </ion-col>
+      </ion-row>
+    </ion-card-header>
+    <ion-card-content>
+      <div id="paypal-button-container"></div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

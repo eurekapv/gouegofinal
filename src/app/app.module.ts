@@ -19,6 +19,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 import localeIt from '@angular/common/locales/it';
 import { PayPal } from '@ionic-native/paypal/ngx';
 
+
 registerLocaleData(localeIt,'it');
 
 @NgModule({

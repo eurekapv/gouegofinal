@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, LoadingController, ToastController, NavParams, ModalController } from '@ionic/angular';
+import { NavController, LoadingController, ToastController, NavParams, ModalController, Platform } from '@ionic/angular';
 
 import { Subscription } from 'rxjs';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
@@ -10,9 +10,10 @@ import { Utente } from 'src/app/models/utente.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Campo } from 'src/app/models/campo.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
+import { PaymentConfiguration, PaymentChannel, PaymentResult } from 'src/app/models/payment.model';
 import { SettoreAttivita } from 'src/app/models/valuelist.model';
-
+import { PaypalPage } from 'src/app/pages/paypal/paypal.page';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-bookingsummary',
@@ -55,6 +56,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   //Gestione pagamento
   arPaymentConfig: PaymentConfiguration[]; //Elenco dei metodi di pagamento accettati
   selectedPayment: PaymentConfiguration;
+  paymentResult: PaymentResult;
+  subPaymentResult: Subscription;
 
   
   
@@ -62,7 +65,10 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               private navCtrl: NavController,
               private loadingController: LoadingController,
               private toastCtrl: ToastController,
-              private navParams: NavParams, private modalCtrl: ModalController
+              private navParams: NavParams, 
+              private modalCtrl: ModalController,
+              private platform: Platform,
+              private alertCtrl: AlertController
               ) {
 
 
@@ -139,71 +145,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     //#endregion
 
-    /* VERSIONE FULL SCREEN
-    this.router.paramMap.subscribe( param => {
-      
-      if (param.has('locationId')) {
-        this.idLocation = param.get('locationId');
-        
-        // Chiedo Location
-        this.selectedLocation = this.startService.findLocationByID(this.idLocation);        
-        
-        if (!this.selectedLocation) {
-          result = false;
-        }
-        
-      }
-      else {
-        result = false;
-      }
-
-      //Cerco il BookId
-      if (result) {
-        if (param.has('bookId')) 
-        {
-          this.idPrenotazione = param.get('bookId');
-  
-          //IDPrenotazione presente
-          if (this.idPrenotazione) {
-  
-            //Recupero la prenotazione 
-            this.recuperaPrenotazione();
-          }
-          else {
-            result = false;
-          }
-        }
-        else {
-          result = false;
-        }
-      }
-
-
-      if (result) {
-        //Controllo dell'utente loggato
-        this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
-                this.userLogged = element;
-        });
-  
-        //Richiedo lo User
-        this.subDocUtente = this.startService.utente.subscribe(element => {
-          this.docUtente = element;
-        });
-  
-        //Recupero il campo selezionato
-        this.selectedCampo = this.startService.getSelectedCampoPrenotazione();
-      }
-
-
-
-      
-      if (!result) {
-        this.onBookIdWrong();
-      }
-
-    });
-
-    */
+    
   }
 
   ngOnDestroy() {
@@ -217,6 +159,10 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     if (this.subDocUtente) {
       this.subDocUtente.unsubscribe();
+    }
+
+    if (this.subPaymentResult) {
+      this.subPaymentResult.unsubscribe();
     }
 
   }
@@ -327,22 +273,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   }
 
 
-   /**
-   * Visualizza un messaggio come Toast
-   * @param message Messaggio da mostrare
-   */
-  showMessage(message: string) {
 
-    //Creo un messaggio
-    this.toastCtrl.create({
-      message: message,
-      duration: 3000
-    })
-    .then(tstMsg => {
-      tstMsg.present();
-    });
-
-  }
 
 
   //Ritorna un indirizzo Location da mostrare
@@ -361,12 +292,26 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     return value;
   }
   
+
+  /**
+   * Pressione del pulsante in interfaccia di conferma 
+   */
   onConfirm()
   {
-    //operazioni di submit
-    this.onAfterSavePrenotazione()
+    let save = false;
+    save = this.onSavePrenotazione();
+
+    if (save) {
+      //Vado al pagamento
+       this.onExecPayment();
+    }
+
+
   }
   
+  /**
+   * Prenotazione salvata nel sistema posso andare via
+   */
   onAfterSavePrenotazione()
   {
     
@@ -374,6 +319,14 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.closeModal();
     //2) Andare alla History sulla scheda
     this.navCtrl.navigateRoot(['historylist/booking',this.docPianificazione.ID])
+  }
+
+
+  /**
+   * Invio al server la Prenotazione da salvare
+   */
+  onSavePrenotazione():boolean {
+    return true;
   }
 
   //#region METODI GESTIONE PAGAMENTO
@@ -399,15 +352,187 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Ricezione valore Canale pagamento da utilizzare
+   * Ricezione pagamento da utilizzare
    * @param value Valore Pagamento
    */
   onPaymentSelected(value) {
     this.selectedPayment = value;
   }
 
+
+  /**
+   * Richiesta di esecuzione del pagamento di qualsiasi tipologia
+   * 1) Se onSite conclude subito dicendo che va bene
+   * 2) Per altre tipologie esiste la versione Mobile e la versione Web
+   * Versione Mobile utilizza il servizio e l'Observable
+   * Versione Web viene aperta una modale per pagare
+   */
+  onExecPayment() {
+    let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
+    let resPay: PaymentResult;
+
+    if (this.selectedPayment) {
+
+      //Paga sul posto proseguo subito
+      if (this.selectedPayment.channel == PaymentChannel.onSite) {
+        resPay = new PaymentResult();
+        resPay.executed= true;
+        resPay.result = true;
+        resPay.message = 'Pagamento in struttura';
+
+        //Passo subito al Success
+        this.onPaymentSuccess(resPay);
+
+      }
+      else {
+        //Altre forme di pagamento
+        //Capacitor o Cordova 
+        //Pagamento gestito nel Servizio Payment
+      if (this.platform.is('hybrid')) {
+        //Mi metto in attesa dell'Observable di ricezione del pagamento
+        this.onWaitingPaymentResult();
+
+        //Richiedo il pagamento
+        this.startService.execPayment(this.selectedPayment, 
+                                      this.activePrenotazione.TOTALE, 
+                                      'EUR',
+                                      descrizioneAcquisto);
+
+        //Ora attendo la risposta con l'Observable
+      }
+      else {
+        //Ambiente Web
+        switch (this.selectedPayment.channel) {
+          case PaymentChannel.paypal:
+              //Apro la modale del pagamento Paypal
+              this.modalCtrl.create({
+                component: PaypalPage,
+                componentProps: {
+                  paymentConfig: this.selectedPayment,
+                  amount: this.activePrenotazione.TOTALE,
+                  currency: 'EUR',
+                  description: descrizioneAcquisto
+                }
+              })
+              .then(modal => modal.present());
+
+            break;
+        
+          default:
+            break;
+        }
+      }
+      }
+
+    }
+    else {
+      this.showMessage('Selezionare un pagamento');
+    }
+
+
+  }
+
+
+  /**
+   * Attendo risposta del pagamento in versione Mobile
+   * Arrivato in modalità Observable
+   */
+  onWaitingPaymentResult() {
+    this.subPaymentResult = this.startService.paymentResult.subscribe(resPayment => {
+      //Pagamento è stato eseguito
+      if (resPayment.executed == true) {
+        if (resPayment.result) {
+          this.onPaymentSuccess(resPayment);
+        }
+        else {
+          this.onPaymentFailed(resPayment);
+        }
+
+        //Pagamento Eseguito tolgo la sottoscrizione
+        if (this.subPaymentResult) {
+          this.subPaymentResult.unsubscribe();
+        }
+      }
+    });
+  }
+
+  /**
+   * Pagamento andato a buon fine
+   * @param resultPayment Risultato del pagamento
+   */
+  onPaymentSuccess(resultPayment?: PaymentResult) {
+    //Pagamento avvenuto correttamente
+    
+    //Eseguo operazioni successive al salvataggio
+    this.onAfterSavePrenotazione()
+  }
+
+  /**
+   * Si sono verificati errori nel pagamento
+   * @param resultPayment Risultato Pagamento Fallito
+   */
+  onPaymentFailed(resultPayment?: PaymentResult) {
+    let message = 'Si sono verificati errori nel pagamento';
+    let title = 'Pagamento Fallito';
+
+    if (resultPayment) {
+      if (resultPayment.message) {
+        message = resultPayment.message;
+      }
+    }
+
+    //Visualizzo il messaggio
+    this.showAlert(message, title);
+
+    //Avviso il server di eliminare la prenotazione
+    //DA IMPLEMENTARE
+    
+  }
+
   //#endregion
 
+     /**
+   * Visualizza un messaggio come Toast
+   * @param message Messaggio da mostrare
+   */
+  showMessage(message: string) {
+
+    //Creo un messaggio
+    this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    })
+    .then(tstMsg => {
+      tstMsg.present();
+    });
+
+  }
+
+
+  /**
+   * Visualizza un alert con un pulsante Ok se !buttons, oppure con i bottoni dell'array
+   * @param messaggio Messaggio
+   * @param titolo Titolo
+   */
+  showAlert(messaggio:string, titolo?:string, bottoni?:string[]) {
+
+    if (!bottoni || bottoni.length == 0) {
+      bottoni = [];
+      bottoni.push('Ok');
+    }
+
+    //Mostro l'alert richiesto
+    this.alertCtrl.create({      
+      header: (titolo?titolo:'Attenzione'),      
+      message: messaggio,
+      buttons: bottoni
+    })
+    .then(elAlert => {
+      elAlert.present();
+    })
+  }
+
+  
 }
 
 

@@ -10,6 +10,7 @@ import { BookingPage } from './booking.page';
 import { HomePageModule } from '../../home/home.module';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose/payment-choose.component';
+import { PaypalPage } from '../../paypal/paypal.page';
 
 @NgModule({
   imports: [
@@ -19,7 +20,7 @@ import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose
     BookingPageRoutingModule,
     HomePageModule
   ],
-  declarations: [BookingPage, BookingsummaryPage, PaymentChooseComponent],
-  entryComponents: [BookingsummaryPage, PaymentChooseComponent]
+  declarations: [BookingPage, BookingsummaryPage, PaymentChooseComponent, PaypalPage],
+  entryComponents: [BookingsummaryPage, PaymentChooseComponent, PaypalPage]
 })
 export class BookingPageModule {}

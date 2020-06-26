@@ -10,6 +10,7 @@
     <ion-card>
       <ion-item button="false" lines="none">
         <ion-icon slot="start" [name]="myCorso.getIcon()" color="primary"></ion-icon>
+        <i class="sport-icon"><span [innerHTML]="getIcon(myCorso)"></span></i>
         <ion-label>
           <h1 class="ion-text-wrap">
             {{ myCorso.DENOMINAZIONE }}

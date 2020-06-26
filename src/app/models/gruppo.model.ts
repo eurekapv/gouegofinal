@@ -1,7 +1,8 @@
 import { IDDocument } from './iddocument.model';
-import { TipoSocieta } from '../models/valuelist.model';
+import { TipoSocieta, SettoreAttivita } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../models/descriptor.model';
 import { PrivateImage } from './privateimage.model';
+import { Payment } from './payment.model';
 
 
 export class Gruppo extends IDDocument {
@@ -17,11 +18,16 @@ export class Gruppo extends IDDocument {
     APPID: string;
     TIPOGRUPPO: TipoSocieta;
     PRIVATEIMAGE: PrivateImage[];
+    _PAYMENT_MODE: Payment;         //Oggetto con i metodi di pagamento
   
     constructor() {
       super();
       this.PRIVATEIMAGE = [];
+      this._PAYMENT_MODE = new Payment();
+      
+      this._PAYMENT_MODE.testingMode();
     }
+
 
     /**
      * Imposta le proprietà del documento
@@ -92,6 +98,7 @@ export class Gruppo extends IDDocument {
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
     
     return objDescriptor;
-}
+  }
 
 }
+

@@ -32,6 +32,8 @@ import { Prenotazione } from '../models/prenotazione.model';
 import { UtenteprenotazioneService } from './utenteprenotazione.service';
 import { UtenteiscrizioneService } from './utenteiscrizione.service';
 import { Platform } from '@ionic/angular';
+import { PaymentService } from './payment.service';
+import { PaymentConfiguration } from '../models/payment.model';
 
 
 
@@ -86,7 +88,8 @@ export class StartService {
     private newsEventiService: NewseventiService,
     private slotOccupazioneService: SlotoccupazioneService,
     private utentePrenotazioneService: UtenteprenotazioneService,
-    private utenteIscrizioneService: UtenteiscrizioneService ) { 
+    private utenteIscrizioneService: UtenteiscrizioneService,
+    private paymentService: PaymentService ) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -818,6 +821,34 @@ requestSlotOccupazioni(templateSlotDay: SlotDay,
   this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, docLocation, docCampo, dataGiorno);
 
 }
+
+//#endregion
+
+//#region PAGAMENTI
+
+/**
+ * Observable del Risultato dell'operazione di pagamento
+ */
+get paymentResult() {
+  return this.paymentService.paymentResult;
+}
+
+/**
+ * 
+ * @param paymentMode Configurazione del Modo di pagamento
+ * @param importo     Importo pagamento 
+ * @param valuta      Valuta
+ * @param descrizione Descrizione del pagamento visibile in paypal
+ */
+execPayment(paymentMode: PaymentConfiguration, 
+            importo: number,
+            valuta?: string,
+            descrizione?: string) {
+
+    this.paymentService.execPayment(paymentMode, importo, valuta, descrizione);
+}
+
+
 
 //#endregion
 

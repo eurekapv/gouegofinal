@@ -9,6 +9,9 @@ import { Location } from 'src/app/models/location.model';
 import { Utente } from 'src/app/models/utente.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Campo } from 'src/app/models/campo.model';
+import { Gruppo } from 'src/app/models/gruppo.model';
+import { PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
+import { SettoreAttivita } from 'src/app/models/valuelist.model';
 
 
 @Component({
@@ -37,6 +40,9 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   docUtente: Utente;
   subDocUtente: Subscription; 
 
+  docGruppo: Gruppo;
+  subStartConfig: Subscription; 
+
   idPrenotazione = '';
   idLocation = '';
 
@@ -45,16 +51,35 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
   //accettazione delle condizioni di vendita
   disclaimer: boolean =false;
+
+  //Gestione pagamento
+  arPaymentConfig: PaymentConfiguration[]; //Elenco dei metodi di pagamento accettati
+  selectedPayment: PaymentConfiguration;
+
+  
   
   constructor(private startService:StartService,
-              private router: ActivatedRoute,
               private navCtrl: NavController,
               private loadingController: LoadingController,
               private toastCtrl: ToastController,
               private navParams: NavParams, private modalCtrl: ModalController
               ) {
 
+
+      this.subStartConfig = this.startService.startConfig.subscribe(elStartConfig => {
+          if (elStartConfig.gruppo) {
+            //Con il gruppo posso chiedere i metodi di pagamento accettati
+            this.docGruppo = elStartConfig.gruppo;
+
+            this.initPayment();
+
+          }
+      });
+    
+
   }
+
+
 
   ngOnInit() {
     this.disclaimer=false;
@@ -351,6 +376,37 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.navCtrl.navigateRoot(['historylist/booking',this.docPianificazione.ID])
   }
 
+  //#region METODI GESTIONE PAGAMENTO
+
+  /**
+   * Prepara le informazioni per gestire i pagamenti
+   */
+  initPayment() {
+    //Chiedo un Array con le configurazioni. Questo array viene passato 
+    //al componente payment-item
+    if (this.docGruppo) {
+      if (this.docGruppo._PAYMENT_MODE) {
+        this.arPaymentConfig = this.docGruppo._PAYMENT_MODE.getPaymentFor(SettoreAttivita.settorePrenotazione);
+
+        if (this.arPaymentConfig) {
+          //Con un solo metodo di pagamento lo imposto gia
+          if (this.arPaymentConfig.length == 1) {
+            this.selectedPayment = this.arPaymentConfig[0];
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Ricezione valore Canale pagamento da utilizzare
+   * @param value Valore Pagamento
+   */
+  onPaymentSelected(value) {
+    this.selectedPayment = value;
+  }
+
+  //#endregion
 
 }
 

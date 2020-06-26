@@ -8,12 +8,13 @@ import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController, NavController } from '@ionic/angular';
 import { Attivita  } from 'src/app/models/attivita.model';
-import { SettoreAttivita } from '../../models/valuelist.model';
+import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEventi } from 'src/app/models/newseventi.model';
 import { PopoverController } from '@ionic/angular';
+import { Settimana } from 'src/app/models/settimana.model';
 
 
 @Component({
@@ -60,11 +61,11 @@ export class HomePage implements OnInit, OnDestroy{
   listNews: NewsEventi[] = [];
   listNewsListen: Subscription;
 
+  
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
-              private navController: NavController,
-              private popController: PopoverController
+              private navController: NavController
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -296,7 +297,7 @@ export class HomePage implements OnInit, OnDestroy{
   /** funzione per mostrare il popup di scelta campo */
   async presentActionSheet()
   {
-    let buttonsArray: any[]=[]
+    let buttonsArray: any[]=[];
     let singleButton: any;
     //popolo l'array di bottoni con i nomi delle aree operative
     for (const iterator of this.listAree) {

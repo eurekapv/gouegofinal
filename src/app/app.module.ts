@@ -17,7 +17,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 
 
 import localeIt from '@angular/common/locales/it';
-
+import { PayPal } from '@ionic-native/paypal/ngx';
 
 registerLocaleData(localeIt,'it');
 
@@ -36,7 +36,8 @@ registerLocaleData(localeIt,'it');
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    {provide: LOCALE_ID, useValue: 'it' }
+    {provide: LOCALE_ID, useValue: 'it' },
+    PayPal
 
   ],
   bootstrap: [AppComponent]

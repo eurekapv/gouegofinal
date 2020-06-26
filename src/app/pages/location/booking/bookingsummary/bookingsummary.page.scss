@@ -28,26 +28,26 @@ h4
     border-width: thin;
     border-color: #eff1f8;
 }
-ion-checkbox
-{
-    margin:10px;
-}
-p{
+
+
+p {
     font-size: 13px;
 }
 
-.col-prezzo
-{
-    margin: 10px;
-    margin-top: 20px;
-    border-top-style: solid;
-    border-bottom-style: solid;
-    border-width: thin;
-    border-color: #eff1f8;
-}
+
+
 
 ion-button.full-buttons{
     margin-left:10px;
     margin-right:10px;
 
 }
+
+#item-totale {
+    ion-label {
+        font-size: 20px;
+    }
+}
+
+
+

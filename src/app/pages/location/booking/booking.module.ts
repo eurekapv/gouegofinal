@@ -9,6 +9,7 @@ import { BookingPageRoutingModule } from './booking-routing.module';
 import { BookingPage } from './booking.page';
 import { HomePageModule } from '../../home/home.module';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
+import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose/payment-choose.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
     BookingPageRoutingModule,
     HomePageModule
   ],
-  declarations: [BookingPage, BookingsummaryPage],
-  entryComponents: [BookingsummaryPage]
+  declarations: [BookingPage, BookingsummaryPage, PaymentChooseComponent],
+  entryComponents: [BookingsummaryPage, PaymentChooseComponent]
 })
 export class BookingPageModule {}

@@ -1,0 +1,18 @@
+<!-- NELLA PAGINA DOVE VIENE INNESTATO IL COMPONENTE CIRCONDARLO DENTRO A ION-LIST-->
+  <ion-item *ngIf="!arPayment.length" lines="none">
+    <ion-label>Pagamento non supportato</ion-label>
+  </ion-item>
+
+  <ion-item button 
+          *ngIf="arPayment.length" 
+          lines="none" 
+          [detail]="true"
+          (click)="onOpenChoose()">
+      <ion-icon slot="start" [name]="itemIcon"></ion-icon>
+      <ion-label *ngIf="selectedPayment">{{selectedPayment?.label}}</ion-label>
+      <ion-label *ngIf="!selectedPayment">Scegli metodo di pagamento</ion-label>
+  </ion-item>
+
+
+
+

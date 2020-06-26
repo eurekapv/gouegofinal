@@ -65,41 +65,54 @@
           <app-player-number [numPlayer]="docPianificazione.NUMPARTECIPANTI" (changeNumPlayer)="onChangedNumPlayer($event)" ></app-player-number>
         </ion-col>
       </ion-row>
-      <ion-row class="ion-align-items-center">
-        <ion-col size="2">
-          <ion-checkbox [(ngModel)]="disclaimer" ></ion-checkbox>
-        </ion-col>
-        <ion-col><p>Letto e approvato le <a href="">condizioni di vendita</a></p></ion-col>
-      </ion-row>
     </ion-grid>
+
+
+
   </div>
+
+
+
+</ion-content>
+<ion-footer>
+
   <ion-grid>
-    <ion-row>
-      <ion-col class="col-prezzo">
-        <ion-row>
-          <ion-col size="9"class="ion-no-padding">
-            <h5>TOTALE</h5>
-          </ion-col>
-          <ion-col size="3"class="ion-no-padding">
-            <h5>{{activePrenotazione.TOTALE | currency: "EUR"}}</h5>
-          </ion-col>
-        </ion-row>
-      </ion-col>
-    </ion-row>
+    <ion-list>
+      <ion-item>
+        <ion-checkbox [(ngModel)]="disclaimer" slot="start"></ion-checkbox>
+        <ion-label class="ion-text-wrap">
+          <p>Lette e approvate le
+          <a href="">condizioni di vendita</a>
+        </p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Componente scelta Pagamento -->  
+        <app-payment-choose 
+        [arPayment]="arPaymentConfig" 
+        (onPaymentChoosed)="onPaymentSelected($event)"></app-payment-choose>
+
+        <ion-item lines="none" id="item-totale">
+          <ion-label slot="start">Totale</ion-label>
+          <ion-label style="text-align:right;">
+          {{activePrenotazione.TOTALE | currency: "EUR"}}
+          </ion-label>
+        </ion-item>
+
+    </ion-list>
+
     <ion-row>
       <ion-col>
-        <ion-button color="light" expand="block" class="full-buttons">
-          Pagamento
-          <ion-icon name="chevron-forward-outline"></ion-icon>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button color="primary" expand="block" class="full-buttons" [disabled]="!disclaimer || !activePrenotazione.ISVALID " (click)="onConfirm()">
+        <ion-button 
+            color="primary" 
+            expand="block" 
+            class="full-buttons" 
+            [disabled]="!disclaimer || !activePrenotazione.ISVALID || !selectedPayment " 
+            (click)="onConfirm()">
           Conferma Prenotazione
         </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
-</ion-content>
+</ion-footer>
+

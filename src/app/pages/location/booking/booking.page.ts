@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, IonSlides, LoadingController, ToastController, ModalController } from '@ionic/angular';
@@ -15,7 +15,7 @@ import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { Sport } from 'src/app/models/sport.model';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+
 
 @Component({
   selector: 'app-booking',

@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PaypalComponent } from './paypal.component';
+import { PaymentChooseComponent } from './payment-choose.component';
 
-describe('PaypalComponent', () => {
-  let component: PaypalComponent;
-  let fixture: ComponentFixture<PaypalComponent>;
+describe('PaymentChooseComponent', () => {
+  let component: PaymentChooseComponent;
+  let fixture: ComponentFixture<PaymentChooseComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PaypalComponent ],
+      declarations: [ PaymentChooseComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PaypalComponent);
+    fixture = TestBed.createComponent(PaymentChooseComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

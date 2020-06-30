@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
 import { NavParams, ModalController } from '@ionic/angular';
-import { PaymentConfiguration, PaymentResult } from 'src/app/models/payment.model';
+import { PaymentConfiguration, PaymentResult, ConfigPaypal, EnvironmentPaypal } from 'src/app/models/payment.model';
+import { get } from 'scriptjs';
+
 // interface Window {
 //   window?: any;
 // }
@@ -12,19 +14,20 @@ import { PaymentConfiguration, PaymentResult } from 'src/app/models/payment.mode
   templateUrl: 'paypal.page.html',
   styleUrls: ['paypal.page.scss'],
 })
-export class PaypalPage {
+export class PaypalPage implements OnInit{
   paymentAmount: string = '0.00';
   currency: string = 'EUR';
   currencyIcon: string = '€';
   amount: number;
   description : string;
   paymentConfig: PaymentConfiguration;
-
+  configPaypal: ConfigPaypal;
+  paypalAvailable = false; //Script Paypal caricati
 
   constructor(private payPal: PayPal, 
               private navParams: NavParams,
               private modalCtrl: ModalController) {
-    let _this = this;
+    
 
     //Recupero dei parametri 
     this.amount = parseFloat(this.navParams.get('amount'));
@@ -33,8 +36,41 @@ export class PaypalPage {
     this.paymentConfig = this.navParams.get('paymentConfig');
 
     this.paymentAmount = this.amount.toLocaleString('en-us', {minimumFractionDigits: 2});
+   
+  }
 
 
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    //Caricamento script Paypal
+    let url = 'https://paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR';
+    
+    let clientId = 'sb'; //Versione Sandbox
+    if (this.paymentConfig) {
+      if (this.paymentConfig.configPayPal) {
+
+        //Configurazione Paypal
+        this.configPaypal = this.paymentConfig.configPayPal;
+        if (this.configPaypal.enviroment == EnvironmentPaypal.production) {
+          clientId = this.configPaypal.clientIDProduction;
+        }
+
+        url = `https://paypal.com/sdk/js?client-id=${clientId}&currency=EUR`;
+
+        // get(url, () => {
+        //   this.paypalAvailable = true;
+        //   //Inizializzo paypal
+        //   this.initPaypal();
+        // });
+
+        this.paypalAvailable = true;
+      }
+    }
+  }
+
+  initPaypal(): void {
+    let _this = this;
     setTimeout(() => {
       // Render the PayPal button into #paypal-button-container
       <any>window['paypal'].Buttons({
@@ -68,14 +104,12 @@ export class PaypalPage {
         }
       }).render('#paypal-button-container');
     }, 500);
-
   }
-
 
    /**
    * Chiude la modale annullando il pagamento
    */
-  closeModal() {
+  closeModal():void {
     let resultPayment = new PaymentResult();
     resultPayment.executed = true;
     resultPayment.result = false;
@@ -90,7 +124,7 @@ export class PaypalPage {
    * Pagamento corretto
    * @param details Dettagli avvenuto pagamento
    */
-  onPaymentSuccess(details:any) {
+  onPaymentSuccess(details:any):void {
     let resultPayment = new PaymentResult();
     resultPayment.executed = true;
     resultPayment.result = true;
@@ -104,7 +138,7 @@ export class PaypalPage {
    * Errore pagamento
    * @param error Errore Pagamento
    */
-  onPaymentError(error:any) {
+  onPaymentError(error:any):void {
     let resultPayment = new PaymentResult();
     resultPayment.executed = true;
     resultPayment.result = false;

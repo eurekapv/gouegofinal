@@ -3,6 +3,7 @@ import * as moment from "moment";
 import { PickerController } from '@ionic/angular';
 import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
 import { ValueList, Mesi } from 'src/app/models/valuelist.model';
+import { async } from '@angular/core/testing';
 
 
 @Component({
@@ -111,14 +112,87 @@ export class CalendarscrollComponent implements OnInit {
     //Lancio evento di cambio giorno
     this.onChangeActiveDay.emit(this.activeDay);
   }
-  
 
-  showPickerDate() {
+
+
+  /**
+   * Usato per creare la colonna del mese del ion picker
+   * @param meseZeroBased è il numero del Mese Zero Base (0 = Gennaio)
+   */
+  initColumnMesi(meseZeroBased: number): PickerColumnOption[] {
+    let optionColMesi: PickerColumnOption[] = [];
+    for (let index = 0; index < this.listMesi.length; index++) {
+      const element = this.listMesi[index];
+      let isDisabled = (index >= meseZeroBased ? false:true);
+
+      let pickColMese: PickerColumnOption = {
+        text: element.description,
+        value: element.value,
+        disabled: isDisabled
+        
+      }
+      optionColMesi.push(pickColMese);
+    }    
+
+    return optionColMesi;
+  }
+
+  /**
+   * Crea la colonna degli anni
+   */
+  initColumnAnni(): PickerColumnOption[] {
+    //Creo l'elenco sulla colonna dell'Anno
+    let optionColAnni: PickerColumnOption[] = [];
+    let startAnno = (new Date()).getFullYear();
+    for (let index = startAnno; index < startAnno + 5 ; index++) {
+
+
+      let pickColAnno: PickerColumnOption = {
+        text: index + '',
+        value: index
+      }
+
+      optionColAnni.push(pickColAnno);
+      
+      
+    }
+
+    return optionColAnni;
+  }
+
+  /**
+   * Crea l'insieme delle colonne da passare al Picker
+   * @param optColMesi       Colonna del Mese
+   * @param indexActiveMese  Index Selezionato Mese
+   * @param optColAnni       Colonna degli Anni
+   * @param indexActiveAnno  Index Selezionato Anno
+   */
+  initColumnsPicker(optColMesi: PickerColumnOption[], indexActiveMese: number, optColAnni: PickerColumnOption[], indexActiveAnno:number): PickerColumn[] {
+        // Colonne del Picker
+        let pickColumns: PickerColumn[] = [
+          {
+            name: 'mese',
+            options: optColMesi,
+            selectedIndex: indexActiveMese
+          },
+          {
+            name: 'anno',
+            options: optColAnni,
+            selectedIndex: indexActiveAnno
+          }];
+
+      return pickColumns;
+  }
+  
+  /**
+   * Visualizza il Picker Date
+   */
+  showPickerDate(): void {
     let _this = this;
     // Indici delle voci selezionate
-    let indexActiveMese = _this.activeDay.getMonth();
+    let indexActiveMese = 0;
     let indexActiveAnno = (_this.activeDay.getFullYear() - (new Date()).getFullYear());
-    console.log(indexActiveAnno);
+    const myMese = (new Date()).getMonth();
 
     let pickButtons: PickerButton[] = [{
       text: 'Conferma',
@@ -138,48 +212,15 @@ export class CalendarscrollComponent implements OnInit {
       }];
 
     //Creo l'elenco sulla colonna del Mese
-    let optionColMesi: PickerColumnOption[] = [];
-    for (let index = 0; index < this.listMesi.length; index++) {
-      const element = this.listMesi[index];
-
-      let pickColMese: PickerColumnOption = {
-        text: element.description,
-        value: element.value
-      }
-      optionColMesi.push(pickColMese);
-    }
-
-
-
-
+    let optionColMesi: PickerColumnOption[] = this.initColumnMesi(myMese);
+    
     //Creo l'elenco sulla colonna dell'Anno
     let optionColAnni: PickerColumnOption[] = [];
-    let startAnno = (new Date()).getFullYear();
-    for (let index = startAnno; index < startAnno + 5 ; index++) {
+    optionColAnni = this.initColumnAnni();
 
-
-      let pickColAnno: PickerColumnOption = {
-        text: index + '',
-        value: index
-      }
-
-      optionColAnni.push(pickColAnno);
-      
-      
-    }
-
+    
     // Colonne del Picker
-    let pickColumns: PickerColumn[] = [
-            {
-              name: 'mese',
-              options: optionColMesi,
-              selectedIndex: indexActiveMese
-            },
-            {
-              name: 'anno',
-              options: optionColAnni,
-              selectedIndex: indexActiveAnno
-            }];
+    let pickColumns = this.initColumnsPicker(optionColMesi, indexActiveMese, optionColAnni, indexActiveAnno);
 
 
     //Opzioni del Picker
@@ -193,6 +234,48 @@ export class CalendarscrollComponent implements OnInit {
     this.pickController
           .create(pickOptions)
           .then(elPicker => {
+            elPicker.addEventListener('ionPickerColChange', async (event:any) => {
+              const data = event.detail;
+              
+              //Cambiare la colonna dei Mesi a seconda dell'anno
+              if (data.name == 'anno') {
+                    const myAnno = (new Date()).getFullYear();
+                    const myMese = (new Date()).getMonth();
+                    let optionColMesi: PickerColumnOption[] = [];
+                    let optionColAnni: PickerColumnOption[] = [];
+                    let pickColumns: PickerColumn[] = [];
+
+                    //Indice di posizione dell'array
+                    const colSelectedIndex = data.selectedIndex;
+                    //Tutto il contenuto della colonna 
+                    const colOptions = data.options;
+                    //Vediamo quale anno ha scelto
+                    const chooseAnno = colOptions[colSelectedIndex].value;
+
+                    //Creo la Colonna dell'Anno
+                    optionColAnni = this.initColumnAnni();
+
+                    //Stesso Anno attuale devo filtrare i mesi
+                    if (chooseAnno == myAnno) {
+                      //Devo filtrare i mesi visualizzando solo i mancanti
+                      optionColMesi = this.initColumnMesi(myMese);
+                    }
+                    else {
+                      //Tutti i mesi
+                      optionColMesi = this.initColumnMesi(0);
+                    }
+
+                    //Unisco le colonne
+                    pickColumns = this.initColumnsPicker(optionColMesi, 0, optionColAnni, colSelectedIndex);
+                    
+
+                    //Applico le nuove colonne
+                    elPicker.columns = pickColumns;
+                    elPicker.forceUpdate();
+
+              }
+
+            });
             elPicker.present();
           });
   }

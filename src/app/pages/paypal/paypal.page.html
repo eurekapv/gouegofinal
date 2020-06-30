@@ -32,8 +32,16 @@
         </ion-col>
       </ion-row>
     </ion-card-header>
+    
     <ion-card-content>
-      <div id="paypal-button-container"></div>
+        <!-- IN ATTESA DATI  -->
+        <!-- DATI  NON RICEVUTI -->
+        <div *ngIf="!paypalAvailable" id="crs-spinner">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+        </div>
+
+
+      <div *ngIf="paypalAvailable" id="paypal-button-container"></div>
     </ion-card-content>
   </ion-card>
 </ion-content>

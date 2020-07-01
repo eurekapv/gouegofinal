@@ -15,7 +15,6 @@ import { LoadingController, ToastController, NavController, ModalController } fr
 export class AuthComponent implements OnInit {
 
   
-  form: FormGroup;
   iconColor = 'primary';
 
   @ViewChild('c1',{static:false}) c1;
@@ -29,13 +28,14 @@ export class AuthComponent implements OnInit {
   //per utilizzare l'enum nell'html
   pageState: typeof PageState=PageState;
 
-  docUtente= new Account;
   formRegister: FormGroup;
   formConfirm: FormGroup;
+  formLogin: FormGroup;
 
   startConfig:StartConfiguration
   startListen: Subscription;
   stato: PageState;  
+  docUtente= new Account;
   
 
   constructor(
@@ -45,7 +45,7 @@ export class AuthComponent implements OnInit {
     private navCtrl: NavController, 
     private startService: StartService,
     private modalCtrl: ModalController) {
-      this.stato=PageState.LOGIN;
+      this.stato=PageState.REGISTRATION;
       this.startListen = this.startService.startConfig.subscribe( element => {
         this.startConfig = element;
       });
@@ -58,7 +58,7 @@ export class AuthComponent implements OnInit {
   }
 
   createLoginForm() {
-    this.form = new FormGroup({
+    this.formLogin = new FormGroup({
       username: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
@@ -208,7 +208,7 @@ export class AuthComponent implements OnInit {
   /** Usata per effettuare il login  */
   onClickLogin()
   {
-    if (!this.form.valid)
+    if (!this.formLogin.valid)
     {
       return
     }
@@ -226,7 +226,7 @@ export class AuthComponent implements OnInit {
 
           // Chiamo il Servizio per eseguire l'autorizzazione
           this.startService
-            .requestAuthorization(this.form.value.username, this.form.value.password)
+            .requestAuthorization(this.formLogin.value.username, this.formLogin.value.password)
             .subscribe(dataResult => {
 
                 //Chiudo lo Spinner
@@ -240,10 +240,10 @@ export class AuthComponent implements OnInit {
                   //LOGIN ACCETTATO
                   
                   // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
-                  this.startService.saveStorageUtente(this.form.value.username,this.form.value.password);
+                  this.startService.saveStorageUtente(this.formLogin.value.username,this.formLogin.value.password);
 
                   //Resetto la form
-                  this.form.reset();
+                  this.formLogin.reset();
                   
                   //Chiudo la modale o torno alla home
                   if (this.onModal)

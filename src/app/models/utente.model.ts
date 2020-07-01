@@ -10,6 +10,7 @@ export class Utente extends IDDocument {
     NOMINATIVO: string;
     EMAIL: string; 
     WEBLOGIN: string;
+    WEBPASSWORD:string;
     MOBILENUMBER: string;
     INDIRIZZO: string;
     CAP: string;

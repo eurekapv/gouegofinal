@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
@@ -16,12 +16,14 @@ import { CalendarscrollComponent } from 'src/app/shared/components/calendarscrol
 import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbooked.component';
 import { PlayerNumberComponent } from 'src/app/shared/components/player-number/player-number.component';
 import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/sport-scroll.component';
+import { AuthComponent } from 'src/app/shared/components/auth/auth.component'
 
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     RouterModule.forChild([
       {
@@ -39,7 +41,8 @@ import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/spo
                  CalendarscrollComponent,
                  FootbookedComponent,
                  PlayerNumberComponent,
-                 SportScrollComponent
+                 SportScrollComponent,
+                 AuthComponent
                  ],
   exports: [NewsEventiComponent,
             ButtonCardComponent,
@@ -47,6 +50,7 @@ import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/spo
             CalendarscrollComponent, 
             FootbookedComponent,
             PlayerNumberComponent,
+            AuthComponent,
             SportScrollComponent]
   
 })

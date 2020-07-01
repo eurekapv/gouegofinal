@@ -15,6 +15,8 @@ import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { Sport } from 'src/app/models/sport.model';
+import { AuthComponent } from 'src/app/shared/components/auth/auth.component'
+ 
 
 
 @Component({
@@ -441,7 +443,14 @@ export class BookingPage implements OnInit, OnDestroy {
     
     if (!this.userLogged) {
 
-      //Deve prima loggarsi
+      this.modalCtrl.create({
+        component:AuthComponent,
+        componentProps:{'onModal':true},
+        cssClass:'modal-login'
+      })
+        .then(modal=>{
+          modal.present();
+        })
       console.log('Utente non loggato');
 
     }

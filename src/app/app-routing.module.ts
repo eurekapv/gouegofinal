@@ -82,7 +82,14 @@ const routes: Routes = [
   {
     path: 'test',
     loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
+  },
+  {
+    path: 'new-login',
+    loadChildren: () => import('./pages/auth/new-login/new-login.module').then( m => m.NewLoginPageModule)
   }
+
+ 
+
 
 
 

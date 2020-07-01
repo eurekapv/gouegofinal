@@ -27,6 +27,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   subActivePrenotazione: Subscription;
 
   //Elemento 1 di Pianificazione contenuta in activePrenotazione
+  //FIXME Alcune informazioni (tra cui lo sport) non vengono recuperate
   docPianificazione: PrenotazionePianificazione;
 
  //Location selezionata
@@ -91,7 +92,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.disclaimer=false;
     
     let result = true;
-
+     console.log('bp');
+    // console.log(this.docPianificazione._DESCRSPORT);
     //#region MODALE
     /* VERSIONE MODALE*/
       this.idLocation = this.navParams.get('locationId');

@@ -19,8 +19,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
   activePrenotazione: Prenotazione;
   subActivePrenotazione: Subscription;
 
- //Location selezionata
-  selectedLocation: Location = new Location();
+  subListLocation: Subscription;
   
   //Campo in versione normale
   selectedCampo: Campo = new Campo();
@@ -128,7 +127,6 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                                   this.activePrenotazione = docPrenotazione;
                                                   this.showSpinner = false;
                                                   this.sliderOpts.initialSlide=this.activePrenotazione.getIndexPianificazione(this.idPianificazione);
-
                                                   console.log("ho dato alle slideropts" +  this.activePrenotazione.getIndexPianificazione(this.idPianificazione));                                                  });
       }
     }

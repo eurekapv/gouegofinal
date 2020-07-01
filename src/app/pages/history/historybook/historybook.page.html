@@ -26,7 +26,7 @@
           <ion-button layout="icon-top" fill="clear" size="large" disabled>
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>
-          <ion-button fill="clear" size="large">
+          <ion-button fill="clear" size="large" href="mailto:">
             <ion-icon name="mail-outline"></ion-icon>
           </ion-button>
           <ion-button fill="clear" size="large">
@@ -36,9 +36,15 @@
     
         <ion-list lines="none">
           <ion-item lines="full" *ngIf="activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length>1">
-            <ion-icon color="primary" class="no-margin-vertical" slot="start" name="arrow-back-circle"></ion-icon>
+            <ion-icon *ngIf="i!=0" color="primary" class="no-margin-vertical" slot="start" name="chevron-back"></ion-icon>
             <ion-label class="no-margin-vertical">DATA {{i+1}} DI {{activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length}}</ion-label>
-            <ion-icon color="primary" class="no-margin-vertical" slot="end" name="arrow-forward-circle"></ion-icon>
+            <ion-icon *ngIf="i<activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length-1" color="primary" class="no-margin-vertical" slot="end" name="chevron-forward"></ion-icon>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <!-- #TODO manca lo sport -->
+              <h4>{{docPianificazione._DESCRSPORT}}</h4>
+            </ion-label>
           </ion-item>
           <ion-item>
             <ion-label>
@@ -51,8 +57,9 @@
           </ion-item>
           <ion-item>
             <ion-label>
-              <h1>Campo {{selectedCampo.DENOMINAZIONE}}</h1>
-              <p>{{selectedLocation.INDIRIZZO}}</p>
+              <h1>Campo {{docPianificazione._DESCRCAMPO}}</h1>
+              <!-- TODO manca l'indirizzo
+                <p>{{}}</p> -->
             </ion-label>
             <ion-chip color="primary">
               {{docPianificazione.NUMPARTECIPANTI}}

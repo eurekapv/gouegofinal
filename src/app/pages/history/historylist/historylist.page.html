@@ -3,12 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>Storico</ion-title>
-    <ion-buttons slot="end">
+    <ion-title *ngIf="selectedView=='corsi'">I miei corsi</ion-title>
+    <ion-title *ngIf="selectedView=='prenotazioni'">Le mie prenotazioni</ion-title>
+
+    <!-- <ion-buttons slot="end">
       <ion-button>
         <ion-icon name="filter"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 

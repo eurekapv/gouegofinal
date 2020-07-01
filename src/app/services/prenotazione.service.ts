@@ -183,7 +183,8 @@ export class PrenotazioneService {
     // { "nomeParametro" : { oggetto exportato JSON } }
     let myBody = '{' + '\"' + paramName + '\"' + ':' + myBodyJSON + '}';
 
-       
+   LogApp.consoleLog('Invio per calcolo totale:');
+   LogApp.consoleLog(myBody);
 
     return this.apiService
           .httpPost(myUrl,myHeaders, myParams, myBody)

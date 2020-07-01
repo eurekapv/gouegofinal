@@ -92,8 +92,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.disclaimer=false;
     
     let result = true;
-     console.log('bp');
-    // console.log(this.docPianificazione._DESCRSPORT);
+     
     //#region MODALE
     /* VERSIONE MODALE*/
       this.idLocation = this.navParams.get('locationId');
@@ -174,6 +173,9 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     this.subActivePrenotazione = this.startService.activePrenotazione
         .subscribe(elPrenotazione => {
+              console.log('Mi è arrivata la prenotazione');
+              console.log(elPrenotazione);
+              
               //Recupero la prenotazione
               this.activePrenotazione = elPrenotazione;
               //Recupero la Pianificazione dentro alla Prenotazione

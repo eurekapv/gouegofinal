@@ -465,6 +465,7 @@ export class BookingPage implements OnInit, OnDestroy {
       docPianificazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
       docPianificazione.IDLOCATION = this.selectedLocation.ID;
       docPianificazione.IDCAMPO = this.selectedCampo.ID;
+      docPianificazione.IDSPORT = this.selectedSport.ID;
       docPianificazione._DESCRCAMPO = this.selectedCampo.DENOMINAZIONE;
       docPianificazione._DESCRSPORT = this.selectedSport.DENOMINAZIONE;
 
@@ -474,6 +475,7 @@ export class BookingPage implements OnInit, OnDestroy {
       //Indico al servizio di mantenere (non Observable) le info del campo selezionato
       this.startService.setSelectedCampoPrenotazione(this.selectedCampo);
 
+      //Chiedo al server il calcolo del totale
       this.calcolaTotale();
 
       
@@ -512,8 +514,14 @@ export class BookingPage implements OnInit, OnDestroy {
 
                 // Risposta corretta del server
                 if (newPrenotazione.ISVALID === true) {
+                  
+                  let myPianificazione = newPrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
+                  myPianificazione._DESCRCAMPO = this.selectedCampo.DENOMINAZIONE;
+                  myPianificazione._DESCRSPORT = this.selectedSport.DENOMINAZIONE;
+                  
                   //Invio al servizio il documento
                   this.startService.setActivePrenotazione(newPrenotazione);
+
 
                   //Procedo al passaggio di finalizzazione
                   this.goToFinalizza();

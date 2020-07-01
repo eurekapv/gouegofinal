@@ -8,16 +8,20 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'login', pathMatch: 'full'
+        redirectTo: 'new-login', pathMatch: 'full'
       },
       {
-        path: 'login',
-        loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule)
-      },
-      {
-        path: 'register',
-        loadChildren: () => import('./pages/auth/register/register.module').then( m => m.RegisterPageModule)
+        path: 'new-login',
+        loadChildren: () => import('./pages/auth/new-login/new-login.module').then( m => m.NewLoginPageModule)
       }
+      // {
+      //   path: 'login',
+      //   loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule)
+      // },
+      // {
+      //   path: 'register',
+      //   loadChildren: () => import('./pages/auth/register/register.module').then( m => m.RegisterPageModule)
+      // }
     ]
   }, 
   {
@@ -82,11 +86,8 @@ const routes: Routes = [
   {
     path: 'test',
     loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
-  },
-  {
-    path: 'new-login',
-    loadChildren: () => import('./pages/auth/new-login/new-login.module').then( m => m.NewLoginPageModule)
   }
+  
 
  
 

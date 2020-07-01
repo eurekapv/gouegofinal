@@ -268,7 +268,7 @@ export class HomePage implements OnInit, OnDestroy{
 
   /** Apertura Videata Login */
   openLogin() {
-    this.navController.navigateForward(['/','auth','login']);
+    this.navController.navigateForward(['/','auth','new-login']);
   }
 
   /**

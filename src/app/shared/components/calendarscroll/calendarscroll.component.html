@@ -1,11 +1,15 @@
 <ion-grid class="ion-no-padding ion-no-margin">
-  <ion-row class=" date-row ion-align-items-center">
-    <ion-col (click)="showPickerDate()" size="1" offset="3" class="ion-text-center">
-      <ion-icon  class="icon-calendar" name="calendar" color="primary"></ion-icon>
+  <ion-row class=" date-row">
+    <ion-col (click)="showPickerDate()" size=""  class="ion-text-center">
+      <div class="custom-div">
+      <h5 class="ion-no-margin custom-h5 ion-text-center">
+        <ion-icon  class="icon-calendar" name="calendar" color="primary"></ion-icon>
+        <span> {{ activeDay | date: "MMMM yyyy" | titlecase}}</span>
+      </h5>
+    </div>
     </ion-col>
-    <ion-col (click)="showPickerDate()" size="5" class="ion-no-padding ion-no-margin ion-text-center">
-      <a ><h5 class="ion-no-margin">{{ activeDay | date: "MMMM yyyy" | titlecase}}</h5></a>
-    </ion-col>
+    <!-- <ion-col (click)="showPickerDate()" size="5" class="ion-no-padding ion-no-margin ion-text-left">
+    </ion-col> -->
   </ion-row>
 
   <ion-row class="ion-no-margin ion-padding-horizontal">

@@ -322,14 +322,10 @@ export class StartService {
   //#endregion
 
 
-//#region CAMPISPORT
-
-//#endregion
-
 //#region SPORT SERVICE
 
 /**
- * Proprietà Collection tutti gli sport
+ * Richiede in modalità Observable l'elenco degli sport
  */
 get listSport() {
   return this.sportService.listSport;
@@ -342,13 +338,13 @@ get actualListSport() {
   return this.sportService.actualListSport;
 }
 
-//TODO CONTROLLARE
+
 /**
  * Dato l'id di uno sport, ritorna l'icona
- * @param id l'id dello sport
+ * @param idSport l'id dello sport
  */
-getSportIcon(id:string){
-  return this.sportService.getIconaSport(id);
+getSportIcon(idSport:string){
+  return this.sportService.getIconaSport(idSport);
 }
 
 /**

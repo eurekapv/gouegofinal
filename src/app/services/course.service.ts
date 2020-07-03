@@ -109,9 +109,6 @@ export class CourseService {
             //Decodifico i campi chiave
             newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
   
-            LogApp.consoleLog('Nuovo Corso');
-            LogApp.consoleLog(newCorso);
-  
             this.addCorso(newCorso);
   
           });

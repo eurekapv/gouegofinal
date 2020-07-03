@@ -21,6 +21,13 @@ export class SportService {
     return this._listSport.asObservable();
   }
 
+  /**
+  * Ritorna la lista non in modalità Observable
+  */
+  get actualListSport() {
+    return this._listSport.getValue();
+  }
+
   //Lista degli sport presenti in una location
   get listLocationSport() {
     return this._listLocationSport.asObservable();
@@ -28,33 +35,6 @@ export class SportService {
 
 
 
-
-  /**
-   * Ritorna la lista non in modalità Observable
-   */
-  get actualListSport() {
-    return this._listSport.getValue();
-  }
-
-  //TODO CONTROLLARE
-  /**
-   * Dato l'id di uno sport, restituisce la stringa dell'icona associata
-   * @param id l'id dello sport
-   */
-  getIconaSport(id: string){
-    let listSport =this._listSport.getValue();
-    let icona='';
-    if(listSport){
-      for (const sport of listSport) {
-        if (id==sport.ID)
-        {
-          icona=sport.htmlIconHex;
-          break;
-        } 
-      }
-    }
-    return icona;
-  }
 
   constructor(private apiService: ApicallService) { 
     this._loaded = false;
@@ -173,5 +153,34 @@ export class SportService {
       
     }
 
+
+    /**
+   * Dato l'id di uno sport, restituisce la stringa dell'icona associata
+   * @param idSport l'id dello sport
+   */
+  getIconaSport(idSport: string){
+    let listSport = this._listSport.getValue();
+    let icona='';
+    let docSport: Sport;
+
+    if(listSport){
+
+      //Cerco lo Sport nella collection
+      docSport = listSport.find(el => {
+        return el.ID == idSport
+      });
+
+      //Sport trovato applico l'icona
+      if (!docSport) {
+        //Ne creo uno fasullo
+        docSport = new Sport();
+      }
+
+      //Ricavo l'icona
+      icona = docSport.htmlIconHex
+      
+    }
+    return icona;
+  }
 
 }

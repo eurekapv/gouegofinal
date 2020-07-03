@@ -29,7 +29,8 @@ export class CampiPage implements OnInit, OnDestroy {
                                             .subscribe(filledLocation => {
                       this.myLocation = filledLocation;
     });
-    this.listSport=this.startService.actualListSport;
+
+    
   }
 
   ngOnDestroy() {
@@ -53,7 +54,7 @@ export class CampiPage implements OnInit, OnDestroy {
   }
 
 
-  //TODO CONTROLLARE
+  
   /**
    * Dato un oggetto campo, chiama il servizio e ritorna l'icona
    * @param campoSport L'oggetto campo

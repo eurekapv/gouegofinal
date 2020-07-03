@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ɵConsole } from '@angular/core';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
@@ -6,21 +6,23 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
 import { Prenotazione } from '../models/prenotazione.model';
 import { Utente } from '../models/utente.model';
-import { StartConfiguration } from '../models/start-configuration.model';
-import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 import { LogApp } from '../models/log.model';
 import { Campo } from '../models/campo.model';
+import { StartConfiguration } from '../models/start-configuration.model';
+import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
+import { SportService } from './sport.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrenotazioneService {
 
+
   private _listPrenotazioni = new BehaviorSubject<Prenotazione[]>([]);
   private _activePrenotazione = new BehaviorSubject<Prenotazione>(new Prenotazione());
   private _selectedCampo: Campo;
 
-  constructor(private apiService: ApicallService) { }
+  constructor(private apiService: ApicallService, private sportService: SportService) { }
 
   /** Prenotazione */
   get activePrenotazione() {
@@ -112,8 +114,28 @@ export class PrenotazioneService {
         return fullData.PRENOTAZIONE
       }))
       .subscribe( resultData => {
-        console.log(resultData);
+
+        resultData.forEach(elPrenotazione => {
+
+          let docPrenotazione = new Prenotazione();
+          docPrenotazione.setJSONProperty(elPrenotazione);
+          this.add2ListPrenotazioni(docPrenotazione);
+        });
+
       });
+  }
+
+  //Aggiunge una attivita alla lista globale
+  add2ListPrenotazioni(objPrenotazione: Prenotazione) {
+
+    let listSport = this.sportService.actualListSport;
+
+    this.listPrenotazioni
+      .pipe(take(1))
+      .subscribe( collLocation => {
+        this._listPrenotazioni.next( collLocation.concat(objPrenotazione));
+      });
+    
   }
 
 
@@ -144,15 +166,23 @@ export class PrenotazioneService {
             let collPrenotazioni = fullData.PRENOTAZIONE;
             if (collPrenotazioni.length !== 0) {
 
+              let listSport = this.sportService.actualListSport;
               docPrenotazione = new Prenotazione();
               docPrenotazione.setJSONProperty(collPrenotazioni[0]);
+
+              
+              docPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(elPianificazione => {
+                  elPianificazione.lookup('IDSPORT', listSport, "DENOMINAZIONE");
+              });
 
             }
           }
         }
-        return docPrenotazione
+        return docPrenotazione;
       }));
   }
+
+
 
 
   /**
@@ -183,8 +213,7 @@ export class PrenotazioneService {
     // { "nomeParametro" : { oggetto exportato JSON } }
     let myBody = '{' + '\"' + paramName + '\"' + ':' + myBodyJSON + '}';
 
-   LogApp.consoleLog('Invio per calcolo totale:');
-   LogApp.consoleLog(myBody);
+   
 
     return this.apiService
           .httpPost(myUrl,myHeaders, myParams, myBody)
@@ -196,5 +225,6 @@ export class PrenotazioneService {
     }
 
 
+    
 
 }

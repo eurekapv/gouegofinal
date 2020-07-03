@@ -18,10 +18,10 @@ export class CardCourseComponent implements OnInit {
   @Output() clickDetail = new EventEmitter<Corso>();
   iconColor = 'primary';
 
-  sportList:Sport[]=[];
+  
 
   ngOnInit() {
-    this.sportList=this.startService.actualListSport;
+    
   }
 
   getLabelTargetSesso() {
@@ -37,10 +37,6 @@ export class CardCourseComponent implements OnInit {
     return label;
   }
 
-  // goToCalendar() {
-  //   //Emetto l'evento per andare al calendario giornate
-  //   this.clickCalendar.emit(this.myCorso);
-  // }
 
   goToDetail() {
     //Emetto l'evento per andare al dettaglio corso
@@ -48,7 +44,7 @@ export class CardCourseComponent implements OnInit {
     this.clickDetail.emit(this.myCorso);
   }
 
-  //TODO controllare!
+  
   /**
    * Dato un oggetto corso, ritorna la stringa dell'icona corrispondente
    * @param corso L'oggetto corso

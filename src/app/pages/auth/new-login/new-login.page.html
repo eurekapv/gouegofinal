@@ -1,12 +1,15 @@
 <ion-header>
     <ion-toolbar color="primary">
+        <ion-buttons slot="start" *ngIf="stato==pageState.REGISTRATION||stato==pageState.VERIFY">
+            <ion-button fill="clear" (click)="changePageState(pageState.CONTACT)">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
         <ion-title *ngIf="stato==pageState.LOGIN">Login</ion-title>
-        <ion-title *ngIf="stato==pageState.REGISTRATION">Registrati</ion-title>
-        <ion-title *ngIf="stato==pageState.CONFIRM">Verifica Cellulare</ion-title>
-        <ion-title *ngIf="stato==pageState.WELCOME">Benvenuto</ion-title>
+        <ion-title *ngIf="stato!=pageState.LOGIN">Registrati</ion-title>
         <ion-buttons slot="end">
-            <ion-button fill="clear">
-                <ion-icon name="close" (click)="closeModal()"></ion-icon>
+            <ion-button fill="clear" (click)="closeModal()">
+                <ion-icon name="close" ></ion-icon>
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
@@ -15,31 +18,61 @@
 
 <!-- Pagina Login -->
 <ion-content *ngIf="stato==pageState.LOGIN">
-    <div>
-        <img src="assets/img/sport2_mini.png">
+    <div class="ion-text-center div-logo">
+        <img [src]="startConfig.getUrlBrand()">
     </div>
     <form [formGroup]="formLogin">
         <ion-list>
             <ion-item>
-                <ion-icon slot="start" name="person" color="primary"></ion-icon>
+                <ion-icon slot="start" name="person-outline" color="primary"></ion-icon>
                 <ion-input inputmode="email" type="email" placeholder="Username" formControlName="username" ></ion-input>
               </ion-item>
 
               <ion-item>
-                <ion-icon slot="start" name="key" color="primary"></ion-icon>
+                <ion-icon slot="start" name="key-outline" color="primary"></ion-icon>
                 <ion-input inputmode="text" type="password" placeholder="Password" formControlName="password"></ion-input>
               </ion-item>
         </ion-list>
     </form>
-    <ion-button color="primary" expand="block" fill="outline" (click)="onClickLogin()" [disabled]="!formLogin.valid">
+    <ion-button class="btn-confirm" color="primary" expand="block" fill="outline" (click)="onClickLogin()" [disabled]="!formLogin.valid">
         login
     </ion-button>
     <div class="ion-text-center">Non hai un account?</div>
-    <div class="ion-text-center"><a (click)="changePageState(pageState.REGISTRATION)">Registrati</a></div>
+    <div class="ion-text-center"><a (click)="changePageState(pageState.CONTACT)">Registrati</a></div>
+</ion-content>
+
+<!-- Pagina inserimento contatti -->
+<ion-content *ngIf="stato==pageState.CONTACT">
+    <div class="ion-text-center div-logo">
+        <img [src]="startConfig.getUrlBrand()">
+    </div>
+    <form [formGroup]="formContact">
+        <ion-list>
+            <ion-item>
+                <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
+                <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
+                <ion-input type="tel" inputmode="tel" placeholder="Cellulare" formControlName="telephone" ></ion-input>
+            </ion-item>
+        </ion-list>
+    </form>
+    <ion-button color="primary"
+    class="btn-confirm" 
+    expand="block" fill="outline" 
+    [disabled]="!this.formContact.valid"
+    (click)="onClickContinua()">Continua</ion-button>
+    <div class="ion-text-center">Hai già un account?</div>
+    <div class="ion-text-center"><a (click)="changePageState(pageState.LOGIN)">Effettua il login</a></div>
+
 </ion-content>
 
 <!-- Pagina Registrazione -->
 <ion-content *ngIf="stato==pageState.REGISTRATION">
+    <div class="ion-text-center div-logo">
+        <img [src]="startConfig.getUrlBrand()">
+    </div>
     <form [formGroup]="formRegister">
         <ion-list>
             <ion-item>
@@ -51,10 +84,6 @@
             <ion-input type="text" placeholder="Cognome" formControlName="surname" ></ion-input>
             </ion-item>
             <ion-item>
-            <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
-            <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
-            </ion-item>
-            <ion-item>
             <ion-icon name="key-outline" slot="start" color="primary"></ion-icon>
             <ion-input type="password" placeholder="Password" formControlName="psw"></ion-input>
             </ion-item>
@@ -62,10 +91,7 @@
             <ion-icon name="key-outline" slot="start" color="primary"></ion-icon>
             <ion-input type="password" placeholder="Verifica password" formControlName="verifyPsw"></ion-input>
             </ion-item>
-            <ion-item>
-            <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
-            <ion-input type="tel" inputmode="tel" placeholder="Cellulare" formControlName="telephone" ></ion-input>
-            </ion-item>
+            
             <ion-item>
             <ion-icon name="card-outline" slot="start" color="primary"></ion-icon>
             <ion-input type="text" placeholder="Codice Fiscale" formControlName="codFisc" ></ion-input>
@@ -88,41 +114,75 @@
             </ion-item>
         </ion-list>
     </form>
-    <ion-button color="primary" expand="block" fill="outline" (click)="onClickProsegui()" [disabled]="!formRegister.valid">
+    <ion-button 
+    class="btn-confirm" 
+    color="primary" 
+    expand="block" 
+    fill="outline"
+    (click)="onClickRegistrati()" 
+    [disabled]="!formRegister.valid">
         registrati
     </ion-button>
-    <div class="ion-text-center">Hai già un account?</div>
-    <div class="ion-text-center"><a (click)="changePageState(pageState.LOGIN)">Effettua il login</a></div>
 </ion-content>
 
-<!-- Pagina verifica cellulare -->
-<ion-content *ngIf="stato==pageState.CONFIRM">
-    <div>
+<!-- Pagina verifica cellulare / mail-->
+<ion-content *ngIf="stato==pageState.VERIFY">
+    <div class="ion-text-center div-logo">
         <img [src]="startConfig.getUrlBrand()">
     </div>  
-    <h4 class="ion-text-center">Inserisci il codice che ti abbiamo inviato tramite SMS</h4>
-    <ion-segment>
-        <form [formGroup]="formConfirm">
-            <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
-            <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
-            <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
-            <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
-            <ion-input clearOnEdit type="tel" inputmode="numeric" class="code-input ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
-        </form>
-    </ion-segment>
-    <div class="ion-text-center">Non ho ricevuto il codice</div>
-    <ion-button color="primary" expand="block" fill="outline">Convalida</ion-button>
-    <div class="ion-text-center">Verifica in seguito</div>
+    <h6 class="ion-text-center">Inserisci il codice che ti abbiamo inviato tramite E-Mail</h6>
+    <form [formGroup]="formVeriryMail">
+        <div class="form-verifica">
+            <ion-segment>
+                <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
+                <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
+                <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
+                <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
+                <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
+            </ion-segment>
+        </div>
+    </form>
+    <h6 class="ion-text-center">Inserisci il codice che ti abbiamo inviato tramite SMS</h6>
+    <form [formGroup]="formVeriryTel">
+            <div class="form-verifica">
+                <ion-segment>
+                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c6" #c6 (ionInput)="changeFocus($event)"id="6"></ion-input>
+                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c7" #c7 (ionInput)="changeFocus($event)"id="7"></ion-input>
+                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c8" #c8 (ionInput)="changeFocus($event)"id="8"></ion-input>
+                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c9" #c9 (ionInput)="changeFocus($event)"id="9"></ion-input>
+                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c10" #c10 (ionInput)="changeFocus($event)"id="10"></ion-input>
+                </ion-segment>
+            </div>
+    </form>
+    <div class="ion-text-center">
+        <a>Non ho ricevuto i codici</a>
+    </div>
+    <ion-button 
+    class="btn-confirm"
+    color="primary"
+    expand="block"
+    fill="outline"
+    (click)="onClickVerifica()"
+    [disabled]="!(this.formVeriryMail.valid&&this.formVeriryTel.valid)">Verifica</ion-button>
 
 </ion-content>
 
-<!-- Pagina di benvenuto -->
+<!-- Pagina di fine registrazione -->
 <ion-content *ngIf="stato==pageState.WELCOME">
-    <div>
+    <div class="ion-text-center div-logo">
         <img [src]="startConfig.getUrlBrand()">
     </div>
     <h1 class="ion-text-center">Benvenuto!</h1>
-    <img src="assets/img/handshake_b.gif">
-    <ion-button color="primary" expand="block" fill="outline" (click)="closeModal()">Inizia</ion-button>
+    <div class="ion-text-center">
+        <img src="assets/img/handshake_b.gif">
+    </div>
+    <ion-button
+    class="btn-confirm"
+    color="primary"
+    expand="block" 
+    fill="outline"
+    (click)="closeModal()">
+        Inizia
+    </ion-button>
 </ion-content>
 

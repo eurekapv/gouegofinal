@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
-import { ActionSheetController, NavController } from '@ionic/angular';
+import { ActionSheetController, NavController, ModalController } from '@ionic/angular';
 import { Attivita  } from 'src/app/models/attivita.model';
 import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 
@@ -15,6 +15,7 @@ import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEventi } from 'src/app/models/newseventi.model';
 import { PopoverController } from '@ionic/angular';
 import { Settimana } from 'src/app/models/settimana.model';
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 
 
 @Component({
@@ -65,7 +66,8 @@ export class HomePage implements OnInit, OnDestroy{
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
-              private navController: NavController
+              private navController: NavController,
+              private modalCtrl:ModalController
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -267,8 +269,12 @@ export class HomePage implements OnInit, OnDestroy{
 
 
   /** Apertura Videata Login */
-  openLogin() {
-    this.navController.navigateForward(['/','auth','new-login']);
+  async openLogin() {
+    //this.navController.navigateForward(['/','auth','new-login']);
+    const modal = await this.modalCtrl.create({
+      component: NewLoginPage
+    });
+    modal.present();
   }
 
   /**

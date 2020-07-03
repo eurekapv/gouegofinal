@@ -16,6 +16,7 @@ import { CalendarscrollComponent } from 'src/app/shared/components/calendarscrol
 import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbooked.component';
 import { PlayerNumberComponent } from 'src/app/shared/components/player-number/player-number.component';
 import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/sport-scroll.component';
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/spo
                  CalendarscrollComponent,
                  FootbookedComponent,
                  PlayerNumberComponent,
-                 SportScrollComponent
+                 SportScrollComponent,
+                 NewLoginPage
                  ],
   exports: [NewsEventiComponent,
             ButtonCardComponent,
@@ -48,7 +50,8 @@ import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/spo
             CalendarscrollComponent, 
             FootbookedComponent,
             PlayerNumberComponent,
-            SportScrollComponent]
+            SportScrollComponent],
+  entryComponents: [NewLoginPage]
   
 })
 export class HomePageModule {}

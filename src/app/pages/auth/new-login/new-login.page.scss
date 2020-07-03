@@ -1,0 +1,52 @@
+div.div-logo{
+    background : var(--ion-color-light);
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    margin-bottom: 3vh;
+    img{
+        height: 17vh;
+    }
+}
+
+ion-button.btn-confirm{
+    margin-top: 7vh;
+    margin-bottom: 8vh;
+}
+
+div.form-verifica{
+    width:320px;
+    //background-color:white;
+    margin:auto;
+    margin-bottom: 8vh;
+    text-align:center;
+    ion-segment{
+        background:white;
+        ion-input{
+            display:inline;
+            border-radius:15px;
+            margin:2px;
+            border:3px solid var(--ion-color-primary);
+            text-align:center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--ion-color-light);
+            font-size: 40px;
+        }
+    }
+}
+
+
+//inserisci i codici
+h6{
+    font-size: small;
+}
+
+a{
+    color: var(--ion-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+
+
+

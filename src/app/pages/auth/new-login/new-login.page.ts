@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ModalController, LoadingController, ToastController } from '@ionic/angular';
+import { ModalController, LoadingController, ToastController, NavController } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -43,9 +43,10 @@ export class NewLoginPage implements OnInit {
     private modalCtrl:ModalController,
     private startService:StartService,
     private loadingCtrl:LoadingController,
-    private toastCtrl:ToastController
+    private toastCtrl:ToastController,
+    private navCtrl:NavController
   ) {
-    this.stato=this.pageState.WELCOME;
+    this.stato=this.pageState.LOGIN;
     this.startListen=startService.startConfig.subscribe(data=>{
       this.startConfig=data;
     });
@@ -59,7 +60,8 @@ export class NewLoginPage implements OnInit {
   }
 
   closeModal(){
-    this.modalCtrl.dismiss();
+    //this.modalCtrl.dismiss();
+    this.navCtrl.navigateRoot('/')
   }
 
   /**

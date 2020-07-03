@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ModalController, LoadingController, ToastController } from '@ionic/angular';
+import { ModalController, LoadingController, ToastController, NavController } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -21,8 +21,10 @@ export class NewLoginPage implements OnInit {
 
   //varibili formGroup (per usare i reactive forms)
   formRegister: FormGroup;
-  formConfirm: FormGroup;
+  formVeriryTel: FormGroup;
+  formVeriryMail: FormGroup;
   formLogin: FormGroup;
+  formContact: FormGroup;
 
   //Dati
   startConfig:StartConfiguration
@@ -35,6 +37,11 @@ export class NewLoginPage implements OnInit {
   @ViewChild('c3',{static:false}) c3;
   @ViewChild('c4',{static:false}) c4;
   @ViewChild('c5',{static:false}) c5;
+  @ViewChild('c6',{static:false}) c6;
+  @ViewChild('c7',{static:false}) c7;
+  @ViewChild('c8',{static:false}) c8;
+  @ViewChild('c9',{static:false}) c9;
+  @ViewChild('c10',{static:false}) c10;
 
   //#endregion
 
@@ -43,9 +50,10 @@ export class NewLoginPage implements OnInit {
     private modalCtrl:ModalController,
     private startService:StartService,
     private loadingCtrl:LoadingController,
-    private toastCtrl:ToastController
+    private toastCtrl:ToastController,
+    private navCtrl:NavController
   ) {
-    this.stato=this.pageState.WELCOME;
+    this.stato=this.pageState.LOGIN;
     this.startListen=startService.startConfig.subscribe(data=>{
       this.startConfig=data;
     });
@@ -54,77 +62,16 @@ export class NewLoginPage implements OnInit {
   ngOnInit() {
     this.createLoginForm();
     this.createRegisterForm();
-    this.createConfirmForm();
+    this.createVeriryForm();
+    this.createContactForm();
+
     
   }
 
   closeModal(){
     this.modalCtrl.dismiss();
-  }
-
-  /**
-   * evento scatenato quando l'utente clicca "registrati" 
-   * sulla prima pagina di registrazione
-   */
-  onClickProsegui()
-  {
-    if (!this.formRegister.valid)
-    {
-      return;
-    }
-    else{
-      this.docUtente.NOME=this.formRegister.value.name;
-      this.docUtente.COGNOME=this.formRegister.value.surname;
-      this.docUtente.EMAIL=this.formRegister.value.email;
-      this.docUtente.WEBPASSWORD=this.formRegister.value.psw;
-      this.docUtente.MOBILENUMBER=this.formRegister.value.telephone;
-      this.docUtente.CODICEFISCALE=this.formRegister.value.codFisc;
-      this.loadingCtrl
-        .create({
-          message: 'Registrazione'
-        })
-        .then(element => {
-
-          // //Creo il loading
-          // element.present();
-
-
-            this.stato=PageState.CONFIRM;
-        })
-    }
-  }
-
-  /**
-   * evento scatenato quando l'utente clicca sul pulsante di validazione
-   * del numero di telefono
-   */
-  onClickRegister()
-  {
-    if(this.formConfirm.valid)
-    {
-      //TODO qui manca la richiesta di registrazione a gouego
-      this.stato=PageState.WELCOME;
-    }
-  }
-
-  /**
-   * procedura che sposta il focus sulla casella di input successiva
-   * @param evento parametri $event dell'eveno "ion-input", necessari a identificare
-   * in quale casella c'è stato l'input
-   */
-  changeFocus(evento)
-  {
-    let id=evento['target']['id'];
-  
-      if (id==1)
-      this.c2.setFocus();
-      else if (id==2)
-      this.c3.setFocus();
-      else if (id==3)
-      this.c4.setFocus();
-      else if (id==4)
-      this.c5.setFocus();      
-    
+    //usato quando non in modale
+    //this.navCtrl.navigateRoot('/')
   }
 
   /**
@@ -178,6 +125,98 @@ export class NewLoginPage implements OnInit {
   }
 
   /**
+   * evento scatenato quando l'utente clicca "registrati" 
+   * sulla pagina di inserimento dati
+   */
+  onClickRegistrati()
+  {
+    if (!this.formRegister.valid)
+    {
+      return;
+    }
+    else{
+      this.docUtente.NOME=this.formRegister.value.name;
+      this.docUtente.COGNOME=this.formRegister.value.surname;
+      this.docUtente.WEBPASSWORD=this.formRegister.value.psw;
+      this.docUtente.CODICEFISCALE=this.formRegister.value.codFisc;
+      this.loadingCtrl
+        .create({
+          message: 'Registrazione'
+        })
+        .then(element => {
+
+          // //Creo il loading
+          // element.present();
+
+
+            this.stato=PageState.WELCOME;
+        })
+    }
+  }
+
+  /**
+   * evento scatenato quando l'utente clicca sul pulsante conferma della videata di verifica
+   * dei recapiti
+   */
+  onClickVerifica()
+  {
+    if(this.formVeriryTel.valid&&this.formVeriryMail.valid)
+    {
+      //TODO qui manca la richiesta di registrazione a gouego
+      this.stato=PageState.REGISTRATION;
+    }
+  }
+
+  /**
+   * evento scatenato quando l'utente clicca sul pulsante verifica nella videata di inserimento dei contatti
+   */
+  onClickContinua(){
+    //TODO qui bisogna inserire l'invio di sms ed email
+    this.stato=PageState.VERIFY
+    
+  }
+
+  /**
+   * procedura che sposta il focus sulla casella di input successiva
+   * @param evento parametri $event dell'eveno "ion-input", necessari a identificare
+   * in quale casella c'è stato l'input
+   */
+  changeFocus(evento)
+  {
+    let id=evento['target']['id'];
+        switch (id) {
+        case '1':
+          this.c2.setFocus();
+          break;
+        case '2':
+          this.c3.setFocus();
+          break;
+        case '3':
+          this.c4.setFocus();
+          break;
+        case '4':
+          this.c5.setFocus();
+          break;
+        case '6':
+          this.c7.setFocus();
+          break;
+        case '7':
+          this.c8.setFocus();
+          break;
+        case '8':
+          this.c9.setFocus();
+          break;
+        case '9': 
+          this.c10.setFocus();
+          break;
+      
+        default:
+          break;
+      }
+    
+  }
+
+  /**
    * Procedura che visualizza un toast con il messaggio passato
    * @param myMessage Il messaggio da visualizzare
    */
@@ -210,9 +249,6 @@ export class NewLoginPage implements OnInit {
   /**
    * evento scatenato quando l'utente clicca su "verifica in seguito"
    */
-  onClickVerificaInSeguito(){
-    this.stato=this.pageState.WELCOME;
-  }
 
   /**
    * evento scatenato quando l'utente clicca su inizia
@@ -221,10 +257,24 @@ export class NewLoginPage implements OnInit {
     //TODO da decidere cosa fare
     this.modalCtrl.dismiss();
   }
-
-   
+  
 
 //#region funzioni per la creazioe dei form
+
+  createContactForm(){
+    //form dei contatti (mail e telefono)
+    this.formContact=new FormGroup({
+      email: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required, Validators.email]
+      }),
+      telephone: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required, Validators.pattern('[0-9]*')]
+      })
+    })
+
+  }
   createRegisterForm(){
     //form di registrazione
     this.formRegister=new FormGroup({
@@ -236,10 +286,6 @@ export class NewLoginPage implements OnInit {
         updateOn: 'change',
         validators: [Validators.required]
       }),
-      email: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.email]
-      }),
       psw: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
@@ -248,10 +294,6 @@ export class NewLoginPage implements OnInit {
         updateOn: 'change',
         validators: [Validators.required]
       }),      
-      telephone: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required]
-      }),
       codFisc: new FormControl(null,{
         updateOn: 'change',
         validators: [Validators.required]
@@ -278,8 +320,8 @@ export class NewLoginPage implements OnInit {
       })
     });
   }
-  createConfirmForm(){
-    this.formConfirm=new FormGroup({
+  createVeriryForm(){
+    this.formVeriryMail=new FormGroup({
       c1: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
@@ -297,6 +339,29 @@ export class NewLoginPage implements OnInit {
         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       }),
       c5: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+      })
+    })
+
+    this.formVeriryTel=new FormGroup({
+      c6: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+      }),
+      c7: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+      }),
+      c8: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+      }),
+      c9: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+      }),
+      c10: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       })
@@ -321,8 +386,9 @@ export class NewLoginPage implements OnInit {
 enum PageState
 {
   REGISTRATION =10,
-  CONFIRM = 20,
+  VERIFY = 20,
   WELCOME = 30,
-  LOGIN = 40
+  LOGIN = 40,
+  CONTACT = 50
 }
 

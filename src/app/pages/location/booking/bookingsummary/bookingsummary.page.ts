@@ -26,8 +26,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   activePrenotazione: Prenotazione;
   subActivePrenotazione: Subscription;
 
-  //Elemento 1 di Pianificazione contenuta in activePrenotazione
-  //FIXME Alcune informazioni (tra cui lo sport) non vengono recuperate
   docPianificazione: PrenotazionePianificazione;
 
  //Location selezionata

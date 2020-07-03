@@ -11,7 +11,6 @@ import { HomePageModule } from '../../home/home.module';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose/payment-choose.component';
 import { PaypalPage } from '../../paypal/paypal.page';
-import { AuthComponent } from 'src/app/shared/components/auth/auth.component'
 
 
 @NgModule({
@@ -25,6 +24,6 @@ import { AuthComponent } from 'src/app/shared/components/auth/auth.component'
     
   ],
   declarations: [BookingPage,  BookingsummaryPage, PaymentChooseComponent, PaypalPage],
-  entryComponents: [BookingsummaryPage, AuthComponent, PaymentChooseComponent, PaypalPage]
+  entryComponents: [BookingsummaryPage, PaymentChooseComponent, PaypalPage]
 })
 export class BookingPageModule {}

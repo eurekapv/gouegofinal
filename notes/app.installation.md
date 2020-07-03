@@ -96,3 +96,14 @@ ngOnInit() {
         loadSearchEmp();
     });
 }
+
+/* ********************************** */
+/* RECUPERO ELENCO COMUNI ITALIANI    */
+/* ********************************** */
+Esiste un repository github
+https://github.com/Samurai016/Comuni-ITA
+installabile su server Node.Js oppure siccome è hostato su heroku
+https://comuni-ita.herokuapp.com/
+
+è possibile interrogarlo
+

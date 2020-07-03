@@ -6,9 +6,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { NewLoginPageRoutingModule } from './new-login-routing.module';
 
-
-import { NewLoginPage } from './new-login.page';
 import { HomePageModule } from 'src/app/pages/home/home.module'
+import { NewLoginPage } from './new-login.page'
 
 @NgModule({
   imports: [

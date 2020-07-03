@@ -157,7 +157,7 @@
       
               <!-- CARD LOGIN -->
               <ion-card class="cardPrincipale" *ngIf="stato==pageState.LOGIN">
-                <form [formGroup]="form">
+                <form [formGroup]="formLogin">
                   <ion-header>
                     <ion-toolbar color="primary">
                       <ion-buttons *ngIf="!onModal" slot="start">
@@ -198,7 +198,7 @@
                         color="primary" 
                         fill="outline" 
                         expand="block" 
-                        [disabled]="!form.valid" 
+                        [disabled]="!formLogin.valid" 
                         (click)="onClickLogin()">
                       Login
                     </ion-button>

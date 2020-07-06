@@ -67,16 +67,14 @@ export class SlotoccupazioneService {
       myParams = myParams.append('dataGiorno',strData);
   
       let myUrl = config.urlBase + '/' + doObject;
-        this.apiCall
-            .httpGet(myUrl,myHeaders,myParams)
-            .subscribe(resultData => {
-              
-              // LogApp.consoleLog('Dati Occupazione: RISPOSTA');
-              // LogApp.consoleLog(resultData);
+  
+      this.apiCall
+          .httpGet(myUrl,myHeaders,myParams)
+          .subscribe(resultData => {
 
-              //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
-              this.syncResult(resultData, templateSlotDay);
-            });
+            //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
+            this.syncResult(resultData, templateSlotDay);
+          });
     }
     else {
 

@@ -32,6 +32,8 @@ export class ListcoursesPage implements OnInit {
 
   preferList: SegmentCorsi; 
 
+  
+
   //Spinner di ricezione corsi
   ricevuti = false;
   
@@ -63,6 +65,9 @@ export class ListcoursesPage implements OnInit {
   }
 
   ngOnInit() {
+
+    this.ricevuti = false;
+    
     
     // Leggo idLocation 
     this.router.paramMap.subscribe( param => {

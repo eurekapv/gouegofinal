@@ -83,7 +83,6 @@ export class StartService {
     private areaService: AreaService,
     private locationService: LocationService,
     private corsoCalendarioService: CourseschedulerService,
-    private campiSportService: CamposportService,
     private prenotazioniService: PrenotazioneService,
     private newsEventiService: NewseventiService,
     private slotOccupazioneService: SlotoccupazioneService,
@@ -455,7 +454,7 @@ newFilterCorsi(idLocation: string) {
  * Richiede al server le Categorie Eta
  * @param docUser Documento Utente per estrarre corsi solo dedicati all'utente
  */
-requestCorsi(docUser?:Utente) {
+requestCorsi(docUser?:Utente, ricezione?: boolean) {
   const actualStartConfig = this._startConfig.getValue();
   const listSport = this.sportService.actualListSport;
   const listCategoriaEta = this.categoriaEtaService.actualListCategorieEta;

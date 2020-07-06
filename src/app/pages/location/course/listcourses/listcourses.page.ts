@@ -7,7 +7,7 @@ import { StartService } from '../../../../services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi } from 'src/app/models/valuelist.model';
 import { FilterCorsi } from 'src/app/models/filtercorsi.model';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, LoadingController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 import { LogApp } from 'src/app/models/log.model';
@@ -39,7 +39,8 @@ export class ListcoursesPage implements OnInit {
   constructor(private router: ActivatedRoute, 
               private startService: StartService,
               private mdlController: ModalController,
-              private navController: NavController
+              private navController: NavController,
+              private loadingCtrl: LoadingController
               ) { 
     
     //In attesa dei corsi
@@ -68,24 +69,22 @@ export class ListcoursesPage implements OnInit {
       
       if (param.has('locationId')) 
       {
-        //Recupero del Location ID
-        this.idLocation = param.get('locationId');
-        
-        //Inizializzazione dei Filtri
-        this.filtriCorsi = this.startService
-                                  .newFilterCorsi(this.idLocation);
-        
-        //Effettuo la richiesta dei corsi
-        this.requestCorsi();
+          //Recupero del Location ID
+          this.idLocation = param.get('locationId');
+          
+          //Inizializzazione dei Filtri
+          this.filtriCorsi = this.startService
+                                    .newFilterCorsi(this.idLocation);
+          
+          //Effettuo la richiesta dei corsi
+          this.requestCorsi();
 
-        //Mi sottoscrivo alla ricezione
-        this.corsiListen = this.startService.listCorsi.subscribe (element => {
-          //Corsi sono stati ricevuti
-          this.ricevuti = true;
-          this.listCorsi = element;
-        })
-
-
+          //Mi sottoscrivo alla ricezione
+          this.corsiListen = this.startService.listCorsi.subscribe (element => {
+            //Corsi sono stati ricevuti
+            this.ricevuti = true;
+            this.listCorsi = element;
+          })
       }
 
     })
@@ -99,7 +98,9 @@ export class ListcoursesPage implements OnInit {
       case SegmentCorsi.tutti:
           //Richiedo i corsi
           this.ricevuti = false;
-          this.startService.requestCorsi();
+          this.startService.requestCorsi().then(()=>{
+            console.log('ORA SONO ARRIVATI');
+          });
           break;
       case SegmentCorsi.mioLivello:
           //Richiedo i corsi con il documento utente per effettuare i filtri

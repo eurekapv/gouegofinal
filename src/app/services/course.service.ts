@@ -12,6 +12,7 @@ import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { Utente } from '../models/utente.model';
 import { LogApp } from '../models/log.model';
+import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,7 @@ export class CourseService {
   private _decodeListLivelli: Livello[];
   private _decodeListEta: CategoriaEta[];
   private _selectedCorso = new BehaviorSubject<Corso>(new Corso());
+
 
 
   get listCorsi() {
@@ -66,7 +68,8 @@ export class CourseService {
     return this._filterCorsi;
   }
 
-  constructor(private apiService: ApicallService) { }
+  constructor(private apiService: ApicallService,
+              private loadingCtrl: LoadingController) { }
 
   /**
    * Effettua una chiamata al server per il recupero dei corsi
@@ -87,33 +90,83 @@ export class CourseService {
     
     //Elimino i corsi presenti
     this.emptyCorsi();
+    this.loadingCtrl.create({
+      message: 'Caricamento',
+      spinner: 'bubbles'
+    }).then(ctrl=>{
+      ctrl.present();
+         this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+          return data.CORSO
+        }))
+        .subscribe( resultData => {
 
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-        return data.CORSO
-      }))
-      .subscribe( resultData => {
-
-        if (resultData) {
-          resultData.forEach(element => {
-  
-            let newCorso = new Corso();
-            newCorso.setJSONProperty(element);
-            //Decodifico i campi chiave
-            newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
-  
-            //Decodifico i campi chiave
-            newCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
-  
-            //Decodifico i campi chiave
-            newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
-  
-            this.addCorso(newCorso);
-  
-          });
-        }
+          if (resultData) {
+            resultData.forEach(element => {
+    
+              let newCorso = new Corso();
+              newCorso.setJSONProperty(element);
+              //Decodifico i campi chiave
+              newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
+    
+              //Decodifico i campi chiave
+              newCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
+    
+              //Decodifico i campi chiave
+              newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
+    
+              this.addCorso(newCorso);
+              ctrl.dismiss();
+    
+            });
+          }
+        })
       })
+  };
+
+  requestPromise (config: StartConfiguration, docUser?:Utente) {
+    return new Promise ((resolve, reject)=>{
+
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'CORSO';
+      
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      let myParams = this.getHttpParamsFilter(this._filterCorsi);
+      
+      //Elimino i corsi presenti
+      this.emptyCorsi();
+           this.apiService
+          .httpGet(myUrl, myHeaders, myParams)
+          .pipe(map(data => {
+            return data.CORSO
+          }))
+          .subscribe( resultData => {
+  
+            if (resultData) {
+              resultData.forEach(element => {
+      
+                let newCorso = new Corso();
+                newCorso.setJSONProperty(element);
+                //Decodifico i campi chiave
+                newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
+      
+                //Decodifico i campi chiave
+                newCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
+      
+                //Decodifico i campi chiave
+                newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
+      
+                this.addCorso(newCorso); 
+                resolve();     
+              });
+            }
+          })
+    })
   }
 
 

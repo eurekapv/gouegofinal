@@ -14,6 +14,7 @@ import { SlotTime } from '../models/imdb/slottime.model';
 import { StatoSlot } from '../models/valuelist.model';
 import { MyDateTime } from '../models/mydatetime.model';
 import { LogApp } from '../models/log.model';
+import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class SlotoccupazioneService {
     return this._docOccupazione.asObservable();
   }
 
-  constructor(private apiCall: ApicallService) { }
+  constructor(private apiCall: ApicallService,
+              private loadingCtrl: LoadingController) { }
 
   /**
    * Prende in ingresso il template Slot Day, richiede al server i soli dati di occupazione di un determinato campo per un determinato giorno,
@@ -65,17 +67,16 @@ export class SlotoccupazioneService {
       myParams = myParams.append('dataGiorno',strData);
   
       let myUrl = config.urlBase + '/' + doObject;
-  
-      this.apiCall
-          .httpGet(myUrl,myHeaders,myParams)
-          .subscribe(resultData => {
-            
-            // LogApp.consoleLog('Dati Occupazione: RISPOSTA');
-            // LogApp.consoleLog(resultData);
+        this.apiCall
+            .httpGet(myUrl,myHeaders,myParams)
+            .subscribe(resultData => {
+              
+              // LogApp.consoleLog('Dati Occupazione: RISPOSTA');
+              // LogApp.consoleLog(resultData);
 
-            //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
-            this.syncResult(resultData, templateSlotDay);
-          });
+              //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
+              this.syncResult(resultData, templateSlotDay);
+            });
     }
     else {
 

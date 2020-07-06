@@ -467,10 +467,13 @@ requestCorsi(docUser?:Utente) {
   this.corsoService.decodeListLivelli = listLivelli;
   this.corsoService.decodeListSport = listSport;
 
+
+  //TODO questo l'ho commentato
   //Chiamo il servizio per il recupero corsi
-  this.corsoService
-      .request(actualStartConfig, 
-               docUser);
+  // this.corsoService
+  //     .request(actualStartConfig, 
+  //              docUser);
+  return this.corsoService.requestPromise(actualStartConfig, docUser);
             
 }
 

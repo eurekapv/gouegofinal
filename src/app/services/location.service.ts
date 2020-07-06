@@ -9,6 +9,7 @@ import { StartConfiguration } from '../models/start-configuration.model';
 import { Sport } from '../models/sport.model';
 import { CampoSport } from '../models/camposport.model';
 import { SlotWeek } from '../models/imdb/slotweek.model';
+import { LoadingController } from '@ionic/angular';
 
 
 
@@ -35,7 +36,8 @@ export class LocationService {
     return this._activeLocation.asObservable();
   }
 
-  constructor(private apiService:ApicallService) { }
+  constructor(private apiService:ApicallService,
+              private loadingCtrl: LoadingController) { }
 
 
 
@@ -93,24 +95,23 @@ export class LocationService {
 
     let myUrl = config.urlBase + '/' + doObject;
 
-
-    this.apiService
-                .httpGet(myUrl, myHeaders, myParams)
-                .pipe(map(fullData => {                
-                  return fullData.LOCATION;
-                }))
-                .subscribe(resultData => {
-                  let locReturn: Location;
-                  
-                  if (resultData && resultData.length !== 0) {
+      this.apiService
+                  .httpGet(myUrl, myHeaders, myParams)
+                  .pipe(map(fullData => {                
+                    return fullData.LOCATION;
+                  }))
+                  .subscribe(resultData => {
+                    let locReturn: Location;
                     
-                    locReturn = new Location();
-                    locReturn.setJSONProperty(resultData[0]);
-                    
-                    //Emetto evento di cambio
-                    this._activeLocation.next(locReturn);
-                  }                  
-                });
+                    if (resultData && resultData.length !== 0) {
+                      
+                      locReturn = new Location();
+                      locReturn.setJSONProperty(resultData[0]);
+                      
+                      //Emetto evento di cambio
+                      this._activeLocation.next(locReturn);
+                    }                  
+                  });
   }
 
   /**

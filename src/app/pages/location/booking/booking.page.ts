@@ -65,7 +65,8 @@ export class BookingPage implements OnInit, OnDestroy {
   availableFields: Campo[]=[]; //un array dei soli campi per lo sport selezionato
 
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
-  
+  indexCount: number = 0;
+
 
   constructor(private router: ActivatedRoute, 
               private startService:StartService,
@@ -74,6 +75,7 @@ export class BookingPage implements OnInit, OnDestroy {
               private toastCtrl: ToastController,
               private modalCtrl: ModalController) { 
 
+
     this.ricevuti = false;
     this.bookable = false;
 
@@ -81,6 +83,11 @@ export class BookingPage implements OnInit, OnDestroy {
     this.actualPlanning = new PrenotazionePianificazione;
     
   }
+  
+  // ionViewDidLeave() {
+  //   this.ricevuti = false;
+  //   this.bookable = false;
+  // }
 
   
   /**
@@ -116,6 +123,10 @@ export class BookingPage implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+
+    console.log('Sono nell onInit');
+    this.ricevuti = false;
+    this.bookable = false;
 
     this.router.paramMap.subscribe(param => {
       
@@ -157,10 +168,9 @@ export class BookingPage implements OnInit, OnDestroy {
 
           //Ascolto documento di Prenotazione
           //Sia la prima volta che entra nel OnInit
-          //Esegue tutte le colte che la prenotazione cambia
+          //Esegue tutte le volte che la prenotazione cambia
           this.subActivePrenotazione = this.startService.activePrenotazione.subscribe(elPrenotazione => {
             this.activePrenotazione = elPrenotazione;
-              console.log(this.activePrenotazione);
           });
 
 
@@ -220,11 +230,17 @@ export class BookingPage implements OnInit, OnDestroy {
 
     this.subSelectedLocation = this.startService.activeLocation
       .subscribe(dataLocation => {
+
+        this.indexCount ++;
+        console.log('Sono entrato per la ' + this.indexCount);
+        console.log('Con questi dati ');
+        console.log(dataLocation);
+
         // Chiedo la Location
         this.selectedLocation = dataLocation;
 
         /* Se ho la location */
-        if (this.selectedLocation && !this.selectedLocation.do_inserted) {
+        if (this.selectedLocation && !this.selectedLocation.do_inserted && this.selectedLocation.CAMPO.length !== 0) {
 
           //RECUPERO IL TEMPLATE WEEK SLOT TIME
           this.getTemplateWeek(this.selectedLocation);
@@ -250,6 +266,9 @@ export class BookingPage implements OnInit, OnDestroy {
     //Mi sottoscrivo alla ricezione degli Sport praticati
     this.subListLocationSport = this.startService.listLocationSport
           .subscribe(resultData => {
+
+
+
                 //Popolo Lista degli Sport
                 this.listLocationSport = resultData;
 
@@ -307,6 +326,7 @@ export class BookingPage implements OnInit, OnDestroy {
 
         //Richiesta delle nuove occupazioni e impostazione nuova Pianificazione
         this.getOccupazioni();
+        
       }
     }
 

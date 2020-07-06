@@ -96,6 +96,7 @@ export class CourseService {
       .subscribe( resultData => {
 
         if (resultData) {
+          
           resultData.forEach(element => {
   
             let newCorso = new Corso();
@@ -113,7 +114,7 @@ export class CourseService {
   
           });
         }
-      })
+      });
   }
 
 

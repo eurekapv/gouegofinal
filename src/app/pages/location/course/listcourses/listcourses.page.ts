@@ -32,6 +32,8 @@ export class ListcoursesPage implements OnInit {
 
   preferList: SegmentCorsi; 
 
+  
+
   //Spinner di ricezione corsi
   ricevuti = false;
   
@@ -62,6 +64,9 @@ export class ListcoursesPage implements OnInit {
   }
 
   ngOnInit() {
+
+    this.ricevuti = false;
+    
     
     // Leggo idLocation 
     this.router.paramMap.subscribe( param => {
@@ -73,7 +78,7 @@ export class ListcoursesPage implements OnInit {
         
         //Inizializzazione dei Filtri
         this.filtriCorsi = this.startService
-                                  .newFilterCorsi(this.idLocation);
+                               .newFilterCorsi(this.idLocation);
         
         //Effettuo la richiesta dei corsi
         this.requestCorsi();
@@ -83,7 +88,7 @@ export class ListcoursesPage implements OnInit {
           //Corsi sono stati ricevuti
           this.ricevuti = true;
           this.listCorsi = element;
-        })
+        });
 
 
       }
@@ -99,7 +104,7 @@ export class ListcoursesPage implements OnInit {
       case SegmentCorsi.tutti:
           //Richiedo i corsi
           this.ricevuti = false;
-          this.startService.requestCorsi();
+          this.startService.requestCorsi(null);
           break;
       case SegmentCorsi.mioLivello:
           //Richiedo i corsi con il documento utente per effettuare i filtri

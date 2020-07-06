@@ -69,9 +69,6 @@ export class SlotoccupazioneService {
       this.apiCall
           .httpGet(myUrl,myHeaders,myParams)
           .subscribe(resultData => {
-            
-            // LogApp.consoleLog('Dati Occupazione: RISPOSTA');
-            // LogApp.consoleLog(resultData);
 
             //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
             this.syncResult(resultData, templateSlotDay);

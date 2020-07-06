@@ -7,15 +7,15 @@ div.div-logo{
         height: 17vh;
     }
 }
-
-ion-button.btn-confirm{
-    margin-top: 7vh;
-    margin-bottom: 8vh;
+div.div-logo.desktop{
+    padding-top: 1vh;
+    padding-bottom:1vh;
+    margin-bottom: 1vh;
 }
+
 
 div.form-verifica{
     width:320px;
-    //background-color:white;
     margin:auto;
     margin-bottom: 8vh;
     text-align:center;
@@ -32,6 +32,10 @@ div.form-verifica{
             font-size: 40px;
         }
     }
+}
+
+div.form-verifica.desktop{
+    margin-bottom: 2vh;
 }
 
 

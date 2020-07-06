@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ModalController, LoadingController, ToastController, NavController } from '@ionic/angular';
+import { ModalController, LoadingController, ToastController } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -31,6 +31,9 @@ export class NewLoginPage implements OnInit {
   startListen: Subscription;
   docUtente= new Utente;
 
+  //Restituisce true se l'app sta girando su Desktop
+  isDesktop:boolean;
+
   //#region questi servono per accedere ai corrispettivi elementi in HTML
   @ViewChild('c1',{static:false}) c1;
   @ViewChild('c2',{static:false}) c2;
@@ -51,7 +54,6 @@ export class NewLoginPage implements OnInit {
     private startService:StartService,
     private loadingCtrl:LoadingController,
     private toastCtrl:ToastController,
-    private navCtrl:NavController
   ) {
     this.stato=this.pageState.LOGIN;
     this.startListen=startService.startConfig.subscribe(data=>{
@@ -64,8 +66,7 @@ export class NewLoginPage implements OnInit {
     this.createRegisterForm();
     this.createVeriryForm();
     this.createContactForm();
-
-    
+    this.isDesktop=this.startService.isDesktop
   }
 
   closeModal(){

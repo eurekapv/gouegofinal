@@ -242,16 +242,11 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                      .requestImportoPrenotazione()
                      .subscribe(resultData => {
 
-                          console.log('Ricalcolo Prenotazione');
-                          console.log(resultData);
                           //Chiudo il loading
                           elLoading.dismiss();
 
                           //Converto il documento ricevuto
                           let newPrenotazione = Prenotazione.getPrenotazioneFromJson(resultData);
-                          console.log('AfterCalcolaTotale prenotazione');
-                          console.log(newPrenotazione);
-
 
                           //Invio al servizio il documento
                           this.startService
@@ -308,11 +303,12 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    */
   onAfterSavePrenotazione()
   {
-    
+    this.showMessage('Prenotazione confermata');
     //1) Chiudere la modale
     this.closeModal();
     //2) Andare alla History sulla scheda
-    this.navCtrl.navigateRoot(['historylist/booking',this.docPianificazione.ID])
+    this.navCtrl.navigateRoot(['historylist/booking', this.activePrenotazione.ID + '-' + this.docPianificazione.ID]);
+
   }
 
 
@@ -479,23 +475,38 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
           //Effettuo il salvataggio
           this.startService
               .requestSavePrenotazione()
-              .then(elPrenotazione => {
+              .then(docPrenotazione => {
                 //Salvataggio avvenuto correttamente
                 //Chiudo il loading
                 elLoading.dismiss();
 
-                //Imposto questa prenotazione
-                this.activePrenotazione = elPrenotazione;
-                this.docPianificazione = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
+                //Ecco il documento ricevuto
+                this.activePrenotazione = docPrenotazione;
 
-                console.log(elPrenotazione);
 
+
+                  //Se non è valida visualizzo un messsaggio
+                if (!docPrenotazione.ISVALID) {
+
+                  this.showMessage(docPrenotazione.MSGINVALID);
+
+                }
+                else {
+                  //Imposto anche la pianificazione
+                  this.docPianificazione = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
+
+                }
+
+                console.log('Salvo');
+                console.log(this.activePrenotazione);
+                console.log(this.docPianificazione);
                 //Eseguo operazioni successive al salvataggio
                 this.onAfterSavePrenotazione();
 
+
               }, errPrenotazione => {
                 elLoading.dismiss();
-                this.showMessage(errPrenotazione.MSGVALID)
+                this.showMessage(errPrenotazione.MSGVALID);
               });
         });
     

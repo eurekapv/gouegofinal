@@ -109,9 +109,14 @@ export class HistorybookPage implements OnInit, OnDestroy {
     let idPren = '';
     let idPian = '';
 
+    console.log(historyId);
+
     if (historyId.length !== 0) {
       idPren = historyId.substr(0,36);
       idPian = historyId.substr(37,36);
+
+      console.log('IDPre: ' + idPren);
+      console.log('IDPia: ' + idPian);
 
       if (idPren.length !== 36 || idPian.length !== 36) {
         result = false;
@@ -121,13 +126,14 @@ export class HistorybookPage implements OnInit, OnDestroy {
         this.idPianificazione = idPian;
 
         //Chiedo la Prenotazione
-        this.subActivePrenotazione = this.startService.requestPrenotazioneById(this.idPrenotazione, 999)
-                                         .subscribe (docPrenotazione => {
+        this.subActivePrenotazione = this.startService
+                      .requestPrenotazioneById(this.idPrenotazione, 999)
+                      .subscribe (docPrenotazione => {
 
                                                   this.activePrenotazione = docPrenotazione;
                                                   this.showSpinner = false;
                                                   this.sliderOpts.initialSlide=this.activePrenotazione.getIndexPianificazione(this.idPianificazione);
-                                                  console.log("ho dato alle slideropts" +  this.activePrenotazione.getIndexPianificazione(this.idPianificazione));                                                  });
+                                                });
       }
     }
     else {

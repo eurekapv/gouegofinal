@@ -18,7 +18,7 @@ export class ApicallService {
    * @param header Dati di Testata
    * @param params Parametri di Testata
    */
-  httpGet(url: string, header: HttpHeaders, params: HttpParams) {
+  httpGet(url: string, header: HttpHeaders, params?: HttpParams) {
     return this._httpGet(url, header, params)
   }
 
@@ -59,7 +59,7 @@ export class ApicallService {
    * @param reqHeaders Testata
    * @param reqParams  Parametri
    */
-  private _httpGet(url: string, reqHeaders: HttpHeaders, reqParams: HttpParams) {
+  private _httpGet(url: string, reqHeaders: HttpHeaders, reqParams?: HttpParams) {
     LogApp.consoleLog('Chiamata GET a ' + url);
     
     //ritorno la get controllando l'errore

@@ -229,12 +229,18 @@ export class PaymentConfiguration {
   }
   
   export class PaymentResult {
-    executed: boolean;  //Indica se è avvenuto il pagamento
-    result: boolean;    //Indica la risposta del sistema remoto
+    paymentRequestInApp: boolean; //Pagamento con l'App richiesto (Se false pagherà dopo)
+    paymentExecuted: boolean;   //Indica se il sistema remoto ha autorizzato il pagamento
+    result: boolean;     //Indica se il processo del pagamento è completato (o siamo in attesa)
+
     message: string;
     responseJson: string;
 
     constructor() {
-        this.executed = false;
+        this.result = false;
+        //Richiesto il pagamento con l'app
+        this.paymentRequestInApp = true;
+        //Non eseguito
+        this.paymentExecuted = false;
     }
   }

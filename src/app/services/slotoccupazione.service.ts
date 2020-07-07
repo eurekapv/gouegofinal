@@ -9,26 +9,28 @@ import { SlotDay } from '../models/imdb/slotday.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { Location } from '../models/location.model';
 import { Campo } from '../models/campo.model';
-import { DateSlotLock, TimeLock } from '../models/dateslotlock.model';
+import { DateSlotLock } from '../models/dateslotlock.model';
 import { SlotTime } from '../models/imdb/slottime.model';
 import { StatoSlot } from '../models/valuelist.model';
 import { MyDateTime } from '../models/mydatetime.model';
 import { LogApp } from '../models/log.model';
-import { LoadingController } from '@ionic/angular';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class SlotoccupazioneService {
 
+  gapHour: number; //Se lo slot e l'ora attuale hanno una differenza inferiore al gapHour non è prenotabile
   _docOccupazione = new BehaviorSubject<SlotDay>(new SlotDay());
 
   get docOccupazione() {
     return this._docOccupazione.asObservable();
   }
 
-  constructor(private apiCall: ApicallService,
-              private loadingCtrl: LoadingController) { }
+  constructor(private apiCall: ApicallService) {
+    this.gapHour = 2;
+   }
 
   /**
    * Prende in ingresso il template Slot Day, richiede al server i soli dati di occupazione di un determinato campo per un determinato giorno,
@@ -124,16 +126,29 @@ export class SlotoccupazioneService {
             //Nel caso da template sia CHIUSO non lo cambio
 
             if (elSlotTime.STATO !== StatoSlot.chiuso) {
-              let inSlot = this.slotInServerSlotLock(elSlotTime, srvResult);
 
-            
-              if (inSlot) {
-                //E' tra gli slot occupati
+              //ad Adesso applico un gap di Ore
+              let adesso = moment().add(this.gapHour, 'hours');
+               
+              //Se l'inizio dello Slot è superiore ad adesso
+              if (moment(elSlotTime.START).isAfter(adesso))  {
+
+                let inSlot = this.slotInServerSlotLock(elSlotTime, srvResult);
+  
+              
+                if (inSlot) {
+                  //E' tra gli slot occupati
+                  elSlotTime.STATO = StatoSlot.occupato;
+                }
+              }
+              else {
+                //Lo Slot non è disponibile
                 elSlotTime.STATO = StatoSlot.occupato;
               }
+
             }
           }
-        })
+        });
 
       
     }

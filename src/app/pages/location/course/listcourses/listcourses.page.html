@@ -17,31 +17,13 @@
  
 
 <ion-content>
+
   <!-- IN RICERCA CORSI -->
   <!-- CORSI NON RICEVUTI -->
-  <div *ngIf="!ricevuti" id="crs-spinner">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  <div *ngIf="!ricevuti" class="nofind-cnt">
+    <ion-spinner name="circular"></ion-spinner>
   </div>
-
-
-  <!-- NON IN RICERCA - PER UTENTE LOGGATO -->
-  <!-- BOTTONI SEGMENTATI -->
-  <ion-segment 
-      *ngIf="userLogged && ricevuti" 
-      class="ion-padding-top ion-padding-horizontal"
-       (ionChange)="onChangeSegmentCorsi($event)"
-       color="medium"
-       value="corsiall"
-       id="crs:button">
-    <ion-segment-button value="corsiall">
-      <ion-label>Tutti</ion-label>
-    </ion-segment-button>
-
-    <ion-segment-button value="corsiforme">
-      <ion-label>Mio Livello</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-
+  
   <!-- NON IN RICERCA E CORSI TROVATI -->
   <!-- VISUALIZZAZIONE CORSI -->
   <div *ngIf="ricevuti && listCorsi.length !== 0" id="crs-lista">
@@ -78,7 +60,6 @@
   </div>
 
   <div *ngIf="ricevuti && listCorsi.length === 0" class="nofind-cnt">
-
     <ion-label>Nessun corso disponibile</ion-label>
     <ion-label>Modifica i parametri</ion-label>
     <ion-label>di Ricerca</ion-label>
@@ -86,3 +67,22 @@
 
 
 </ion-content>
+
+<ion-footer>
+   <!-- NON IN RICERCA - PER UTENTE LOGGATO -->
+  <!-- BOTTONI SEGMENTATI -->
+  <ion-segment 
+  *ngIf="userLogged" 
+  (ionChange)="onChangeSegmentCorsi($event)"
+  color="medium"
+  value="corsiall"
+       id="crs:button">
+       <ion-segment-button value="corsiall">
+         <ion-label>Tutti</ion-label>
+    </ion-segment-button>
+    
+    <ion-segment-button value="corsiforme">
+      <ion-label>Mio Livello</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-footer>

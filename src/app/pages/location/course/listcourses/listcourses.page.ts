@@ -12,7 +12,8 @@ import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 import { LogApp } from 'src/app/models/log.model';
 
-
+//#TODO qui la logica potrebbe essere diversa: bisogna fare la request una sola volta allinizio,
+//e non ogni volta che il segment cambia, in modo da evitare il flash dello spinner ogni volta
 @Component({
   selector: 'app-listcourses',
   templateUrl: './listcourses.page.html',
@@ -45,9 +46,6 @@ export class ListcoursesPage implements OnInit {
               private loadingCtrl: LoadingController
               ) { 
     
-    //In attesa dei corsi
-    this.ricevuti = false;
-
     //Richiedo l'utente e se è loggato
     this.listenUserLogged = this.startService.utenteLogged.subscribe(value => {
       this.userLogged = value;
@@ -87,7 +85,6 @@ export class ListcoursesPage implements OnInit {
           //Mi sottoscrivo alla ricezione
           this.corsiListen = this.startService.listCorsi.subscribe (element => {
             //Corsi sono stati ricevuti
-            this.ricevuti = true;
             this.listCorsi = element;
           })
       }
@@ -99,18 +96,21 @@ export class ListcoursesPage implements OnInit {
    * Richiesta dei corsi
    */
   requestCorsi() {
+    this.ricevuti=false;
     switch (this.preferList) {
       case SegmentCorsi.tutti:
           //Richiedo i corsi
-          this.ricevuti = false;
           this.startService.requestCorsi().then(()=>{
-            console.log('ORA SONO ARRIVATI');
+            this.ricevuti=true;
+          }, ()=>{
+            console.log('reject');
           });
           break;
       case SegmentCorsi.mioLivello:
           //Richiedo i corsi con il documento utente per effettuare i filtri
-          this.ricevuti = false;
-          this.startService.requestCorsi(this.docUser);
+          this.startService.requestCorsi(this.docUser).then(()=>{
+            this.ricevuti=true;
+          });
           break;
 
       default:
@@ -125,7 +125,7 @@ export class ListcoursesPage implements OnInit {
    * Modifica del Segment per la scelta dei corsi
    */
   onChangeSegmentCorsi(event: any) {
-
+    this.ricevuti=false
     if (event.target.value == 'corsiall')  {
       this.preferList = SegmentCorsi.tutti
       this.requestCorsi();

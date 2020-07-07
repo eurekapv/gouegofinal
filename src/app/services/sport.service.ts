@@ -5,6 +5,7 @@ import { Sport } from '../models/sport.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { ApicallService } from './apicall.service';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { error } from 'protractor';
 
 
 @Injectable({
@@ -45,45 +46,50 @@ export class SportService {
    * @param config Parametri configurazione chiamata
    */
   request(config: StartConfiguration, withLivelli?:boolean) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'SPORT';
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    //Nei Parametri imposto il LivelloAutorizzazione
-    let myParams = new HttpParams().set('LivelloAutorizzazione','0');
-    let myUrl = config.urlBase + '/' + doObject;
-
-    if (withLivelli) {
-      //Richiedo di caricare anche i livelli
-      myHeaders = myHeaders.append('only-level','-1');
-    }
-
-    /*Non ho ancora caricato dal server*/
-    if (!this._loaded) {
-      this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-          return data.SPORT
-        }))
-        .subscribe(resultData => {
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'SPORT';
   
-          //Arrivati dal server
-          this._loaded = true;
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      //Nei Parametri imposto il LivelloAutorizzazione
+      let myParams = new HttpParams().set('LivelloAutorizzazione','0');
+      let myUrl = config.urlBase + '/' + doObject;
   
-          resultData.forEach(element => {
+      if (withLivelli) {
+        //Richiedo di caricare anche i livelli
+        myHeaders = myHeaders.append('only-level','-1');
+      }
   
-            let newSport = new Sport();
-            newSport.setJSONProperty(element);
-            this.add2ListSport(newSport);
+      /*Non ho ancora caricato dal server*/
+      if (!this._loaded) {
+        this.apiService
+          .httpGet(myUrl, myHeaders, myParams)
+          .pipe(map(data => {
+            return data.SPORT
+          }))
+          .subscribe(resultData => {
+    
+            //Arrivati dal server
+            this._loaded = true;
             
+            resultData.forEach(element => {
+              
+              let newSport = new Sport();
+              newSport.setJSONProperty(element);
+              this.add2ListSport(newSport);
+              resolve();
+              
+            });
+          }, error=>{
+            reject(error);
           });
-        });
-    }
-    else {
-      //Già caricati dal server
+      }
+      else {
+        //Già caricati dal server
+      }
       
-    }
+    })
 
   }
 
@@ -108,37 +114,42 @@ export class SportService {
    * @param idLocation Location
    */
   requestLocationSport(config: StartConfiguration, idLocation: string) {
-      const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
-                         'X-HTTP-Method-Override':'getSportLocation', 
-                         'appid':config.appId,
-                         'child-level': '1'
-                        });
-
-    const myParams = new HttpParams().set('idLocation', idLocation);
-    const doObject = 'SPORT';
-
-    let myUrl = config.urlBase + '/' + doObject;
-
-    //Svuoto gli attuali
-    this._listLocationSport.next([]);
-
-    // Effettuo la chiamata
-    return this.apiService
-               .httpGet(myUrl, myHeaders, myParams)
-               .pipe(map(data => {
-                      return data.SPORT
-                    }))
-               .subscribe(resultData => {
-
-                    resultData.forEach(element => {
+    return new Promise((resolve, reject)=>{
       
-                      let newSport = new Sport();
-                      newSport.setJSONProperty(element);
-                      this.add2ListLocationSport(newSport);
-                      
-                    });
+        const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
+                          'X-HTTP-Method-Override':'getSportLocation', 
+                          'appid':config.appId,
+                          'child-level': '1'
+                          });
 
-               });
+      const myParams = new HttpParams().set('idLocation', idLocation);
+      const doObject = 'SPORT';
+
+      let myUrl = config.urlBase + '/' + doObject;
+
+      //Svuoto gli attuali
+      this._listLocationSport.next([]);
+
+      // Effettuo la chiamata
+      return this.apiService
+                .httpGet(myUrl, myHeaders, myParams)
+                .pipe(map(data => {
+                        return data.SPORT
+                      }))
+                .subscribe(resultData => {
+
+                      resultData.forEach(element => {
+        
+                        let newSport = new Sport();
+                        newSport.setJSONProperty(element);
+                        this.add2ListLocationSport(newSport);
+                        
+                      });
+                      resolve();
+                }, error=>{
+                  reject(error);
+                });
+    })
     }
 
 

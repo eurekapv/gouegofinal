@@ -33,42 +33,47 @@ export class NewseventiService {
    * @param maxRecord Max Record da recuperare
    */
   request(config: StartConfiguration, idArea: string, maxRecord: number = 0) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'NEWSEVENTO';
-    const filterDateTime = this.getFilterDateTime();
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    let myUrl = config.urlBase + '/' + doObject;  
-
-    //Nei Parametri imposto l'area richiesta
-    let myParams = new HttpParams().set('IDAREAOPERATIVA',idArea);
-    myParams = myParams.append('PUBBLICATADAL',filterDateTime);
-    myParams = myParams.append('$top', (maxRecord + '') );
-
-    //Elimino gli attuali
-    this._listNews.next([]);
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-          
-            let arReturn = [];
-            if (data.NEWSEVENTO) {
-              arReturn = data.NEWSEVENTO;
-            }
-
-            return arReturn;
-          
-      }))
-      .subscribe (resultData => {
-
-          resultData.forEach(element => {
-            let newNews = new NewsEventi();
-            newNews.setJSONProperty(element);
-            this.addNews(newNews);
-          });
-      })
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'NEWSEVENTO';
+      const filterDateTime = this.getFilterDateTime();
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto l'area richiesta
+      let myParams = new HttpParams().set('IDAREAOPERATIVA',idArea);
+      myParams = myParams.append('PUBBLICATADAL',filterDateTime);
+      myParams = myParams.append('$top', (maxRecord + '') );
+  
+      //Elimino gli attuali
+      this._listNews.next([]);
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+            
+              let arReturn = [];
+              if (data.NEWSEVENTO) {
+                arReturn = data.NEWSEVENTO;
+              }
+  
+              return arReturn;
+            
+        }))
+        .subscribe (resultData => {
+  
+            resultData.forEach(element => {
+              let newNews = new NewsEventi();
+              newNews.setJSONProperty(element);
+              this.addNews(newNews);
+              resolve();
+            });
+        }, error=>{
+          reject(error);
+        })
+    })
   }
 
   /**

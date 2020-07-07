@@ -13,6 +13,7 @@ import { CategoriaEta } from '../models/categoriaeta.model';
 import { Utente } from '../models/utente.model';
 import { LogApp } from '../models/log.model';
 import { LoadingController } from '@ionic/angular';
+import { error } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -77,55 +78,8 @@ export class CourseService {
    * @param config Parametri di configurazione
    * @param docUser Documento Utente loggato. Se presente i corsi vengono proposti solo quelli validi all'utente
    */
-  request(config: StartConfiguration, docUser?:Utente) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'CORSO';
-    
 
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    let myUrl = config.urlBase + '/' + doObject;  
-
-    let myParams = this.getHttpParamsFilter(this._filterCorsi);
-    
-    //Elimino i corsi presenti
-    this.emptyCorsi();
-    this.loadingCtrl.create({
-      message: 'Caricamento',
-      spinner: 'bubbles'
-    }).then(ctrl=>{
-      ctrl.present();
-         this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-          return data.CORSO
-        }))
-        .subscribe( resultData => {
-
-          if (resultData) {
-            resultData.forEach(element => {
-    
-              let newCorso = new Corso();
-              newCorso.setJSONProperty(element);
-              //Decodifico i campi chiave
-              newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
-    
-              //Decodifico i campi chiave
-              newCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
-    
-              //Decodifico i campi chiave
-              newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
-    
-              this.addCorso(newCorso);
-              ctrl.dismiss();
-    
-            });
-          }
-        })
-      })
-  };
-
-  requestPromise (config: StartConfiguration, docUser?:Utente) {
+  request (config: StartConfiguration, docUser?:Utente) {
     return new Promise ((resolve, reject)=>{
 
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
@@ -165,6 +119,8 @@ export class CourseService {
                 resolve();     
               });
             }
+          }, error=>{
+            reject(error);
           })
     })
   }
@@ -240,30 +196,34 @@ export class CourseService {
    * @param idCorso idCorso di cui far richiesta
    */
   requestCorsoProgramma(config: StartConfiguration, idCorso: string) {
-    
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'CORSOPROGRAMMA';
-    
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    let myUrl = config.urlBase + '/' + doObject; 
-    let myParams = new HttpParams().set('IDCORSO', idCorso);
-
-    this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-            return data.CORSOPROGRAMMA
-        }))
-        .subscribe(returnData => {
-            let myCorso = this._listCorsi.getValue().find(element => {
-              return (element.ID == idCorso)
-            });
-            if (myCorso) {
-              //Imposto la collection
-              myCorso.setCollectionCorsoProgramma(returnData);
-              this._selectedCorso.next(myCorso);
-            }
-        })
-
+    return new Promise ((resolve,reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'CORSOPROGRAMMA';
+      
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      let myUrl = config.urlBase + '/' + doObject; 
+      let myParams = new HttpParams().set('IDCORSO', idCorso);
+  
+      this.apiService
+          .httpGet(myUrl, myHeaders, myParams)
+          .pipe(map(data => {
+              return data.CORSOPROGRAMMA
+          }))
+          .subscribe(returnData => {
+              let myCorso = this._listCorsi.getValue().find(element => {
+                return (element.ID == idCorso)
+              });
+              if (myCorso) {
+                //Imposto la collection
+                myCorso.setCollectionCorsoProgramma(returnData);
+                this._selectedCorso.next(myCorso);
+                resolve();
+              }
+          },
+          error=>{
+            reject(error);
+          })
+    })
   }
 }

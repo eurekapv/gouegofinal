@@ -187,7 +187,7 @@ export class StartService {
     requestAree() {
       const actualStartConfig = this._startConfig.getValue();
 
-      this.areaService.request(actualStartConfig);
+      return this.areaService.request(actualStartConfig);
     }
 
     /**
@@ -267,7 +267,7 @@ export class StartService {
   requestLocation(idArea: string) {
     const actualStartConfig = this._startConfig.getValue();
     
-    this.locationService.requestByIdArea(actualStartConfig, idArea);
+    return this.locationService.requestByIdArea(actualStartConfig, idArea);
   }
 
   /** Effettua la richiesta al server di una Location precisa
@@ -277,7 +277,7 @@ export class StartService {
   requestLocationByID(idLocation: string, _numLivelli?:number) {
     const actualStartConfig = this._startConfig.getValue();
     
-    this.locationService.requestLocationByID(actualStartConfig, idLocation, _numLivelli);
+    return this.locationService.requestLocationByID(actualStartConfig, idLocation, _numLivelli);
   }
 
   /**
@@ -374,7 +374,7 @@ requestLocationSport(idLocation: string) {
   const actualStartConfig = this._startConfig.getValue();
 
   //Effettuo la chiamata
-  this.sportService.requestLocationSport(actualStartConfig, idLocation);
+  return this.sportService.requestLocationSport(actualStartConfig, idLocation);
 }
 
 
@@ -394,7 +394,7 @@ get listLivelli() {
 requestLivelli() {
   const actualStartConfig = this._startConfig.getValue();
 
-  this.livelloService
+  return this.livelloService
     .request(actualStartConfig);
 }
 
@@ -467,13 +467,11 @@ requestCorsi(docUser?:Utente, ricezione?: boolean) {
   this.corsoService.decodeListSport = listSport;
 
 
-  //TODO questo l'ho commentato
+ 
   //Chiamo il servizio per il recupero corsi
-  // this.corsoService
-  //     .request(actualStartConfig, 
-  //              docUser);
-  return this.corsoService.requestPromise(actualStartConfig, docUser);
-            
+  return this.corsoService
+      .request(actualStartConfig, 
+               docUser);            
 }
 
 
@@ -491,7 +489,7 @@ get calendarioCorso() {
 requestCalendarioCorso(idCorso: string) {
   const actualStartConfig = this._startConfig.getValue();
 
-  this.corsoCalendarioService.request(actualStartConfig, idCorso);
+  return this.corsoCalendarioService.request(actualStartConfig, idCorso);
 }
 
 
@@ -503,7 +501,7 @@ get selectedCorso() {
 //Richiede il programma del Corso
 requestCorsoProgramma(idCorso: string) {
   const actualStartConfig = this._startConfig.getValue();
-  this.corsoService.requestCorsoProgramma(actualStartConfig, idCorso);
+  return this.corsoService.requestCorsoProgramma(actualStartConfig, idCorso);
 }
 //#endregion
 
@@ -623,7 +621,7 @@ onChangeAreaFavListener() {
 requestUtente(idUtente: string) {
   const actualStartConfig = this._startConfig.getValue();
 
-  this.utenteService
+  return this.utenteService
       .request(actualStartConfig, idUtente);
             
 }
@@ -734,7 +732,7 @@ requestUtentePrenotazioni(idUtente: string) {
   const actualStartConfig = this._startConfig.getValue();
   
   //Richiedo i dati al servizio
-  this.utentePrenotazioneService.request(actualStartConfig, idUtente);
+  return this.utentePrenotazioneService.request(actualStartConfig, idUtente);
 }
 
 
@@ -762,7 +760,7 @@ requestUtenteIscrizioni(idUtente: string) {
   const actualStartConfig = this._startConfig.getValue();
   
   //Richiedo i dati al servizio
-  this.utenteIscrizioneService.request(actualStartConfig, idUtente);
+  return this.utenteIscrizioneService.request(actualStartConfig, idUtente);
 }
 
 
@@ -790,7 +788,7 @@ requestNews(idArea: string, maxRecord: number = 0) {
   const actualStartConfig = this._startConfig.getValue();
 
   //Chiedo il recupero delle News
-  this.newsEventiService.request(actualStartConfig, idArea, maxRecord);
+  return this.newsEventiService.request(actualStartConfig, idArea, maxRecord);
 }
 
   /** Effettua la richiesta al servizio di una news
@@ -825,7 +823,7 @@ requestSlotOccupazioni(templateSlotDay: SlotDay,
   const actualStartConfig = this._startConfig.getValue();
 
   //Faccio la richiesta dei dati al servizio
-  this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, docLocation, docCampo, dataGiorno);
+  return this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, docLocation, docCampo, dataGiorno);
 
 }
 

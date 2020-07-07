@@ -15,8 +15,7 @@ import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { Sport } from 'src/app/models/sport.model';
-import { AuthComponent } from 'src/app/shared/components/auth/auth.component'
- 
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page' 
 
 
 @Component({
@@ -76,18 +75,12 @@ export class BookingPage implements OnInit, OnDestroy {
               private modalCtrl: ModalController) { 
 
 
-    this.ricevuti = false;
-    this.bookable = false;
 
     //Creo un documento di Pianificazione
     this.actualPlanning = new PrenotazionePianificazione;
     
   }
   
-  // ionViewDidLeave() {
-  //   this.ricevuti = false;
-  //   this.bookable = false;
-  // }
 
   
   /**
@@ -145,7 +138,9 @@ export class BookingPage implements OnInit, OnDestroy {
           this.sottoscrizioneListaSport();
 
           // Chiedo al server Location, Campi e CampiSport (3 Livelli)
-          this.startService.requestLocationByID(this.idLocation, 3);
+          this.startService.requestLocationByID(this.idLocation, 3).then(()=>{
+            this.ricevuti=true;
+          });
 
           //Mi sottoscrivo alla ricezione
           this.sottoscrizioneLocationCampi();
@@ -231,11 +226,6 @@ export class BookingPage implements OnInit, OnDestroy {
     this.subSelectedLocation = this.startService.activeLocation
       .subscribe(dataLocation => {
 
-        this.indexCount ++;
-        console.log('Sono entrato per la ' + this.indexCount);
-        console.log('Con questi dati ');
-        console.log(dataLocation);
-
         // Chiedo la Location
         this.selectedLocation = dataLocation;
 
@@ -246,7 +236,7 @@ export class BookingPage implements OnInit, OnDestroy {
           this.getTemplateWeek(this.selectedLocation);
 
           // Ho ricevuto i dati
-          this.ricevuti = true;
+          //this.ricevuti = true;
 
           //Recupero Campi, e Occupazioni
           this.onRefresh();
@@ -464,14 +454,11 @@ export class BookingPage implements OnInit, OnDestroy {
     if (!this.userLogged) {
 
       this.modalCtrl.create({
-        component:AuthComponent,
-        componentProps:{'onModal':true},
-        cssClass:'modal-login'
+        component:NewLoginPage
       })
         .then(modal=>{
           modal.present();
         })
-      console.log('Utente non loggato');
 
     }
     else {

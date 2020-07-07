@@ -7,6 +7,7 @@ import { CorsoScheduler } from '../models/corsoscheduler.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
+import { error } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -29,43 +30,46 @@ export class CourseschedulerService {
    * @param idCorso Corso Richiesto
    */
   request(config: StartConfiguration, idCorso: string) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'PIANIFICAZIONECORSO';
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    let myUrl = config.urlBase + '/' + doObject;  
-
-    //Nei Parametri imposto il corso richiesto
-    let myParams = new HttpParams().set('IDCORSO',idCorso);
-
+    return new Promise ((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'PIANIFICAZIONECORSO';
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto il corso richiesto
+      let myParams = new HttpParams().set('IDCORSO',idCorso);
+  
+      
+      //Elimino le schedulazioni presenti
+      this.emptyCalendario();
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+          return data.PIANIFICAZIONECORSO
+        }))
+        .subscribe( resultData => {
+  
+          LogApp.consoleLog(resultData);
+          
+          if (resultData) {
+            resultData.forEach(element => {
     
-    //Elimino le schedulazioni presenti
-    this.emptyCalendario();
+              let newCorsoCalendario = new CorsoScheduler();
+              newCorsoCalendario.setJSONProperty(element);
+              LogApp.consoleLog(newCorsoCalendario);
+              this.addCorsoCalendario(newCorsoCalendario);
+              resolve();
+            },
+            error=>{
+              reject(error);
+            });
+          }
+        })
 
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-        return data.PIANIFICAZIONECORSO
-      }))
-      .subscribe( resultData => {
-
-        LogApp.consoleLog(resultData);
-        
-        if (resultData) {
-          resultData.forEach(element => {
-  
-            let newCorsoCalendario = new CorsoScheduler();
-            newCorsoCalendario.setJSONProperty(element);
-
-            LogApp.consoleLog(newCorsoCalendario);
-            
-  
-            this.addCorsoCalendario(newCorsoCalendario);
-  
-          });
-        }
-      })
+    })
   }
 
   /**

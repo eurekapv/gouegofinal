@@ -6,11 +6,6 @@
 <div class="item-sports" *ngIf="sportList.length>2">
   <ion-slides [options]="sliderOpts" class="ion-text-center">
     <ion-slide *ngFor="let sport of sportList" >
-      <!-- <ion-button [fill]="sport==selectedSport? 'solid':'outline'" 
-                  size="large" 
-                  expand = "full"
-                  (click)="onChangeSport(sport)">{{sport.DENOMINAZIONE}} 
-      </ion-button> -->
       <ion-card class="card-sport" [color]="sport==selectedSport? 'primary':'light'" button (click)="onChangeSport(sport)">
         <ion-grid>
           <ion-row class="ion-align-items-center">

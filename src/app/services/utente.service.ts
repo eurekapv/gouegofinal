@@ -43,22 +43,27 @@ export class UtenteService {
    * @param idUtente IDUtente da recuperare
    */
   request(config: StartConfiguration, idUtente: string) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'UTENTE';
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    let myParams = new HttpParams().set('ID',idUtente);
-    let myUrl = config.urlBase + '/' + doObject;
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-        return data.UTENTE
-      }))
-      .subscribe( resultData => {
-        this.loginSuccessfull(resultData);
-      });
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'UTENTE';
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      let myParams = new HttpParams().set('ID',idUtente);
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+          return data.UTENTE
+        }))
+        .subscribe( resultData => {
+          this.loginSuccessfull(resultData);
+          resolve();
+        }, error=>{
+          reject (error);
+        });
+    })
   }
 
 

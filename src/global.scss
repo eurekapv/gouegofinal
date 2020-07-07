@@ -69,6 +69,9 @@ div[scrollX=true] {
      font-weight: bold;
      color: rgb(57, 102, 135);
    }
+   ion-spinner{
+     color: var(--ion-color-primary);
+   }
   }
 
   .small-button-card {

@@ -27,33 +27,39 @@ export class CamposportService {
    */
   request(config: StartConfiguration, 
           idCampo: string) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'CAMPOSPORT';
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    //Nei Parametri imposto IDCampo
-    let myParams = new HttpParams().set('IDCAMPO',idCampo);
-    let myUrl = config.urlBase + '/' + doObject;
-
-    //Elimino i campi presenti
-    this.emptyCampiSport
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-        return data.CATEGORIEETA
-      }))
-      .subscribe(
-         resultData => {
-
-          resultData.forEach(element => {
-            let newCampoSport = new CampoSport();
-            newCampoSport.setJSONProperty(element);
-            this.addCampoSport(newCampoSport);
-          });
-         }
-      )
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'CAMPOSPORT';
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      //Nei Parametri imposto IDCampo
+      let myParams = new HttpParams().set('IDCAMPO',idCampo);
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      //Elimino i campi presenti
+      this.emptyCampiSport
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+          return data.CATEGORIEETA
+        }))
+        .subscribe(
+           resultData => {
+  
+            resultData.forEach(element => {
+              let newCampoSport = new CampoSport();
+              newCampoSport.setJSONProperty(element);
+              this.addCampoSport(newCampoSport);
+              resolve();
+            });
+           },
+           error=>{
+             reject(error);
+           }
+        )
+    })
   }
 
   /**

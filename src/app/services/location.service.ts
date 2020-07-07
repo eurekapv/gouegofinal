@@ -9,6 +9,8 @@ import { StartConfiguration } from '../models/start-configuration.model';
 import { Sport } from '../models/sport.model';
 import { CampoSport } from '../models/camposport.model';
 import { SlotWeek } from '../models/imdb/slotweek.model';
+import { LoadingController } from '@ionic/angular';
+import { error } from 'protractor';
 
 
 
@@ -35,7 +37,8 @@ export class LocationService {
     return this._activeLocation.asObservable();
   }
 
-  constructor(private apiService:ApicallService) { }
+  constructor(private apiService:ApicallService,
+              private loadingCtrl: LoadingController) { }
 
 
 
@@ -45,30 +48,36 @@ export class LocationService {
    * @param idArea Area di riferimento
    */
   requestByIdArea(config: StartConfiguration, idArea: string) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'LOCATION';
-    
-    // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    // Nei parametri imposto l'Area Operativa
-    let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
-
-    let myUrl = config.urlBase + '/' + doObject;
-
-    this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(fullData => {
-          return fullData.LOCATION
-        }))
-        .subscribe(resultData => {
-
-          //Cancello le Location
-          this._listLocation.next([]);
-
-          //Inserisco le location
-          this._addMultipleLocation(resultData);
-
-        });
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'LOCATION';
+      
+      // In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      // Nei parametri imposto l'Area Operativa
+      let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
+  
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      this.apiService
+          .httpGet(myUrl, myHeaders, myParams)
+          .pipe(map(fullData => {
+            return fullData.LOCATION
+          }))
+          .subscribe(resultData => {
+  
+            //Cancello le Location
+            this._listLocation.next([]);
+  
+            //Inserisco le location
+            this._addMultipleLocation(resultData);
+            resolve();
+  
+          },error=>{
+            reject(error);
+          });
+      
+    })
   }
 
 
@@ -77,40 +86,44 @@ export class LocationService {
    * 
    */
   requestLocationByID(config: StartConfiguration, idLocation: string, _numLivelli?:number) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'LOCATION';
-
-    if (!_numLivelli) {
-      _numLivelli = 3;
-    }
-
-    // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    myHeaders = myHeaders.set('child-level',_numLivelli + '');
-
-    // Nei parametri imposto l'Area Operativa
-    let myParams = new HttpParams().set('ID', idLocation);
-
-    let myUrl = config.urlBase + '/' + doObject;
-
-
-    this.apiService
-                .httpGet(myUrl, myHeaders, myParams)
-                .pipe(map(fullData => {                
-                  return fullData.LOCATION;
-                }))
-                .subscribe(resultData => {
-                  let locReturn: Location;
-                  
-                  if (resultData && resultData.length !== 0) {
-                    
-                    locReturn = new Location();
-                    locReturn.setJSONProperty(resultData[0]);
-                    
-                    //Emetto evento di cambio
-                    this._activeLocation.next(locReturn);
-                  }                  
-                });
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'LOCATION';
+  
+      if (!_numLivelli) {
+        _numLivelli = 3;
+      }
+  
+      // In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      myHeaders = myHeaders.set('child-level',_numLivelli + '');
+  
+      // Nei parametri imposto l'Area Operativa
+      let myParams = new HttpParams().set('ID', idLocation);
+  
+      let myUrl = config.urlBase + '/' + doObject;
+  
+        this.apiService
+                    .httpGet(myUrl, myHeaders, myParams)
+                    .pipe(map(fullData => {                
+                      return fullData.LOCATION;
+                    }))
+                    .subscribe(resultData => {
+                      let locReturn: Location;
+                      
+                      if (resultData && resultData.length !== 0) {
+                        
+                        locReturn = new Location();
+                        locReturn.setJSONProperty(resultData[0]);
+                        
+                        //Emetto evento di cambio
+                        this._activeLocation.next(locReturn);
+                        resolve();
+                      }                  
+                    }, error=>{
+                      reject (error);
+                    });      
+    })
   }
 
   /**

@@ -14,6 +14,7 @@ import { SlotTime } from '../models/imdb/slottime.model';
 import { StatoSlot } from '../models/valuelist.model';
 import { MyDateTime } from '../models/mydatetime.model';
 import { LogApp } from '../models/log.model';
+import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class SlotoccupazioneService {
     return this._docOccupazione.asObservable();
   }
 
-  constructor(private apiCall: ApicallService) { }
+  constructor(private apiCall: ApicallService,
+              private loadingCtrl: LoadingController) { }
 
   /**
    * Prende in ingresso il template Slot Day, richiede al server i soli dati di occupazione di un determinato campo per un determinato giorno,
@@ -43,45 +45,51 @@ export class SlotoccupazioneService {
           docLocation: Location, 
           docCampo: Campo, 
           dataGiorno: Date) {
+    return new Promise((resolve, reject)=>{
+      const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                         'X-HTTP-Method-Override':'GETDATESLOTLOCK', 
+                                         'appid':config.appId
+                                        });
+  
+      const doObject = 'CAMPO';
+      const strData = moment(dataGiorno).format('YYYY-MM-DD');
+  
+      if (docLocation && docCampo)  {
+        // LogApp.consoleLog('Dati Occupazione: RICHIESTA');
+        // LogApp.consoleLog(`Guid Location: ${docLocation.ID} - GuidCampo: ${docCampo.ID} - Data: ${strData}`);
+  
+        let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
+        myParams = myParams.append('guidLocation', docLocation.ID);
+        myParams = myParams.append('guidCampo', docCampo.ID);
+        myParams = myParams.append('dataGiorno',strData);
+    
+        let myUrl = config.urlBase + '/' + doObject;
+    
+        this.apiCall
+            .httpGet(myUrl,myHeaders,myParams)
+            .subscribe(resultData => {
+  
+              //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
+              this.syncResult(resultData, templateSlotDay);
+              resolve();
+            }, error=>{
+              reject(error);
+            });
+      }
+      else {
+  
+        LogApp.consoleLog('Dati Occupazione: RICHIESTA FAILED');
+        LogApp.consoleLog('Manca' + (!docLocation?'Location':'') + ' ' + (!docCampo?'Campo':''));
+  
+        this._docOccupazione.next(templateSlotDay);
+        reject();
+        
+      }
+    })
 
   
   
 
-  const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                       'X-HTTP-Method-Override':'GETDATESLOTLOCK', 
-                                       'appid':config.appId
-                                      });
-
-    const doObject = 'CAMPO';
-    const strData = moment(dataGiorno).format('YYYY-MM-DD');
-
-    if (docLocation && docCampo)  {
-      // LogApp.consoleLog('Dati Occupazione: RICHIESTA');
-      // LogApp.consoleLog(`Guid Location: ${docLocation.ID} - GuidCampo: ${docCampo.ID} - Data: ${strData}`);
-
-      let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
-      myParams = myParams.append('guidLocation', docLocation.ID);
-      myParams = myParams.append('guidCampo', docCampo.ID);
-      myParams = myParams.append('dataGiorno',strData);
-  
-      let myUrl = config.urlBase + '/' + doObject;
-  
-      this.apiCall
-          .httpGet(myUrl,myHeaders,myParams)
-          .subscribe(resultData => {
-
-            //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
-            this.syncResult(resultData, templateSlotDay);
-          });
-    }
-    else {
-
-      LogApp.consoleLog('Dati Occupazione: RICHIESTA FAILED');
-      LogApp.consoleLog('Manca' + (!docLocation?'Location':'') + ' ' + (!docCampo?'Campo':''));
-
-      this._docOccupazione.next(templateSlotDay);
-      
-    }
 
 
   } 

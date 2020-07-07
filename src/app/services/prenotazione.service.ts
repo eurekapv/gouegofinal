@@ -98,31 +98,35 @@ export class PrenotazioneService {
    * @param idUtente idUtente
    */
   request(config: StartConfiguration) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'PRENOTAZIONE';
-    
-    // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    // Nei parametri imposto il gruppo Sportivo
-    let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
-
-    let myUrl = config.urlBase + '/' + doObject;
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(fullData => {
-        return fullData.PRENOTAZIONE
-      }))
-      .subscribe( resultData => {
-
-        resultData.forEach(elPrenotazione => {
-
-          let docPrenotazione = new Prenotazione();
-          docPrenotazione.setJSONProperty(elPrenotazione);
-          this.add2ListPrenotazioni(docPrenotazione);
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'PRENOTAZIONE';
+      
+      // In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      // Nei parametri imposto il gruppo Sportivo
+      let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
+  
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(fullData => {
+          return fullData.PRENOTAZIONE
+        }))
+        .subscribe( resultData => {
+  
+          resultData.forEach(elPrenotazione => {
+  
+            let docPrenotazione = new Prenotazione();
+            docPrenotazione.setJSONProperty(elPrenotazione);
+            this.add2ListPrenotazioni(docPrenotazione);
+          });
+          resolve();
+        }, error=>{
+          reject (error);
         });
-
-      });
+    })
   }
 
   //Aggiunge una attivita alla lista globale

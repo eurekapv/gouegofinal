@@ -27,42 +27,48 @@ export class UtenteiscrizioneService {
    * @param maxRecord Max Record da recuperare
    */
   request(config: StartConfiguration, idUtente: string, maxRecord: number = 0) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'UTENTEISCRIZIONE';
-    const filterDateTime = this.getFilterDateTime();
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
-    let myUrl = config.urlBase + '/' + doObject;  
-
-    //Nei Parametri imposto l'area richiesta
-    let myParams = new HttpParams().set('IDUTENTE',idUtente);
-    myParams = myParams.append('DATAISCRIZIONE',filterDateTime);
-    myParams = myParams.append('$top', (maxRecord + '') );
-
-    //Elimino gli attuali
-    this._listUtenteIscrizione.next([]);
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-          
-            let arReturn = [];
-            if (data.UTENTEISCRIZIONE) {
-              arReturn = data.UTENTEISCRIZIONE;
-            }
-
-            return arReturn;
-          
-      }))
-      .subscribe (resultData => {
-
-          resultData.forEach(element => {
-            let newUtenteIscrizione = new Utenteiscrizione();
-            newUtenteIscrizione.setJSONProperty(element);
-            this.addUtenteIscrizione(newUtenteIscrizione);
-          });
-      })
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'UTENTEISCRIZIONE';
+      const filterDateTime = this.getFilterDateTime();
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto l'area richiesta
+      let myParams = new HttpParams().set('IDUTENTE',idUtente);
+      myParams = myParams.append('DATAISCRIZIONE',filterDateTime);
+      myParams = myParams.append('$top', (maxRecord + '') );
+  
+      //Elimino gli attuali
+      this._listUtenteIscrizione.next([]);
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+            
+              let arReturn = [];
+              if (data.UTENTEISCRIZIONE) {
+                arReturn = data.UTENTEISCRIZIONE;
+              }
+  
+              return arReturn;
+            
+        }))
+        .subscribe (resultData => {
+  
+            resultData.forEach(element => {
+              let newUtenteIscrizione = new Utenteiscrizione();
+              newUtenteIscrizione.setJSONProperty(element);
+              this.addUtenteIscrizione(newUtenteIscrizione);
+            });
+            resolve();
+        }, error=>{
+          reject (error);
+        })
+      
+    })
   }
 
   /**

@@ -1,16 +1,7 @@
 
-<div class="item-sports ion-text-center" *ngIf="sportList.length<=2">
-      <!-- <ion-button *ngFor="let sport of sportList" [fill]="sport==selectedSport? 'solid':'outline'" size="small" (click)="onChangeSport(sport)">{{sport.DENOMINAZIONE}}</ion-button> -->
-</div>
-
-<div class="item-sports" *ngIf="sportList.length>2">
-  <ion-slides [options]="sliderOpts" class="ion-text-center">
+<div >
+  <ion-slides *ngIf="sportList.length==1" [options]="sliderOpts1" class="ion-text-center">
     <ion-slide *ngFor="let sport of sportList" >
-      <!-- <ion-button [fill]="sport==selectedSport? 'solid':'outline'" 
-                  size="large" 
-                  expand = "full"
-                  (click)="onChangeSport(sport)">{{sport.DENOMINAZIONE}} 
-      </ion-button> -->
       <ion-card class="card-sport" [color]="sport==selectedSport? 'primary':'light'" button (click)="onChangeSport(sport)">
         <ion-grid>
           <ion-row class="ion-align-items-center">
@@ -26,6 +17,46 @@
     </ion-slide>
   </ion-slides>
 </div>
+
+<div >
+  <ion-slides *ngIf="sportList.length==2" [options]="sliderOpts2" class="ion-text-center">
+    <ion-slide *ngFor="let sport of sportList" >
+      <ion-card class="card-sport" [color]="sport==selectedSport? 'primary':'light'" button (click)="onChangeSport(sport)">
+        <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4">
+              <i class="icon-sport"><span [innerHTML]="sport.htmlIconHex"></span></i>
+            </ion-col>
+            <ion-col>
+              <ion-label><h3 class="text-sport">{{sport.DENOMINAZIONE}}</h3></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
+</div>
+
+<div >
+  <ion-slides *ngIf="sportList.length>2" [options]="sliderOpts3" class="ion-text-center">
+    <ion-slide *ngFor="let sport of sportList" >
+      <ion-card class="card-sport" [color]="sport==selectedSport? 'primary':'light'" button (click)="onChangeSport(sport)">
+        <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4">
+              <i class="icon-sport"><span [innerHTML]="sport.htmlIconHex"></span></i>
+            </ion-col>
+            <ion-col>
+              <ion-label><h3 class="text-sport">{{sport.DENOMINAZIONE}}</h3></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </ion-slide>
+  </ion-slides>
+</div>
+
+
 
 
 

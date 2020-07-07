@@ -32,42 +32,48 @@ export class UtenteprenotazioneService {
    * @param maxRecord Max Record da recuperare
    */
   request(config: StartConfiguration, idUtente: string, maxRecord: number = 0) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'UTENTEPRENOTAZIONE';
-    const filterDateTime = this.getFilterDateTime();
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
-    let myUrl = config.urlBase + '/' + doObject;  
-
-    //Nei Parametri imposto l'area richiesta
-    let myParams = new HttpParams().set('IDUTENTE',idUtente);
-    myParams = myParams.append('DATAORAINIZIO',filterDateTime);
-    myParams = myParams.append('$top', (maxRecord + '') );
-
-    //Elimino gli attuali
-    this._listUtentePrenotazione.next([]);
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-          
-            let arReturn = [];
-            if (data.UTENTEPRENOTAZIONE) {
-              arReturn = data.UTENTEPRENOTAZIONE;
-            }
-
-            return arReturn;
-          
-      }))
-      .subscribe (resultData => {
-
-          resultData.forEach(element => {
-            let newUtentePrenotazione = new UtentePrenotazione();
-            newUtentePrenotazione.setJSONProperty(element);
-            this.addUtentePrenotazione(newUtentePrenotazione);
-          });
-      })
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'UTENTEPRENOTAZIONE';
+      const filterDateTime = this.getFilterDateTime();
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto l'area richiesta
+      let myParams = new HttpParams().set('IDUTENTE',idUtente);
+      myParams = myParams.append('DATAORAINIZIO',filterDateTime);
+      myParams = myParams.append('$top', (maxRecord + '') );
+  
+      //Elimino gli attuali
+      this._listUtentePrenotazione.next([]);
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+            
+              let arReturn = [];
+              if (data.UTENTEPRENOTAZIONE) {
+                arReturn = data.UTENTEPRENOTAZIONE;
+              }
+  
+              return arReturn;
+            
+        }))
+        .subscribe (resultData => {
+  
+            resultData.forEach(element => {
+              let newUtentePrenotazione = new UtentePrenotazione();
+              newUtentePrenotazione.setJSONProperty(element);
+              this.addUtentePrenotazione(newUtentePrenotazione);
+            });
+            resolve();
+        }, error=>{
+          reject (error);
+        })
+      
+    })
   }
 
   /**

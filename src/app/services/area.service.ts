@@ -39,29 +39,35 @@ export class AreaService {
    * @param config Parametri di configurazione
    */
   request(config: StartConfiguration) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'AREAOPERATIVA';
+    return new Promise((resolve, reject)=>{
+        let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+        const doObject = 'AREAOPERATIVA';
+        
+        // In Testata c'e' sempre l'AppId
+        myHeaders = myHeaders.set('appid',config.appId);
+        // Nei parametri imposto il gruppo Sportivo
+        let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
     
-    // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    // Nei parametri imposto il gruppo Sportivo
-    let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
-
-    let myUrl = config.urlBase + '/' + doObject;
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(fullData => {
-        return fullData.AREAOPERATIVA
-      }))
-      .subscribe(resultData => {
-
-          //Ricreo l'array di Aree
-          this._listAree.next([]);
-
-          //Aggiungo i valori
-          this._addMultipleAree(resultData, true);
-      });
+        let myUrl = config.urlBase + '/' + doObject;
+    
+        this.apiService
+          .httpGet(myUrl, myHeaders, myParams)
+          .pipe(map(fullData => {
+            return fullData.AREAOPERATIVA
+          }))
+          .subscribe(resultData => {
+    
+              //Ricreo l'array di Aree
+              this._listAree.next([]);
+    
+              //Aggiungo i valori
+              this._addMultipleAree(resultData, true);
+              resolve();
+          },
+          error=>{
+            reject(error);
+          });
+    })
 
   }
 

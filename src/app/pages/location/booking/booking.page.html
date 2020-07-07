@@ -67,8 +67,12 @@
 <ion-content>
   <!-- IN ATTESA DATI  -->
   <!-- DATI  NON RICEVUTI -->
-  <div *ngIf="!ricevuti" id="crs-spinner">
+  <!-- <div *ngIf="!ricevuti" id="crs-spinner">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
+  </div> -->
+
+  <div *ngIf="!ricevuti" class="nofind-cnt">
+    <ion-spinner name="circular"></ion-spinner>
   </div>
 
   <!-- PRENOTAZIONE NON POSSIBILE-->
@@ -90,7 +94,7 @@
     <!-- TITOLO SLOT TIME -->
     <ion-item class="item-transparent">
       <ion-label class="ion-padding-horizontal">SCEGLI L'ORARIO:</ion-label>
-      <ion-spinner name="bubbles" color="primary" *ngIf="actualSlotDay._TEMPLATELOCK"></ion-spinner>
+      <ion-spinner name="circular" color="primary" *ngIf="actualSlotDay._TEMPLATELOCK"></ion-spinner>
     </ion-item>
 
     <!-- VISUALIZZO GLI SLOT TIME SE E' APERTO-->

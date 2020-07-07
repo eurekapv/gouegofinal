@@ -37,34 +37,39 @@ export class LivelloService {
    * @param config Parametri configurazione chiamata
    */
   request(config: StartConfiguration) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'LIVELLO';
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    //Nei Parametri imposto il LivelloAutorizzazione
-    let myParams = new HttpParams().set('LivelloAutorizzazione','0');
-    let myUrl = config.urlBase + '/' + doObject;
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-        return data.LIVELLO
-      }))
-      .subscribe(resultData => {
-
-        //Arrivati dal server
-        this._loaded = true;
-
-        resultData.forEach(element => {
-
-          let newLivello = new Livello();
-          newLivello.setJSONProperty(element);
-          this.addLivello(newLivello);
-          
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'LIVELLO';
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      //Nei Parametri imposto il LivelloAutorizzazione
+      let myParams = new HttpParams().set('LivelloAutorizzazione','0');
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+          return data.LIVELLO
+        }))
+        .subscribe(resultData => {
+  
+          //Arrivati dal server
+          this._loaded = true;
+  
+          resultData.forEach(element => {
+  
+            let newLivello = new Livello();
+            newLivello.setJSONProperty(element);
+            this.addLivello(newLivello);
+            
+          });
+          resolve();
+  
+        }, error=>{
+          reject(error);
         });
-
-      });
+    })
 
   }
 

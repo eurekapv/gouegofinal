@@ -6,6 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
+import { resolve } from 'url';
 
 @Injectable({
   providedIn: 'root'
@@ -32,30 +33,36 @@ export class CategoriaetaService {
    * @param config Parametri configurazione chiamata
    */
   request(config: StartConfiguration) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'CATEGORIEETA';
-
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
-    //Nei Parametri imposto il LivelloAutorizzazione
-    let myParams = new HttpParams().set('LivelloAutorizzazione','0');
-    let myUrl = config.urlBase + '/' + doObject;
-
-    this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-        return data.CATEGORIEETA
-      }))
-      .subscribe(
-         resultData => {
-
-          resultData.forEach(element => {
-            let newCategoria = new CategoriaEta();
-            newCategoria.setJSONProperty(element);
-            this.addCategoriaEta(newCategoria);
-          });
-         }
-      )
+    return new Promise((resolve,reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'CATEGORIEETA';
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      //Nei Parametri imposto il LivelloAutorizzazione
+      let myParams = new HttpParams().set('LivelloAutorizzazione','0');
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+          return data.CATEGORIEETA
+        }))
+        .subscribe(
+           resultData => {
+  
+            resultData.forEach(element => {
+              let newCategoria = new CategoriaEta();
+              newCategoria.setJSONProperty(element);
+              this.addCategoriaEta(newCategoria);
+              resolve();
+            });
+           },
+           error=>{
+             reject(error);
+           }
+        )
+    })
   }
 
   /**

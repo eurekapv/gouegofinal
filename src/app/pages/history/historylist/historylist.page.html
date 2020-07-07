@@ -20,11 +20,6 @@
   </ion-refresher>
   <!-- PARTE CORSI -->
   <div class="contentExpand" *ngIf="selectedView=='corsi'">
-      <!-- IN ATTESA DATI  -->
-      <!-- DATI  NON RICEVUTI -->
-      <div *ngIf="!receivedCorsi" id="crs-spinner">
-        <ion-progress-bar type="indeterminate"></ion-progress-bar>
-      </div>
 
       <!-- NESSUN CORSO-->
       <div class="nofind-cnt" *ngIf="receivedCorsi && listUtentePrenotazione!.length === 0">
@@ -64,11 +59,6 @@
 
   <!-- PARTE PRENOTAZIONI -->
   <div class="contentExpand" *ngIf="selectedView=='prenotazioni'">
-      <!-- IN ATTESA DATI  -->
-      <!-- DATI  NON RICEVUTI -->
-      <div *ngIf="!receivedPrenotazioni" id="crs-spinner">
-        <ion-progress-bar type="indeterminate"></ion-progress-bar>
-      </div>
 
       <!-- NESSUNA PRENOTAZIONE-->
       <div class="nofind-cnt" *ngIf="receivedPrenotazioni && listUtentePrenotazione!.length === 0">

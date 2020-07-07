@@ -534,6 +534,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     })
   }
 
+
   
 }
 

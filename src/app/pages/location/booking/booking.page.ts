@@ -15,7 +15,8 @@ import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { Sport } from 'src/app/models/sport.model';
-import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page' 
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
+
 
 
 @Component({
@@ -117,78 +118,90 @@ export class BookingPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    console.log('Sono nell onInit');
-    this.ricevuti = false;
-    this.bookable = false;
+    this.loadingController.create({
+      message: 'Caricamento',
+      spinner: 'circles',
+      backdropDismiss: true
 
-    this.router.paramMap.subscribe(param => {
+    }).then(loading=>{
+      loading.present()
+      this.ricevuti = false;
+      this.bookable = false;
       
-      
-      if (param.has('locationId')) {
-
-        //Location sulla barra
-        this.idLocation = param.get('locationId');
-
-        if (this.idLocation) {
-
-          //Chiedo al server gli Sport praticati nella location
-          this.startService.requestLocationSport(this.idLocation);
-
-          //Mi sottoscrivo alla ricezione degli Sport
+      this.router.paramMap.subscribe(param => {
+        
+        
+        if (param.has('locationId')) {
+          
+          //Location sulla barra
+          this.idLocation = param.get('locationId');
+          
+          if (this.idLocation) {
+            
+            //Chiedo al server gli Sport praticati nella location
+            this.startService.requestLocationSport(this.idLocation);
+            
+            //Mi sottoscrivo alla ricezione degli Sport
           this.sottoscrizioneListaSport();
-
+          
           // Chiedo al server Location, Campi e CampiSport (3 Livelli)
           this.startService.requestLocationByID(this.idLocation, 3).then(()=>{
             this.ricevuti=true;
+            loading.dismiss();
+          },()=>{
+            loading.dismiss();
+            this.showMessage('Errore di connessione')
+
           });
 
           //Mi sottoscrivo alla ricezione
           this.sottoscrizioneLocationCampi();
-         
+          
           
           //Controllo dell'utente loggato
           this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
-                  this.userLogged = element;
+            this.userLogged = element;
           });
-
+          
           //Richiedo lo User
           this.subDocUtente = this.startService.utente.subscribe(element => {
             this.docUtente = element;
           });
-
+          
           // Mi metto in ascolto di variazioni di Slot attuale
           this.subActualSlotDay = this.startService.docOccupazione.subscribe(elActualDay => {
             this.actualSlotDay = elActualDay;
           });
-
+          
           //Ascolto documento di Prenotazione
           //Sia la prima volta che entra nel OnInit
           //Esegue tutte le volte che la prenotazione cambia
           this.subActivePrenotazione = this.startService.activePrenotazione.subscribe(elPrenotazione => {
             this.activePrenotazione = elPrenotazione;
           });
-
-
+          
+          
         }
         else {
           // Dico che non posso prenotare
           this.bookable = false;
           this.ricevuti = true;
         }
-
+        
       }
       else {
         //Rimando alla HOME
         this.navController.navigateForward(['/']);
       }
     })
+});
     
   }
 
-
+  
   ngOnDestroy() {
     
-
+    
     if (this.subSelectedLocation) {
       this.subSelectedLocation.unsubscribe();
     }

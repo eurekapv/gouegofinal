@@ -7,10 +7,9 @@ import { StartService } from '../../../../services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi } from 'src/app/models/valuelist.model';
 import { FilterCorsi } from 'src/app/models/filtercorsi.model';
-import { ModalController, NavController, LoadingController } from '@ionic/angular';
+import { ModalController, NavController, LoadingController, ToastController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
-import { LogApp } from 'src/app/models/log.model';
 
 //#TODO qui la logica potrebbe essere diversa: bisogna fare la request una sola volta allinizio,
 //e non ogni volta che il segment cambia, in modo da evitare il flash dello spinner ogni volta
@@ -43,7 +42,8 @@ export class ListcoursesPage implements OnInit {
               private startService: StartService,
               private mdlController: ModalController,
               private navController: NavController,
-              private loadingCtrl: LoadingController
+              private loadingCtrl: LoadingController,
+              private toastCtrl: ToastController
               ) { 
     
     //Richiedo l'utente e se è loggato
@@ -96,34 +96,44 @@ export class ListcoursesPage implements OnInit {
    * Richiesta dei corsi
    */
   requestCorsi() {
-    this.ricevuti=false;
-    switch (this.preferList) {
-      case SegmentCorsi.tutti:
+    this.loadingCtrl.create({
+      spinner: 'circles',
+      message: 'Caricamento',
+      backdropDismiss: true
+    }).then(loading=>{
+      loading.present();
+      this.ricevuti=false;
+      switch (this.preferList) {
+        case SegmentCorsi.tutti:
           //Richiedo i corsi
           this.startService.requestCorsi().then(()=>{
             this.ricevuti=true;
+            loading.dismiss();
           }, ()=>{
-            console.log('reject');
+            loading.dismiss();
+            this.showMessage('Errore di connessione');
           });
           break;
       case SegmentCorsi.mioLivello:
-          //Richiedo i corsi con il documento utente per effettuare i filtri
-          this.startService.requestCorsi(this.docUser).then(()=>{
-            this.ricevuti=true;
-          });
-          break;
-
-      default:
+        //Richiedo i corsi con il documento utente per effettuare i filtri
+        this.startService.requestCorsi(this.docUser).then(()=>{
+          loading.dismiss();
+          this.ricevuti=true;
+        }, ()=>{
+          loading.dismiss();
+          this.showMessage('Errore di connessione');
+        });
         break;
-    }
-
-
-    
+      }
+          
+          
+    })
+          
   }
-
-  /**
-   * Modifica del Segment per la scelta dei corsi
-   */
+        
+        /**
+         * Modifica del Segment per la scelta dei corsi
+         */
   onChangeSegmentCorsi(event: any) {
     this.ricevuti=false
     if (event.target.value == 'corsiall')  {
@@ -186,7 +196,23 @@ export class ListcoursesPage implements OnInit {
     });
 
   }
+  showMessage(message: string) {
 
+    //Creo un messaggio
+    this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    })
+    .then(tstMsg => {
+      tstMsg.present();
+    });
+
+  }
+
+  doRefresh(event){
+    this.requestCorsi();
+    event.target.complete();
+  }
 
 
 

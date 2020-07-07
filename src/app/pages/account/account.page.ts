@@ -39,6 +39,7 @@ export class AccountPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     //Chiedo di caricare le immagini
     let photoLoaded = this.photoService.loadSaved();
 
@@ -63,7 +64,9 @@ export class AccountPage implements OnInit, OnDestroy {
    * Ritorna il src da applicare all'avatar
    */
   get sourceAvatar() {
-    let src = 'assets/img/avatar.svg'
+
+    let src = 'assets/img/avatar.svg';
+
     if (this.myPhoto) {
       if(this.myPhoto.base64){
         src = this.myPhoto.base64;

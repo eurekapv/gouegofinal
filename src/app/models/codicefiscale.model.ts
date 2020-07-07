@@ -16,7 +16,8 @@ export class CodiceFiscale {
     checkValidate: boolean;
     msgValidate: string;
 
-    constructor() {
+    constructor(codFisc: string) {
+        this.codiceFiscale = codFisc;
         this.checkValidate = false;
         this.msgValidate = '';
     }

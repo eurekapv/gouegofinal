@@ -111,7 +111,7 @@ export class PaypalPage implements OnInit{
    */
   closeModal():void {
     let resultPayment = new PaymentResult();
-    resultPayment.executed = true;
+    resultPayment.paymentExecuted = true;
     resultPayment.result = false;
     resultPayment.responseJson = '';
     resultPayment.message = 'Pagamento annullato';
@@ -126,7 +126,7 @@ export class PaypalPage implements OnInit{
    */
   onPaymentSuccess(details:any):void {
     let resultPayment = new PaymentResult();
-    resultPayment.executed = true;
+    resultPayment.paymentExecuted = true;
     resultPayment.result = true;
     resultPayment.responseJson = details;
     resultPayment.message = 'Pagamento effettuato';
@@ -140,7 +140,7 @@ export class PaypalPage implements OnInit{
    */
   onPaymentError(error:any):void {
     let resultPayment = new PaymentResult();
-    resultPayment.executed = true;
+    resultPayment.paymentExecuted = true;
     resultPayment.result = false;
     resultPayment.responseJson = error;
     resultPayment.message = 'Pagamento fallito';

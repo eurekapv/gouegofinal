@@ -55,7 +55,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   //Gestione pagamento
   arPaymentConfig: PaymentConfiguration[]; //Elenco dei metodi di pagamento accettati
   selectedPayment: PaymentConfiguration;
-  paymentResult: PaymentResult;
+
+  paymentResult: PaymentResult = new PaymentResult();
   subPaymentResult: Subscription;
 
   
@@ -171,8 +172,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     this.subActivePrenotazione = this.startService.activePrenotazione
         .subscribe(elPrenotazione => {
-              console.log('Mi è arrivata la prenotazione');
-              console.log(elPrenotazione);
               
               //Recupero la prenotazione
               this.activePrenotazione = elPrenotazione;
@@ -212,7 +211,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Chiude la modale 
+   * Chiude questa videata modale 
    */
   closeModal() {
     this.modalCtrl.dismiss();
@@ -232,7 +231,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.loadingController
       .create({
         message: 'Ricalcolo importo...',
-        spinner: 'bubbles'
+        spinner: 'circles'
       })
       .then(elLoading => {
         //Mostro il loading
@@ -300,15 +299,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    */
   onConfirm()
   {
-    let save = false;
-    save = this.onSavePrenotazione();
-
-    if (save) {
-      //Vado al pagamento
-       this.onExecPayment();
-    }
-
-
+    //Vado al pagamento
+     this.onExecPayment();
   }
   
   /**
@@ -323,13 +315,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.navCtrl.navigateRoot(['historylist/booking',this.docPianificazione.ID])
   }
 
-
-  /**
-   * Invio al server la Prenotazione da salvare
-   */
-  onSavePrenotazione():boolean {
-    return true;
-  }
 
   //#region METODI GESTIONE PAGAMENTO
 
@@ -377,13 +362,16 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
       //Paga sul posto proseguo subito
       if (this.selectedPayment.channel == PaymentChannel.onSite) {
-        resPay = new PaymentResult();
-        resPay.executed= true;
-        resPay.result = true;
-        resPay.message = 'Pagamento in struttura';
+        this.paymentResult = new PaymentResult();
+        this.paymentResult.paymentExecuted= false;     //Pagamento non eseguito
+        this.paymentResult.paymentRequestInApp = false; //Pagamento con l'app non necessario
+        this.paymentResult.message = 'Pagamento in struttura';
+
+        this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
+        this.activePrenotazione.INCASSATO = 0;
 
         //Passo subito al Success
-        this.onPaymentSuccess(resPay);
+        this.onPaymentSuccess(this.paymentResult);
 
       }
       else {
@@ -391,6 +379,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
         //Capacitor o Cordova 
         //Pagamento gestito nel Servizio Payment
       if (this.platform.is('hybrid')) {
+
         //Mi metto in attesa dell'Observable di ricezione del pagamento
         this.onWaitingPaymentResult();
 
@@ -440,17 +429,29 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    * Arrivato in modalità Observable
    */
   onWaitingPaymentResult() {
+
+    //Sottoscrivo alla ricezione del pagamento
     this.subPaymentResult = this.startService.paymentResult.subscribe(resPayment => {
-      //Pagamento è stato eseguito
-      if (resPayment.executed == true) {
-        if (resPayment.result) {
+
+      //Memorizzo nella class il pagamento
+      this.paymentResult = resPayment;
+
+      //L'operazione del pagamento è avvenuta
+      if (resPayment.result == true) {
+        //Pagamento effettuata
+        if (resPayment.paymentExecuted) {
+          //Eseguita correttamente
+          this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
+          this.activePrenotazione.RESIDUO = 0;
+
           this.onPaymentSuccess(resPayment);
         }
         else {
+          //Esecuzione fallita
           this.onPaymentFailed(resPayment);
         }
 
-        //Pagamento Eseguito tolgo la sottoscrizione
+        //Tolgo la sottoscrizione
         if (this.subPaymentResult) {
           this.subPaymentResult.unsubscribe();
         }
@@ -464,9 +465,42 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    */
   onPaymentSuccess(resultPayment?: PaymentResult) {
     //Pagamento avvenuto correttamente
+
+    //Posso salvare la prenotazione e poi scappare
+        //Visualizzo il loading controller
+        this.loadingController.create({
+          message: 'Salvataggio Prenotazione',
+          spinner: 'circles'
+        })
+        .then(elLoading => {
+          //Creo il loading
+          elLoading.present();
+
+          //Effettuo il salvataggio
+          this.startService
+              .requestSavePrenotazione()
+              .then(elPrenotazione => {
+                //Salvataggio avvenuto correttamente
+                //Chiudo il loading
+                elLoading.dismiss();
+
+                //Imposto questa prenotazione
+                this.activePrenotazione = elPrenotazione;
+                this.docPianificazione = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
+
+                console.log(elPrenotazione);
+
+                //Eseguo operazioni successive al salvataggio
+                this.onAfterSavePrenotazione();
+
+              }, errPrenotazione => {
+                elLoading.dismiss();
+                this.showMessage(errPrenotazione.MSGVALID)
+              });
+        });
     
-    //Eseguo operazioni successive al salvataggio
-    this.onAfterSavePrenotazione()
+    
+
   }
 
   /**

@@ -94,7 +94,8 @@ export class CourseService {
       
       //Elimino i corsi presenti
       this.emptyCorsi();
-           this.apiService
+      //Effettuo la chiamata
+      this.apiService
           .httpGet(myUrl, myHeaders, myParams)
           .pipe(map(data => {
             return data.CORSO

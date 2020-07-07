@@ -30,9 +30,8 @@ export class PaymentService {
               importo: number,
               valuta?: string,
               descrizione?: string) {
+
   let myPaymentResult = new PaymentResult();
-
-
   this.description = (descrizione ? descrizione:'Acquisto');
   this.currency = (valuta ? valuta:'EUR');
   this.paymentAmount = importo.toLocaleString('en-us', {minimumFractionDigits: 2});
@@ -48,7 +47,7 @@ export class PaymentService {
   
     default:
       //Segnalo un errore
-      myPaymentResult.executed = true;
+      myPaymentResult.paymentExecuted = true;
       myPaymentResult.result = false;
       myPaymentResult.message = 'Metodo di pagamento non supportato';
       myPaymentResult.responseJson = '';
@@ -95,7 +94,7 @@ export class PaymentService {
         this.payPal.renderSinglePaymentUI(payment)
 
         .then((res) => {
-          myPaymentResult.executed = true;
+          myPaymentResult.paymentExecuted = true;
           myPaymentResult.result = true;
           myPaymentResult.message = '';
           myPaymentResult.responseJson = res;
@@ -124,7 +123,7 @@ export class PaymentService {
 
         }, () => {
           // Error or render dialog closed without being successful
-          myPaymentResult.executed = true;
+          myPaymentResult.paymentExecuted = true;
           myPaymentResult.result = false;
           myPaymentResult.message = 'Che peccato! Chiusura inaspettata';
           myPaymentResult.responseJson = '';
@@ -132,7 +131,7 @@ export class PaymentService {
 
         });
       }, () => {
-          myPaymentResult.executed = true;
+          myPaymentResult.paymentExecuted = true;
           myPaymentResult.result = false;
           myPaymentResult.message = 'Che peccato! Configurazione errata';
           myPaymentResult.responseJson = '';
@@ -140,7 +139,7 @@ export class PaymentService {
       });
     }, () => {
           // Error in initialization, maybe PayPal isn't supported or something else
-          myPaymentResult.executed = true;
+          myPaymentResult.paymentExecuted = true;
           myPaymentResult.result = false;
           myPaymentResult.message =  'Che peccato! Non funziona';
           myPaymentResult.responseJson = '';

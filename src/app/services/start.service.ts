@@ -34,6 +34,8 @@ import { UtenteiscrizioneService } from './utenteiscrizione.service';
 import { Platform } from '@ionic/angular';
 import { PaymentService } from './payment.service';
 import { PaymentConfiguration } from '../models/payment.model';
+import { CodicefiscaleService } from './codicefiscale.service';
+import { CodiceFiscale } from '../models/codicefiscale.model';
 
 
 
@@ -88,7 +90,8 @@ export class StartService {
     private slotOccupazioneService: SlotoccupazioneService,
     private utentePrenotazioneService: UtenteprenotazioneService,
     private utenteIscrizioneService: UtenteiscrizioneService,
-    private paymentService: PaymentService ) { 
+    private paymentService: PaymentService,
+    private codFiscService: CodicefiscaleService ) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -692,12 +695,23 @@ setIDUtenteActivePrenotazione(docUtente: Utente) {
 /**
  * Richiede al servizio il calcolo 
  * della Prenotazione
- * Se _callback è una funzione, viene eseguita al termine
+ * 
  */
 requestImportoPrenotazione() {
   const actualStartConfig = this._startConfig.getValue();
   return this.prenotazioniService.requestImporto(actualStartConfig);
 }
+
+/**
+ * Ritorna Observable da analizzare con subscribe relativo alla richiesta di salvataggio
+ * della prenotazione
+ */
+requestSavePrenotazione() {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.prenotazioniService.requestSave(actualStartConfig);
+}
+
+
 
 //Mantiene nel servizio il campo per una rilettura futura
 setSelectedCampoPrenotazione(value: Campo) {
@@ -839,7 +853,7 @@ get paymentResult() {
 }
 
 /**
- * 
+ * Promise per il pagamento Mobile
  * @param paymentMode Configurazione del Modo di pagamento
  * @param importo     Importo pagamento 
  * @param valuta      Valuta
@@ -854,6 +868,20 @@ execPayment(paymentMode: PaymentConfiguration,
 }
 
 
+
+//#endregion
+
+
+//#region CODICE FISCALE
+/**
+ * Promise per il controllo e la decodifica del codice fiscale
+ * Puo' essere usata solo per controllare il Codice Controllo con il resto, oppure per decodificare tutti i campi
+ * @param codiceFiscale Codice Fiscale da anallizare
+ * @param decode 
+ */
+checkCodiceFiscale(codiceFiscale: string, decode?:boolean): Promise<CodiceFiscale> {
+  return this.codFiscService.checkCodiceFiscale(codiceFiscale, decode);
+}
 
 //#endregion
 

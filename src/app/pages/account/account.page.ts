@@ -65,7 +65,12 @@ export class AccountPage implements OnInit, OnDestroy {
   get sourceAvatar() {
     let src = 'assets/img/avatar.svg'
     if (this.myPhoto) {
-      src = this.myPhoto.base64;
+      if(this.myPhoto.base64){
+        src = this.myPhoto.base64;
+      }
+      else{
+        src=this.myPhoto.webviewPath;
+      }
     }
 
     return src;
@@ -76,10 +81,11 @@ export class AccountPage implements OnInit, OnDestroy {
    * Effettuato il click sull'avatar
    */
   onClickAvatar() {
-    let addGallery = this.photoService.addNewToGallery(PhotoType.account);
-    addGallery.then(() => {
-      //Richiedo l'immagine account
-      this.myPhoto = this.photoService.myAccountPhoto;
+    this.photoService.addNewToGallery(PhotoType.account).then(() => {
+      this.photoService.loadSaved().then(()=>{
+        //Richiedo l'immagine account
+        this.myPhoto = this.photoService.myAccountPhoto;
+      })
     });
   }
 

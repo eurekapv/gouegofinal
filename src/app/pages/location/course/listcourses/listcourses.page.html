@@ -17,13 +17,10 @@
  
 
 <ion-content>
-
-  <!-- IN RICERCA CORSI -->
-  <!-- CORSI NON RICEVUTI -->
-  <div *ngIf="!ricevuti" class="nofind-cnt">
-    <ion-spinner name="circular"></ion-spinner>
-  </div>
-  
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+    
   <!-- NON IN RICERCA E CORSI TROVATI -->
   <!-- VISUALIZZAZIONE CORSI -->
   <div *ngIf="ricevuti && listCorsi.length !== 0" id="crs-lista">

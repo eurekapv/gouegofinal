@@ -79,14 +79,15 @@
 
   <ion-grid>
     <ion-list>
-      <ion-item>
+      <ion-item button (click)="disclaimer=!disclaimer; " >
         <ion-checkbox 
               [(ngModel)]="disclaimer" 
-              slot="start">
+              slot="start"
+              (click)="$event.stopPropagation();">
         </ion-checkbox>
         <ion-label class="ion-text-wrap">
           <p>Lette e approvate le
-          <a href="">condizioni di vendita</a>
+          <a href="" (click)="$event.stopPropagation()">condizioni di vendita</a>
         </p>
         </ion-label>
       </ion-item>

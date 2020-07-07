@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Corso } from 'src/app/models/corso.model';
 
-import { NavController } from '@ionic/angular';
+import { NavController, LoadingController, ToastController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
 import { Subscription } from 'rxjs';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
@@ -41,7 +41,9 @@ export class HistorylistPage implements OnInit {
 
   constructor(
     private navCtrl:NavController,
-    private startService:StartService    
+    private startService:StartService,
+    private loadingCtrl:LoadingController,
+    private toastCtrl: ToastController    
   ) { }
 
   ngOnInit() {
@@ -73,10 +75,23 @@ export class HistorylistPage implements OnInit {
   requestPrenotazioni() {
     if (this.docUtente) {
       if (this.docUtente.ID) {
-        //Segno di non aver ancora ricevuto nulla
-        this.receivedPrenotazioni = false;
-        //Richiedo le Prenotazioni
-        this.startService.requestUtentePrenotazioni(this.docUtente.ID);
+        this.loadingCtrl.create({
+          spinner: 'circles',
+          message: 'Caricamento',
+          backdropDismiss: true
+        }).then(loading=>{
+          loading.present();
+          //Segno di non aver ancora ricevuto nulla
+          this.receivedPrenotazioni = false;
+          //Richiedo le Prenotazioni
+          this.startService.requestUtentePrenotazioni(this.docUtente.ID).then(()=>{
+            this.receivedPrenotazioni=true;
+            loading.dismiss();
+          }, ()=>{
+            loading.dismiss();
+            this.showMessage('Errore nel caricamento');
+          });
+        })
       }
     }
   }
@@ -87,10 +102,23 @@ export class HistorylistPage implements OnInit {
   requestIscrizioni() {
     if (this.docUtente) {
       if (this.docUtente.ID) {
-        //Segno di non aver ancora ricevuto nulla
-        this.receivedCorsi = false;
-        //Richiedo le Iscrizioni
-        this.startService.requestUtenteIscrizioni(this.docUtente.ID);
+        this.loadingCtrl.create({
+          spinner: 'circles',
+          message: 'Caricamento',
+          backdropDismiss: true
+        }).then(loading=>{
+          loading.present();
+          //Segno di non aver ancora ricevuto nulla
+          this.receivedCorsi = false;
+          //Richiedo le Iscrizioni
+          this.startService.requestUtenteIscrizioni(this.docUtente.ID).then(()=>{
+            loading.dismiss();
+            this.receivedCorsi=true;
+          }, ()=>{
+            loading.dismiss();
+            this.showMessage('Errore nel caricamento');
+          });
+        })
       }
     }
   }
@@ -104,7 +132,7 @@ export class HistorylistPage implements OnInit {
       this.subListUtentePrenotazioni = this.startService.listUtentePrenotazioni
                                           .subscribe(collPrenotazioni => {
                                               this.listUtentePrenotazione = collPrenotazioni;                                
-                                              this.receivedPrenotazioni = true;
+                                              //this.receivedPrenotazioni = true;
 
                                               //Disattivo il refresh se rimasto attivo
                                               if (this.eventRefresherPrenotazioni) {
@@ -117,7 +145,7 @@ export class HistorylistPage implements OnInit {
                                               //Avvisare dell'errore
 
                                               //Disattivo il refresh se rimasto attivo
-                                              this.receivedPrenotazioni = true;
+                                              //this.receivedPrenotazioni = true;
 
                                               if (this.eventRefresherPrenotazioni) {
                                                 if (this.eventRefresherPrenotazioni.target) {
@@ -138,7 +166,7 @@ export class HistorylistPage implements OnInit {
     this.subListUtenteIscrizioni = this.startService.listUtenteIscrizioni
                                         .subscribe(collIscrizioni => {
                                             this.listUtenteCorsi = collIscrizioni;                                
-                                            this.receivedCorsi = true;
+                                            //this.receivedCorsi = true;
                                             console.log(this.listUtenteCorsi);
                                             if (this.eventRefresherIscrizioni) {
                                               if (this.eventRefresherIscrizioni.target) {
@@ -149,7 +177,7 @@ export class HistorylistPage implements OnInit {
                                         }, error => {
                                               //Avvisare dell'errore
                                               
-                                              this.receivedCorsi = true;
+                                              //this.receivedCorsi = true;
 
                                               if (this.eventRefresherIscrizioni) {
                                                 if (this.eventRefresherIscrizioni.target) {
@@ -223,6 +251,18 @@ export class HistorylistPage implements OnInit {
       default:
         break;
     }
+
+  }
+  showMessage(message: string) {
+
+    //Creo un messaggio
+    this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    })
+    .then(tstMsg => {
+      tstMsg.present();
+    });
 
   }
 

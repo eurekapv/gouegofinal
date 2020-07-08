@@ -32,6 +32,8 @@ export class Livello extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
+    objDescriptor.className = 'LIVELLO';
+    objDescriptor.doRemote = true;
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

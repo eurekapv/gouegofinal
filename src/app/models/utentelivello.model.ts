@@ -29,6 +29,10 @@ export class UtenteLivello extends IDDocument {
         let arTime = [];
         let arCollection = [];
 
+        objDescriptor.className = 'UtenteLivello';
+        objDescriptor.classWebApiName = 'UTENTELIVELLO';
+        objDescriptor.doRemote = true;
+        
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

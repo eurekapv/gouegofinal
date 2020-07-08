@@ -38,6 +38,10 @@ export class Attivita extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
+    objDescriptor.className = 'ATTIVITA';
+    objDescriptor.classWebApiName = '';
+    objDescriptor.doRemote = false;
+
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

@@ -35,6 +35,9 @@ export class Sport extends IDDocument {
     let arTime = [];
     let arCollection = ['LIVELLO'];
 
+    objDescriptor.className = 'SPORT';
+    objDescriptor.doRemote = true;
+    
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

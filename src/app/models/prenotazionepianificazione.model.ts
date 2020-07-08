@@ -64,6 +64,8 @@ export class PrenotazionePianificazione extends IDDocument {
         let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
         let arTime = [];
 
+        objDescriptor.className = 'PRENOTAZIONEPIANIFICAZIONE';
+        objDescriptor.doRemote = true;
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arNumberDecimal, TypeDefinition.numberDecimal);

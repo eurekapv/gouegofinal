@@ -26,6 +26,8 @@ export class CategoriaEta extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
+    objDescriptor.className = 'CATEGORIAETA';
+    objDescriptor.doRemote = true;
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

@@ -7,7 +7,7 @@ import { ApicallService } from './apicall.service';
 
 import { StartConfiguration } from '../models/start-configuration.model';
 import { NewsEventi } from '../models/newseventi.model';
-import { IDDocument } from '../models/iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 
 
 

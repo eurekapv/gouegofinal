@@ -1,7 +1,7 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { Language } from './valuelist.model';
 import { Settimana } from './settimana.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 export class AperturaLocation extends IDDocument {
     GIORNO: number; //Da scemo ho messo da 1 a 7

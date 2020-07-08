@@ -5,7 +5,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { map, take } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
-import { IDDocument } from '../models/iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 
 @Injectable({
   providedIn: 'root'

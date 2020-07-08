@@ -1,7 +1,7 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { Sesso } from './valuelist.model';
 import { UtenteLivello } from './utentelivello.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 
 export class Utente extends IDDocument {

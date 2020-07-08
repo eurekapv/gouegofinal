@@ -1,5 +1,5 @@
-import { TypeDefinition, Descriptor } from '../models/descriptor.model';
-import { MyDateTime } from './mydatetime.model';
+import { TypeDefinition, Descriptor } from './descriptor.model';
+import { MyDateTime } from '../../models/mydatetime.model';
  
   export class IDDocument {
     ID: string;
@@ -509,7 +509,6 @@ import { MyDateTime } from './mydatetime.model';
 
 
   }
-
 
 
  

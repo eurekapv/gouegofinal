@@ -1,5 +1,5 @@
-import { IDDocument } from './iddocument.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { IDDocument } from '../library/models/iddocument.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { ViewOreOccupazione } from './vieworeoccupazione.model';
 
 export class ViewOccupazione extends IDDocument {

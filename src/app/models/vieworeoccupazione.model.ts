@@ -1,6 +1,6 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { StatoSlot, SettoreAttivita } from './valuelist.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 export class ViewOreOccupazione extends IDDocument {
     DATA: Date;

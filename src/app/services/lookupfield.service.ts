@@ -6,7 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
 import { StartService } from './start.service';
 import { StartConfiguration } from '../models/start-configuration.model';
-import { IDDocument } from '../models/iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 
 @Injectable({
   providedIn: 'root'

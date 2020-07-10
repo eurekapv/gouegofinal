@@ -1,6 +1,6 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { SettoreAttivita } from './valuelist.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 export class Attivita extends IDDocument {
 
@@ -37,6 +37,10 @@ export class Attivita extends IDDocument {
     let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
     let arTime = [];
     let arCollection = [];
+
+    objDescriptor.className = 'ATTIVITA';
+    objDescriptor.classWebApiName = '';
+    objDescriptor.doRemote = false;
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

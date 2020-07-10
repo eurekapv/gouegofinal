@@ -262,8 +262,8 @@ export class PrenotazioneService {
                 .httpPost(myUrl,myHeaders, myParams, myBody)
                 .subscribe(elPrenotazione => {
 
-                  let receivedPrenotazione = new Prenotazione();
-                  receivedPrenotazione.setJSONProperty(elPrenotazione);
+                  let receivedPrenotazione = Prenotazione.getPrenotazioneFromJson(elPrenotazione);
+                  
                   if (receivedPrenotazione.ISVALID == true) {
                     resolve(receivedPrenotazione);
                   }
@@ -272,10 +272,12 @@ export class PrenotazioneService {
                   }
 
                 }, error => {
+
                   let receivedPrenotazione = new Prenotazione();
                   receivedPrenotazione.ISVALID = false;
                   receivedPrenotazione.MSGINVALID = error;
                   reject(receivedPrenotazione);
+                  
                 });
 
       });

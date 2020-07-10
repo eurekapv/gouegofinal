@@ -1,7 +1,7 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { TipoSport} from '../models/valuelist.model';
 import { Livello } from '../models/livello.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 
 
@@ -35,6 +35,9 @@ export class Sport extends IDDocument {
     let arTime = [];
     let arCollection = ['LIVELLO'];
 
+    objDescriptor.className = 'SPORT';
+    objDescriptor.doRemote = true;
+    
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

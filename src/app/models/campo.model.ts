@@ -1,6 +1,6 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { TipoCampo, StrutturaCampo } from '../models/valuelist.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CampoSport } from './camposport.model';
 
 
@@ -40,6 +40,9 @@ export class Campo extends IDDocument {
     let arDateTime =[];
     let arTime = [];
     let arCollection = ['CAMPOSPORT'];
+
+    objDescriptor.className = 'CAMPO';
+    objDescriptor.doRemote = true;
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

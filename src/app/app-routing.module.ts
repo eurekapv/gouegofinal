@@ -14,14 +14,6 @@ const routes: Routes = [
         path: 'new-login',
         loadChildren: () => import('./pages/auth/new-login/new-login.module').then( m => m.NewLoginPageModule)
       }
-      // {
-      //   path: 'login',
-      //   loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule)
-      // },
-      // {
-      //   path: 'register',
-      //   loadChildren: () => import('./pages/auth/register/register.module').then( m => m.RegisterPageModule)
-      // }
     ]
   }, 
   {

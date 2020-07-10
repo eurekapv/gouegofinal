@@ -1,8 +1,8 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { LocationImage } from './locaton-image.model';
 import { Campo } from './campo.model';
 import { AperturaLocation } from './aperturalocation.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CampoSport } from './camposport.model';
 
 export class Location extends IDDocument {
@@ -66,6 +66,8 @@ export class Location extends IDDocument {
     let arTime = [];
     let arCollection = ['LOCATIONIMAGE','CAMPO','APERTURALOCATION'];
 
+    objDescriptor.className = 'LOCATION';
+    objDescriptor.doRemote = true;
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

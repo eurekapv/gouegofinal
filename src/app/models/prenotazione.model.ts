@@ -1,5 +1,5 @@
-import { IDDocument } from './iddocument.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { IDDocument } from '../library/models/iddocument.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { PrenotazionePianificazione } from './prenotazionepianificazione.model';
 
 export class Prenotazione extends IDDocument {
@@ -153,6 +153,8 @@ export class Prenotazione extends IDDocument {
         let arDateTime =[];
         let arTime = [];
 
+        objDescriptor.className = 'PRENOTAZIONE';
+        objDescriptor.doRemote = true;
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arNumberDecimal, TypeDefinition.numberDecimal);

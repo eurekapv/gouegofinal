@@ -1,6 +1,6 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { TipoSocieta, SettoreAttivita } from '../models/valuelist.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { PrivateImage } from './privateimage.model';
 import { Payment } from './payment.model';
 
@@ -89,6 +89,8 @@ export class Gruppo extends IDDocument {
     let arTime = [];
     let arCollection = ['PRIVATEIMAGE'];
 
+    objDescriptor.className = 'GRUPPO';
+    objDescriptor.doRemote = true;
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

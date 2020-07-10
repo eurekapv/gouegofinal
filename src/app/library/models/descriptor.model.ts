@@ -37,7 +37,7 @@ export class TypeReflector {
     }
 
     /**
-     * Ritorna TRUE se il campoè un campo presente anche sul server
+     * Ritorna TRUE se il campo è un campo presente anche sul server
      */
     nativeField(): boolean {
         let value = true;
@@ -56,7 +56,44 @@ export class TypeReflector {
 export class  Descriptor{
     fields: TypeReflector[] = [];
 
+    //Nome della classe
+    private _className: string;         
+    //Indica se la classe viene gestita in remoto
+    private _doRemote: boolean;
+    //Nome da utilizzare nelle chiamate webapi
+    private _classWebApiName: string;
+    
+    get className() {
+        return this._className;
+    }
+
+    set className(value:string) {
+        this._className = value;
+        
+        if (!this._classWebApiName || this._classWebApiName.length == 0) {
+            this._classWebApiName = value;
+        }
+    }
+
+    get classWebApiName() {
+        return this._classWebApiName;
+    }
+
+    set classWebApiName(value: string) {
+        this._classWebApiName = value;
+    }
+
+    get doRemote() {
+        return this._doRemote;
+    }
+
+    set doRemote(value: boolean) {
+        this._doRemote = value;
+    }
+
     constructor() {
+        this._doRemote = false;
+
         this.add('ID',TypeDefinition.char);
         this.add('do_updated', TypeDefinition.boolean);
         this.add('do_loaded', TypeDefinition.boolean);

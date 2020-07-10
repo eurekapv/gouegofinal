@@ -1,6 +1,6 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { AmbitoNews } from './valuelist.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 export class NewsEventi extends IDDocument {
     AMBITO: AmbitoNews;
@@ -50,6 +50,8 @@ export class NewsEventi extends IDDocument {
         let arDateTime =['PUBBLICATADAL'];
         let arTime = [];
 
+        objDescriptor.className = 'NEWSEVENTI';
+        objDescriptor.doRemote = true;
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arNumberDecimal, TypeDefinition.numberDecimal);

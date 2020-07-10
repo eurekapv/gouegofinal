@@ -1,7 +1,7 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 import { Location } from '../models/location.model';
 import { TipoArea } from '../models/valuelist.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 
 export class Area extends IDDocument {
@@ -39,6 +39,9 @@ export class Area extends IDDocument {
       let arDateTime =[];
       let arTime = [];
       let arCollection = ['LOCATIONS'];
+
+      objDescriptor.className = 'AREA';
+      objDescriptor.doRemote = true;
 
       objDescriptor.addMultiple(arString, TypeDefinition.char);
       objDescriptor.addMultiple(arNumber, TypeDefinition.number);

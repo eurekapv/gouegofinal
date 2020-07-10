@@ -1,5 +1,5 @@
-import { IDDocument } from './iddocument.model';
-import { TypeDefinition, Descriptor} from '../models/descriptor.model';
+import { IDDocument } from '../library/models/iddocument.model';
+import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 export class CategoriaEta extends IDDocument {
     CODICE: string;
@@ -26,6 +26,8 @@ export class CategoriaEta extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
+    objDescriptor.className = 'CATEGORIAETA';
+    objDescriptor.doRemote = true;
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

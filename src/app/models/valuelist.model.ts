@@ -1,4 +1,4 @@
-import { IDDocument } from './iddocument.model';
+import { IDDocument } from '../library/models/iddocument.model';
 
 
 export enum TipoArea {

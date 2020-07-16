@@ -85,6 +85,44 @@ export class UtenteiscrizioneService {
     })
   }
 
+
+     /**
+   * 
+   * @param config Dati configurazione
+   * @param idIscrizione ID Iscrizione richiesta
+   */
+  requestById(config: StartConfiguration, idIscrizione: string) {
+    return new Promise((resolve, reject)=>{
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'UTENTEISCRIZIONE';
+      const filterDateTime = this.getFilterDateTime();
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto richiesta
+      let myParams = new HttpParams().set('ID',idIscrizione);
+        
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data => {
+              return data.UTENTEISCRIZIONE      
+        }))
+        .subscribe (objData => {
+            let docIscrizione = new Utenteiscrizione();
+            docIscrizione.setJSONProperty(objData);
+
+            resolve(docIscrizione);
+            
+        }, error => {
+          reject (error);
+        })
+      
+    })
+  }
+
   /**
    * Aggiunge all'elenco una prenotazione dell'utente
    * @param objUtenteIscrizione Prenotazione da aggiungere

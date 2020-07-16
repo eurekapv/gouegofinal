@@ -11,9 +11,8 @@ import { Sport } from '../models/sport.model';
 import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { Utente } from '../models/utente.model';
-import { LogApp } from '../models/log.model';
 import { LoadingController } from '@ionic/angular';
-import { error } from 'protractor';
+
 
 @Injectable({
   providedIn: 'root'
@@ -69,8 +68,7 @@ export class CourseService {
     return this._filterCorsi;
   }
 
-  constructor(private apiService: ApicallService,
-              private loadingCtrl: LoadingController) { }
+  constructor(private apiService: ApicallService) { }
 
   /**
    * Effettua una chiamata al server per il recupero dei corsi
@@ -200,7 +198,7 @@ export class CourseService {
     return new Promise ((resolve,reject)=>{
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'CORSOPROGRAMMA';
-      
+      console.log('Qua');
       //In Testata c'e' sempre l'AppId
       myHeaders = myHeaders.set('appid',config.appId);
       let myUrl = config.urlBase + '/' + doObject; 

@@ -34,6 +34,7 @@ export class HistorycoursePage implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               private startService: StartService) {
+
                 this.myIscrizione=new Utenteiscrizione();
               }
 
@@ -41,7 +42,8 @@ export class HistorycoursePage implements OnInit {
     //mi sottoscrivo al corso
     this.subMyCorso=this.startService.selectedCorso.subscribe(corso=>{
       this.myCorso=corso;
-    })
+    });
+    
     this.subUserLogged=this.startService.utenteLogged.subscribe(data=>{
       this.userLogged=data;
       if(this.userLogged){

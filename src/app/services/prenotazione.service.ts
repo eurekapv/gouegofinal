@@ -154,6 +154,7 @@ export class PrenotazioneService {
     
     // In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('appid',config.appId);
+    
     // Nei parametri imposto idPrenotazion richiesto
     let myParams = new HttpParams().set('ID',idPrenotazione);
 

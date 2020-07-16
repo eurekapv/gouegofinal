@@ -54,7 +54,9 @@ export class PhotoService {
     //Scrivo nello storage l'array delle Photos
     Storage.set({
       key: this.PHOTO_STORAGE,
-      value: JSON.stringify(this.photos.map(p => {
+      value: this.platform.is('hybrid')
+      ? JSON.stringify(this.photos)
+      : JSON.stringify(this.photos.map(p => {
               // Don't save the base64 representation of the photo data, 
               // since it's already saved on the Filesystem
               const photoCopy = { ...p };
@@ -145,7 +147,7 @@ export class PhotoService {
     // Retrieve cached photo array data
     const photos = await Storage.get({ key: this.PHOTO_STORAGE });
     this.photos = JSON.parse(photos.value) || [];
-    
+    if (!this.platform.is('hybrid')) {
     // Display the photo by reading into base64 format
     for (let photo of this.photos) {
     // Read each saved photo's data from the Filesystem
@@ -156,6 +158,7 @@ export class PhotoService {
 
         // For Web platform only: Save the photo into the base64 field
         photo.base64 = `data:image/jpeg;base64,${readFile.data}`;
+      }
     }
   }
   

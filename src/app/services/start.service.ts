@@ -785,6 +785,10 @@ get listUtenteIscrizioni() {
   return this.utenteIscrizioneService.listUtenteIscrizione;
 }
 
+getIscrizioneById(idIscrizione:string){
+  return this.utenteIscrizioneService.getIscrizioneById(idIscrizione);
+}
+
 //#endregion
 
 //#region NEWS EVENTI

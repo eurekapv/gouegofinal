@@ -7,8 +7,8 @@
     </ion-toolbar>
   </ion-header>
   <ion-content>
-    <ion-card>
-      <ion-item button="false" lines="none">
+    <ion-card class="title">
+      <ion-item color="light" button="false" lines="none">
         <i class="sport-icon" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
         <ion-label>
           <h1 class="ion-text-wrap">
@@ -34,7 +34,7 @@
   </ion-card>
 
 
-    <ion-list>
+    <ion-list class="ion-no-padding">
     <!-- GIORNATE -->
       <ion-item-group>
         <ion-item-divider color="light">
@@ -54,8 +54,7 @@
                   size="small" 
                   color="primary" 
                   expand="block" 
-                  fill="outline"
-                  (click)="onClickCardCalendar()">
+                  fill="outline">
     
                 <ion-icon name="time" slot="start"></ion-icon>
                 {{myCorso.ORAINIZIO | date:'h:mm'}}
@@ -67,8 +66,7 @@
                 size="small" 
                 color="primary" 
                 expand="block" 
-                fill="outline"
-                (click)="onClickCardCalendar()">
+                fill="outline">
                 <ion-icon name="infinite" slot="start"></ion-icon>
                 {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
               </ion-button>
@@ -102,7 +100,10 @@
                   size="small" 
                   fill="outline"
                   slot="end"
-                  (click)="onClickCardCalendar()">Calendario</ion-button>
+                  (click)="onClickCardCalendar()">
+                  <ion-icon slot="start" name="calendar"></ion-icon>
+                  Calendario
+              </ion-button>
 
           </ion-item>
 

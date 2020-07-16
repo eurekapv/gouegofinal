@@ -221,6 +221,10 @@ export class CourseService {
                 this._selectedCorso.next(myCorso);
                 resolve();
               }
+              else
+              {
+                reject('corso non trovato');
+              }
           },
           error=>{
             reject(error);

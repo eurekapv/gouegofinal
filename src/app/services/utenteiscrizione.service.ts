@@ -18,6 +18,20 @@ export class UtenteiscrizioneService {
     return this._listUtenteIscrizione.asObservable();
   }
 
+  /**
+   * dato un id, restituisce l'oggetto utenteiscrizione dalla lista in memoria (è necessario effettuare
+   * la request)
+   * #TODO CONTROLLARE!
+   * @param idIscrizione L'id da cercare
+   */
+  getIscrizioneById(idIscrizione:string): Utenteiscrizione{
+    let myIscrizione : Utenteiscrizione;
+    myIscrizione= this._listUtenteIscrizione.getValue().find(elem=>{
+      return elem.ID===idIscrizione;
+    })
+    return myIscrizione;
+  }
+
   constructor(private apiService: ApicallService) { }
 
    /**

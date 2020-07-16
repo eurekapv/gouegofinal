@@ -11,8 +11,6 @@ import { ModalController, NavController, LoadingController, ToastController } fr
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 
-//#TODO qui la logica potrebbe essere diversa: bisogna fare la request una sola volta allinizio,
-//e non ogni volta che il segment cambia, in modo da evitare il flash dello spinner ogni volta
 @Component({
   selector: 'app-listcourses',
   templateUrl: './listcourses.page.html',

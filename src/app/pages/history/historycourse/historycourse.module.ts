@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { HistorycoursePageRoutingModule } from './historycourse-routing.module';
 
 import { HistorycoursePage } from './historycourse.page';
+import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HistorycoursePageRoutingModule
+    HistorycoursePageRoutingModule,
+    PipesModule
   ],
   declarations: [HistorycoursePage]
 })

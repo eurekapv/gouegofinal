@@ -16,11 +16,12 @@ export enum TypeDefinition {
 export class TypeReflector {
     fieldName: string;
     fieldType: TypeDefinition;
+    describeRow: boolean;
 
     constructor(campoName: string, campoType: TypeDefinition) {
         this.fieldName = campoName;
         this.fieldType = campoType;
-
+        this.describeRow = false;
     }
 
     /**
@@ -57,9 +58,11 @@ export class  Descriptor{
     fields: TypeReflector[] = [];
 
     //Nome della classe
-    private _className: string;         
+    private _className: string; 
+
     //Indica se la classe viene gestita in remoto
     private _doRemote: boolean;
+
     //Nome da utilizzare nelle chiamate webapi
     private _classWebApiName: string;
     

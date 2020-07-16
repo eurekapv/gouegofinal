@@ -3,18 +3,18 @@ import { BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
-import { CorsoScheduler } from '../models/corsoscheduler.model';
+import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
-import { error } from 'protractor';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseschedulerService {
 
-  _calendarioCorso = new BehaviorSubject<CorsoScheduler[]>([]);
+  _calendarioCorso = new BehaviorSubject<PianificazioneCorso[]>([]);
 
   constructor(private apiService: ApicallService) { }
 
@@ -57,7 +57,7 @@ export class CourseschedulerService {
           if (resultData) {
             resultData.forEach(element => {
     
-              let newCorsoCalendario = new CorsoScheduler();
+              let newCorsoCalendario = new PianificazioneCorso();
               newCorsoCalendario.setJSONProperty(element);
               LogApp.consoleLog(newCorsoCalendario);
               this.addCorsoCalendario(newCorsoCalendario);
@@ -76,7 +76,7 @@ export class CourseschedulerService {
    * Aggiunge una schedulazione
    * @param objCorsoScheduler Schedulazione Corso
    */
-  addCorsoCalendario(objCorsoScheduler: CorsoScheduler) {
+  addCorsoCalendario(objCorsoScheduler: PianificazioneCorso) {
     this.calendarioCorso
       .pipe(take(1))
       .subscribe( collCalendario => {

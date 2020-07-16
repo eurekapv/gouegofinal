@@ -1,7 +1,7 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
-export class CorsoScheduler extends IDDocument {
+export class PianificazioneCorso extends IDDocument {
     IDCORSO: string;
     IDAREAOPERATIVA: string;
     IDLOCATION: string;

@@ -18,19 +18,6 @@ export class UtenteiscrizioneService {
     return this._listUtenteIscrizione.asObservable();
   }
 
-  /**
-   * dato un id, restituisce l'oggetto utenteiscrizione dalla lista in memoria (è necessario effettuare
-   * la request)
-   * #TODO CONTROLLARE!
-   * @param idIscrizione L'id da cercare
-   */
-  getIscrizioneById(idIscrizione:string): Utenteiscrizione{
-    let myIscrizione : Utenteiscrizione;
-    myIscrizione= this._listUtenteIscrizione.getValue().find(elem=>{
-      return elem.ID===idIscrizione;
-    })
-    return myIscrizione;
-  }
 
   constructor(private apiService: ApicallService) { }
 
@@ -92,7 +79,7 @@ export class UtenteiscrizioneService {
    * @param idIscrizione ID Iscrizione richiesta
    */
   requestById(config: StartConfiguration, idIscrizione: string) {
-    return new Promise((resolve, reject)=>{
+    return new Promise<Utenteiscrizione>((resolve, reject)=>{
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'UTENTEISCRIZIONE';
       const filterDateTime = this.getFilterDateTime();
@@ -110,11 +97,16 @@ export class UtenteiscrizioneService {
         .pipe(map(data => {
               return data.UTENTEISCRIZIONE      
         }))
-        .subscribe (objData => {
+        .subscribe (arrData => {
             let docIscrizione = new Utenteiscrizione();
-            docIscrizione.setJSONProperty(objData);
+            if (arrData[0]){
+              docIscrizione.setJSONProperty(arrData[0]);
+              resolve(docIscrizione);
+            }
+            else{
+              reject('iscrizione inesistente');
+            }
 
-            resolve(docIscrizione);
             
         }, error => {
           reject (error);

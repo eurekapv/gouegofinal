@@ -125,6 +125,59 @@ export class CourseService {
   }
 
 
+  requestById (config: StartConfiguration, idCorso: string, numLivelli?:string) {
+    return new Promise<Corso>((resolve, reject)=>{
+
+      if (!numLivelli){
+        numLivelli='3';
+      }
+
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'CORSO';
+      
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      myHeaders = myHeaders.set('child-level', numLivelli);
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      let myParams = new HttpParams().set('ID',idCorso)
+      
+      //Effettuo la chiamata
+      this.apiService
+          .httpGet(myUrl, myHeaders, myParams)
+          .pipe(map(data => {
+            return data.CORSO;
+          }))
+          .subscribe( resultData => {
+
+            if (resultData[0]){
+              let objCorso = new Corso();
+              objCorso.setJSONProperty(resultData[0]);
+              
+              //Decodifico i campi chiave
+              objCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
+              
+              //Decodifico i campi chiave
+              objCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
+              
+              //Decodifico i campi chiave
+              objCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
+              
+              resolve(objCorso);     
+            }
+            else
+            {
+              reject('corso non trovato');
+            }
+
+          }, error=>{
+            reject(error);
+          })
+    })
+  }
+
+
   /**
    * Ritorna un oggetto HttpParams con i parametri impostati
    * @param filter Oggetto co i filtri da applicare e passare come HttpParams

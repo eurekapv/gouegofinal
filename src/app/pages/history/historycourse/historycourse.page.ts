@@ -19,63 +19,47 @@ export class HistorycoursePage implements OnInit {
   docUtente: Utente;
   subDocUtente: Subscription;
 
-  myIscrizione: Utenteiscrizione; //il documento iscrizione NON OBSERVABLE
+  myIscrizione: Utenteiscrizione = new  Utenteiscrizione(); //il documento iscrizione NON OBSERVABLE
 
   myCorso:Corso= new Corso();
-  subMyCorso: Subscription;
+
+  myLocation: Location= new Location();
 
   selectedLocation: Location = new Location(); //il documento location NON OBSERVABLE 
 
-  userLogged: boolean;
-  subUserLogged: Subscription;
-
-
-  //TODO da finire e controllare ("myIscrizione viene recuperato in mod. non observable, capire se va bene")
 
   constructor(private activatedRoute: ActivatedRoute,
-              private startService: StartService) {
-
-                this.myIscrizione=new Utenteiscrizione();
-              }
+              private startService: StartService) {              }
 
   ngOnInit() {
-    //mi sottoscrivo al corso
-    this.subMyCorso=this.startService.selectedCorso.subscribe(corso=>{
-      this.myCorso=corso;
-    });
-    
-    this.subUserLogged=this.startService.utenteLogged.subscribe(data=>{
-      this.userLogged=data;
-      if(this.userLogged){
-        //recupero l'utente
-        this.subDocUtente=this.startService.utente.subscribe(utente=>{
-          this.docUtente=utente
-          //recupero l'id dell'iscrizione
+  
           this.activatedRoute.paramMap.subscribe(route=>{
             if(route.has('historyId')){
               //se ho l'id dell'iscrizione, faccio la riciesta al server
               let idIscrizione=route.get('historyId');
-              this.startService.requestUtenteIscrizioni(this.docUtente.ID).then(()=>{
-                //poi recupero l'iscrizione tramite l'id
-                this.myIscrizione=this.startService.getIscrizioneById(idIscrizione);
-                //ruchiedo la location
-                this.selectedLocation=this.startService.findLocationByID(this.myIscrizione.IDLOCATION);
+              this.startService.requestIscrizioneById(idIscrizione).then(docIscrizione=>{
+                this.myIscrizione=docIscrizione;
+                console.log('iscr');
                 console.log(this.myIscrizione);
-                this.startService.requestCorsi().then(()=>{
-                  //faccio la richiesta per ottenere il corso (la sottoscrizione è stata fatta all'inizio)
-                  this.startService.requestCorsoProgramma(this.myIscrizione.IDCORSO).then(()=>{
-                    console.log(this.myCorso);
-                  })
+                
+                //quando è arrivata l'iscrizione, richiedo al server il corso usando l'IDCORSO
+                this.startService.requestCorsoById(this.myIscrizione.IDCORSO).then(docCorso=>{
+                  this.myCorso=docCorso;
+                  console.log('corso');
+                  console.log(this.myCorso);
+                })
+                //poi chiedo anche la location
+                this.startService.requestLocationByID(this.myIscrizione.IDLOCATION).then(docLocation=>{
+                  this.myLocation= docLocation;
+                  console.log('location');
+                  console.log(this.myLocation);
                 })
               })
-            }
-          })
+              
+          }
         })
 
       }
-    })
-    
-  }
   /**
    * chiama il servizio passandogli l'id dell'oggetto corso, e restituisce la stringa dell'icona
    * @param corso l'oggetto corso per cui si richiede l'icona

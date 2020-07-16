@@ -86,7 +86,7 @@ export class LocationService {
    * 
    */
   requestLocationByID(config: StartConfiguration, idLocation: string, _numLivelli?:number) {
-    return new Promise((resolve, reject)=>{
+    return new Promise<Location>((resolve, reject)=>{
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'LOCATION';
   
@@ -118,7 +118,7 @@ export class LocationService {
                         
                         //Emetto evento di cambio
                         this._activeLocation.next(locReturn);
-                        resolve();
+                        resolve(locReturn);
                       }                  
                     }, error=>{
                       reject (error);

@@ -477,6 +477,11 @@ requestCorsi(docUser?:Utente, ricezione?: boolean) {
                docUser);            
 }
 
+requestCorsoById(idCorso: string){
+  const actualStartConfig = this._startConfig.getValue();
+  return this.corsoService.requestById(actualStartConfig, idCorso);
+}
+
 
 /**
  * Ritorna il calendario di un corso
@@ -785,8 +790,9 @@ get listUtenteIscrizioni() {
   return this.utenteIscrizioneService.listUtenteIscrizione;
 }
 
-getIscrizioneById(idIscrizione:string){
-  return this.utenteIscrizioneService.getIscrizioneById(idIscrizione);
+requestIscrizioneById(idIscrizione){
+  const actualStartConfig = this._startConfig.getValue();
+  return this.utenteIscrizioneService.requestById(actualStartConfig, idIscrizione);
 }
 
 //#endregion

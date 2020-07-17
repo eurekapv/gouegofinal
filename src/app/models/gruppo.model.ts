@@ -17,6 +17,7 @@ export class Gruppo extends IDDocument {
     PARTITAIVA: string;
     APPID: string;
     TIPOGRUPPO: TipoSocieta;
+    URLPRIVACY: string;
     PRIVATEIMAGE: PrivateImage[];
     _PAYMENT_MODE: Payment;         //Oggetto con i metodi di pagamento
   
@@ -80,7 +81,8 @@ export class Gruppo extends IDDocument {
                     'ISOSTATO',
                     'CODICEFISCALE',
                     'PARTITAIVA',
-                    'APPID'                   
+                    'APPID',
+                    'URLPRIVACY'                   
                     ];
     let arNumber = ['TIPOGRUPPO'];
     let arBoolean = [];

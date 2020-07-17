@@ -13,6 +13,8 @@ export class Area extends IDDocument {
     COMUNE: string;
     PROVINCIA: string;
     ISOSTATO: string;
+    CONDVENDITACORSI: string;
+    CONDVENDPRENOTAZIONI: string;
     LOCATIONS: Location[];
     
   
@@ -32,7 +34,9 @@ export class Area extends IDDocument {
                       'CAP',
                       'COMUNE',
                       'PROVINCIA',
-                      'ISOSTATO'];
+                      'ISOSTATO',
+                      'CONDVENDITACORSI',
+                      'CONDVENDPRENOTAZIONI'];
       let arNumber = ['TIPOAREA'];
       let arBoolean = [];
       let arDate = [];

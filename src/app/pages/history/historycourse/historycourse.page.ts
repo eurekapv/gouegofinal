@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ParamMap, ActivatedRoute } from '@angular/router';
-import { NavParams } from '@ionic/angular';
+import { NavParams, LoadingController, ToastController } from '@ionic/angular';
 import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -29,37 +29,52 @@ export class HistorycoursePage implements OnInit {
 
 
   constructor(private activatedRoute: ActivatedRoute,
-              private startService: StartService) {              }
+              private startService: StartService,
+              private loadingController: LoadingController,
+              private toastController: ToastController) {              }
 
   ngOnInit() {
-  
-          this.activatedRoute.paramMap.subscribe(route=>{
-            if(route.has('historyId')){
-              //se ho l'id dell'iscrizione, faccio la riciesta al server
-              let idIscrizione=route.get('historyId');
-              this.startService.requestIscrizioneById(idIscrizione).then(docIscrizione=>{
-                this.myIscrizione=docIscrizione;
-                console.log('iscr');
-                console.log(this.myIscrizione);
-                
-                //quando è arrivata l'iscrizione, richiedo al server il corso usando l'IDCORSO
-                this.startService.requestCorsoById(this.myIscrizione.IDCORSO).then(docCorso=>{
-                  this.myCorso=docCorso;
-                  console.log('corso');
-                  console.log(this.myCorso);
-                })
-                //poi chiedo anche la location
-                this.startService.requestLocationByID(this.myIscrizione.IDLOCATION).then(docLocation=>{
-                  this.myLocation= docLocation;
-                  console.log('location');
-                  console.log(this.myLocation);
-                })
-              })
-              
-          }
-        })
+    //creo lo spinner e lo presento
+    this.loadingController.create({
+      message: 'Caricamento',
+      spinner: 'circles',
+      backdropDismiss: true
+    }).then(loading=>{
+      loading.present();
+      //recupero l'id dell'iscrizione
+      this.activatedRoute.paramMap.subscribe(route=>{
+        if(route.has('historyId')){
+          //se ho l'id dell'iscrizione, faccio la riciesta al server
+          let idIscrizione=route.get('historyId');
+          this.startService.requestIscrizioneById(idIscrizione).then(docIscrizione=>{
+            //quando arriva la risposta, valorizzo la proprietà
+            this.myIscrizione=docIscrizione;
 
-      }
+            
+            //questo risolve la promise (e quindi dismette il loading) solo quando entrambe le promise
+            //passate sono risolte
+            Promise.all([this.startService.requestCorsoById(this.myIscrizione.IDCORSO),
+                          this.startService.requestLocationByID(this.myIscrizione.IDLOCATION)])
+                          .then(results=>{
+                            //quando entrambe le richieste sono andate a buon fine, valorizzo le proprietà
+                            this.myCorso=results[0];
+                            this.myLocation=results[1];
+                            //e chiudo il loading
+                            loading.dismiss();
+                            this.debug();
+                          }).catch((error)=>{
+                            //se invece almeno una richiesta non va a buon fine dismetto il loading
+                            loading.dismiss();
+                            //e stampo un messaggio di errore
+                            this.showAlert('Errore nel caricamento');
+                            console.log(error);
+
+                          })
+          })
+        }
+      })
+    })
+  }
   /**
    * chiama il servizio passandogli l'id dell'oggetto corso, e restituisce la stringa dell'icona
    * @param corso l'oggetto corso per cui si richiede l'icona
@@ -71,6 +86,25 @@ export class HistorycoursePage implements OnInit {
 
   onClickCalendar(){
 
+  }
+
+  debug(){
+    console.log('iscr');
+    console.log(this.myIscrizione);
+    console.log('corso');
+    console.log(this.myCorso);
+    console.log('location');
+    console.log(this.myLocation);
+  }
+
+  showAlert(messaggio: string)
+  {
+    this.toastController.create({
+      message:messaggio,
+      duration:2000
+    }).then(loading=>{
+      loading.present();
+    })
   }
 
 }

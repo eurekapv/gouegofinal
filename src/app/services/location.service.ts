@@ -119,7 +119,11 @@ export class LocationService {
                         //Emetto evento di cambio
                         this._activeLocation.next(locReturn);
                         resolve(locReturn);
-                      }                  
+                      }     
+                      else
+                      {
+                        reject('location non trovata');
+                      }             
                     }, error=>{
                       reject (error);
                     });      

@@ -53,6 +53,7 @@ export class HistorycoursePage implements OnInit {
             this.myIscrizione=docIscrizione;
 
             //#FIXME quando la subscribe va in errore, le promise non vengono rigettate
+            
             //questo risolve la promise (e quindi dismette il loading) solo quando entrambe le promise
             //passate sono risolte
             Promise.all([this.startService.requestCorsoById(this.myIscrizione.IDCORSO),

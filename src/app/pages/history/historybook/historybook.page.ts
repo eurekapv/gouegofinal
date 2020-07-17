@@ -177,4 +177,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   }
 
+  getIcon (idSport){
+    return this.startService.getSportIcon(idSport);
+  }
+
 }

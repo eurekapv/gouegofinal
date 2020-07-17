@@ -14,6 +14,8 @@ import { PaymentConfiguration, PaymentChannel, PaymentResult } from 'src/app/mod
 import { SettoreAttivita } from 'src/app/models/valuelist.model';
 import { PaypalPage } from 'src/app/pages/paypal/paypal.page';
 import { AlertController } from '@ionic/angular';
+import { Plugins } from '@capacitor/core';
+const { Browser } = Plugins;
 
 @Component({
   selector: 'app-bookingsummary',
@@ -577,6 +579,11 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     .then(elAlert => {
       elAlert.present();
     })
+  }
+  
+  openLink(url:string)
+  {
+    Browser.open({url:url})
   }
 
 

@@ -43,8 +43,11 @@
           <ion-item>
             <ion-label>
               <!-- #TODO manca lo sport -->
-              <h4>{{docPianificazione._DESCRSPORT}}</h4>
+              <h2>{{docPianificazione._DESCRSPORT}}</h2>
             </ion-label>
+            <ion-chip color="primary">
+              <i class="sport-icon"><span [innerHTML]="getIcon(docPianificazione.IDSPORT)"></span></i> 
+            </ion-chip>
           </ion-item>
           <ion-item>
             <ion-label>
@@ -57,7 +60,7 @@
           </ion-item>
           <ion-item>
             <ion-label>
-              <h1>Campo {{docPianificazione._DESCRCAMPO}}</h1>
+              <h2>Campo {{docPianificazione._DESCRCAMPO}}</h2>
               <!-- TODO manca l'indirizzo
                 <p>{{}}</p> -->
             </ion-label>

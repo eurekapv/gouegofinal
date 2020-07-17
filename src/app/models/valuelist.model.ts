@@ -239,6 +239,11 @@ export enum SegmentCorsi {
     mioLivello = 20
 }
 
+export enum StatoIscrizione{
+    confermata=-1,
+    inProva=0
+}
+
 export enum Mesi {
     gennaio = 1,
     febbraio = 2,

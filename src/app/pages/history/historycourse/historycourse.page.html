@@ -157,7 +157,7 @@
     <!-- COMUNE -->
     <ion-item *ngIf="myLocation?.COMUNE">
       <ion-icon 
-          name="home" 
+          name="home-outline" 
           slot="start" 
           color="primary"></ion-icon>
       <ion-label>{{myLocation?.COMUNE}}</ion-label>
@@ -166,7 +166,7 @@
     <!-- INDIRIZZO -->
     <ion-item *ngIf="myLocation?.INDIRIZZO">
       <ion-icon 
-        name="navigate" 
+        name="navigate-outline" 
         slot="start" 
         color="primary">
       </ion-icon>
@@ -179,7 +179,7 @@
 
     <ion-item *ngIf="myLocation?.TELEFONO">
       <ion-icon 
-        name="call" 
+        name="call-outline" 
         slot="start" 
         color="primary"></ion-icon>
       <ion-label>{{myLocation?.TELEFONO}}</ion-label>
@@ -189,3 +189,51 @@
 </ion-list>   
 <!-- END LOCATION -->
 </ion-content>
+
+<!-- FOOTER CON INFO ISCRIZIONE -->
+
+<ion-footer>
+  <!-- <ion-button *ngIf="iscrizioneConfermata()" color="primary" fill="outline" expand="block" slot="icon-end">
+    Iscrizione confermata dal {{myIscrizione.DATAISCRIZIONE|date:'dd/MM/yy' }}
+    <ion-icon name="thumbs-up-outline"></ion-icon>
+  </ion-button>
+  <ion-button *ngIf="iscrizioneConfermata()" color="primary" fill="outline" expand="block" slot="icon-end">
+    Iscrizione in prova il {{ myIscrizione.DATAISCRIZIONE|date }}
+    <ion-icon name="help-outline"></ion-icon>
+  </ion-button> -->
+
+  <!-- PARTE ISCRIZIONE -->
+    <ion-item lines="full" *ngIf="iscrizioneConfermata()">
+      <ion-icon slot="start" name="clipboard-outline" color="primary"></ion-icon>
+      <ion-label>
+        Iscrizione il {{myIscrizione.DATAISCRIZIONE|date:'dd/MM/yy' }}
+      </ion-label>
+      <ion-badge slot="end" color="primary">
+        Confermata
+        <ion-icon name="thumbs-up"></ion-icon>
+      </ion-badge>
+    </ion-item>
+    <ion-item lines="full" *ngIf="!iscrizioneConfermata()">
+      <ion-icon slot="start" name="clipboard-outline" color="primary"></ion-icon>
+      <ion-label>
+        Iscrizione il {{myIscrizione.DATAISCRIZIONE|date:'dd/MM/yy' }}
+      </ion-label>
+      <ion-badge slot="end" color="light">
+        In prova
+        <ion-icon name="help"></ion-icon>
+      </ion-badge>
+    </ion-item>
+
+    <!-- PARTE PAGAMENTO -->
+
+  <ion-button *ngIf="statoPagamento()==StatoPagamento.pagato" disabled color="primary"  expand="block">
+    Corso pagato
+  </ion-button>
+
+  <ion-button *ngIf="statoPagamento()!=StatoPagamento.pagato" (click)="onClickPaga();"  color="primary"  expand="block">
+    Paga ora
+  </ion-button>
+    
+
+    
+</ion-footer>

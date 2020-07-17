@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ParamMap, ActivatedRoute } from '@angular/router';
-import { NavParams, LoadingController, ToastController } from '@ionic/angular';
+import { NavParams, LoadingController, ToastController, ModalController } from '@ionic/angular';
 import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
 import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
 import { Utente } from 'src/app/models/utente.model';
-import { start } from 'repl';
-
+import { StatoIscrizione } from 'src/app/models/valuelist.model'
+import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calendar/calendar.page';
 @Component({
   selector: 'app-historycourse',
   templateUrl: './historycourse.page.html',
@@ -16,6 +16,7 @@ import { start } from 'repl';
 })
 export class HistorycoursePage implements OnInit {
 
+  StatoPagamento : typeof StatoPagamento=StatoPagamento
   docUtente: Utente;
   subDocUtente: Subscription;
 
@@ -31,7 +32,8 @@ export class HistorycoursePage implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
               private startService: StartService,
               private loadingController: LoadingController,
-              private toastController: ToastController) {              }
+              private toastController: ToastController,
+              private modalController: ModalController) {              }
 
   ngOnInit() {
     //creo lo spinner e lo presento
@@ -50,7 +52,7 @@ export class HistorycoursePage implements OnInit {
             //quando arriva la risposta, valorizzo la proprietà
             this.myIscrizione=docIscrizione;
 
-            
+            //#FIXME quando la subscribe va in errore, le promise non vengono rigettate
             //questo risolve la promise (e quindi dismette il loading) solo quando entrambe le promise
             //passate sono risolte
             Promise.all([this.startService.requestCorsoById(this.myIscrizione.IDCORSO),
@@ -62,7 +64,7 @@ export class HistorycoursePage implements OnInit {
                             //e chiudo il loading
                             loading.dismiss();
                             this.debug();
-                          }).catch((error)=>{
+                          },).catch((error)=>{
                             //se invece almeno una richiesta non va a buon fine dismetto il loading
                             loading.dismiss();
                             //e stampo un messaggio di errore
@@ -84,7 +86,21 @@ export class HistorycoursePage implements OnInit {
     return this.startService.getSportIcon(corso.IDSPORT);
   }
 
-  onClickCalendar(){
+
+
+  /* ****** CALENDAR ******** */
+  onClickCalendar() {
+    /* Apro in modale il calendario */
+    this.modalController
+    .create({
+      component: CalendarPage,
+      componentProps: {
+        'myCorso': this.myCorso
+      }
+    })
+    .then(formModal => {
+      formModal.present();
+    });
 
   }
 
@@ -106,5 +122,33 @@ export class HistorycoursePage implements OnInit {
       loading.present();
     })
   }
+
+  iscrizioneConfermata(){
+    return this.myIscrizione.STATOISCRIZIONE==StatoIscrizione.confermata? true: false;
+  }
+
+  statoPagamento(): StatoPagamento{
+    let statoPagamento: StatoPagamento;
+    if (this.myIscrizione.RESIDUO!=0 && this.myIscrizione.VERSATO==0)
+      statoPagamento=StatoPagamento.daPagare;
+    else if (this.myIscrizione.RESIDUO!=0 && this.myIscrizione.VERSATO!=0)
+      statoPagamento=StatoPagamento.pagatoInParte;
+    else
+      statoPagamento=StatoPagamento.pagato;
+
+    return statoPagamento;
+  }
+
+  onClickPaga()
+  {
+
+  }
+
+}
+
+enum StatoPagamento{
+  daPagare=0,
+  pagatoInParte=10,
+  pagato=20
 
 }

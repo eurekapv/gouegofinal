@@ -8,6 +8,11 @@ import { HistorycoursePageRoutingModule } from './historycourse-routing.module';
 
 import { HistorycoursePage } from './historycourse.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
+import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calendar/calendar.page';
+import { CalendarPageModule } from 'src/app/pages/location/course/detailcourse/calendar/calendar.module';
+
+
+
 
 @NgModule({
   imports: [
@@ -15,8 +20,10 @@ import { PipesModule } from 'src/app/shared/pipes/pipes.module';
     FormsModule,
     IonicModule,
     HistorycoursePageRoutingModule,
-    PipesModule
+    PipesModule,
+    CalendarPageModule
   ],
+  entryComponents:[CalendarPage],
   declarations: [HistorycoursePage]
 })
 export class HistorycoursePageModule {}

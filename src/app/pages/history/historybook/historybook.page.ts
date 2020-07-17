@@ -16,7 +16,7 @@ import { NavController, ToastController} from '@ionic/angular';
 })
 export class HistorybookPage implements OnInit, OnDestroy {
 
-  activePrenotazione: Prenotazione;
+  activePrenotazione: Prenotazione= new Prenotazione;
   subActivePrenotazione: Subscription;
 
   subListLocation: Subscription;

@@ -15,6 +15,7 @@ import { CalendarPage } from './calendar.page';
     IonicModule,
     CalendarPageRoutingModule
   ],
-  declarations: [CalendarPage]
+  declarations: [CalendarPage],
+  exports: [CalendarPage]
 })
 export class CalendarPageModule {}

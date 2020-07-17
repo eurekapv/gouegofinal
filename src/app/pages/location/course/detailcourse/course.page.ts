@@ -7,7 +7,7 @@ import { NavController, ModalController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { CalendarPage } from './calendar/calendar.page';
 
-
+//FIXME Alcuni dati (e la pianificazione) non arrivano
 @Component({
   selector: 'app-course',
   templateUrl: './course.page.html',

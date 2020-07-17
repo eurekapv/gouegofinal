@@ -59,11 +59,7 @@ import { MyDateTime } from '../../models/mydatetime.model';
     }
 
   
-    // newID() {
-    //   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    // }
-
-    
+ 
 
     
     //Generazione GUID
@@ -395,6 +391,19 @@ import { MyDateTime } from '../../models/mydatetime.model';
       return ((value != null) &&
               (value !== '') &&
               !isNaN(Number(value.toString())));
+    }
+
+
+    /**
+     * Tipo della proprietà
+     * @param PropertyName Nome della proprietà
+     */
+    getType(PropertyName: string): TypeDefinition {
+      
+      let objDescriptor = this.getDescriptor();
+
+      return objDescriptor.getType(PropertyName);
+
     }
 
     //#endregion

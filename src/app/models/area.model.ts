@@ -40,8 +40,9 @@ export class Area extends IDDocument {
       let arTime = [];
       let arCollection = ['LOCATIONS'];
 
-      objDescriptor.className = 'AREA';
+      objDescriptor.className = 'Area';
       objDescriptor.doRemote = true;
+      objDescriptor.classWebApiName = 'AREA';
 
       objDescriptor.addMultiple(arString, TypeDefinition.char);
       objDescriptor.addMultiple(arNumber, TypeDefinition.number);

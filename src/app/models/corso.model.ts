@@ -3,6 +3,7 @@ import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni } from '../models
 import { Settimana } from './settimana.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CorsoProgramma } from './corsoprogramma.model';
+import { PianificazioneCorso } from './pianificazionecorso.model';
 
 export class Corso extends IDDocument {
 
@@ -34,8 +35,8 @@ export class Corso extends IDDocument {
     _SETTIMANA: Settimana[]; //Giorni della Settimana del Corso
     DURATA: number;
     CORSOPROGRAMMA: CorsoProgramma[];
-
-
+    PIANIFICAZIONECORSO: PianificazioneCorso[];
+    
 
     constructor() {
       super();
@@ -44,9 +45,11 @@ export class Corso extends IDDocument {
       this._DESCRLIVELLOENTRATA = '';
       this._DESCRSPORT = '';
       this.CORSOPROGRAMMA = [];
+      this.PIANIFICAZIONECORSO = [];
+
     }
 
-          /**
+    /**
     * Ritorna il descrittore della Struttura Campi
     */
    getDescriptor(): Descriptor {
@@ -78,7 +81,7 @@ export class Corso extends IDDocument {
     let arDate = ['DATAINIZIO','DATAFINE','ISCRIZIONEDAL','ISCRIZIONEAL'];
     let arDateTime =[];
     let arTime = ['ORAINIZIO'];
-    let arCollection = ['_SETTIMANA'];
+    let arCollection = ['_SETTIMANA', 'CORSOPROGRAMMA','PIANIFICAZIONECORSO'];
 
     objDescriptor.className = 'CORSO';
     objDescriptor.doRemote = true;
@@ -122,6 +125,11 @@ export class Corso extends IDDocument {
       if (data.CORSOPROGRAMMA) {
         this.setCollectionCorsoProgramma(data.CORSOPROGRAMMA);
       }
+
+      if (data.PIANIFICAZIONECORSO) {
+        this.setCollectionPianificazioneCorso(data.PIANIFICAZIONECORSO);
+      }
+      
     }
 
     /**
@@ -166,6 +174,50 @@ export class Corso extends IDDocument {
         });
 
         return newProgramma;
+    }
+
+    /**
+     * Imposta la collection Pianificazioni Corso
+     * @param arPianificazioni JSON Ricevuti
+     */
+    setCollectionPianificazioneCorso(arPianificazioni: any[]) {
+
+      this.PIANIFICAZIONECORSO = [];
+
+      if (arPianificazioni) {
+        arPianificazioni.forEach(element => {
+          
+          // Ricerco se esiste già
+          let newPianificazione = this.getPianificazioneCorsoByID(element.ID);
+
+          //Non esiste lo creo nuovo
+          if (!newPianificazione) {
+
+            newPianificazione = new PianificazioneCorso();
+            newPianificazione.setJSONProperty(element);
+            this.PIANIFICAZIONECORSO.push(newPianificazione);
+
+          }
+          else {
+            //Reimposto i valori
+            newPianificazione.setJSONProperty(element);
+          }
+
+
+        })
+      }
+    }
+
+    /**
+     * Ritorna l'elemento di Pianificazione Corso che corrisponde con ID
+     */
+    getPianificazioneCorsoByID(idPianificazioneCorso): PianificazioneCorso {
+        // Ricerco se esiste già
+        let findPianificazioneCorso = this.PIANIFICAZIONECORSO.find(elPianificazione => {
+          return elPianificazione.ID == idPianificazioneCorso
+        });
+
+        return findPianificazioneCorso;
     }
 
     /**

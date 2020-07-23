@@ -1,6 +1,6 @@
 import { StatoSlot } from '../valuelist.model';
 import * as moment from "moment";
-import { MyDateTime } from '../mydatetime.model';
+import { MyDateTime } from '../../library/models/mydatetime.model';
 import { IDDocument } from '../../library/models/iddocument.model';
 
 

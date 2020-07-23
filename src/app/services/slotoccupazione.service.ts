@@ -12,7 +12,7 @@ import { Campo } from '../models/campo.model';
 import { DateSlotLock } from '../models/dateslotlock.model';
 import { SlotTime } from '../models/imdb/slottime.model';
 import { StatoSlot } from '../models/valuelist.model';
-import { MyDateTime } from '../models/mydatetime.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
 import { LogApp } from '../models/log.model';
 
 

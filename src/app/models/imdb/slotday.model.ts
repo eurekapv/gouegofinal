@@ -1,6 +1,6 @@
 import { SlotTime } from './slottime.model';
 import { PrenotazionePianificazione } from '../prenotazionepianificazione.model';
-import { MyDateTime } from '../mydatetime.model';
+import { MyDateTime } from '../../library/models/mydatetime.model';
 
 export class SlotDay {
     WEEKDAY:    number;

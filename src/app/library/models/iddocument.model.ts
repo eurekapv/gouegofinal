@@ -1,5 +1,6 @@
 import { TypeDefinition, Descriptor } from './descriptor.model';
-import { MyDateTime } from '../../models/mydatetime.model';
+import { MyDateTime } from './mydatetime.model';
+
  
   export class IDDocument {
     ID: string;
@@ -341,7 +342,7 @@ import { MyDateTime } from '../../models/mydatetime.model';
     }
 
 
-
+    
     
 
     //Formatta una data passata in ISO (Solo la parte data)

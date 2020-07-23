@@ -1,4 +1,6 @@
 import * as moment from "moment";
+import { TypeDefinition } from './descriptor.model';
+
 export class MyDateTime {
 
 //Formatta una data passata in ISO (Solo la parte data)
@@ -21,6 +23,33 @@ static formatDateTimeISO(data: Date) {
     let final = prefixDate + ' ' + ore + ':' + minuti + ':' + secondi;
 
     return final;
+}
+
+/**
+* Trasforma la stringa in un oggetto di tipo Data
+* @param strDate data / dataOra / Ora in formato stringa
+*/
+static stringToDateObject(strDate) {
+ //1 - Devo capire cos'è
+ let tipo: TypeDefinition;
+ 
+
+
+ //certamente è una data o una data ora
+ if (strDate.includes('-') || strDate.includes('/')) {
+   //Includo anche il simbolo di :
+   if (strDate.includes(':')) {
+     tipo = TypeDefinition.dateTime;
+   }
+   else {
+     tipo = TypeDefinition.date;
+   }
+ }
+ else if (strDate.includes(':')) {
+   //Solo orario
+   tipo = TypeDefinition.time;
+ }
+
 }
 
 /**

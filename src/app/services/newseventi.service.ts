@@ -65,9 +65,18 @@ export class NewseventiService {
         .subscribe (resultData => {
   
             resultData.forEach(element => {
+
+              console.log('News Elemento');
+              console.log(element);
+
               let newNews = new NewsEventi();
               newNews.setJSONProperty(element);
               this.addNews(newNews);
+
+
+              console.log('News in JS');
+              console.log(newNews);
+
               resolve();
             });
         }, error=>{

@@ -5,7 +5,7 @@ import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { NavController, ToastController, LoadingController } from '@ionic/angular';
-import { MyDateTime } from 'src/app/models/mydatetime.model';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 
 
 @Component({

@@ -1,7 +1,8 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { Location } from '../models/location.model';
-import { TipoArea } from '../models/valuelist.model';
+import { TipoArea, PageType } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
+import { AreaLink } from './arealink.model';
 
 
 export class Area extends IDDocument {
@@ -16,7 +17,7 @@ export class Area extends IDDocument {
     CONDVENDITACORSI: string;
     CONDVENDPRENOTAZIONI: string;
     LOCATIONS: Location[];
-    
+    AREELINK: AreaLink[];
   
     constructor() {
       super();
@@ -78,6 +79,7 @@ export class Area extends IDDocument {
     setCollection(data: any) {
       this.LOCATIONS = [];
       if (data) {
+
         if (data.LOCATION) {
           data.LOCATION.forEach(element => {
             let objLocation = this.findLocationByID(element.ID);
@@ -91,6 +93,22 @@ export class Area extends IDDocument {
             objLocation.setJSONProperty(element);
           });
         }
+
+        if (data.AREELINK) {
+          data.AREELINK.forEach(element => {
+            let objAreaLink = this.findAreaLinkByID(element.ID);
+
+            if (!objAreaLink) {
+              //Nuova Area Link
+              objAreaLink = new AreaLink();
+              //Aggiungo all'Array
+              this.AREELINK.push(objAreaLink);
+            }
+
+            objAreaLink.setJSONProperty(element);
+          });
+        }
+
       }
     }
 
@@ -101,6 +119,28 @@ export class Area extends IDDocument {
     findLocationByID(idLocation: string) {
       return this.LOCATIONS.find(element => {
         return element.ID == idLocation;
+      });
+    }
+
+
+    /**
+     * Cerca nella colletion Area Link e ritorna il Link
+     * @param idLink Link desiderato
+     */
+    findAreaLinkByID(idLink: string) {
+      return this.AREELINK.find(element => {
+        return element.ID == idLink;
+      });
+    }
+
+
+    /**
+     * Cerca e ritorna un link con il tipo pagina passato
+     * @param tipo Tipo pagina richiesto
+     */
+    findAreaLinkByPageType(tipo: PageType) {
+      return this.AREELINK.find(element => {
+        return element.TIPOURL == tipo;
       });
     }
 

@@ -119,6 +119,17 @@ export enum AmbitoNews {
     torneo = 30
 }
 
+export enum PageType {
+    home = 10,
+    policyPrivacy = 20,
+    condizioniVenditaPrenotazioni = 100,
+    condizioniVenditaIscrizioni = 110,
+    facebook = 200,
+    twitter = 210,
+    instagram = 220,
+    tikTok = 230
+}
+
 
 
 

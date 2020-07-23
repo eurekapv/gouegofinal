@@ -107,6 +107,22 @@ https://comuni-ita.herokuapp.com/
 
 è possibile interrogarlo
 
-
+/* SOCIAL SHARING */
 Aggiunto plugin per Social Sharing
-npm install @ionic-native/social-sharing
+
+> npm install cordova-plugin-x-socialsharing
+> npm install @ionic-native/social-sharing
+> npm install jetifier
+> npx jetifier
+
+
+aggiunto SocialSharing all'array "providers" nell'app.module.ts
+
+/*HTML TO IMAGE*/
+>npm install --save html-to-image
+
+dove serve:
+import htmlToImage from 'html-to-image';
+
+
+

@@ -22,6 +22,11 @@ ESECUZIONE ANDROID/IOS
 > npx cap open android
 > npx cap open Xcode
 
+ESECUZIONE IN LIVE RELOADING
+>ionic capacitor run android -l --external
+Poi far partire l'emulatore da Android Studio
+in caso di errore ERR_CLEARTEXT_NOT_PERMITTED, inserire in AndroidManifest.xml, nel tag <application> la riga android:usesCleartextTraffic="true"
+
 
 
 

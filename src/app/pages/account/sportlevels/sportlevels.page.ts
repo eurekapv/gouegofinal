@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Utente } from 'src/app/models/utente.model';
-import { Subscription } from 'rxjs';
-import { UtenteService } from 'src/app/services/utente.service';
+import { Subscription, Observable, Observer } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
-import { Plugins } from '@capacitor/core';
-const { Share } = Plugins;
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import htmlToImage from 'html-to-image';
+import { Livello } from 'src/app/models/livello.model';
+import { UtenteLivello } from 'src/app/models/utentelivello.model';
+import { Sport } from 'src/app/models/sport.model';
+import { StartConfiguration } from 'src/app/models/start-configuration.model';
+import { TipoPrivateImage } from 'src/app/models/valuelist.model';
+
 
 
 @Component({
@@ -14,29 +19,46 @@ const { Share } = Plugins;
 })
 export class SportlevelsPage implements OnInit {
 
-  utente:Utente
+  utente:Utente;
   utenteListener: Subscription;
-
-  constructor(private startService: StartService)  {
+  sport: Sport;
+  logoGruppo:string;
+  constructor(private startService: StartService,
+              private socialSharing: SocialSharing)  {
     this.utenteListener=this.startService.utente.subscribe(data=>{
       this.utente=data;
     })
-   }
+  }
+  
+  //TODO bisogna convertire l'immagine del logo in Base64
 
   ngOnInit() {
-    
-  }
-
-
-  //TODO share da testare su mobile
-  async onShare()
-  {
-    let provaShare= await Share.share({
-      title: 'Titolo di prova',
-      text: 'Testo di prova',
-      url: 'http://www.gouego.com',
-      dialogTitle: 'condividi con gli amici'
+    console.log('bp0');
+    this.startService.requestBase64Image(TipoPrivateImage.logo).then(b64Image=>{
+      this.logoGruppo=b64Image;
+      console.log('bp');
+      console.log(this.logoGruppo);
     })
+      
   }
 
+
+  async onShare(id: string)
+  {
+    let livello:UtenteLivello;
+    livello= await this.utente.UTENTILIVELLI.find(elem=>{
+      return elem.ID==id;
+    });
+    let messaggio: string = this.utente.NOME + ' ha ottenuto il livello ' + livello.DESCRLIVELLO +  ' a ' + livello.DESCRSPORT + '!';
+    //recupero l'immagine della card
+    let card=document.getElementById(id);
+    let urlImage= await htmlToImage.toPng(card);
+    this.socialSharing.share(messaggio,'',urlImage,'https://www.openbeachvolley.com/milano');
+       
+  }
+
+  
+  
+  
 }
+

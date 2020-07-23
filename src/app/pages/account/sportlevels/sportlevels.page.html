@@ -4,11 +4,6 @@
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
     <ion-title>I tuoi livelli</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="onShare()" expand="block" fill="clear" >
-        <ion-icon name="share-social"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -16,7 +11,10 @@
   <ion-grid>
     <ion-row>
       <ion-col *ngFor="let livello of utente.UTENTILIVELLI" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
-        <ion-card class="card-livello">
+        <ion-card button (click)="onShare(livello.ID)" class="card-livello" id="{{livello.ID}}">
+            <ion-card-header class="ion-no-padding ion-text-center">
+              <img [src]="logoGruppo" id="img-logo">
+            </ion-card-header>
             <h2 class="ion-text-center">{{ livello.DESCRSPORT }}</h2>
           <ion-card-content>
               <ion-row>

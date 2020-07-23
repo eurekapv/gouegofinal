@@ -21,6 +21,7 @@ export class Area extends IDDocument {
   
     constructor() {
       super();
+      this.AREALINKS=[];
       this.LOCATIONS = [];
     }
 

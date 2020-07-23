@@ -4,11 +4,10 @@ import { Subscription, Observable, Observer } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import htmlToImage from 'html-to-image';
-import { Livello } from 'src/app/models/livello.model';
 import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { Sport } from 'src/app/models/sport.model';
-import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { TipoPrivateImage } from 'src/app/models/valuelist.model';
+import { TipoPrivateImage, PageType } from 'src/app/models/valuelist.model';
+import { url } from 'inspector';
 
 
 
@@ -30,14 +29,11 @@ export class SportlevelsPage implements OnInit {
     })
   }
   
-  //TODO bisogna convertire l'immagine del logo in Base64
 
   ngOnInit() {
     console.log('bp0');
     this.startService.requestBase64Image(TipoPrivateImage.logo).then(b64Image=>{
       this.logoGruppo=b64Image;
-      console.log('bp');
-      console.log(this.logoGruppo);
     })
       
   }
@@ -45,15 +41,30 @@ export class SportlevelsPage implements OnInit {
 
   async onShare(id: string)
   {
+    //recupero il livello
     let livello:UtenteLivello;
     livello= await this.utente.UTENTILIVELLI.find(elem=>{
       return elem.ID==id;
     });
+
+    //compongo il messaggio
     let messaggio: string = this.utente.NOME + ' ha ottenuto il livello ' + livello.DESCRLIVELLO +  ' a ' + livello.DESCRSPORT + '!';
+    
     //recupero l'immagine della card
     let card=document.getElementById(id);
     let urlImage= await htmlToImage.toPng(card);
-    this.socialSharing.share(messaggio,'',urlImage,'https://www.openbeachvolley.com/milano');
+
+    //recupero l'url del sito aziendale
+    let area=this.startService.areaSelectedValue;
+    console.log(area);
+    let urlArea=await area.findAreaLinkByPageType(PageType.home)
+    if(urlArea){
+      this.socialSharing.share(messaggio,'',urlImage, urlArea.REFERURL);
+    }
+    else{
+      this.socialSharing.share(messaggio,'',urlImage);
+    }
+
        
   }
 

@@ -107,3 +107,6 @@ https://comuni-ita.herokuapp.com/
 
 è possibile interrogarlo
 
+
+Aggiunto plugin per Social Sharing
+npm install @ionic-native/social-sharing

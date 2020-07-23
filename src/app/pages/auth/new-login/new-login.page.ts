@@ -5,6 +5,8 @@ import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
+import { Plugins } from '@capacitor/core';
+const { Browser } = Plugins;
 
 
 @Component({
@@ -380,6 +382,11 @@ export class NewLoginPage implements OnInit {
       {
         return {invalid: true};
       }
+  }
+
+  openLink(url:string)
+  {
+    Browser.open({url:url})
   }
 //#endregion
 

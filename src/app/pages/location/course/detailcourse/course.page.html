@@ -155,16 +155,16 @@
       </ion-item-divider>
 
       <!-- COMUNE -->
-      <ion-item *ngIf="selectedLocation?.COMUNE">
+      <ion-item *ngIf="myLocation?.COMUNE">
         <ion-icon 
             name="home-outline" 
             slot="start" 
             [color]="iconColor"></ion-icon>
-        <ion-label>{{selectedLocation?.COMUNE}}</ion-label>
+        <ion-label>{{myLocation?.COMUNE}}</ion-label>
       </ion-item>
 
       <!-- INDIRIZZO -->
-      <ion-item *ngIf="selectedLocation?.INDIRIZZO">
+      <ion-item *ngIf="myLocation?.INDIRIZZO">
         <ion-icon 
           name="navigate-outline" 
           slot="start" 
@@ -172,17 +172,17 @@
         </ion-icon>
 
         <ion-label>
-          {{selectedLocation?.INDIRIZZO}}
+          {{myLocation?.INDIRIZZO}}
         </ion-label>
 
       </ion-item>
 
-      <ion-item *ngIf="selectedLocation?.TELEFONO">
+      <ion-item *ngIf="myLocation?.TELEFONO">
         <ion-icon 
           name="call-outline" 
           slot="start" 
           [color]="iconColor"></ion-icon>
-        <ion-label>{{selectedLocation?.TELEFONO}}</ion-label>
+        <ion-label>{{myLocation?.TELEFONO}}</ion-label>
       </ion-item>
 
     </ion-item-group>

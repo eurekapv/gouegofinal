@@ -16,7 +16,7 @@ import { NavController, ToastController} from '@ionic/angular';
 })
 export class HistorybookPage implements OnInit, OnDestroy {
 
-  activePrenotazione: Prenotazione;
+  activePrenotazione: Prenotazione= new Prenotazione;
   subActivePrenotazione: Subscription;
 
   subListLocation: Subscription;
@@ -175,6 +175,10 @@ export class HistorybookPage implements OnInit, OnDestroy {
       tstMsg.present();
     });
 
+  }
+
+  getIcon (idSport){
+    return this.startService.getSportIcon(idSport);
   }
 
 }

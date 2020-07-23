@@ -38,13 +38,18 @@ export class AreaService {
    * 
    * @param config Parametri di configurazione
    */
-  request(config: StartConfiguration) {
+  request(config: StartConfiguration, _childLevel?:number) {
     return new Promise((resolve, reject)=>{
         let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
         const doObject = 'AREAOPERATIVA';
         
         // In Testata c'e' sempre l'AppId
         myHeaders = myHeaders.set('appid',config.appId);
+        if (!_childLevel){
+          _childLevel=2;
+        }
+        myHeaders=myHeaders.set('child-level',_childLevel+'');
+
         // Nei parametri imposto il gruppo Sportivo
         let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
     

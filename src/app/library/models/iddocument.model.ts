@@ -271,6 +271,7 @@ import { MyDateTime } from './mydatetime.model';
 
                   case TypeDefinition.boolean:
                     let value = parseInt(dataObject[element],10);
+                    
                     if (value === -1) {
                       _this[element] = true;  
                     }
@@ -278,7 +279,7 @@ import { MyDateTime } from './mydatetime.model';
                       _this[element] = false;
                     }
 
-                    // _this[element] = parseInt(dataObject[element],10);
+                    
                     break;
                 
                   case TypeDefinition.number:
@@ -290,40 +291,16 @@ import { MyDateTime } from './mydatetime.model';
                     break;
 
                   case TypeDefinition.time:
-                    //Campo di tipo ORA
-                    stringValue = dataObject[element]; //Valore Stringa
-
-                    //Non ho dentro il giorno ma solo l'ora
-                    if (!stringValue.includes('-') && stringValue.includes(':')) {
-                      stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
-                      _this[element] = new Date(stringValue);  
-                    }
-                    else {
-                      //Gia presente sia Data che Ora
-                      _this[element] = new Date(stringValue);
-                    }
-
+                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
                     break;
 
                   case TypeDefinition.date:
                     //E' una data
-                    _this[element] = new Date(dataObject[element]);
+                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
                     break;
 
                   case TypeDefinition.dateTime:
-                    //Campo di tipo ORA
-                    stringValue = dataObject[element]; //Valore Stringa
-
-                    //Non ho dentro il giorno ma solo l'ora
-                    if (!stringValue.includes('-') && stringValue.includes(':')) {
-                      stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
-                      _this[element] = new Date(stringValue);  
-                    }
-                    else {
-                      //Gia presente sia Data che Ora
-                      _this[element] = new Date(stringValue);
-                    }
-
+                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
                     break;
 
                   default:

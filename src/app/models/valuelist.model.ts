@@ -103,8 +103,8 @@ export enum StatoSlot {
 }
 
 export enum TipoPrivateImage {
-    icon = 10,
-    brand = 20
+    logo = 10,
+    icon = 20
 }
 
 export enum StatoPrenotazione {

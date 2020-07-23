@@ -19,7 +19,7 @@
 <!-- Pagina Login -->
 <ion-content *ngIf="stato==pageState.LOGIN">
     <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-        <img [src]="startConfig.getUrlBrand()">
+        <img [src]="startConfig.getUrlLogo()">
     </div>
     <form [formGroup]="formLogin">
         <ion-list>
@@ -39,7 +39,7 @@
 <!-- Pagina inserimento contatti -->
 <ion-content *ngIf="stato==pageState.CONTACT">
     <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-        <img [src]="startConfig.getUrlBrand()">
+        <img [src]="startConfig.getUrlLogo()">
     </div>
     <form [formGroup]="formContact">
         <ion-list>
@@ -63,7 +63,7 @@
 <!-- Pagina Registrazione -->
 <ion-content *ngIf="stato==pageState.REGISTRATION">
     <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-        <img [src]="startConfig.getUrlBrand()">
+        <img [src]="startConfig.getUrlLogo()">
     </div>
     <form [formGroup]="formRegister">
         <ion-list>
@@ -111,7 +111,7 @@
 <!-- Pagina verifica cellulare / mail-->
 <ion-content *ngIf="stato==pageState.VERIFY">
     <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-        <img [src]="startConfig.getUrlBrand()">
+        <img [src]="startConfig.getUrlLogo()">
     </div>  
     <h6 class="ion-text-center">Inserisci il codice che ti abbiamo inviato tramite E-Mail</h6>
     <form [formGroup]="formVeriryMail">
@@ -145,7 +145,7 @@
 <!-- Pagina di fine registrazione -->
 <ion-content *ngIf="stato==pageState.WELCOME">
     <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-        <img [src]="startConfig.getUrlBrand()">
+        <img [src]="startConfig.getUrlLogo()">
     </div>
     <h1 class="ion-text-center">Benvenuto!</h1>
     <div class="ion-text-center">

@@ -134,7 +134,7 @@ openChangePassword() {
       component: EditLoginPage,
       componentProps: {
         'myUser': this.docUtente,
-        'myUrlLogo': this.docConfig.getUrlIcon()
+        'myUrlLogo': this.docConfig.getUrlLogo()
       }
     })
     .then(formModal => {

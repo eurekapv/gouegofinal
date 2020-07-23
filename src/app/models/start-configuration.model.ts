@@ -12,12 +12,14 @@ export class StartConfiguration {
     
     private _urlComponent: string; //Parte dell'URL relativa al componente
     private _urlBase: string; // Url di Base per effettuare la chiamata
-    //Immagini utilizzate come Icone (Altezza Max 50px)
-    private _companyUrlIcon: string; // Icon Url company (Impostata in BackEnd)
-    private _appUrlIcon: string;  // Icon Url App Gouego (Default)
-    //Immagini utilizzate come Brand 
-    private _companyUrlBrand: string; // Image Brand company (Impostata in BackEnd)
-    private _appUrlBrand: string; // Image Brand App Gouego (Defualt)
+
+    //Immagini rettangolari utilizzate come Logo
+    private _companyUrlLogo: string; // Logo Url company (Impostata in BackEnd)
+    private _appUrlLogo: string;  // Logo Url App Gouego (Statica di default)
+
+    //Immagini utilizzate come Icona quadrata
+    private _companyUrlIcon: string; // Icon company (Impostata in BackEnd)
+    private _appUrlIcon: string; // Icon App Gouego (Statica di Default)
 
     private _companyName: string; //Nome Società
     private _titleApp: string; //Titolo Applicazione
@@ -33,11 +35,20 @@ export class StartConfiguration {
         this._titleApp = 'Gouego';
         this._companyName = 'Gouego Sport';
 
-        this._companyUrlIcon = 'assets/img/iconapp.png';
+        //Immagine Rettangolare
+
+        //Questa è sempre una immagine statica
+        this._appUrlLogo = 'assets/img/logoapp.png';
+        //Questa è inizialmente come appUrlLogo ma il server puo' mandarcene un'altra
+        this._companyUrlLogo = this._appUrlLogo ;
+
+
+        //Immagine Quadrata come ICONA
+        //Questa è sempre una immagine statica
         this._appUrlIcon = 'assets/img/iconapp.png';
 
-        this._companyUrlBrand = 'assets/img/brandapp.png';
-        this._appUrlBrand = 'assets/img/brandapp.png';
+        //Questa è inizialmente come appUrlIcon ma il server puo' mandarcene un'altra
+        this._companyUrlIcon = this._appUrlIcon;
 
 
         this._appId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; 
@@ -63,11 +74,6 @@ export class StartConfiguration {
             this._urlDomain = 'www.gouego.com/gouegoapi';
             this._urlFileServer = 'www.gouego.com/gouego';
             
-            //Modalità temporanea per vecchio server
-            //this._urlProtocol = 'http';
-            //this._urlDomain='52.29.237.67:8084/gouegoapi';
-            //this._urlFileServer='52.29.237.67:8084/gouego';
-
         }
         
 
@@ -86,11 +92,11 @@ export class StartConfiguration {
 
             if (elImage.FILENAMEESTENSIONE) {
                 switch (elImage.TIPO) {
-                    case TipoPrivateImage.brand:
-                        this._companyUrlBrand = `${this._urlProtocol}://${this._urlFileServer}/${elImage.FILENAMEESTENSIONE}`;
-                        break;
                     case TipoPrivateImage.icon:
                         this._companyUrlIcon = `${this._urlProtocol}://${this._urlFileServer}/${elImage.FILENAMEESTENSIONE}`;
+                        break;
+                    case TipoPrivateImage.logo:
+                        this._companyUrlLogo = `${this._urlProtocol}://${this._urlFileServer}/${elImage.FILENAMEESTENSIONE}`;
                         break;
                 
                     default:
@@ -104,7 +110,7 @@ export class StartConfiguration {
             this._companyName = this._gruppo.DENOMINAZIONE;
         }
 
-        console.log(this._gruppo);
+        
 
     }
 
@@ -124,7 +130,33 @@ export class StartConfiguration {
         this._idAreaSelected = value;
     }
 
-    //#region Icon Height Max 50px
+    /**
+     * Ritorna il logo standard di Gouego
+     */
+    get appUrlLogo() {
+        return this._appUrlLogo;
+    }
+
+    set appUrlLogo(value: string) {
+        this._appUrlLogo = value;
+    }
+
+    /**
+     * Ritorna il logo aziendale
+     */
+    get companyUrlLogo() {
+        return this._companyUrlLogo;
+    }
+
+    set companyUrlLogo(value: string) {
+        this._companyUrlLogo = value;
+    }
+    //#endregion
+
+    //#region Brand Logo Image
+    /**
+     * Ritorna Icona Rettangolare Standard
+     */
     get appUrlIcon() {
         return this._appUrlIcon;
     }
@@ -133,45 +165,33 @@ export class StartConfiguration {
         this._appUrlIcon = value;
     }
 
+
+    /**
+     * Ritorna Icona Aziendale
+     */
     get companyUrlIcon() {
         return this._companyUrlIcon;
     }
 
     set companyUrlIcon(value: string) {
         this._companyUrlIcon = value;
-    }
-    //#endregion
-
-    //#region Brand Logo Image
-    get appUrlBrand() {
-        return this._appUrlBrand;
-    }
-
-    set appUrlBrand(value: string) {
-        this._appUrlBrand = value;
-    }
-
-    get companyUrlBrand() {
-        return this._companyUrlBrand;
-    }
-
-    set companyUrlBrand(value: string) {
-        this._companyUrlBrand = value;
     }    
     //#endregion
 
+    
+
     /**
-     * Ritorna una icona (Max Height: 50px):  quella Default o quella della Company
+     * Ritorna Logo rettangolare da utilizzare
      */
-    getUrlIcon() {
-        return (this._companyUrlIcon ? this._companyUrlIcon : this._appUrlIcon)
+    getUrlLogo() {
+        return (this._companyUrlLogo ? this._companyUrlLogo : this._appUrlLogo)
     }
 
     /**
-     * Ritorna una immagine di Brand: quella Default o quella della Company
+     * Ritorna una Icona quadrata
      */
-    getUrlBrand() {
-        return (this._companyUrlBrand ? this._companyUrlBrand : this._appUrlBrand)
+    getUrlIcon() {
+        return (this._companyUrlIcon ? this._companyUrlIcon : this._appUrlIcon)
     }
 
     

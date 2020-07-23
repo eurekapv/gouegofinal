@@ -17,7 +17,7 @@ export class Area extends IDDocument {
     CONDVENDITACORSI: string;
     CONDVENDPRENOTAZIONI: string;
     LOCATIONS: Location[];
-    AREELINK: AreaLink[];
+    AREALINKS: AreaLink[];
   
     constructor() {
       super();
@@ -43,7 +43,7 @@ export class Area extends IDDocument {
       let arDate = [];
       let arDateTime =[];
       let arTime = [];
-      let arCollection = ['LOCATIONS'];
+      let arCollection = ['LOCATIONS','AREALINKS'];
 
       objDescriptor.className = 'Area';
       objDescriptor.doRemote = true;
@@ -94,15 +94,15 @@ export class Area extends IDDocument {
           });
         }
 
-        if (data.AREELINK) {
-          data.AREELINK.forEach(element => {
+        if (data.AREALINK) {
+          data.AREALINK.forEach(element => {
             let objAreaLink = this.findAreaLinkByID(element.ID);
 
             if (!objAreaLink) {
               //Nuova Area Link
               objAreaLink = new AreaLink();
               //Aggiungo all'Array
-              this.AREELINK.push(objAreaLink);
+              this.AREALINKS.push(objAreaLink);
             }
 
             objAreaLink.setJSONProperty(element);
@@ -128,7 +128,7 @@ export class Area extends IDDocument {
      * @param idLink Link desiderato
      */
     findAreaLinkByID(idLink: string) {
-      return this.AREELINK.find(element => {
+      return this.AREALINKS.find(element => {
         return element.ID == idLink;
       });
     }
@@ -139,7 +139,7 @@ export class Area extends IDDocument {
      * @param tipo Tipo pagina richiesto
      */
     findAreaLinkByPageType(tipo: PageType) {
-      return this.AREELINK.find(element => {
+      return this.AREALINKS.find(element => {
         return element.TIPOURL == tipo;
       });
     }

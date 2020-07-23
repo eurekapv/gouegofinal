@@ -19,6 +19,7 @@ import { CamposportService } from './camposport.service';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
 import { SlotoccupazioneService } from './slotoccupazione.service';
+import { PhotoService } from './photo.service';
 
 import { StartConfiguration } from '../models/start-configuration.model';
 
@@ -36,7 +37,8 @@ import { PaymentService } from './payment.service';
 import { PaymentConfiguration } from '../models/payment.model';
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
-
+import { ValueList, TipoPrivateImage } from 'src/app/models/valuelist.model'
+import { PrivateImage } from '../models/privateimage.model';
 
 
 @Injectable({
@@ -91,7 +93,8 @@ export class StartService {
     private utentePrenotazioneService: UtenteprenotazioneService,
     private utenteIscrizioneService: UtenteiscrizioneService,
     private paymentService: PaymentService,
-    private codFiscService: CodicefiscaleService ) { 
+    private codFiscService: CodicefiscaleService,
+    private photoService: PhotoService ) { 
     }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
@@ -895,4 +898,39 @@ checkCodiceFiscale(codiceFiscale: string, decode?:boolean): Promise<CodiceFiscal
 
 //#endregion
 
+/**
+ * dato un tipo di immagine, la funzione restituisce la stringa in B64
+ * @param tipo il tipo di immagine richiesta 
+ */
+requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
+  return new Promise((resolve,reject)=>{
+    const doObject='GRUPPOSPORTIVO'
+    let config=this._startConfig.getValue();
+    let myUrl = config.urlBase + '/' + doObject;  
+    
+    let myHeaders=new HttpHeaders({
+      'Content-Type': 'text/plain',
+      'appid': config.appId,
+      'X-HTTP-Method-Override':'getBase64PrivateImage'
+    });
+    
+    let myParams= new HttpParams().set('Tipo', tipo+'');
+
+    this.apiService.httpGet(myUrl,myHeaders, myParams)
+    .pipe(map(data=>{
+      return data.image;
+    }))
+    .subscribe(base64=>{
+      resolve(base64);
+    },error=>{
+      reject(error);
+    });
+  });
+  //#region image
 }
+
+//#endregion
+
+}
+
+

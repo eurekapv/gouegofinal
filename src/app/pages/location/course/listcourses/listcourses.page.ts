@@ -10,6 +10,7 @@ import { FilterCorsi } from 'src/app/models/filtercorsi.model';
 import { ModalController, NavController, LoadingController, ToastController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 
 @Component({
   selector: 'app-listcourses',
@@ -41,7 +42,8 @@ export class ListcoursesPage implements OnInit {
               private mdlController: ModalController,
               private navController: NavController,
               private loadingCtrl: LoadingController,
-              private toastCtrl: ToastController
+              private toastCtrl: ToastController,
+              private docStrService: DocstructureService
               ) { 
     
     //Richiedo l'utente e se è loggato
@@ -176,7 +178,9 @@ export class ListcoursesPage implements OnInit {
   }
 
   onClickCardDetail(corso: Corso) {
-    this.navController.navigateForward(['/','detailcourse',corso.ID]);
+    //this.navController.navigateForward(['/','detailcourse',corso.ID]);
+
+    this.testingDecode(corso);
   }
 
   /* ****** CALENDAR ******** */
@@ -213,5 +217,10 @@ export class ListcoursesPage implements OnInit {
   }
 
 
+  testingDecode(corso: Corso) {
+
+    this.docStrService.decode(corso,'IDSPORT',true);
+
+  }
 
 }

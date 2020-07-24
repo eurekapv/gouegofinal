@@ -21,9 +21,11 @@ export class Gruppo extends IDDocument {
     PRIVATEIMAGE: PrivateImage[];
     _PAYMENT_MODE: Payment;         //Oggetto con i metodi di pagamento
   
-    constructor() {
-      super();
+    constructor(onlyInstance?:boolean) {
+      super(onlyInstance);
+      
       this.PRIVATEIMAGE = [];
+
       this._PAYMENT_MODE = new Payment();
       
       this._PAYMENT_MODE.testingMode();

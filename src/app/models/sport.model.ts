@@ -14,8 +14,8 @@ export class Sport extends IDDocument {
     LIVELLO:        Livello[]; //Livelli dello sport
 
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
 
         this.LIVELLO = [];
     }
@@ -38,6 +38,7 @@ export class Sport extends IDDocument {
     objDescriptor.className = 'Sport';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'SPORT';
+    objDescriptor.describeField = 'DENOMINAZIONE';
 
     
     objDescriptor.addMultiple(arString, TypeDefinition.char);

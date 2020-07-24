@@ -26,9 +26,13 @@ export class UtentePrenotazione extends IDDocument {
     
     
 
-    constructor() {
-        super();
-        this.NUMPARTECIPANTI = 1;
+    constructor(onlyInstance?:boolean) {
+        
+        super(onlyInstance);
+
+        if (!onlyInstance) {
+            this.NUMPARTECIPANTI = 1;
+        }
     }
 
     setJSONProperty(data: any) {
@@ -76,6 +80,13 @@ export class UtentePrenotazione extends IDDocument {
         objDescriptor.addMultiple(arDate, TypeDefinition.date);
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
+
+        objDescriptor.setRelation('IDPRENOTAZIONE','Prenotazione');
+        objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+        objDescriptor.setRelation('IDLOCATION','Location');
+        objDescriptor.setRelation('IDSPORT','Sport');
+        objDescriptor.setRelation('IDUTENTE','Utente');
+        objDescriptor.setRelation('IDCAMPO','Campo');
         
         return objDescriptor;
     }

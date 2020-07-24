@@ -7,8 +7,8 @@ export class CategoriaEta extends IDDocument {
     ETAMASSIMA: number;
     DESCTOOLTIP: string;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
           /**

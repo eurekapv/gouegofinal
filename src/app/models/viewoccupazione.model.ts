@@ -10,8 +10,8 @@ export class ViewOccupazione extends IDDocument {
     DATA: Date;
     VIEWOREOCCUPAZIONE: ViewOreOccupazione[];
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
 
         this.VIEWOREOCCUPAZIONE = [];
 

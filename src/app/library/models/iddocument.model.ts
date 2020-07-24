@@ -1,4 +1,4 @@
-import { TypeDefinition, Descriptor } from './descriptor.model';
+import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
 
  
@@ -381,6 +381,17 @@ import { MyDateTime } from './mydatetime.model';
       let objDescriptor = this.getDescriptor();
 
       return objDescriptor.getType(PropertyName);
+
+    }
+
+    /**
+     * Controlla se nell'istanza del documento c'e' il campo passato come parametro
+     * @param fieldName Nome del campo
+     */
+    getByFieldName(fieldName: string): TypeReflector {
+      let objDescriptor = this.getDescriptor();
+
+      return objDescriptor.getByFieldName(fieldName);
 
     }
 

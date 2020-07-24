@@ -1,18 +1,19 @@
-import { Injectable, Type } from '@angular/core';
-import { Account } from 'src/app/models/account.model';
+import { Injectable } from '@angular/core';
 import { IDDocument } from '../models/iddocument.model';
-import { Area } from 'src/app/models/area.model';
-import { Campo } from 'src/app/models/campo.model';
-import { CampoSport } from 'src/app/models/camposport.model';
-import { CategoriaEta } from 'src/app/models/categoriaeta.model';
-import { Corso } from 'src/app/models/corso.model';
-import { CorsoProgramma } from 'src/app/models/corsoprogramma.model';
+
+
+
+
 import { ApicallService } from '../../services/apicall.service';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
-import { Descriptor, TypeDefinition } from '../models/descriptor.model';
+import { Descriptor, TypeDefinition, TypeReflector } from '../models/descriptor.model';
 import { map } from 'rxjs/operators';
+import { CacheListElement } from '../models/cachelistelement.model';
+import { Cache } from '../models/cache.model';
+import { Sport } from 'src/app/models/sport.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +22,22 @@ export class DocstructureService {
 
   tableDocuments = [];
   myConfig: StartConfiguration;
+  
+  
+
+  //cacheList: CacheListElement[];
+
+  //Oggetto con la cache
+  objCache = new Cache();
+  
 
 
   constructor(private startService: StartService,
               private apiService: ApicallService) { 
 
-    this.initTableDocuments();
+
+    //this.cacheList = [];
+    
 
     this.startService.startConfig.subscribe(elConfig => {
       this.myConfig = elConfig;
@@ -35,51 +46,191 @@ export class DocstructureService {
   }
 
 
+  /**
+   * 
+   * @param doc Documento
+   * @param fieldDecode Nome del campo da cui parte la decodifica
+   */
+  decode(doc:IDDocument, fieldDecode: string, useCache:boolean=false, newDecodeField?:[]) {
+    //Step 1: field Decode esiste in doc
+    //Step 2: field Decode è in una relazione
+    let definition: TypeReflector;
+    let queryServer = true;
+    let result = false;
 
-  //Inizializzo tutti i documenti
-  initTableDocuments() {
+    if (doc && fieldDecode) {
+      //Chiedo la definizione del campo
+      definition = doc.getByFieldName(fieldDecode);
 
-    let docAccount = new Account();
-    this.addToTable(docAccount);
+      //Definizione presente
+      if (definition) {
+        if (definition.isForeignKey) {  //  {relFieldDoc}
 
-    let docArea = new Area();
-    this.addToTable(docArea);
+          //Step 3: Cercare nella cache 
+          //Se non lo trovo nella cache devo richiederlo al server
+          if (useCache) {
+            //Cerco nella cache se trovo la decodifica
+            result = this._decodeInCache(doc, definition, newDecodeField);
+            
+            //Se non trovo in cache devo eseguire la query al server
+            queryServer = !result;
+          }
 
-    let docCampo = new Campo();
-    this.addToTable(docCampo);
+          //Chiedo al server
+          if (queryServer) {
 
-    let docCampoSport = new CampoSport();
-    this.addToTable(docCampoSport);
+            this._decodeWithServer(doc, definition, newDecodeField);
+          }
 
-    let docCatEta = new CategoriaEta();
-    this.addToTable(docCatEta);
-
-    let docCorso = new Corso();
-    this.addToTable(docCorso);
-
-    let docCorsoProgramma = new CorsoProgramma();
-    this.addToTable(docCorsoProgramma);
-
-    
-    
-  }
-
-
-
-  addToTable(document: IDDocument) {
-    if (document) {
-      this.tableDocuments.push(document);
+        }
+      }
     }
+
   }
 
 
-   /**
+  /**
+   * Contatta il server per richiedere elementi 
+   * in Definition come relFieldDoc e relFieldName
+   * @param doc 
+   * @param definition 
+   * @param newDecodeField 
+   */
+  private _decodeWithServer(doc:IDDocument, definition: TypeReflector, newDecodeField?:[]) {
+    
+    let docFilter: IDDocument = new (<any>window)[definition.relFieldDoc](true);
+
+    
+    //Valorizzo le proprietà del documento come filtro di caricamento
+    docFilter[definition.relFieldName] = doc[definition.fieldName];
+
+    this.request(docFilter)
+          .then(serverElement => {
+            //In teoria dovrei aver ricevuto qualcosa dal server
+            if (serverElement.length !== 0) {
+              //Step 1: Inserirlo in cache
+              this.objCache.addTo(serverElement[0]);
+
+              //Step 2: Valorizzare le proprietà
+              this._setNewDecodeField(doc, serverElement[0], newDecodeField);
+
+              
+            }
+
+
+    })
+
+
+  } 
+
+  /**
+   * 
+   * @param doc Documento da decodificare
+   * @param definition Definitione del campo e sua relazione
+   * @param newDecodeField Se presenti vengono creati come campi di decodifica al posto del describeRowField
+   */
+  private _decodeInCache(doc:IDDocument, definition: TypeReflector, newDecodeField?:[]): boolean {
+
+    let elementList: CacheListElement;
+    let result = false;
+    let findElement: IDDocument;
+    let nameField: string;
+
+
+    if (doc && definition) {
+      if (this.objCache) {
+
+        elementList = this.objCache.findByClassName(definition.relFieldDoc);
+
+        //Questa è la lista degli elementi della stessa tipologia del 
+        //documento di riferimento che contiene le decodifiche
+        if (elementList) {
+
+          nameField = definition.relFieldName;
+
+          if (elementList.list) {
+            //Cerco nella lista della cache il valore presente nel documento e impostato come nameField nel documento correlato
+            findElement = elementList.findElementByFieldName(nameField, doc[definition.fieldName]);
+
+            //Questo e' il documento di Decodifica
+            //Devo conoscere il valore della proprietà eletta come describeRowField
+            if (findElement) {
+
+              //Passo il documento che devo modificare e il documento di decodifica
+              result = this._setNewDecodeField(doc, findElement, newDecodeField)
+            }
+          }
+        }
+      }
+    }
+    
+
+    return result;
+
+  }
+
+
+  /**
+   * 
+   * @param doc Documento a cui applicare nuovi campi
+   * @param docRel Documento di riferimento
+   * @param useFields Se presente sono i campi usati per la decodifica, altrimenti viene usato il describeRowFields
+   */
+  private _setNewDecodeField(doc: IDDocument, docRel: IDDocument, useFields?:[]): boolean {
+    let objDescriptor: Descriptor;
+    let result = false;
+    let nameDescribe = '';
+    let nameNewProperty = '';
+
+    if (doc && docRel) {
+      if (!useFields) {
+        //doc è il documento a cui aggiungere proprietà
+        //in questo caso ne aggiungo 1 sola, che è il describeRowField del docRel
+        objDescriptor = docRel.getDescriptor();
+
+        if (objDescriptor && objDescriptor.describeField && objDescriptor.describeField.length !== 0) {
+
+          nameDescribe = objDescriptor.describeField;
+          nameNewProperty = "_" + objDescriptor.describeField + "_" + objDescriptor.className;
+
+          //Creo la nuova proprietà con il valore
+          doc[nameNewProperty] = docRel[nameDescribe];
+
+          result = true;
+        }
+  
+  
+      }
+      else {
+        //Nell'array useFields ho i nomi dei campi che voglio come nuovi campi di decodifica
+        objDescriptor = docRel.getDescriptor();
+        for (let index = 0; index < useFields.length; index++) {
+          const elFieldDecode = useFields[index];
+
+          nameDescribe = elFieldDecode;
+          nameNewProperty = "_" + elFieldDecode + "_" + objDescriptor.className;
+
+          //Creo la nuova proprietà con il valore
+          doc[nameNewProperty] = docRel[nameDescribe];
+
+          result = true;          
+        }
+      }
+    }
+
+    console.log(doc);
+    return result;
+  }
+
+
+
+  /**
    * Effettua chiamate al server 
    * il document dovrà essere istanziato con i parametri che si desiderano diventare filtri di caricamento
    * @param document Parametri di configurazione
    * @param decode Effettua la decodifica dei dati 
    */
-  request(document: IDDocument, decode?: boolean) {
+  request(document: IDDocument) {
 
     return new Promise<IDDocument[]>((resolve, reject)=>{
       
@@ -128,6 +279,7 @@ export class DocstructureService {
                   let newClass: IDDocument = new (<any>window)[objDescriptor.className]();
                   newClass.setJSONProperty(elData);
                   listElement.push(newClass);
+
                 });
   
                 resolve(listElement);

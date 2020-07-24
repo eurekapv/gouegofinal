@@ -38,12 +38,17 @@ export class Corso extends IDDocument {
     PIANIFICAZIONECORSO: PianificazioneCorso[];
     
 
-    constructor() {
-      super();
+    constructor(onlyInstance?:boolean) {
+      super(onlyInstance);
 
-      this._DESCRCATEGORIEETA = ''
-      this._DESCRLIVELLOENTRATA = '';
-      this._DESCRSPORT = '';
+      if (!onlyInstance) {
+
+        this._DESCRCATEGORIEETA = ''
+        this._DESCRLIVELLOENTRATA = '';
+        this._DESCRSPORT = '';
+      }
+
+
       this.CORSOPROGRAMMA = [];
       this.PIANIFICAZIONECORSO = [];
 
@@ -95,7 +100,13 @@ export class Corso extends IDDocument {
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+
+    objDescriptor.setRelation('IDSPORT','Sport');
+    objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+    objDescriptor.setRelation('IDLOCATION','Location');
+    objDescriptor.setRelation('IDCAMPO','Campo');
     
+
     return objDescriptor;
 }    
 

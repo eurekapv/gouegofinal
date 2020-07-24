@@ -20,8 +20,8 @@ export class Account extends IDDocument {
     RUOLO: number;
     MANSIONE: Mansione;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     setJSONProperty(data: any) {

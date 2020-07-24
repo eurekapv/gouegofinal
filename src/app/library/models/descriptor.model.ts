@@ -16,12 +16,47 @@ export enum TypeDefinition {
 export class TypeReflector {
     fieldName: string;
     fieldType: TypeDefinition;
-    describeRow: boolean;
+    
 
-    constructor(campoName: string, campoType: TypeDefinition) {
+    constructor(campoName: string, 
+                campoType: TypeDefinition,
+                relDoc?: string,
+                relName?: string) {
         this.fieldName = campoName;
         this.fieldType = campoType;
-        this.describeRow = false;
+        this._relFieldDoc = relDoc;
+        this._relFieldName = relName;
+
+        
+    }
+
+    private _relFieldDoc: string;
+    private _relFieldName: string;
+
+    get relFieldDoc(): string {
+        return this._relFieldDoc;
+    }
+
+    set relFieldDoc(value:string) {
+        this._relFieldDoc = value;
+    }
+
+    get relFieldName(): string {
+        let strReturn = '';
+        if (this._relFieldDoc && this._relFieldDoc.length !== 0) {
+            if (this._relFieldName && this._relFieldName) {
+                strReturn = this._relFieldName;
+            }
+            else {
+                strReturn = 'ID';
+            }
+        }
+
+        return strReturn;
+    }
+
+    set relFieldName(value:string) {
+        this._relFieldName = value;
     }
 
     /**
@@ -49,6 +84,20 @@ export class TypeReflector {
 
         return value;
     }
+
+
+    /**
+     * Controlla e indica se ha una relazione il campo
+     */
+    get isForeignKey():boolean {
+        let result = false;
+
+        if (this.relFieldDoc) {
+            result = true;
+        }
+
+        return result;
+    }
 }
 
 /**
@@ -65,6 +114,10 @@ export class  Descriptor{
 
     //Nome da utilizzare nelle chiamate webapi
     private _classWebApiName: string;
+
+    //Campo che descrive la riga (usato di default per le decodifiche)
+    private _describeField: string;
+
     
     get className() {
         return this._className;
@@ -85,6 +138,14 @@ export class  Descriptor{
     set classWebApiName(value: string) {
         this._classWebApiName = value;
     }
+
+    get describeField() {
+        return this._describeField;
+    }
+
+    set describeField(value: string) {
+        this._describeField = value;
+    }    
 
     get doRemote() {
         return this._doRemote;
@@ -108,9 +169,29 @@ export class  Descriptor{
      * @param campoName Nome Campo
      * @param campoType Tipo Campo
      */
-    add(campoName: string, campoType: TypeDefinition) {
-        let typeR = new TypeReflector(campoName, campoType);
+    add(campoName: string, campoType: TypeDefinition, relDoc?:string, relField?:string) {
+        let typeR = new TypeReflector(campoName, campoType, relDoc, relField);
         this.fields.push(typeR);
+    }
+
+
+    /**
+     * Ricerca tra i campi quello denominato fieldName e ne setta una relazione con
+     * relDoc grazie a relFieldName
+     * @param fieldName 
+     * @param relDoc 
+     * @param relFieldName 
+     */
+    setRelation(fieldName: string, relDoc:string, relFieldName?: string) {
+        
+        let findField = this.fields.find(el => {
+            return el.fieldName == fieldName;
+        });
+
+        if (findField) {
+            findField.relFieldName = relFieldName;
+            findField.relFieldDoc = relDoc;
+        }
     }
 
     /**
@@ -144,5 +225,13 @@ export class  Descriptor{
         return retType;
     }
 
-    
+    /**
+     * Cerca e ritorna il campo per fieldName
+     * @param fieldName Nome del campo
+     */
+    getByFieldName(fieldName: string) : TypeReflector {
+        return this.fields.find(el => {
+            return el.fieldName == fieldName;
+        });
+    }
 }

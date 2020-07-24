@@ -90,6 +90,11 @@ export class Utente extends IDDocument {
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+
+    
+    objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+    objDescriptor.setRelation('IDLOCATION','Location');
+
     
     return objDescriptor;
 }

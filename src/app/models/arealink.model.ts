@@ -7,8 +7,8 @@ export class AreaLink extends IDDocument {
     TIPOURL: PageType;
     REFERURL: string;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
 
@@ -29,6 +29,7 @@ export class AreaLink extends IDDocument {
     objDescriptor.className = 'AreaLink';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'AREALINK';
+    objDescriptor.describeField = 'REFERURL';
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
@@ -37,6 +38,9 @@ export class AreaLink extends IDDocument {
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    
+    //Aggiungo le relazioni
+    objDescriptor.setRelation('IDAREAOPERATIVA', 'Area');
     
     return objDescriptor;
     }

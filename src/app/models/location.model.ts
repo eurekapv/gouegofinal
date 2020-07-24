@@ -26,19 +26,22 @@ export class Location extends IDDocument {
     APERTURALOCATION: AperturaLocation[];
     
   
-    constructor() {
+    constructor(onlyInstance?:boolean) {
       
-      super();
+      super(onlyInstance);
       
       this.LOCATIONIMAGE = [];
       this.CAMPO = [];
       this.APERTURALOCATION = [];
-      this.ENABLEPRENOTAZIONI = false;
-      this.MINUTISLOTPRENOTAZIONE = 30;
-
-      // Imposto una cover standard
-      this.setStandardCover();
       
+      if (!onlyInstance) { 
+
+        this.ENABLEPRENOTAZIONI = false;
+        this.MINUTISLOTPRENOTAZIONE = 30;
+        // Imposto una cover standard
+        this.setStandardCover();
+
+      }
     }
 
 
@@ -77,6 +80,8 @@ export class Location extends IDDocument {
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+
+    objDescriptor.setRelation('IDAREAOPERATIVA','Area');
     
     return objDescriptor;
 }

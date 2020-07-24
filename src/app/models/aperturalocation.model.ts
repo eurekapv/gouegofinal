@@ -11,8 +11,8 @@ export class AperturaLocation extends IDDocument {
     DALLE2: Date;
     ALLE2: Date;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     

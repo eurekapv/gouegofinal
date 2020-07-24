@@ -15,8 +15,8 @@ export class Attivita extends IDDocument {
     IDSPORT:        string; //Sport - Attività di riferimento
     DESCRIZIONE:    string;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
       /**
@@ -49,6 +49,11 @@ export class Attivita extends IDDocument {
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+
+    objDescriptor.setRelation('IDAREA','Area');
+    objDescriptor.setRelation('IDLOCATION','Location');
+    objDescriptor.setRelation('IDCAMPO','Campo');
+    objDescriptor.setRelation('IDSPORT','Sport');
     
     return objDescriptor;
 }

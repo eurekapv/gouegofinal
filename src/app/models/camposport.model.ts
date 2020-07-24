@@ -30,8 +30,9 @@ export class CampoSport extends IDDocument {
         let arTime = [];
         let arCollection = [];
 
-        objDescriptor.className = 'CAMPOSPORT';
+        objDescriptor.className = 'CampoSport';
         objDescriptor.doRemote = true;
+        objDescriptor.classWebApiName = 'CAMPOSPORT';
         
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);

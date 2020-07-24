@@ -28,6 +28,10 @@ export class AperturaLocation extends IDDocument {
         let arDateTime =[];
         let arTime = ['DALLE1','DALLE2','ALLE1','ALLE2'];
 
+        objDescriptor.className = 'AperturaLocation';
+        objDescriptor.doRemote = true;
+        objDescriptor.classWebApiName = 'APERTURALOCATION';
+
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

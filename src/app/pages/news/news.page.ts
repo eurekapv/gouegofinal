@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NewsEventi } from 'src/app/models/newseventi.model';
+import { NewsEvento } from 'src/app/models/newsevento.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Area } from 'src/app/models/area.model';
@@ -12,13 +12,13 @@ import { NavController } from '@ionic/angular';
 })
 export class NewsPage implements OnInit, OnDestroy {
 
-  listNews: NewsEventi[] = [];
+  listNews: NewsEvento[] = [];
   subListNews: Subscription;
   loading: boolean;
   areaSelected: Area; //Area Selezionata
   subAreaSelected: Subscription; 
   maxRecord = 20; //Numero massimo di News richieste al server
-  noNewsCard: NewsEventi; //Card per quando non ci sono Eventi
+  noNewsCard: NewsEvento; //Card per quando non ci sono Eventi
 
   myEvent: any;
 
@@ -26,7 +26,7 @@ export class NewsPage implements OnInit, OnDestroy {
               private navController: NavController) { 
 
     //Recupero la card che dice che non ci sono eventi
-    this.noNewsCard = NewsEventi.getNoNews();
+    this.noNewsCard = NewsEvento.getNoNews();
 
     this.loading = true;
 
@@ -92,7 +92,7 @@ export class NewsPage implements OnInit, OnDestroy {
    * Apre in modalità dettaglio la news
    * @param news News da leggere
    */
-  onClickNews(news: NewsEventi) {
+  onClickNews(news: NewsEvento) {
     if (news) {
       // Le news Inserted sono finte, non posso aprirle
       if (!news.do_inserted) {

@@ -38,7 +38,7 @@ export class Attivita extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
-    objDescriptor.className = 'ATTIVITA';
+    objDescriptor.className = 'Attività';
     objDescriptor.classWebApiName = '';
     objDescriptor.doRemote = false;
 

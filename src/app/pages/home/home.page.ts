@@ -12,7 +12,7 @@ import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
-import { NewsEventi } from 'src/app/models/newseventi.model';
+import { NewsEvento } from 'src/app/models/newsevento.model';
 import { PopoverController } from '@ionic/angular';
 import { Settimana } from 'src/app/models/settimana.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
@@ -58,8 +58,8 @@ export class HomePage implements OnInit, OnDestroy{
   listButtonNoEvents: ButtonCard[] = []; //Bottoni da mostrare in assenza di eventi
 
   //Oggetti per le News
-  noNewsCard: NewsEventi;
-  listNews: NewsEventi[] = [];
+  noNewsCard: NewsEvento;
+  listNews: NewsEvento[] = [];
   listNewsListen: Subscription;
 
   
@@ -71,7 +71,7 @@ export class HomePage implements OnInit, OnDestroy{
               ) {
 
     //Recupero la card che dice che non ci sono eventi
-    this.noNewsCard = NewsEventi.getNoNews();
+    this.noNewsCard = NewsEvento.getNoNews();
  
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
@@ -175,7 +175,7 @@ export class HomePage implements OnInit, OnDestroy{
    * Evento Click sulla News
    * @param news News selezionata
    */
-  onClickNews(news: NewsEventi) {
+  onClickNews(news: NewsEvento) {
     if (news) {
       //Le News insert non sono vere, non posso aprirle
       if (!news.do_inserted) {

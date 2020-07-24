@@ -10,8 +10,8 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col *ngFor="let livello of utente.UTENTILIVELLI" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
-        <ion-card button (click)="onShare(livello.ID)" class="card-livello" id="{{livello.ID}}">
+      <ion-col *ngFor="let livello of utente.UTENTILIVELLI" id="{{livello.ID}}" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
+        <ion-card [button]="!startService.isDesktop" (click)="onShare(livello.ID)" class="card-livello" >
             <ion-card-header class="ion-no-padding ion-text-center">
               <img [src]="logoGruppo" id="img-logo">
             </ion-card-header>

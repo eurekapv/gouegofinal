@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NewsEventi } from 'src/app/models/newseventi.model';
+import { NewsEvento } from 'src/app/models/newsevento.model';
 
 
 @Component({
@@ -9,8 +9,8 @@ import { NewsEventi } from 'src/app/models/newseventi.model';
 })
 export class NewsEventiComponent implements OnInit {
 
-  @Input() myNews = new NewsEventi();
-  @Output() clickNews = new EventEmitter<NewsEventi>();
+  @Input() myNews = new NewsEvento();
+  @Output() clickNews = new EventEmitter<NewsEvento>();
 
   constructor() { }
 

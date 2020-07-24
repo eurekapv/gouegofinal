@@ -66,8 +66,10 @@ export class Location extends IDDocument {
     let arTime = [];
     let arCollection = ['LOCATIONIMAGE','CAMPO','APERTURALOCATION'];
 
-    objDescriptor.className = 'LOCATION';
+    objDescriptor.className = 'Location';
     objDescriptor.doRemote = true;
+    objDescriptor.classWebApiName = 'LOCATION';
+
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

@@ -26,9 +26,9 @@ export class AreaLink extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
-    objDescriptor.className = 'Area';
+    objDescriptor.className = 'AreaLink';
     objDescriptor.doRemote = true;
-    objDescriptor.classWebApiName = 'AREA';
+    objDescriptor.classWebApiName = 'AREALINK';
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

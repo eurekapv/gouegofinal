@@ -37,6 +37,11 @@ export class PianificazioneCorso extends IDDocument {
     let arTime = ['ORAINIZIO'];
     let arCollection = [];
 
+    objDescriptor.className = 'PianificazioneCorso';
+    objDescriptor.doRemote = true;
+    objDescriptor.classWebApiName = 'PIANIFICAZIONECORSO';
+
+
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

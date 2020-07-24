@@ -51,6 +51,10 @@ export class Account extends IDDocument {
         let arDateTime =[];
         let arTime = [];
 
+        objDescriptor.className = 'Account';
+        objDescriptor.doRemote = true;
+        objDescriptor.classWebApiName = 'ACCOUNT';
+
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

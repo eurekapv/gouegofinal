@@ -68,6 +68,11 @@ export class Utenteiscrizione extends IDDocument {
         let arDateTime =['ORAINIZIOCORSO'];
         let arTime = [];
 
+        objDescriptor.className = 'UtenteIscrizione';
+        objDescriptor.doRemote = true;
+        objDescriptor.classWebApiName = 'UTENTEISCRIZIONE';
+
+
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arNumberDecimal, TypeDefinition.numberDecimal);

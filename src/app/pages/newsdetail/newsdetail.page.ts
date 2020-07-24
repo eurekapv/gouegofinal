@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NewsEventi } from 'src/app/models/newseventi.model';
+import { NewsEvento } from 'src/app/models/newsevento.model';
 
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class NewsdetailPage implements OnInit {
 
-  myNews: NewsEventi = new NewsEventi();
+  myNews: NewsEvento = new NewsEvento();
   
   loading: boolean;
 

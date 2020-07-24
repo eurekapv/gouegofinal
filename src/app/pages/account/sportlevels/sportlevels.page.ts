@@ -17,7 +17,7 @@ import { url } from 'inspector';
   styleUrls: ['./sportlevels.page.scss'],
 })
 export class SportlevelsPage implements OnInit {
-
+  
   utente:Utente;
   utenteListener: Subscription;
   sport: Sport;
@@ -35,25 +35,34 @@ export class SportlevelsPage implements OnInit {
     this.startService.requestBase64Image(TipoPrivateImage.logo).then(b64Image=>{
       this.logoGruppo=b64Image;
     })
+
+
       
   }
 
 
   async onShare(id: string)
   {
-    //recupero il livello
-    let livello:UtenteLivello;
-    livello= await this.utente.UTENTILIVELLI.find(elem=>{
-      return elem.ID==id;
-    });
+    if (!this.startService.isDesktop){
 
-    //compongo il messaggio
-    let messaggio: string = this.utente.NOME + ' ha ottenuto il livello ' + livello.DESCRLIVELLO +  ' a ' + livello.DESCRSPORT + '!';
+      //recupero il livello
+      let livello:UtenteLivello;
+      livello= await this.utente.UTENTILIVELLI.find(elem=>{
+        return elem.ID==id;
+      });
+      
+      //compongo il messaggio
+    let messaggio: string = this.utente.NOME + ' ha ottenuto il livello ' + livello.DESCRLIVELLO +  ' a ' + livello.DESCRSPORT + '! Complimenti!!';
     
     //recupero l'immagine della card
     let card=document.getElementById(id);
-    let urlImage= await htmlToImage.toPng(card);
-
+    let urlImage= await htmlToImage.toJpeg(card,{
+      width:350,
+      height:600
+      
+    });
+    console.log(urlImage);
+    
     //recupero l'url del sito aziendale
     let area=this.startService.areaSelectedValue;
     console.log(area);
@@ -64,10 +73,11 @@ export class SportlevelsPage implements OnInit {
     else{
       this.socialSharing.share(messaggio,'',urlImage);
     }
-
-       
   }
-
+    
+    
+  }
+  
   
   
   

@@ -64,6 +64,11 @@ export class ViewOccupazione extends IDDocument {
     let arTime = [];
     let arCollection = ['VIEWOREOCCUPAZIONE'];
 
+    objDescriptor.className = 'ViewOccupazione';
+    objDescriptor.doRemote = false;
+    objDescriptor.classWebApiName = '';
+
+
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

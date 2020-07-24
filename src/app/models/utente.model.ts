@@ -78,6 +78,11 @@ export class Utente extends IDDocument {
     let arTime = [];
     let arCollection = ['UTENTILIVELLI'];
 
+    objDescriptor.className = 'Utente';
+    objDescriptor.doRemote = true;
+    objDescriptor.classWebApiName = 'UTENTE';
+
+
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

@@ -2,7 +2,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 import { AmbitoNews } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
-export class NewsEventi extends IDDocument {
+export class NewsEvento extends IDDocument {
     AMBITO: AmbitoNews;
     TITLE: string;
     SUBTITLE: string;
@@ -50,8 +50,11 @@ export class NewsEventi extends IDDocument {
         let arDateTime =['PUBBLICATADAL'];
         let arTime = [];
 
-        objDescriptor.className = 'NEWSEVENTI';
+        objDescriptor.className = 'NewsEvento';
         objDescriptor.doRemote = true;
+        objDescriptor.classWebApiName = 'NEWSEVENTO';
+
+
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arNumberDecimal, TypeDefinition.numberDecimal);
@@ -66,8 +69,8 @@ export class NewsEventi extends IDDocument {
     /**
      * Torna un oggetto News per indicare che non ci sono News
      */
-    static getNoNews(): NewsEventi {
-        let objNews = new NewsEventi();
+    static getNoNews(): NewsEvento {
+        let objNews = new NewsEvento();
 
         objNews.TITLE = 'Nessun evento in programma';
         objNews.SUBTITLE = 'Torna a trovarci per scoprire le prossime novità';

@@ -27,7 +27,7 @@ export class CategoriaEta extends IDDocument {
     let arCollection = [];
 
     objDescriptor.className = 'CategoriaEta';
-    objDescriptor.classWebApiName = 'CATEGORIAETA';
+    objDescriptor.classWebApiName = 'CATEGORIEETA';
     objDescriptor.doRemote = true;
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);

@@ -25,7 +25,8 @@ export class CorsoProgramma extends IDDocument {
         let arTime = [];
         let arCollection = [];
 
-        objDescriptor.className = 'CORSOPROGRAMMA';
+        objDescriptor.className = 'CorsoProgramma';
+        objDescriptor.classWebApiName = 'CORSOPROGRAMMA';
         objDescriptor.doRemote = true;
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);

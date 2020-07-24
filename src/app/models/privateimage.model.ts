@@ -24,6 +24,11 @@ export class PrivateImage extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
+    objDescriptor.className = 'PrivateImage';
+    objDescriptor.doRemote = false;
+    objDescriptor.classWebApiName = '';
+
+
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
     objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);

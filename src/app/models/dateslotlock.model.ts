@@ -54,6 +54,10 @@ export class DateSlotLock extends IDDocument {
         let arDateTime =[];
         let arTime = [];
         let arCollection = ['TIMELOCK'];
+
+        objDescriptor.className = 'DateSlotLock';
+        objDescriptor.classWebApiName = '';
+        objDescriptor.doRemote = false;
     
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);

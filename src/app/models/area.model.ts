@@ -48,7 +48,7 @@ export class Area extends IDDocument {
 
       objDescriptor.className = 'Area';
       objDescriptor.doRemote = true;
-      objDescriptor.classWebApiName = 'AREA';
+      objDescriptor.classWebApiName = 'AREAOPERATIVA';
 
       objDescriptor.addMultiple(arString, TypeDefinition.char);
       objDescriptor.addMultiple(arNumber, TypeDefinition.number);

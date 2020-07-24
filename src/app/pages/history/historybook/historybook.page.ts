@@ -7,6 +7,7 @@ import { Location } from 'src/app/models/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, ToastController} from '@ionic/angular';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 
 @Component({
@@ -68,7 +69,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
   constructor(private router: ActivatedRoute,
               private navCtr: NavController,
               private startService: StartService,
-              private toastCtr: ToastController) { }
+              private toastCtr: ToastController,
+              private socialSharing: SocialSharing
+              ) { }
 
   //In paramMap leggo IDPrenotazione
   ngOnInit() {
@@ -133,6 +136,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                                   this.activePrenotazione = docPrenotazione;
                                                   this.showSpinner = false;
                                                   this.sliderOpts.initialSlide=this.activePrenotazione.getIndexPianificazione(this.idPianificazione);
+                                                  console.log('a');
+                                                  console.log(this.activePrenotazione);
                                                 });
       }
     }
@@ -179,6 +184,21 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   getIcon (idSport){
     return this.startService.getSportIcon(idSport);
+  }
+
+  onShare(docPianificazione:PrenotazionePianificazione){
+    let url:string;
+    let messaggio:string;
+    let logo: string;
+
+    if(this.startService.isDesktop){
+      //share via mail su desktop
+    }
+    else{
+      //share su mobile
+      this.socialSharing.share(messaggio,'',logo,url);
+    }
+
   }
 
 }

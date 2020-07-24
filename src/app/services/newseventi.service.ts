@@ -6,7 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
 
 import { StartConfiguration } from '../models/start-configuration.model';
-import { NewsEventi } from '../models/newseventi.model';
+import { NewsEvento } from '../models/newsevento.model';
 import { IDDocument } from '../library/models/iddocument.model';
 
 
@@ -17,7 +17,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 })
 export class NewseventiService {
 
-  private _listNews = new BehaviorSubject<NewsEventi[]>([]);
+  private _listNews = new BehaviorSubject<NewsEvento[]>([]);
 
   get listNews() {
     return this._listNews.asObservable();
@@ -68,7 +68,7 @@ export class NewseventiService {
 
 
 
-              let newNews = new NewsEventi();
+              let newNews = new NewsEvento();
               newNews.setJSONProperty(element);
               this.addNews(newNews);
 
@@ -85,7 +85,7 @@ export class NewseventiService {
    * Aggiunge una news
    * @param objNews News da aggiungere
    */
-  addNews(objNews: NewsEventi) {
+  addNews(objNews: NewsEvento) {
     this.listNews
       .pipe(take(1))
       .subscribe (collNews => {

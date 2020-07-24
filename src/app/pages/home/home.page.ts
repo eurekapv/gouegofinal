@@ -13,8 +13,6 @@ import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEventi } from 'src/app/models/newseventi.model';
-import { PopoverController } from '@ionic/angular';
-import { Settimana } from 'src/app/models/settimana.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 
 

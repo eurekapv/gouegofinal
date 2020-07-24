@@ -61,10 +61,10 @@ static stringToDateObject(strInput: string): Date {
         
     //Non aggiungere il TimeZone perchè non da errori ma l'uso della proprietà data da problemi
     strComplete = `${strDate}T${strTime}`;
-    dataReturn = new Date(strComplete);
+    dataReturn = moment(strComplete).toDate();
 
 
-     return dataReturn;
+    return dataReturn;
  }
 
 
@@ -154,9 +154,10 @@ static changeDateInTime(nuovaData: Date, applyDataOra: Date) {
         let minuti = (applyDataOra.getMinutes() > 9) ? (applyDataOra.getMinutes() + '') : ('0' + applyDataOra.getMinutes());
         let secondi = (applyDataOra.getSeconds() > 9) ? (applyDataOra.getSeconds() + '') : ('0' + applyDataOra.getSeconds());
 
-        strDataOra = `${strDataOra} ${ore}:${minuti}:${secondi}`;
+        strDataOra = `${strDataOra}T${ore}:${minuti}:${secondi}`;
 
-        newReturn = new Date(strDataOra);
+        
+        newReturn = moment(strDataOra).toDate();
     }
 
     return newReturn;

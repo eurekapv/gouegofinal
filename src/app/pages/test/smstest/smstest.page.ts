@@ -30,7 +30,7 @@ export class SmstestPage implements OnInit {
                                   {ore:10, minuti:0}, 
                                   {ore:15, minuti:0},
                                   30);
-    LogApp.consoleLog(this.timeSlots);
+    
   }
 
   ngOnInit() {

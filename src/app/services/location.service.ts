@@ -11,6 +11,7 @@ import { CampoSport } from '../models/camposport.model';
 import { SlotWeek } from '../models/imdb/slotweek.model';
 import { LoadingController } from '@ionic/angular';
 import { error } from 'protractor';
+import { LogApp } from '../models/log.model';
 
 
 
@@ -277,6 +278,7 @@ export class LocationService {
         if (minDateTime && maxDateTime) {
           daySlot.STARTTIME = minDateTime;
           daySlot.ENDTIME = maxDateTime;
+
         }
 
       }

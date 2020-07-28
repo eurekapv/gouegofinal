@@ -131,9 +131,9 @@ export class ListcoursesPage implements OnInit {
           
   }
         
-        /**
-         * Modifica del Segment per la scelta dei corsi
-         */
+  /**
+   * Modifica del Segment per la scelta dei corsi
+   */
   onChangeSegmentCorsi(event: any) {
     this.ricevuti=false
     if (event.target.value == 'corsiall')  {
@@ -177,11 +177,7 @@ export class ListcoursesPage implements OnInit {
     this.requestCorsi();
   }
 
-  onClickCardDetail(corso: Corso) {
-    //this.navController.navigateForward(['/','detailcourse',corso.ID]);
 
-    this.testingDecode(corso);
-  }
 
   /* ****** CALENDAR ******** */
   onClickCardCalendar(corso: Corso) {
@@ -217,9 +213,58 @@ export class ListcoursesPage implements OnInit {
   }
 
 
-  testingDecode(corso: Corso) {
+  //Modificato
+  onClickCardDetail(corso: Corso) {
+    //this.navController.navigateForward(['/','detailcourse',corso.ID]);
 
-    this.docStrService.decode(corso,'IDSPORT',true);
+    this.testingDecodeAll(corso);
+  }
+
+  /**
+   * Test di decodifica semplice con il describe row
+   * @param corso 
+   */
+  testingDecodeSimple(corso: Corso) {
+
+    let useCache = true;
+    
+    this.docStrService.decode(corso,'IDSPORT', useCache);
+
+  }
+
+  /**
+   * Test di decodifica hard con il describe row
+   * @param corso 
+   */
+  testingDecodeHard(corso: Corso) {
+
+    let useCache = true;
+    let describeWith = ['PARTECIPANTI', 'ICONA'];
+    
+    this.docStrService.decode(corso,'IDSPORT', useCache, describeWith)
+        .then(() => {
+            console.log('Sti gran cazzi !!!!')
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+  }
+
+    /**
+   * Test di decodifica hard con il describe row
+   * @param corso 
+   */
+  testingDecodeAll(corso: Corso) {
+
+    
+    this.docStrService.decodeAll(corso)
+        .then(() => {
+            console.log('Sti gran cazzi !!!!')
+        })
+        .catch(err => {
+            console.error(err);
+        });
 
   }
 

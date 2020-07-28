@@ -1,6 +1,6 @@
 import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
-
+import { DynamicClass } from './structure.model'
  
   export class IDDocument {
     ID: string;
@@ -59,6 +59,15 @@ import { MyDateTime } from './mydatetime.model';
       return valueIcon;
     }
 
+    /**
+     * Ritorna un array di Type Reflector dei campi 
+     * che formano l'insieme delle ForeignKeys
+     */
+    get ForeignKeys(): TypeReflector[] {
+      let objDescriptor = this.getDescriptor();
+
+      return objDescriptor.foreignKeys;
+    }
   
  
 
@@ -319,6 +328,8 @@ import { MyDateTime } from './mydatetime.model';
     }
 
 
+
+
     
     
 
@@ -376,7 +387,7 @@ import { MyDateTime } from './mydatetime.model';
      * Tipo della proprietà
      * @param PropertyName Nome della proprietà
      */
-    getType(PropertyName: string): TypeDefinition {
+    getPropertyType(PropertyName: string): TypeDefinition {
       
       let objDescriptor = this.getDescriptor();
 
@@ -385,14 +396,53 @@ import { MyDateTime } from './mydatetime.model';
     }
 
     /**
-     * Controlla se nell'istanza del documento c'e' il campo passato come parametro
+     * Ritorna TypeReflector del campo passato come parametro
      * @param fieldName Nome del campo
      */
-    getByFieldName(fieldName: string): TypeReflector {
+    getTypeReflectorByFieldName(fieldName: string): TypeReflector {
       let objDescriptor = this.getDescriptor();
 
       return objDescriptor.getByFieldName(fieldName);
 
+    }
+
+    /**
+     * Controlla se il campo è presente nell'istanza
+     * @param fieldName Nome del campo richiesto
+     */
+    propertyInDoc(fieldName: string): boolean {
+      let arProperty = Object.keys(this);
+      let contain = false;
+      if (fieldName && fieldName.length !== 0) {
+        contain = arProperty.includes(fieldName);
+      }
+
+      return contain;
+
+    }
+
+    /**
+     * Controlla se un campo contiene dei dati oppure è vuoto
+     * considerando qualsiasi valore undefined, null, nullstring
+     * @param fieldName Nome del campo
+     */
+    isEmpty(fieldName:string): boolean {
+      let inDoc = this.propertyInDoc(fieldName);
+      let empty = false;
+
+      if (inDoc) {
+        if (this[fieldName]==undefined || this[fieldName]== null) {
+          empty = true;
+        }
+        else {
+          empty = (this[fieldName] + '').length==0?true:false;
+        }
+      }
+      else {
+        empty = true;
+      }
+
+      return empty;
     }
 
     //#endregion
@@ -440,7 +490,7 @@ import { MyDateTime } from './mydatetime.model';
         }
       })
       
-
+ 
 
       return hasModifiche;
     }

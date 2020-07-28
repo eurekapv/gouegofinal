@@ -155,6 +155,27 @@ export class  Descriptor{
         this._doRemote = value;
     }
 
+    /**
+     * Ritorna un array con i campi foreignkey
+     */
+    get foreignKeys():TypeReflector[] {
+
+        let arForeign: TypeReflector[] = [];
+
+        if (this.fields) {
+            for (let index = 0; index < this.fields.length; index++) {
+                const element = this.fields[index];
+                const isForeign = element.isForeignKey;
+                if (isForeign) {
+                    arForeign.push(element);
+                }
+                
+            }
+        }
+
+        return arForeign;
+    }
+
     constructor() {
         this._doRemote = false;
 

@@ -1,19 +1,20 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { SettoreAttivita } from './valuelist.model';
+import { SettoreAttivita, StatoCorso } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
-export class Attivita extends IDDocument {
+export class Impegni extends IDDocument {
 
-    DENOMINAZIONE:  string;
-    SETTORE:        SettoreAttivita;
     IDREFER:        string; //ID Riferimento
-    IDAREA:         string;
+    SETTORE:        SettoreAttivita;
+    DENOMINAZIONE:  string;
+    IDAREAOPERATIVA:string;
     IDLOCATION:     string;
     IDCAMPO:        string;
+    IDSPORT:        string; //Sport - Attività di riferimento
     DATAORAINIZIO:  Date;
     DATAORAFINE:    Date;
-    IDSPORT:        string; //Sport - Attività di riferimento
-    DESCRIZIONE:    string;
+    IDUTENTE:       string;
+    STATO:          StatoCorso;
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
@@ -24,13 +25,13 @@ export class Attivita extends IDDocument {
     */
    getDescriptor(): Descriptor {
     let objDescriptor = new Descriptor();
-    let arString = ['DENOMINAZIONE',
-                    'IDREFER',
-                    'IDAREA',
+    let arString = ['IDREFER',
+                    'DENOMINAZIONE',
+                    'IDAREAOPERATIVA',
                     'IDLOCATION',
                     'IDCAMPO',
                     'IDSPORT',
-                    'DESCRIZIONE'];
+                    'IDUTENTE'];
     let arNumber = ['SETTORE'];
     let arBoolean = [];
     let arDate = [];
@@ -38,9 +39,10 @@ export class Attivita extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
-    objDescriptor.className = 'Attività';
-    objDescriptor.classWebApiName = '';
-    objDescriptor.doRemote = false;
+    objDescriptor.className = 'Impegni';
+    objDescriptor.classWebApiName = 'IMPEGNI';
+    objDescriptor.doRemote = true;
+    objDescriptor.describeField = 'DENOMINAZIONE';
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
@@ -54,6 +56,7 @@ export class Attivita extends IDDocument {
     objDescriptor.setRelation('IDLOCATION','Location');
     objDescriptor.setRelation('IDCAMPO','Campo');
     objDescriptor.setRelation('IDSPORT','Sport');
+    objDescriptor.setRelation('IDUTENTE','Utente');
     
     return objDescriptor;
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IDDocument } from '../models/iddocument.model';
+import { DynamicClass } from '../models/structure.model';
 
 
 
@@ -12,7 +13,8 @@ import { Descriptor, TypeDefinition, TypeReflector } from '../models/descriptor.
 import { map } from 'rxjs/operators';
 import { CacheListElement } from '../models/cachelistelement.model';
 import { Cache } from '../models/cache.model';
-import { Sport } from 'src/app/models/sport.model';
+import { exec } from 'cordova';
+
 
 
 @Injectable({
@@ -20,13 +22,11 @@ import { Sport } from 'src/app/models/sport.model';
 })
 export class DocstructureService {
 
-  tableDocuments = [];
+  //Struttura documentale
+  structureDocuments = [];
   myConfig: StartConfiguration;
   
   
-
-  //cacheList: CacheListElement[];
-
   //Oggetto con la cache
   objCache = new Cache();
   
@@ -36,13 +36,71 @@ export class DocstructureService {
               private apiService: ApicallService) { 
 
 
-    //this.cacheList = [];
-    
 
     this.startService.startConfig.subscribe(elConfig => {
       this.myConfig = elConfig;
     });
 
+  }
+
+  /**
+   * Decodifica tutte le Foreign Key presenti, eccetto quelle passate nell'array di esclusione
+   * @param doc Documento da decodificare
+   * @param fieldsExclude Campi di ForeignKeys da non decodificare
+   */
+  decodeAll(doc:IDDocument, useCache:boolean=true, fieldsExclude?:string[]){
+    
+    return new Promise((resolve, reject)=>{       
+
+      let executePromise:Promise<any>[] = [];
+
+      if (doc) {
+        //Chiedo le ForeignKeys del documento
+        let arForeign = doc.ForeignKeys;
+        let _this = this;
+
+        /**Ciclo sulle foreignkey */
+        for (let index = 0; index < arForeign.length; index++) {
+          const element = arForeign[index];
+          let use = true;
+
+          if (fieldsExclude && fieldsExclude.length !== 0) {
+            //Utilizzo questa foreignkeys solo se non presente tra quelle da
+            //escludere
+            use = !(fieldsExclude.includes(element.fieldName));
+          }
+
+          if (use) {
+            //Richiedo la decodifica del campo
+            executePromise.push(_this.decode(doc, element.fieldName, useCache));
+          }
+          
+        }
+
+        //Ho dei campi che devo decodificare con le Promise
+        if (executePromise.length !== 0) {
+
+          Promise.all(executePromise).then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+
+        }
+        else {
+          //Non ho nulla da decodificare e va bene cosi
+          resolve();
+        }
+
+      }
+      else {
+        reject('Document null');
+      }
+
+
+
+    });
   }
 
 
@@ -51,42 +109,86 @@ export class DocstructureService {
    * @param doc Documento
    * @param fieldDecode Nome del campo da cui parte la decodifica
    */
-  decode(doc:IDDocument, fieldDecode: string, useCache:boolean=false, newDecodeField?:[]) {
-    //Step 1: field Decode esiste in doc
-    //Step 2: field Decode è in una relazione
-    let definition: TypeReflector;
-    let queryServer = true;
-    let result = false;
+  decode(doc:IDDocument, 
+         fieldDecode: string, 
+         useCache:boolean=true, 
+         newDecodeField?:string[]) {
 
-    if (doc && fieldDecode) {
-      //Chiedo la definizione del campo
-      definition = doc.getByFieldName(fieldDecode);
+    return new Promise((resolve, reject)=>{          
+          //Step 1: field Decode esiste in doc
+          //Step 2: field Decode è in una relazione
+          let definition: TypeReflector;
+          let queryServer = true;
+          let result = false;
+          let goToDecode = false;
 
-      //Definizione presente
-      if (definition) {
-        if (definition.isForeignKey) {  //  {relFieldDoc}
+          if (doc && fieldDecode) {
+            //Chiedo la definizione del campo, e controlla che
+            //n
+            definition = doc.getTypeReflectorByFieldName(fieldDecode);
 
-          //Step 3: Cercare nella cache 
-          //Se non lo trovo nella cache devo richiederlo al server
-          if (useCache) {
-            //Cerco nella cache se trovo la decodifica
-            result = this._decodeInCache(doc, definition, newDecodeField);
-            
-            //Se non trovo in cache devo eseguire la query al server
-            queryServer = !result;
+            //Definizione presente
+            if (definition) {
+              if (definition.isForeignKey) {  //  {relFieldDoc}
+
+              
+                //Decodifica se il campo  contiene un valore
+                goToDecode = !(doc.isEmpty(fieldDecode));
+                
+                //Il campo da decodificare contiene un valore
+                if (goToDecode) {
+
+                  //Step 3: Cercare nella cache 
+                  //Se non lo trovo nella cache devo richiederlo al server
+                  if (useCache) {
+                    //Cerco nella cache se trovo la decodifica
+                    result = this._decodeInCache(doc, definition, newDecodeField);
+                    
+                    //Se non trovo in cache devo eseguire la query al server
+                    queryServer = !result;
+                  }
+  
+                  //Chiedo al server
+                  if (queryServer) {
+  
+                    this._decodeWithServer(doc, definition, newDecodeField)
+                        .then(() => {
+                          resolve();
+                        })
+                        .catch(errMessage => {
+                          reject(errMessage);
+                        });
+                  }
+                  else {
+                    //Ho usato la cache
+                    resolve();
+                  }
+
+                }
+                else {
+                  //Il campo non contiene valori e quini non lo decodifico
+                  resolve();
+                }
+
+              }
+              else {
+                reject('Field ' + fieldDecode + ' is not a foreingKey');
+              }
+            }
+            else {
+              reject('Field ' + fieldDecode + ' unknown in structure');
+            }
+          }
+          else {
+            reject('Field or Document null');
           }
 
-          //Chiedo al server
-          if (queryServer) {
-
-            this._decodeWithServer(doc, definition, newDecodeField);
-          }
-
-        }
-      }
-    }
+        });
 
   }
+
+
+
 
 
   /**
@@ -96,29 +198,37 @@ export class DocstructureService {
    * @param definition 
    * @param newDecodeField 
    */
-  private _decodeWithServer(doc:IDDocument, definition: TypeReflector, newDecodeField?:[]) {
+  private _decodeWithServer(doc:IDDocument, 
+                            definition: TypeReflector, 
+                            newDecodeField?:string[]) {
     
-    let docFilter: IDDocument = new (<any>window)[definition.relFieldDoc](true);
+    return new Promise((resolve, reject)=>{
 
-    
-    //Valorizzo le proprietà del documento come filtro di caricamento
-    docFilter[definition.relFieldName] = doc[definition.fieldName];
+          let docFilter: any = new DynamicClass(definition.relFieldDoc,true);
+          
+          //Valorizzo le proprietà del documento come filtro di caricamento
+          docFilter[definition.relFieldName] = doc[definition.fieldName];
 
-    this.request(docFilter)
-          .then(serverElement => {
-            //In teoria dovrei aver ricevuto qualcosa dal server
-            if (serverElement.length !== 0) {
-              //Step 1: Inserirlo in cache
-              this.objCache.addTo(serverElement[0]);
+          this.request(docFilter)
+              .then(serverElement => {
+                  //In teoria dovrei aver ricevuto qualcosa dal server
+                  if (serverElement.length !== 0) {
+                    //Step 1: Inserirlo in cache
+                    this.objCache.addTo(serverElement[0]);
 
-              //Step 2: Valorizzare le proprietà
-              this._setNewDecodeField(doc, serverElement[0], newDecodeField);
+                    //Step 2: Valorizzare le proprietà
+                    this._setNewDecodeField(doc, serverElement[0], newDecodeField);
 
-              
-            }
+                    
+                  }
 
+                  resolve();
 
-    })
+              })
+              .catch(errMessage => {
+                reject(errMessage);
+              });
+    });
 
 
   } 
@@ -129,7 +239,9 @@ export class DocstructureService {
    * @param definition Definitione del campo e sua relazione
    * @param newDecodeField Se presenti vengono creati come campi di decodifica al posto del describeRowField
    */
-  private _decodeInCache(doc:IDDocument, definition: TypeReflector, newDecodeField?:[]): boolean {
+  private _decodeInCache(doc:IDDocument, 
+                         definition: TypeReflector, 
+                         newDecodeField?:string[]): boolean {
 
     let elementList: CacheListElement;
     let result = false;
@@ -157,7 +269,8 @@ export class DocstructureService {
             if (findElement) {
 
               //Passo il documento che devo modificare e il documento di decodifica
-              result = this._setNewDecodeField(doc, findElement, newDecodeField)
+              result = this._setNewDecodeField(doc, findElement, newDecodeField);
+              
             }
           }
         }
@@ -176,7 +289,9 @@ export class DocstructureService {
    * @param docRel Documento di riferimento
    * @param useFields Se presente sono i campi usati per la decodifica, altrimenti viene usato il describeRowFields
    */
-  private _setNewDecodeField(doc: IDDocument, docRel: IDDocument, useFields?:[]): boolean {
+  private _setNewDecodeField(doc: IDDocument, 
+                             docRel: IDDocument, 
+                             useFields?:string[]): boolean {
     let objDescriptor: Descriptor;
     let result = false;
     let nameDescribe = '';
@@ -261,7 +376,7 @@ export class DocstructureService {
           let myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
 
           if (!myParams) {
-            reject('Parametri insufficienti');
+            reject('Request Parametri insufficienti');
           }
           else {
 
@@ -276,7 +391,8 @@ export class DocstructureService {
   
                 resultData.forEach(elData => {
                   
-                  let newClass: IDDocument = new (<any>window)[objDescriptor.className]();
+                  //let newClass: IDDocument = new (<any>window)[objDescriptor.className]();
+                  let newClass: any = new DynamicClass(objDescriptor.className);
                   newClass.setJSONProperty(elData);
                   listElement.push(newClass);
 
@@ -320,7 +436,7 @@ export class DocstructureService {
 
           let value = document[nameProperty];
           let strValue = '';
-          let tipo = document.getType(nameProperty);
+          let tipo = document.getPropertyType(nameProperty);
 
           switch (tipo) {
             case TypeDefinition.char:
@@ -372,5 +488,8 @@ export class DocstructureService {
 
     return myParams;
   }
+
+
+
 
 }

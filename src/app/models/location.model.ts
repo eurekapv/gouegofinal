@@ -72,6 +72,7 @@ export class Location extends IDDocument {
     objDescriptor.className = 'Location';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'LOCATION';
+    objDescriptor.describeField = 'DENOMINAZIONE';
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

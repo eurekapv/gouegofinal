@@ -215,9 +215,9 @@ export class ListcoursesPage implements OnInit {
 
   //Modificato
   onClickCardDetail(corso: Corso) {
-    //this.navController.navigateForward(['/','detailcourse',corso.ID]);
+    this.navController.navigateForward(['/','detailcourse',corso.ID]);
 
-    this.testingDecodeAll(corso);
+    //this.testingDecodeAll(corso);
   }
 
   /**

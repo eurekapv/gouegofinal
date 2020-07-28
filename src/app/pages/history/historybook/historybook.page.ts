@@ -128,10 +128,11 @@ export class HistorybookPage implements OnInit, OnDestroy {
         filterPrenotazione.ID=idPren;
         console.log('Qui');
         
-        this.docStructureService.request(filterPrenotazione).then(data=>{
-          if (data && data.length>0){
-            this.myPrenotazione.setJSONProperty(data[0]);
-          }
+        this.docStructureService.request(filterPrenotazione)
+        .then(data =>{
+
+          this.myPrenotazione = data[0];
+          
         })
       
 

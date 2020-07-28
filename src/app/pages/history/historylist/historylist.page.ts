@@ -167,7 +167,7 @@ export class HistorylistPage implements OnInit {
                                         .subscribe(collIscrizioni => {
                                             this.listUtenteCorsi = collIscrizioni;                                
                                             //this.receivedCorsi = true;
-                                            console.log(this.listUtenteCorsi);
+                                            
                                             if (this.eventRefresherIscrizioni) {
                                               if (this.eventRefresherIscrizioni.target) {
                                                 this.eventRefresherIscrizioni.target.complete();

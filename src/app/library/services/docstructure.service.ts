@@ -347,7 +347,7 @@ export class DocstructureService {
    */
   request(document: IDDocument) {
 
-    return new Promise<IDDocument[]>((resolve, reject)=>{
+    return new Promise<any[]>((resolve, reject)=>{
       
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
       let objDescriptor: Descriptor;
@@ -391,7 +391,6 @@ export class DocstructureService {
   
                 resultData.forEach(elData => {
                   
-                  //let newClass: IDDocument = new (<any>window)[objDescriptor.className]();
                   let newClass: any = new DynamicClass(objDescriptor.className);
                   newClass.setJSONProperty(elData);
                   listElement.push(newClass);

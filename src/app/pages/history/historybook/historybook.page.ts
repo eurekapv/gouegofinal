@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
-import { Subscription } from 'rxjs';
+import { Subscription, from } from 'rxjs';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Campo } from 'src/app/models/campo.model';
 import { Location } from 'src/app/models/location.model';
@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, ToastController} from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { DocstructureService } from 'src/app/library/services/docstructure.service'
 
 
 @Component({
@@ -20,10 +21,13 @@ export class HistorybookPage implements OnInit, OnDestroy {
   activePrenotazione: Prenotazione= new Prenotazione;
   subActivePrenotazione: Subscription;
 
+  listLocation:Location[]=[];
   subListLocation: Subscription;
+
+  listCampi:Campo[]=[];
+  subListCampi:Subscription;
   
   //Campo in versione normale
-  selectedCampo: Campo = new Campo();
   idPrenotazione: string;
   idPianificazione: string;
   historyId: string;
@@ -70,15 +74,22 @@ export class HistorybookPage implements OnInit, OnDestroy {
               private navCtr: NavController,
               private startService: StartService,
               private toastCtr: ToastController,
-              private socialSharing: SocialSharing
+              private socialSharing: SocialSharing,
+              private docStructureService: DocstructureService
               ) { }
 
   //In paramMap leggo IDPrenotazione
   ngOnInit() {
+    
+    this.prova();
     let result = true;
 
     this.showSpinner = true;
+    this.subListCampi=this.startService.listLocation.subscribe(data=>{
+      this.listLocation=data;
+    })
 
+    
     this.router.paramMap.subscribe(param => {
       if (param.has('historyId')) {
 
@@ -199,6 +210,14 @@ export class HistorybookPage implements OnInit, OnDestroy {
       this.socialSharing.share(messaggio,'',logo,url);
     }
 
+  }
+
+  prova(){
+    let objCampo=new  Campo();
+    objCampo.ID='prova';
+    this.docStructureService.request(objCampo).then(data=>{
+      console.log(data);
+    })
   }
 
 }

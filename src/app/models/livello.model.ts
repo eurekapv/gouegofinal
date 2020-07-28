@@ -8,8 +8,8 @@ export class Livello extends IDDocument {
     ETAMINIMA: number;
     ETAMASSIMA: number;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     setJSONProperty(data: any) {
@@ -44,6 +44,9 @@ export class Livello extends IDDocument {
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
     
+
+    objDescriptor.setRelation('IDSPORT','Sport');
+
     return objDescriptor;
 }
 

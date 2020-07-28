@@ -19,10 +19,12 @@ export class Area extends IDDocument {
     LOCATIONS: Location[];
     AREALINKS: AreaLink[];
   
-    constructor() {
-      super();
+    constructor(onlyInstance?:boolean) {
+      
+      super(onlyInstance);
       this.AREALINKS=[];
       this.LOCATIONS = [];
+
     }
 
     /**
@@ -49,6 +51,7 @@ export class Area extends IDDocument {
       objDescriptor.className = 'Area';
       objDescriptor.doRemote = true;
       objDescriptor.classWebApiName = 'AREAOPERATIVA';
+      objDescriptor.describeField = 'DENOMINAZIONE';
 
       objDescriptor.addMultiple(arString, TypeDefinition.char);
       objDescriptor.addMultiple(arNumber, TypeDefinition.number);
@@ -58,6 +61,8 @@ export class Area extends IDDocument {
       objDescriptor.addMultiple(arTime, TypeDefinition.time);
       objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
       
+
+
       return objDescriptor;
   }
 

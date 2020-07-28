@@ -19,6 +19,7 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 
 
 
+
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.page.html',
@@ -80,9 +81,21 @@ export class BookingPage implements OnInit, OnDestroy {
     //Creo un documento di Pianificazione
     this.actualPlanning = new PrenotazionePianificazione;
     
+    this.myDebug('Constructor Booking Page');
+    this.myDebug(this.actualPlanning);
   }
   
 
+  /**
+   * 
+   * @param element Element 
+   */
+  myDebug(element) {
+    let actDebug = true;
+    if (actDebug) {
+      console.log(element);
+    }
+  }
   
   /**
    * Crea l'array con i soli Campi dove è possibile effettuare l'attività selezionata
@@ -124,62 +137,76 @@ export class BookingPage implements OnInit, OnDestroy {
       backdropDismiss: true
 
     }).then(loading=>{
-      loading.present()
-      this.ricevuti = false;
-      this.bookable = false;
+
+        this.myDebug('Presentazione Loading');
+
+        loading.present()
+        this.ricevuti = false;
+        this.bookable = false;
       
+
+        //Controllo dei parametri del router
       this.router.paramMap.subscribe(param => {
         
+        this.myDebug('Controllo Routing locationId');
         
         if (param.has('locationId')) {
           
+          this.myDebug('locationId trovata');
+
           //Location sulla barra
           this.idLocation = param.get('locationId');
           
           if (this.idLocation) {
+
+            this.myDebug('locationId: ' + this.idLocation);
             
             //Chiedo al server gli Sport praticati nella location
+            this.myDebug('Richiesta al server Sport Praticati nella location ');
             this.startService.requestLocationSport(this.idLocation);
             
             //Mi sottoscrivo alla ricezione degli Sport
-          this.sottoscrizioneListaSport();
+            this.sottoscrizioneListaSport();
           
-          // Chiedo al server Location, Campi e CampiSport (3 Livelli)
-          this.startService.requestLocationByID(this.idLocation, 3).then(()=>{
-            this.ricevuti=true;
-            loading.dismiss();
-          },()=>{
-            loading.dismiss();
-            this.showMessage('Errore di connessione')
+            // Chiedo al server Location, Campi e CampiSport (3 Livelli)
+            this.myDebug('Richiesta al server Location, Campi e CampiSport ');
 
-          });
+            this.startService.requestLocationByID(this.idLocation, 3)
+              .then(()=>{
+                  this.ricevuti=true;
+                  loading.dismiss();
+              },()=>{
+                  loading.dismiss();
+                  this.showMessage('Errore di connessione');
+            });
 
-          //Mi sottoscrivo alla ricezione
-          this.sottoscrizioneLocationCampi();
+            //Mi sottoscrivo alla ricezione
+            this.sottoscrizioneLocationCampi();
           
           
-          //Controllo dell'utente loggato
-          this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
-            this.userLogged = element;
-          });
-          
-          //Richiedo lo User
-          this.subDocUtente = this.startService.utente.subscribe(element => {
-            this.docUtente = element;
-          });
-          
-          // Mi metto in ascolto di variazioni di Slot attuale
-          this.subActualSlotDay = this.startService.docOccupazione.subscribe(elActualDay => {
-            this.actualSlotDay = elActualDay;
-          });
-          
-          //Ascolto documento di Prenotazione
-          //Sia la prima volta che entra nel OnInit
-          //Esegue tutte le volte che la prenotazione cambia
-          this.subActivePrenotazione = this.startService.activePrenotazione.subscribe(elPrenotazione => {
-            this.activePrenotazione = elPrenotazione;
-          });
-          
+            //Controllo dell'utente loggato
+            this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
+              this.userLogged = element;
+            });
+            
+            //Richiedo lo User
+            this.subDocUtente = this.startService.utente.subscribe(element => {
+              this.docUtente = element;
+            });
+            
+            // Mi metto in ascolto di variazioni di Slot attuale
+            this.subActualSlotDay = this.startService.docOccupazione.subscribe(elActualDay => {
+              this.myDebug('Variazione Slot Day');
+              this.actualSlotDay = elActualDay;
+              this.myDebug(elActualDay);
+            });
+            
+            //Ascolto documento di Prenotazione
+            //Sia la prima volta che entra nel OnInit
+            //Esegue tutte le volte che la prenotazione cambia
+            this.subActivePrenotazione = this.startService.activePrenotazione.subscribe(elPrenotazione => {
+              this.activePrenotazione = elPrenotazione;
+            });
           
         }
         else {
@@ -193,6 +220,7 @@ export class BookingPage implements OnInit, OnDestroy {
         //Rimando alla HOME
         this.navController.navigateForward(['/']);
       }
+
     })
 });
     
@@ -213,7 +241,6 @@ export class BookingPage implements OnInit, OnDestroy {
     if (this.subDocUtente) {
       this.subDocUtente.unsubscribe();
     }    
-
 
     if (this.subActualSlotDay) {
       this.subActualSlotDay.unsubscribe();
@@ -236,6 +263,7 @@ export class BookingPage implements OnInit, OnDestroy {
   */
   private sottoscrizioneLocationCampi() {
 
+    this.myDebug('Sottoscrizione Location, Campi e CampiSport ');
     this.subSelectedLocation = this.startService.activeLocation
       .subscribe(dataLocation => {
 
@@ -245,15 +273,24 @@ export class BookingPage implements OnInit, OnDestroy {
         /* Se ho la location */
         if (this.selectedLocation && !this.selectedLocation.do_inserted && this.selectedLocation.CAMPO.length !== 0) {
 
+          this.myDebug('Ricezione Location, Campi e CampiSport ');
+
           //RECUPERO IL TEMPLATE WEEK SLOT TIME
           this.getTemplateWeek(this.selectedLocation);
-
-          // Ho ricevuto i dati
-          //this.ricevuti = true;
 
           //Recupero Campi, e Occupazioni
           this.onRefresh();
 
+        }
+        else {
+          if (this.selectedLocation && this.selectedLocation.CAMPO) {
+            this.myDebug('Location');
+            this.myDebug(this.selectedLocation);
+            this.myDebug(this.selectedLocation.CAMPO);
+          }
+          else {
+            this.myDebug('Non ho la location oppure i campi ')
+          }
         }
 
       });
@@ -313,6 +350,8 @@ export class BookingPage implements OnInit, OnDestroy {
    */
   onRefresh() {
     
+    
+
     if (this.selectedSport) {
 
       //this.selectedLocation è la Location, che contiene la Collection dei Campi, con dentro i CampiSport
@@ -325,12 +364,19 @@ export class BookingPage implements OnInit, OnDestroy {
 
       if (this.selectedCampo) {
 
+        this.myDebug('Richiesto Refresh success, getOccupazioni');
         this.bookable = (this.selectedCampo?true:false);
 
         //Richiesta delle nuove occupazioni e impostazione nuova Pianificazione
         this.getOccupazioni();
         
       }
+      else {
+        this.myDebug('Richiesto Refresh failed NO SELECTED CAMPO');
+      }
+    }
+    else {
+      this.myDebug('Richiesto Refresh failed NO SELECTED SPORT');
     }
 
 
@@ -411,6 +457,8 @@ export class BookingPage implements OnInit, OnDestroy {
   getOccupazioni() {
     //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata (TRUE-> Chiedo di aggiornare la data su tutti i record figli SLOTTIME)
     this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
+
+    this.myDebug('Richiesta Slot Occupazioni');
 
     //Step b) Chiamo il servizio
     this.startService.requestSlotOccupazioni(this.actualSlotDay, 

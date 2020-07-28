@@ -14,8 +14,8 @@ export class ViewOreOccupazione extends IDDocument {
     TOOLTIP: string;
     IDPRIMARY: string;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
 

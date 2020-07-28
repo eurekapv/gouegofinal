@@ -5,8 +5,8 @@ export class CorsoProgramma extends IDDocument {
     IDCORSO: string;
     TESTOHTML: string;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     /**
@@ -37,6 +37,8 @@ export class CorsoProgramma extends IDDocument {
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
         objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+
+        objDescriptor.setRelation('IDCORSO','Corso');
         
         return objDescriptor;
     }

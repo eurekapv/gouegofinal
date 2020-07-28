@@ -40,7 +40,6 @@ export class CardCourseComponent implements OnInit {
 
   goToDetail() {
     //Emetto l'evento per andare al dettaglio corso
-    console.log(this.myCorso);
     this.clickDetail.emit(this.myCorso);
   }
 

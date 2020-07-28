@@ -27,29 +27,115 @@ static formatDateTimeISO(data: Date) {
 
 /**
 * Trasforma la stringa in un oggetto di tipo Data
-* @param strDate data / dataOra / Ora in formato stringa
+* @param strInput data / dataOra / Ora in formato stringa
 */
-static stringToDateObject(strDate) {
+static stringToDateObject(strInput: string): Date {
  //1 - Devo capire cos'è
  let tipo: TypeDefinition;
+ let strDate = moment().format('YYYY-MM-DD');
+ let strTime = '00:00:00'
+ let timeZone = '+01:00';
+ let strComplete = '';
+ let dataReturn: Date;
+ let arElement: string[];
+
+ arElement = [];
  
 
+ if (strInput.length !== 0) {
 
- //certamente è una data o una data ora
- if (strDate.includes('-') || strDate.includes('/')) {
-   //Includo anche il simbolo di :
-   if (strDate.includes(':')) {
-     tipo = TypeDefinition.dateTime;
-   }
-   else {
-     tipo = TypeDefinition.date;
-   }
- }
- else if (strDate.includes(':')) {
-   //Solo orario
-   tipo = TypeDefinition.time;
+    //Spplitto Data, Ora, TimeZone
+    arElement = MyDateTime.splitDateTime(strInput);
+
+    if (arElement[0].length !== 0) {
+        strDate = arElement[0];
+    }
+
+    if (arElement[1].length !== 0) {
+        strTime = arElement[1];
+    }   
+    
+    if (arElement[2].length !== 0) {
+        timeZone = arElement[2];
+    }
+        
+    //Non aggiungere il TimeZone perchè non da errori ma l'uso della proprietà data da problemi
+    strComplete = `${strDate}T${strTime}`;
+    dataReturn = moment(strComplete).toDate();
+
+
+    return dataReturn;
  }
 
+
+}
+
+/**
+ * 
+ * @param strDateTime Stringa di data e ora
+ * @param arReturn Separa gli elementi in posizione 0 la data e 1 l'ora
+ */
+static splitDateTime(strDateTime:string):string[] {
+    let tipo: TypeDefinition;
+    let strDate = '';
+    let strTime = '';
+    let strTimeZone = '';
+    let arReturn:string[];
+
+    arReturn = [];
+
+    if (strDateTime.length !== 0) {
+        if (strDateTime.includes('-') || strDateTime.includes('/')) {
+
+            if (strDateTime.includes(':')) {
+                tipo = TypeDefinition.dateTime;
+
+                //Cerchiamo il simbolo T oppure uno spazio
+                strDateTime = strDateTime.replace(' ','T');
+                strDateTime = strDateTime.replace('+','T');
+                let el = strDateTime.split('T');
+
+                for (let index = 0; index < el.length; index++) {
+                    const element = el[index];
+                    switch (index) {
+                        case 0:
+                            strDate = element;
+                        break;
+
+                        case 1:
+                            strTime = element;
+                        break;
+
+                        case 2:
+                            strTimeZone = element;
+                        break;                        
+                    
+                        default:
+                            break;
+                    }
+                    
+                }
+
+            }
+            else {
+                //Solo una data
+                tipo = TypeDefinition.date;
+                strDate = strDateTime;
+            }
+        }
+        else if (strDateTime.includes(':')) {
+            //Solo un orario
+            tipo = TypeDefinition.time;
+            strTime = strDateTime;
+        }
+
+    }
+
+    arReturn.push(strDate);
+    arReturn.push(strTime);
+    arReturn.push(strTimeZone);
+    
+    return arReturn;
 }
 
 /**
@@ -68,9 +154,10 @@ static changeDateInTime(nuovaData: Date, applyDataOra: Date) {
         let minuti = (applyDataOra.getMinutes() > 9) ? (applyDataOra.getMinutes() + '') : ('0' + applyDataOra.getMinutes());
         let secondi = (applyDataOra.getSeconds() > 9) ? (applyDataOra.getSeconds() + '') : ('0' + applyDataOra.getSeconds());
 
-        strDataOra = `${strDataOra} ${ore}:${minuti}:${secondi}`;
+        strDataOra = `${strDataOra}T${ore}:${minuti}:${secondi}`;
 
-        newReturn = new Date(strDataOra);
+        
+        newReturn = moment(strDataOra).toDate();
     }
 
     return newReturn;

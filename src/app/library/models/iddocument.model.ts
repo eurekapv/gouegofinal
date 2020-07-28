@@ -1,6 +1,6 @@
-import { TypeDefinition, Descriptor } from './descriptor.model';
+import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
-
+import { DynamicClass } from './structure.model'
  
   export class IDDocument {
     ID: string;
@@ -59,6 +59,15 @@ import { MyDateTime } from './mydatetime.model';
       return valueIcon;
     }
 
+    /**
+     * Ritorna un array di Type Reflector dei campi 
+     * che formano l'insieme delle ForeignKeys
+     */
+    get ForeignKeys(): TypeReflector[] {
+      let objDescriptor = this.getDescriptor();
+
+      return objDescriptor.foreignKeys;
+    }
   
  
 
@@ -271,6 +280,7 @@ import { MyDateTime } from './mydatetime.model';
 
                   case TypeDefinition.boolean:
                     let value = parseInt(dataObject[element],10);
+                    
                     if (value === -1) {
                       _this[element] = true;  
                     }
@@ -278,7 +288,7 @@ import { MyDateTime } from './mydatetime.model';
                       _this[element] = false;
                     }
 
-                    // _this[element] = parseInt(dataObject[element],10);
+                    
                     break;
                 
                   case TypeDefinition.number:
@@ -290,40 +300,16 @@ import { MyDateTime } from './mydatetime.model';
                     break;
 
                   case TypeDefinition.time:
-                    //Campo di tipo ORA
-                    stringValue = dataObject[element]; //Valore Stringa
-
-                    //Non ho dentro il giorno ma solo l'ora
-                    if (!stringValue.includes('-') && stringValue.includes(':')) {
-                      stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
-                      _this[element] = new Date(stringValue);  
-                    }
-                    else {
-                      //Gia presente sia Data che Ora
-                      _this[element] = new Date(stringValue);
-                    }
-
+                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
                     break;
 
                   case TypeDefinition.date:
                     //E' una data
-                    _this[element] = new Date(dataObject[element]);
+                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
                     break;
 
                   case TypeDefinition.dateTime:
-                    //Campo di tipo ORA
-                    stringValue = dataObject[element]; //Valore Stringa
-
-                    //Non ho dentro il giorno ma solo l'ora
-                    if (!stringValue.includes('-') && stringValue.includes(':')) {
-                      stringValue = this.formatDateISO(fakeDate) + ' ' + stringValue;
-                      _this[element] = new Date(stringValue);  
-                    }
-                    else {
-                      //Gia presente sia Data che Ora
-                      _this[element] = new Date(stringValue);
-                    }
-
+                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
                     break;
 
                   default:
@@ -340,6 +326,8 @@ import { MyDateTime } from './mydatetime.model';
       });
 
     }
+
+
 
 
     
@@ -399,12 +387,62 @@ import { MyDateTime } from './mydatetime.model';
      * Tipo della proprietà
      * @param PropertyName Nome della proprietà
      */
-    getType(PropertyName: string): TypeDefinition {
+    getPropertyType(PropertyName: string): TypeDefinition {
       
       let objDescriptor = this.getDescriptor();
 
       return objDescriptor.getType(PropertyName);
 
+    }
+
+    /**
+     * Ritorna TypeReflector del campo passato come parametro
+     * @param fieldName Nome del campo
+     */
+    getTypeReflectorByFieldName(fieldName: string): TypeReflector {
+      let objDescriptor = this.getDescriptor();
+
+      return objDescriptor.getByFieldName(fieldName);
+
+    }
+
+    /**
+     * Controlla se il campo è presente nell'istanza
+     * @param fieldName Nome del campo richiesto
+     */
+    propertyInDoc(fieldName: string): boolean {
+      let arProperty = Object.keys(this);
+      let contain = false;
+      if (fieldName && fieldName.length !== 0) {
+        contain = arProperty.includes(fieldName);
+      }
+
+      return contain;
+
+    }
+
+    /**
+     * Controlla se un campo contiene dei dati oppure è vuoto
+     * considerando qualsiasi valore undefined, null, nullstring
+     * @param fieldName Nome del campo
+     */
+    isEmpty(fieldName:string): boolean {
+      let inDoc = this.propertyInDoc(fieldName);
+      let empty = false;
+
+      if (inDoc) {
+        if (this[fieldName]==undefined || this[fieldName]== null) {
+          empty = true;
+        }
+        else {
+          empty = (this[fieldName] + '').length==0?true:false;
+        }
+      }
+      else {
+        empty = true;
+      }
+
+      return empty;
     }
 
     //#endregion
@@ -452,7 +490,7 @@ import { MyDateTime } from './mydatetime.model';
         }
       })
       
-
+ 
 
       return hasModifiche;
     }

@@ -34,8 +34,8 @@ export class Utenteiscrizione extends IDDocument {
         CODICEINT:             number;
         STATOISCRIZIONE:       number;
 
-        constructor() {
-            super();
+        constructor(onlyInstance?:boolean) {
+            super(onlyInstance);
         }
 
     /**
@@ -80,6 +80,12 @@ export class Utenteiscrizione extends IDDocument {
         objDescriptor.addMultiple(arDate, TypeDefinition.date);
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
+
+        objDescriptor.setRelation('IDCORSO','Corso');
+        objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+        objDescriptor.setRelation('IDLOCATION','Location');
+        objDescriptor.setRelation('IDSPORT','Sport');
+        objDescriptor.setRelation('IDUTENTE','Utente');
         
         return objDescriptor;
     }

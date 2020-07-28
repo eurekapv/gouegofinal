@@ -8,8 +8,8 @@ export class UtenteLivello extends IDDocument {
     DESCRLIVELLO: string;
 
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     /**
@@ -41,6 +41,10 @@ export class UtenteLivello extends IDDocument {
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
         objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
         
+        
+        objDescriptor.setRelation('IDSPORT','Sport');
+        
+
         return objDescriptor;
     }    
     /**

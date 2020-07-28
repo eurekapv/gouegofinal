@@ -7,8 +7,8 @@ export class PrivateImage extends IDDocument {
     FILENAMEESTENSIONE: string; //Percorso relativo di scaricamento 
 
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     /**

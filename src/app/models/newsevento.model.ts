@@ -15,12 +15,15 @@ export class NewsEvento extends IDDocument {
     _NAMEICON: string;
     _COLOR: string;
 
-    constructor() {
+    constructor(onlyInstance?:boolean) {
 
-        super();
+        super(onlyInstance);
 
-        this._NAMEICON = 'newspaper-outline';
-        this._COLOR = 'secondary';
+        if (!onlyInstance) {
+
+            this._NAMEICON = 'newspaper-outline';
+            this._COLOR = 'secondary';
+        }
     }
 
     /**
@@ -62,6 +65,9 @@ export class NewsEvento extends IDDocument {
         objDescriptor.addMultiple(arDate, TypeDefinition.date);
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
+
+        objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+        objDescriptor.setRelation('IDLOCATION','Location');
         
         return objDescriptor;
     } 

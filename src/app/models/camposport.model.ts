@@ -7,10 +7,12 @@ export class CampoSport extends IDDocument {
     IDSPORT: string;
     _DESCRSPORT: string;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
 
-        this._DESCRSPORT = '';
+        if (!onlyInstance) {
+            this._DESCRSPORT = '';
+        }
     }
 
     
@@ -41,6 +43,9 @@ export class CampoSport extends IDDocument {
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
         objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+        
+        objDescriptor.setRelation('IDSPORT','Sport');
+        objDescriptor.setRelation('ICAMPO','Campo');
         
         return objDescriptor;
     }

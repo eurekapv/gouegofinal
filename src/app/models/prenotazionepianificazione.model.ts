@@ -23,11 +23,14 @@ export class PrenotazionePianificazione extends IDDocument {
     TOTALE: number;
     GUIDSERIE: string;
 
-    constructor() {
-        super();
-        this.NUMPARTECIPANTI = 1;
-        this._DESCRCAMPO = '';
-        this._DESCRSPORT = '';
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
+
+        if (!onlyInstance) {
+            this.NUMPARTECIPANTI = 1;
+            this._DESCRCAMPO = '';
+            this._DESCRSPORT = '';
+        }
     }
 
     setJSONProperty(data: any) {
@@ -76,6 +79,12 @@ export class PrenotazionePianificazione extends IDDocument {
         objDescriptor.addMultiple(arDate, TypeDefinition.date);
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
+
+        objDescriptor.setRelation('IDPRENOTAZIONE','Prenotazione');
+        objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+        objDescriptor.setRelation('IDLOCATION','Location');
+        objDescriptor.setRelation('IDSPORT','Sport');
+        objDescriptor.setRelation('IDCAMPO','Campo');
         
         return objDescriptor;
     }

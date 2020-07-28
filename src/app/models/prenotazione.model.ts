@@ -20,15 +20,21 @@ export class Prenotazione extends IDDocument {
     ISVALID: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
                      //si puo' procedere al pagamento finale
 
-    constructor() {
-        super();
-        this.IMPORTO = 0;
-        this.INCASSATO = 0;
-        this.RESIDUO = 0;
-        this.TOTALE = 0;
-        this.IMPOSTA = 0;
-        this.ISVALID = false;
-        this.MSGINVALID = '';
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
+
+        if (!onlyInstance) {
+
+            this.IMPORTO = 0;
+            this.INCASSATO = 0;
+            this.RESIDUO = 0;
+            this.TOTALE = 0;
+            this.IMPOSTA = 0;
+            this.ISVALID = false;
+            this.MSGINVALID = '';
+        }
+
+
         this.PRENOTAZIONEPIANIFICAZIONE = [];
         
     }
@@ -164,6 +170,10 @@ export class Prenotazione extends IDDocument {
         objDescriptor.addMultiple(arDate, TypeDefinition.date);
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
+
+        objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+        objDescriptor.setRelation('IDUTENTE','Utente');
+        
         
         return objDescriptor;
     }

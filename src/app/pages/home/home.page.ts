@@ -7,7 +7,7 @@ import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController, NavController, ModalController } from '@ionic/angular';
-import { Attivita  } from 'src/app/models/attivita.model';
+import { Impegni  } from 'src/app/models/impegni.model';
 import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
@@ -44,7 +44,7 @@ export class HomePage implements OnInit, OnDestroy{
   listLocationListen: Subscription;
 
   //Elenco delle prossime attività
-  listImpegni: Attivita[]=[];
+  listImpegni: Impegni[]=[];
 
   // L'area viene recuperata dal subscribe
   selectedArea: Area;
@@ -187,13 +187,13 @@ export class HomePage implements OnInit, OnDestroy{
 
   _testAddImpegni() {
     //visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
-    let prossimoImpegno=new Attivita();
+    let prossimoImpegno=new Impegni();
     prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
     prossimoImpegno.DESCRIZIONE="wash"
     prossimoImpegno.SETTORE=SettoreAttivita.settoreCorso;
     this.listImpegni.push(prossimoImpegno);
 
-    prossimoImpegno=new Attivita();
+    prossimoImpegno=new Impegni();
     prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
     prossimoImpegno.DESCRIZIONE="lore"
     prossimoImpegno.SETTORE=SettoreAttivita.settorePrenotazione;

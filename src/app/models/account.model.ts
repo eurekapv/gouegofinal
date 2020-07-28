@@ -20,8 +20,8 @@ export class Account extends IDDocument {
     RUOLO: number;
     MANSIONE: Mansione;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     setJSONProperty(data: any) {
@@ -54,6 +54,7 @@ export class Account extends IDDocument {
         objDescriptor.className = 'Account';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'ACCOUNT';
+        objDescriptor.describeField  = 'NOMINATIVO';
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);

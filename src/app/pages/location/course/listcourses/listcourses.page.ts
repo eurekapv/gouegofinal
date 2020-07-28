@@ -10,6 +10,7 @@ import { FilterCorsi } from 'src/app/models/filtercorsi.model';
 import { ModalController, NavController, LoadingController, ToastController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 
 @Component({
   selector: 'app-listcourses',
@@ -41,7 +42,8 @@ export class ListcoursesPage implements OnInit {
               private mdlController: ModalController,
               private navController: NavController,
               private loadingCtrl: LoadingController,
-              private toastCtrl: ToastController
+              private toastCtrl: ToastController,
+              private docStrService: DocstructureService
               ) { 
     
     //Richiedo l'utente e se è loggato
@@ -129,9 +131,9 @@ export class ListcoursesPage implements OnInit {
           
   }
         
-        /**
-         * Modifica del Segment per la scelta dei corsi
-         */
+  /**
+   * Modifica del Segment per la scelta dei corsi
+   */
   onChangeSegmentCorsi(event: any) {
     this.ricevuti=false
     if (event.target.value == 'corsiall')  {
@@ -175,9 +177,7 @@ export class ListcoursesPage implements OnInit {
     this.requestCorsi();
   }
 
-  onClickCardDetail(corso: Corso) {
-    this.navController.navigateForward(['/','detailcourse',corso.ID]);
-  }
+
 
   /* ****** CALENDAR ******** */
   onClickCardCalendar(corso: Corso) {
@@ -213,5 +213,59 @@ export class ListcoursesPage implements OnInit {
   }
 
 
+  //Modificato
+  onClickCardDetail(corso: Corso) {
+    //this.navController.navigateForward(['/','detailcourse',corso.ID]);
+
+    this.testingDecodeAll(corso);
+  }
+
+  /**
+   * Test di decodifica semplice con il describe row
+   * @param corso 
+   */
+  testingDecodeSimple(corso: Corso) {
+
+    let useCache = true;
+    
+    this.docStrService.decode(corso,'IDSPORT', useCache);
+
+  }
+
+  /**
+   * Test di decodifica hard con il describe row
+   * @param corso 
+   */
+  testingDecodeHard(corso: Corso) {
+
+    let useCache = true;
+    let describeWith = ['PARTECIPANTI', 'ICONA'];
+    
+    this.docStrService.decode(corso,'IDSPORT', useCache, describeWith)
+        .then(() => {
+            console.log('Sti gran cazzi !!!!')
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+  }
+
+    /**
+   * Test di decodifica hard con il describe row
+   * @param corso 
+   */
+  testingDecodeAll(corso: Corso) {
+
+    
+    this.docStrService.decodeAll(corso)
+        .then(() => {
+            console.log('Sti gran cazzi !!!!')
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+  }
 
 }

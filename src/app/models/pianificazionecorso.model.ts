@@ -16,8 +16,8 @@ export class PianificazioneCorso extends IDDocument {
 
 
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     /**
@@ -50,6 +50,11 @@ export class PianificazioneCorso extends IDDocument {
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
     
+    objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+    objDescriptor.setRelation('IDLOCATION','Location');
+    objDescriptor.setRelation('IDCORSO','Corso');
+    objDescriptor.setRelation('IDCAMPO','Campo');
+
     return objDescriptor;
 }    
 

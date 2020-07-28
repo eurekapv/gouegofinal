@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Attivita } from 'src/app/models/attivita.model';
+import { Impegni } from 'src/app/models/impegni.model';
 import { SettoreAttivita } from '../../../models/valuelist.model';
 
 @Component({
@@ -9,7 +9,7 @@ import { SettoreAttivita } from '../../../models/valuelist.model';
 })
 export class ImpegniComponent implements OnInit {
 
-  @Input() impegno:Attivita=new Attivita;
+  @Input() impegno:Impegni=new Impegni;
   iconName: string;
   locationName: string;//da valorizzare
 

@@ -11,8 +11,8 @@ export class AperturaLocation extends IDDocument {
     DALLE2: Date;
     ALLE2: Date;
 
-    constructor() {
-        super();
+    constructor(onlyInstance?:boolean) {
+        super(onlyInstance);
     }
 
     
@@ -31,6 +31,7 @@ export class AperturaLocation extends IDDocument {
         objDescriptor.className = 'AperturaLocation';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'APERTURALOCATION';
+        
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
@@ -39,6 +40,7 @@ export class AperturaLocation extends IDDocument {
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
         
+
         return objDescriptor;
     }
 

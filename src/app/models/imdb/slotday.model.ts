@@ -1,6 +1,7 @@
 import { SlotTime } from './slottime.model';
 import { PrenotazionePianificazione } from '../prenotazionepianificazione.model';
 import { MyDateTime } from '../../library/models/mydatetime.model';
+import { LogApp } from '../log.model';
 
 export class SlotDay {
     WEEKDAY:    number;
@@ -61,6 +62,8 @@ export class SlotDay {
         let oreEnd = 0;
         let minutiEnd = 0;
 
+
+        
 
         if (this.APERTOCHIUSO) {
             anno = this.STARTTIME.getFullYear();

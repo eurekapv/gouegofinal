@@ -57,9 +57,7 @@ export class SlotoccupazioneService {
       const strData = moment(dataGiorno).format('YYYY-MM-DD');
   
       if (docLocation && docCampo)  {
-        // LogApp.consoleLog('Dati Occupazione: RICHIESTA');
-        // LogApp.consoleLog(`Guid Location: ${docLocation.ID} - GuidCampo: ${docCampo.ID} - Data: ${strData}`);
-  
+        
         let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
         myParams = myParams.append('guidLocation', docLocation.ID);
         myParams = myParams.append('guidCampo', docCampo.ID);

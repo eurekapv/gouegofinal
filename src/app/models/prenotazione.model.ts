@@ -162,6 +162,7 @@ export class Prenotazione extends IDDocument {
         objDescriptor.className = 'Prenotazione';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'PRENOTAZIONE';
+        objDescriptor.describeField = 'NOMINATIVO';
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);

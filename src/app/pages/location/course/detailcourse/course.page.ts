@@ -13,7 +13,6 @@ import { CalendarPage } from './calendar/calendar.page';
   styleUrls: ['./course.page.scss'],
 })
 
-//FIXME se si aggiorna la pagina, alcuni campi non vengono decodificati
 export class CoursePage implements OnInit, OnDestroy {
 
   myCorso: Corso = new Corso();

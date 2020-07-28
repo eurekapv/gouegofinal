@@ -345,7 +345,7 @@ export class DocstructureService {
    * @param document Parametri di configurazione
    * @param decode Effettua la decodifica dei dati 
    */
-  request(document: IDDocument) {
+  request(document: IDDocument, childLevel=2) {
 
     return new Promise<any[]>((resolve, reject)=>{
       
@@ -370,6 +370,7 @@ export class DocstructureService {
 
           // In Testata c'e' sempre l'AppId
           myHeaders = myHeaders.set('appid',this.myConfig.appId);
+          myHeaders = myHeaders.append('child-level', childLevel+'');
 
           //Preparare i parametri con i filtri arrivati sul documento
           let myParams = this.getHttpParamsFromDoc(document);

@@ -6,10 +6,11 @@ import { Campo } from 'src/app/models/campo.model';
 import { Location } from 'src/app/models/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, ToastController} from '@ionic/angular';
+import { NavController, ToastController, LoadingController} from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { DocstructureService } from 'src/app/library/services/docstructure.service'
 import { filter } from 'rxjs/operators';
+import { Corso } from 'src/app/models/corso.model';
 
 
 @Component({
@@ -24,8 +25,6 @@ export class HistorybookPage implements OnInit, OnDestroy {
   idPrenotazione: string;
   idPianificazione: string;
   historyId: string;
-
-  showSpinner = true;
 
   sliderOpts={
     slidesPerView: 1,
@@ -68,33 +67,42 @@ export class HistorybookPage implements OnInit, OnDestroy {
               private startService: StartService,
               private toastCtr: ToastController,
               private socialSharing: SocialSharing,
-              private docStructureService: DocstructureService
+              private docStructureService: DocstructureService,
+              private loadingController: LoadingController
               ) { }
 
   //In paramMap leggo IDPrenotazione
   ngOnInit() {
-    let result=true;    
-    this.router.paramMap.subscribe(param => {
-      if (param.has('historyId')) {
-
-        //HistoryID è formato da IDPrenotazione + '-' + IDPianificazione
-        this.historyId = param.get('historyId');
-
-        if (this.historyId.length !== 0) {
-          result = this.requestByHistoryId(this.historyId);
+    let result=true; 
+    this.loadingController.create({
+      spinner:'circles',
+      message:'Caricamento',
+      backdropDismiss:true
+    }).then(loading=>{
+      loading.present();
+      this.router.paramMap.subscribe(param => {
+        if (param.has('historyId')) {
+  
+          //HistoryID è formato da IDPrenotazione + '-' + IDPianificazione
+          this.historyId = param.get('historyId');
+  
+          if (this.historyId.length !== 0) {
+            result = this.requestByHistoryId(this.historyId);
+          }
+          else {
+            result = false;
+          }
         }
         else {
           result = false;
         }
-      }
-      else {
-        result = false;
-      }
-
-      if (!result) {
-        this.goBack();
-      }
-    });
+  
+        if (!result) {
+          this.loadingController.dismiss();
+          this.goBack();
+        }
+      });
+    })
 
   }
 
@@ -127,12 +135,21 @@ export class HistorybookPage implements OnInit, OnDestroy {
         let filterPrenotazione : Prenotazione=new Prenotazione(true);
         filterPrenotazione.ID=idPren;
         console.log('Qui');
-        
-        this.docStructureService.request(filterPrenotazione)
-        .then(data =>{
 
+        this.docStructureService.request(filterPrenotazione,5)
+        .then(data =>{
           this.myPrenotazione = data[0];
-          
+          this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
+            this.docStructureService.decodeAll(element).then(()=>{
+              this.docStructureService.decode(element, 'IDLOCATION',true,['INDIRIZZO']);
+              console.log('decodificati');
+              console.log(this.myPrenotazione);
+              this.loadingController.dismiss();
+            }).catch(error=>{
+              this.loadingController.dismiss();
+              this.showMessage('Errore nel caricamento');
+            })
+          });
         })
       
 

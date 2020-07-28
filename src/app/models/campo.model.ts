@@ -44,6 +44,7 @@ export class Campo extends IDDocument {
     objDescriptor.className = 'Campo';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'CAMPO';
+    objDescriptor.describeField = 'DENOMINAZIONE'
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

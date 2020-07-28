@@ -185,20 +185,20 @@ export class HomePage implements OnInit, OnDestroy{
 
   //#endregion
 
-  _testAddImpegni() {
-    //visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
-    let prossimoImpegno=new Impegni();
-    prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
-    prossimoImpegno.DESCRIZIONE="wash"
-    prossimoImpegno.SETTORE=SettoreAttivita.settoreCorso;
-    this.listImpegni.push(prossimoImpegno);
+  // _testAddImpegni() {
+  //   visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
+  //   let prossimoImpegno=new Impegni();
+  //   prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
+  //   prossimoImpegno.DESCRIZIONE="wash"
+  //   prossimoImpegno.SETTORE=SettoreAttivita.settoreCorso;
+  //   this.listImpegni.push(prossimoImpegno);
 
-    prossimoImpegno=new Impegni();
-    prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
-    prossimoImpegno.DESCRIZIONE="lore"
-    prossimoImpegno.SETTORE=SettoreAttivita.settorePrenotazione;
-    this.listImpegni.push(prossimoImpegno);
-  }
+  //   prossimoImpegno=new Impegni();
+  //   prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
+  //   prossimoImpegno.DESCRIZIONE="lore"
+  //   prossimoImpegno.SETTORE=SettoreAttivita.settorePrenotazione;
+  //   this.listImpegni.push(prossimoImpegno);
+  // }
 
   ngOnInit() {
   }

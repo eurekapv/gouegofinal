@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
-import { Subscription } from 'rxjs';
+import { Subscription, from } from 'rxjs';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Campo } from 'src/app/models/campo.model';
 import { Location } from 'src/app/models/location.model';
@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, ToastController} from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { DocstructureService } from 'src/app/library/services/docstructure.service'
+import { filter } from 'rxjs/operators';
 
 
 @Component({
@@ -17,13 +19,8 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 })
 export class HistorybookPage implements OnInit, OnDestroy {
 
-  activePrenotazione: Prenotazione= new Prenotazione;
-  subActivePrenotazione: Subscription;
+  myPrenotazione: Prenotazione= new Prenotazione;
 
-  subListLocation: Subscription;
-  
-  //Campo in versione normale
-  selectedCampo: Campo = new Campo();
   idPrenotazione: string;
   idPianificazione: string;
   historyId: string;
@@ -70,15 +67,13 @@ export class HistorybookPage implements OnInit, OnDestroy {
               private navCtr: NavController,
               private startService: StartService,
               private toastCtr: ToastController,
-              private socialSharing: SocialSharing
+              private socialSharing: SocialSharing,
+              private docStructureService: DocstructureService
               ) { }
 
   //In paramMap leggo IDPrenotazione
   ngOnInit() {
-    let result = true;
-
-    this.showSpinner = true;
-
+    let result=true;    
     this.router.paramMap.subscribe(param => {
       if (param.has('historyId')) {
 
@@ -128,17 +123,29 @@ export class HistorybookPage implements OnInit, OnDestroy {
         this.idPrenotazione = idPren;
         this.idPianificazione = idPian;
 
-        //Chiedo la Prenotazione
-        this.subActivePrenotazione = this.startService
-                      .requestPrenotazioneById(this.idPrenotazione, 999)
-                      .subscribe (docPrenotazione => {
+        //creo il filtro e richiedo la prenotazione
+        let filterPrenotazione : Prenotazione=new Prenotazione(true);
+        filterPrenotazione.ID=idPren;
+        console.log('Qui');
+        
+        this.docStructureService.request(filterPrenotazione).then(data=>{
+          if (data && data.length>0){
+            this.myPrenotazione.setJSONProperty(data[0]);
+          }
+        })
+      
 
-                                                  this.activePrenotazione = docPrenotazione;
-                                                  this.showSpinner = false;
-                                                  this.sliderOpts.initialSlide=this.activePrenotazione.getIndexPianificazione(this.idPianificazione);
-                                                  console.log('a');
-                                                  console.log(this.activePrenotazione);
-                                                });
+        // //Chiedo la Prenotazione
+        // this.subActivePrenotazione = this.startService
+        //               .requestPrenotazioneById(this.idPrenotazione, 999)
+        //               .subscribe (docPrenotazione => {
+
+        //                                           this.activePrenotazione = docPrenotazione;
+        //                                           this.showSpinner = false;
+        //                                           this.sliderOpts.initialSlide=this.activePrenotazione.getIndexPianificazione(this.idPianificazione);
+        //                                           console.log('a');
+        //                                           console.log(this.activePrenotazione);
+        //                                         });
       }
     }
     else {
@@ -153,9 +160,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
   
 
   ngOnDestroy() {
-    if (this.subActivePrenotazione) {
-      this.subActivePrenotazione.unsubscribe();
-    }
+    
   }
 
 

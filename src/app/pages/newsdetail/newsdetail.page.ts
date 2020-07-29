@@ -3,6 +3,9 @@ import { NewsEvento } from 'src/app/models/newsevento.model';
 
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Plugins } from '@capacitor/core';
+const { Browser } = Plugins;
+
 
 @Component({
   selector: 'app-newsdetail',
@@ -44,8 +47,10 @@ export class NewsdetailPage implements OnInit {
   /**
    * Apre il link della News
    */
-  onClickReadNews() {
-
+  onClickReadNews(url:string) {
+    if (url&&url.length>0){
+      Browser.open({url:url})
+    }
   }
 
 }

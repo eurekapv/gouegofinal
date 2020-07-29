@@ -71,6 +71,7 @@ export class Utenteiscrizione extends IDDocument {
         objDescriptor.className = 'UtenteIscrizione';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'UTENTEISCRIZIONE';
+        objDescriptor.describeField = 'DENOMINAZIONECORSO';
 
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);

@@ -56,6 +56,7 @@ export class NewsEvento extends IDDocument {
         objDescriptor.className = 'NewsEvento';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'NEWSEVENTO';
+        objDescriptor.describeField = 'TITLE';
 
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);

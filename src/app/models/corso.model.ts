@@ -91,6 +91,7 @@ export class Corso extends IDDocument {
     objDescriptor.className = 'Corso';
     objDescriptor.classWebApiName = 'CORSO';
     objDescriptor.doRemote = true;
+    objDescriptor.describeField = 'DENOMINAZIONE';
     
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);
@@ -105,6 +106,13 @@ export class Corso extends IDDocument {
     objDescriptor.setRelation('IDAREAOPERATIVA','Area');
     objDescriptor.setRelation('IDLOCATION','Location');
     objDescriptor.setRelation('IDCAMPO','Campo');
+    objDescriptor.setRelation('IDLIVELLOENTRATA','Livello');
+    objDescriptor.setRelation('IDLIVELLOFINALE','Livello');
+    objDescriptor.setRelation('IDCATEGORIAETA','CategoriaEta');
+    
+    
+
+
     
 
     return objDescriptor;

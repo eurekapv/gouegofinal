@@ -43,6 +43,8 @@ export class UtenteLivello extends IDDocument {
         
         
         objDescriptor.setRelation('IDSPORT','Sport');
+        objDescriptor.setRelation('IDLIVELLO','Livello');
+
         
 
         return objDescriptor;

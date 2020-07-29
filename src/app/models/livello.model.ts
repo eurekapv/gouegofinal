@@ -35,6 +35,7 @@ export class Livello extends IDDocument {
     objDescriptor.className = 'Livello';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'LIVELLO';
+    objDescriptor.describeField = 'DENOMINAZOIONE';
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

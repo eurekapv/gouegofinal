@@ -76,6 +76,11 @@ export class ViewOccupazione extends IDDocument {
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+
+    objDescriptor.setRelation('IDAREAOPERATIVA','Area');
+    objDescriptor.setRelation('IDLOCATION','Location');
+    objDescriptor.setRelation('IDCAMPO','Campo');
+
     
     return objDescriptor;
 }

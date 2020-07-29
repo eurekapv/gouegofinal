@@ -81,6 +81,7 @@ export class Utente extends IDDocument {
     objDescriptor.className = 'Utente';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'UTENTE';
+    objDescriptor.describeField = 'NOMINATIVO';
 
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);

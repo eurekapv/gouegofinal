@@ -40,6 +40,7 @@ export class PianificazioneCorso extends IDDocument {
     objDescriptor.className = 'PianificazioneCorso';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'PIANIFICAZIONECORSO';
+    objDescriptor.describeField = 'DATA';
 
     
     objDescriptor.addMultiple(arString, TypeDefinition.char);

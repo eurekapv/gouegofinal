@@ -70,6 +70,7 @@ export class PrenotazionePianificazione extends IDDocument {
         objDescriptor.className = 'PrenotazionePianificazione';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'PRENOTAZIONEPIANIFICAZIONE';
+        objDescriptor.describeField = 'DATAORAINIZIO';
 
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);

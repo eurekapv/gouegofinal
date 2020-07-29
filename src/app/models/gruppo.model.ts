@@ -96,6 +96,7 @@ export class Gruppo extends IDDocument {
     objDescriptor.className = 'Gruppo';
     objDescriptor.doRemote = true;
     objDescriptor.classWebApiName = 'GRUPPOSPORTIVO';
+    objDescriptor.describeField = 'DENOMINAZIONE';
     
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

@@ -45,7 +45,7 @@ export class CampoSport extends IDDocument {
         objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
         
         objDescriptor.setRelation('IDSPORT','Sport');
-        objDescriptor.setRelation('ICAMPO','Campo');
+        objDescriptor.setRelation('IDCAMPO','Campo');
         
         return objDescriptor;
     }

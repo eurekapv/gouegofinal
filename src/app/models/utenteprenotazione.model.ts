@@ -71,6 +71,7 @@ export class UtentePrenotazione extends IDDocument {
         objDescriptor.className = 'UtentePrenotazione';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'UTENTEPRENOTAZIONE';
+        objDescriptor.describeField = 'DATAORAINIZIO';
 
 
         objDescriptor.addMultiple(arString, TypeDefinition.char);

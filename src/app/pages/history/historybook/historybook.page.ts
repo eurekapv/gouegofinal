@@ -245,9 +245,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
     let messaggio:string;
     let logo: string;
     let oggetto: string;
+    
+    
 
-    
-    
     for (const iterator of this.myArea.AREALINKS) {
       if (iterator.TIPOURL==PageType.home){
         url=iterator.REFERURL;

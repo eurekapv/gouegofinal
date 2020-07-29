@@ -3,6 +3,7 @@ import { Location } from '../models/location.model';
 import { TipoArea, PageType } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { AreaLink } from './arealink.model';
+import { AreaPaymentSetting } from './areapaymentsetting.model';
 
 
 export class Area extends IDDocument {
@@ -18,12 +19,17 @@ export class Area extends IDDocument {
     CONDVENDPRENOTAZIONI: string;
     LOCATIONS: Location[];
     AREALINKS: AreaLink[];
+    AREAPAYMENTSETTINGS: AreaPaymentSetting[];
+    APPSHOW: boolean;
+    APPISCRIZIONI: boolean;
+    APPPRENOTAZIONI: boolean;
   
     constructor(onlyInstance?:boolean) {
       
       super(onlyInstance);
       this.AREALINKS=[];
       this.LOCATIONS = [];
+      this.AREAPAYMENTSETTINGS=[];
 
     }
 
@@ -42,11 +48,11 @@ export class Area extends IDDocument {
                       'CONDVENDITACORSI',
                       'CONDVENDPRENOTAZIONI'];
       let arNumber = ['TIPOAREA'];
-      let arBoolean = [];
+      let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI'];
       let arDate = [];
       let arDateTime =[];
       let arTime = [];
-      let arCollection = ['LOCATIONS','AREALINKS'];
+      let arCollection = ['LOCATIONS','AREALINKS','AREAPAYMENTSETTINGS'];
 
       objDescriptor.className = 'Area';
       objDescriptor.doRemote = true;
@@ -83,7 +89,6 @@ export class Area extends IDDocument {
      * @param resultData Json Information
      */
     setCollection(data: any) {
-      this.LOCATIONS = [];
       if (data) {
 
         if (data.LOCATION) {
@@ -114,6 +119,24 @@ export class Area extends IDDocument {
             objAreaLink.setJSONProperty(element);
           });
         }
+        
+        //se nell'oggetto any che mi arriva è presente il campo AREAPAYMENTSETTING[]
+        if (data.AREAPAYMENTSETTING){
+          //ne scorro gli elementi
+          data.AREAPAYMENTSETTING.forEach(element => {
+            //cerco se tra gli elementi che ho in memoria è già prsente l'elemento che mi è arrivato
+            let objPaymentSetting= this.findPaymentSettingById(element.ID)
+            //se non è presente
+            if (!objPaymentSetting){
+              //ne creo uno nuovo
+              objPaymentSetting= new AreaPaymentSetting();
+              //e lo inserisco nell'array
+              this.AREAPAYMENTSETTINGS.push(objPaymentSetting);
+            }
+            //ora valorizzo il nuovo oggetto (che ci fosse già o no è indifferente) con le proprietà dell'oggetto che mi è arrivato
+            objPaymentSetting.setJSONProperty(element);
+          });
+        }
 
       }
     }
@@ -136,6 +159,16 @@ export class Area extends IDDocument {
     findAreaLinkByID(idLink: string) {
       return this.AREALINKS.find(element => {
         return element.ID == idLink;
+      });
+    }
+
+     /**
+     * Cerca nella colletion areapaymentsettings  e ritorna l'elemeto desiderato
+     * @param id id dell'elemento eesiderato
+     */
+    findPaymentSettingById(id: string) {
+      return this.AREAPAYMENTSETTINGS.find(element => {
+        return element.ID == id;
       });
     }
 

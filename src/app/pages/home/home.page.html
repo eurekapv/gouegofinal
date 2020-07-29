@@ -120,7 +120,7 @@
 
       <ion-icon 
           slot="start" 
-          name="game-controller-outline"></ion-icon>
+          name="newspaper-outline"></ion-icon>
       <ion-label class="ion-text-nowrap">
         <h2>News ed Eventi</h2>
       </ion-label>
@@ -134,13 +134,13 @@
       </ion-button>  
   </ion-item>
   <!-- NEWS PRESENTI -->
-  <ion-list *ngIf="listNews.length !== 0">
+  <ion-list class="list-news" *ngIf="listNews.length !== 0">
     <div *ngFor="let news of listNews">
       <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
     </div>
   </ion-list>
 
-  <ion-list *ngIf="listNews.length === 0">
+  <ion-list class="list-news" *ngIf="listNews.length === 0">
       <app-news-eventi [myNews]="noNewsCard" (clickNews)="onClickNews(noNewsCard,$event)"></app-news-eventi>
   </ion-list>
 

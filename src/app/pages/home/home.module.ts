@@ -17,6 +17,9 @@ import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbo
 import { PlayerNumberComponent } from 'src/app/shared/components/player-number/player-number.component';
 import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/sport-scroll.component';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
+import { NewsdetailPageModule } from 'src/app/pages/newsdetail/newsdetail.module'
+import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page'
+
 
 //questi 3 da rimuovere perchè inutili
 import { AdvertisingComponent } from 'src/app/shared/components/advertising/advertising.component'
@@ -50,10 +53,12 @@ import { CircularComponent } from 'src/app/shared/components/circular/circular.c
                  PlayerNumberComponent,
                  SportScrollComponent,
                  NewLoginPage,
+                 NewsdetailPage,
                  //questi 3 da rimuovere perchè inutili
                  AdvertisingComponent,
                  AuthComponent,
                  CircularComponent
+                 
                  ],
   exports: [NewsEventiComponent,
             ButtonCardComponent,
@@ -61,8 +66,9 @@ import { CircularComponent } from 'src/app/shared/components/circular/circular.c
             CalendarscrollComponent, 
             FootbookedComponent,
             PlayerNumberComponent,
-            SportScrollComponent],
-  entryComponents: [NewLoginPage]
+            SportScrollComponent,
+            NewsdetailPage],
+  entryComponents: [NewLoginPage, NewsdetailPage]
   
 })
 export class HomePageModule {}

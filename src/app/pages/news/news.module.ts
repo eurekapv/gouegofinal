@@ -8,6 +8,9 @@ import { NewsPageRoutingModule } from './news-routing.module';
 
 import { NewsPage } from './news.page';
 import { HomePageModule } from '../home/home.module';
+import { NewsdetailPageModule } from 'src/app/pages/newsdetail/newsdetail.module'
+import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page'
+
 
 @NgModule({
   imports: [
@@ -15,9 +18,11 @@ import { HomePageModule } from '../home/home.module';
     FormsModule,
     IonicModule,
     NewsPageRoutingModule,
-    HomePageModule
+    HomePageModule,
   ],
-  declarations: [NewsPage]
+  declarations: [NewsPage],
+  entryComponents:[NewsdetailPage]
+
   
 })
 export class NewsPageModule {}

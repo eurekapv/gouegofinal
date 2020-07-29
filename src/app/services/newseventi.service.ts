@@ -8,6 +8,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { NewsEvento } from '../models/newsevento.model';
 import { IDDocument } from '../library/models/iddocument.model';
+import { promise } from 'protractor';
 
 
 
@@ -32,7 +33,7 @@ export class NewseventiService {
    * @param idArea Area richiesta
    * @param maxRecord Max Record da recuperare
    */
-  request(config: StartConfiguration, idArea: string, maxRecord: number = 0) {
+  request_old(config: StartConfiguration, idArea: string, maxRecord: number = 0) {
     return new Promise((resolve, reject)=>{
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'NEWSEVENTO';
@@ -161,5 +162,44 @@ export class NewseventiService {
       .pipe(take(1))
 
   }
+
+  request(config: StartConfiguration, guidArea:string, n:number){
+    return new Promise<NewsEvento[]>((resolve,reject)=>{
+
+      let myHeaders = new HttpHeaders();
+      const doObject = 'NEWSEVENTO';
+  
+      //In Testata c'e' sempre l'AppId
+      myHeaders = myHeaders.set('appid',config.appId);
+      myHeaders = myHeaders.append('X-HTTP-Method-Override','GETNEXTNEWS')
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto l'area richiesta
+      let myParams = new HttpParams().set('guidArea',guidArea);
+      myParams = myParams.append('$top', n+'');
+      this.apiService.httpGet(myUrl, myHeaders, myParams).pipe(map(data=>{
+        let arReturn = [];
+        if (data.NEWSEVENTO){
+          arReturn=data.NEWSEVENTO;
+        }
+        return arReturn;
+      })).subscribe(objList=>{
+        console.log('objlist');
+        console.log(objList);
+        let newsEventi: NewsEvento[]=[];
+        objList.forEach(obJElement=>{
+          let newsEvento= new NewsEvento()
+          newsEvento.setJSONProperty(obJElement);
+          newsEventi.push(newsEvento);
+        })
+        resolve(newsEventi);
+      }, error=>{
+        reject(error);
+      })
+
+    })
+  }
+
+
 
 }

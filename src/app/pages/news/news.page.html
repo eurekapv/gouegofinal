@@ -16,15 +16,15 @@
   </ion-refresher>
 
     <!-- NEWS PRESENTI -->
-    <ion-list *ngIf="listNews.length !== 0 && !loading">
+    <ion-list *ngIf="listNews.length !== 0">
       <div *ngFor="let news of listNews">
         <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
       </div>
     </ion-list>
   
     <!-- NEWS NON PRESENTI -->
-    <ion-list *ngIf="listNews.length === 0 && !loading">
-        <app-news-eventi [myNews]="noNewsCard" (clickNews)="onClickNews(noNewsCard,$event)"></app-news-eventi>
+    <ion-list *ngIf="listNews.length === 0 ">
+        <app-news-eventi [myNews]="noNewsCard" ></app-news-eventi>
     </ion-list>
 
 </ion-content>

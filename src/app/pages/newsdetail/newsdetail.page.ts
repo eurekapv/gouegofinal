@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NewsEvento } from 'src/app/models/newsevento.model';
 
-import { StartService } from 'src/app/services/start.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
+import { ModalController } from '@ionic/angular';
 const { Browser } = Plugins;
 
 
@@ -14,34 +13,15 @@ const { Browser } = Plugins;
 })
 export class NewsdetailPage implements OnInit {
 
-  myNews: NewsEvento = new NewsEvento();
+  myNews: NewsEvento=new NewsEvento();
   
-  loading: boolean;
 
-  constructor(private startService: StartService,
-              private actRouter: ActivatedRoute,
-              private router: Router) { 
+  constructor(private modalController: ModalController) { 
     
   }
 
   ngOnInit() {
 
-    let idNews = '';
-
-    this.actRouter.paramMap.subscribe( param => {
-      
-      if (param.has('newsId')) 
-      {
-        idNews = param.get('newsId');
-
-        //Richiedo la News che mi serve
-        this.myNews = this.startService.requestNewsByID(idNews);
-        
-      }
-      else {
-        this.router.navigate(['/']);
-      }
-    });
   }
 
   /**
@@ -51,6 +31,10 @@ export class NewsdetailPage implements OnInit {
     if (url&&url.length>0){
       Browser.open({url:url})
     }
+  }
+
+  close(){
+    this.modalController.dismiss();
   }
 
 }

@@ -811,12 +811,22 @@ get listNews() {
  * Recupera le news dal server
  * @param maxRecord Massimo Numero record restituiti (0 = Tutti)
  */
-requestNews(idArea: string, maxRecord: number = 0) {
+requestNews_old(idArea: string, maxRecord: number = 0) {
   const actualStartConfig = this._startConfig.getValue();
 
   //Chiedo il recupero delle News
-  return this.newsEventiService.request(actualStartConfig, idArea, maxRecord);
+  return this.newsEventiService.request_old(actualStartConfig, idArea, maxRecord);
 }
+
+  /**
+   * Recupera le news relative ad un'area
+   * @param guidArea il guid dell'area 
+   * @param nElementi il numero di elementi richiesti
+   */
+  requestNews(guidArea: string, nElementi: number){
+    const actualStartConfig= this._startConfig.getValue();
+    return this.newsEventiService.request(actualStartConfig,guidArea,nElementi);
+  }
 
   /** Effettua la richiesta al servizio di una news
    * @param idNews News scelta 

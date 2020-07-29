@@ -13,7 +13,8 @@ import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEvento } from 'src/app/models/newsevento.model';
-import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
+import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
 
 
 @Component({
@@ -58,14 +59,14 @@ export class HomePage implements OnInit, OnDestroy{
   //Oggetti per le News
   noNewsCard: NewsEvento;
   listNews: NewsEvento[] = [];
-  listNewsListen: Subscription;
+  //listNewsListen: Subscription;
 
   
 
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
               private navController: NavController,
-              private modalCtrl:ModalController
+              private modalController:ModalController
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -90,8 +91,12 @@ export class HomePage implements OnInit, OnDestroy{
             this.selectedArea = areaSel;
             //Richiesta nuove News
             if (this.selectedArea) {
-              this.startService.requestNews(this.selectedArea.ID, 3);
-            }
+              startService.requestNews(this.selectedArea.ID,3).then(listNews=>{
+                this.listNews=listNews;
+                console.log('newsprova');
+                console.log(this.listNews);
+              })
+           }
 
     });
 
@@ -114,12 +119,12 @@ export class HomePage implements OnInit, OnDestroy{
       this.docUtente = element;
     });
 
-    /** Sottoscrizione alle news, qui copio sempre al massimo 3 News */
-    this.listNewsListen = this.startService.listNews.subscribe(listNews => {
-      this.listNews = listNews.filter((news,index) => {
-          return (index < 3);
-      })
-    });
+    // /** Sottoscrizione alle news, qui copio sempre al massimo 3 News */
+    // this.listNewsListen = this.startService.listNews.subscribe(listNews => {
+    //   this.listNews = listNews.filter((news,index) => {
+    //       return (index < 3);
+    //   })
+    // });
 
     
     //Impostazione Iniziale dei Bottoni relativi a NoEvents
@@ -132,7 +137,7 @@ export class HomePage implements OnInit, OnDestroy{
     if (this.selectedArea) {
       if (!this.selectedArea.do_inserted) {
         //Richiesta delle News
-        this.startService.requestNews(this.selectedArea.ID, 3);
+        //this.startService.requestNews_old(this.selectedArea.ID, 3);
       }
     }
   }
@@ -172,17 +177,17 @@ export class HomePage implements OnInit, OnDestroy{
   }
 
   /**
-   * Evento Click sulla News
-   * @param news News selezionata
+   * Apre in modalità modale la news
+   * @param news News da leggere
    */
   onClickNews(news: NewsEvento, event:any) {
-    if (news) {
-      //Le News insert non sono vere, non posso aprirle
-      if (!news.do_inserted) {
-        this.navController.navigateForward(['/','news',news.ID]);
-      }
-    }
     
+    this.modalController.create({
+      component:NewsdetailPage,
+      componentProps:{myNews:news}
+    }).then(modal=>{
+      modal.present();
+    })    
   }
 
   //#endregion
@@ -236,9 +241,7 @@ export class HomePage implements OnInit, OnDestroy{
     }
 
 
-    if (this.listNewsListen) {
-      this.listNewsListen.unsubscribe();
-    }
+    
   }
 
 
@@ -276,7 +279,7 @@ export class HomePage implements OnInit, OnDestroy{
   /** Apertura Videata Login */
   async openLogin() {
     //this.navController.navigateForward(['/','auth','new-login']);
-    const modal = await this.modalCtrl.create({
+    const modal = await this.modalController.create({
       component: NewLoginPage
     });
     modal.present();

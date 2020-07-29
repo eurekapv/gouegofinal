@@ -3,7 +3,8 @@ import { NewsEvento } from 'src/app/models/newsevento.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Area } from 'src/app/models/area.model';
-import { NavController } from '@ionic/angular';
+import { NavController, LoadingController, ToastController, ModalController } from '@ionic/angular';
+import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page'
 
 @Component({
   selector: 'app-news',
@@ -14,42 +15,48 @@ export class NewsPage implements OnInit, OnDestroy {
 
   listNews: NewsEvento[] = [];
   subListNews: Subscription;
-  loading: boolean;
   areaSelected: Area; //Area Selezionata
   subAreaSelected: Subscription; 
   maxRecord = 20; //Numero massimo di News richieste al server
   noNewsCard: NewsEvento; //Card per quando non ci sono Eventi
 
-  myEvent: any;
 
   constructor(private startService: StartService,
-              private navController: NavController) { 
+              private navController: NavController,
+              private loadingController: LoadingController,
+              private toastController: ToastController,
+              private modalController: ModalController) { 
 
     //Recupero la card che dice che non ci sono eventi
     this.noNewsCard = NewsEvento.getNoNews();
 
-    this.loading = true;
-
-    // Recupero subito l'area non Observable
-    this.areaSelected = this.startService.areaSelectedValue;
-
-
-    //Sottoscrivo alla ricezione delle news
-    this.subListNews = this.startService.listNews.subscribe(collNews => {
-      this.listNews = collNews;
-
-      //Se qualcosa arriva spengo il loading
-      this.loading = false;
-
-      if (this.myEvent) {
-        this.myEvent.target.complete();
-        this.myEvent = undefined;
-      }
-    });
-
-    //Chiedo le News
     this.requestNews();
+
+
     
+  }
+
+  /**
+   * Richiede al server le news
+   */
+  private requestNews() {
+    this.loadingController.create({
+      spinner: 'circular',
+      message: 'Caricamento',
+      backdropDismiss: true
+    }).then(loading => {
+      loading.present();
+      // Recupero subito l'area non Observable
+      this.areaSelected = this.startService.areaSelectedValue;
+      this.startService.requestNews(this.areaSelected.ID, this.maxRecord).then(data => {
+        this.listNews = data;
+        loading.dismiss();
+      }).catch(error => {
+        console.log(error);
+        loading.dismiss();
+        this.showMessage("Errore nel caricamento");
+      });
+    });
   }
 
   ngOnInit() {
@@ -64,40 +71,53 @@ export class NewsPage implements OnInit, OnDestroy {
   /**
    * Richiesta al servizio delle News
    */
-  requestNews() {
-    if (this.areaSelected) {
-      if (this.areaSelected.ID) {
-        this.loading = true;
-        //Faccio la richiesta al server
-        this.startService.requestNews(this.areaSelected.ID, 20);
-      }
-    }
-  }
+  // requestNews() {
+  //   if (this.areaSelected) {
+  //     if (this.areaSelected.ID) {
+  //       this.loading = true;
+  //       //Faccio la richiesta al server
+  //       this.startService.requestNews_old(this.areaSelected.ID, 20);
+  //     }
+  //   }
+  //}
 
 
   /** Eseguo un refresh delle news */
-  doRefresh(event) {
+  doRefresh(evento:any) {
+        
+    this.startService.requestNews(this.areaSelected.ID, this.maxRecord).then(data => {
+      this.listNews = data;
+      evento.target.complete();
+    }).catch(error => {
+      console.log(error);
+      evento.target.complete();
+      this.showMessage("Errore nel caricamento");
+    });
+
     
-    this.myEvent = event;
-
-    this.requestNews();
-
-    // setTimeout(() => {
-    //   console.log('Async operation has ended');
-    //   event.target.complete();
-    // }, 2000);
   }
 
   /**
-   * Apre in modalità dettaglio la news
+   * Apre in modalità modale la news
    * @param news News da leggere
    */
   onClickNews(news: NewsEvento, event:any) {
-    if (news) {
       // Le news Inserted sono finte, non posso aprirle
-      if (!news.do_inserted) {
-        this.navController.navigateForward(['/','news',news.ID]);
+        //this.navController.navigateForward(['/','news',news.ID]);
+      this.modalController.create({
+        component:NewsdetailPage,
+        componentProps:{myNews:news}
+      }).then(modal=>{
+        modal.present();
+      })
       }
-    }
+  
+
+  showMessage(messaggio:string){
+    this.toastController.create({
+      message:messaggio
+    }).then(toast=>{
+      toast.present();
+    })
   }
 }

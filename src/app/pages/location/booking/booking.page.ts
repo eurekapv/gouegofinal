@@ -133,7 +133,7 @@ export class BookingPage implements OnInit, OnDestroy {
 
     this.loadingController.create({
       message: 'Caricamento',
-      spinner: 'circles',
+      spinner: 'circular',
       backdropDismiss: true
 
     }).then(loading=>{
@@ -559,7 +559,7 @@ export class BookingPage implements OnInit, OnDestroy {
     this.loadingController
         .create({
           message: 'Verifica Prenotazione...',
-          spinner: 'bubbles'
+          spinner: 'circular'
         })
         .then (elLoading => {
           //Mostro il loading

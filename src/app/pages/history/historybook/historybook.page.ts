@@ -90,7 +90,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
   ngOnInit() {
     let result=true; 
     this.loadingController.create({
-      spinner:'circles',
+      spinner:'circular',
       message:'Caricamento',
       backdropDismiss:true
     }).then(loading=>{

@@ -153,7 +153,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
       this.loadingController
             .create({
               message: 'Aggiornamento dati...',
-              spinner: 'bubbles'
+              spinner: 'circular'
             })
             .then (elLoading => {
               // Mostro il loading

@@ -97,7 +97,7 @@ export class ListcoursesPage implements OnInit {
    */
   requestCorsi() {
     this.loadingCtrl.create({
-      spinner: 'circles',
+      spinner: 'circular',
       message: 'Caricamento',
       backdropDismiss: true
     }).then(loading=>{

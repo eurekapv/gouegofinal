@@ -233,7 +233,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.loadingController
       .create({
         message: 'Ricalcolo importo...',
-        spinner: 'circles'
+        spinner: 'circular'
       })
       .then(elLoading => {
         //Mostro il loading
@@ -468,7 +468,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
         //Visualizzo il loading controller
         this.loadingController.create({
           message: 'Salvataggio Prenotazione',
-          spinner: 'circles'
+          spinner: 'circular'
         })
         .then(elLoading => {
           //Creo il loading

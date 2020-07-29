@@ -7,8 +7,10 @@ import { Subscription } from 'rxjs';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { StartService } from 'src/app/services/start.service';
 
-import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
+import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { type } from 'os';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { UtenteprenotazioneService } from 'src/app/services/utenteprenotazione.service';
 
 
 @Component({
@@ -28,16 +30,8 @@ export class HistorylistPage implements OnInit {
 
   selectedView: string='prenotazioni';
 
-  listUtenteCorsi: Utenteiscrizione[];
+  listUtenteCorsi: UtenteIscrizione[];
   subListUtenteIscrizioni: Subscription;
-
-  //Mostra il loading
-  receivedPrenotazioni: boolean;
-  receivedCorsi: boolean;
-
-  //Eventi dei Refresh
-  eventRefresherPrenotazioni: any;
-  eventRefresherIscrizioni: any;
 
 
   today = new Date();
@@ -46,12 +40,11 @@ export class HistorylistPage implements OnInit {
     private navCtrl:NavController,
     private startService:StartService,
     private loadingCtrl:LoadingController,
-    private toastCtrl: ToastController    
+    private toastCtrl: ToastController,
+    private docstructureService:DocstructureService
   ) { }
 
   ngOnInit() {
-    this.receivedPrenotazioni = false;
-    this.receivedCorsi = false;
     //Mi sottoscrivo alla ricezione Prenotazioni e Iscrizioni Corsi
     //Verranno richiesti successivamente
     this.sottoscrizionePrenotazioni();
@@ -78,21 +71,29 @@ export class HistorylistPage implements OnInit {
     if (this.docUtente) {
       if (this.docUtente.ID) {
         this.loadingCtrl.create({
-          spinner: 'circles',
+          spinner: 'circular',
           message: 'Caricamento',
           backdropDismiss: true
         }).then(loading=>{
           loading.present();
-          //Segno di non aver ancora ricevuto nulla
-          this.receivedPrenotazioni = false;
-          //Richiedo le Prenotazioni
-          this.startService.requestUtentePrenotazioni(this.docUtente.ID).then(()=>{
-            this.receivedPrenotazioni=true;
+          //creo il documento di filtro
+          let filterUtentePrenotazioni= new UtentePrenotazione(true);
+          filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
+          this.docstructureService.request(filterUtentePrenotazioni).then(list=>{
+            this.listUtentePrenotazione=list;
             loading.dismiss();
-          }, ()=>{
+          }).catch(error=>{
             loading.dismiss();
+            console.log(error);
             this.showMessage('Errore nel caricamento');
-          });
+          })
+          //Richiedo le Prenotazioni (vecchio metodo)
+          // this.startService.requestUtentePrenotazioni(this.docUtente.ID).then(()=>{
+          //   loading.dismiss();
+          // }, ()=>{
+          //   loading.dismiss();
+          //   this.showMessage('Errore nel caricamento');
+          // });
         })
       }
     }
@@ -105,22 +106,37 @@ export class HistorylistPage implements OnInit {
     if (this.docUtente) {
       if (this.docUtente.ID) {
         this.loadingCtrl.create({
-          spinner: 'circles',
+          spinner: 'circular',
           message: 'Caricamento',
           backdropDismiss: true
         }).then(loading=>{
           loading.present();
-          //Segno di non aver ancora ricevuto nulla
-          this.receivedCorsi = false;
-          //Richiedo le Iscrizioni
-          this.startService.requestUtenteIscrizioni(this.docUtente.ID).then(()=>{
+          //creo il documento di filtro
+          let filterUtenteIscrizioni= new UtenteIscrizione(true);
+          filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
+          this.docstructureService.request(filterUtenteIscrizioni).then(list=>{
+            this.listUtenteCorsi=list;
             loading.dismiss();
-            this.receivedCorsi=true;
-          }, ()=>{
+          }).catch(error=>{
             loading.dismiss();
+            console.log(error);
             this.showMessage('Errore nel caricamento');
-          });
-        })
+          })
+        
+        
+        
+        
+        
+        // .then(loading=>{
+        //   loading.present();
+        //   //Richiedo le Iscrizioni
+        //   this.startService.requestUtenteIscrizioni(this.docUtente.ID).then(()=>{
+        //     loading.dismiss();
+        //   }, ()=>{
+        //     loading.dismiss();
+        //     this.showMessage('Errore nel caricamento');
+        //   });
+         })
       }
     }
   }
@@ -134,29 +150,7 @@ export class HistorylistPage implements OnInit {
       this.subListUtentePrenotazioni = this.startService.listUtentePrenotazioni
                                           .subscribe(collPrenotazioni => {
                                               this.listUtentePrenotazione = collPrenotazioni;                                
-                                              //this.receivedPrenotazioni = true;
-
-                                              //Disattivo il refresh se rimasto attivo
-                                              if (this.eventRefresherPrenotazioni) {
-                                                if (this.eventRefresherPrenotazioni.target) {
-                                                  this.eventRefresherPrenotazioni.target.complete();
-                                                  this.eventRefresherPrenotazioni = null;
-                                                }
-                                              }
-                                          }, error => {
-                                              //Avvisare dell'errore
-
-                                              //Disattivo il refresh se rimasto attivo
-                                              //this.receivedPrenotazioni = true;
-
-                                              if (this.eventRefresherPrenotazioni) {
-                                                if (this.eventRefresherPrenotazioni.target) {
-                                                  this.eventRefresherPrenotazioni.target.complete();
-                                                  this.eventRefresherPrenotazioni = null;
-                                                }
-                                              }                                            
-                                          }
-      );
+                                          }, error => {});
   }
 
     /**
@@ -168,27 +162,7 @@ export class HistorylistPage implements OnInit {
     this.subListUtenteIscrizioni = this.startService.listUtenteIscrizioni
                                         .subscribe(collIscrizioni => {
                                             this.listUtenteCorsi = collIscrizioni;                                
-                                            //this.receivedCorsi = true;
-                                            
-                                            if (this.eventRefresherIscrizioni) {
-                                              if (this.eventRefresherIscrizioni.target) {
-                                                this.eventRefresherIscrizioni.target.complete();
-                                                this.eventRefresherIscrizioni = null;
-                                              }
-                                            }
-                                        }, error => {
-                                              //Avvisare dell'errore
-                                              
-                                              //this.receivedCorsi = true;
-
-                                              if (this.eventRefresherIscrizioni) {
-                                                if (this.eventRefresherIscrizioni.target) {
-                                                  this.eventRefresherIscrizioni.target.complete();
-                                                  this.eventRefresherIscrizioni = null;
-                                                }
-                                              }                                       
-                                          }
-    );
+                                        }, error => {});
 }
 
   /**
@@ -238,17 +212,33 @@ export class HistorylistPage implements OnInit {
   //Richiesta di Refresh
   doRefresh(event) {
 
-    
+    if(this.docUtente&&this.docUtente.ID)
     switch (this.selectedView) {
       case 'prenotazioni':
-          this.eventRefresherPrenotazioni = event;
-          this.requestPrenotazioni();
+        let filterUtentePrenotazioni= new UtentePrenotazione(true);
+          filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
+          this.docstructureService.request(filterUtentePrenotazioni).then(list=>{
+            this.listUtentePrenotazione=list;
+            event.target.complete();
+          }).catch(error=>{
+            event.target.complete();
+            console.log(error);
+            this.showMessage('Errore nel caricamento');
+          })
         break;
 
       case 'corsi':
-        this.eventRefresherIscrizioni = event;
-        this.requestIscrizioni();
-        break;
+        //Richiedo le Iscrizioni
+        let filterUtenteIscrizioni= new UtenteIscrizione(true);
+          filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
+          this.docstructureService.request(filterUtenteIscrizioni).then(list=>{
+            this.listUtenteCorsi=list;
+            event.target.complete();
+          }).catch(error=>{
+            event.target.complete();
+            console.log(error);
+            this.showMessage('Errore nel caricamento');
+          })
     
       default:
         break;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Utenteiscrizione } from '../models/utenteiscrizione.model';
+import { UtenteIscrizione } from '../models/utenteiscrizione.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { map, take } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 })
 export class UtenteiscrizioneService {
 
-  private _listUtenteIscrizione = new BehaviorSubject<Utenteiscrizione[]>([]);
+  private _listUtenteIscrizione = new BehaviorSubject<UtenteIscrizione[]>([]);
 
   get listUtenteIscrizione() {
     return this._listUtenteIscrizione.asObservable();
@@ -60,7 +60,7 @@ export class UtenteiscrizioneService {
         .subscribe (resultData => {
   
             resultData.forEach(element => {
-              let newUtenteIscrizione = new Utenteiscrizione();
+              let newUtenteIscrizione = new UtenteIscrizione();
               newUtenteIscrizione.setJSONProperty(element);
               this.addUtenteIscrizione(newUtenteIscrizione);
             });
@@ -79,7 +79,7 @@ export class UtenteiscrizioneService {
    * @param idIscrizione ID Iscrizione richiesta
    */
   requestById(config: StartConfiguration, idIscrizione: string) {
-    return new Promise<Utenteiscrizione>((resolve, reject)=>{
+    return new Promise<UtenteIscrizione>((resolve, reject)=>{
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'UTENTEISCRIZIONE';
       const filterDateTime = this.getFilterDateTime();
@@ -98,7 +98,7 @@ export class UtenteiscrizioneService {
               return data.UTENTEISCRIZIONE      
         }))
         .subscribe (arrData => {
-            let docIscrizione = new Utenteiscrizione();
+            let docIscrizione = new UtenteIscrizione();
             if (arrData[0]){
               docIscrizione.setJSONProperty(arrData[0]);
               resolve(docIscrizione);
@@ -119,7 +119,7 @@ export class UtenteiscrizioneService {
    * Aggiunge all'elenco una prenotazione dell'utente
    * @param objUtenteIscrizione Prenotazione da aggiungere
    */
-  addUtenteIscrizione(objUtenteIscrizione: Utenteiscrizione) {
+  addUtenteIscrizione(objUtenteIscrizione: UtenteIscrizione) {
     this.listUtenteIscrizione
       .pipe(take(1))
       .subscribe (collUtenteIscrizione => {

@@ -5,7 +5,7 @@ import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
-import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
+import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { Utente } from 'src/app/models/utente.model';
 import { StatoIscrizione } from 'src/app/models/valuelist.model'
 import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calendar/calendar.page';
@@ -20,7 +20,7 @@ export class HistorycoursePage implements OnInit {
   docUtente: Utente;
   subDocUtente: Subscription;
 
-  myIscrizione: Utenteiscrizione = new  Utenteiscrizione(); //il documento iscrizione NON OBSERVABLE
+  myIscrizione: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
 
   myCorso:Corso= new Corso();
 
@@ -39,7 +39,7 @@ export class HistorycoursePage implements OnInit {
     //creo lo spinner e lo presento
     this.loadingController.create({
       message: 'Caricamento',
-      spinner: 'circles',
+      spinner: 'circular',
       backdropDismiss: true
     }).then(loading=>{
       loading.present();

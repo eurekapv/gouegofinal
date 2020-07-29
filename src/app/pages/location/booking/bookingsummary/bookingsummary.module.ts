@@ -5,9 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { BookingsummaryPageRoutingModule } from './bookingsummary-routing.module';
+import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose/payment-choose.component';
+
 
 import { BookingsummaryPage } from './bookingsummary.page';
 import { HomePageModule } from 'src/app/pages/home/home.module';
+import { PaypalPageModule } from '../../../paypal/paypal.module';
+import { PaypalPage } from '../../../paypal/paypal.page';
+
 
 
 @NgModule({
@@ -16,8 +21,11 @@ import { HomePageModule } from 'src/app/pages/home/home.module';
     FormsModule,
     IonicModule,
     BookingsummaryPageRoutingModule,
-    HomePageModule
+    HomePageModule,
+    PaypalPageModule
   ],
-  declarations: [BookingsummaryPage]
+  declarations: [BookingsummaryPage, PaymentChooseComponent],
+  entryComponents:[PaymentChooseComponent, PaypalPage],
+  exports:[BookingsummaryPage]
 })
 export class BookingsummaryPageModule {}

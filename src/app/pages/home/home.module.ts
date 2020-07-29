@@ -18,9 +18,15 @@ import { PlayerNumberComponent } from 'src/app/shared/components/player-number/p
 import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/sport-scroll.component';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 
+//questi 3 da rimuovere perchè inutili
+import { AdvertisingComponent } from 'src/app/shared/components/advertising/advertising.component'
+import { AuthComponent } from 'src/app/shared/components/auth/auth.component'
+import { CircularComponent } from 'src/app/shared/components/circular/circular.component'
+
 
 @NgModule({
   imports: [
+    
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -30,7 +36,8 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
         path: '',
         component: HomePage
       }
-    ])
+    ]),
+    //NewLoginPageModule
   ],
   declarations: [HomePage, 
                  CentriComponent, 
@@ -42,7 +49,11 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
                  FootbookedComponent,
                  PlayerNumberComponent,
                  SportScrollComponent,
-                 NewLoginPage
+                 NewLoginPage,
+                 //questi 3 da rimuovere perchè inutili
+                 AdvertisingComponent,
+                 AuthComponent,
+                 CircularComponent
                  ],
   exports: [NewsEventiComponent,
             ButtonCardComponent,

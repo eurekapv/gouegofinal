@@ -32,7 +32,7 @@ export class CentriComponent implements OnInit {
   /**
    * Lancio l'evento di Click per la scheda Location
    */
-  onClickLocation() {
+  onClickLocation(event:any) {
     this.clickLocation.emit(this.location);
   }
 

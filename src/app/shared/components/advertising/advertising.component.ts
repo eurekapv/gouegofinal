@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdvertisingComponent implements OnInit {
 
+//TODO: componente dichiarato momentaneamente nell'home.module per evitare errori, da rimuovere
+
+
   constructor() { }
 
   ngOnInit() {}

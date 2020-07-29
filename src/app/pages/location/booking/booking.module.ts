@@ -9,8 +9,7 @@ import { BookingPageRoutingModule } from './booking-routing.module';
 import { BookingPage } from './booking.page';
 import { HomePageModule } from '../../home/home.module';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
-import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose/payment-choose.component';
-import { PaypalPage } from '../../paypal/paypal.page';
+import{ BookingsummaryPageModule } from './bookingsummary/bookingsummary.module'
 
 
 @NgModule({
@@ -21,9 +20,10 @@ import { PaypalPage } from '../../paypal/paypal.page';
     IonicModule,
     BookingPageRoutingModule,
     HomePageModule,
+    BookingsummaryPageModule
     
   ],
-  declarations: [BookingPage,  BookingsummaryPage, PaymentChooseComponent, PaypalPage],
-  entryComponents: [BookingsummaryPage, PaymentChooseComponent, PaypalPage]
+  declarations: [BookingPage],
+  entryComponents: [BookingsummaryPage]
 })
 export class BookingPageModule {}

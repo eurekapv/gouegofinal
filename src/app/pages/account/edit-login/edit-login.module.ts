@@ -16,6 +16,9 @@ import { EditLoginPage } from './edit-login.page';
     EditLoginPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [EditLoginPage]
+  declarations: [EditLoginPage],
+  exports:[
+    EditLoginPage
+  ]
 })
 export class EditLoginPageModule {}

@@ -92,7 +92,7 @@ export class NewsPage implements OnInit, OnDestroy {
    * Apre in modalità dettaglio la news
    * @param news News da leggere
    */
-  onClickNews(news: NewsEvento) {
+  onClickNews(news: NewsEvento, event:any) {
     if (news) {
       // Le news Inserted sono finte, non posso aprirle
       if (!news.do_inserted) {

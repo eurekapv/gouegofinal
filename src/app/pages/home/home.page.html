@@ -27,7 +27,7 @@
   <!-- IMPEGNI -->
   <!-- NESSUN IMPEGNO SCARICATO -->
     
-  <ion-grid *ngIf="listImpegni.length===0" class="grid-impegni">
+  <ion-grid *ngIf="myListImpegni.length===0" class="grid-impegni">
 
       <ion-slides class="ion-no-padding ion-no-margin">
       <ion-slide 
@@ -45,16 +45,16 @@
     </ion-slides>
   </ion-grid>
 
-  <ion-grid *ngIf="listImpegni.length===1" >
+  <ion-grid *ngIf="myListImpegni.length===1" >
     <ion-row>
       <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
-        <app-impegni [impegno]="listImpegni[0]"></app-impegni>
+        <app-impegni [impegno]="myListImpegni[0]"></app-impegni>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <div scrollX="true" *ngIf="listImpegni.length>1">
-    <app-impegni *ngFor="let item of listImpegni " [impegno]="item"></app-impegni>
+  <div scrollX="true" *ngIf="myListImpegni.length>1">
+    <app-impegni *ngFor="let item of myListImpegni " [impegno]="item"></app-impegni>
   </div>
 
   <!-- AREA OPERATIVA -->

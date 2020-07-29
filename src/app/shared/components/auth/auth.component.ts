@@ -6,7 +6,7 @@ import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { LoadingController, ToastController, NavController, ModalController } from '@ionic/angular';
 
-
+//TODO: componente dichiarato momentaneamente nell'home.module per evitare errori, da rimuovere
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',

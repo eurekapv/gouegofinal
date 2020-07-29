@@ -18,6 +18,7 @@ import { NewLoginPage } from './new-login.page'
     NewLoginPageRoutingModule,
     HomePageModule
   ],
-  declarations: [NewLoginPage]
+  declarations: [],
+  exports: []
 })
 export class NewLoginPageModule {}

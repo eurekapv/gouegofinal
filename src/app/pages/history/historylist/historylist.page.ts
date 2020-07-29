@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Corso } from 'src/app/models/corso.model';
-
+import { Language } from 'src/app/models/valuelist.model';
 import { NavController, LoadingController, ToastController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
 import { Subscription } from 'rxjs';
@@ -8,6 +8,7 @@ import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { StartService } from 'src/app/services/start.service';
 
 import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
+import { type } from 'os';
 
 
 @Component({
@@ -16,6 +17,8 @@ import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
   styleUrls: ['./historylist.page.scss'],
 })
 export class HistorylistPage implements OnInit {
+
+  lingua=Language.italiano;  
 
   docUtente: Utente;
   subDocUtente: Subscription;
@@ -49,7 +52,6 @@ export class HistorylistPage implements OnInit {
   ngOnInit() {
     this.receivedPrenotazioni = false;
     this.receivedCorsi = false;
-
     //Mi sottoscrivo alla ricezione Prenotazioni e Iscrizioni Corsi
     //Verranno richiesti successivamente
     this.sottoscrizionePrenotazioni();

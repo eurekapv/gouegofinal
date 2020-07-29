@@ -17,6 +17,7 @@ import { PipesModule } from '../../../shared/pipes/pipes.module';
     CampiPageRoutingModule,
     PipesModule
   ],
-  declarations: [CampiPage]
+  declarations: [CampiPage],
+  exports:[CampiPage]
 })
 export class CampiPageModule {}

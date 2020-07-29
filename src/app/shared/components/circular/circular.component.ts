@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
+//TODO: componente dichiarato momentaneamente nell'home.module per evitare errori, da rimuovere
+
 @Component({
   selector: 'app-circular',
   templateUrl: './circular.component.html',
   styleUrls: ['./circular.component.scss'],
 })
+
 export class CircularComponent implements OnInit {
 
   constructor() { }

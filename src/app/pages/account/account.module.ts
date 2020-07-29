@@ -8,6 +8,7 @@ import { AccountPageRoutingModule } from './account-routing.module';
 
 import { AccountPage } from './account.page';
 import { EditLoginPage } from './edit-login/edit-login.page';
+import {EditLoginPageModule} from './edit-login/edit-login.module'
 
 @NgModule({
   imports: [
@@ -15,9 +16,11 @@ import { EditLoginPage } from './edit-login/edit-login.page';
     FormsModule,
     IonicModule,
     AccountPageRoutingModule,
-   ReactiveFormsModule
+   ReactiveFormsModule,
+   EditLoginPageModule
+   
   ],
-  declarations: [AccountPage, EditLoginPage],
+  declarations: [AccountPage],
   entryComponents: [EditLoginPage]
   
 })

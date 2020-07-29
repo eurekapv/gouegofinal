@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SmstestPageRoutingModule } from './smstest-routing.module';
 import { SmstestPage } from './smstest.page';
 import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.component';
+import { HomePageModule } from 'src/app/pages/home/home.module'
 
 
 @NgModule({
@@ -14,9 +15,10 @@ import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.c
     CommonModule,
     FormsModule,
     IonicModule,
-    SmstestPageRoutingModule
+    SmstestPageRoutingModule,
+    HomePageModule
     
   ],
-  declarations: [SmstestPage, SlottimeComponent]
+  declarations: [SmstestPage]
 })
 export class SmstestPageModule {}

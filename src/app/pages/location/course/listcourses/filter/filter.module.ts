@@ -15,6 +15,7 @@ import { FilterPage } from './filter.page';
     IonicModule,
     FilterPageRoutingModule
   ],
-  declarations: [FilterPage]
+  declarations: [FilterPage],
+  exports: [FilterPage]
 })
 export class FilterPageModule {}

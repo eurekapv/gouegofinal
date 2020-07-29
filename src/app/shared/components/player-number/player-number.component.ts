@@ -40,7 +40,7 @@ export class PlayerNumberComponent implements OnInit {
    * Invia alla pagina il nuovo numero player
    * @param nPlayer Numero Player
    */
-  onClickPlayer(nPlayer)
+  onClickPlayer(nPlayer, event:any)
   {
     this.changeNumPlayer.emit(nPlayer);
   }

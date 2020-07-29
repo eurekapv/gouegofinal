@@ -8,6 +8,7 @@ import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { Sport } from 'src/app/models/sport.model';
 import { TipoPrivateImage, PageType } from 'src/app/models/valuelist.model';
 import { url } from 'inspector';
+import { start } from 'repl';
 
 
 
@@ -18,6 +19,7 @@ import { url } from 'inspector';
 })
 export class SportlevelsPage implements OnInit {
   
+  isDesktop:boolean;
   utente:Utente;
   utenteListener: Subscription;
   sport: Sport;
@@ -31,6 +33,7 @@ export class SportlevelsPage implements OnInit {
   
 
   ngOnInit() {
+    this.isDesktop=this.startService.isDesktop;
     console.log('bp0');
     this.startService.requestBase64Image(TipoPrivateImage.logo).then(b64Image=>{
       this.logoGruppo=b64Image;

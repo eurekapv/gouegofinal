@@ -10,7 +10,10 @@ import { LocationPage } from './location.page';
 
 import { ApertureComponent } from '../../shared/components/aperture/aperture.component';
 import { GalleryPage } from './gallery/gallery.page';
+import { GalleryPageModule } from './gallery/gallery.module';
 import { CampiPage } from './campi/campi.page';
+import { CampiPageModule } from './campi/campi.module';
+
 import { PipesModule } from '../../shared/pipes/pipes.module';
 import { HomePageModule } from '../home/home.module';
 
@@ -22,13 +25,14 @@ import { HomePageModule } from '../home/home.module';
     IonicModule,
     LocationPageRoutingModule,
     PipesModule,
-    HomePageModule
+    HomePageModule,
+    GalleryPageModule,
+    CampiPageModule
     
   ],
   declarations: [LocationPage, 
-                  ApertureComponent, 
-                  GalleryPage, 
-                  CampiPage],
+                  ApertureComponent,  
+                  ],
   entryComponents: [GalleryPage, CampiPage]
   
   

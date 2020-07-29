@@ -9,6 +9,8 @@ import { ListcoursesPageRoutingModule } from './listcourses-routing.module';
 import { ListcoursesPage } from './listcourses.page';
 import { CardCourseComponent } from 'src/app/shared/components/card-course/card-course.component';
 import { FilterPage } from './filter/filter.page';
+import { FilterPageModule } from './filter/filter.module';
+
 import { CalendarPageModule } from '../detailcourse/calendar/calendar.module';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 
@@ -21,9 +23,10 @@ import { CalendarPage } from '../detailcourse/calendar/calendar.page';
     FormsModule,
     IonicModule,
     ListcoursesPageRoutingModule,
-    CalendarPageModule
+    CalendarPageModule,
+    FilterPageModule
   ],
-  declarations: [ListcoursesPage, CardCourseComponent, FilterPage],
+  declarations: [ListcoursesPage, CardCourseComponent],
   entryComponents: [FilterPage, CalendarPage],
   exports: []
   

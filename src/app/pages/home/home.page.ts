@@ -44,7 +44,7 @@ export class HomePage implements OnInit, OnDestroy{
   listLocationListen: Subscription;
 
   //Elenco delle prossime attività
-  listImpegni: Impegni[]=[];
+  myListImpegni: Impegni[]=[];
 
   // L'area viene recuperata dal subscribe
   selectedArea: Area;
@@ -126,6 +126,8 @@ export class HomePage implements OnInit, OnDestroy{
     this.setButtonNoEvents();
   }
 
+ 
+
   ionViewDidEnter() {
     if (this.selectedArea) {
       if (!this.selectedArea.do_inserted) {
@@ -173,7 +175,7 @@ export class HomePage implements OnInit, OnDestroy{
    * Evento Click sulla News
    * @param news News selezionata
    */
-  onClickNews(news: NewsEvento) {
+  onClickNews(news: NewsEvento, event:any) {
     if (news) {
       //Le News insert non sono vere, non posso aprirle
       if (!news.do_inserted) {
@@ -201,6 +203,11 @@ export class HomePage implements OnInit, OnDestroy{
   // }
 
   ngOnInit() {
+    let filterImpegni= new Impegni;
+    let now = new Date;
+    //filterImpegni.DATAORAINIZIO='>'+now;
+    console.log("provadata");
+    console.log(filterImpegni.DATAORAINIZIO);
   }
 
   ngOnDestroy() {

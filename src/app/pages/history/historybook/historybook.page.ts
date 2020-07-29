@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Pipe } from '@angular/core';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { Subscription, from } from 'rxjs';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
@@ -7,10 +7,19 @@ import { Location } from 'src/app/models/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, ToastController, LoadingController} from '@ionic/angular';
+
+//per lo share mobile con immagini
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+//per lo share via browser
+import { Plugins } from '@capacitor/core';
+const { Share } = Plugins;
+
 import { DocstructureService } from 'src/app/library/services/docstructure.service'
 import { filter } from 'rxjs/operators';
 import { Corso } from 'src/app/models/corso.model';
+import { StartConfiguration } from 'src/app/models/start-configuration.model';
+import { Area } from 'src/app/models/area.model';
+import { PageType } from 'src/app/models/valuelist.model'
 
 
 @Component({
@@ -22,9 +31,14 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   myPrenotazione: Prenotazione= new Prenotazione;
 
+  startConfig:StartConfiguration;
+  subStartConfig:Subscription;
+  
   idPrenotazione: string;
   idPianificazione: string;
   historyId: string;
+  myArea:Area;
+
 
   sliderOpts={
     slidesPerView: 1,
@@ -68,7 +82,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
               private toastCtr: ToastController,
               private socialSharing: SocialSharing,
               private docStructureService: DocstructureService,
-              private loadingController: LoadingController
+              private loadingController: LoadingController,
+              private docstructrureService: DocstructureService
               ) { }
 
   //In paramMap leggo IDPrenotazione
@@ -80,6 +95,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
       backdropDismiss:true
     }).then(loading=>{
       loading.present();
+      this.subStartConfig=this.startService.startConfig.subscribe(config=>{
+        this.startConfig=config;
+      })
       this.router.paramMap.subscribe(param => {
         if (param.has('historyId')) {
   
@@ -141,15 +159,28 @@ export class HistorybookPage implements OnInit, OnDestroy {
           this.myPrenotazione = data[0];
           this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
             this.docStructureService.decodeAll(element).then(()=>{
-              this.docStructureService.decode(element, 'IDLOCATION',true,['INDIRIZZO']);
+              this.docStructureService.decode(element, 'IDLOCATION',true,['INDIRIZZO','EMAIL']);
               console.log('decodificati');
               console.log(this.myPrenotazione);
-              this.loadingController.dismiss();
+              //recupero anche l'area della prenotazione (mi serve per lo share)
+              //creo un filtro per richiedere l'area
+              let areaFiltro= new Area(true);
+              areaFiltro.ID=this.myPrenotazione.IDAREAOPERATIVA;
+              this.docstructrureService.request(areaFiltro).then(listArea=>{
+                this.myArea=listArea[0];
+                this.loadingController.dismiss();
+              }).catch(error=>{
+                this.loadingController.dismiss();
+                this.showMessage('Errore nel caricamento');
+              })
             }).catch(error=>{
               this.loadingController.dismiss();
               this.showMessage('Errore nel caricamento');
             })
           });
+        }).catch(error=>{
+          this.loadingController.dismiss();
+          this.showMessage('Errore nel caricamento');
         })
       
 
@@ -213,9 +244,26 @@ export class HistorybookPage implements OnInit, OnDestroy {
     let url:string;
     let messaggio:string;
     let logo: string;
+    let oggetto: string;
+
+    
+    
+    for (const iterator of this.myArea.AREALINKS) {
+      if (iterator.TIPOURL==PageType.home){
+        url=iterator.REFERURL;
+        break;
+      }
+      
+    }
+    logo=this.startConfig.getUrlLogo();
+    messaggio=this.myPrenotazione.NOMINATIVO+' ha prenotato il '+docPianificazione.DATAORAINIZIO.toLocaleDateString()+' alle '
+      +docPianificazione.DATAORAINIZIO.toLocaleTimeString()+' presso '+this.startConfig.companyName+' '+docPianificazione['_INDIRIZZO_Location']
+      +' (Campo: '+docPianificazione['_DENOMINAZIONE_Campo']+', Attività: '+docPianificazione['_DENOMINAZIONE_Sport']+')';
+    oggetto='Prenotazione '+docPianificazione.PROGRESSIVO;
 
     if(this.startService.isDesktop){
       //share via mail su desktop
+      window.open('mailto:?subject='+oggetto+'&body='+messaggio);
     }
     else{
       //share su mobile
@@ -223,5 +271,6 @@ export class HistorybookPage implements OnInit, OnDestroy {
     }
 
   }
+
 
 }

@@ -389,15 +389,16 @@ export class DocstructureService {
               .subscribe (resultData => {
 
                 let listElement: IDDocument[] = [];
+                if (resultData){
+                  resultData.forEach(elData => {
+                    
+                    let newClass: any = new DynamicClass(objDescriptor.className);
+                    newClass.setJSONProperty(elData);
+                    listElement.push(newClass);
   
-                resultData.forEach(elData => {
-                  
-                  let newClass: any = new DynamicClass(objDescriptor.className);
-                  newClass.setJSONProperty(elData);
-                  listElement.push(newClass);
-
-                });
-  
+                  });
+    
+                }
                 resolve(listElement);
 
               }, error => {

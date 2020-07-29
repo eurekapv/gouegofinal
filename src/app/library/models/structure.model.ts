@@ -17,7 +17,7 @@ import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Utente } from 'src/app/models/utente.model';
-import { Utenteiscrizione } from 'src/app/models/utenteiscrizione.model';
+import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 
@@ -43,7 +43,7 @@ export const Structure: any = {
     Prenotazione,
     PrenotazionePianificazione,
     Utente,
-    Utenteiscrizione,
+    UtenteIscrizione,
     UtenteLivello,
     UtentePrenotazione
 }

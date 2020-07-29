@@ -2,7 +2,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import {  TipoCorso } from '../models/valuelist.model';
 
-export class Utenteiscrizione extends IDDocument {
+export class UtenteIscrizione extends IDDocument {
 
         IDCORSO:               string; //
         IDAREAOPERATIVA:       string; //

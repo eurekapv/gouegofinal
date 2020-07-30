@@ -7,7 +7,7 @@ import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController, NavController, ModalController } from '@ionic/angular';
-import { Impegni  } from 'src/app/models/impegni.model';
+import { Impegno  } from 'src/app/models/impegno.model';
 import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
@@ -15,6 +15,7 @@ import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { NewsEvento } from 'src/app/models/newsevento.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 
 
 @Component({
@@ -45,7 +46,7 @@ export class HomePage implements OnInit, OnDestroy{
   listLocationListen: Subscription;
 
   //Elenco delle prossime attività
-  myListImpegni: Impegni[]=[];
+  myListImpegni: Impegno[]=[];
 
   // L'area viene recuperata dal subscribe
   selectedArea: Area;
@@ -66,7 +67,8 @@ export class HomePage implements OnInit, OnDestroy{
   constructor(private startService: StartService,
               private actionSheetController: ActionSheetController,
               private navController: NavController,
-              private modalController:ModalController
+              private modalController:ModalController,
+              private docStructureService: DocstructureService
               ) {
 
     //Recupero la card che dice che non ci sono eventi
@@ -81,14 +83,28 @@ export class HomePage implements OnInit, OnDestroy{
     // Sottoscrivo alla ricezione delle Aree
     this.listAreeListen = this.startService.listAree
        .subscribe(aree => {
-          this.listAree = aree;
+          this.listAree = aree.filter(objArea=>{
+            return objArea.APPSHOW;
+          });
+          console.log('bp');
+          console.log(this.listAree);
+
     });
 
     //Mi sottoscrivo alla ricezione della Area Selezionata
     this.selectedAreaListen = this.startService.areaSelected
         .subscribe( areaSel => {
-            //Cambio Area Selezionata
-            this.selectedArea = areaSel;
+            //controllo se nell'array di aree è presente quella selezionata
+            if (this.listAree.includes(areaSel)){
+              //Cambio Area Selezionata
+              this.selectedArea = areaSel;
+            }
+            //altrimenti setto come area selezionata la prima disponibile
+            else{
+              this.selectedArea=this.listAree[0];
+            }
+            //richiedo le location sulla base della nuova area selezionata
+            startService.requestLocation(this.selectedArea.ID);
             //Richiesta nuove News
             if (this.selectedArea) {
               startService.requestNews(this.selectedArea.ID,3).then(listNews=>{
@@ -109,14 +125,19 @@ export class HomePage implements OnInit, OnDestroy{
     //Sottoscrivo all'ascolto di un utente loggato
     this.userLoggedListen = this.startService.utenteLogged.subscribe( element => {
       this.userLogged = element;
-
+      this.updateListImpegni();
+      
       //Reimposto i Bottoni NoEvents poichè dipende se loggato o no
       this.setButtonNoEvents();
+      
     });
 
+
+    
     //Sottoscrivo all'ascolto dell'Account
     this.docUtenteListen = this.startService.utente.subscribe(element => {
       this.docUtente = element;
+      this.updateListImpegni();
     });
 
     // /** Sottoscrizione alle news, qui copio sempre al massimo 3 News */
@@ -208,7 +229,7 @@ export class HomePage implements OnInit, OnDestroy{
   // }
 
   ngOnInit() {
-    let filterImpegni= new Impegni;
+    let filterImpegni= new Impegno;
     let now = new Date;
     //filterImpegni.DATAORAINIZIO='>'+now;
     console.log("provadata");
@@ -383,5 +404,24 @@ export class HomePage implements OnInit, OnDestroy{
   return retIcon;
  }
  //#endregion
+
+ updateListImpegni(){
+  if (this.userLogged){
+    if(this.docUtente){
+      //Devo richiedere gli impegni
+      //creo il filtro
+      let filterImpegno= new Impegno(true);
+      filterImpegno.IDUTENTE=this.docUtente.ID;
+      this.docStructureService.request(filterImpegno,undefined,5).then(listImpegni=>{
+        this.myListImpegni=listImpegni;
+      }).catch(error=>{
+        console.log(error);
+      })
+    }
+  }
+  else{
+    this.myListImpegni=[];
+  }
+ }
 
 }

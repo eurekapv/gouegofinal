@@ -2,7 +2,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 import { SettoreAttivita, StatoCorso } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
-export class Impegni extends IDDocument {
+export class Impegno extends IDDocument {
 
     IDREFER:        string; //ID Riferimento
     SETTORE:        SettoreAttivita;
@@ -39,8 +39,8 @@ export class Impegni extends IDDocument {
     let arTime = [];
     let arCollection = [];
 
-    objDescriptor.className = 'Impegni';
-    objDescriptor.classWebApiName = 'IMPEGNI';
+    objDescriptor.className = 'Impegno';
+    objDescriptor.classWebApiName = 'IMPEGNO';
     objDescriptor.doRemote = true;
     objDescriptor.describeField = 'DENOMINAZIONE';
 

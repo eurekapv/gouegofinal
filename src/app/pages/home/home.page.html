@@ -53,7 +53,7 @@
     </ion-row>
   </ion-grid>
 
-  <div scrollX="true" *ngIf="myListImpegni.length>1">
+  <div scrollX="true" class="div-impegni" *ngIf="myListImpegni.length>1">
     <app-impegni *ngFor="let item of myListImpegni " [impegno]="item"></app-impegni>
   </div>
 

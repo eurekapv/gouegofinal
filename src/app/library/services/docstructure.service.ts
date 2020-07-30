@@ -345,7 +345,7 @@ export class DocstructureService {
    * @param document Parametri di configurazione
    * @param decode Effettua la decodifica dei dati 
    */
-  request(document: IDDocument, childLevel=2) {
+  request(document: IDDocument, childLevel=2, nElem?: number) {
 
     return new Promise<any[]>((resolve, reject)=>{
       
@@ -374,6 +374,9 @@ export class DocstructureService {
 
           //Preparare i parametri con i filtri arrivati sul documento
           let myParams = this.getHttpParamsFromDoc(document);
+          if (nElem){
+            myParams=myParams.append('$top',nElem+'');
+          }
           let myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
 
           if (!myParams) {

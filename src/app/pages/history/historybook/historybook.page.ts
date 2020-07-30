@@ -252,8 +252,10 @@ export class HistorybookPage implements OnInit, OnDestroy {
       if (iterator.TIPOURL==PageType.home){
         url=iterator.REFERURL;
         break;
-      }
-      
+      }      
+    }
+    if(!url){
+      url='';
     }
     logo=this.startConfig.getUrlLogo();
     messaggio=this.myPrenotazione.NOMINATIVO+' ha prenotato il '+docPianificazione.DATAORAINIZIO.toLocaleDateString()+' alle '

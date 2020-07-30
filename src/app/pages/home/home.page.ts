@@ -16,6 +16,7 @@ import { NewsEvento } from 'src/app/models/newsevento.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { LogApp } from 'src/app/models/log.model';
 
 
 @Component({
@@ -55,13 +56,11 @@ export class HomePage implements OnInit, OnDestroy{
   idAreaFav: string;
   listenIdAreaFav: Subscription;
 
-  listButtonNoEvents: ButtonCard[] = []; //Bottoni da mostrare in assenza di eventi
+  listButtonImpegni: ButtonCard[] = []; //Bottoni da mostrare nell'area impegni
 
   //Oggetti per le News
   noNewsCard: NewsEvento;
   listNews: NewsEvento[] = [];
-  //listNewsListen: Subscription;
-
   
 
   constructor(private startService: StartService,
@@ -71,7 +70,7 @@ export class HomePage implements OnInit, OnDestroy{
               private docStructureService: DocstructureService
               ) {
 
-    //Recupero la card che dice che non ci sono eventi
+    //Recupero la card che dice che non ci sono news
     this.noNewsCard = NewsEvento.getNoNews();
  
     // Parametri di Configurazione Iniziale Applicazione
@@ -86,9 +85,6 @@ export class HomePage implements OnInit, OnDestroy{
           this.listAree = aree.filter(objArea=>{
             return objArea.APPSHOW;
           });
-          console.log('bp');
-          console.log(this.listAree);
-
     });
 
     //Mi sottoscrivo alla ricezione della Area Selezionata
@@ -105,13 +101,12 @@ export class HomePage implements OnInit, OnDestroy{
             }
             //richiedo le location sulla base della nuova area selezionata
             startService.requestLocation(this.selectedArea.ID);
+
             //Richiesta nuove News
             if (this.selectedArea) {
               startService.requestNews(this.selectedArea.ID,3).then(listNews=>{
                 this.listNews=listNews;
-                console.log('newsprova');
-                console.log(this.listNews);
-              })
+              });
            }
 
     });
@@ -124,32 +119,29 @@ export class HomePage implements OnInit, OnDestroy{
 
     //Sottoscrivo all'ascolto di un utente loggato
     this.userLoggedListen = this.startService.utenteLogged.subscribe( element => {
+
+      //Recupero l'utente
       this.userLogged = element;
-      this.updateListImpegni();
-      
-      //Reimposto i Bottoni NoEvents poichè dipende se loggato o no
-      this.setButtonNoEvents();
-      
+
+      //Aggiorno lista impegni e cerco di visualizzare le card superiori
+      this.updateListImpegni(); 
+           
     });
 
 
     
     //Sottoscrivo all'ascolto dell'Account
     this.docUtenteListen = this.startService.utente.subscribe(element => {
+
       this.docUtente = element;
+      //Aggiorno lista impegni e cerco di visualizzare le card superiori
       this.updateListImpegni();
+
     });
 
-    // /** Sottoscrizione alle news, qui copio sempre al massimo 3 News */
-    // this.listNewsListen = this.startService.listNews.subscribe(listNews => {
-    //   this.listNews = listNews.filter((news,index) => {
-    //       return (index < 3);
-    //   })
-    // });
-
     
-    //Impostazione Iniziale dei Bottoni relativi a NoEvents
-    this.setButtonNoEvents();
+    //Impostazione Iniziale dei Bottoni relativi gli impegni
+    this.setButtonImpegni();
   }
 
  
@@ -166,9 +158,9 @@ export class HomePage implements OnInit, OnDestroy{
   //#region EVENTI PERSONALI
 
   /** Imposta i bottoni in caso di mancanza eventi */
-  setButtonNoEvents() {
+  setButtonImpegni() {
     //Recupero i bottoni da mostrare, a seconda sia loggato o no
-    this.listButtonNoEvents = ButtonCard.getButtonHomeNoEvents(this.userLogged);
+    this.listButtonImpegni = ButtonCard.getButtonHomeImpegni(this.userLogged, this.myListImpegni);
   }
 
   /**
@@ -405,23 +397,44 @@ export class HomePage implements OnInit, OnDestroy{
  }
  //#endregion
 
+ /**
+  * Richiede gli impegni dell'utente
+  * e successivamente prepara la listButtonImpegni
+  */
  updateListImpegni(){
   if (this.userLogged){
-    if(this.docUtente){
+
+    if (this.docUtente) {
       //Devo richiedere gli impegni
       //creo il filtro
-      let filterImpegno= new Impegno(true);
+      let filterImpegno = new Impegno(true);
       filterImpegno.IDUTENTE=this.docUtente.ID;
-      this.docStructureService.request(filterImpegno,undefined,5).then(listImpegni=>{
-        this.myListImpegni=listImpegni;
-      }).catch(error=>{
-        console.log(error);
-      })
+      this.docStructureService.request(filterImpegno,1,5)
+                .then( listImpegni =>{
+
+                    this.myListImpegni=listImpegni;
+
+                    //Reimposto l'area impegni
+                    this.setButtonImpegni();
+                })
+                .catch(error=>{
+                  this.myListImpegni=[];
+                  console.log(error);
+                });
+    }
+    else {
+      this.myListImpegni=[];
+      //Reimposto l'area impegni
+      this.setButtonImpegni();
     }
   }
   else{
     this.myListImpegni=[];
+    //Reimposto l'area impegni
+    this.setButtonImpegni();
   }
+
+
  }
 
 }

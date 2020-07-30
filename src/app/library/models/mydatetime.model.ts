@@ -25,6 +25,24 @@ static formatDateTimeISO(data: Date) {
     return final;
 }
 
+//Formatta un orario passata  (Data e Ora)
+static formatTimeISO(data: Date, withSeconds:boolean =false) {
+
+    
+    let ore = (data.getHours() > 9) ? (data.getHours() + '') : ('0' + data.getHours());
+    let minuti = (data.getMinutes() > 9) ? (data.getMinutes() + '') : ('0' + data.getMinutes());
+    let secondi = (data.getSeconds() > 9) ? (data.getSeconds() + '') : ('0' + data.getSeconds());
+
+    let final =  ore + ':' + minuti;
+    
+    if (withSeconds) {
+        final = final + ':' + secondi;
+    }
+
+    return final;
+}
+
+
 /**
 * Trasforma la stringa in un oggetto di tipo Data
 * @param strInput data / dataOra / Ora in formato stringa

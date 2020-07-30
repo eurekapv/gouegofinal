@@ -22,6 +22,7 @@ import { LogApp } from '../models/log.model';
 export class SlotoccupazioneService {
 
   gapHour: number; //Se lo slot e l'ora attuale hanno una differenza inferiore al gapHour non è prenotabile
+  gapMinutes: number; //Minuti in arrivo dalla location
   _docOccupazione = new BehaviorSubject<SlotDay>(new SlotDay());
 
   get docOccupazione() {
@@ -29,7 +30,23 @@ export class SlotoccupazioneService {
   }
 
   constructor(private apiCall: ApicallService) {
-    this.gapHour = 2;
+    this.gapHour = 0;
+    this.gapMinutes = 0;
+   }
+
+   /**
+    * Passando un tempo in minuti imposta il Gap da utilizzare
+    * @param minuti Minuti da impostare
+    */
+   setGapMinutes(minuti: number) {
+    if (minuti && minuti !== 0) {
+      this.gapMinutes = minuti;
+      this.gapHour = (minuti/60);
+    }
+    else {
+      this.gapMinutes = 0;
+      this.gapHour = 0;
+    }
    }
 
   /**
@@ -69,6 +86,9 @@ export class SlotoccupazioneService {
             .httpGet(myUrl,myHeaders,myParams)
             .subscribe(resultData => {
   
+              //Reimposto il Gap dei minuti
+              this.setGapMinutes(docLocation.MINUTIPREAVVISOPRENOTAZIONE);
+              
               //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
               this.syncResult(resultData, templateSlotDay);
               resolve();

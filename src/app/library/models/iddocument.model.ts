@@ -1,6 +1,6 @@
 import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
-import { DynamicClass } from './structure.model'
+
  
   export class IDDocument {
     ID: string;
@@ -559,5 +559,7 @@ import { DynamicClass } from './structure.model'
   }
 
 
- 
+
+
+
   

@@ -21,6 +21,7 @@ export class Location extends IDDocument {
     EMAIL: string;
     ENABLEPRENOTAZIONI: boolean;
     MINUTISLOTPRENOTAZIONE: number;
+    MINUTIPREAVVISOPRENOTAZIONE: number;
     LOCATIONIMAGE: LocationImage[];
     CAMPO: Campo[];
     APERTURALOCATION: AperturaLocation[];
@@ -38,6 +39,7 @@ export class Location extends IDDocument {
 
         this.ENABLEPRENOTAZIONI = false;
         this.MINUTISLOTPRENOTAZIONE = 30;
+        this.MINUTIPREAVVISOPRENOTAZIONE = 0;
         // Imposto una cover standard
         this.setStandardCover();
 
@@ -62,7 +64,7 @@ export class Location extends IDDocument {
                     'TELEFONO',
                     'EMAIL'
                     ];
-    let arNumber = ['MINUTISLOTPRENOTAZIONE'];
+    let arNumber = ['MINUTISLOTPRENOTAZIONE','MINUTIPREAVVISOPRENOTAZIONE'];
     let arBoolean = ['FAVORITE','ENABLEPRENOTAZIONI'];
     let arDate = [];
     let arDateTime =[];

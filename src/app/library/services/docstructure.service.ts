@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IDDocument } from '../models/iddocument.model';
+import {RequestParams, RequestDecode, RequestForeign } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
 
@@ -415,6 +416,149 @@ export class DocstructureService {
       
     });
 
+  }
+
+  /**
+   * Effettua chiamate al server 
+   * il document dovrà essere istanziato con i parametri che si desiderano diventare filtri di caricamento
+   * @param document Parametri di configurazione
+   * @param decode Effettua la decodifica dei dati 
+   */
+  requestNew(document: IDDocument, params:RequestParams) {
+
+    return new Promise<any[]>((resolve, reject)=>{
+      
+      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let objDescriptor: Descriptor;
+      let childLevel = -1;
+      let nElem = 0;
+      let requestAndDecode = false;
+      let foreignFields: RequestForeign[];
+      
+      if (!document) {
+        reject('Documento non presente');
+      }
+      else {
+        //Recupero il descrittore della classe
+        objDescriptor = document.getDescriptor();
+
+        if (!objDescriptor) {
+          reject('Documento non descritto');
+        }
+        else if (objDescriptor.doRemote == false) {
+          //Non è gestito esternamente
+          reject('Documento non gestito in remoto');
+        }
+        else {
+
+          // Controllo i parametri di richiesta
+          if (params) {
+
+            if (params.child_level) {
+              childLevel = params.child_level;
+            }
+
+            if (params.top) {
+              nElem = params.top;
+            }
+
+            if (params.decode) {
+              if (params.decode.active) {
+                requestAndDecode = true;
+
+                if (params.decode.foreignFields) {
+                  foreignFields = params.decode.foreignFields;
+                }
+              }
+
+            }
+
+            
+
+          }
+
+          // In Testata c'e' sempre l'AppId
+          myHeaders = myHeaders.set('appid',this.myConfig.appId);
+
+          if (childLevel != -1) {
+            myHeaders = myHeaders.append('child-level', childLevel+'');
+          }
+
+
+          //Preparare i parametri con i filtri arrivati sul documento
+          let myParams = this.getHttpParamsFromDoc(document);
+
+          if (nElem && nElem > 0){
+            myParams=myParams.append('$top',nElem+'');
+          }
+
+          let myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
+
+          if (!myParams) {
+            reject('Request Parametri insufficienti');
+          }
+          else {
+
+            this.apiService
+              .httpGet(myUrl, myHeaders, myParams)
+              .pipe(map(fullData => {
+                return fullData[objDescriptor.classWebApiName]
+              }))
+              .subscribe (resultData => {
+
+                let listElement: IDDocument[] = [];
+
+                if (resultData){
+
+                  resultData.forEach(elData => {
+                    
+                    let newClass: any = new DynamicClass(objDescriptor.className);
+                    newClass.setJSONProperty(elData);
+                    listElement.push(newClass);
+                  });
+                  
+
+                }
+
+                //Se non devo decodificare posso fare qui il resolve
+                if (!requestAndDecode) {
+                  resolve(listElement);
+                }
+                else if (listElement.length !== 0) {
+
+                  this.decodeCollection(listElement, foreignFields)
+                      .then(() => {
+                        resolve(listElement);
+                      })
+                      .catch(errMessage => {
+                        reject(errMessage);
+                      });
+                }
+
+              }, error => {
+                reject(error);
+              });
+
+          }
+          
+        }
+      }
+      
+    });
+
+  }
+
+  //TODO: Scrivere la decode collection
+  decodeCollection(collection: IDDocument[], foreignFields?:RequestForeign[]) {
+    
+    return new Promise((resolve, reject)=>{        
+
+      let executePromise:Promise<any>[] = [];
+
+    });
+
+
+    
   }
 
     

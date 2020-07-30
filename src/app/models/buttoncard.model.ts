@@ -1,3 +1,8 @@
+import { Impegno } from './impegno.model';
+import { SettoreAttivita } from './valuelist.model';
+import { Settimana } from './settimana.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
+
 export class ButtonCard {
     title: string;
     subtitle: string;
@@ -6,6 +11,7 @@ export class ButtonCard {
     color: string;
     iconLink: boolean;
     functionCod: string;
+
 
 
     /**
@@ -49,22 +55,67 @@ export class ButtonCard {
      * quando non sono presenti eventi
      * @param userLogged Utente è loggato
      */
-    static getButtonHomeNoEvents(userLogged: boolean): ButtonCard[] {
+    static getButtonHomeImpegni(userLogged: boolean, listImpegni?:Impegno[]): ButtonCard[] {
         let arButton: ButtonCard[] = [];
         let newBtn: ButtonCard;
+        let numImpegni = 0;
 
-        /** UTENTE LOGGATO, SENZA EVENTI */
+        /** UTENTE LOGGATO */
         if (userLogged) {
-            newBtn = new ButtonCard();
-            newBtn.title = 'Nessun appuntamento previsto';
-            newBtn.subtitle = 'Organizza un incontro con i tuoi amici';
-            newBtn.nameicon = 'calendar-outline';
-            newBtn.sloticon = "start";
-            newBtn.color = "primary";
-            newBtn.iconLink = false;
-            newBtn.functionCod = 'noevents';
-    
-            arButton.push(newBtn);
+            if (listImpegni && listImpegni.length !== 0) {
+                numImpegni = listImpegni.length;
+            }
+
+            if (numImpegni == 0) {
+
+                newBtn = new ButtonCard();
+                newBtn.title = 'Nessun appuntamento previsto';
+                newBtn.subtitle = 'Organizza un incontro con i tuoi amici';
+                newBtn.nameicon = 'calendar-outline';
+                newBtn.sloticon = "start";
+                newBtn.color = "primary";
+                newBtn.iconLink = false;
+                newBtn.functionCod = 'noevents';
+        
+                arButton.push(newBtn);
+
+            }
+            else {
+                listImpegni.forEach(element => {
+
+                    newBtn = new ButtonCard();
+                    if (element.SETTORE == SettoreAttivita.settoreCorso) {
+
+                        newBtn.title = element.DENOMINAZIONE;
+                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' alle ' + MyDateTime.formatTimeISO(element.DATAORAINIZIO);
+
+                        newBtn.nameicon = 'school-outline';
+                        newBtn.sloticon = "start";
+                        newBtn.color = "primary";
+                        newBtn.iconLink = true;
+                        newBtn.functionCod = SettoreAttivita.settoreCorso + '-' + element.ID;
+                
+                        arButton.push(newBtn);
+                    }
+                    else if (element.SETTORE == SettoreAttivita.settorePrenotazione){
+
+                        //TODO: Tutta questa parte è sbagliata, mancando ancora le decodifiche opportune
+                        newBtn.title = element.DENOMINAZIONE;
+                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' alle ' + MyDateTime.formatTimeISO(element.DATAORAINIZIO);
+
+                        newBtn.nameicon = 'calendar-outline';
+                        newBtn.sloticon = "start";
+                        newBtn.color = "primary";
+                        newBtn.iconLink = true;
+                        newBtn.functionCod = SettoreAttivita.settorePrenotazione + '-' + element.ID;
+                
+                        arButton.push(newBtn);                        
+                    }
+
+                })
+            }
+
+
         }
         else {
             newBtn = new ButtonCard();

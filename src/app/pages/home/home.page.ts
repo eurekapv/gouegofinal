@@ -479,6 +479,7 @@ export class HomePage implements OnInit, OnDestroy{
   reqParam.top = 10;
   reqParam.child_level = 1;
   reqParam.decode.active = true;
+  reqParam.orderBy = 'asc';
   
   reqParam.decode.foreignFields = Impegno.getReqForeignKeys();
 

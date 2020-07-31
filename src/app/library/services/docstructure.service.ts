@@ -432,6 +432,7 @@ export class DocstructureService {
       let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
       let objDescriptor: Descriptor;
       let childLevel = -1;
+      let orderBy: string = '';
       let nElem = 0;
       let requestAndDecode = false;
       let foreignFields: RequestForeign[];
@@ -463,6 +464,10 @@ export class DocstructureService {
               nElem = params.top;
             }
 
+            if (params.orderBy) {
+              orderBy = params.orderBy;
+            }
+
             if (params.decode) {
               if (params.decode.active) {
                 requestAndDecode = true;
@@ -485,6 +490,10 @@ export class DocstructureService {
             myHeaders = myHeaders.append('child-level', childLevel+'');
           }
 
+          if (orderBy && orderBy.length !== 0) {
+            myHeaders = myHeaders.append('order-by', orderBy);
+          }
+
 
           //Preparare i parametri con i filtri arrivati sul documento
           let myParams = this._getHttpParamsFromDoc(filterDocument);
@@ -492,6 +501,8 @@ export class DocstructureService {
           if (nElem && nElem > 0){
             myParams=myParams.append('$top',nElem+'');
           }
+
+
 
           let myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
 

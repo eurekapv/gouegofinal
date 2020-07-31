@@ -103,7 +103,7 @@ export class ButtonCard {
                         newBtn.color = "primary";
                         newBtn.iconLink = true;
                         newBtn.functionCod =  "show";
-                        newBtn.id = element.ID;
+                        newBtn.id = element.IDREFER;
                         newBtn.settore = SettoreAttivita.settoreCorso;
                         
                         arButton.push(newBtn);
@@ -120,7 +120,7 @@ export class ButtonCard {
                         newBtn.iconLink = true;
 
                         newBtn.functionCod =  "show";
-                        newBtn.id = element.ID;
+                        newBtn.id =  element.IDREFER + '-' + element.ID;
                         newBtn.settore = SettoreAttivita.settorePrenotazione;
 
                         

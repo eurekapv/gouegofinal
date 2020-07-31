@@ -535,6 +535,9 @@ export class DocstructureService {
                         reject(errMessage);
                       });
                 }
+                else {
+                  resolve(listElement);
+                }
 
               }, error => {
                 reject(error);

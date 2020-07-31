@@ -153,11 +153,7 @@ export class HomePage implements OnInit, OnDestroy{
             startService.requestLocation(this.selectedArea.ID);
 
             //Richiesta nuove News
-            if (this.selectedArea) {
-              startService.requestNews(this.selectedArea.ID,3).then(listNews=>{
-                this.listNews=listNews;
-              });
-           }
+            this.requestNews();
 
     });
 
@@ -194,15 +190,30 @@ export class HomePage implements OnInit, OnDestroy{
     this.createButtonCardImpegni();
   }
 
+
+  /**
+   * Effettua la richiesta delle News
+   */
+  requestNews() {
+
+    if (this.selectedArea) {
+
+      //Chiedo al servizio le News
+      this.startService.requestNews(this.selectedArea.ID,3).then(listNews=>{
+        this.listNews=listNews;
+      });
+
+   }
+  }
+
  
 
   ionViewDidEnter() {
-    if (this.selectedArea) {
-      if (!this.selectedArea.do_inserted) {
-        //Richiesta delle News
-        //this.startService.requestNews_old(this.selectedArea.ID, 3);
-      }
-    }
+
+    //Aggiorniamo gli impegni
+    this.updateListImpegni();
+    this.requestNews();
+
   }
 
   //#region IMPEGNI
@@ -285,27 +296,8 @@ export class HomePage implements OnInit, OnDestroy{
 
   //#endregion
 
-  // _testAddImpegni() {
-  //   visto che il vettore di impegni ancora non è popolato, lo popolo manualmente per provare
-  //   let prossimoImpegno=new Impegni();
-  //   prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
-  //   prossimoImpegno.DESCRIZIONE="wash"
-  //   prossimoImpegno.SETTORE=SettoreAttivita.settoreCorso;
-  //   this.listImpegni.push(prossimoImpegno);
-
-  //   prossimoImpegno=new Impegni();
-  //   prossimoImpegno.DATAORAINIZIO=new Date(2020, 2, 12, 21,15, 0);
-  //   prossimoImpegno.DESCRIZIONE="lore"
-  //   prossimoImpegno.SETTORE=SettoreAttivita.settorePrenotazione;
-  //   this.listImpegni.push(prossimoImpegno);
-  // }
-
   ngOnInit() {
-    let filterImpegni= new Impegno;
-    let now = new Date;
-    //filterImpegni.DATAORAINIZIO='>'+now;
-    console.log("provadata");
-    console.log(filterImpegni.DATAORAINIZIO);
+
   }
 
   ngOnDestroy() {

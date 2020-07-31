@@ -98,12 +98,19 @@ export class UtenteiscrizioneService {
               return data.UTENTEISCRIZIONE      
         }))
         .subscribe (arrData => {
+
             let docIscrizione = new UtenteIscrizione();
-            if (arrData[0]){
-              docIscrizione.setJSONProperty(arrData[0]);
-              resolve(docIscrizione);
+
+            if (arrData) {
+              if (arrData[0]){
+                docIscrizione.setJSONProperty(arrData[0]);
+                resolve(docIscrizione);
+              }
+              else{
+                reject('iscrizione inesistente');
+              }
             }
-            else{
+            else {
               reject('iscrizione inesistente');
             }
 

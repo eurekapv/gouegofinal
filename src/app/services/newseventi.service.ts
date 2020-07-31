@@ -184,8 +184,7 @@ export class NewseventiService {
         }
         return arReturn;
       })).subscribe(objList=>{
-        console.log('objlist');
-        console.log(objList);
+
         let newsEventi: NewsEvento[]=[];
         objList.forEach(obJElement=>{
           let newsEvento= new NewsEvento()

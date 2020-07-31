@@ -20,6 +20,7 @@ import { Corso } from 'src/app/models/corso.model';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Area } from 'src/app/models/area.model';
 import { PageType } from 'src/app/models/valuelist.model'
+import { RequestParams } from 'src/app/library/models/requestParams.model';
 
 
 @Component({
@@ -152,49 +153,110 @@ export class HistorybookPage implements OnInit, OnDestroy {
         //creo il filtro e richiedo la prenotazione
         let filterPrenotazione : Prenotazione=new Prenotazione(true);
         filterPrenotazione.ID=idPren;
-        console.log('Qui');
+        //Parametri richiesta
+        let reqParams = new RequestParams();
+        reqParams.child_level = 2;
 
-        this.docStructureService.request(filterPrenotazione,5)
+        //Lancio la richiesta per la Prenotazione
+        this.docStructureService.requestNew(filterPrenotazione,reqParams)
         .then(data =>{
-          this.myPrenotazione = data[0];
-          this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
-            this.docStructureService.decodeAll(element).then(()=>{
-              this.docStructureService.decode(element, 'IDLOCATION',true,['INDIRIZZO','EMAIL']);
-              console.log('decodificati');
-              console.log(this.myPrenotazione);
-              //recupero anche l'area della prenotazione (mi serve per lo share)
-              //creo un filtro per richiedere l'area
-              let areaFiltro= new Area(true);
-              areaFiltro.ID=this.myPrenotazione.IDAREAOPERATIVA;
-              this.docstructrureService.request(areaFiltro).then(listArea=>{
-                this.myArea=listArea[0];
-                this.loadingController.dismiss();
-              }).catch(error=>{
-                this.loadingController.dismiss();
-                this.showMessage('Errore nel caricamento');
-              })
-            }).catch(error=>{
-              this.loadingController.dismiss();
-              this.showMessage('Errore nel caricamento');
-            })
-          });
+            //Recupero la Prenotazione
+            this.myPrenotazione = data[0];
+
+            //Voglio decodificare una collection di PRENOTAZIONEPIANIFICAZIONE e recuperare il doc Area
+
+            
+            
+            if (this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE && this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length !== 0 ) {
+              
+              //Mi faccio tornare i campi di foreing key e di describe che mi servono ora
+              let reqForeign = PrenotazionePianificazione.getReqForeignKeys();
+
+              //Chiedo la decodifica della collection e successivamente chiedo il documento Area
+              this.docStructureService.decodeCollection(this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE, reqForeign)
+                                      .then(() => {
+
+                                        //CHIEDO L'AREA
+                                        //Chiedo il recupero del documento Area
+                                        this.docstructrureService.getRelDoc(this.myPrenotazione, ['IDAREAOPERATIVA'])
+                                                                  .then(docArea => {
+                                                                      this.myArea = docArea;
+
+                                                                      //Qui è arrivato tutto esattamente
+                                                                      this.loadingController.dismiss();
+                                                                  })
+                                                                  .catch(err => {
+
+                                                                        //Dismetto il loading
+                                                                        this.loadingController.dismiss();
+                                                                        this.showMessage('Errore nel caricamento Area');
+                                                                        console.log(err);                                                                    
+                                                                  });
+
+                                      })
+                                      .catch(err => {
+                                        //Dismetto il loading
+                                        this.loadingController.dismiss();
+
+                                        this.showMessage('Errore nel caricamento Elenco');
+                                        console.log(err);
+                                      });
+            }
+            else {
+
+                //SE NON PRENOTAZIONI PIANIFICAZIONE
+                //CHIEDO L'AREA
+                //Chiedo il recupero del documento Area
+                this.docstructrureService.getRelDoc(this.myPrenotazione, ['IDAREAOPERATIVA'])
+                                          .then(docArea => {
+                                              this.myArea = docArea;
+
+                                              //Qui è arrivato tutto esattamente
+                                              this.loadingController.dismiss();
+                                          })
+                                          .catch(err => {
+                                                //Dismetto il loading
+                                                this.loadingController.dismiss();
+                                                this.showMessage('Errore nel caricamento Area2');
+                                                console.log(err);                                                                    
+                                          });
+
+            }
+
+          // this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
+          //   this.docStructureService.decodeAll(element).then(()=>{
+          //     this.docStructureService.decode(element, 'IDLOCATION',true,['INDIRIZZO','EMAIL']);
+          //     console.log('decodificati');
+          //     console.log(this.myPrenotazione);
+
+          //     //recupero anche l'area della prenotazione (mi serve per lo share)
+          //     //creo un filtro per richiedere l'area
+          //     let areaFiltro= new Area(true);
+          //     areaFiltro.ID=this.myPrenotazione.IDAREAOPERATIVA;
+
+          //     this.docstructrureService.requestNew(areaFiltro)
+          //     .then(listArea=>{
+
+          //       this.myArea=listArea[0];
+          //       this.loadingController.dismiss();
+
+          //     }).catch(error=>{
+          //       this.loadingController.dismiss();
+          //       this.showMessage('Errore nel caricamento');
+          //     });
+
+
+          //   }).catch(error=>{
+          //     this.loadingController.dismiss();
+          //     this.showMessage('Errore nel caricamento');
+          //   })
+          // });
         }).catch(error=>{
           this.loadingController.dismiss();
-          this.showMessage('Errore nel caricamento');
+          this.showMessage('Errore nel caricamento Prenotazione');
+          console.log(error);
         })
       
-
-        // //Chiedo la Prenotazione
-        // this.subActivePrenotazione = this.startService
-        //               .requestPrenotazioneById(this.idPrenotazione, 999)
-        //               .subscribe (docPrenotazione => {
-
-        //                                           this.activePrenotazione = docPrenotazione;
-        //                                           this.showSpinner = false;
-        //                                           this.sliderOpts.initialSlide=this.activePrenotazione.getIndexPianificazione(this.idPianificazione);
-        //                                           console.log('a');
-        //                                           console.log(this.activePrenotazione);
-        //                                         });
       }
     }
     else {

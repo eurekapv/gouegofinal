@@ -69,7 +69,13 @@ import { MyDateTime } from './mydatetime.model';
       return objDescriptor.foreignKeys;
     }
   
- 
+    /**
+     * Imposta il valore nella chiave primaria
+     * @param value Valore Chiave Primaria
+     */
+    setPrimaryKey(value:any) {
+      this.ID = value;
+    }
 
     
     //Generazione GUID

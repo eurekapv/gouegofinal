@@ -27,12 +27,12 @@
   <!-- IMPEGNI -->
   <!-- NESSUN IMPEGNO SCARICATO -->
     
-  <ion-grid *ngIf="myListImpegni.length===0" class="grid-impegni">
+  <!-- <ion-grid *ngIf="myListImpegni.length===0" class="grid-impegni">
 
       <ion-slides class="ion-no-padding ion-no-margin">
       <ion-slide 
           class="ion-no-padding ion-no-margin"
-          *ngFor="let btn of listButtonNoEvents"> 
+          *ngFor="let btn of listButtonImpegni"> 
           
           <app-button-card 
               class="small-button-card" 
@@ -43,19 +43,55 @@
 
       </ion-slide>
     </ion-slides>
-  </ion-grid>
+  </ion-grid> -->
 
-  <ion-grid *ngIf="myListImpegni.length===1" >
+  <ion-grid *ngIf="listButtonImpegni.length === 1" class="grid-impegni">
+
+    <ion-slides class="ion-no-padding ion-no-margin">
+    <ion-slide 
+        class="ion-no-padding ion-no-margin"
+        *ngFor="let btn of listButtonImpegni"> 
+        
+        <app-button-card 
+            class="small-button-card" 
+            (clickElement)="onClickButtonCardImpegni($event)" 
+            [smallVersion]="true" 
+            [myButtonCard]="btn">
+        </app-button-card>
+
+    </ion-slide>
+  </ion-slides>
+</ion-grid>
+
+<ion-grid *ngIf="listButtonImpegni.length > 1" class="grid-impegni">
+
+  <ion-slides class="ion-no-padding ion-no-margin" [options]="sliderOpts">
+  <ion-slide 
+      class="ion-no-padding ion-no-margin"
+      *ngFor="let btn of listButtonImpegni"> 
+      
+      <app-button-card 
+          class="small-button-card" 
+          (clickElement)="onClickButtonCardImpegni($event)" 
+          [smallVersion]="true" 
+          [myButtonCard]="btn">
+      </app-button-card>
+
+  </ion-slide>
+</ion-slides>
+</ion-grid>
+
+  <!-- <ion-grid *ngIf="myListImpegni.length===1" >
     <ion-row>
       <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
         <app-impegni [impegno]="myListImpegni[0]"></app-impegni>
       </ion-col>
     </ion-row>
-  </ion-grid>
+  </ion-grid> -->
 
-  <div scrollX="true" class="div-impegni" *ngIf="myListImpegni.length>1">
+  <!-- <div scrollX="true" class="div-impegni" *ngIf="myListImpegni.length>1">
     <app-impegni *ngFor="let item of myListImpegni " [impegno]="item"></app-impegni>
-  </div>
+  </div> -->
 
   <!-- AREA OPERATIVA -->
   <!-- TITOLO AREA -->

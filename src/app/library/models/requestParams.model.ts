@@ -34,6 +34,7 @@
         let docForeign: RequestForeign;
         if (nameField && nameField.length !== 0) {
             docForeign = new RequestForeign(nameField);
+            this.foreignFields.push(docForeign);
         }
 
         return docForeign;

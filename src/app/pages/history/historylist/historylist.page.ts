@@ -74,27 +74,32 @@ export class HistorylistPage implements OnInit {
           spinner: 'circular',
           message: 'Caricamento',
           backdropDismiss: true
-        }).then(loading=>{
-          loading.present();
-          //creo il documento di filtro
-          let filterUtentePrenotazioni= new UtentePrenotazione(true);
-          filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
-          this.docstructureService.request(filterUtentePrenotazioni).then(list=>{
-            this.listUtentePrenotazione=list;
-            loading.dismiss();
-          }).catch(error=>{
-            loading.dismiss();
-            console.log(error);
-            this.showMessage('Errore nel caricamento');
-          })
-          //Richiedo le Prenotazioni (vecchio metodo)
-          // this.startService.requestUtentePrenotazioni(this.docUtente.ID).then(()=>{
-          //   loading.dismiss();
-          // }, ()=>{
-          //   loading.dismiss();
-          //   this.showMessage('Errore nel caricamento');
-          // });
         })
+        .then(loading=>{
+
+          loading.present();
+
+          //Creo il documento di filtro
+          let filterUtentePrenotazioni= new UtentePrenotazione(true);
+          filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID;
+
+          this.docstructureService.requestNew(filterUtentePrenotazioni)
+              .then( list =>{
+                      //Copia della lista
+                      this.listUtentePrenotazione=list;
+                      //Dismetto il loading
+                      loading.dismiss();
+              })
+              .catch(error=>{
+                 //Dismetto il loading 
+                loading.dismiss();
+
+                console.log(error);
+                this.showMessage('Errore nel caricamento');
+              });
+
+        });
+
       }
     }
   }
@@ -110,33 +115,24 @@ export class HistorylistPage implements OnInit {
           message: 'Caricamento',
           backdropDismiss: true
         }).then(loading=>{
-          loading.present();
-          //creo il documento di filtro
-          let filterUtenteIscrizioni= new UtenteIscrizione(true);
-          filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
-          this.docstructureService.request(filterUtenteIscrizioni).then(list=>{
-            this.listUtenteCorsi=list;
-            loading.dismiss();
-          }).catch(error=>{
-            loading.dismiss();
-            console.log(error);
-            this.showMessage('Errore nel caricamento');
-          })
-        
-        
-        
-        
-        
-        // .then(loading=>{
-        //   loading.present();
-        //   //Richiedo le Iscrizioni
-        //   this.startService.requestUtenteIscrizioni(this.docUtente.ID).then(()=>{
-        //     loading.dismiss();
-        //   }, ()=>{
-        //     loading.dismiss();
-        //     this.showMessage('Errore nel caricamento');
-        //   });
-         })
+
+            loading.present();
+            //creo il documento di filtro
+            let filterUtenteIscrizioni= new UtenteIscrizione(true);
+            filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
+
+            this.docstructureService.requestNew(filterUtenteIscrizioni)
+                  .then(list=>{
+                        this.listUtenteCorsi=list;
+                        loading.dismiss();
+                  })
+                  .catch(error=>{
+                        loading.dismiss();
+                        console.log(error);
+                        this.showMessage('Errore nel caricamento');
+                  });
+
+         });
       }
     }
   }
@@ -215,36 +211,57 @@ export class HistorylistPage implements OnInit {
     if(this.docUtente&&this.docUtente.ID)
     switch (this.selectedView) {
       case 'prenotazioni':
+
         let filterUtentePrenotazioni= new UtentePrenotazione(true);
-          filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
-          this.docstructureService.request(filterUtentePrenotazioni).then(list=>{
-            this.listUtentePrenotazione=list;
-            event.target.complete();
-          }).catch(error=>{
-            event.target.complete();
-            console.log(error);
-            this.showMessage('Errore nel caricamento');
-          })
+        filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
+
+
+        this.docstructureService.requestNew(filterUtentePrenotazioni)
+              .then(list=>{
+                      this.listUtentePrenotazione=list;
+                      //Sparisce il pullToRefresh Image
+                      event.target.complete();
+              })
+              .catch(error=>{
+                      //Sparisce il pullToRefresh Image
+                      event.target.complete();
+
+                      console.log(error);
+                      this.showMessage('Errore nel caricamento');
+              });
         break;
 
       case 'corsi':
         //Richiedo le Iscrizioni
         let filterUtenteIscrizioni= new UtenteIscrizione(true);
-          filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
-          this.docstructureService.request(filterUtenteIscrizioni).then(list=>{
-            this.listUtenteCorsi=list;
-            event.target.complete();
-          }).catch(error=>{
-            event.target.complete();
-            console.log(error);
-            this.showMessage('Errore nel caricamento');
-          })
+        filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
+
+        this.docstructureService.requestNew(filterUtenteIscrizioni)
+              .then(list=>{
+                  
+                      this.listUtenteCorsi=list;
+                      //Sparisce il pullToRefresh Image
+                      event.target.complete();
+              })
+              .catch(error=>{
+
+                      //Sparisce il pullToRefresh Image
+                      event.target.complete();
+                      console.log(error);
+                      this.showMessage('Errore nel caricamento');
+              });
     
       default:
         break;
     }
 
   }
+
+
+  /**
+   * Mostra un messaggio con ToastController
+   * @param message Messaggio da mostrare
+   */
   showMessage(message: string) {
 
     //Creo un messaggio

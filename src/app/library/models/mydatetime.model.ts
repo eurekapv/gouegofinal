@@ -26,7 +26,7 @@ static formatDateTimeISO(data: Date) {
 }
 
 //Formatta un orario passata  (Data e Ora)
-static formatTimeISO(data: Date, withSeconds:boolean =false) {
+static formatTime(data: Date, withSeconds:boolean =false) {
 
     
     let ore = (data.getHours() > 9) ? (data.getHours() + '') : ('0' + data.getHours());
@@ -40,6 +40,16 @@ static formatTimeISO(data: Date, withSeconds:boolean =false) {
     }
 
     return final;
+}
+
+/**
+ * 
+ * @param data Data
+ * @param format Formattazione di moment.js da applicare
+ */
+static formatDate(data: Date, maskFormat: string) {
+    //https://momentjs.com/docs/#/displaying/
+    return moment(data).format(maskFormat);
 }
 
 

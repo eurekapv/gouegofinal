@@ -108,7 +108,7 @@ export class Corso extends IDDocument {
     objDescriptor.setRelation('IDCAMPO','Campo');
     objDescriptor.setRelation('IDLIVELLOENTRATA','Livello');
     objDescriptor.setRelation('IDLIVELLOFINALE','Livello');
-    objDescriptor.setRelation('IDCATEGORIAETA','CategoriaEta');
+    objDescriptor.setRelation('IDCATEGORIEETA','CategoriaEta');
     
     
 

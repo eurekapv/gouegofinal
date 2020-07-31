@@ -1,6 +1,7 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { SettoreAttivita, StatoCorso } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
+import { RequestForeign } from '../library/models/requestParams.model';
 
 export class Impegno extends IDDocument {
 
@@ -52,13 +53,36 @@ export class Impegno extends IDDocument {
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
     objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
 
-    objDescriptor.setRelation('IDAREA','Area');
+    objDescriptor.setRelation('IDAREAOPERATIVA','Area');
     objDescriptor.setRelation('IDLOCATION','Location');
     objDescriptor.setRelation('IDCAMPO','Campo');
     objDescriptor.setRelation('IDSPORT','Sport');
     objDescriptor.setRelation('IDUTENTE','Utente');
     
     return objDescriptor;
+}
+
+static getReqForeignKeys(): RequestForeign[] {
+    let arRequest: RequestForeign[] = [];
+    let objForeign: RequestForeign;
+
+    objForeign = new RequestForeign('IDAREAOPERATIVA');
+    arRequest.push(objForeign);
+
+    objForeign = new RequestForeign('IDSPORT');
+    arRequest.push(objForeign);
+
+    objForeign = new RequestForeign('IDCAMPO');
+    arRequest.push(objForeign);
+
+    objForeign = new RequestForeign('IDLOCATION');
+    objForeign.addDescribeField('DENOMINAZIONE');
+    objForeign.addDescribeField('INDIRIZZO');
+    
+
+    arRequest.push(objForeign);
+
+    return arRequest;
 }
        
 }

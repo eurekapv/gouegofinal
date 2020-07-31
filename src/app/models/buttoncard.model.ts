@@ -11,6 +11,12 @@ export class ButtonCard {
     color: string;
     iconLink: boolean;
     functionCod: string;
+    settore: SettoreAttivita;
+    id: string;
+
+    constructor() {
+        this.settore = 0;
+    }
 
 
 
@@ -62,10 +68,12 @@ export class ButtonCard {
 
         /** UTENTE LOGGATO */
         if (userLogged) {
+            //Determino il numero degli impegni
             if (listImpegni && listImpegni.length !== 0) {
                 numImpegni = listImpegni.length;
             }
 
+            //Non ci sono impegni 
             if (numImpegni == 0) {
 
                 newBtn = new ButtonCard();
@@ -81,33 +89,41 @@ export class ButtonCard {
 
             }
             else {
+                //Ci sono impegni e creo le varie card
                 listImpegni.forEach(element => {
 
                     newBtn = new ButtonCard();
                     if (element.SETTORE == SettoreAttivita.settoreCorso) {
 
                         newBtn.title = element.DENOMINAZIONE;
-                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' alle ' + MyDateTime.formatTimeISO(element.DATAORAINIZIO);
+                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
 
                         newBtn.nameicon = 'school-outline';
                         newBtn.sloticon = "start";
                         newBtn.color = "primary";
                         newBtn.iconLink = true;
-                        newBtn.functionCod = SettoreAttivita.settoreCorso + '-' + element.ID;
-                
+                        newBtn.functionCod =  "show";
+                        newBtn.id = element.ID;
+                        newBtn.settore = SettoreAttivita.settoreCorso;
+                        
                         arButton.push(newBtn);
                     }
                     else if (element.SETTORE == SettoreAttivita.settorePrenotazione){
 
-                        //TODO: Tutta questa parte è sbagliata, mancando ancora le decodifiche opportune
-                        newBtn.title = element.DENOMINAZIONE;
-                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' alle ' + MyDateTime.formatTimeISO(element.DATAORAINIZIO);
+                        
+                        newBtn.title = element['DENOMINAZIONE_Location'];
+                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
 
                         newBtn.nameicon = 'calendar-outline';
                         newBtn.sloticon = "start";
                         newBtn.color = "primary";
                         newBtn.iconLink = true;
-                        newBtn.functionCod = SettoreAttivita.settorePrenotazione + '-' + element.ID;
+
+                        newBtn.functionCod =  "show";
+                        newBtn.id = element.ID;
+                        newBtn.settore = SettoreAttivita.settorePrenotazione;
+
+                        
                 
                         arButton.push(newBtn);                        
                     }
@@ -118,6 +134,7 @@ export class ButtonCard {
 
         }
         else {
+            //Non loggato
             newBtn = new ButtonCard();
             newBtn.title = 'Registrati o accedi';
             newBtn.subtitle = 'crea il tuo account o accedi';
@@ -132,4 +149,7 @@ export class ButtonCard {
 
         return arButton;
     }
+
+
+    
 }

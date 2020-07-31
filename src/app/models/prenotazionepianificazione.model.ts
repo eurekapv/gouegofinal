@@ -1,6 +1,7 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { StatoPrenotazione } from './valuelist.model';
+import { RequestForeign } from '../library/models/requestParams.model';
 
 export class PrenotazionePianificazione extends IDDocument {
     IDPRENOTAZIONE: string;
@@ -90,5 +91,29 @@ export class PrenotazionePianificazione extends IDDocument {
         objDescriptor.setRelation('IDCAMPO','Campo');
         
         return objDescriptor;
+    }
+
+
+    static getReqForeignKeys(): RequestForeign[] {
+        let arRequest: RequestForeign[] = [];
+        let objForeign: RequestForeign;
+
+        objForeign = new RequestForeign('IDAREAOPERATIVA');
+        arRequest.push(objForeign);
+
+        objForeign = new RequestForeign('IDSPORT');
+        arRequest.push(objForeign);
+
+        objForeign = new RequestForeign('IDCAMPO');
+        arRequest.push(objForeign);
+
+        objForeign = new RequestForeign('IDLOCATION');
+        objForeign.addDescribeField('DENOMINAZIONE');
+        objForeign.addDescribeField('INDIRIZZO');
+        objForeign.addDescribeField('EMAIL');
+
+        arRequest.push(objForeign);
+
+        return arRequest;
     }
 }

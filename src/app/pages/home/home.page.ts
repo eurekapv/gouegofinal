@@ -17,6 +17,7 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { LogApp } from 'src/app/models/log.model';
+import { RequestParams } from 'src/app/library/models/requestParams.model';
 
 
 @Component({
@@ -61,6 +62,53 @@ export class HomePage implements OnInit, OnDestroy{
   //Oggetti per le News
   noNewsCard: NewsEvento;
   listNews: NewsEvento[] = [];
+
+  //Guarda qui
+  //https://swiperjs.com/demos/#responsive_breakpoints
+  sliderOpts={
+    slidesPerView: 1.2,
+    spaceBetween: 0,
+    initialSlide: 0,
+        // Dovrei farla variabile
+        // Responsive breakpoints   
+         breakpoints: {  
+   
+            // when window width is <= 320px     
+            320: {       
+               slidesPerView:  1.2,
+               spaceBetween: 0     
+            },     
+            // when window width is <= 480px     
+            480: {       
+               slidesPerView:  1.2,       
+               spaceBetween: 0     
+            },   
+        
+            // when window width is <= 640px     
+            640: {       
+               slidesPerView:  1.2,       
+               spaceBetween: 0     
+            },
+
+            1024: {
+              slidesPerView: 2.5,       
+              spaceBetween: 1  
+            },
+
+            1440: {
+              slidesPerView: 4,       
+              spaceBetween: 1 
+            },
+
+            1920: {
+              slidesPerView: 6,       
+              spaceBetween: 1 
+            }
+
+
+        
+         } 
+  }
   
 
   constructor(private startService: StartService,
@@ -141,7 +189,7 @@ export class HomePage implements OnInit, OnDestroy{
 
     
     //Impostazione Iniziale dei Bottoni relativi gli impegni
-    this.setButtonImpegni();
+    this.createButtonCardImpegni();
   }
 
  
@@ -155,31 +203,61 @@ export class HomePage implements OnInit, OnDestroy{
     }
   }
 
-  //#region EVENTI PERSONALI
+  //#region IMPEGNI
 
-  /** Imposta i bottoni in caso di mancanza eventi */
-  setButtonImpegni() {
+  /**
+   * Crea l'array dei BottoniCard degli impegni, a seconda dell'utente loggato e la lista impegni
+   */
+  createButtonCardImpegni() {
+
     //Recupero i bottoni da mostrare, a seconda sia loggato o no
     this.listButtonImpegni = ButtonCard.getButtonHomeImpegni(this.userLogged, this.myListImpegni);
   }
 
   /**
-   * Evento click su bottone No Events
+   * Evento click su bottone della card
    * @param btn Bottone cliccato
    */
-  onClickButtonNoEvents(btn: ButtonCard) {
+  onClickButtonCardImpegni(btn: ButtonCard) {
+
+    
     if (btn) {
       switch (btn.functionCod) {
         case 'register':
             // Apro il Login
             this.openLogin();
           break;
+        
+        case 'show':
+          this.redirectFromButtonCard(btn);
+        break;
       
         default:
           break;
       }
     }
   }
+
+  /**
+   * Apre la pagina relativa dal Bottone passato
+   * @param btn Bottone
+   */
+  redirectFromButtonCard(btn: ButtonCard) {
+    if (btn.id && btn.id.length !== 0) {
+      switch (btn.settore) {
+        case SettoreAttivita.settoreCorso:
+          this.navController.navigateForward(['/','historylist','course',btn.id]);
+          break;
+
+        case SettoreAttivita.settorePrenotazione:
+            this.navController.navigateForward(['/','historylist','booking',btn.id]);
+            break;
+      
+        default:
+          break;
+      }
+  }
+}
 
   //#endregion
 
@@ -402,6 +480,15 @@ export class HomePage implements OnInit, OnDestroy{
   * e successivamente prepara la listButtonImpegni
   */
  updateListImpegni(){
+  let reqParam = new RequestParams();
+
+  reqParam.top = 5;
+  reqParam.child_level = 1;
+  reqParam.decode.active = true;
+  
+  reqParam.decode.foreignFields = Impegno.getReqForeignKeys();
+
+  
   if (this.userLogged){
 
     if (this.docUtente) {
@@ -409,13 +496,16 @@ export class HomePage implements OnInit, OnDestroy{
       //creo il filtro
       let filterImpegno = new Impegno(true);
       filterImpegno.IDUTENTE=this.docUtente.ID;
-      this.docStructureService.request(filterImpegno,1,5)
+
+
+      this.docStructureService.requestNew(filterImpegno,reqParam)
                 .then( listImpegni =>{
 
                     this.myListImpegni=listImpegni;
 
                     //Reimposto l'area impegni
-                    this.setButtonImpegni();
+                    this.createButtonCardImpegni();
+
                 })
                 .catch(error=>{
                   this.myListImpegni=[];
@@ -425,13 +515,13 @@ export class HomePage implements OnInit, OnDestroy{
     else {
       this.myListImpegni=[];
       //Reimposto l'area impegni
-      this.setButtonImpegni();
+      this.createButtonCardImpegni();
     }
   }
   else{
     this.myListImpegni=[];
     //Reimposto l'area impegni
-    this.setButtonImpegni();
+    this.createButtonCardImpegni();
   }
 
 

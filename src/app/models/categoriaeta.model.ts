@@ -29,6 +29,7 @@ export class CategoriaEta extends IDDocument {
     objDescriptor.className = 'CategoriaEta';
     objDescriptor.classWebApiName = 'CATEGORIEETA';
     objDescriptor.doRemote = true;
+    objDescriptor.describeField = 'DESCTOOLTIP';
 
     objDescriptor.addMultiple(arString, TypeDefinition.char);
     objDescriptor.addMultiple(arNumber, TypeDefinition.number);

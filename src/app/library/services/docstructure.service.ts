@@ -210,7 +210,7 @@ export class DocstructureService {
           //Valorizzo le proprietà del documento come filtro di caricamento
           docFilter[definition.relFieldName] = doc[definition.fieldName];
 
-          this.request(docFilter)
+          this.requestNew(docFilter)
               .then(serverElement => {
                   //In teoria dovrei aver ricevuto qualcosa dal server
                   if (serverElement.length !== 0) {
@@ -299,7 +299,7 @@ export class DocstructureService {
     let nameNewProperty = '';
 
     if (doc && docRel) {
-      if (!useFields) {
+      if (!useFields || useFields.length == 0) {
         //doc è il documento a cui aggiungere proprietà
         //in questo caso ne aggiungo 1 sola, che è il describeRowField del docRel
         objDescriptor = docRel.getDescriptor();
@@ -334,89 +334,12 @@ export class DocstructureService {
       }
     }
 
-    console.log(doc);
+    
     return result;
   }
 
-
-
-  /**
-   * Effettua chiamate al server 
-   * il document dovrà essere istanziato con i parametri che si desiderano diventare filtri di caricamento
-   * @param document Parametri di configurazione
-   * @param decode Effettua la decodifica dei dati 
-   */
-  request(document: IDDocument, childLevel=2, nElem?: number) {
-
-    return new Promise<any[]>((resolve, reject)=>{
-      
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-      let objDescriptor: Descriptor;
-      
-      if (!document) {
-        reject('Documento non presente');
-      }
-      else {
-        //Recupero il descrittore della classe
-        objDescriptor = document.getDescriptor();
-
-        if (!objDescriptor) {
-          reject('Documento non descritto');
-        }
-        else if (objDescriptor.doRemote == false) {
-          //Non è gestito esternamente
-          reject('Documento non gestito in remoto');
-        }
-        else {
-
-          // In Testata c'e' sempre l'AppId
-          myHeaders = myHeaders.set('appid',this.myConfig.appId);
-          myHeaders = myHeaders.append('child-level', childLevel+'');
-
-          //Preparare i parametri con i filtri arrivati sul documento
-          let myParams = this.getHttpParamsFromDoc(document);
-          if (nElem){
-            myParams=myParams.append('$top',nElem+'');
-          }
-          let myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
-
-          if (!myParams) {
-            reject('Request Parametri insufficienti');
-          }
-          else {
-
-            this.apiService
-              .httpGet(myUrl, myHeaders, myParams)
-              .pipe(map(fullData => {
-                return fullData[objDescriptor.classWebApiName]
-              }))
-              .subscribe (resultData => {
-
-                let listElement: IDDocument[] = [];
-                if (resultData){
-                  resultData.forEach(elData => {
-                    
-                    let newClass: any = new DynamicClass(objDescriptor.className);
-                    newClass.setJSONProperty(elData);
-                    listElement.push(newClass);
   
-                  });
-    
-                }
-                resolve(listElement);
 
-              }, error => {
-                reject(error);
-              });
-
-          }
-          
-        }
-      }
-      
-    });
-
-  }
 
   /**
    * Effettua chiamate al server 
@@ -424,7 +347,85 @@ export class DocstructureService {
    * @param document Parametri di configurazione
    * @param decode Effettua la decodifica dei dati 
    */
-  requestNew(document: IDDocument, params:RequestParams) {
+  // request(document: IDDocument, childLevel=2, nElem?: number) {
+
+  //   return new Promise<any[]>((resolve, reject)=>{
+      
+  //     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+  //     let objDescriptor: Descriptor;
+      
+  //     if (!document) {
+  //       reject('Documento non presente');
+  //     }
+  //     else {
+  //       //Recupero il descrittore della classe
+  //       objDescriptor = document.getDescriptor();
+
+  //       if (!objDescriptor) {
+  //         reject('Documento non descritto');
+  //       }
+  //       else if (objDescriptor.doRemote == false) {
+  //         //Non è gestito esternamente
+  //         reject('Documento non gestito in remoto');
+  //       }
+  //       else {
+
+  //         // In Testata c'e' sempre l'AppId
+  //         myHeaders = myHeaders.set('appid',this.myConfig.appId);
+  //         myHeaders = myHeaders.append('child-level', childLevel+'');
+
+  //         //Preparare i parametri con i filtri arrivati sul documento
+  //         let myParams = this.getHttpParamsFromDoc(document);
+  //         if (nElem){
+  //           myParams=myParams.append('$top',nElem+'');
+  //         }
+  //         let myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
+
+  //         if (!myParams) {
+  //           reject('Request Parametri insufficienti');
+  //         }
+  //         else {
+
+  //           this.apiService
+  //             .httpGet(myUrl, myHeaders, myParams)
+  //             .pipe(map(fullData => {
+  //               return fullData[objDescriptor.classWebApiName]
+  //             }))
+  //             .subscribe (resultData => {
+
+  //               let listElement: IDDocument[] = [];
+  //               if (resultData){
+  //                 resultData.forEach(elData => {
+                    
+  //                   let newClass: any = new DynamicClass(objDescriptor.className);
+  //                   newClass.setJSONProperty(elData);
+  //                   listElement.push(newClass);
+  
+  //                 });
+    
+  //               }
+  //               resolve(listElement);
+
+  //             }, error => {
+  //               reject(error);
+  //             });
+
+  //         }
+          
+  //       }
+  //     }
+      
+  //   });
+
+  // }
+
+  /**
+   * Effettua chiamate al server 
+   * il document dovrà essere istanziato con i parametri che si desiderano diventare filtri di caricamento
+   * @param filterDocument Parametri di configurazione
+   * @param decode Effettua la decodifica dei dati 
+   */
+  requestNew(filterDocument: IDDocument, params?:RequestParams) {
 
     return new Promise<any[]>((resolve, reject)=>{
       
@@ -435,15 +436,15 @@ export class DocstructureService {
       let requestAndDecode = false;
       let foreignFields: RequestForeign[];
       
-      if (!document) {
-        reject('Documento non presente');
+      if (!filterDocument) {
+        reject('Documento filtro non presente');
       }
       else {
         //Recupero il descrittore della classe
-        objDescriptor = document.getDescriptor();
+        objDescriptor = filterDocument.getDescriptor();
 
         if (!objDescriptor) {
-          reject('Documento non descritto');
+          reject('Descrittore Documento filtro non presente');
         }
         else if (objDescriptor.doRemote == false) {
           //Non è gestito esternamente
@@ -486,7 +487,7 @@ export class DocstructureService {
 
 
           //Preparare i parametri con i filtri arrivati sul documento
-          let myParams = this.getHttpParamsFromDoc(document);
+          let myParams = this.getHttpParamsFromDoc(filterDocument);
 
           if (nElem && nElem > 0){
             myParams=myParams.append('$top',nElem+'');
@@ -548,12 +549,82 @@ export class DocstructureService {
 
   }
 
-  //TODO: Scrivere la decode collection
+
+  
   decodeCollection(collection: IDDocument[], foreignFields?:RequestForeign[]) {
     
+    //Devo decodificare l'intera collection di dati
+    //Versione 1: foreignField non presente
+    //        Decodifica di tutte le foreign key presenti con il describeRowField default
+    //Versione 2: foreignField presente 
+    //        Decodifica delle solo foreign key indicate controllando all'interno se ci sono campi di decodifica richiesti
+    
+
+
     return new Promise((resolve, reject)=>{        
 
       let executePromise:Promise<any>[] = [];
+
+      //Dati presenti in collection
+      if (collection && collection.length !== 0) {
+
+        //Versione 2
+        if (foreignFields && foreignFields.length !== 0) {
+
+          for (let index = 0; index < collection.length; index++) {
+            const doc = collection[index];
+
+            //Ciclo i ForeignFields
+            for (let iField = 0; iField < foreignFields.length; iField++) {
+              const elForeign = foreignFields[iField];
+
+              let exPromise = this.decode(doc,elForeign.nameField,true,elForeign.describeFields);
+              //Aggiunta all'Array
+              executePromise.push(exPromise);
+            }
+
+          }
+  
+        }
+        else {
+          //Versione 1
+          //Decodifica di tutte le foreign key presenti con il describeRowField default
+          //Utilizzo il decodeAll
+          for (let index = 0; index < collection.length; index++) {
+            const doc = collection[index];
+
+            //Creo la Promise di decodifica
+            let exPromise = this.decodeAll(doc);
+            
+            //Aggiunta all'Array
+            executePromise.push(exPromise);
+          }
+
+        }
+        
+        //Esecuzione di tutte le Promise se presenti
+        if (executePromise.length !== 0) {
+        //Eseguo tutte le Promise
+        Promise.all(executePromise)
+                .then(() => {
+                  //Ritorno il tutto decodificato
+                  resolve(collection);    
+                })
+                .catch(err => {
+                  reject(err);
+                });
+        }
+        else {
+          //Non ho nulla da decodificare e va bene cosi
+          resolve(collection);          
+        }
+
+      }
+      else {
+
+        //Non ci sono dati ritorno la stessa collection vuota
+        resolve(collection);
+      }
 
     });
 
@@ -638,6 +709,90 @@ export class DocstructureService {
   }
 
 
+  /**
+   * Dato un documento di partenza e una sequenza di campi ritorna il documento correlato
+   * Esempio Documento Corso contiene IDLOCATION
+   * seqField mi da il percorso da seguire per arrivare al documento correlato
+   * seqField = ['IDLOCATION'] => Location
+   * seqField = ['IDLOCATION', 'IDAREA'] => Area
+   * seqField = ['IDLOCATION', 'IDAREA','IDGRUPPO'] => Gruppo
+   * @param docStart Documento di partenza
+   * @param seqField Percorso da seguire per ottenere il documento correlato
+   */
+  getRelDoc(docStart:IDDocument, seqField: string[]):Promise<any> {
+    return new Promise((resolve, reject)=>{  
 
+      let nameField = '';
+      
+      let objFieldType: TypeReflector;
+
+      if (docStart) {
+
+        
+
+        if (seqField && seqField.length !== 0) {
+          
+          nameField = seqField[0];
+
+          //Con il nome del campo, ottengo la definizione del campo
+          objFieldType = docStart.getTypeReflectorByFieldName(nameField);
+            
+          //Il campo esiste e contiene qualcosa
+          if (objFieldType && docStart.isEmpty(nameField)==false) {
+
+            //E' un campo in foreing Key
+            if (objFieldType.isForeignKey) {
+              
+              //Impostare il documento di filtro
+              let filter:any = new DynamicClass(objFieldType.relFieldDoc, true);
+              let idDocFilter:IDDocument = filter;
+
+              idDocFilter.setPrimaryKey(docStart[nameField]);
+
+              this.requestNew(idDocFilter)
+                  .then(arElement => {
+
+                    if (arElement && arElement.length !== 0) {
+                      let element = arElement[0];
+
+                      if (seqField.length > 1) {
+                        let newSeqField = seqField.slice(1);
+
+                        return resolve(this.getRelDoc(element, newSeqField))
+
+                      }
+                      else {
+                        //Il giro è finito
+                        return resolve(element);
+                      }
+                    }
+                    else {
+                      return reject('Document rel not found');
+                    }
+
+                  })
+  
+            }
+            else {
+              return reject('Foreign Key not find');
+            }
+          }
+          else {
+            return reject('Foreign Key field');
+          }
+          
+  
+        }
+        else {
+          reject('Sequence Field Link empty');
+        }
+      }
+      else {
+        reject('Document null or undefined');
+      }
+
+    });
+
+  }
 
 }

@@ -11,6 +11,9 @@ import { ModalController, NavController, LoadingController, ToastController } fr
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { RequestParams, RequestForeign } from 'src/app/library/models/requestParams.model';
+import { filter } from 'rxjs/operators';
+import { Area } from 'src/app/models/area.model';
 
 @Component({
   selector: 'app-listcourses',
@@ -256,15 +259,42 @@ export class ListcoursesPage implements OnInit {
    * @param corso 
    */
   testingDecodeAll(corso: Corso) {
-
+    let params = new RequestParams();
+    let filterCorso = new Corso(true);
+    let objForeign: RequestForeign;
     
-    this.docStrService.decodeAll(corso)
-        .then(() => {
-            console.log('Sti gran cazzi !!!!')
-        })
-        .catch(err => {
-            console.error(err);
-        });
+    console.log(corso);
+    let area: Area;
+    this.docStrService.getRelDoc(corso, ['IDCAMPO','IDLOCATION','IDAREAOPERATIVA'])
+                     .then(docRel => {
+                       console.log(docRel);
+                     })
+                     .catch(err=> {
+                       console.log(err);
+                     })
+
+    //filterCorso.ID = corso.ID;
+    //filterCorso.IDLOCATION = '9742AD87-FE66-44AF-9F2C-59967C4D051F';
+
+    // params.child_level = 1;
+    // params.decode.active = true;
+    // objForeign = params.decode.addForeignField('IDSPORT');
+    // objForeign.addDescribeField('ICONA');
+    // objForeign.addDescribeField('DENOMINAZIONE');
+
+    // objForeign = params.decode.addForeignField('IDLIVELLOENTRATA');
+    // objForeign.addDescribeField('DENOMINAZIONE');
+    
+
+    // this.docStrService.requestNew(filterCorso,params)
+    //                   .then(collection => {
+    //                     console.log(collection);
+    //                   })
+    //                   .catch(err => {
+    //                     console.log('Errore');
+    //                   })
+    
+
 
   }
 

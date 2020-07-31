@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IDDocument } from '../models/iddocument.model';
+import { IDDocument, OperatorCondition } from '../models/iddocument.model';
 import {RequestParams, RequestDecode, RequestForeign } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
@@ -487,7 +487,7 @@ export class DocstructureService {
 
 
           //Preparare i parametri con i filtri arrivati sul documento
-          let myParams = this.getHttpParamsFromDoc(filterDocument);
+          let myParams = this._getHttpParamsFromDoc(filterDocument);
 
           if (nElem && nElem > 0){
             myParams=myParams.append('$top',nElem+'');
@@ -637,7 +637,7 @@ export class DocstructureService {
    * Prepara i parametri per la chiamata controllando i parametri presenti sul documento
    * @param document Documento con i parametri di filtro
    */
-  getHttpParamsFromDoc(document:IDDocument): HttpParams {
+  private _getHttpParamsFromDoc(document:IDDocument): HttpParams {
     
     let myParams: HttpParams;
     let arProperty = Object.keys(document); //Prendo tutte le proprietà
@@ -688,8 +688,19 @@ export class DocstructureService {
               break;
           }
 
+
+
           if (strValue.length !== 0) {
 
+            //Tutti i parametri vengono aggiunti per uguaglianza o controllando
+            //se presenti con una condizione diversa nel filterCondition
+            let operator: OperatorCondition;
+            //Chiedo l'operatore da applicare
+            operator = document.getFilterOperatorByFieldName(nameProperty);
+
+            //Viene sempre ritornato l'operatore da impostare
+            strValue = operator + strValue;
+            
             if (myParams == undefined) {
               myParams = new HttpParams().set(nameProperty, strValue);
             }

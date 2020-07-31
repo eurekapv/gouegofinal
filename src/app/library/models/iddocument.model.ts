@@ -10,12 +10,18 @@ import { MyDateTime } from './mydatetime.model';
     do_inserted: boolean;
     do_deleted: boolean;
     selected: boolean;
+
+
+    //Condizioni di filtro
+    _filterConditions:FilterCondition[];
   
     /**
      * 
      * @param onlyInstance Non inizializzare con valori predefiniti il documento, crea solo l'istanza
      */
     constructor(onlyInstance?:boolean) {
+
+        this._filterConditions = [];
 
        if (!onlyInstance) {
           this.ID = this.newID();
@@ -558,12 +564,84 @@ import { MyDateTime } from './mydatetime.model';
     }
     //#endregion
 
+    //#region CONDITION
+    addFilterCondition(operator: OperatorCondition, fieldName: string) {
+      if (operator && fieldName) {
+
+        let objCondition = new FilterCondition(operator, fieldName);
+        this._filterConditions.push(objCondition);
+      }
+    }
+
+
+    /**
+     * Cerca se nelle Condizioni di Filtro è preseente il campo e ne ritorna l'oggetto FilterCondition
+     * @param fieldName Nome del campo
+     */
+    getFilterConditionByFieldName(fieldName: string): FilterCondition {
+      let objFilter: FilterCondition;
+
+      //Cerchiamo nell'array delle condizioni
+      objFilter = this._filterConditions.find(element => {
+        return element.fieldName == fieldName;
+      });
+
+      return objFilter;
+    }
+
+
+    /**
+     * Ritorna l'operatore della condizione di Filtro impostata nel campo
+     * Di Default viene tornata sempre l'uguaglianza
+     * @param fieldName Nome del campo
+     */
+    getFilterOperatorByFieldName(fieldName: string): OperatorCondition {
+      let objFilter: FilterCondition;
+      let operator: OperatorCondition = OperatorCondition.uguale;
+
+
+      if (fieldName && fieldName.length !== 0) {
+
+        //Chiedo la condizione di filtro se presente
+        objFilter = this.getFilterConditionByFieldName(fieldName);
+        //Se presente recupero l'operatore della condizione
+        if (objFilter) {
+          operator = objFilter.operator;
+        }
+      }
+      
+
+      return operator;
+    }
+    
+    //#endregion
 
     
 
 
   }
 
+  /**
+   * Classe di Condizioni di filtro
+   */
+  export class FilterCondition {
+    operator: OperatorCondition;
+    fieldName: string;
+
+    constructor(operator: OperatorCondition, fieldName: string) {
+      this.fieldName = fieldName;
+      this.operator = operator;
+    }
+  }
+
+  /**
+   * Operatori delle condizioni
+   */
+  export enum OperatorCondition {
+    uguale = '',
+    minore = '<',
+    maggiore = '>'
+  }
 
 
 

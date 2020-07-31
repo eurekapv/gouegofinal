@@ -18,6 +18,8 @@ import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { LogApp } from 'src/app/models/log.model';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
+import { filter } from 'rxjs/operators';
+import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 
 
 @Component({
@@ -482,7 +484,7 @@ export class HomePage implements OnInit, OnDestroy{
  updateListImpegni(){
   let reqParam = new RequestParams();
 
-  reqParam.top = 5;
+  reqParam.top = 10;
   reqParam.child_level = 1;
   reqParam.decode.active = true;
   
@@ -493,9 +495,14 @@ export class HomePage implements OnInit, OnDestroy{
 
     if (this.docUtente) {
       //Devo richiedere gli impegni
-      //creo il filtro
+
+      //Imposto nel filtro l'Utente
       let filterImpegno = new Impegno(true);
       filterImpegno.IDUTENTE=this.docUtente.ID;
+
+      filterImpegno.DATAORAINIZIO = new Date();
+      //Applico una condizione per la dataorainizio
+      filterImpegno.addFilterCondition(OperatorCondition.maggiore, 'DATAORAINIZIO');
 
 
       this.docStructureService.requestNew(filterImpegno,reqParam)

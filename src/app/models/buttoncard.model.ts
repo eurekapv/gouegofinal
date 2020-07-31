@@ -111,7 +111,7 @@ export class ButtonCard {
                     else if (element.SETTORE == SettoreAttivita.settorePrenotazione){
 
                         
-                        newBtn.title = element['DENOMINAZIONE_Location'];
+                        newBtn.title = element['_DENOMINAZIONE_Location'];
                         newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
 
                         newBtn.nameicon = 'calendar-outline';

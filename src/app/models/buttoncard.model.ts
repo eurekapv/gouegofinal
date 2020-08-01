@@ -3,6 +3,12 @@ import { SettoreAttivita } from './valuelist.model';
 import { Settimana } from './settimana.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 
+export class ButtonHomeParams {
+    utenteLoggato?: boolean; //Utente loggato
+    registrazioneInApp?: boolean; //Indica se è possibile effettuare la registrazione nell'App
+    listImpegni?: Impegno[]; //Lista degli impegni utente
+}
+
 export class ButtonCard {
     title: string;
     subtitle: string;
@@ -61,10 +67,21 @@ export class ButtonCard {
      * quando non sono presenti eventi
      * @param userLogged Utente è loggato
      */
-    static getButtonHomeImpegni(userLogged: boolean, listImpegni?:Impegno[]): ButtonCard[] {
+    static getButtonHomeImpegni(params?:ButtonHomeParams): ButtonCard[] {
         let arButton: ButtonCard[] = [];
         let newBtn: ButtonCard;
         let numImpegni = 0;
+
+        let registrationInApp: boolean = false; 
+        let userLogged: boolean = false;
+        let listImpegni:Impegno[] = [];
+
+        //Recupero dei parametri
+        if (params) {
+            userLogged = params.utenteLoggato;
+            listImpegni = params.listImpegni;
+            registrationInApp = params.registrazioneInApp;
+        }
 
         /** UTENTE LOGGATO */
         if (userLogged) {
@@ -136,15 +153,29 @@ export class ButtonCard {
         else {
             //Non loggato
             newBtn = new ButtonCard();
-            newBtn.title = 'Registrati o accedi';
-            newBtn.subtitle = 'crea il tuo account o accedi';
-            newBtn.nameicon = 'person-add-outline';
-            newBtn.sloticon = "start";
-            newBtn.color = "primary";
-            newBtn.iconLink = true;
-            newBtn.functionCod = 'register';
-    
-            arButton.push(newBtn);
+            if (registrationInApp) {
+
+                newBtn.title = 'Registrati o accedi';
+                newBtn.subtitle = 'crea il tuo account o accedi';
+                newBtn.nameicon = 'person-add-outline';
+                newBtn.sloticon = "start";
+                newBtn.color = "primary";
+                newBtn.iconLink = true;
+                newBtn.functionCod = 'register';
+        
+                arButton.push(newBtn);
+            }
+            else {
+                newBtn.title = 'Inizia ed accedi';
+                newBtn.subtitle = 'accedi al tuo account';
+                newBtn.nameicon = 'person-add-outline';
+                newBtn.sloticon = "start";
+                newBtn.color = "primary";
+                newBtn.iconLink = true;
+                newBtn.functionCod = 'login';
+        
+                arButton.push(newBtn);
+            }
         }
 
         return arButton;

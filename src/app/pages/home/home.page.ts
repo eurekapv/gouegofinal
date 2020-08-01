@@ -11,7 +11,7 @@ import { Impegno  } from 'src/app/models/impegno.model';
 import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
-import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { ButtonCard, ButtonHomeParams } from 'src/app/models/buttoncard.model';
 import { NewsEvento } from 'src/app/models/newsevento.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
@@ -222,9 +222,19 @@ export class HomePage implements OnInit, OnDestroy{
    * Crea l'array dei BottoniCard degli impegni, a seconda dell'utente loggato e la lista impegni
    */
   createButtonCardImpegni() {
+    let params: ButtonHomeParams = new ButtonHomeParams();
+
+    //Preparo i parametri
+    params.utenteLoggato = this.userLogged;
+    params.listImpegni = this.myListImpegni;
+    params.registrazioneInApp = false;
+    if (this.startConfig && this.startConfig.gruppo) {
+      params.registrazioneInApp = this.startConfig.gruppo.APPFLAGREGISTRAZIONE;
+    }
+
 
     //Recupero i bottoni da mostrare, a seconda sia loggato o no
-    this.listButtonImpegni = ButtonCard.getButtonHomeImpegni(this.userLogged, this.myListImpegni);
+    this.listButtonImpegni = ButtonCard.getButtonHomeImpegni(params);
   }
 
   /**
@@ -240,6 +250,11 @@ export class HomePage implements OnInit, OnDestroy{
             // Apro il Login
             this.openLogin();
           break;
+
+        case 'login':
+            // Apro il Login
+            this.openLogin();
+        break;
         
         case 'show':
           this.redirectFromButtonCard(btn);
@@ -363,10 +378,12 @@ export class HomePage implements OnInit, OnDestroy{
 
   /** Apertura Videata Login */
   async openLogin() {
-    //this.navController.navigateForward(['/','auth','new-login']);
+    
+    //**Apro in versione moale la NewLogin
     const modal = await this.modalController.create({
       component: NewLoginPage
     });
+
     modal.present();
   }
 

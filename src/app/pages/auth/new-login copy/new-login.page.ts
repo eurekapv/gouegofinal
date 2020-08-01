@@ -6,8 +6,6 @@ import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { Plugins } from '@capacitor/core';
-import { Gruppo } from 'src/app/models/gruppo.model';
-import { TipoVerificaAccount } from 'src/app/models/valuelist.model';
 const { Browser } = Plugins;
 
 
@@ -20,27 +18,8 @@ export class NewLoginPage implements OnInit {
 
   //per utilizzare l'enum nell'html
   pageState: typeof PageState=PageState;
-  tipoVerifica: typeof TipoVerificaAccount = TipoVerificaAccount;
-
   //variabile che indica lo stato della pagina
-  //Se posizionato su Login, Register, Verifiy o Welcome
-  actualStatePage:PageState = PageState.LOGIN;
-
-  //Situazione del Segment (Login o Register)
-  actualStateSegment: PageState = PageState.LOGIN;
-
-  //Nel caso di registrazione indica a che punto ci si trova
-  registrationStep: PageState;
-
-  //Array con gli step possibili in registrazione
-  stepRegistration: PageState[] = [];
-  indexStepRegistration: number = 0;
-
-
-
-  //Registrazione possibile in app
-  registrationInApp: boolean = false; 
-
+  stato:PageState;
 
   //varibili formGroup (per usare i reactive forms)
   formRegister: FormGroup;
@@ -50,10 +29,8 @@ export class NewLoginPage implements OnInit {
   formContact: FormGroup;
 
   //Dati
-  startConfig:StartConfiguration;
+  startConfig:StartConfiguration
   startListen: Subscription;
-  docGruppo: Gruppo;
-
   docUtente= new Utente;
 
   //Restituisce true se l'app sta girando su Desktop
@@ -78,43 +55,12 @@ export class NewLoginPage implements OnInit {
     private modalCtrl:ModalController,
     private startService:StartService,
     private loadingCtrl:LoadingController,
-    private toastCtrl:ToastController
+    private toastCtrl:ToastController,
+    private navCtrl: NavController
   ) {
-
-    
-    //Stato Pagina registrazione
-    this.indexStepRegistration = 0;
-
-    
-
-    //Posizionato sulla pagina di login
-    this.actualStatePage = PageState.LOGIN;
-
-    //Segment Option puo' essere solo Login/Registration
-    this.actualStateSegment = PageState.LOGIN;
-
-    
-
-
-    //Richiedo lo startConfig
-    this.startListen = startService.startConfig.subscribe(data=>{
-                
-                //Memorizzo lo StartConfig
-                this.startConfig=data;
-
-                //Nel gruppo è specificato se è possibile effettuare 
-                //registrazioni con l'app
-                if (this.startConfig && this.startConfig.gruppo) {
-
-                  //Memorizzo il Gruppo con le sue Opzioni
-                  this.docGruppo = this.startConfig.gruppo;
-
-                  //Abilitazione / Disabilitazione registrazione in App
-                  this.registrationInApp = this.startConfig.gruppo.APPFLAGREGISTRAZIONE;
-
-                  //Creo un Array con gli step di registrazione
-                  this.createArrayStepRegistration(this.docGruppo);
-                }
+    this.stato=this.pageState.LOGIN;
+    this.startListen=startService.startConfig.subscribe(data=>{
+      this.startConfig=data;
     });
    }
 
@@ -124,76 +70,6 @@ export class NewLoginPage implements OnInit {
     this.createVeriryForm();
     this.createContactForm();
     this.isDesktop=this.startService.isDesktop
-  }
-
-  /**
-   * Titolo da applicare alla videata
-   */
-  getCaptionTitle(): string {
-    let strTitle: string;
-
-    if (this.actualStateSegment == PageState.LOGIN) {
-      strTitle = 'Login';
-    }
-    else {
-      strTitle = 'Nuovo Account';
-    }
-
-    return strTitle;
-  }
-
-  /**
-   * Modifica dello stato del segment
-   */
-  onSegmentChanged(ev:any) {
-    //Vuole tornare al login
-    if (ev.detail.value == PageState.LOGIN) {
-      this.actualStatePage = PageState.LOGIN;
-    }
-    else {
-      //Lo stato della pagina
-      this.actualStatePage = this.stepRegistration[this.indexStepRegistration];
-    }
-  }
-
-
-  /**
-   * Crea un array con i passaggi disponibili in registrazione
-   * a seconda delle richieste del gruppo
-   * Se il gruppo non vuole verifiche, si passa subito ai dati
-   */
-  createArrayStepRegistration(docGruppo: Gruppo) {
-    this.stepRegistration = [];
-
-    console.log(docGruppo);
-    
-    if (docGruppo.APPFLAGREGISTRAZIONE == true) {
-
-      //Pagina dei contatti Email/SMS
-      this.stepRegistration.push(PageState.CONTACT);
-
-      if (docGruppo.APPTIPOVERIFICA !== TipoVerificaAccount.noverifica) {
-        //La pagina di Verifica è necessaria alla registrazione
-        this.stepRegistration.push(PageState.VERIFY);
-      }
-
-      //Dati di registrazione
-      this.stepRegistration.push(PageState.REGISTRATION);
-      //Fase Finale
-      this.stepRegistration.push(PageState.WELCOME);
-
-    }
-  }
-
-
-    /**
-   * cambia lo stato della pagina (login, registrazione, ecc...)
-   * @param stato il nuovo stato da impostare
-   */
-  changePageState(stato:PageState)
-  {
-    this.actualStatePage=stato;
-
   }
 
   closeModal(){
@@ -277,7 +153,7 @@ export class NewLoginPage implements OnInit {
           // element.present();
 
 
-            this.actualStatePage=PageState.WELCOME;
+            this.stato=PageState.WELCOME;
         })
     }
   }
@@ -291,7 +167,7 @@ export class NewLoginPage implements OnInit {
     if(this.formVeriryTel.valid&&this.formVeriryMail.valid)
     {
       //TODO qui manca la richiesta di registrazione a gouego
-      this.actualStatePage=PageState.REGISTRATION;
+      this.stato=PageState.REGISTRATION;
     }
   }
 
@@ -300,7 +176,7 @@ export class NewLoginPage implements OnInit {
    */
   onClickContinua(){
     //TODO qui bisogna inserire l'invio di sms ed email
-    this.actualStatePage=PageState.VERIFY
+    this.stato=PageState.VERIFY
     
   }
 
@@ -358,7 +234,14 @@ export class NewLoginPage implements OnInit {
       toast.present();
   }
 
-
+  /**
+   * cambia lo stato della pagina (login, registrazione, ecc...)
+   * @param stato il nuovo stato da impostare
+   */
+  changePageState(stato:PageState)
+  {
+    this.stato=stato;
+  }
   
   /**
    * evento scatenato quando l'utente tappa su "reinvia codice"
@@ -512,10 +395,10 @@ export class NewLoginPage implements OnInit {
 
 enum PageState
 {
-  LOGIN = 100,
-  CONTACT = 210,
-  REGISTRATION = 220,
-  VERIFY = 230,
-  WELCOME = 300
+  REGISTRATION =10,
+  VERIFY = 20,
+  WELCOME = 30,
+  LOGIN = 40,
+  CONTACT = 50
 }
 

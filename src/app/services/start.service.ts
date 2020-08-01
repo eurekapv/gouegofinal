@@ -105,6 +105,7 @@ export class StartService {
     const doObject = 'GRUPPOSPORTIVO';
     //Aggiungo negli header la richiesta delle immagini
     myHeaders = myHeaders.set('with-images','1');
+    myHeaders = myHeaders.set('with-options','1');
 
     let myUrl = actualStartConfig.urlBase + '/' + doObject;
 

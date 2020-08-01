@@ -130,6 +130,13 @@ export enum PageType {
     tikTok = 230
 }
 
+//Questa lista non è presente in Inde ma memorizzata sul db nelle opzioni
+export enum TipoVerificaAccount {
+    noverifica = 0,
+    verificaemail = 10,
+    verificasms = 20,
+    verificaemailsms = 30
+}
 
 
 
@@ -270,6 +277,8 @@ export enum Mesi {
     dicembre = 12
 
 }
+
+
 
 
 //#endregion

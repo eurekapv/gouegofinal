@@ -19,6 +19,9 @@ export class Gruppo extends IDDocument {
     TIPOGRUPPO: TipoSocieta;
     URLPRIVACY: string;
     PRIVATEIMAGE: PrivateImage[];
+    APPFLAGREGISTRAZIONE: boolean;
+    APPTIPOVERIFICA: number;
+
     _PAYMENT_MODE: Payment;         //Oggetto con i metodi di pagamento
   
     constructor(onlyInstance?:boolean) {
@@ -86,8 +89,8 @@ export class Gruppo extends IDDocument {
                     'APPID',
                     'URLPRIVACY'                   
                     ];
-    let arNumber = ['TIPOGRUPPO'];
-    let arBoolean = [];
+    let arNumber = ['TIPOGRUPPO','APPTIPOVERIFICA'];
+    let arBoolean = ['APPFLAGREGISTRAZIONE'];
     let arDate = [];
     let arDateTime =[];
     let arTime = [];

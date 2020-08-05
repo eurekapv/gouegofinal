@@ -7,7 +7,11 @@ import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { Plugins } from '@capacitor/core';
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { TipoVerificaAccount } from 'src/app/models/valuelist.model';
+import { TipoVerificaAccount, PageType } from 'src/app/models/valuelist.model';
+import { Area } from 'src/app/models/area.model';
+import { AreaLink } from 'src/app/models/arealink.model';
+import { AccountRegistrationRequestCode, AccountRegistrationResponse } from 'src/app/models/accountregistration.model';
+import { skip } from 'rxjs/operators';
 const { Browser } = Plugins;
 
 
@@ -36,6 +40,8 @@ export class NewLoginPage implements OnInit {
   stepRegistration: PageState[] = [];
   indexStepRegistration: number = 0;
 
+  //Documento per la richiesta invio codici al server
+  docRichiestaCodici: AccountRegistrationRequestCode = new AccountRegistrationRequestCode();
 
 
   //Registrazione possibile in app
@@ -53,11 +59,19 @@ export class NewLoginPage implements OnInit {
   startConfig:StartConfiguration;
   startListen: Subscription;
   docGruppo: Gruppo;
+  docArea: Area;
 
+  //Utente
   docUtente= new Utente;
 
   //Restituisce true se l'app sta girando su Desktop
   isDesktop:boolean;
+
+  //Verifiche
+  emailVerificationYES: boolean = false;
+  smsVerificationYES: boolean = false;
+  emailVerificata: string = ''; //Email verificata
+  telVerificato: string = ''; //Numero telefono Verificato
 
   //#region questi servono per accedere ai corrispettivi elementi in HTML
   @ViewChild('c1',{static:false}) c1;
@@ -84,8 +98,6 @@ export class NewLoginPage implements OnInit {
     
     //Stato Pagina registrazione
     this.indexStepRegistration = 0;
-
-    
 
     //Posizionato sulla pagina di login
     this.actualStatePage = PageState.LOGIN;
@@ -116,6 +128,11 @@ export class NewLoginPage implements OnInit {
                   this.createArrayStepRegistration(this.docGruppo);
                 }
     });
+
+    //Prelevo l'area selezionata 
+    this.docArea = this.startService.areaSelectedValue;
+  
+
    }
 
   ngOnInit() {
@@ -165,8 +182,8 @@ export class NewLoginPage implements OnInit {
   createArrayStepRegistration(docGruppo: Gruppo) {
     this.stepRegistration = [];
 
-    console.log(docGruppo);
     
+
     if (docGruppo.APPFLAGREGISTRAZIONE == true) {
 
       //Pagina dei contatti Email/SMS
@@ -185,6 +202,32 @@ export class NewLoginPage implements OnInit {
     }
   }
 
+  /**
+   * Effettua l'avanzamento di pagina nello Step Registrazione
+   * @param skipVerifica Nel caso fosse la pagina di verifica salta a quella successiva
+   */
+  nextStepRegistration(skipVerifica: boolean = false) {
+    
+    
+    if (this.indexStepRegistration + 1 < this.stepRegistration.length) {
+      
+      for (let index = this.indexStepRegistration + 1; index < this.stepRegistration.length; index++) {
+        let find = true;
+        const element = this.stepRegistration[index];
+        
+        if (skipVerifica && element == PageState.VERIFY) {
+          //Fingo di non aver trovato cosi sto dentro
+          find = false;
+        }
+        
+        if (find) {
+          this.indexStepRegistration = index;
+          this.actualStatePage = element;
+        }
+      }
+    }
+  }
+
 
     /**
    * cambia lo stato della pagina (login, registrazione, ecc...)
@@ -198,9 +241,35 @@ export class NewLoginPage implements OnInit {
 
   closeModal(){
     this.modalCtrl.dismiss();
-    //usato quando non in modale
-    //this.navCtrl.navigateRoot('/')
   }
+
+
+  /**
+   * Pulsante Indietro nel footer (ove presente)
+   */
+  onClickFooterIndietro() {
+
+  }
+
+
+  /**
+   * Pulsante Avanti o Acced presente nel footer
+   */
+  onClickFooterAvanti() {
+    switch(this.actualStatePage) {
+      case PageState.LOGIN:
+          //Siamo sul Login e quindi gestisco la fase di login
+          this.onClickLogin();
+        break;
+
+      case PageState.CONTACT:
+          //Siamo sulla pagina dei Contatti e dobbiamo gestirne la fase
+          this.onClickAvantiContact();
+        break;
+
+    }
+  }
+
 
   /**
    * Evento scatenato al click del login
@@ -252,6 +321,257 @@ export class NewLoginPage implements OnInit {
     }
   }
 
+
+  //#region BOTTONI AVANZAMENTO REGISTRAZIONE
+
+  /*
+  L'intera fase di registrazione è gestita con un array this.stepRegistration
+  Dentro ci sono i passaggi richiesti (che sono variabili a seconda delle verifiche richieste)
+
+  this.indexStepRegistration è l'indice dell'array su cui siamo posizionati
+  this.actualStatePage è lo Stato Attuale (recuperato dall'array)
+
+  */
+
+  /**
+   * Click di Avanti sulla pagina con i contatti
+   */
+  onClickAvantiContact() {
+    //Ci sono diversi stati da gestire per andare avanti da questa pagina
+    //La variabile docGruppo.APPTIPOVERIFICA indica le verifiche richieste
+    let inpEmail = this.formContact.value.email;
+    let inpTel = this.formContact.value.telephone;
+    let needPageVerify: boolean = true;
+    let prosegui: boolean = false;
+    let message: string = '';
+
+
+    //Le due variabili
+    //this.smsVerificationYES
+    //this.emailVerificationYES
+    //indicano cosa bisogna ancora verificare
+
+    //Stato 1: Le verifiche sono già effettuate e 
+    //nessun campo è stato modificato dopo la verifica
+    //Stato 2: Non sono richieste verifiche
+
+    console.log('Qui inizio');
+
+    //Nessuna verifica da apportare
+    if (this.docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.noverifica) {
+      
+      //Imposto email e sms verificati
+      this.emailVerificationYES = true;
+      this.smsVerificationYES = true;
+
+      //Non serve la pagina di verifica
+      needPageVerify = false;
+      prosegui = true;
+
+      //Nessuna richiesta codici da effettuare
+      this.docRichiestaCodici.REQUESTSMSCODE = false;
+      this.docRichiestaCodici.REQUESTEMAILCODE = false;
+
+    }
+    else {
+
+      //Bisogna verificare qualcosa
+      switch(this.docGruppo.APPTIPOVERIFICA) {
+
+        case TipoVerificaAccount.verificaemail:
+
+          if (this.emailVerificationYES && this.emailVerificata == inpEmail) {
+            //Tutto rimasto invariato, email è verificata si puo' bypassare la verifica
+
+            //Non serve la pagina di verifica
+            needPageVerify = false;
+            prosegui = true;
+
+            //non serve richiedere ancora il codice email
+            this.docRichiestaCodici.REQUESTEMAILCODE = false;
+
+
+          }
+          else {
+            //Email non verificata, oppure modificata
+            //devo verificare
+
+            //Serve la pagina di verifica
+            needPageVerify = true;
+            prosegui = true;
+
+            //Bisogna richiedere ancora il codice email
+            this.docRichiestaCodici.REQUESTEMAILCODE = true;
+            this.docRichiestaCodici.EMAIL = inpEmail;
+
+          }
+          break;
+
+        case TipoVerificaAccount.verificaemailsms:
+
+          if ((this.emailVerificationYES && this.emailVerificata == inpEmail) && 
+              (this.smsVerificationYES && this.telVerificato == inpTel)) {
+            //Tutto rimasto invariato, email e Telefono verificati si puo' bypassare la verifica
+
+            //Non serve la pagina di verifica
+            needPageVerify = false;
+            prosegui = true;
+
+            //Nessuna richiesta ulteriore da effettuare
+            this.docRichiestaCodici.REQUESTEMAILCODE = false;
+            this.docRichiestaCodici.REQUESTSMSCODE = false;
+
+          }
+          else {
+            //Email o Telefono non verificato, oppure modificato
+            //devo verificare
+
+            //Serve la pagina di verifica
+            needPageVerify = true;
+            prosegui = true;
+
+            if (this.emailVerificationYES == false || this.emailVerificata !== inpEmail) {
+              //Ha cambiato la mail dopo la verifica oppure non l ha mai verificato
+
+              //Bisogna richiedere ancora il codice email
+              this.docRichiestaCodici.REQUESTEMAILCODE = true;
+              this.docRichiestaCodici.EMAIL = inpEmail;
+            }
+
+            if (this.smsVerificationYES == false || this.telVerificato !== inpTel) {
+              //Ha cambiato il telefono dopo la verifica oppure non l ha mai verificato
+
+              //Bisogna richiedere ancora il codice SMS
+              this.docRichiestaCodici.REQUESTSMSCODE = true;
+              this.docRichiestaCodici.TELEPHONE = inpTel;
+
+            }
+
+
+          }
+          break;
+
+
+          
+        case TipoVerificaAccount.verificasms:
+
+          if (this.smsVerificationYES && this.telVerificato == inpTel) {
+            //Tutto rimasto invariato, Telefono è verificato si puo' bypassare la verifica
+
+            //Non serve la pagina di verifica
+            needPageVerify = false;
+            prosegui = true;
+
+            //Nessuna richiesta SMS da effettuare
+            this.docRichiestaCodici.REQUESTSMSCODE = false;
+
+          }
+          else {
+            //Telefono non verificato, oppure modificato
+            //devo verificare
+
+            //Serve la pagina di verifica
+            needPageVerify = true;
+            prosegui = true;
+
+            //Bisogna richiedere ancora il codice SMS
+            this.docRichiestaCodici.REQUESTSMSCODE = true;
+            this.docRichiestaCodici.TELEPHONE = inpTel;
+
+
+          }
+
+          break;
+
+        default:
+          prosegui = false;
+          message = 'Ops..qualcosa è andato storto';
+          break;
+      }
+
+      if (prosegui) {
+        //Serve la pagina di verifica
+        //Allora devo chiamare il server per inviare i codici
+        if (needPageVerify) {
+
+          //Chiamo il server, e se tutto va a buon fine andro alla verifica
+          this.sendServerRichiestaCodici();
+          
+        }
+        else {
+          //Devo andare alla pagina successiva alla verifica
+          const skipPageVerifica = true;
+          this.nextStepRegistration(skipPageVerifica);
+        }
+      }
+      else {
+
+        //Visualizzo il messaggio
+        this.showMessage(message);
+
+      }
+
+
+
+    }
+
+
+  }
+
+
+  /**
+   * Chiede al server di inviare i codici pin necessari
+   * Se tutto va a buon fine si sposta nella pagina di verifica, altrimenti segnala l'errore
+   */
+  sendServerRichiestaCodici() {
+
+    this.loadingCtrl
+      .create({
+          message: 'Invio Codici'
+      })
+      .then(element => {
+
+        //Creo il loading
+        element.present();
+
+        //Ora chiedo al server di inviare i codici
+
+        //Il documento contiene le informazioni necessarie
+        //Aggiungo l'area nel caso non ci fosse
+        this.docRichiestaCodici.IDAREA = this.docArea.ID;
+
+        //Chiamo il servizio
+        this.startService
+              .registrationSendCodici(this.docRichiestaCodici)
+              .then((responseServer:AccountRegistrationResponse) => {
+
+                //Chiudo il Loading Controller
+                element.dismiss();
+
+                //Qui in teoria i codici sono stati inviati
+                //Memorizzo IDREFER per le chiamate successive
+                this.docRichiestaCodici.IDREFER = responseServer.idRefer;
+
+                //Devo spostarmi alla pagina di verifica
+                const skipPageVerifica = false;
+                this.nextStepRegistration(skipPageVerifica);
+
+              })
+              .catch(err => {
+                  //Chiudo il Loading Controller
+                  element.dismiss();
+                  //Visualizzo il messaggio
+                  this.showMessage(err);
+              })
+
+      
+    });
+    
+  }
+
+
+  //#endregion
+
   /**
    * evento scatenato quando l'utente clicca "registrati" 
    * sulla pagina di inserimento dati
@@ -267,6 +587,7 @@ export class NewLoginPage implements OnInit {
       this.docUtente.COGNOME=this.formRegister.value.surname;
       this.docUtente.WEBPASSWORD=this.formRegister.value.psw;
       this.docUtente.CODICEFISCALE=this.formRegister.value.codFisc;
+
       this.loadingCtrl
         .create({
           message: 'Registrazione'
@@ -344,19 +665,7 @@ export class NewLoginPage implements OnInit {
     
   }
 
-  /**
-   * Procedura che visualizza un toast con il messaggio passato
-   * @param myMessage Il messaggio da visualizzare
-   */
-  async showMessage(myMessage: string) {
-    const toast = await this.toastCtrl
-      .create({
-        message: myMessage,
-        duration: 3000
-      });
 
-      toast.present();
-  }
 
 
   
@@ -383,6 +692,17 @@ export class NewLoginPage implements OnInit {
 //#region funzioni per la creazioe dei form
 
   createContactForm(){
+    let pattTelefono = '^[+]*[0-9]*';
+    //Spiegazione pattern 
+    //Per altre spiegazioni guardare qui https://regexr.com/3c53v
+
+    // ^ Il match parte dall'inizio della stringa
+    // [+] Qualsiasi elemento contenuto nelle quadre (quindi il +)
+    // * la regola precedente è opzionale
+    // [0-9] Qualsiasi elemento delle quadre
+    // * la regola precedente è opzionale
+
+
     //form dei contatti (mail e telefono)
     this.formContact=new FormGroup({
       email: new FormControl(null, {
@@ -391,9 +711,9 @@ export class NewLoginPage implements OnInit {
       }),
       telephone: new FormControl(null, {
         updateOn: 'change',
-        validators: [Validators.required, Validators.pattern('[0-9]*')]
+        validators: [Validators.required, Validators.pattern(pattTelefono)]
       })
-    })
+    });
 
   }
   createRegisterForm(){
@@ -501,11 +821,68 @@ export class NewLoginPage implements OnInit {
       }
   }
 
+//#endregion
+
+
+  //#region LINK ESTERNI
+
+  /**
+   * Controlla che nell'area ci sia il link della policy
+   */
+  isPolicyLink(): boolean {
+    let link: AreaLink;
+    let ready: boolean = false;
+
+    if (this.docArea) {
+
+      link = this.docArea.findAreaLinkByPageType(PageType.policyPrivacy);
+  
+      if (link && link.REFERURL) {
+        ready = true;
+      }
+    }
+
+    return ready;
+  }
+
+  //Apre il link delle Policy se presente
+  openPolicyLink() {
+    let link: AreaLink;
+    
+
+    if (this.docArea) {
+
+      link = this.docArea.findAreaLinkByPageType(PageType.policyPrivacy);
+  
+      if (link && link.REFERURL) {
+        this.openLink(link.REFERURL);
+      }
+    }
+
+    
+  }
+
+  //Apre un link in un'altra pagina
   openLink(url:string)
   {
-    Browser.open({url:url})
+    Browser.open({url:url});
   }
-//#endregion
+
+  //#endregion
+
+    /**
+   * Procedura che visualizza un toast con il messaggio passato
+   * @param myMessage Il messaggio da visualizzare
+   */
+  async showMessage(myMessage: string) {
+    const toast = await this.toastCtrl
+      .create({
+        message: myMessage,
+        duration: 3000
+      });
+
+      toast.present();
+  }
 
 }
 

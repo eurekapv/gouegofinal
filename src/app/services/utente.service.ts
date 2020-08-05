@@ -6,6 +6,7 @@ import { Utente } from '../models/utente.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
+import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from '../models/accountregistration.model';
 
 
 
@@ -216,6 +217,121 @@ export class UtenteService {
         .httpGet(myUrl, myHeaders, myParams)       
 
   }
+
+
+
+  //#region FASI REGISTRAZIONE
+  
+
+  /**
+   * Invia al server la richiesta per inviare via Mail/SMS i codici per la registrazione account
+   * @param config Dati di configurazione
+   * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
+   */
+  registrationSendCodici(config: StartConfiguration, 
+                         docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+          //Viene effettuata una chiamata al server per ottenere
+          //l'invio di una mail e/o un SMS contenente codici PIN
+          const metodo = 'registrationSendCodici';
+          const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                              'X-HTTP-Method-Override': metodo, 
+                                              'appid':config.appId
+                                            });
+
+          const myParams = new HttpParams();
+          const doObject = 'ACCOUNT';
+          let bodyRequest = '';
+
+          let myUrl = config.urlBase + '/' + doObject;
+
+          return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+            if (docRequestCode) {
+
+              //Creo il body da inviare
+              bodyRequest = docRequestCode.exportToJSON(true, true, true);
+              bodyRequest = `{"docRequest" : ${bodyRequest}}`;
+              console.log(bodyRequest);
+
+              //Faccio la chiamata POST
+              this.apiService
+                  .httpPost(myUrl, myHeaders, myParams, bodyRequest )
+                  .pipe(map(received => {
+                          return received.activation;
+                  }))
+                  .subscribe((response:AccountRegistrationResponse) => {
+                      if (response.result) {
+                        resolve(response);
+                      }
+                      else {
+                        reject(response.message);
+                      }
+                  }, error => {
+                  reject(error);
+                  })
+            }
+            else {
+              reject('Dati mancanti per la richiesta');
+            }
+
+          });
+
+
+
+  }
+
+  /**
+   * Invia al server una richiesta per verificare i pincode inseriti dall'utente
+   * @param config Dati di configurazione
+   * @param docVerifyCode Dati da verificare
+   */
+  registrationVerifyCodici(config: StartConfiguration, 
+    docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+        const metodo = 'registrationVerifyCodici';
+        const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                'X-HTTP-Method-Override': metodo, 
+                                'appid':config.appId
+                              });
+
+        const myParams = new HttpParams();
+        const doObject = 'ACCOUNT';
+        let bodyRequest = '';
+
+        let myUrl = config.urlBase + '/' + doObject;
+
+        return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+            if (docVerifyCode) {
+
+                //Creo il body da inviare
+                bodyRequest = docVerifyCode.exportToJSON(true, true, true);
+                bodyRequest = `{"docRequest" : ${bodyRequest}}`;
+                
+                //Faccio la chiamata POST
+                this.apiService
+                .httpPost(myUrl, myHeaders, myParams, bodyRequest )
+                .pipe(map(received => {
+                    return received.activation;
+                }))
+                .subscribe((response:AccountRegistrationResponse) => {
+                if (response.result) {
+                  resolve(response);
+                }
+                else {
+                  reject(response.message);
+                }
+                }, error => {
+                  reject(error);
+                })
+            }
+            else {
+              reject('Dati mancanti per la richiesta');
+            }
+
+        });
+
+
+
+}  
+  //#endregion
   
 
 }

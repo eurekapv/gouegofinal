@@ -1,5 +1,5 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { Mansione, Ruolo } from './valuelist.model';
+import { Mansione } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 
 

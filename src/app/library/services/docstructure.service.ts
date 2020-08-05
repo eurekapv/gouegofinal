@@ -14,7 +14,7 @@ import { Descriptor, TypeDefinition, TypeReflector } from '../models/descriptor.
 import { map } from 'rxjs/operators';
 import { CacheListElement } from '../models/cachelistelement.model';
 import { Cache } from '../models/cache.model';
-import { exec } from 'cordova';
+
 
 
 

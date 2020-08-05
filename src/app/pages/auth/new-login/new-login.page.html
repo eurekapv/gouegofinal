@@ -25,7 +25,7 @@
 
 
 
-<!-- Pagina Login -->
+<!-- CONTENT PAGES -->
 <ion-content >
     <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
         <img [src]="startConfig.getUrlLogo()">
@@ -81,12 +81,19 @@
                 </ion-item>
                 <ion-item>
                     <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
-                    <ion-input type="tel" inputmode="tel" placeholder="Cellulare" formControlName="telephone" ></ion-input>
+                    <ion-input type="tel" inputmode="tel" placeholder="+39 Cellulare" formControlName="telephone" ></ion-input>
                 </ion-item>
 
             </ion-list>
 
-            <ion-button fill="outline" size="small" expand="block">condizioni di registrazione</ion-button>
+            <ion-button 
+                    fill="outline" 
+                    size="small" 
+                    expand="block"
+                    *ngIf="isPolicyLink()"
+                    (click)="openPolicyLink()">
+                condizioni di registrazione
+            </ion-button>
                 
             <div  class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.noverifica">
                 <p>
@@ -191,12 +198,13 @@
                 <ion-input type="text" placeholder="Codice Fiscale" formControlName="codFisc" ></ion-input>
                 </ion-item>
     
-                <ion-item lines="none" >
-                    <ion-label>Accetto la <a (click)="openLink('https://www.openbeachvolley.com')">privacy policy</a></ion-label>
-                <ion-checkbox 
-                    slot="start" 
-                    color="primary" 
-                    formControlName="chkPrivacy"></ion-checkbox>
+                <ion-item lines="none" *ngIf="isPolicyLink()">
+                    <ion-label>Accetto la <a (click)="openPolicyLink()">privacy policy</a></ion-label>
+                    <ion-checkbox 
+                        slot="start" 
+                        color="primary" 
+                        formControlName="chkPrivacy">
+                    </ion-checkbox>
                 </ion-item>
     
                 <ion-item lines="none" >
@@ -262,6 +270,76 @@
 
 
 </ion-content>
+
+<!-- FOOTER PAGES-->
+<ion-footer>
+
+    <div id="footer-login" 
+         *ngIf="actualStatePage==pageState.LOGIN">
+        <ion-button 
+        class="btn-confirm" 
+        color="primary" 
+        expand="block" 
+        (click)="onClickFooterAvanti()" 
+        [disabled]="!formLogin.valid">
+            ACCEDI
+        </ion-button>
+    </div>
+
+    <div id="footer-contact" *ngIf="actualStatePage==pageState.CONTACT">
+        <ion-button color="primary"
+        class="btn-confirm" 
+        expand="block"
+        [disabled]="!this.formContact.valid"
+        (click)="onClickFooterAvanti()">Avanti</ion-button>
+    </div>
+
+    <div id="footer-verify" *ngIf="actualStatePage==pageState.VERIFY">
+        <ion-buttons>
+            <ion-button>
+                Indietro
+            </ion-button>
+
+            <ion-button 
+                class="btn-confirm"
+                color="primary"
+                (click)="onClickVerifica()"
+                [disabled]="!(this.formVeriryMail.valid&&this.formVeriryTel.valid)">
+                Avanti
+            </ion-button>
+
+        </ion-buttons>
+    </div>
+
+    <div id="footer-registration" *ngIf="actualStatePage==pageState.REGISTRATION">
+        <ion-buttons>
+
+            <ion-button>
+                Indietro
+            </ion-button>
+
+            <ion-button 
+                class="btn-confirm" 
+                color="primary" 
+                expand="block" 
+                (click)="onClickRegistrati()" 
+                [disabled]="!formRegister.valid">
+                registrati
+            </ion-button>
+        </ion-buttons>
+    </div>
+
+    <div id="footer-welcome" *ngIf="actualStatePage==pageState.WELCOME">
+        <ion-button
+            class="btn-confirm"
+            color="primary"
+            expand="block" 
+            (click)="closeModal()">
+            Inizia
+        </ion-button>
+    </div>
+
+</ion-footer>
 
 <!-- Pagina inserimento contatti -->
 <!-- <ion-content *ngIf="stato==pageState.CONTACT">
@@ -382,22 +460,11 @@
     </div>
 </ion-content> -->
 
-<!-- footer login -->
-<ion-footer *ngIf="stato==pageState.LOGIN">
-    <ion-button 
-    class="btn-confirm" 
-    color="primary" 
-    expand="block" 
-    (click)="onClickLogin()" 
-    [disabled]="!formLogin.valid">
-        ACCEDI
-    </ion-button>
-    <div class="ion-text-center">Non hai un account?</div>
-    <div class="ion-text-center"><a (click)="changePageState(pageState.CONTACT)">Registrati</a></div>
-</ion-footer>
+
+
 
 <!-- footer pagina inserimento contatti -->
-<ion-footer *ngIf="stato==pageState.CONTACT">
+<!-- <ion-footer *ngIf="stato==pageState.CONTACT">
     <ion-button color="primary"
     class="btn-confirm" 
     expand="block"
@@ -405,20 +472,20 @@
     (click)="onClickContinua()">Continua</ion-button>
     <div class="ion-text-center">Hai già un account?</div>
     <div class="ion-text-center"><a (click)="changePageState(pageState.LOGIN)">Effettua il login</a></div>
-</ion-footer>
+</ion-footer> -->
 
 <!-- footer pagina verifica contatti -->
-<ion-footer *ngIf="stato==pageState.VERIFY">
+<!-- <ion-footer *ngIf="stato==pageState.VERIFY">
     <ion-button 
     class="btn-confirm"
     color="primary"
     expand="block"
     (click)="onClickVerifica()"
     [disabled]="!(this.formVeriryMail.valid&&this.formVeriryTel.valid)">Verifica</ion-button>
-</ion-footer>
+</ion-footer> -->
 
 <!-- footer pagina registrazione -->
-<ion-footer *ngIf="stato==pageState.REGISTRATION">
+<!-- <ion-footer *ngIf="stato==pageState.REGISTRATION">
     <ion-button 
     class="btn-confirm" 
     color="primary" 
@@ -427,10 +494,10 @@
     [disabled]="!formRegister.valid">
         registrati
     </ion-button>
-</ion-footer>
+</ion-footer> -->
 
 <!-- footer pagina di fine registrazione -->
-<ion-footer *ngIf="stato==pageState.WELCOME">
+<!-- <ion-footer *ngIf="stato==pageState.WELCOME">
     <ion-button
     class="btn-confirm"
     color="primary"
@@ -438,6 +505,6 @@
     (click)="closeModal()">
         Inizia
     </ion-button>
-</ion-footer>
+</ion-footer> -->
 
 

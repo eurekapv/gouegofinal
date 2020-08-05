@@ -39,6 +39,7 @@ import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
 import { ValueList, TipoPrivateImage } from 'src/app/models/valuelist.model'
 import { PrivateImage } from '../models/privateimage.model';
+import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from '../models/accountregistration.model';
 
 
 @Injectable({
@@ -663,6 +664,29 @@ requestChangePassword(oldPsw:string, newPsw:string) {
 
 //#endregion
 
+//#region REGISTRAZIONE ACCOUNT
+
+/**
+ * Chiama il server e chiede l'invio dei PINCODE di registrazione
+ * @param docRequestCode Dati per la richiesta da inviare al server
+ */
+registrationSendCodici(docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+
+    const actualStartConfig = this._startConfig.getValue();
+    return this.utenteService.registrationSendCodici(actualStartConfig, docRequestCode);
+}
+
+/**
+ * Chiama il server inviando i codici inseriti dall'utente per chiederne il controllo
+ * @param docVerifyCode Dati per la verifica dei codici inseriti
+ */
+registrationVerifyCodici(docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.utenteService.registrationVerifyCodici(actualStartConfig, docVerifyCode);
+}
+
+//#endregion
+
 //#region PRENOTAZIONE
 
 /**
@@ -940,7 +964,11 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
   //#region image
 }
 
+
 //#endregion
+
+
+
 
 }
 

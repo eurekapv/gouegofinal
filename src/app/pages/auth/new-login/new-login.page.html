@@ -1,14 +1,14 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <!-- <ion-buttons 
+        <ion-buttons 
                 slot="start" 
                 *ngIf="actualStatePage==pageState.REGISTRATION||actualStatePage==pageState.VERIFY">
 
-            <ion-button fill="clear" (click)="changePageState(pageState.CONTACT)">
+            <ion-button fill="clear" (click)="backStepRegistration()">
                 <ion-icon name="arrow-back"></ion-icon>
             </ion-button>
 
-        </ion-buttons> -->
+        </ion-buttons>
 
         <ion-title>{{getCaptionTitle()}}</ion-title>
         
@@ -173,6 +173,61 @@
 
     </div>
 
+
+
+
+    <div  *ngIf="actualStatePage==pageState.VERIFY">
+        <div class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemail || docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemailsms">
+
+
+            <ion-item lines="none">
+                <ion-button slot="start" fill="clear" color="danger">
+                    <ion-icon name="refresh-outline"></ion-icon>
+                </ion-button>
+
+                <ion-label color="default">Inserisci il pincode ricevuto tramite email</ion-label>
+            </ion-item>
+
+            <form [formGroup]="formVeriryMail">
+                <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
+                    <ion-segment>
+                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
+                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
+                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
+                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
+                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
+                    </ion-segment>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.verificasms || docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemailsms">
+
+            <ion-item lines="none">
+                <ion-button slot="start" fill="clear" color="danger">
+                    <ion-icon name="refresh-outline"></ion-icon>
+                </ion-button>
+                <ion-label color="default" >
+                    Inserisci il pincode ricevuto tramite SMS</ion-label>
+            </ion-item>            
+
+            <form [formGroup]="formVeriryTel">
+                    <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
+                        <ion-segment>
+                            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c6" #c6 (ionInput)="changeFocus($event)"id="6"></ion-input>
+                            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c7" #c7 (ionInput)="changeFocus($event)"id="7"></ion-input>
+                            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c8" #c8 (ionInput)="changeFocus($event)"id="8"></ion-input>
+                            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c9" #c9 (ionInput)="changeFocus($event)"id="9"></ion-input>
+                            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c10" #c10 (ionInput)="changeFocus($event)"id="10"></ion-input>
+                        </ion-segment>
+                    </div>
+            </form>
+
+        </div>
+
+    </div>
+
     <div *ngIf="actualStatePage==pageState.REGISTRATION">
         <form [formGroup]="formRegister">
             <ion-list>
@@ -219,35 +274,6 @@
     </div>
 
 
-    <div  *ngIf="actualStatePage==pageState.VERIFY">
-        <h6 class="ion-text-center">Inserisci il codice che ti abbiamo inviato tramite E-Mail</h6>
-        <form [formGroup]="formVeriryMail">
-            <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
-                <ion-segment>
-                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
-                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
-                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
-                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
-                    <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
-                </ion-segment>
-            </div>
-        </form>
-        <h6 class="ion-text-center">Inserisci il codice che ti abbiamo inviato tramite SMS</h6>
-        <form [formGroup]="formVeriryTel">
-                <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
-                    <ion-segment>
-                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c6" #c6 (ionInput)="changeFocus($event)"id="6"></ion-input>
-                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c7" #c7 (ionInput)="changeFocus($event)"id="7"></ion-input>
-                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c8" #c8 (ionInput)="changeFocus($event)"id="8"></ion-input>
-                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c9" #c9 (ionInput)="changeFocus($event)"id="9"></ion-input>
-                        <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c10" #c10 (ionInput)="changeFocus($event)"id="10"></ion-input>
-                    </ion-segment>
-                </div>
-        </form>
-        <div class="ion-text-center">
-            <a>Non ho ricevuto i codici</a>
-        </div>
-    </div>
 
     <div *ngIf="actualStatePage==pageState.WELCOME">
         <h1 class="ion-text-center">Benvenuto!</h1>
@@ -287,36 +313,31 @@
     </div>
 
     <div id="footer-contact" *ngIf="actualStatePage==pageState.CONTACT">
-        <ion-button color="primary"
-        class="btn-confirm" 
-        expand="block"
+        <ion-button 
+                color="primary"
+                class="btn-confirm" 
+                expand="block"
         [disabled]="!this.formContact.valid"
         (click)="onClickFooterAvanti()">Avanti</ion-button>
     </div>
 
     <div id="footer-verify" *ngIf="actualStatePage==pageState.VERIFY">
-        <ion-buttons>
-            <ion-button>
-                Indietro
-            </ion-button>
+
 
             <ion-button 
                 class="btn-confirm"
                 color="primary"
+                expand="block"
                 (click)="onClickVerifica()"
                 [disabled]="!(this.formVeriryMail.valid&&this.formVeriryTel.valid)">
-                Avanti
+                Verifica
             </ion-button>
 
-        </ion-buttons>
+        
     </div>
 
     <div id="footer-registration" *ngIf="actualStatePage==pageState.REGISTRATION">
-        <ion-buttons>
-
-            <ion-button>
-                Indietro
-            </ion-button>
+        
 
             <ion-button 
                 class="btn-confirm" 
@@ -324,9 +345,9 @@
                 expand="block" 
                 (click)="onClickRegistrati()" 
                 [disabled]="!formRegister.valid">
-                registrati
+                Registrati
             </ion-button>
-        </ion-buttons>
+        
     </div>
 
     <div id="footer-welcome" *ngIf="actualStatePage==pageState.WELCOME">

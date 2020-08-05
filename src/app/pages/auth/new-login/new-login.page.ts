@@ -223,21 +223,32 @@ export class NewLoginPage implements OnInit {
         if (find) {
           this.indexStepRegistration = index;
           this.actualStatePage = element;
+          break;
         }
       }
     }
   }
 
-
-    /**
-   * cambia lo stato della pagina (login, registrazione, ecc...)
-   * @param stato il nuovo stato da impostare
+  /**
+   * Torna indietro negli Step di Registrazione
    */
-  changePageState(stato:PageState)
-  {
-    this.actualStatePage=stato;
+  backStepRegistration() {
 
-  }
+    if (this.indexStepRegistration - 1 >= 0) {
+      
+      for (let index = this.indexStepRegistration -1; index >= 0; index--) {
+        
+        const element = this.stepRegistration[index];
+        this.indexStepRegistration = index;
+        this.actualStatePage = element;
+        break;
+        }
+      }
+    }    
+  
+
+
+
 
   closeModal(){
     this.modalCtrl.dismiss();

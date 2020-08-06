@@ -42,7 +42,7 @@
                 "input": "node_modules/sportsfont/css/sports.css"
               }
             ],
-            "scripts": []
+            "scripts": ["node_modules/crypto-js/crypto-js.js"]
           },
           "configurations": {
             "production": {

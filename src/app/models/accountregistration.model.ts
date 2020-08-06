@@ -58,6 +58,12 @@ export class AccountRegistrationVerifyCode extends IDDocument {
     EMAILPINCODE: string;
     SMSPINCODE: string;
 
+    constructor() {
+        super();
+        this.EMAILPINCODE = '';
+        this.SMSPINCODE = '';
+    }
+
     /**
      * Ritorna il descrittore della Struttura Campi
      */

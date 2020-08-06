@@ -3,9 +3,6 @@ import { IDDocument, OperatorCondition } from '../models/iddocument.model';
 import {RequestParams, RequestDecode, RequestForeign } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
-
-
-
 import { ApicallService } from '../../services/apicall.service';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';

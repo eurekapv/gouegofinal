@@ -124,5 +124,22 @@ aggiunto SocialSharing all'array "providers" nell'app.module.ts
 dove serve:
 import htmlToImage from 'html-to-image';
 
+/* ****************** */
+/*      06/08/2020    */
+/*       crypto-js    */
+/**********************/ 
+Aggiunto il modulo per criptare stringhe
+> npm install crypto-js
+> npm install @types/crypto-js
+
+Aprire il file angular.json
+sotto architect.build.options.scripts
+"scripts": [
+              "node_modules/crypto-js/crypto-js.js"
+            ]
+
+
+
+
 
 

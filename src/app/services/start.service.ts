@@ -15,7 +15,7 @@ import { LivelloService } from './livello.service';
 import { AreaService } from './area.service';
 import { LocationService } from './location.service';
 import { CourseschedulerService } from './coursescheduler.service';
-import { CamposportService } from './camposport.service';
+
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
 import { SlotoccupazioneService } from './slotoccupazione.service';

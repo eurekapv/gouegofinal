@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ModalController, LoadingController, ToastController, NavController } from '@ionic/angular';
+import { ModalController, LoadingController, ToastController, NavController, AlertController } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -10,8 +10,9 @@ import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
 import { AreaLink } from 'src/app/models/arealink.model';
-import { AccountRegistrationRequestCode, AccountRegistrationResponse } from 'src/app/models/accountregistration.model';
+import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from 'src/app/models/accountregistration.model';
 import { skip } from 'rxjs/operators';
+import { CryptoService } from 'src/app/library/services/crypto.service';
 const { Browser } = Plugins;
 
 
@@ -50,8 +51,8 @@ export class NewLoginPage implements OnInit {
 
   //varibili formGroup (per usare i reactive forms)
   formRegister: FormGroup;
-  formVeriryTel: FormGroup;
-  formVeriryMail: FormGroup;
+  formVerifyTel: FormGroup;
+  formVerifyMail: FormGroup;
   formLogin: FormGroup;
   formContact: FormGroup;
 
@@ -92,7 +93,9 @@ export class NewLoginPage implements OnInit {
     private modalCtrl:ModalController,
     private startService:StartService,
     private loadingCtrl:LoadingController,
-    private toastCtrl:ToastController
+    private toastCtrl:ToastController,
+    private alertCtrl: AlertController,
+    private cryptoService: CryptoService
   ) {
 
     
@@ -138,7 +141,7 @@ export class NewLoginPage implements OnInit {
   ngOnInit() {
     this.createLoginForm();
     this.createRegisterForm();
-    this.createVeriryForm();
+    this.createVerifyForm();
     this.createContactForm();
     this.isDesktop=this.startService.isDesktop
   }
@@ -250,17 +253,13 @@ export class NewLoginPage implements OnInit {
 
 
 
+  /**
+   * Chiusura della videata
+   */  
   closeModal(){
     this.modalCtrl.dismiss();
   }
 
-
-  /**
-   * Pulsante Indietro nel footer (ove presente)
-   */
-  onClickFooterIndietro() {
-
-  }
 
 
   /**
@@ -276,6 +275,19 @@ export class NewLoginPage implements OnInit {
       case PageState.CONTACT:
           //Siamo sulla pagina dei Contatti e dobbiamo gestirne la fase
           this.onClickAvantiContact();
+        break;
+
+      case PageState.VERIFY:
+        //Siamo sulla pagina di inserimento codici da verificare
+        this.onClickAvantiVerifica();
+        break;
+
+      case PageState.REGISTRATION:
+        //Siamo nella parte finale della registrazione con i dati 
+        //e l'invio dei dati al server
+        this.onClickRegistrati();
+      
+      default:
         break;
 
     }
@@ -333,7 +345,7 @@ export class NewLoginPage implements OnInit {
   }
 
 
-  //#region BOTTONI AVANZAMENTO REGISTRAZIONE
+  //#region GESTIONE PAGINA CONTATTI E CODICI
 
   /*
   L'intera fase di registrazione è gestita con un array this.stepRegistration
@@ -366,7 +378,6 @@ export class NewLoginPage implements OnInit {
     //nessun campo è stato modificato dopo la verifica
     //Stato 2: Non sono richieste verifiche
 
-    console.log('Qui inizio');
 
     //Nessuna verifica da apportare
     if (this.docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.noverifica) {
@@ -529,12 +540,13 @@ export class NewLoginPage implements OnInit {
 
   }
 
-
   /**
    * Chiede al server di inviare i codici pin necessari
    * Se tutto va a buon fine si sposta nella pagina di verifica, altrimenti segnala l'errore
+   * @param onSuccessChangePage Se l'operazione ha successo passa alla pagina successiva
+   * @param customMessage Se presente viene mostrato in caso di richiesta a buon fine
    */
-  sendServerRichiestaCodici() {
+  sendServerRichiestaCodici(onSuccessChangePage:boolean = true, customMessage?: string) {
 
     this.loadingCtrl
       .create({
@@ -563,9 +575,21 @@ export class NewLoginPage implements OnInit {
                 //Memorizzo IDREFER per le chiamate successive
                 this.docRichiestaCodici.IDREFER = responseServer.idRefer;
 
-                //Devo spostarmi alla pagina di verifica
-                const skipPageVerifica = false;
-                this.nextStepRegistration(skipPageVerifica);
+                //Azzero i flag che servono a richiedere i codici
+                this.docRichiestaCodici.REQUESTSMSCODE = false;
+                this.docRichiestaCodici.REQUESTEMAILCODE = false;
+
+                //Mi sposto alla pagina successiva (di verifica)
+                if (onSuccessChangePage) {
+                  //Devo spostarmi alla pagina di verifica
+                  const skipPageVerifica = false;
+                  this.nextStepRegistration(skipPageVerifica);
+                }
+
+                //Se ho un messaggio da visualizzare lo mostro
+                if (customMessage && customMessage.length!== 0) {
+                  this.showMessage(customMessage);
+                }
 
               })
               .catch(err => {
@@ -583,21 +607,246 @@ export class NewLoginPage implements OnInit {
 
   //#endregion
 
+
+  //#region GESTIONE PAGINA VERIFICA
+
+  /**
+   * evento scatenato quando l'utente tappa su "reinvia codice"
+   * Eì possibile richiedere il reinvio di 1 solo codice alla volta
+   * @param tipo Reinvio Codice Email oppure Sms
+   */
+  onClickReinviaCodice(tipo: TipoVerificaAccount){
+    let askMessage = '';
+    let askEmail = false;
+    let askTel = false;
+
+    if (this.docRichiestaCodici) {
+
+      askMessage = 'Verrà inviato un nuovo codice a ';
+
+      switch (tipo) {
+        case TipoVerificaAccount.verificaemail:
+            askMessage += this.docRichiestaCodici.EMAIL;
+            //Uso le variabili temporanee per indicare che vorrebbe il codice in email
+            askEmail = true;
+
+          break;
+
+        case TipoVerificaAccount.verificasms:
+            askMessage += this.docRichiestaCodici.TELEPHONE;
+            //Uso le variabili temporanee per indicare che vorrebbe il codice su telefono
+            askTel= true;
+          break;
+      
+        default:
+          break;
+      }
+
+      //Faccio la richiesta se desidera un reinvio codici
+      this.alertCtrl.create({
+        header: 'Reinvio pincode',
+        message: askMessage,
+        buttons: [
+          {
+            text: 'Annulla',
+            role: 'cancel',
+          },
+          {
+            text: 'Reinvia',
+            handler: () => {
+              
+              //Reimposto il documenti di Richiesta con quello che vuole
+              this.docRichiestaCodici.REQUESTEMAILCODE = askEmail;
+              this.docRichiestaCodici.REQUESTSMSCODE = askTel;
+
+              const msg = 'Codice reinviato con successo';
+              //Faccio la richiesta al server e indico di non cambiare
+              //pagina al termine della richiesta
+              this.sendServerRichiestaCodici(false, msg);
+            }
+          }
+        ]
+      })
+      .then (element => {
+        element.present();
+      })
+
+      
+    }
+
+  }
+
+  
+  /**
+  * evento scatenato quando l'utente clicca sul pulsante conferma della videata di verifica
+  * dei recapiti
+  */
+  onClickAvantiVerifica()
+  {
+    //Devo inviare al server i dati inseriti dall'utente
+    let enable = this.isEnableAvantiOnVerify();
+    let altMessage = '';
+    let docVerify: AccountRegistrationVerifyCode;
+
+    if (!enable) {
+      altMessage = 'Controllare i dati inseriti';
+    }
+    else {
+      //I codici sono stati richiesti e dovrei avere l'IDREFER
+      if (this.docRichiestaCodici && this.docRichiestaCodici.IDREFER) {
+        
+          if (this.docRichiestaCodici.IDREFER.length !== 0) {
+            //Posso preparare il documento per la verifica
+            docVerify = new AccountRegistrationVerifyCode();
+            docVerify.IDAREA = this.docRichiestaCodici.IDAREA;
+            docVerify.IDREFER = this.docRichiestaCodici.IDREFER;
+            
+            //Devo passare il pincode Email
+            if (this.docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemail || 
+              this.docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms
+               ) 
+               {
+                 docVerify.EMAILPINCODE = this.getInputVerifyCode(TipoVerificaAccount.verificaemail);
+               }
+
+
+            //Devo passare il pincode SMS
+            if (this.docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificasms || 
+              this.docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms
+               ) 
+               {
+                 docVerify.SMSPINCODE = this.getInputVerifyCode(TipoVerificaAccount.verificasms);
+               }
+
+            
+            //Tutto pronto per effettuare la richiesta di verifica pincode
+            this.sendServerVerificaCodici(docVerify);
+
+
+          }
+          else {
+            enable = false;
+            altMessage = 'Errore: Richiedere il reinvio';
+          }
+
+      }
+      else {
+        enable = false;
+        altMessage = 'Errore: Richiedere il reinvio';
+      }
+
+
+      
+    }
+
+
+    //Nel caso mostro un messaggio di errore
+    if (!enable) {
+      this.showMessage(altMessage);
+    }
+  }
+
+
+
+  /**
+   * Richiedo al server se i dati sono corretti
+   * @param docVerifica Documento per la verifica dei codici
+   */
+  sendServerVerificaCodici(docVerifica: AccountRegistrationVerifyCode) {
+
+    if (docVerifica) {
+
+      this.loadingCtrl
+      .create({
+          message: 'Verifica Codici'
+      })
+      .then(elLoading => {
+
+        //Creo il loading
+        elLoading.present();
+
+        //Faccio la richiesta al server
+        this.startService
+          .registrationVerifyCodici(docVerifica)
+          .then((response:AccountRegistrationResponse) => {
+
+            //Chiudo il Loading 
+            elLoading.dismiss();
+
+            //Verifica codici passata
+            if (response.result) {
+
+              //Memorizzo nelle variabili che la verifica ha avuto esito positivo
+              this.emailVerificationYES = true;
+              this.emailVerificata = this.docRichiestaCodici.EMAIL;
+
+              this.smsVerificationYES = true;
+              this.telVerificato = this.docRichiestaCodici.TELEPHONE;
+
+              //Posso spostarmi alla pagina successiva
+              this.nextStepRegistration();
+
+            }
+            else {
+
+              //Segno che ha fallito tutto 
+              this.emailVerificationYES = false;
+              this.emailVerificata = '';
+
+              this.smsVerificationYES = false;
+              this.telVerificato = '';
+            }
+          })
+          .catch(err => {
+            //Qui qualcosa è andato storto
+
+            //Chiudo il Loading
+            elLoading.dismiss();
+
+            //Mostro il messaggio
+            this.showMessage(err);
+          });
+      });
+    }
+
+  }
+
+
+  //#endregion
+
+
   /**
    * evento scatenato quando l'utente clicca "registrati" 
    * sulla pagina di inserimento dati
    */
   onClickRegistrati()
   {
+    let pwd = '';
+
     if (!this.formRegister.valid)
     {
       return;
     }
-    else{
+    else {
+
       this.docUtente.NOME=this.formRegister.value.name;
       this.docUtente.COGNOME=this.formRegister.value.surname;
-      this.docUtente.WEBPASSWORD=this.formRegister.value.psw;
+
+      //Sarebbe meglio passare la BCrypt Password dentro al campo SHAPASSWORD
+      pwd = this.formRegister.value.psw;
+      this.docUtente.SHAPASSWORD = this.cryptoService.getBCrypt(pwd);
+      
+
       this.docUtente.CODICEFISCALE=this.formRegister.value.codFisc;
+      this.docUtente.EMAIL = this.formContact.value.email;
+      this.docUtente.MOBILENUMBER = this.formContact.value.telephone;
+      if (this.formContact.value.chkNewsletter == true) {
+        this.docUtente.NEWSLETTER = true;
+      }
+      else {
+        this.docUtente.NEWSLETTER = false;
+      }
+
 
       this.loadingCtrl
         .create({
@@ -614,27 +863,9 @@ export class NewLoginPage implements OnInit {
     }
   }
 
-  /**
-   * evento scatenato quando l'utente clicca sul pulsante conferma della videata di verifica
-   * dei recapiti
-   */
-  onClickVerifica()
-  {
-    if(this.formVeriryTel.valid&&this.formVeriryMail.valid)
-    {
-      //TODO qui manca la richiesta di registrazione a gouego
-      this.actualStatePage=PageState.REGISTRATION;
-    }
-  }
 
-  /**
-   * evento scatenato quando l'utente clicca sul pulsante verifica nella videata di inserimento dei contatti
-   */
-  onClickContinua(){
-    //TODO qui bisogna inserire l'invio di sms ed email
-    this.actualStatePage=PageState.VERIFY
-    
-  }
+
+
 
   /**
    * procedura che sposta il focus sulla casella di input successiva
@@ -680,12 +911,7 @@ export class NewLoginPage implements OnInit {
 
 
   
-  /**
-   * evento scatenato quando l'utente tappa su "reinvia codice"
-   */
-  onClickReinvia(){
-    //TODO manca la richiesta per ricevere un nuovo codice
-  }
+
 
   /**
    * evento scatenato quando l'utente clicca su "verifica in seguito"
@@ -700,8 +926,28 @@ export class NewLoginPage implements OnInit {
   }
   
 
-//#region funzioni per la creazioe dei form
+//#region CREAZIONI FORM
 
+  /**
+   * Funzione di creazione della Form di Login
+   */
+  createLoginForm(){
+    this.formLogin = new FormGroup({
+      username: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required]
+      }),
+      password: new FormControl(null, {
+        updateOn: 'change',
+        validators: [Validators.required]
+      })
+    });
+  }
+
+  /**
+   * Funzione di creazione della Form Contatti, usata come prima pagina 
+   * nello StepRegistrazione
+   */
   createContactForm(){
     let pattTelefono = '^[+]*[0-9]*';
     //Spiegazione pattern 
@@ -727,6 +973,10 @@ export class NewLoginPage implements OnInit {
     });
 
   }
+
+
+
+
   createRegisterForm(){
     //form di registrazione
     this.formRegister=new FormGroup({
@@ -760,20 +1010,18 @@ export class NewLoginPage implements OnInit {
       })      
     }, this.pswValidator);
   }
-  createLoginForm(){
-    this.formLogin = new FormGroup({
-      username: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required]
-      }),
-      password: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required]
-      })
-    });
-  }
-  createVeriryForm(){
-    this.formVeriryMail=new FormGroup({
+
+
+
+
+
+
+
+  /**
+   * Funzione per la creazione del FORM relativo alla Verifica Pincode Email e SMS
+   */
+  createVerifyForm(){
+    this.formVerifyMail=new FormGroup({
       c1: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
@@ -794,9 +1042,9 @@ export class NewLoginPage implements OnInit {
         updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       })
-    })
+    });
 
-    this.formVeriryTel=new FormGroup({
+    this.formVerifyTel=new FormGroup({
       c6: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
@@ -817,9 +1065,73 @@ export class NewLoginPage implements OnInit {
         updateOn: 'change',
         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
       })
-    })
+    });
 
   }
+
+
+  /**
+   * 
+   * @param tipo Tipo del codice richiesto
+   */
+  getInputVerifyCode(tipo: TipoVerificaAccount): string {
+    let strReturn: string = '';
+
+    if (tipo == TipoVerificaAccount.verificaemail) {
+      strReturn = this.formVerifyMail.value.c1 + 
+                  this.formVerifyMail.value.c2 + 
+                  this.formVerifyMail.value.c3 + 
+                  this.formVerifyMail.value.c4 + 
+                  this.formVerifyMail.value.c5;
+    }
+    else if (tipo == TipoVerificaAccount.verificasms) {
+      strReturn = this.formVerifyTel.value.c6 + 
+                  this.formVerifyTel.value.c7 + 
+                  this.formVerifyTel.value.c8 + 
+                  this.formVerifyTel.value.c9 + 
+                  this.formVerifyTel.value.c10;
+    }
+
+    return strReturn;
+  }
+
+  /**
+   * Il pulsante Avanti previsto nella form di Verifica
+   * deve tenere conto 
+   * 1) Quanti sono i pincode da inserire 
+   * 2) Quali ha inserito
+   */
+  isEnableAvantiOnVerify():boolean {
+    let enable = true;
+
+    if (this.docGruppo) {
+      if (this.docGruppo.APPTIPOVERIFICA !== TipoVerificaAccount.noverifica) {
+
+        switch (this.docGruppo.APPTIPOVERIFICA) {
+          case TipoVerificaAccount.verificaemail:
+              enable = this.formVerifyMail.valid;
+            break;
+          case TipoVerificaAccount.verificasms:
+              enable = this.formVerifyTel.valid;
+            break;
+
+          case TipoVerificaAccount.verificaemailsms:
+            enable = this.formVerifyTel.valid && this.formVerifyMail.valid;
+            break;
+        
+          default:
+            break;
+        }
+
+      }
+    }
+    else {
+      enable = false;
+    }
+    return enable;
+  }
+
+
   pswValidator(c:AbstractControl):{invalid:boolean}
   {
       if ((c.get('verifyPsw').value==c.get('psw').value))

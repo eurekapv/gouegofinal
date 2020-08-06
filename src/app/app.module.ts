@@ -20,6 +20,7 @@ import localeIt from '@angular/common/locales/it';
 import { PayPal } from '@ionic-native/paypal/ngx';
 
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { CryptoService } from './library/services/crypto.service';
 
 
 
@@ -42,7 +43,8 @@ registerLocaleData(localeIt,'it');
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'it' },
     PayPal,
-    SocialSharing
+    SocialSharing,
+    CryptoService
 
   ],
   bootstrap: [AppComponent]

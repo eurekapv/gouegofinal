@@ -685,6 +685,18 @@ registrationVerifyCodici(docVerifyCode: AccountRegistrationVerifyCode):Promise<A
   return this.utenteService.registrationVerifyCodici(actualStartConfig, docVerifyCode);
 }
 
+/**
+ * Invia al server la richiesta per la registrazione di un nuovo account
+ * @param docUtente Nuovo Utente da registrare
+ * @param docRequestCode Documento richiesta codici presentato in precedenza
+ */
+registrationFinalize(docUtente: Utente, 
+                     docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+
+    const actualStartConfig = this._startConfig.getValue();
+    return this.utenteService.registrationFinalize(actualStartConfig,docUtente, docRequestCode);
+  }
+
 //#endregion
 
 //#region PRENOTAZIONE

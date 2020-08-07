@@ -58,4 +58,47 @@ export class CryptoService {
     return encrypted;
   }
 
+
+  /**
+   * Prende una stringa che corrisponde a una password e la splitta con questa logica
+   * Divide in 2 Array i caratteri in posizione Dispari e in posizione Pari
+   * Array Dispari lo ritrasforma in stringa da 0...n 
+   * Array Pari lo ritrasforma in stringa da n..0
+   * Mette le 2 stringhe in elArray per tornarle
+   * 
+   * @param pwd Password da splittare
+   * @param elArray Array con le 2 porzioni splittate
+   */
+  mySplitPassword(pwd:string, elArray:string[]): boolean {
+    let result = false;
+    let arFirst: string [] = [];
+    let arSecond: string[] = [];
+    let strFirst: string;
+    let strSecond: string;
+
+
+    if (pwd && pwd.length !== 0)  {
+      result = true;
+
+      for (let index = 0; index < pwd.length; index++) {
+        const token = pwd.substr(index, 1);
+
+        if (index+1 % 2 === 0) {
+          arSecond.push(token);
+        }
+        else {
+          arFirst.push(token);
+        }
+      }
+
+      strFirst = arFirst.toString();
+      strSecond = arSecond.reverse.toString();
+      elArray = [];
+      elArray.push(strFirst);
+      elArray.push(strSecond);
+    }
+
+    return result;
+  }
+
 }

@@ -13,6 +13,8 @@ export class Utente extends IDDocument {
     WEBPASSWORD:string;
     SHAPASSWORD: string;
     MOBILENUMBER: string;
+    TELEFONO1: string;
+    TELEFONO2: string;
     INDIRIZZO: string;
     CAP: string;
     COMUNE: string;
@@ -71,7 +73,9 @@ export class Utente extends IDDocument {
                     'IDAREAOPERATIVA',
                     'IDLOCATION',
                     'AVATAR',
-                    'SHAPASSWORD'
+                    'SHAPASSWORD',
+                    'TELEFONO1',
+                    'TELEFONO2'
                     ];
     let arNumber = ['SESSO'];
     let arBoolean = ['NEWSLETTER','PROFILAZIONEINTERNA','PROFILAZIONEESTERNA'];

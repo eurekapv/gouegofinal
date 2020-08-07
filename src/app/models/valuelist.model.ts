@@ -138,6 +138,11 @@ export enum TipoVerificaAccount {
     verificaemailsms = 30
 }
 
+export enum RequestPincodeUse {
+    forRegistration = 10,
+    forRecovery = 20
+}
+
 
 
 

@@ -7,7 +7,7 @@ import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { Plugins } from '@capacitor/core';
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { TipoVerificaAccount, PageType } from 'src/app/models/valuelist.model';
+import { TipoVerificaAccount, PageType, RequestPincodeUse } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
 import { AreaLink } from 'src/app/models/arealink.model';
 import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from 'src/app/models/accountregistration.model';
@@ -562,6 +562,7 @@ export class NewLoginPage implements OnInit {
         //Il documento contiene le informazioni necessarie
         //Aggiungo l'area nel caso non ci fosse
         this.docRichiestaCodici.IDAREA = this.docArea.ID;
+        this.docRichiestaCodici.USE = RequestPincodeUse.forRegistration;
 
         //Chiamo il servizio
         this.startService
@@ -822,6 +823,9 @@ export class NewLoginPage implements OnInit {
   onClickRegistrati()
   {
     let pwd = '';
+    let pwdCriptata = '';
+    let splitPwd:string[] = [];
+    let chkPwd: boolean = false;
 
     if (!this.formRegister.valid)
     {
@@ -834,12 +838,24 @@ export class NewLoginPage implements OnInit {
 
       //Sarebbe meglio passare la BCrypt Password dentro al campo SHAPASSWORD
       pwd = this.formRegister.value.psw;
-      this.docUtente.SHAPASSWORD = this.cryptoService.getBCrypt(pwd);
+      pwdCriptata = this.cryptoService.getBCrypt(pwd);
+
+      //Splitto la password criptata in 2 stringhe
+      chkPwd = this.cryptoService.mySplitPassword(pwdCriptata,splitPwd);
+
+      if (chkPwd) {
+        //Metto la prima parte della password dentro al docRichiesta
+        this.docRichiestaCodici.TOKEN = splitPwd[0];
+        //La seconda parte dentro a SHAPASSWORD
+        this.docUtente.SHAPASSWORD = splitPwd[1];
+      }
       
 
       this.docUtente.CODICEFISCALE=this.formRegister.value.codFisc;
+      this.docUtente.WEBLOGIN = this.formContact.value.email;
       this.docUtente.EMAIL = this.formContact.value.email;
       this.docUtente.MOBILENUMBER = this.formContact.value.telephone;
+
       if (this.formContact.value.chkNewsletter == true) {
         this.docUtente.NEWSLETTER = true;
       }
@@ -847,19 +863,36 @@ export class NewLoginPage implements OnInit {
         this.docUtente.NEWSLETTER = false;
       }
 
-
+      //Attivo il loading e invio i dati al server
       this.loadingCtrl
         .create({
           message: 'Registrazione'
         })
-        .then(element => {
+        .then(elLoading => {
 
-          // //Creo il loading
-          // element.present();
+          //Creo il loading
+          elLoading.present();
+
+          this.startService
+              .registrationFinalize(this.docUtente, this.docRichiestaCodici)
+              .then((response:AccountRegistrationResponse) => {
+
+                  //Wow registrazione conclusa
+
+                  //Dentro a IDREFER c'e' il GUID dell'Utente
 
 
-            this.actualStatePage=PageState.WELCOME;
-        })
+              })
+              .catch(error => {
+                    //Chiudo il Loading
+                    elLoading.dismiss();
+
+                    //Mostro il messaggio
+                    this.showMessage(error);
+              });
+
+            
+        });
     }
   }
 

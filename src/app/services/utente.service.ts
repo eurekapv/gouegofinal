@@ -331,6 +331,70 @@ export class UtenteService {
 
 
 }  
+
+/**
+ * Invia al server i dati per completare la registrazione di un account
+ * @param config Dati configurazione
+ * @param docUtente Utente da registrare
+ * @param docRequestCode Documento di Richiesta codici iniziale
+ */
+registrationFinalize(config: StartConfiguration,
+  docUtente: Utente, 
+  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+
+    //Viene inviato al server il documento per chiedere la registrazione utente
+    const metodo = 'registrationFinalize';
+    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                          'X-HTTP-Method-Override': metodo, 
+                          'appid':config.appId
+                        });
+
+    const myParams = new HttpParams();
+    const doObject = 'ACCOUNT';
+    let bodyRequest = '';
+    let bodyUtente = '';
+    let bodyFinal = '';
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+  if (docRequestCode && docUtente) {
+
+    //Creo il body da inviare
+    bodyRequest = docRequestCode.exportToJSON(true, true, true);
+    bodyUtente = docUtente.exportToJSON(true,true,true);
+
+    bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
+    
+
+    //Faccio la chiamata POST
+    this.apiService
+      .httpPost(myUrl, myHeaders, myParams, bodyFinal )
+      .pipe(map(received => {
+        return received.activation;
+      }))
+      .subscribe((response:AccountRegistrationResponse) => {
+      if (response.result) {
+          resolve(response);
+      }
+      else {
+          reject(response.message);
+      }
+      }, error => {
+          reject(error);
+      })
+    }
+    else {
+      reject('Dati mancanti per la richiesta');
+    }
+
+});
+
+
+
+}
+
+
   //#endregion
   
 

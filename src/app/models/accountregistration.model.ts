@@ -1,15 +1,18 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
+import { RequestPincodeUse } from './valuelist.model';
 
 //Documento inviato in POST nella fase di richiesta Codici
 export class AccountRegistrationRequestCode extends IDDocument {
     
+    USE: RequestPincodeUse;
     IDAREA: string;
     IDREFER: string;
     REQUESTEMAILCODE: boolean;
     EMAIL: string;
     REQUESTSMSCODE: boolean;
     TELEPHONE: string;
+    TOKEN: string;
 
     constructor() {
 
@@ -26,9 +29,10 @@ export class AccountRegistrationRequestCode extends IDDocument {
         let arString = ['IDAREA',
                         'IDREFER',
                         'EMAIL',
-                        'TELEPHONE'
+                        'TELEPHONE',
+                        'TOKEN'
                         ];
-        let arNumber = [];
+        let arNumber = ['USE'];
         let arBoolean = ['REQUESTEMAILCODE', 'REQUESTSMSCODE'];
         let arDate = [];
         let arDateTime =[];

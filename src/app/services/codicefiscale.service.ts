@@ -18,8 +18,9 @@ export class CodicefiscaleService {
    * Nel caso fosse corretto puo' essere richiesta la decodifica del codice in Comune, Provincia, DataNascita etc.
    * @param docCF Documento Codice Fiscale
    * @param decode Decodifica il Codice Fiscale se corretto
+   * @param userMsg I testi dei messaggi di errore sono rivolti all'utente finale
    */
-  checkCodiceFiscale(codiceFiscale: string, decode?:boolean): Promise<CodiceFiscale> {
+  checkCodiceFiscale(codiceFiscale: string, decode?:boolean, userMsg=false): Promise<CodiceFiscale> {
     return new Promise ((resolve, reject)=>{
               let check = false;
               let resDecode = false;
@@ -87,12 +88,17 @@ export class CodicefiscaleService {
 
                             resolve(docCF);
 
-                          } ,error => {
+                          } , error => {
                             docCF.checkValidate = false;
                             docCF.msgValidate = error;
                             resolve(docCF);
                           });
                     }
+                    else {
+                      
+                      resolve(docCF);
+                    }
+
                   }
                   else {
                     resolve(docCF);
@@ -100,6 +106,13 @@ export class CodicefiscaleService {
 
               }
               else {
+                //Check Codice Fiscale fallito
+
+                //Se i messaggi sono per l'utente cambio con
+                if (userMsg) {
+                  docCF.msgValidate = 'Codice fiscale non valido';
+                }
+
                 reject(docCF);
               }
               

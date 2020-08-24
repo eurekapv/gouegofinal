@@ -12,6 +12,7 @@ export class Utente extends IDDocument {
     WEBLOGIN: string;
     WEBPASSWORD:string;
     SHAPASSWORD: string;
+    INPUTPASSWORD: string;
     MOBILENUMBER: string;
     TELEFONO1: string;
     TELEFONO2: string;
@@ -74,6 +75,7 @@ export class Utente extends IDDocument {
                     'IDLOCATION',
                     'AVATAR',
                     'SHAPASSWORD',
+                    'INPUTPASSWORD',
                     'TELEFONO1',
                     'TELEFONO2'
                     ];

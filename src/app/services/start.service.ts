@@ -53,10 +53,10 @@ export class StartService {
     secureProtocol = FALSE (chiamata http e non https)
   */
   //Versione Production
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
 
   //Versione LocalTest
-  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
   
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
@@ -939,8 +939,10 @@ execPayment(paymentMode: PaymentConfiguration,
  * @param codiceFiscale Codice Fiscale da anallizare
  * @param decode 
  */
-checkCodiceFiscale(codiceFiscale: string, decode?:boolean): Promise<CodiceFiscale> {
-  return this.codFiscService.checkCodiceFiscale(codiceFiscale, decode);
+checkCodiceFiscale(codiceFiscale: string, 
+                   decode?:boolean,
+                   userMsg?:boolean): Promise<CodiceFiscale> {
+  return this.codFiscService.checkCodiceFiscale(codiceFiscale, decode, userMsg);
 }
 
 //#endregion

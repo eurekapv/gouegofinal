@@ -11,8 +11,10 @@ import { TipoVerificaAccount, PageType, RequestPincodeUse } from 'src/app/models
 import { Area } from 'src/app/models/area.model';
 import { AreaLink } from 'src/app/models/arealink.model';
 import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from 'src/app/models/accountregistration.model';
-import { skip } from 'rxjs/operators';
+
 import { CryptoService } from 'src/app/library/services/crypto.service';
+import { CodicefiscaleService } from 'src/app/services/codicefiscale.service';
+import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
 const { Browser } = Plugins;
 
 
@@ -550,7 +552,7 @@ export class NewLoginPage implements OnInit {
 
     this.loadingCtrl
       .create({
-          message: 'Invio Codici'
+          message: 'Invio Codici in corso...'
       })
       .then(element => {
 
@@ -816,84 +818,206 @@ export class NewLoginPage implements OnInit {
   //#endregion
 
 
+
   /**
    * evento scatenato quando l'utente clicca "registrati" 
    * sulla pagina di inserimento dati
    */
   onClickRegistrati()
   {
-    let pwd = '';
-    let pwdCriptata = '';
-    let splitPwd:string[] = [];
-    let chkPwd: boolean = false;
-
+    
+    let codfisc: string;
+    
     if (!this.formRegister.valid)
     {
       return;
     }
     else {
 
+      //Prima vediamo il codice fiscale
+      codfisc = this.formRegister.value.codFisc;
+      codfisc = codfisc.toUpperCase();
+
+      this.loadingCtrl.create({
+        message: 'Check Codice Fiscale'
+      })
+      .then(elLoading => {
+        elLoading.present();
+
+        //Chiamo il servizio del codice fiscale
+        this.startService
+          .checkCodiceFiscale(codfisc, true, true)
+          .then(elCodFisc => {
+            //Dovrei ottenere il codice fiscale con i dati
+            
+            elLoading.dismiss();
+
+            if (!elCodFisc.checkValidate) {
+              this.showMessage(elCodFisc.msgValidate);
+            }
+            else {
+
+              //Passo alla registrazione reale
+              this.execRegistrati(elCodFisc);
+            }
+
+  
+          })
+          .catch(objError => {
+
+            elLoading.dismiss();
+            this.showMessage(objError.msgValidate);
+
+          });
+
+      });
+      
+    }
+  }
+
+
+  /**
+   * Invia al server i dati di registrazione
+   */
+  execRegistrati(myCodiceFiscale: CodiceFiscale) {
+    let pwd = '';
+    let pwdToSend = '';
+    let splitPwd:string[] = [];
+    let useCrypter: boolean = false;
+
+      //Imposto il nome e cognome
       this.docUtente.NOME=this.formRegister.value.name;
       this.docUtente.COGNOME=this.formRegister.value.surname;
 
-      //Sarebbe meglio passare la BCrypt Password dentro al campo SHAPASSWORD
+      //Sarebbe meglio criptare la password con BCrypt ma per ora confidiamo nel https
+      //e quindi non la cripto
+      useCrypter = false;
+
       pwd = this.formRegister.value.psw;
-      pwdCriptata = this.cryptoService.getBCrypt(pwd);
 
-      //Splitto la password criptata in 2 stringhe
-      chkPwd = this.cryptoService.mySplitPassword(pwdCriptata,splitPwd);
+      if (useCrypter) {
+        pwdToSend = this.cryptoService.getBCrypt(pwd);
+      }
+      else {
+        pwdToSend = pwd;
+      }
 
-      if (chkPwd) {
+      //Splitto la stringa in 2 stringhe che verrà ricostruita dal server
+      splitPwd = this.cryptoService.mySplitPassword(pwdToSend);
+
+      if (splitPwd) {
         //Metto la prima parte della password dentro al docRichiesta
         this.docRichiestaCodici.TOKEN = splitPwd[0];
-        //La seconda parte dentro a SHAPASSWORD
-        this.docUtente.SHAPASSWORD = splitPwd[1];
+
+        if (useCrypter) {
+          //La seconda parte dentro a SHAPASSWORD
+          //nel caso di criptata
+          this.docUtente.SHAPASSWORD = splitPwd[1];
+          this.docUtente.INPUTPASSWORD = '';
+        }
+        else {
+          this.docUtente.INPUTPASSWORD = splitPwd[1];
+          this.docUtente.SHAPASSWORD = '';
+        }
+
+        //Inserisco il codice fiscale
+        this.docUtente.CODICEFISCALE = myCodiceFiscale.codiceFiscale;
+        this.docUtente.SESSO = myCodiceFiscale.sesso;
+        this.docUtente.NATOIL = myCodiceFiscale.dataNascita;
+        this.docUtente.NATOA = myCodiceFiscale.comune;
+        this.docUtente.NATOCAP = myCodiceFiscale.cap;
+        this.docUtente.NATOPROV = myCodiceFiscale.provincia;
+
+
+        this.docUtente.WEBLOGIN = this.formContact.value.email;
+        this.docUtente.EMAIL = this.formContact.value.email;
+        this.docUtente.MOBILENUMBER = this.formContact.value.telephone;
+  
+        if (this.formRegister.value.chkNewsletter == true) {
+          this.docUtente.NEWSLETTER = true;
+        }
+        else {
+          this.docUtente.NEWSLETTER = false;
+        }
+  
+        //Attivo il loading e invio i dati al server
+        this.loadingCtrl
+          .create({
+            message: 'Registrazione'
+          })
+          .then(elLoading => {
+  
+            //Creo il loading
+            elLoading.present();
+  
+            this.startService
+                .registrationFinalize(this.docUtente, this.docRichiestaCodici)
+                .then((response:AccountRegistrationResponse) => {
+  
+                    //Chiudo il Loading
+                    elLoading.dismiss();
+  
+                    //Wow registrazione conclusa
+  
+                    //Posso spostarmi alla pagina successiva
+                    this.nextStepRegistration();
+  
+                    //Dentro a IDREFER c'e' il GUID dell'Utente
+
+                    //Faccio un accesso automatico dell'utente
+                    this.loginAfterRegister(this.docUtente.WEBLOGIN, pwd);
+  
+                })
+                .catch(error => {
+                      //Chiudo il Loading
+                      elLoading.dismiss();
+  
+                      //Mostro il messaggio
+                      this.showMessage(error);
+                });
+  
+              
+          });
+
+      }
+      else {
+        this.showMessage('Dati non corretti');
       }
       
 
-      this.docUtente.CODICEFISCALE=this.formRegister.value.codFisc;
-      this.docUtente.WEBLOGIN = this.formContact.value.email;
-      this.docUtente.EMAIL = this.formContact.value.email;
-      this.docUtente.MOBILENUMBER = this.formContact.value.telephone;
+    
 
-      if (this.formContact.value.chkNewsletter == true) {
-        this.docUtente.NEWSLETTER = true;
-      }
-      else {
-        this.docUtente.NEWSLETTER = false;
-      }
+  }
 
-      //Attivo il loading e invio i dati al server
-      this.loadingCtrl
-        .create({
-          message: 'Registrazione'
-        })
-        .then(elLoading => {
+  /**
+   * Al termine della registrazione se tutto va a buon fine, procedo con il login automatico
+   */
+  loginAfterRegister(username: string, password: string)
+  {
 
-          //Creo il loading
-          elLoading.present();
+    if (username && password) {
 
-          this.startService
-              .registrationFinalize(this.docUtente, this.docRichiestaCodici)
-              .then((response:AccountRegistrationResponse) => {
+      // Chiamo il Servizio per eseguire l'autorizzazione
+      this.startService
+      .requestAuthorization(username, password)
+      .subscribe(dataResult => {
 
-                  //Wow registrazione conclusa
+          // E' Arrivata una risposta NEGATIVA
+          if (dataResult.RESULT === 0) {
 
-                  //Dentro a IDREFER c'e' il GUID dell'Utente
-
-
-              })
-              .catch(error => {
-                    //Chiudo il Loading
-                    elLoading.dismiss();
-
-                    //Mostro il messaggio
-                    this.showMessage(error);
-              });
-
+            this.showMessage(dataResult.MESSAGE);
+          }
+          else {
+            //LOGIN ACCETTATO
             
-        });
+            // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
+            this.startService.saveStorageUtente(username,password);
+          }
+      });
     }
+
+
+    
   }
 
 
@@ -954,7 +1078,7 @@ export class NewLoginPage implements OnInit {
    * evento scatenato quando l'utente clicca su inizia
    */
   onClickInizia(){
-    //TODO da decidere cosa fare
+    //Chiudo la modale
     this.modalCtrl.dismiss();
   }
   
@@ -1011,6 +1135,7 @@ export class NewLoginPage implements OnInit {
 
 
   createRegisterForm(){
+    let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
     //form di registrazione
     this.formRegister=new FormGroup({
       name: new FormControl(null, {
@@ -1031,19 +1156,33 @@ export class NewLoginPage implements OnInit {
       }),      
       codFisc: new FormControl(null,{
         updateOn: 'change',
-        validators: [Validators.required]
+        validators: [Validators.required, Validators.pattern(patternCodice)]
       }),
       chkPrivacy: new FormControl(false, {
         updateOn: 'change',
-        validators: [Validators.requiredTrue]
+        validators: [this.isPolicyLink() ? Validators.requiredTrue: Validators.nullValidator]
       }),
       chkNewsletter: new FormControl(true, {
         updateOn: 'change',
         validators: []
       })      
-    }, this.pswValidator);
+    }, [this.pswValidator]);
   }
 
+
+  pswValidator(c:AbstractControl):{invalid:boolean}
+  {
+
+    if ((c.get('verifyPsw').value==c.get('psw').value))
+    {
+      return
+    }
+    else
+    {
+      return {invalid: true};
+    }
+
+  }
 
 
 
@@ -1165,17 +1304,7 @@ export class NewLoginPage implements OnInit {
   }
 
 
-  pswValidator(c:AbstractControl):{invalid:boolean}
-  {
-      if ((c.get('verifyPsw').value==c.get('psw').value))
-      {
-        return
-      }
-      else
-      {
-        return {invalid: true};
-      }
-  }
+
 
 //#endregion
 

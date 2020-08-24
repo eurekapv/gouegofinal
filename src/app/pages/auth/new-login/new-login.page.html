@@ -32,7 +32,7 @@
     </div>
 
 
-    <div class="ion-padding">
+    <div class="ion-padding" *ngIf="actualStatePage !== pageState.WELCOME">
         <ion-segment 
                 [(ngModel)]="actualStateSegment" 
                 color="primary" 
@@ -303,7 +303,9 @@
 
 
     <div *ngIf="actualStatePage==pageState.WELCOME">
-        <h1 class="ion-text-center">Benvenuto!</h1>
+        <h1 class="ion-text-center">Benvenuto</h1>
+        <h3 class="ion-text-center">sei uno dei nostri!</h3>
+             
         <div class="ion-text-center">
             <img src="assets/img/handshake_b.gif">
         </div>

@@ -366,6 +366,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
     
+    console.log('Richiesta di Registrazione: ' + bodyFinal);
 
     //Faccio la chiamata POST
     this.apiService
@@ -374,15 +375,18 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
         return received.activation;
       }))
       .subscribe((response:AccountRegistrationResponse) => {
-      if (response.result) {
-          resolve(response);
-      }
-      else {
-          reject(response.message);
-      }
-      }, error => {
-          reject(error);
-      })
+
+        console.log(response);
+
+        if (response.result) {
+            resolve(response);
+        }
+        else {
+            reject(response.message);
+        }
+        }, error => {
+            reject(error);
+        });
     }
     else {
       reject('Dati mancanti per la richiesta');

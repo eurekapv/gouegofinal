@@ -69,12 +69,13 @@ export class CryptoService {
    * @param pwd Password da splittare
    * @param elArray Array con le 2 porzioni splittate
    */
-  mySplitPassword(pwd:string, elArray:string[]): boolean {
+  mySplitPassword(pwd:string): string[] {
     let result = false;
     let arFirst: string [] = [];
     let arSecond: string[] = [];
     let strFirst: string;
     let strSecond: string;
+    let elArray:string[] = [];
 
 
     if (pwd && pwd.length !== 0)  {
@@ -83,7 +84,7 @@ export class CryptoService {
       for (let index = 0; index < pwd.length; index++) {
         const token = pwd.substr(index, 1);
 
-        if (index+1 % 2 === 0) {
+        if ( (index + 1) % 2 == 0) {
           arSecond.push(token);
         }
         else {
@@ -92,13 +93,17 @@ export class CryptoService {
       }
 
       strFirst = arFirst.toString();
-      strSecond = arSecond.reverse.toString();
+      strFirst = strFirst.replace(/,/g,'');
+
+      strSecond = arSecond.reverse().toString();
+      strSecond = strSecond.replace(/,/g,'');
+
       elArray = [];
       elArray.push(strFirst);
       elArray.push(strSecond);
     }
 
-    return result;
+    return elArray;
   }
 
 }

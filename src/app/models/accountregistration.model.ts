@@ -105,5 +105,4 @@ export class AccountRegistrationResponse {
     idRefer: string;
     result: boolean;
     message: string;
-
 }

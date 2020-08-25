@@ -69,8 +69,7 @@ const routes: Routes = [
   {
     path: 'news/:newsId',
     loadChildren: () => import('./pages/newsdetail/newsdetail.module').then( m => m.NewsdetailPageModule)
-  }
-  ,  
+  },
   {
     path: 'news',
     loadChildren: () => import('./pages/news/news.module').then( m => m.NewsPageModule)
@@ -79,6 +78,12 @@ const routes: Routes = [
     path: 'test',
     loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
   }
+  //questo lo lascio commentato, perchè in teoria ci si arriva solo da modale
+  // {
+  //   path: 'psw-recovery',
+  //   loadChildren: () => import('./pages/auth/psw-recovery/psw-recovery.module').then( m => m.PswRecoveryPageModule)
+  // }
+
   
 
  

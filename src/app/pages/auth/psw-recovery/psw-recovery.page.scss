@@ -1,0 +1,32 @@
+div.form-verifica{
+    width:320px;
+    margin:auto;
+    margin-bottom: 8vh;
+    text-align:center;
+    ion-segment{
+        background:white;
+        ion-input{
+            display:inline;
+            border-radius:15px;
+            margin:2px;
+            border:3px solid var(--ion-color-primary);
+            text-align:center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--ion-color-light);
+            font-size: 40px;
+        }
+    }
+}
+
+div.form-verifica.desktop{
+    margin-bottom: 2vh;
+}
+
+ion-button.btn-send-code{
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
+
+div.ion-padding{
+    margin-top:5vh;
+}

@@ -53,10 +53,10 @@ export class StartService {
     secureProtocol = FALSE (chiamata http e non https)
   */
   //Versione Production
-  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
 
   //Versione LocalTest
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
+  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
   
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
@@ -69,6 +69,10 @@ export class StartService {
 
   get startConfig() {
     return this._startConfig.asObservable();
+  }
+
+  get actualStartConfig(){
+    return this._startConfig.getValue();
   }
 
   //Ritorna se l'applicazione sta girando su desktop
@@ -696,6 +700,34 @@ registrationFinalize(docUtente: Utente,
     const actualStartConfig = this._startConfig.getValue();
     return this.utenteService.registrationFinalize(actualStartConfig,docUtente, docRequestCode);
   }
+
+//#endregion
+
+//#region PSW RECOVERY
+
+recoverySendCodici(docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.utenteService.recoverySendCodici(actualStartConfig, docRequestCode);
+}
+
+recoveryVerifyCodici(docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.utenteService.recoveryVerifyCodici(actualStartConfig, docVerifyCode);
+}
+
+
+/**
+ * Invia al server la richiesta per la registrazione di un nuovo account
+ * @param docUtente Nuovo Utente da registrare
+ * @param docRequestCode Documento richiesta codici presentato in precedenza
+ */
+recoveryFinalize(docUtente: Utente, 
+  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+
+const actualStartConfig = this._startConfig.getValue();
+return this.utenteService.recoveryFinalize(actualStartConfig,docUtente, docRequestCode);
+}
+
 
 //#endregion
 

@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Recupero password</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div [ngClass]="this.isDesktop?'ion-text-center ion-padding desktop':'ion-text-center ion-padding'">
+    <img [src]="startConfig.getUrlLogo()">
+  </div>
+
+  <!-- PARTE RICHIESTA CODICE -->
+  <div *ngIf="stato==PageState.richiestaCodice" class="ion-padding ion-text-center">
+    <p>
+      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        Per recuperare la password, dobbiamo verificare la tua identità 
+    </p>
+    <form [formGroup]="formContact">
+      <ion-item >
+        <ion-icon slot="start" name="at-outline"></ion-icon>
+        <ion-input type="text" placeholder="E-Mail o Cellulare" formControlName="contatto"></ion-input>
+      </ion-item>
+    </form>
+    <ion-button  [disabled]="!this.formContact.valid" color="primary" class="btn-send-code" (click)="onClickInviaCodice()">
+      Invia Codice
+    </ion-button>
+    <form [formGroup]="formVerify">
+      <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
+          <ion-segment>
+              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
+              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
+              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
+              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
+              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
+          </ion-segment>
+      </div>
+  </form>
+  </div>
+
+  <!-- PARTE CAMBIO PSW -->
+  <div *ngIf="stato==PageState.cambioPsw" class="ion-padding">
+    <form [formGroup]="formPsw">
+      <ion-list>
+        <ion-item>
+          <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+          <ion-input placeholder="Nuova password" type="password" inputmode="password" formControlName="psw"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+          <ion-input placeholder="Conferma Password" type="password" inputmode="password" formControlName="confirmPsw"></ion-input>
+        </ion-item>
+      </ion-list>
+    </form>
+
+  </div>
+</ion-content>
+
+
+<ion-footer>
+  <!-- PARTE RICHIESTA CODICE -->
+  <div *ngIf="stato==PageState.richiestaCodice">
+    <ion-button [disabled]="!this.formVerify.valid" color="primary" expand="block" (click)="onClickVerifica()">Verifica</ion-button>
+  </div>
+
+  <!-- PARTE CAMBIO PSW -->
+  <div *ngIf="stato==PageState.cambioPsw">
+    <ion-button  [disabled]="!this.formPsw.valid" color="primary" expand = "block" (click)="onClickCambia()">Cambia Password</ion-button>
+  </div>
+</ion-footer>

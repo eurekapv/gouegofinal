@@ -402,4 +402,164 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
   //#endregion
   
 
+  //#region  FASI RECUPERO PSW
+
+  /**
+   * Invia al server la richiesta per inviare via Mail/SMS i codici per la registrazione account
+   * @param config Dati di configurazione
+   * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
+   */
+  recoverySendCodici(config: StartConfiguration, 
+  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+  //Viene effettuata una chiamata al server per ottenere
+  //l'invio di una mail e/o un SMS contenente codici PIN
+  const metodo = 'recoverySendCodici';
+  const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                          'X-HTTP-Method-Override': metodo, 
+                          'appid':config.appId
+                        });
+
+  const myParams = new HttpParams();
+  const doObject = 'ACCOUNT';
+  let bodyRequest = '';
+
+  let myUrl = config.urlBase + '/' + doObject;
+
+  return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+  if (docRequestCode) {
+
+  //Creo il body da inviare
+  bodyRequest = docRequestCode.exportToJSON(true, true, true);
+  bodyRequest = `{"docRequest" : ${bodyRequest}}`;
+  console.log(bodyRequest);
+
+  //Faccio la chiamata POST
+  this.apiService
+  .httpPost(myUrl, myHeaders, myParams, bodyRequest )
+  .pipe(map(received => {
+      return received.recovery;
+  }))
+  .subscribe((response:AccountRegistrationResponse) => {
+    resolve(response);
+  }, error => {
+  reject(error);
+  })
+  }
+  else {
+  reject('Dati mancanti per la richiesta');
+  }
+
+  });
+
+
+
+}
+
+ /**
+   * Invia al server una richiesta per verificare i pincode inseriti dall'utente
+   * @param config Dati di configurazione
+   * @param docVerifyCode Dati da verificare
+   */
+  recoveryVerifyCodici(config: StartConfiguration, 
+    docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+        const metodo = 'recoveryVerifyCodici';
+        const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                'X-HTTP-Method-Override': metodo, 
+                                'appid':config.appId
+                              });
+
+        const myParams = new HttpParams();
+        const doObject = 'ACCOUNT';
+        let bodyRequest = '';
+
+        let myUrl = config.urlBase + '/' + doObject;
+
+        return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+            if (docVerifyCode) {
+
+                //Creo il body da inviare
+                bodyRequest = docVerifyCode.exportToJSON(true, true, true);
+                bodyRequest = `{"docRequest" : ${bodyRequest}}`;
+                
+                //Faccio la chiamata POST
+                this.apiService
+                .httpPost(myUrl, myHeaders, myParams, bodyRequest )
+                .pipe(map(received => {
+                    return received.recovery;
+                }))
+                .subscribe((response:AccountRegistrationResponse) => {
+                  resolve(response);
+                }, error => {
+                  reject(error);
+                })
+            }
+            else {
+              reject('Dati mancanti per la richiesta');
+            }
+
+        });
+}  
+
+/**
+ * Invia al server i dati per completare la registrazione di un account
+ * @param config Dati configurazione
+ * @param docUtente Utente da registrare
+ * @param docRequestCode Documento di Richiesta codici iniziale
+ */
+recoveryFinalize(config: StartConfiguration,
+  docUtente: Utente, 
+  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+
+    //Viene inviato al server il documento per chiedere la registrazione utente
+    const metodo = 'recoveryFinalize';
+    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                          'X-HTTP-Method-Override': metodo, 
+                          'appid':config.appId
+                        });
+
+    const myParams = new HttpParams();
+    const doObject = 'ACCOUNT';
+    let bodyRequest = '';
+    let bodyUtente = '';
+    let bodyFinal = '';
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+  if (docRequestCode && docUtente) {
+
+    //Creo il body da inviare
+    bodyRequest = docRequestCode.exportToJSON(true, true, true);
+    bodyUtente = docUtente.exportToJSON(true,true,true);
+
+    bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
+    
+    console.log('Richiesta di Registrazione: ' + bodyFinal);
+
+    //Faccio la chiamata POST
+    this.apiService
+      .httpPost(myUrl, myHeaders, myParams, bodyFinal )
+      .pipe(map(received => {
+        return received.activation;
+      }))
+      .subscribe((response:AccountRegistrationResponse) => {
+        console.log(response);
+        resolve(response);
+        }, error => {
+            reject(error);
+        });
+    }
+    else {
+      reject('Dati mancanti per la richiesta');
+    }
+
+});
+
+
+
+}
+
+
+
+  //#endregion
 }

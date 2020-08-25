@@ -15,6 +15,7 @@ import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountReg
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { CodicefiscaleService } from 'src/app/services/codicefiscale.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
+import { PswRecoveryPage } from '../psw-recovery/psw-recovery.page';
 const { Browser } = Plugins;
 
 
@@ -344,8 +345,20 @@ export class NewLoginPage implements OnInit {
             })
         })
     }
-  }
 
+  }
+  
+  /**
+   * evento scatenato quando l'utente clicca su "reimposta password"
+   */
+  onClickReimpostaPsw(){
+    this.modalCtrl.create({
+      component:PswRecoveryPage
+    }).then(elModal=>{
+      elModal.present();
+      this.modalCtrl.dismiss();
+    })
+  }
 
   //#region GESTIONE PAGINA CONTATTI E CODICI
 

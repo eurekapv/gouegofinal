@@ -8,6 +8,7 @@ import { NewLoginPageRoutingModule } from './new-login-routing.module';
 
 import { HomePageModule } from 'src/app/pages/home/home.module'
 import { NewLoginPage } from './new-login.page'
+import { PswRecoveryPage } from '../psw-recovery/psw-recovery.page'
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { NewLoginPage } from './new-login.page'
     HomePageModule
   ],
   declarations: [],
-  exports: []
+  exports: [],
+  entryComponents: [PswRecoveryPage]
 })
 export class NewLoginPageModule {}

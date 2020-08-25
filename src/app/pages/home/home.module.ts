@@ -19,6 +19,8 @@ import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/spo
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 import { NewsdetailPageModule } from 'src/app/pages/newsdetail/newsdetail.module'
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page'
+import { PswRecoveryPage } from '../auth/psw-recovery/psw-recovery.page'
+
 
 
 //questi 3 da rimuovere perchè inutili
@@ -57,7 +59,8 @@ import { CircularComponent } from 'src/app/shared/components/circular/circular.c
                  //questi 3 da rimuovere perchè inutili
                  AdvertisingComponent,
                  AuthComponent,
-                 CircularComponent
+                 CircularComponent,
+                 PswRecoveryPage
                  
                  ],
   exports: [NewsEventiComponent,
@@ -67,8 +70,10 @@ import { CircularComponent } from 'src/app/shared/components/circular/circular.c
             FootbookedComponent,
             PlayerNumberComponent,
             SportScrollComponent,
-            NewsdetailPage],
-  entryComponents: [NewLoginPage, NewsdetailPage]
+            NewsdetailPage,
+            PswRecoveryPage
+          ],
+  entryComponents: [NewLoginPage, PswRecoveryPage, NewsdetailPage]
   
 })
 export class HomePageModule {}

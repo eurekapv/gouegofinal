@@ -103,6 +103,7 @@ export class AccountRegistrationVerifyCode extends IDDocument {
 //Risposta ottenuta dal server 
 export class AccountRegistrationResponse {
     idRefer: string;
+    descrRefer:string;
     result: boolean;
     message: string;
 }

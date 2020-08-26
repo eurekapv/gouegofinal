@@ -34,8 +34,12 @@ export class PswRecoveryPage implements OnInit {
   //oggetti per richiedere e verificare i codici
   docRichiestaCodici : AccountRegistrationRequestCode= new AccountRegistrationRequestCode;
   docVerifica: AccountRegistrationVerifyCode = new AccountRegistrationVerifyCode;
+
   //l'id dell'utente che vuole cambiare la psw
   idUtente: string='';
+  //la weblogin dell'utente
+  descrUtente: string='';
+
 
    //#region questi servono per accedere ai corrispettivi elementi in HTML
    @ViewChild('c1',{static:false}) c1;
@@ -354,6 +358,7 @@ export class PswRecoveryPage implements OnInit {
           if (risposta.result){
             //se la verifica è andata a buon fine, recupero l'utente su bisogna cambiare la psw, poi posso procedere
             this.idUtente=risposta.idRefer;
+            this.descrUtente = risposta.descrRefer;
             this.stato=PageState.cambioPsw;
           }
           else{

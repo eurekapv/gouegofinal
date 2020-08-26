@@ -62,6 +62,11 @@
 
   <!-- PARTE CAMBIO PSW -->
   <div *ngIf="stato==PageState.cambioPsw" class="ion-padding">
+
+    <p>
+      <ion-icon color="primary" name="information-circle-outline"></ion-icon>
+      Inserisci la nuova password per l'account <ion-text color="primary"> {{this.descrUtente}}</ion-text>
+    </p>
     <form [formGroup]="formPsw">
       <ion-list>
         <ion-item>

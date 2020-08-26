@@ -176,42 +176,62 @@ export class PswRecoveryPage implements OnInit {
    */
   onClickVerifica(){
 
-    //creo un nuovo documento per richiedere la verifica
-    //ora controllo se ho tuttti i dati, e lo popolo
-    if (this.docRichiestaCodici&&this.docRichiestaCodici.IDREFER){
-      if (this.docRichiestaCodici.IDREFER.length!=0){
-        this.docVerifica=new AccountRegistrationVerifyCode();
+    let prosegui = true;
+    let message = "";
+   
+    //Per poter proseguire devo avere il documento di Richiesta codice con IDREFER popolato
+    if (this.docRichiestaCodici && this.docRichiestaCodici.IDREFER) {
+
+      if (this.docRichiestaCodici.IDREFER.length != 0) {
+
+        //Preparo il documento di Verifica da inviare al server
+        this.docVerifica = new AccountRegistrationVerifyCode();
         this.docVerifica.IDREFER=this.docRichiestaCodici.IDREFER;
         this.docVerifica.IDAREA=this.docRichiestaCodici.IDAREA;
-        if (this.docRichiestaCodici.REQUESTEMAILCODE&&!this.docRichiestaCodici.REQUESTSMSCODE){
-          //mi ha richiesto il codice tramite mail
-          this.docVerifica.EMAILPINCODE=this.getInputPin();
-          //faccio la richiesta al server
-          this.sendServerVerificaCodici();
+
+        //Invio il pincode ricevuto in mail
+        if (this.docRichiestaCodici.REQUESTEMAILCODE) {
+
+            //mi ha richiesto il codice tramite mail
+            this.docVerifica.EMAILPINCODE=this.getInputPin();
+
+
         }
-        else if (!this.docRichiestaCodici.REQUESTEMAILCODE&&this.docRichiestaCodici.REQUESTSMSCODE){
+        else if (this.docRichiestaCodici.REQUESTSMSCODE) {
           //mi ha richiesto il codice via sms
           this.docVerifica.SMSPINCODE=this.getInputPin();
-          //faccio la richiesta al server
-          this.sendServerVerificaCodici();
+          
         }
         else{
           //ci sono stati casini
-          this.showMessage("C'è stato un problema, richiedi un nuovo codice")
+          prosegui =false;
+          message = "C'è stato un problema, richiedi un nuovo codice";
         }
       }
       else{
         //ci sono stati casini
-        this.showMessage("C'è stato un problema, richiedi un nuovo codice")
+        prosegui =false;
+        message = "C'è stato un problema, richiedi un nuovo codice";
       }
     }
     else{
       //ci sono stati casini
-      this.showMessage("C'è stato un problema, richiedi un nuovo codice")
+      prosegui =false;
+      message = "C'è stato un problema, richiedi un nuovo codice";
     }
 
-    //alla fine, se tutto è andato bene, passo alla pagina successiva
-    this.stato=PageState.cambioPsw;
+    //Sembra corretto, invio il pincode al server
+    if (prosegui ) {
+      //faccio la richiesta al server
+      this.sendServerVerificaCodici();
+    }
+    else {
+      //Ci sono errori
+      this.showMessage(message);
+    }
+
+
+
   }
 
   /**
@@ -317,12 +337,14 @@ export class PswRecoveryPage implements OnInit {
                           if (risposta.result) {
                             //se è andato tutto bene
                             this.showMessage("Il codice di verifica è stato inviato");
-
+                            //Imposto IDRefer
+                            this.docRichiestaCodici.IDREFER = risposta.idRefer;
                           }
                           else{
                             //se la richiesta è andata a buon fine, ma il server non è riuscito ad inviare il messaggio, presumo che 
                             //l'utente non esista
                             this.showMessage("Account non trovato");
+                            this.docRichiestaCodici.IDREFER = "";
                             console.log(risposta.message);
                           }
                 })
@@ -331,44 +353,62 @@ export class PswRecoveryPage implements OnInit {
                     elLoading.dismiss();
                     console.log(error);
                     this.showMessage("Errore di connessione");
+                    this.docRichiestaCodici.IDREFER = "";
                 });
     });
   }
 
   /**
    * qui richiedo al server la verifica del codice (in risposta, riceverò l'id utente)
+   *     //alla fine, se tutto è andato bene, passo alla pagina successiva
+    //this.stato=PageState.cambioPsw;
    */
-  sendServerVerificaCodici(){
-    if (this.docVerifica){
+  sendServerVerificaCodici() {
+
+    if (this.docVerifica) {
       //mostro il loading
-      this.loadingController.create({
+      this.loadingController
+      .create({
         message:"Verifica in corso...",
         spinner:"circular",
         backdropDismiss: true
-      }).then(loading=>{
-        loading.present();
+      })
+      .then(elLoading=>{
+
+        //Mostro il loding
+        elLoading.present();
         
         //ora faccio la richiesta
-        this.startService.recoveryVerifyCodici(this.docVerifica).then(risposta=>{
-          loading.dismiss();
-          if (risposta.result){
-            //se la verifica è andata a buon fine, recupero l'utente su bisogna cambiare la psw, poi posso procedere
-            this.idUtente=risposta.idRefer;
-            this.stato=PageState.cambioPsw;
-          }
-          else{
-            //altrimenti, se il server ha risposto, ma ha risposto negativamente, presumo che il codice sia errato
-            this.showMessage('Codice di verifica non valido');
-          }
+        this.startService.recoveryVerifyCodici(this.docVerifica)
+            .then(risposta=>{
 
-        }).catch(error=>{
+                  //Il server ha risposto, nascondo il loading
+                  elLoading.dismiss();
 
-          //se la richiesta non è andata a buon fine
-          loading.dismiss();
-          console.log(error);
-          this.showMessage('Errore di connessione');
-        })
-      })
+                  if (risposta.result) {
+                    //La verifica è andata a buon fine, recupero l'utente su cui bisogna cambiare la psw, poi posso procedere
+                    this.idUtente=risposta.idRefer;
+
+                    //Cambio lo stato della pagina
+                    this.stato=PageState.cambioPsw;
+
+                    this.showMessage('Codice di verifica valido');
+                  }
+                  else {
+                    //Altrimenti, se il server ha risposto, ma ha risposto negativamente, presumo che il codice sia errato
+                    this.showMessage('Codice di verifica non valido');
+                  }
+
+            })
+            .catch(error => {
+                //se la richiesta non è andata a buon fine
+                //Nascondo il loading
+                elLoading.dismiss();
+
+                console.log(error);
+                this.showMessage('Errore di connessione');
+            });
+      });
     }
   }
 

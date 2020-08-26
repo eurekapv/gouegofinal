@@ -37,8 +37,7 @@ import { PaymentService } from './payment.service';
 import { PaymentConfiguration } from '../models/payment.model';
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
-import { ValueList, TipoPrivateImage } from 'src/app/models/valuelist.model'
-import { PrivateImage } from '../models/privateimage.model';
+import { TipoPrivateImage } from 'src/app/models/valuelist.model'
 import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from '../models/accountregistration.model';
 
 
@@ -53,10 +52,10 @@ export class StartService {
     secureProtocol = FALSE (chiamata http e non https)
   */
   //Versione Production
-  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
 
   //Versione LocalTest
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
+  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
   
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);

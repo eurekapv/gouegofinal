@@ -34,6 +34,8 @@ export class Utente extends IDDocument {
     NEWSLETTER: boolean;
     PROFILAZIONEINTERNA: boolean;
     PROFILAZIONEESTERNA: boolean;
+    VERIFICATAMAIL: boolean;
+    VERIFICATAMOBILE: boolean;
     UTENTILIVELLI: UtenteLivello[];
 
     /**
@@ -48,6 +50,9 @@ export class Utente extends IDDocument {
             this.PROFILAZIONEESTERNA = false;
             this.PROFILAZIONEINTERNA = false;
         }
+
+        this.VERIFICATAMAIL = false;
+        this.VERIFICATAMOBILE = false;
     }
 
     /**
@@ -80,7 +85,7 @@ export class Utente extends IDDocument {
                     'TELEFONO2'
                     ];
     let arNumber = ['SESSO'];
-    let arBoolean = ['NEWSLETTER','PROFILAZIONEINTERNA','PROFILAZIONEESTERNA'];
+    let arBoolean = ['NEWSLETTER','PROFILAZIONEINTERNA','PROFILAZIONEESTERNA','VERIFICATAMAIL','VERIFICATAMOBILE'];
     let arDate = ['NATOIL'];
     let arDateTime =[];
     let arTime = [];
@@ -144,6 +149,71 @@ export class Utente extends IDDocument {
             newLevel.setJSONProperty(element);
             this.UTENTILIVELLI.push(newLevel);
         });
+    }
+
+
+    /**
+     * Ritorna una label per indicare se la Mail è verificata oppure no
+     */
+    getLabelVerificaMail() {
+        let labelReturn = '';
+
+        //Mail verificata
+        if (this.VERIFICATAMAIL) {
+
+            //Se c'e' la mail dico che è verificata
+            if (this.EMAIL && this.EMAIL.length !== 0) {
+                labelReturn = 'VERIFICATA';
+            }
+            else {
+                //Se non c'e' la mail non dico nulla
+                labelReturn = '';
+            }
+        }
+        else {
+            //Se c'e' la mail dico che non è verificata
+            if (this.EMAIL && this.EMAIL.length !== 0) {
+                labelReturn = 'NON VERIFICATA';
+            }
+            else {
+                //Se non c'e' la mail non dico nulla
+                labelReturn = '';
+            }
+        }
+
+        return labelReturn;
+    }
+
+    /**
+     * Ritorna una label per indicare se il telefono è verificato oppure no
+     */
+    getLabelVerificaMobile() {
+        let labelReturn = '';
+
+        //Mobile verificato
+        if (this.VERIFICATAMOBILE) {
+
+            //Se c'e' la mail dico che è verificata
+            if (this.MOBILENUMBER && this.MOBILENUMBER.length !== 0) {
+                labelReturn = 'VERIFICATO';
+            }
+            else {
+                //Se non c'e' la mail non dico nulla
+                labelReturn = '';
+            }
+        }
+        else {
+            //Se c'e' la mail dico che non è verificata
+            if (this.MOBILENUMBER && this.MOBILENUMBER.length !== 0) {
+                labelReturn = 'NON VERIFICATO';
+            }
+            else {
+                //Se non c'e' la mail non dico nulla
+                labelReturn = '';
+            }
+        }
+
+        return labelReturn;
     }
 
 

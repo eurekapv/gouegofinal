@@ -129,11 +129,11 @@
         </ion-item-divider>
         <ion-item button>
           <ion-label>{{utente.MOBILENUMBER}}</ion-label>
-          <ion-badge color="success">VERIFIED</ion-badge>
+          <ion-badge color="success">{{utente.getLabelVerificaMobile()}}</ion-badge>
         </ion-item>
         <ion-item button>
           <ion-label>{{utente.EMAIL}}</ion-label>
-          <ion-badge color="success">VERIFIED</ion-badge>
+          <ion-badge color="success">{{utente.getLabelVerificaMail()}}</ion-badge>
         </ion-item>
         
       </ion-item-group>

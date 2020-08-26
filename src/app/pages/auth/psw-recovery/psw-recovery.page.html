@@ -9,17 +9,16 @@
   </ion-toolbar>
 </ion-header>
 
+<!-- CONTENT PAGES -->
 <ion-content>
-  <div [ngClass]="this.isDesktop?'ion-text-center ion-padding desktop':'ion-text-center ion-padding'">
+  <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
     <img [src]="startConfig.getUrlLogo()">
   </div>
 
   <!-- PARTE RICHIESTA CODICE -->
-  <div *ngIf="stato==PageState.richiestaCodice" class="ion-padding ion-text-center">
-    <p>
-      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-        Per recuperare la password, dobbiamo verificare la tua identità 
-    </p>
+  <div *ngIf="stato==PageState.richiestaCodice" 
+        class="ion-padding-horizontal ion-text-center">
+
     <form [formGroup]="formContact">
       <ion-item >
         <ion-icon slot="start" name="at-outline"></ion-icon>
@@ -29,6 +28,21 @@
     <ion-button  [disabled]="!this.formContact.valid" color="primary" class="btn-send-code" (click)="onClickInviaCodice()">
       Invia Codice
     </ion-button>
+
+    <div  class="ion-no-padding div-message">
+      <p>
+      <ion-text color="primary">
+          <ion-icon name="information-circle-outline"></ion-icon>
+      </ion-text>
+          Indica una email o un numero cellulare utilizzato nella registrazione account, e ti invieremo un pincode di recovery password
+      </p>
+      <p>
+          <ion-text color="primary">
+              <h6><i>(se non ricordi queste informazioni è necessario contattare la struttura)</i></h6>
+          </ion-text>
+      </p>
+    </div>
+
     <form [formGroup]="formVerify">
       <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
           <ion-segment>
@@ -39,7 +53,11 @@
               <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
           </ion-segment>
       </div>
-  </form>
+    </form>
+
+
+
+
   </div>
 
   <!-- PARTE CAMBIO PSW -->

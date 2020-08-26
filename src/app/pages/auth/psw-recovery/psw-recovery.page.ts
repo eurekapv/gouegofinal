@@ -276,25 +276,29 @@ export class PswRecoveryPage implements OnInit {
   sendServerRichiestaCodici(){
     //creo il loading
     this.loadingController.create({
-      message:'Invio codice in corso...',
-      spinner:'circular',
-      backdropDismiss: true,
-    }).then(loading=>{
-      loading.present();
-      let contatto:string;
-      //recupero il contatto inserito dall'utente
-      contatto=this.formContact.value.contatto;
+          message:'Invio codice in corso...',
+          spinner:'circular',
+          backdropDismiss: true,
+    }).then(elLoading => {
+
+        elLoading.present();
+        let contatto:string;
+        //recupero il contatto inserito dall'utente
+        contatto=this.formContact.value.contatto;
+
       //devo capire se l'utente ha inserito una mail o un telefono (se è presente @, presumo sia una mail) e valorizzare
       //l'oggetto "docRichiestaCodici" di conseguenza
       if (contatto.includes('@')){
         //è una mail
         this.docRichiestaCodici.EMAIL=contatto;
+        this.docRichiestaCodici.TELEPHONE = "";
         this.docRichiestaCodici.REQUESTEMAILCODE=true;
-        this.docRichiestaCodici.REQUESTSMSCODE=false
+        this.docRichiestaCodici.REQUESTSMSCODE=false;
       }
       else{
         //è un telefono
         this.docRichiestaCodici.TELEPHONE=contatto;
+        this.docRichiestaCodici.EMAIL = "";
         this.docRichiestaCodici.REQUESTSMSCODE=true;
         this.docRichiestaCodici.REQUESTEMAILCODE=false;
       }
@@ -303,26 +307,32 @@ export class PswRecoveryPage implements OnInit {
       this.docRichiestaCodici.IDAREA=this.startService.areaSelectedValue.ID;
 
       //ora che l'oggetto è pronto, faccio la richiesta
-      this.startService.recoverySendCodici(this.docRichiestaCodici).then((risposta:AccountRegistrationResponse)=>{
-        //quando arriva la risposta chiudo il loading
-        loading.dismiss();
-        if (risposta.result){
-          //se è andato tutto bene
-          this.showMessage("Il codice di verifica è stato inviato");
-        }
-        else{
-          //se la richiesta è andata a buon fine, ma il server non è riuscito ad inviare il messaggio, presumo che 
-          //l'utente non esista
-          this.showMessage("Account non trovato");
-          console.log(risposta.message);
-        }
-      }).catch(error=>{
-        //Se la richiesta non è andata a buon fine, dismetto il loading, lo stampo in console e scrivo all'utente "errore di connessione"
-        loading.dismiss();
-        console.log(error)
-        this.showMessage("Errore di connessione");
-      })
-    })
+      this.startService.recoverySendCodici(this.docRichiestaCodici)
+                .then((risposta:AccountRegistrationResponse)=>{
+                          //quando arriva la risposta chiudo il loading
+                          elLoading.dismiss();
+
+                          console.log(risposta);
+
+                          if (risposta.result) {
+                            //se è andato tutto bene
+                            this.showMessage("Il codice di verifica è stato inviato");
+
+                          }
+                          else{
+                            //se la richiesta è andata a buon fine, ma il server non è riuscito ad inviare il messaggio, presumo che 
+                            //l'utente non esista
+                            this.showMessage("Account non trovato");
+                            console.log(risposta.message);
+                          }
+                })
+                .catch(error => {
+                    //Se la richiesta non è andata a buon fine, dismetto il loading, lo stampo in console e scrivo all'utente "errore di connessione"
+                    elLoading.dismiss();
+                    console.log(error);
+                    this.showMessage("Errore di connessione");
+                });
+    });
   }
 
   /**
@@ -394,11 +404,18 @@ export class PswRecoveryPage implements OnInit {
     })
   }
 
-  showMessage(messaggio: string){
-    this.toastController.create({
-      message: messaggio,
-      duration: 4
-    })
+   /**
+   * Procedura che visualizza un toast con il messaggio passato
+   * @param myMessage Il messaggio da visualizzare
+   */
+  async showMessage(myMessage: string) {
+    const toast = await this.toastController
+      .create({
+        message: myMessage,
+        duration: 3000
+      });
+
+      toast.present();
   }
 
 

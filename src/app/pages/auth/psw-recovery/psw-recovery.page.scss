@@ -8,6 +8,12 @@ div.div-logo{
     img{
         height: 15vh;
     }
+    
+}
+
+div.div-logo.desktop{
+    margin-bottom: 0vh;
+
 }
 
 div.div-message {
@@ -43,6 +49,11 @@ div.form-verifica.desktop{
 ion-button.btn-send-code{
     margin-top: 5vh;
     margin-bottom: 5vh;
+}
+
+ion-button.btn-send-code.desktop{
+    margin-top: 3vh;
+    margin-bottom:1vh;
 }
 
 div.ion-padding{

@@ -25,7 +25,7 @@
         <ion-input type="text" placeholder="E-Mail o Cellulare" formControlName="contatto"></ion-input>
       </ion-item>
     </form>
-    <ion-button  [disabled]="!this.formContact.valid" color="primary" class="btn-send-code" (click)="onClickInviaCodice()">
+    <ion-button  [disabled]="!this.formContact.valid" color="primary" [ngClass]="this.isDesktop? 'btn-send-code desktop':'btn-send-code'" (click)="onClickInviaCodice()">
       Invia Codice
     </ion-button>
 

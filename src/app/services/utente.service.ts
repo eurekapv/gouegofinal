@@ -530,7 +530,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
 
     //Creo il body da inviare
     bodyRequest = docRequestCode.exportToJSON(true, true, true);
-    bodyUtente = docUtente.exportToJSON(true,true,true);
+    bodyUtente = docUtente.exportToJSON(true,false,true);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
     
@@ -538,9 +538,9 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
 
     //Faccio la chiamata POST
     this.apiService
-      .httpPost(myUrl, myHeaders, myParams, bodyFinal )
+      .httpPost(myUrl, myHeaders, myParams, bodyFinal)
       .pipe(map(received => {
-        return received.activation;
+        return received.recovery;
       }))
       .subscribe((response:AccountRegistrationResponse) => {
         console.log(response);

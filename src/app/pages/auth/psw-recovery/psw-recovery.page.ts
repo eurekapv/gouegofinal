@@ -176,7 +176,15 @@ export class PswRecoveryPage implements OnInit {
   }
 
   /**
+   * Evento click per la richiesta da effettuare al server dei codici
+   */
+  onClickInviaCodice() {
+    this.sendServerRichiestaCodici();
+  }
+
+  /**
    * evento che si attiva quando l'utente clicca "verifica" dopo aver inserito il codice
+   * Preparo il documento docVerifica che sarà usato nell'invio dei codici
    */
   onClickVerifica(){
 
@@ -227,6 +235,7 @@ export class PswRecoveryPage implements OnInit {
     //Sembra corretto, invio il pincode al server
     if (prosegui ) {
       //faccio la richiesta al server
+      //il metodo invia il documento docVerifica
       this.sendServerVerificaCodici();
     }
     else {
@@ -242,16 +251,20 @@ export class PswRecoveryPage implements OnInit {
    * evento attivato quando l'utente conferma il cambiamento della password
    */
   onClickCambia(){
+    
     //ora, devo crearmi il documento utente, e inserire il token nel documento docrichiesta
     let sendDocRichiestaCodici = this.docRichiestaCodici;
-    let sendDocUtente = new Utente;
-    sendDocUtente.ID= this.idUtente;
+    let sendDocUtente = new Utente();
     
-    //vriabili necessarie per il giochino delle psw
+    //variabili necessarie per il giochino delle psw
     let pwd = '';
     let pwdToSend = '';
     let splitPwd:string[] = [];
     let useCrypter: boolean = false; //per ora, useCrypter non va, quindi è false
+
+    //Metto nell'ID l'utente
+    sendDocUtente.ID = this.idUtente;
+    
 
     //recupero la psw
     pwd = this.formPsw.value.psw;
@@ -285,14 +298,9 @@ export class PswRecoveryPage implements OnInit {
     }
 
 
-
-
-
   }
 
-  onClickInviaCodice(){
-    this.sendServerRichiestaCodici();
-  }
+
 
   /**
    * qui richiedo al server l'invio di un codice di verifica
@@ -341,7 +349,8 @@ export class PswRecoveryPage implements OnInit {
                           if (risposta.result) {
                             //se è andato tutto bene
                             this.showMessage("Il codice di verifica è stato inviato");
-                            //Imposto IDRefer
+
+                            //Imposto IDRefer che devo reinviare quando chiedo di verificare il codice
                             this.docRichiestaCodici.IDREFER = risposta.idRefer;
                           }
                           else{
@@ -390,8 +399,12 @@ export class PswRecoveryPage implements OnInit {
                   elLoading.dismiss();
 
                   if (risposta.result) {
+
                     //La verifica è andata a buon fine, recupero l'utente su cui bisogna cambiare la psw, poi posso procedere
                     this.idUtente=risposta.idRefer;
+                    this.descrUtente = risposta.descrRefer;
+
+                    console.log('Questo è IDUtente ricevuto -> ' + this.idUtente);
 
                     //Cambio lo stato della pagina
                     this.stato=PageState.cambioPsw;
@@ -399,6 +412,8 @@ export class PswRecoveryPage implements OnInit {
                     this.showMessage('Codice di verifica valido');
                   }
                   else {
+                    //Nessun utente è stato trovato
+                    this.idUtente = '';
                     //Altrimenti, se il server ha risposto, ma ha risposto negativamente, presumo che il codice sia errato
                     this.showMessage('Codice di verifica non valido');
                   }
@@ -408,6 +423,9 @@ export class PswRecoveryPage implements OnInit {
                 //se la richiesta non è andata a buon fine
                 //Nascondo il loading
                 elLoading.dismiss();
+
+                //Nessun utente è stato trovato
+                this.idUtente = '';
 
                 console.log(error);
                 this.showMessage('Errore di connessione');
@@ -419,33 +437,53 @@ export class PswRecoveryPage implements OnInit {
   /**
    * qui faccio la richiesta effettiva di cambio password
    */
-  sendServerFinalize(docUtente: Utente, docRichiestaCodici: AccountRegistrationRequestCode){
+  sendServerFinalize(docUtente: Utente, docRichiestaCodici: AccountRegistrationRequestCode) {
+    
     //creo il loading
-    this.loadingController.create({
-      message:'Cambio password',
-      spinner:'circular',
-      backdropDismiss: true
-    }).then(loading=>{
-      loading.present();
-      
-      //ora faccio la richiesta
-      this.startService.recoveryFinalize(docUtente, docRichiestaCodici).then(risposta=>{
-        if (risposta.result){
-          //la modifica della psw è andata a buon fine, posso dire ok, e chiudere la videata
-          this.showMessage("Modifica della password confermata");
-          this.modalController.dismiss();
-        }
-        else{
-          //la richiesta non è andata in errore, ma la modifica non è riuscita... stampo un errore generico
-          this.showMessage('Purtroppo c\'è stato un errore, riprova');
-          console.log(risposta.message);
-        }
-      }).catch(error=>{
-        //la richiesta è andata in errore
-        console.log (error);
-        this.showMessage('Errore di connessione');
+    this.loadingController
+      .create({
+            message:'Cambio password',
+            spinner:'circular',
+            backdropDismiss: true
       })
-    })
+      .then(elLoading => {
+
+          //Mostro il loading
+          elLoading.present();
+      
+          //ora faccio la richiesta
+          this.startService.recoveryFinalize(docUtente, docRichiestaCodici)
+              .then(risposta => {
+
+                  //Chiudo il loading
+                  elLoading.dismiss();
+
+
+                  if (risposta.result) {
+                    //la modifica della psw è andata a buon fine, posso dire ok, e chiudere la videata
+                    this.showMessage("Modifica della password confermata");
+
+                    //Chiudo la videata modale
+                    this.modalController.dismiss();
+                  }
+                  else {
+                    
+                    //la richiesta non è andata in errore, ma la modifica non è riuscita... stampo un errore generico
+                    this.showMessage('Purtroppo c\'è stato un errore, riprova');
+
+                    console.log(risposta.message);
+                  }
+              })
+              .catch(error => {
+                    //la richiesta è andata in errore
+
+                    //Chiudo il loading
+                    elLoading.dismiss();
+
+                    console.log (error);
+                    this.showMessage('Errore di connessione');
+              });
+      });
   }
 
    /**

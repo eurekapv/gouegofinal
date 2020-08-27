@@ -32,46 +32,6 @@
   </div>
 
 
-  <div class="ion-padding" *ngIf="actualStatePage !== pageState.WELCOME">
-      <ion-segment 
-              [(ngModel)]="actualStateSegment" 
-              color="primary" 
-              mode="md"
-              (ionChange)="onSegmentChanged($event)">
-        <ion-segment-button [value]="pageState.LOGIN">
-          Accedi
-        </ion-segment-button>
-
-        <ion-segment-button 
-                  [value]="pageState.REGISTRATION"
-                  *ngIf="registrationInApp">
-          Registrati
-        </ion-segment-button>
-
-      </ion-segment>
-  </div>
-
-  <div *ngIf="actualStatePage==pageState.LOGIN" class="ion-padding">
-
-      <form [formGroup]="formLogin">
-          <ion-list>
-              <ion-item>
-                  <ion-icon slot="start" name="person-outline" color="primary"></ion-icon>
-                  <ion-input inputmode="email" type="email" placeholder="Username" formControlName="username" ></ion-input>
-                </ion-item>
-  
-                <ion-item>
-                  <ion-icon slot="start" name="key-outline" color="primary"></ion-icon>
-                  <ion-input inputmode="text" type="password" placeholder="Password" formControlName="password"></ion-input>
-                </ion-item>
-          </ion-list>
-      </form>
-
-      <div class="ion-text-center ion-padding-vertical">
-          <a (click)="onClickReimpostaPsw()">Aiuto, non ricordo la password </a>
-      </div>
-
-  </div>
 
   <div *ngIf="actualStatePage==pageState.CONTACT" class="ion-padding-horizontal">
 
@@ -305,36 +265,10 @@
   </div>
 
 
-
-  <div *ngIf="actualStatePage==pageState.WELCOME">
-      <h1 class="ion-text-center">Benvenuto</h1>
-      <h3 class="ion-text-center">sei uno dei nostri!</h3>
-           
-      <div class="ion-text-center">
-          <img src="assets/img/handshake_b.gif">
-      </div>
-  </div>
-
-  <div>
-
-  </div>
-
 </ion-content>
 
 <!-- FOOTER PAGES-->
 <ion-footer>
-
-  <div id="footer-login" 
-       *ngIf="actualStatePage==pageState.LOGIN">
-      <ion-button 
-      class="btn-confirm" 
-      color="primary" 
-      expand="block" 
-      (click)="onClickFooterAvanti()" 
-      [disabled]="!formLogin.valid">
-          ACCEDI
-      </ion-button>
-  </div>
 
   <div id="footer-contact" *ngIf="actualStatePage==pageState.CONTACT">
       <ion-button 
@@ -373,15 +307,6 @@
       
   </div>
 
-  <div id="footer-welcome" *ngIf="actualStatePage==pageState.WELCOME">
-      <ion-button
-          class="btn-confirm"
-          color="primary"
-          expand="block" 
-          (click)="closeModal()">
-          Inizia
-      </ion-button>
-  </div>
 
 </ion-footer>
 

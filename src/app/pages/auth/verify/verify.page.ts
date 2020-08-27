@@ -29,11 +29,9 @@ export class VerifyPage implements OnInit {
    tipoVerifica: typeof TipoVerificaAccount = TipoVerificaAccount;
  
    //variabile che indica lo stato della pagina
-   //Se posizionato su Login, Register, Verifiy o Welcome
-   actualStatePage:PageState = PageState.LOGIN;
+   //Se posizionato su  Register, Verifiy o Welcome
+   actualStatePage:PageState = PageState.CONTACT;
  
-   //Situazione del Segment (Login o Register)
-   actualStateSegment: PageState = PageState.LOGIN;
  
    //Nel caso di registrazione indica a che punto ci si trova
    registrationStep: PageState;
@@ -54,7 +52,6 @@ export class VerifyPage implements OnInit {
    formRegister: FormGroup;
    formVerifyTel: FormGroup;
    formVerifyMail: FormGroup;
-   formLogin: FormGroup;
    formContact: FormGroup;
  
    //Dati
@@ -104,34 +101,23 @@ export class VerifyPage implements OnInit {
      this.indexStepRegistration = 0;
  
      //Posizionato sulla pagina di login
-     this.actualStatePage = PageState.LOGIN;
- 
-     //Segment Option puo' essere solo Login/Registration
-     this.actualStateSegment = PageState.LOGIN;
- 
-     
- 
+     this.actualStatePage = PageState.CONTACT;
+    
  
      //Richiedo lo startConfig
-     this.startListen = startService.startConfig.subscribe(data=>{
-                 
-                 //Memorizzo lo StartConfig
-                 this.startConfig=data;
- 
-                 //Nel gruppo è specificato se è possibile effettuare 
-                 //registrazioni con l'app
-                 if (this.startConfig && this.startConfig.gruppo) {
- 
-                   //Memorizzo il Gruppo con le sue Opzioni
-                   this.docGruppo = this.startConfig.gruppo;
- 
-                   //Abilitazione / Disabilitazione registrazione in App
-                   this.registrationInApp = this.startConfig.gruppo.APPFLAGREGISTRAZIONE;
- 
-                   //Creo un Array con gli step di registrazione
-                   this.createArrayStepRegistration(this.docGruppo);
-                 }
-     });
+      this.startConfig = startService.actualStartConfig
+      if (this.startConfig && this.startConfig.gruppo) {
+
+        //Memorizzo il Gruppo con le sue Opzioni
+        this.docGruppo = this.startConfig.gruppo;
+
+        //Abilitazione / Disabilitazione registrazione in App
+        this.registrationInApp = this.startConfig.gruppo.APPFLAGREGISTRAZIONE;
+
+        //Creo un Array con gli step di registrazione
+        this.createArrayStepRegistration(this.docGruppo);
+      }
+
  
      //Prelevo l'area selezionata 
      this.docArea = this.startService.areaSelectedValue;
@@ -1385,7 +1371,6 @@ export class VerifyPage implements OnInit {
  
  enum PageState
  {
-   LOGIN = 100,
    CONTACT = 210,
    REGISTRATION = 220,
    VERIFY = 230,

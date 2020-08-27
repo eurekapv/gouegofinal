@@ -52,9 +52,9 @@ export const Structure: any = {
     UtenteLivello,
     UtentePrenotazione,
     Impegno,
-    AccountOperationResponse: AccountRegistrationResponse, 
-    AccountRequestCode: AccountRegistrationRequestCode, 
-    AccountVerifyCode: AccountRegistrationVerifyCode
+    AccountOperationResponse , 
+    AccountRequestCode, 
+    AccountVerifyCode
 }
 
 export class DynamicClass {

@@ -1,4 +1,3 @@
-Installazione CAPACITOR (P.s. npx è un nuovo comando introdotto da npm)
 Questi comandi si eseguono la PRIMA VOLTA
 > npx cap init
 Richiede il nome dell'app e scrive il file capacitor.config.json

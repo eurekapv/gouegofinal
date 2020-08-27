@@ -5,7 +5,7 @@ import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
-import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from 'src/app/models/accountregistration.model';
+import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 import { RequestPincodeUse } from 'src/app/models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
 import { CryptoService } from 'src/app/library/services/crypto.service';
@@ -32,8 +32,8 @@ export class PswRecoveryPage implements OnInit {
   formPsw : FormGroup;
 
   //oggetti per richiedere e verificare i codici
-  docRichiestaCodici : AccountRegistrationRequestCode= new AccountRegistrationRequestCode;
-  docVerifica: AccountRegistrationVerifyCode = new AccountRegistrationVerifyCode;
+  docRichiestaCodici : AccountRequestCode= new AccountRequestCode;
+  docVerifica: AccountVerifyCode = new AccountVerifyCode;
 
   //l'id dell'utente che vuole cambiare la psw
   idUtente: string='';
@@ -197,7 +197,7 @@ export class PswRecoveryPage implements OnInit {
       if (this.docRichiestaCodici.IDREFER.length != 0) {
 
         //Preparo il documento di Verifica da inviare al server
-        this.docVerifica = new AccountRegistrationVerifyCode();
+        this.docVerifica = new AccountVerifyCode();
         this.docVerifica.IDREFER=this.docRichiestaCodici.IDREFER;
         this.docVerifica.IDAREA=this.docRichiestaCodici.IDAREA;
 
@@ -340,7 +340,7 @@ export class PswRecoveryPage implements OnInit {
 
       //ora che l'oggetto è pronto, faccio la richiesta
       this.startService.recoverySendCodici(this.docRichiestaCodici)
-                .then((risposta:AccountRegistrationResponse)=>{
+                .then((risposta:AccountOperationResponse)=>{
                           //quando arriva la risposta chiudo il loading
                           elLoading.dismiss();
 
@@ -437,7 +437,7 @@ export class PswRecoveryPage implements OnInit {
   /**
    * qui faccio la richiesta effettiva di cambio password
    */
-  sendServerFinalize(docUtente: Utente, docRichiestaCodici: AccountRegistrationRequestCode) {
+  sendServerFinalize(docUtente: Utente, docRichiestaCodici: AccountRequestCode) {
     
     //creo il loading
     this.loadingController

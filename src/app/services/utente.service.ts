@@ -6,7 +6,7 @@ import { Utente } from '../models/utente.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
-import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from '../models/accountregistration.model';
+import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 
 
 
@@ -229,7 +229,7 @@ export class UtenteService {
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
   registrationSendCodici(config: StartConfiguration, 
-                         docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+                         docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
           //Viene effettuata una chiamata al server per ottenere
           //l'invio di una mail e/o un SMS contenente codici PIN
           const metodo = 'registrationSendCodici';
@@ -244,7 +244,7 @@ export class UtenteService {
 
           let myUrl = config.urlBase + '/' + doObject;
 
-          return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+          return new Promise<AccountOperationResponse>((resolve, reject)=> {
             if (docRequestCode) {
 
               //Creo il body da inviare
@@ -258,7 +258,7 @@ export class UtenteService {
                   .pipe(map(received => {
                           return received.activation;
                   }))
-                  .subscribe((response:AccountRegistrationResponse) => {
+                  .subscribe((response:AccountOperationResponse) => {
                       if (response.result) {
                         resolve(response);
                       }
@@ -285,7 +285,7 @@ export class UtenteService {
    * @param docVerifyCode Dati da verificare
    */
   registrationVerifyCodici(config: StartConfiguration, 
-    docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+    docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'registrationVerifyCodici';
         const myHeaders = new HttpHeaders({'Content-type':'application/json', 
                                 'X-HTTP-Method-Override': metodo, 
@@ -298,7 +298,7 @@ export class UtenteService {
 
         let myUrl = config.urlBase + '/' + doObject;
 
-        return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+        return new Promise<AccountOperationResponse>((resolve, reject)=> {
             if (docVerifyCode) {
 
                 //Creo il body da inviare
@@ -311,7 +311,7 @@ export class UtenteService {
                 .pipe(map(received => {
                     return received.activation;
                 }))
-                .subscribe((response:AccountRegistrationResponse) => {
+                .subscribe((response:AccountOperationResponse) => {
                 if (response.result) {
                   resolve(response);
                 }
@@ -340,7 +340,7 @@ export class UtenteService {
  */
 registrationFinalize(config: StartConfiguration,
   docUtente: Utente, 
-  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+  docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
     //Viene inviato al server il documento per chiedere la registrazione utente
     const metodo = 'registrationFinalize';
@@ -357,7 +357,7 @@ registrationFinalize(config: StartConfiguration,
 
     let myUrl = config.urlBase + '/' + doObject;
 
-return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+return new Promise<AccountOperationResponse>((resolve, reject)=> {
   if (docRequestCode && docUtente) {
 
     //Creo il body da inviare
@@ -374,7 +374,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
       .pipe(map(received => {
         return received.activation;
       }))
-      .subscribe((response:AccountRegistrationResponse) => {
+      .subscribe((response:AccountOperationResponse) => {
 
         console.log(response);
 
@@ -410,7 +410,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
   recoverySendCodici(config: StartConfiguration, 
-  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+  docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
   //Viene effettuata una chiamata al server per ottenere
   //l'invio di una mail e/o un SMS contenente codici PIN
   const metodo = 'recoverySendCodici';
@@ -425,7 +425,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
 
   let myUrl = config.urlBase + '/' + doObject;
 
-  return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+  return new Promise<AccountOperationResponse>((resolve, reject)=> {
   if (docRequestCode) {
 
   //Creo il body da inviare
@@ -439,7 +439,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
   .pipe(map(received => {
       return received.recovery;
   }))
-  .subscribe((response:AccountRegistrationResponse) => {
+  .subscribe((response:AccountOperationResponse) => {
     resolve(response);
   }, error => {
   reject(error);
@@ -461,7 +461,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
    * @param docVerifyCode Dati da verificare
    */
   recoveryVerifyCodici(config: StartConfiguration, 
-    docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+    docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'recoveryVerifyCodici';
         const myHeaders = new HttpHeaders({'Content-type':'application/json', 
                                 'X-HTTP-Method-Override': metodo, 
@@ -474,7 +474,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
 
         let myUrl = config.urlBase + '/' + doObject;
 
-        return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+        return new Promise<AccountOperationResponse>((resolve, reject)=> {
             if (docVerifyCode) {
 
                 //Creo il body da inviare
@@ -487,7 +487,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
                 .pipe(map(received => {
                     return received.recovery;
                 }))
-                .subscribe((response:AccountRegistrationResponse) => {
+                .subscribe((response:AccountOperationResponse) => {
                   resolve(response);
                 }, error => {
                   reject(error);
@@ -508,7 +508,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
  */
 recoveryFinalize(config: StartConfiguration,
   docUtente: Utente, 
-  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+  docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
     //Viene inviato al server il documento per chiedere la registrazione utente
     const metodo = 'recoveryFinalize';
@@ -525,7 +525,7 @@ recoveryFinalize(config: StartConfiguration,
 
     let myUrl = config.urlBase + '/' + doObject;
 
-return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
+return new Promise<AccountOperationResponse>((resolve, reject)=> {
   if (docRequestCode && docUtente) {
 
     //Creo il body da inviare
@@ -542,7 +542,7 @@ return new Promise<AccountRegistrationResponse>((resolve, reject)=> {
       .pipe(map(received => {
         return received.recovery;
       }))
-      .subscribe((response:AccountRegistrationResponse) => {
+      .subscribe((response:AccountOperationResponse) => {
         console.log(response);
         resolve(response);
         }, error => {

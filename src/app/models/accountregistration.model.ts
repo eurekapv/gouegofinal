@@ -3,7 +3,7 @@ import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { RequestPincodeUse } from './valuelist.model';
 
 //Documento inviato in POST nella fase di richiesta Codici
-export class AccountRegistrationRequestCode extends IDDocument {
+export class AccountRequestCode extends IDDocument {
     
     USE: RequestPincodeUse;
     IDAREA: string;
@@ -38,7 +38,7 @@ export class AccountRegistrationRequestCode extends IDDocument {
         let arDateTime =[];
         let arTime = [];
 
-        objDescriptor.className = 'AccountRegistrationRequestCode';
+        objDescriptor.className = 'AccountRequestCode';
         objDescriptor.doRemote = false;
         objDescriptor.classWebApiName = '';
         objDescriptor.describeField  = '';
@@ -56,7 +56,7 @@ export class AccountRegistrationRequestCode extends IDDocument {
 }
 
 //Documento inviato in POST nella fase di Verifica codici
-export class AccountRegistrationVerifyCode extends IDDocument {
+export class AccountVerifyCode extends IDDocument {
     IDAREA: string;
     IDREFER: string;
     EMAILPINCODE: string;
@@ -84,7 +84,7 @@ export class AccountRegistrationVerifyCode extends IDDocument {
         let arDateTime =[];
         let arTime = [];
 
-        objDescriptor.className = 'AccountRegistrationVerifyCode';
+        objDescriptor.className = 'AccountVerifyCode';
         objDescriptor.doRemote = false;
         objDescriptor.classWebApiName = '';
         objDescriptor.describeField  = '';
@@ -101,7 +101,7 @@ export class AccountRegistrationVerifyCode extends IDDocument {
 }
 
 //Risposta ottenuta dal server 
-export class AccountRegistrationResponse {
+export class AccountOperationResponse {
     idRefer: string;
     descrRefer:string;
     result: boolean;

@@ -10,10 +10,9 @@ import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType, RequestPincodeUse } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
 import { AreaLink } from 'src/app/models/arealink.model';
-import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from 'src/app/models/accountregistration.model';
+import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
-import { CodicefiscaleService } from 'src/app/services/codicefiscale.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
 import { PswRecoveryPage } from '../psw-recovery/psw-recovery.page';
 const { Browser } = Plugins;
@@ -45,7 +44,7 @@ export class NewLoginPage implements OnInit {
   indexStepRegistration: number = 0;
 
   //Documento per la richiesta invio codici al server
-  docRichiestaCodici: AccountRegistrationRequestCode = new AccountRegistrationRequestCode();
+  docRichiestaCodici: AccountRequestCode = new AccountRequestCode();
 
 
   //Registrazione possibile in app
@@ -582,7 +581,7 @@ export class NewLoginPage implements OnInit {
         //Chiamo il servizio
         this.startService
               .registrationSendCodici(this.docRichiestaCodici)
-              .then((responseServer:AccountRegistrationResponse) => {
+              .then((responseServer:AccountOperationResponse) => {
 
                 //Chiudo il Loading Controller
                 element.dismiss();
@@ -702,7 +701,7 @@ export class NewLoginPage implements OnInit {
     //Devo inviare al server i dati inseriti dall'utente
     let enable = this.isEnableAvantiOnVerify();
     let altMessage = '';
-    let docVerify: AccountRegistrationVerifyCode;
+    let docVerify: AccountVerifyCode;
 
     if (!enable) {
       altMessage = 'Controllare i dati inseriti';
@@ -713,7 +712,7 @@ export class NewLoginPage implements OnInit {
         
           if (this.docRichiestaCodici.IDREFER.length !== 0) {
             //Posso preparare il documento per la verifica
-            docVerify = new AccountRegistrationVerifyCode();
+            docVerify = new AccountVerifyCode();
             docVerify.IDAREA = this.docRichiestaCodici.IDAREA;
             docVerify.IDREFER = this.docRichiestaCodici.IDREFER;
             
@@ -768,7 +767,7 @@ export class NewLoginPage implements OnInit {
    * Richiedo al server se i dati sono corretti
    * @param docVerifica Documento per la verifica dei codici
    */
-  sendServerVerificaCodici(docVerifica: AccountRegistrationVerifyCode) {
+  sendServerVerificaCodici(docVerifica: AccountVerifyCode) {
 
     if (docVerifica) {
 
@@ -784,7 +783,7 @@ export class NewLoginPage implements OnInit {
         //Faccio la richiesta al server
         this.startService
           .registrationVerifyCodici(docVerifica)
-          .then((response:AccountRegistrationResponse) => {
+          .then((response:AccountOperationResponse) => {
 
             //Chiudo il Loading 
             elLoading.dismiss();
@@ -965,7 +964,7 @@ export class NewLoginPage implements OnInit {
   
             this.startService
                 .registrationFinalize(this.docUtente, this.docRichiestaCodici)
-                .then((response:AccountRegistrationResponse) => {
+                .then((response:AccountOperationResponse) => {
   
                     //Chiudo il Loading
                     elLoading.dismiss();

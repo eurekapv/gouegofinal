@@ -140,7 +140,8 @@ export enum TipoVerificaAccount {
 
 export enum RequestPincodeUse {
     forRegistration = 10,
-    forRecovery = 20
+    forRecovery = 20,
+    forValidation = 30,
 }
 
 

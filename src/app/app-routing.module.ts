@@ -77,7 +77,11 @@ const routes: Routes = [
   {
     path: 'test',
     loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
+  },  {
+    path: 'verify',
+    loadChildren: () => import('./pages/auth/verify/verify.module').then( m => m.VerifyPageModule)
   }
+
   //questo lo lascio commentato, perchè in teoria ci si arriva solo da modale
   // {
   //   path: 'psw-recovery',

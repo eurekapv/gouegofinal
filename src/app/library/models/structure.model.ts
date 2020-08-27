@@ -22,7 +22,7 @@ import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { Impegno } from 'src/app/models/impegno.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
-import { AccountRegistrationResponse, AccountRegistrationRequestCode, AccountRegistrationVerifyCode } from 'src/app/models/accountregistration.model';
+import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 
 
 //https://medium.com/@buddhi.amigo/how-to-create-typescript-classes-dynamically-b29ca7767ee5
@@ -52,9 +52,9 @@ export const Structure: any = {
     UtenteLivello,
     UtentePrenotazione,
     Impegno,
-    AccountRegistrationResponse, 
-    AccountRegistrationRequestCode, 
-    AccountRegistrationVerifyCode
+    AccountOperationResponse: AccountRegistrationResponse, 
+    AccountRequestCode: AccountRegistrationRequestCode, 
+    AccountVerifyCode: AccountRegistrationVerifyCode
 }
 
 export class DynamicClass {

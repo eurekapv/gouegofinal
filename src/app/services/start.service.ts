@@ -38,7 +38,7 @@ import { PaymentConfiguration } from '../models/payment.model';
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
 import { TipoPrivateImage } from 'src/app/models/valuelist.model'
-import { AccountRegistrationRequestCode, AccountRegistrationResponse, AccountRegistrationVerifyCode } from '../models/accountregistration.model';
+import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 
 
 @Injectable({
@@ -673,7 +673,7 @@ requestChangePassword(oldPsw:string, newPsw:string) {
  * Chiama il server e chiede l'invio dei PINCODE di registrazione
  * @param docRequestCode Dati per la richiesta da inviare al server
  */
-registrationSendCodici(docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+registrationSendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
     const actualStartConfig = this._startConfig.getValue();
     return this.utenteService.registrationSendCodici(actualStartConfig, docRequestCode);
@@ -683,7 +683,7 @@ registrationSendCodici(docRequestCode: AccountRegistrationRequestCode):Promise<A
  * Chiama il server inviando i codici inseriti dall'utente per chiederne il controllo
  * @param docVerifyCode Dati per la verifica dei codici inseriti
  */
-registrationVerifyCodici(docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+registrationVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
   const actualStartConfig = this._startConfig.getValue();
   return this.utenteService.registrationVerifyCodici(actualStartConfig, docVerifyCode);
 }
@@ -694,7 +694,7 @@ registrationVerifyCodici(docVerifyCode: AccountRegistrationVerifyCode):Promise<A
  * @param docRequestCode Documento richiesta codici presentato in precedenza
  */
 registrationFinalize(docUtente: Utente, 
-                     docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+                     docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
     const actualStartConfig = this._startConfig.getValue();
     return this.utenteService.registrationFinalize(actualStartConfig,docUtente, docRequestCode);
@@ -704,12 +704,12 @@ registrationFinalize(docUtente: Utente,
 
 //#region PSW RECOVERY
 
-recoverySendCodici(docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+recoverySendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
   const actualStartConfig = this._startConfig.getValue();
   return this.utenteService.recoverySendCodici(actualStartConfig, docRequestCode);
 }
 
-recoveryVerifyCodici(docVerifyCode: AccountRegistrationVerifyCode):Promise<AccountRegistrationResponse> {
+recoveryVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
   const actualStartConfig = this._startConfig.getValue();
   return this.utenteService.recoveryVerifyCodici(actualStartConfig, docVerifyCode);
 }
@@ -721,7 +721,7 @@ recoveryVerifyCodici(docVerifyCode: AccountRegistrationVerifyCode):Promise<Accou
  * @param docRequestCode Documento richiesta codici presentato in precedenza
  */
 recoveryFinalize(docUtente: Utente, 
-  docRequestCode: AccountRegistrationRequestCode):Promise<AccountRegistrationResponse> {
+  docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
 const actualStartConfig = this._startConfig.getValue();
 return this.utenteService.recoveryFinalize(actualStartConfig,docUtente, docRequestCode);

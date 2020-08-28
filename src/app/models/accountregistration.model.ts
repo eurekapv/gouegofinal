@@ -19,6 +19,7 @@ export class AccountRequestCode extends IDDocument {
         super();
         this.REQUESTEMAILCODE = false;
         this.REQUESTSMSCODE = false;
+        
     }
 
     /**

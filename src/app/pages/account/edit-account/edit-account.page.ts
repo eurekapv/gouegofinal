@@ -37,6 +37,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
       //Chiedo al servizio i dati dell'utente
       this.utenteListen = this.startService.utente.subscribe(data=>{
+          
           //Clono l'utente
           this.utente = Object.create(data); 
           this.createForm();       

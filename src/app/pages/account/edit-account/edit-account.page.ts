@@ -48,8 +48,9 @@ export class EditAccountPage implements OnInit, OnDestroy {
    }
 
   ngOnInit() {
+    
     this.today=MyDateTime.formatDateISO(new Date);
-    console.log(this.today);
+    
     this.createForm();
   }
 

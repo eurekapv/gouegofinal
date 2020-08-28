@@ -86,7 +86,7 @@
           <ion-label>
             <p>{{prenotazione.DATAORAINIZIO | date : 'dd/MM/yyyy'}}</p>
             <h1>{{prenotazione.DATAORAINIZIO | date: 'EEEE'|titlecase}} ore {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}</h1>
-            <h3>{{(prenotazione.COMUNELOCATION +', '+ prenotazione.INDIRIZZOLOCATION)|titlecase}}</h3> <!--anche qui manca decodifica centro sportivo-->
+            <h3>{{prenotazione.COMUNELOCATION|titlecase}} {{(prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION?', ':'')}} {{prenotazione.INDIRIZZOLOCATION|titlecase}}</h3> <!--anche qui manca decodifica centro sportivo-->
           </ion-label>
           <ion-chip color="primary">{{prenotazione.DURATAORE}} {{prenotazione.DURATAORE==1? 'Ora' : 'Ore'}}</ion-chip>
         </ion-item>

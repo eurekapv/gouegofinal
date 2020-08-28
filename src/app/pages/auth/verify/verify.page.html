@@ -10,7 +10,9 @@
 
       </ion-buttons>
 
-      <ion-title>Verifica informazioni</ion-title>
+      <ion-title *ngIf="actualStatePage!=pageState.REGISTRATION">Verifica informazioni</ion-title>
+      <ion-title *ngIf="actualStatePage==pageState.REGISTRATION">Aggiorna i tuoi dati</ion-title>
+
       
 
 
@@ -353,7 +355,7 @@
               expand="block" 
               (click)="onClickFooterAvanti()" 
               [disabled]="!formRegister.valid">
-              Registrati
+              Aggiorna
           </ion-button>
       
   </div>

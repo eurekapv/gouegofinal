@@ -46,7 +46,7 @@
         </ion-item>
         <ion-item>
           <ion-label position="floating">Codice fiscale</ion-label>
-          <ion-input formControlName="cf"></ion-input>
+          <ion-input (ionBlur)="onCfChange()" formControlName="cf"></ion-input>
         </ion-item >
       </ion-item-group>
 

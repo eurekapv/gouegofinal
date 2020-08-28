@@ -842,15 +842,6 @@ export class VerifyPage implements OnInit {
    }
  
  
- 
- 
-   
- 
- 
-   /**
-    * evento scatenato quando l'utente clicca su "verifica in seguito"
-    */
- 
    /**
     * evento scatenato quando l'utente clicca su inizia
     */

@@ -38,7 +38,8 @@ export class EditAccountPage implements OnInit, OnDestroy {
       //Chiedo al servizio i dati dell'utente
       this.utenteListen = this.startService.utente.subscribe(data=>{
           //Clono l'utente
-          this.utente = Object.create(data);        
+          this.utente = Object.create(data); 
+          this.createForm();       
 
       });
 
@@ -50,7 +51,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.today=MyDateTime.formatDateISO(new Date);
     console.log(this.today);
-    this.createForm();
+    //this.createForm();
   }
 
   ngOnDestroy() {
@@ -210,6 +211,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
   }
 
   testValidation(){
+
     this.modalController.create({
       component: VerifyPage,
       componentProps: {
@@ -218,9 +220,14 @@ export class EditAccountPage implements OnInit, OnDestroy {
           updateDocUtente : true
         }
       }
-    }).then(elModal => {
-      elModal.present();
     })
-  }  
+    .then(elModal => {
+      elModal.present();
+      elModal.onDidDismiss().then(() => {
 
+      });
+    })
+  }
 }
+
+

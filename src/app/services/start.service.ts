@@ -652,10 +652,10 @@ requestUtente(idUtente: string) {
  * Richiedere al server l'operazione di Update Utente
  * @param docUtenteUpdate Documento Utente con le modifiche da inviare
  */
-requestUpdateUtente(docUtenteUpdate: Utente) {
+updateUtente(docUtenteUpdate: Utente) {
   const actualStartConfig = this._startConfig.getValue();
 
-  return this.utenteService.requestUpdateUtente(actualStartConfig, docUtenteUpdate);
+  return this.utenteService.requestUpdate(actualStartConfig, docUtenteUpdate);
 }
 
 /**

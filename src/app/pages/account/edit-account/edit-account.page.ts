@@ -165,10 +165,12 @@ export class EditAccountPage implements OnInit, OnDestroy {
               // Mostro il loading
               elLoading.present();
 
+              //TODO stiamo usando la nuova procedura updateUtente da testare
+
               //richiesta di aggiornamento al server
               this.startService
-                  .requestUpdateUtente(this.utente)
-                  .subscribe(result => {
+                  .updateUtente(this.utente)
+                  .then(result => {
                       // Operazione effettuata
                       elLoading.dismiss();
                       //Aggiornamento corretto

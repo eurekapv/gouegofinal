@@ -772,20 +772,20 @@ export class VerifyPage implements OnInit {
               elLoading.present();
 
               //richiesta di aggiornamento al server
+              //TODO stiamo usando la nuova procedura updateUtente da sistemare e testare 
               this.startService
-                  .requestUpdateUtente(this.docUtente)
-                  .subscribe(result => {
-                      // Operazione effettuata
+                  .updateUtente(this.docUtente)
+                  .then(result => {
+
+                      //visto che siamo nel then, l'operazione è sicuramente andata a buon fine
                       elLoading.dismiss();
-                      //Aggiornamento corretto
-                      if ([200,204].includes(result.status)) {
-                            //Se la richiesta va a buon fine chiudo
-                            this.showMessage('Info Aggiornate');
-                            this.closeModal();
-                      }
-                      else {
+                        this.showMessage('Info Aggiornate');
+                        this.closeModal();
+
                         this.showMessage('Ops..errore aggiornamento');
-                      }
+                  })
+                  .catch(error => {
+                    //TODO finire
                   });
            });
 

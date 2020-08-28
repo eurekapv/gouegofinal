@@ -7,6 +7,9 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
+import { promise } from 'protractor';
+import { PostResponse } from '../library/models/postResult.model';
+import { resolve } from 'url';
 
 
 
@@ -144,64 +147,54 @@ export class UtenteService {
    * @param config Dati di configurazione
    * @param docUtenteUpdate Documento Utente con dati modificati
    */
-  requestUpdateUtente(config: StartConfiguration, docUtenteUpdate: Utente) {
-    let actualUtente = this._utente.getValue();
-    let docSendingUtente = new Utente(true); //Creo solo l'istanza del documento
-    let hasModifiche = false;
-    let myHeaders = new HttpHeaders({'Content-type':'application/json'});
-    let body = '';
+
+  requestUpdate(config: StartConfiguration, docUtenteUpdate: Utente):Promise<Utente>{
+
+    return new Promise((resolve, reject)=>{
+
     const doObject = 'UTENTE';
+
+    let myHeaders = new HttpHeaders({'Content-type':'application/json'});
+    const myParams = new HttpParams();
+    let body = '';
 
 
     //In Testata c'e' sempre l'AppId
     myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;
 
-    //Devo impostare nel sendingUtente solo gli elementi modificati
-    hasModifiche = docSendingUtente.setWithChanges(actualUtente, docUtenteUpdate);
+    //Body da inviare
+    body = docUtenteUpdate.toJSON();
 
-    LogApp.consoleLog('Documento Attuale');
-    LogApp.consoleLog(actualUtente);
+    //faccio la richiesta
+    this.apiService.httpPost(myUrl, myHeaders,myParams, body)
+    .pipe(map(rawResponse => {
 
-    LogApp.consoleLog('Documento Modifica');
-    LogApp.consoleLog(docUtenteUpdate);
+      return rawResponse.update;
 
-    
-    if (hasModifiche) {
+    })).subscribe((response:PostResponse) => {
+
+      let docUtente = new Utente;
       
-      //Body da inviare
-      body = docSendingUtente.toJSON();
+      if (response.result){
+        //l'operazione è andata a buon fine, restituisco l'utente
+        docUtente.setJSONProperty(response.document);
+        resolve(docUtente);
+      }
+      else{
+        //il server ha risposto, ma l'operazione non è andata a buon fine, restituisco il messaggio di errore
+        reject (response.message);
+      }
+    }, error => {
 
-      LogApp.consoleLog('Invio Modifiche ');
-      LogApp.consoleLog(body);
+      //il server non ha risposto
+      reject(error);
 
-      //DEVO INVIARE LE MODIFICHE AL SERVER
-      //OTTENGO LA RISPOSTA COMPLETA
-      return this.apiService
-          .httpPut(myUrl,myHeaders, body)
-          .pipe(tap(element => {
-
-            //Sul server Dati Aggiornati, modifico in locale
-            if (element.status == 204 || element.status == 200) {
-              //Server Aggiornamento completato
-              //Aggiorno l'utente
-              actualUtente.setWithChanges(actualUtente, docUtenteUpdate);
-              //Riemetto l'utente
-              this._utente.next(actualUtente);
-
-            }
-
-          }));
-          
-    }
-    else {
-      //Creo un response con status = 200  
-      let myHttp = new BehaviorSubject<HttpResponse<Object>>(new HttpResponse({status: 200}));
-      
-      return myHttp.asObservable();
-
-    }
+    })
+    })
   }
+
+
 
   requestChangePassword(config: StartConfiguration, oldPsw:string, newPsw:string) {
     let actualUtente = this._utente.getValue();
@@ -221,6 +214,9 @@ export class UtenteService {
         .httpGet(myUrl, myHeaders, myParams)       
 
   }
+
+
+
 
 
 

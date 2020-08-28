@@ -13,9 +13,7 @@
       "FadeSplashScreenDuration": "300",
       "SplashShowOnlyFirstTime": "false",
       "SplashScreen": "screen",
-      "SplashScreenDelay": "0",
-      "splashFullScreen": true,
-      "splashImmersive": true
+      "SplashScreenDelay": "0"
     }
   }
 }

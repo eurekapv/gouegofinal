@@ -28,6 +28,10 @@ export class UtenteService {
     return this._utenteLoggato.asObservable();
   }
 
+  get actualUtente() {
+    return this._utente.getValue();
+  }
+
   /**
    * Area Favorita dall'utente
    */
@@ -560,6 +564,110 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 }
 
 
+
+  //#endregion
+
+  //#region VERIFICA CONTATTI
+
+  /**
+   * Invia al server la richiesta per inviare via Mail/SMS i codici per la procedura di verifica dei contatti
+   * @param config Dati di configurazione
+   * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
+   */
+  validationSendCodici(config: StartConfiguration, 
+    docUtente:Utente,
+    docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+    //Viene effettuata una chiamata al server per ottenere
+    //l'invio di una mail e/o un SMS contenente codici PIN
+    const metodo = 'validationSendCodici';
+    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                            'X-HTTP-Method-Override': metodo, 
+                            'appid':config.appId
+                          });
+  
+    const myParams = new HttpParams();
+    const doObject = 'ACCOUNT';
+    let bodyRequest = '';
+    let bodyUtente = '';
+    let bodyFinal = '';
+  
+    let myUrl = config.urlBase + '/' + doObject;
+  
+    return new Promise<AccountOperationResponse>((resolve, reject)=> {
+    if (docRequestCode) {
+  
+    //Creo il body da inviare
+    bodyRequest = docRequestCode.exportToJSON(true, true, true);
+    bodyUtente = docUtente.exportToJSON(true,false,true);
+
+    bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
+  
+    //Faccio la chiamata POST
+    this.apiService
+    .httpPost(myUrl, myHeaders, myParams, bodyFinal )
+    .pipe(map(received => {
+        return received.validation;
+    }))
+    .subscribe((response:AccountOperationResponse) => {
+      resolve(response);
+    }, error => {
+    reject(error);
+    })
+    }
+    else {
+    reject('Dati mancanti per la richiesta');
+    }
+  
+    });
+
+  }
+
+
+
+   /**
+   * Invia al server una richiesta per verificare i pincode inseriti dall'utente
+   * @param config Dati di configurazione
+   * @param docVerifyCode Dati da verificare
+   */
+  validationVerifyCodici(config: StartConfiguration, 
+    docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
+        const metodo = 'validationVerifyCodici';
+        const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                'X-HTTP-Method-Override': metodo, 
+                                'appid':config.appId
+                              });
+
+        const myParams = new HttpParams();
+        const doObject = 'ACCOUNT';
+        let bodyRequest = '';
+
+        let myUrl = config.urlBase + '/' + doObject;
+
+        return new Promise<AccountOperationResponse>((resolve, reject)=> {
+            if (docVerifyCode) {
+
+                //Creo il body da inviare
+                bodyRequest = docVerifyCode.exportToJSON(true, true, true);
+                bodyRequest = `{"docRequest" : ${bodyRequest}}`;
+                
+                //Faccio la chiamata POST
+                this.apiService
+                .httpPost(myUrl, myHeaders, myParams, bodyRequest )
+                .pipe(map(received => {
+                    return received.validation;
+                }))
+                .subscribe((response:AccountOperationResponse) => {
+                  resolve(response);
+                }, error => {
+                  reject(error);
+                })
+            }
+            else {
+              reject('Dati mancanti per la richiesta');
+            }
+
+        });
+}  
 
   //#endregion
 }

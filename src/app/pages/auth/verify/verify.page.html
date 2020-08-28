@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
       <ion-buttons 
               slot="start" 
-              *ngIf="actualStatePage==pageState.REGISTRATION||actualStatePage==pageState.VERIFY">
+              *ngIf="actualStatePage==pageState.VERIFY">
 
           <ion-button fill="clear" (click)="backStepRegistration()">
               <ion-icon name="arrow-back"></ion-icon>
@@ -10,7 +10,7 @@
 
       </ion-buttons>
 
-      <ion-title>{{getCaptionTitle()}}</ion-title>
+      <ion-title>Verifica informazioni</ion-title>
       
 
 
@@ -26,24 +26,24 @@
 
 
 <!-- CONTENT PAGES -->
-<ion-content >
+<ion-content class="ion-padding">
   <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
       <img [src]="startConfig.getUrlLogo()">
   </div>
 
 
-
+  <!-- PARTE CONTATTI -->
   <div *ngIf="actualStatePage==pageState.CONTACT" class="ion-padding-horizontal">
 
       <form [formGroup]="formContact">
 
 
           <ion-list>
-              <ion-item>
+              <ion-item *ngIf="this.emailVerifyNeeded">
                   <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
                   <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
               </ion-item>
-              <ion-item>
+              <ion-item *ngIf="this.smsVerifyNeeded">
                   <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
                   <ion-input type="tel" inputmode="tel" placeholder="+39 Cellulare" formControlName="telephone" ></ion-input>
               </ion-item>
@@ -56,25 +56,11 @@
                   expand="block"
                   *ngIf="isPolicyLink()"
                   (click)="openPolicyLink()">
-              condizioni di registrazione
+              condizioni di trattamento dei dati
           </ion-button>
-              
-          <div  class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.noverifica">
-              <p>
-              <ion-text color="primary">
-                  <ion-icon name="information-circle-outline"></ion-icon>
-              </ion-text>
-                  Indica una email valida dove sarà possibile inviarti le ricevute di prenotazioni, attestati dei corsi 
-                  ed altri documenti fiscali.
-              </p>
-              <p>
-                  <ion-text color="primary">
-                      <h6><i>(in seguito potrai abilitare l'email anche per la ricezione di altro materiale informativo)</i></h6>
-                  </ion-text>
-              </p>
-          </div>
+            
 
-          <div  class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemail">
+          <div  class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&!this.smsVerifyNeeded">
           <p>
               <ion-text color="primary">
                   <ion-icon name="information-circle-outline"></ion-icon>
@@ -95,7 +81,7 @@
       </div>         
       
       
-      <div  class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemailsms">
+      <div  class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&this.smsVerifyNeeded">
           <p>
               <ion-text color="primary">
                   <ion-icon name="information-circle-outline"></ion-icon>
@@ -112,7 +98,7 @@
           </p>
       </div>                  
 
-      <div  class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.verificasms">
+      <div  class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded&&!this.emailVerifyNeeded">
           <p>
               <ion-text color="primary">
                   <ion-icon name="information-circle-outline"></ion-icon>
@@ -139,9 +125,9 @@
 
 
 
-
+  <!-- PARTE VERIFICA CONTATTI -->
   <div  *ngIf="actualStatePage==pageState.VERIFY">
-      <div class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemail || docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemailsms">
+      <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded">
 
 
           <ion-item lines="none">
@@ -170,7 +156,7 @@
 
       </div>
 
-      <div class="ion-no-padding div-message" *ngIf="docGruppo.APPTIPOVERIFICA == tipoVerifica.verificasms || docGruppo.APPTIPOVERIFICA == tipoVerifica.verificaemailsms">
+      <div class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded">
 
           <ion-item lines="none">
               <ion-button 
@@ -200,49 +186,114 @@
 
   </div>
 
+
+  <!-- PARTE AGGIORNAMENTO ANAGRAFICA -->
   <div *ngIf="actualStatePage==pageState.REGISTRATION">
 
-      <form [formGroup]="formRegister">
-          <ion-list>
-              <ion-item>
-              <ion-icon name="person-outline" slot="start" color="primary"></ion-icon>
-              <ion-input type="text" placeholder="Nome" formControlName="name"></ion-input>
-              </ion-item>
-              <ion-item>
-              <ion-icon name="person-outline" slot="start" color="primary"></ion-icon>
-              <ion-input type="text" placeholder="Cognome" formControlName="surname" ></ion-input>
-              </ion-item>
-              <ion-item>
-              <ion-icon name="key-outline" slot="start" color="primary"></ion-icon>
-              <ion-input type="password" placeholder="Password" formControlName="psw"></ion-input>
-              </ion-item>
-              <ion-item>
-              <ion-icon name="key-outline" slot="start" color="primary"></ion-icon>
-              <ion-input type="password" placeholder="Verifica password" formControlName="verifyPsw"></ion-input>
-              </ion-item>
-              
-              <ion-item>
-              <ion-icon name="card-outline" slot="start" color="primary"></ion-icon>
-              <ion-input type="text" placeholder="Codice Fiscale" formControlName="codFisc" ></ion-input>
-              </ion-item>
-  
-              <ion-item lines="none" *ngIf="isPolicyLink()">
-                  <ion-label>Accetto la <a (click)="openPolicyLink()">privacy policy</a></ion-label>
-                  <ion-checkbox 
-                      slot="start" 
-                      color="primary" 
-                      formControlName="chkPrivacy">
-                  </ion-checkbox>
-              </ion-item>
-  
-              <ion-item lines="none" >
-              <ion-label>Voglio ricevere la Newsletter</ion-label>
-              <ion-checkbox 
-                  slot="start" 
-                  color="primary" 
-                  formControlName="chkNewsletter"></ion-checkbox>
-              </ion-item>
-          </ion-list>
+    <form [formGroup]="formRegister">
+        <ion-list>
+          <ion-item-group>
+            <ion-item-divider color="light">
+              <ion-icon 
+                name="person-outline" 
+                slot="start"
+                color="primary"></ion-icon>
+              <ion-label>Come ti chiami ?</ion-label>
+            </ion-item-divider>
+            <ion-item>
+              <ion-label position="floating">Nome</ion-label>
+              <ion-input formControlName="nome"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Cognome</ion-label>
+              <ion-input formControlName="cognome"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Sesso</ion-label>
+              <ion-select formControlName="sesso" interface="popover">
+                <ion-select-option 
+                  *ngFor="let sesso of listSesso"
+                  [value]="sesso.value">
+                  {{ sesso.description }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Codice fiscale</ion-label>
+              <ion-input formControlName="cf" (ionBlur)="onCfChange()"></ion-input>
+            </ion-item >
+          </ion-item-group>
+    
+          <ion-item-group>
+            <ion-item-divider color="light">
+              <ion-icon 
+                name="home-outline" 
+                slot="start"
+                color="primary"></ion-icon>
+              <ion-label>Dove vivi ?</ion-label>
+            </ion-item-divider>
+            <ion-item>
+              <ion-label position="floating">Indirizzo</ion-label>
+              <ion-input formControlName="indResidenza"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-row>
+                <ion-col size="4" class="ion-no-padding" >
+                  <ion-label position="floating">Cap</ion-label>
+                  <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
+                </ion-col>
+                <ion-col size="4" class="ion-no-padding"  >
+                  <ion-label position="floating">Provincia</ion-label>
+                  <ion-input formControlName="provResidenza"></ion-input>
+                </ion-col>
+                <ion-col size="4" class="ion-no-padding">
+                  <ion-label position="floating">Stato</ion-label>
+                  <ion-input formControlName="statoResidenza"></ion-input>
+                </ion-col>
+              </ion-row>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Comune</ion-label>
+              <ion-input formControlName="comResidenza"></ion-input>
+            </ion-item>
+            
+          </ion-item-group>
+          <ion-item-group>
+            <ion-item-divider color="light">
+              <ion-icon 
+                name="logo-reddit" 
+                slot="start"
+                color="primary"></ion-icon>
+              <ion-label>Quando sei nato ?</ion-label>
+            </ion-item-divider>
+            <ion-item>
+              <ion-label position="floating">Data</ion-label>
+              <ion-datetime formControlName="nascita" 
+                            displayFormat="DD-MM-YYYY"
+                            [max]="today"></ion-datetime>
+            </ion-item>
+            <ion-item>
+              <ion-row>
+                <ion-col size="4" class="ion-no-padding">
+                  <ion-label position="floating">Cap</ion-label>
+                  <ion-input formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>              
+                </ion-col>
+                <ion-col size="4" class="ion-no-padding">
+                  <ion-label position="floating">Provincia</ion-label>
+                  <ion-input formControlName="provNascita"></ion-input>
+                </ion-col>
+                <ion-col size="4" class="ion-no-padding">
+                  <ion-label position="floating">Stato</ion-label>
+                  <ion-input formControlName="statoNascita"></ion-input>
+                </ion-col>
+              </ion-row>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Comune</ion-label>
+              <ion-input formControlName="comNascita"></ion-input>
+            </ion-item>
+          </ion-item-group>
+        </ion-list>
       </form>
 
       <div  class="ion-no-padding div-message">

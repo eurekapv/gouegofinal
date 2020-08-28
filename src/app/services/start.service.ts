@@ -534,6 +534,12 @@ get utenteLogged() {
 }
 
 /**
+ * recupera l'utente loggato (non Obs)
+ */
+get actualUtente() {
+  return this.utenteService.actualUtente;
+}
+/**
  * Memorizza nello storage username e password
  * @param username Username da memorizzare
  * @param pwd Password da memorizzare
@@ -729,6 +735,18 @@ return this.utenteService.recoveryFinalize(actualStartConfig,docUtente, docReque
 
 
 //#endregion
+
+//#region VALIDATION CONTATTI
+
+validationSendCodici(docRequestCode: AccountRequestCode, docUtente: Utente):Promise<AccountOperationResponse> {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.utenteService.validationSendCodici(actualStartConfig, docUtente, docRequestCode );
+}
+
+validationVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
+  const actualStartConfig = this._startConfig.getValue();
+  return this.utenteService.validationVerifyCodici(actualStartConfig, docVerifyCode);
+}
 
 //#region PRENOTAZIONE
 

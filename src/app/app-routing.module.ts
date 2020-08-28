@@ -63,10 +63,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/location/course/detailcourse/course.module').then( m => m.CoursePageModule)
   },
   {
-    path: 'smstest',
-    loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
-  },  
-  {
     path: 'news/:newsId',
     loadChildren: () => import('./pages/newsdetail/newsdetail.module').then( m => m.NewsdetailPageModule)
   },
@@ -75,12 +71,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/news/news.module').then( m => m.NewsPageModule)
   },  
   {
-    path: 'test',
-    loadChildren: () => import('./pages/test/smstest/smstest.module').then( m => m.SmstestPageModule)
-  },  {
     path: 'verify',
     loadChildren: () => import('./pages/auth/verify/verify.module').then( m => m.VerifyPageModule)
+  },  {
+    path: 'test',
+    loadChildren: () => import('./pages/test/test.module').then( m => m.TestPageModule)
   }
+
 
   //questo lo lascio commentato, perchè in teoria ci si arriva solo da modale
   // {

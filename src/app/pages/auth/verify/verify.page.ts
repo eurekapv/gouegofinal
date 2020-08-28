@@ -305,7 +305,7 @@ export class VerifyPage implements OnInit {
         //se devo verificare il tel, inserisco i dati nel documento
         if (this.smsVerifyNeeded){
           this.docRichiestaCodici.REQUESTSMSCODE=true;
-          this.docRichiestaCodici.EMAIL=this.formContact.value.email;
+          this.docRichiestaCodici.TELEPHONE=this.formContact.value.telephone;
         }
 
         //ora posso fare la richiesta al server
@@ -364,6 +364,10 @@ export class VerifyPage implements OnInit {
                   this.showMessage(customSuccessMessage);
                   //Mi sposto alla pagina successiva (di verifica)
                   if (onSuccessChangePage) {
+
+                    //Cancello gli input code presenti nelle formTel e Mail
+                    this.clearInputPinCode();
+                    
                     //Devo spostarmi alla pagina di verifica
                     this.nextStepRegistration();
                   }
@@ -526,7 +530,8 @@ export class VerifyPage implements OnInit {
  
  
    /**
-    * Richiedo al server se i dati sono corretti
+    * Invio al server i pincode inseriti dall'utente
+    * Se tutto va a buon fine, le informazioni saranno rese VERIFICATE
     * @param docVerifica Documento per la verifica dei codici
     */
    sendServerVerificaCodici(docVerifica: AccountVerifyCode) {
@@ -554,13 +559,16 @@ export class VerifyPage implements OnInit {
              if (response.result) {
  
                //se nella richiesta (andata a buon fine), ho verificato la mail, lo segno nel docutente
-               if (this.emailVerifyNeeded){
+               if (this.docRichiestaCodici.REQUESTEMAILCODE) {
                  this.docUtente.VERIFICATAMAIL=true;
+                 this.docUtente.EMAIL = this.docRichiestaCodici.EMAIL;
                }
 
                //se nella richiesta (andata a buon fine), ho verificato il cell, lo segno nel docutente
-               if (this.smsVerifyNeeded){
+               if (this.docRichiestaCodici.REQUESTSMSCODE){
+
                  this.docUtente.VERIFICATAMOBILE=true;
+                 this.docUtente.MOBILENUMBER = this.docRichiestaCodici.TELEPHONE;
                }
                
                this.showMessage("Verifica completata con successo");
@@ -572,7 +580,7 @@ export class VerifyPage implements OnInit {
              else {
  
                //Il server ha risposto, ma la verifica non è andata a buon fine (presumo codice errato)
-               this.showMessage('Il codice inserito è errato');
+               this.showMessage(response.message);
              }
            })
            .catch(err => {
@@ -635,7 +643,7 @@ export class VerifyPage implements OnInit {
              else {
  
                //Passo alla registrazione reale
-               this.execRegistrati(elCodFisc);
+               this.execAggiornaDati(elCodFisc);
              }
  
    
@@ -656,7 +664,7 @@ export class VerifyPage implements OnInit {
    /**
     * Invia al server i dati di registrazione
     */
-   execRegistrati(myCodiceFiscale: CodiceFiscale) {
+   execAggiornaDati(myCodiceFiscale: CodiceFiscale) {
      let pwd = '';
      let pwdToSend = '';
      let splitPwd:string[] = [];
@@ -720,7 +728,7 @@ export class VerifyPage implements OnInit {
          //Attivo il loading e invio i dati al server
          this.loadingCtrl
            .create({
-             message: 'Registrazione'
+             message: 'Aggiornamento in corso...'
            })
            .then(elLoading => {
    
@@ -980,12 +988,6 @@ export class VerifyPage implements OnInit {
           this.formRegister.get('sesso').setValue(this.docUtente.SESSO);
           this.formRegister.get('statoNascita').setValue(this.docUtente.NATOISOSTATO);
           this.formRegister.get('capNascita').setValue(this.docUtente.NATOCAP);
-
-
-
-
-
-
   
         }).catch(err => {
           console.log(err);
@@ -1045,6 +1047,24 @@ export class VerifyPage implements OnInit {
        })
      });
  
+   }
+
+   /**
+    * Cancella i valori nelle caselle di input del form
+    * formVerifyMail e formVerifyTel
+    */
+   clearInputPinCode() {
+     for (let index = 1; index <= 5; index++) {
+       
+       this.formVerifyMail.get('c' + index).setValue("");
+    
+     }
+
+     for (let index = 6; index <= 10; index++) {
+       
+      this.formVerifyTel.get('c' + index).setValue("");
+   
+    }
    }
  
  

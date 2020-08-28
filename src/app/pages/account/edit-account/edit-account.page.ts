@@ -39,7 +39,8 @@ export class EditAccountPage implements OnInit, OnDestroy {
       this.utenteListen = this.startService.utente.subscribe(data=>{
           
           //Clono l'utente
-          this.utente = Object.create(data);        
+          this.utente = Object.create(data); 
+          this.createForm();       
 
       });
 
@@ -52,7 +53,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
     
     this.today=MyDateTime.formatDateISO(new Date);
     
-    this.createForm();
+    //this.createForm();
   }
 
   ngOnDestroy() {
@@ -63,7 +64,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
   createForm()
   {
-    
+    let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
     this.form=new FormGroup({
       nome:new FormControl(this.utente.NOME, {
         updateOn:'change',
@@ -119,7 +120,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
       }),
       cf:new FormControl(this.utente.CODICEFISCALE, {
         updateOn:'change',
-        validators: []
+        validators: [Validators.pattern(patternCodice)]
       })
     })
   }
@@ -171,21 +172,61 @@ export class EditAccountPage implements OnInit, OnDestroy {
                       // Operazione effettuata
                       elLoading.dismiss();
                       //Aggiornamento corretto
-                      if ([200,204].includes(result.status)) {
-                            //Se la richiesta va a buon fine chiudo
                             this.showMessage('Info Aggiornate');
                             this.closePage();
-                      }
-                      else {
-                        this.showMessage('Ops..errore aggiornamento');
-                      }
+                  }, error => {
+                    elLoading.dismiss();
+                    this.showMessage('Errore  di connessione');
+                    console.log(error);
                   });
-              
-
             });
-
     }
   }
+
+  onCfChange(){
+
+    //se il cf cambia, quando l'utente esce dalla casella, provo a validarlo e riempire gli altri campi
+    let codFiscString: string = this.form.value.cf;
+
+    if (codFiscString!=null&&codFiscString!=undefined){
+      
+      if (codFiscString.length != 0){
+  
+        //chiamo il servizio per decodificare il codice fiscale
+        this.startService.checkCodiceFiscale(codFiscString, true).then(codFiscObj => {
+          
+          //inserisco tutto quello che ho decodificato nel utente
+          this.utente.NATOISOSTATO='Italia';
+          this.utente.NATOA=codFiscObj.comune;
+          this.utente.NATOPROV=codFiscObj.provincia;
+          this.utente.NATOIL=codFiscObj.dataNascita;
+          this.utente.SESSO=codFiscObj.sesso;
+          this.utente.NATOCAP=codFiscObj.cap;
+          
+
+          //aggiorno i campi del form
+
+          this.form.get('comNascita').setValue(this.utente.NATOA);
+          this.form.get('provNascita').setValue(this.utente.NATOPROV);
+          this.form.get('nascita').setValue(this.utente.NATOIL.toISOString());
+          this.form.get('sesso').setValue(this.utente.SESSO);
+          this.form.get('statoNascita').setValue(this.utente.NATOISOSTATO);
+          this.form.get('capNascita').setValue(this.utente.NATOCAP);
+
+          //setto il campo cf come valido
+          this.form.controls['cf'].setErrors(null);
+
+  
+        }).catch(err => {
+
+          //qui in teoria il cf non ha passato neppure il check base, segno il campo come non valido
+          this.form.controls['cf'].setErrors({'incorrect':true});
+          console.log(err);
+        })
+      }
+    }
+  }
+  
 
   /**
    * Chiudo e torno alla pagina Account
@@ -212,17 +253,23 @@ export class EditAccountPage implements OnInit, OnDestroy {
   }
 
   testValidation(){
+
     this.modalController.create({
       component: VerifyPage,
       componentProps: {
         params : {
-          tipoVerifica : TipoVerificaAccount.verificaemailsms,
+          tipoVerifica : TipoVerificaAccount.noverifica,
           updateDocUtente : true
         }
       }
-    }).then(elModal => {
-      elModal.present();
     })
-  }  
+    .then(elModal => {
+      elModal.present();
+      elModal.onDidDismiss().then(() => {
 
+      });
+    })
+  }
 }
+
+

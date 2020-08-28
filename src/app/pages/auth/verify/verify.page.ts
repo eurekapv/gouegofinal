@@ -88,7 +88,7 @@ export class VerifyPage implements OnInit {
    constructor(
      private modalCtrl:ModalController,
      private startService:StartService,
-     private loadingCtrl:LoadingController,
+     private loadingController:LoadingController,
      private toastCtrl:ToastController,
      private alertCtrl: AlertController,
      private cryptoService: CryptoService,
@@ -330,7 +330,7 @@ export class VerifyPage implements OnInit {
     */
    sendServerRichiestaCodici(onSuccessChangePage:boolean = true, customSuccessMessage='Codice inviato con successo!', customErrorMessage='Errore nell\'invio del codice, riprova') {
  
-     this.loadingCtrl
+     this.loadingController
        .create({
            message: 'Invio Codici in corso...'
        })
@@ -538,7 +538,7 @@ export class VerifyPage implements OnInit {
  
      if (docVerifica) {
  
-       this.loadingCtrl
+       this.loadingController
        .create({
            message: 'Verifica Codici...'
        })
@@ -604,67 +604,23 @@ export class VerifyPage implements OnInit {
  
  
  
+
+
+   
+ 
    /**
     * evento scatenato quando l'utente clicca "registrati" 
     * sulla pagina di inserimento dati
     */
    onClickAggiornaDati()
    {
-     
-     let codfisc: string;
-     
-     if (!this.formRegister.valid)
-     {
-       return;
-     }
-     else {
- 
-       //Prima vediamo il codice fiscale
-       codfisc = this.formRegister.value.codFisc;
-       codfisc = codfisc.toUpperCase();
- 
-       this.loadingCtrl.create({
-         message: 'Check Codice Fiscale'
-       })
-       .then(elLoading => {
-         elLoading.present();
- 
-         //Chiamo il servizio del codice fiscale
-         this.startService
-           .checkCodiceFiscale(codfisc, true, true)
-           .then(elCodFisc => {
-             //Dovrei ottenere il codice fiscale con i dati
-             
-             elLoading.dismiss();
- 
-             if (!elCodFisc.checkValidate) {
-               this.showMessage(elCodFisc.msgValidate);
-             }
-             else {
- 
-               //Passo alla registrazione reale
-               this.execAggiornaDati(elCodFisc);
-             }
- 
-   
-           })
-           .catch(objError => {
- 
-             elLoading.dismiss();
-             this.showMessage(objError.msgValidate);
- 
-           });
- 
-       });
-       
-     }
+     //TODO CHECK CF
+     this.execAggiornaDati();
    }
- 
- 
    /**
     * Invia al server i dati di registrazione
     */
-   execAggiornaDati(myCodiceFiscale: CodiceFiscale) {
+   execAggiornaDatiOld(myCodiceFiscale: CodiceFiscale) {
      let pwd = '';
      let pwdToSend = '';
      let splitPwd:string[] = [];
@@ -726,7 +682,7 @@ export class VerifyPage implements OnInit {
          }
    
          //Attivo il loading e invio i dati al server
-         this.loadingCtrl
+         this.loadingController
            .create({
              message: 'Aggiornamento in corso...'
            })
@@ -773,6 +729,68 @@ export class VerifyPage implements OnInit {
      
  
    }
+
+   execAggiornaDati() {
+
+
+    //recupero tutti i dati dal form
+    if (this.formRegister.valid)
+    {
+      console.log('bp');
+      this.docUtente.NOMINATIVO='';
+      this.docUtente.NOME=this.formRegister.value.nome;
+      this.docUtente.COGNOME=this.formRegister.value.cognome;
+      this.docUtente.SESSO=this.formRegister.value.sesso;
+      this.docUtente.CODICEFISCALE=this.formRegister.value.cf;
+
+      this.docUtente.INDIRIZZO=this.formRegister.value.indResidenza;
+      this.docUtente.COMUNE=this.formRegister.value.comResidenza;
+      this.docUtente.CAP=this.formRegister.value.capResidenza;
+      this.docUtente.PROVINCIA=this.formRegister.value.provResidenza;
+      this.docUtente.ISOSTATO=this.formRegister.value.statoResidenza;
+
+      
+      if (this.formRegister.value.nascita) {
+        this.docUtente.NATOIL = new Date(this.formRegister.value.nascita);
+      }
+
+      this.docUtente.NATOA=this.formRegister.value.comNascita;
+      this.docUtente.NATOCAP=this.formRegister.value.capNascita;
+      this.docUtente.NATOPROV=this.formRegister.value.provNascita;
+      this.docUtente.NATOISOSTATO=this.formRegister.value.statoNascita;
+      
+      //EMAIL E NUMERO DI TELEFONO NON LI MODIFICO MAI
+
+      //USO IL LOADING CONTROLLER 
+      this.loadingController
+            .create({
+              message: 'Aggiornamento dati...',
+              spinner: 'circular'
+            })
+            .then (elLoading => {
+              // Mostro il loading
+              elLoading.present();
+
+              //richiesta di aggiornamento al server
+              this.startService
+                  .requestUpdateUtente(this.docUtente)
+                  .subscribe(result => {
+                      // Operazione effettuata
+                      elLoading.dismiss();
+                      //Aggiornamento corretto
+                      if ([200,204].includes(result.status)) {
+                            //Se la richiesta va a buon fine chiudo
+                            this.showMessage('Info Aggiornate');
+                            this.closeModal();
+                      }
+                      else {
+                        this.showMessage('Ops..errore aggiornamento');
+                      }
+                  });
+           });
+
+    }
+  }
  
    /**
     * Al termine della registrazione se tutto va a buon fine, procedo con il login automatico
@@ -848,25 +866,7 @@ export class VerifyPage implements OnInit {
        }
      
    }
- 
- 
- 
- 
-   
- 
- 
-   /**
-    * evento scatenato quando l'utente clicca su "verifica in seguito"
-    */
- 
-   /**
-    * evento scatenato quando l'utente clicca su inizia
-    */
-   onClickInizia(){
-     //Chiudo la modale
-     this.modalCtrl.dismiss();
-   }
-   
+    
  
  //#region CREAZIONI FORM
  
@@ -997,8 +997,15 @@ export class VerifyPage implements OnInit {
           this.formRegister.get('sesso').setValue(this.docUtente.SESSO);
           this.formRegister.get('statoNascita').setValue(this.docUtente.NATOISOSTATO);
           this.formRegister.get('capNascita').setValue(this.docUtente.NATOCAP);
+
+          //setto il campo cf come valido
+          this.formRegister.controls['cf'].setErrors(null);
+
   
         }).catch(err => {
+
+          //qui in teoria il cf non ha passato neppure il check base, segno il campo come non valido
+          this.formRegister.controls['cf'].setErrors({'incorrect':true});
           console.log(err);
         })
       }

@@ -6,11 +6,14 @@
     <ion-title *ngIf="selectedView=='corsi'">I miei corsi</ion-title>
     <ion-title *ngIf="selectedView=='prenotazioni'">Le mie prenotazioni</ion-title>
 
-    <!-- <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon name="filter"></ion-icon>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onClickSettings()" >
+        <ion-icon name="settings-outline">
+        </ion-icon>
+
       </ion-button>
-    </ion-buttons> -->
+
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

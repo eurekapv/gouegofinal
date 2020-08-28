@@ -1,24 +1,12 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <!-- <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons> -->
-    <ion-title>
-      {{startConfig?.companyName | titlecase }}
+    <ion-title class="title-image">
+      <div>
+        <img [src]="this.startConfig.getUrlLogo()">
+        {{startConfig?.companyName | titlecase }}
+
+      </div>
     </ion-title>
-    <ion-buttons slot="primary">
-      <ion-button 
-          routerLink="/account" 
-          routerDirection="forward" 
-          *ngIf="userLogged">
-        <ion-icon 
-          name="person-circle-outline" 
-          class="btn-account">
-        </ion-icon>
-
-      </ion-button>
-
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

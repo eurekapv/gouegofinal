@@ -20,6 +20,7 @@ import { LogApp } from 'src/app/models/log.model';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { filter } from 'rxjs/operators';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
+import { Gruppo } from 'src/app/models/gruppo.model';
 
 
 @Component({
@@ -65,6 +66,7 @@ export class HomePage implements OnInit, OnDestroy{
   noNewsCard: NewsEvento;
   listNews: NewsEvento[] = [];
 
+  
   //Guarda qui
   //https://swiperjs.com/demos/#responsive_breakpoints
   sliderOpts={
@@ -478,7 +480,7 @@ export class HomePage implements OnInit, OnDestroy{
   if (this.userLogged) {
     // Account Presente
     if (this.docUtente) {
-        retIcon = this.docUtente.NOMINATIVO ? 'list-circle-outline' : iconAccedi      
+        retIcon = this.docUtente.NOMINATIVO ? 'person-outline' : iconAccedi      
     }
   }
 

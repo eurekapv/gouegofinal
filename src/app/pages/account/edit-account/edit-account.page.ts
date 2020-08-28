@@ -4,8 +4,10 @@ import { Utente } from 'src/app/models/utente.model';
 import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
-import { NavController, ToastController, LoadingController } from '@ionic/angular';
+import { NavController, ToastController, LoadingController, ModalController } from '@ionic/angular';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
+import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
+import { TipoVerificaAccount } from 'src/app/models/valuelist.model'
 
 
 @Component({
@@ -29,7 +31,8 @@ export class EditAccountPage implements OnInit, OnDestroy {
       private startService : StartService,
       private navCtr: NavController,
       private toastCtr: ToastController,
-      private loadingController: LoadingController
+      private loadingController: LoadingController,
+      private modalController: ModalController
     ) {
 
       //Chiedo al servizio i dati dell'utente
@@ -205,5 +208,19 @@ export class EditAccountPage implements OnInit, OnDestroy {
     });
 
   }
+
+  testValidation(){
+    this.modalController.create({
+      component: VerifyPage,
+      componentProps: {
+        params : {
+          tipoVerifica : TipoVerificaAccount.verificaemailsms,
+          updateDocUtente : true
+        }
+      }
+    }).then(elModal => {
+      elModal.present();
+    })
+  }  
 
 }

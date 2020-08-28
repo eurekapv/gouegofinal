@@ -275,6 +275,10 @@ export class HistorylistPage implements OnInit {
 
   }
 
+  onClickSettings(){
+    this.navCtrl.navigateForward('/account');
+  }
+
 
 
 }

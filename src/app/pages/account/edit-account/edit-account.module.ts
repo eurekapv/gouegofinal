@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
+import { VerifyPageModule } from 'src/app/pages/auth/verify/verify.module'
+
 
 import { IonicModule } from '@ionic/angular';
 
@@ -14,8 +17,10 @@ import { EditAccountPage } from './edit-account.page';
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
-    EditAccountPageRoutingModule
+    EditAccountPageRoutingModule,
+    VerifyPageModule
   ],
-  declarations: [EditAccountPage]
+  declarations: [EditAccountPage],
+  entryComponents: [VerifyPage]
 })
 export class EditAccountPageModule {}

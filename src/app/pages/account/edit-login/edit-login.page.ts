@@ -5,6 +5,8 @@ import { ModalController, IonInput, LoadingController, ToastController } from '@
 import { StartService } from 'src/app/services/start.service';
 
 
+
+
 @Component({
   selector: 'app-edit-login',
   templateUrl: './edit-login.page.html',
@@ -24,7 +26,7 @@ export class EditLoginPage implements OnInit {
 
 
 
-  constructor(private mdlController: ModalController,
+  constructor(private modalController: ModalController,
               private startService: StartService,
               private loadingController: LoadingController,
               private toastCtrl: ToastController) {
@@ -40,7 +42,7 @@ export class EditLoginPage implements OnInit {
    */
   onCancel() {
 
-    this.mdlController
+    this.modalController
         .dismiss({action:'none'});
   }
 
@@ -157,7 +159,7 @@ export class EditLoginPage implements OnInit {
               //Se è andato bene chiudo la Modal e torno di aggiornare il cookie con la nuova password
               if (elResult.RESULT) {
 
-                this.mdlController.dismiss(
+                this.modalController.dismiss(
                   {action:'update', pwd: newPsw}
                 );
               };
@@ -166,6 +168,4 @@ export class EditLoginPage implements OnInit {
         });
      }
   }
-  
-
 }

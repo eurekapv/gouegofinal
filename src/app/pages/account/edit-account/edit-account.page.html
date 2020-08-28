@@ -127,11 +127,11 @@
             color="primary"></ion-icon>
           <ion-label>Cellulare e Email</ion-label>
         </ion-item-divider>
-        <ion-item button>
+        <ion-item button (click)="testValidation()">
           <ion-label>{{utente.MOBILENUMBER}}</ion-label>
           <ion-badge color="success">{{utente.getLabelVerificaMobile()}}</ion-badge>
         </ion-item>
-        <ion-item button>
+        <ion-item button (click)="testValidation()">
           <ion-label>{{utente.EMAIL}}</ion-label>
           <ion-badge color="success">{{utente.getLabelVerificaMail()}}</ion-badge>
         </ion-item>

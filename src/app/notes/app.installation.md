@@ -3,7 +3,7 @@
 /*  HELP COME TRADURRE IN ITALIANO  */
 /***********************************/  
  > import { NgModule, LOCALE_ID } from '@angular/core';
- 1) Importare LOCALE_ID oltre che NgModule
+ 1) Importare LOCALE_ID oltre che NgModule in app.module.ts
   
  > import { registerLocaleData } from '@angular/common';
  > import localeIt from '@angular/common/locales/it';

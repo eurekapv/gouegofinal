@@ -161,7 +161,7 @@ export class SlotoccupazioneService {
               }
               else {
                 //Lo Slot non è disponibile
-                elSlotTime.STATO = StatoSlot.occupato;
+                elSlotTime.STATO = StatoSlot.chiuso;
               }
 
             }

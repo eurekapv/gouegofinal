@@ -27,8 +27,11 @@ export class SlottimeComponent implements OnInit {
       myClass = "slot-read-only";
     }
     else {
-      if (this.mySlot.STATO == StatoSlot.occupato || this.mySlot.STATO == StatoSlot.chiuso) {
+      if (this.mySlot.STATO == StatoSlot.occupato) {
         myClass = 'slot-busy';
+      }
+      else if (this.mySlot.STATO == StatoSlot.chiuso) {
+        myClass = "slot-read-only";
       }
       else {
         // Button utilizzabile
@@ -69,7 +72,7 @@ export class SlottimeComponent implements OnInit {
             caption = 'occupato'
             break;
           case StatoSlot.chiuso:
-            caption = 'chiuso'
+            caption = ''
             break;
         
           default:

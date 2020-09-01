@@ -22,7 +22,7 @@ import { Area } from 'src/app/models/area.model';
 import { PageType, SettoreAttivita } from 'src/app/models/valuelist.model'
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
+import { PaymentConfiguration, PaymentChannel, Payment } from 'src/app/models/payment.model';
 
 
 @Component({
@@ -76,11 +76,6 @@ export class HistorybookPage implements OnInit, OnDestroy {
       loading.present();
       this.subStartConfig=this.startService.startConfig.subscribe(config=>{
         this.startConfig=config;
-
-        //recupero anche le modalità di pagamento per le prenotazioni
-        this.arPayments = this.startConfig.gruppo._PAYMENT_MODE.getPaymentFor(SettoreAttivita.settorePrenotazione);
-        console.log('Modalità pagamento: ');
-        console.log(this.arPayments);
       })
       this.router.paramMap.subscribe(param => {
         if (param.has('historyId')) {
@@ -165,6 +160,10 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                                                   .then(docArea => {
                                                                       this.myArea = docArea;
 
+                                                                      //Imposto i dati per i pagamenti
+                                                                      this.setPaymentFromArea();
+
+
                                                                       //Qui è arrivato tutto esattamente
                                                                       this.loadingController.dismiss();
                                                                   })
@@ -192,7 +191,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
                 //Chiedo il recupero del documento Area
                 this.docstructrureService.getRelDoc(this.myPrenotazione, ['IDAREAOPERATIVA'])
                                           .then(docArea => {
+
                                               this.myArea = docArea;
+                                              this.setPaymentFromArea();
 
                                               //Qui è arrivato tutto esattamente
                                               this.loadingController.dismiss();
@@ -207,36 +208,6 @@ export class HistorybookPage implements OnInit, OnDestroy {
             }
 
 
-            
-
-          // this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
-          //   this.docStructureService.decodeAll(element).then(()=>{
-          //     this.docStructureService.decode(element, 'IDLOCATION',true,['INDIRIZZO','EMAIL']);
-          //     console.log('decodificati');
-          //     console.log(this.myPrenotazione);
-
-          //     //recupero anche l'area della prenotazione (mi serve per lo share)
-          //     //creo un filtro per richiedere l'area
-          //     let areaFiltro= new Area(true);
-          //     areaFiltro.ID=this.myPrenotazione.IDAREAOPERATIVA;
-
-          //     this.docstructrureService.requestNew(areaFiltro)
-          //     .then(listArea=>{
-
-          //       this.myArea=listArea[0];
-          //       this.loadingController.dismiss();
-
-          //     }).catch(error=>{
-          //       this.loadingController.dismiss();
-          //       this.showMessage('Errore nel caricamento');
-          //     });
-
-
-          //   }).catch(error=>{
-          //     this.loadingController.dismiss();
-          //     this.showMessage('Errore nel caricamento');
-          //   })
-          // });
         }).catch(error=>{
           this.loadingController.dismiss();
           this.showMessage('Errore nel caricamento Prenotazione');
@@ -254,6 +225,19 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * Imposta i pagamenti a seconda dell'area
+   */
+  setPaymentFromArea() {
+    if (this.myArea) {
+      let objPayment = new Payment(this.myArea);
+      this.arPayments = [];
+      this.arPayments = objPayment.getPaymentFor(SettoreAttivita.settorePrenotazione);
+    }
+    else {
+      this.arPayments = [];
+    }
+  }
   
 
   ngOnDestroy() {

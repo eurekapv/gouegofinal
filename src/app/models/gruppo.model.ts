@@ -22,16 +22,12 @@ export class Gruppo extends IDDocument {
     APPFLAGREGISTRAZIONE: boolean;
     APPTIPOVERIFICA: number;
 
-    _PAYMENT_MODE: Payment;         //Oggetto con i metodi di pagamento
   
     constructor(onlyInstance?:boolean) {
       super(onlyInstance);
       
       this.PRIVATEIMAGE = [];
 
-      this._PAYMENT_MODE = new Payment();
-      
-      this._PAYMENT_MODE.testingMode();
     }
 
 

@@ -1,12 +1,19 @@
 import {SettoreAttivita} from './valuelist.model';
+import { Area } from './area.model';
+import { element } from 'protractor';
+import { isNumber } from 'util';
 
 
 export class Payment  {
     PaymentsMode: PaymentConfiguration[];
 
 
-    constructor() {
+
+    constructor(docArea: Area) {
+
         this.PaymentsMode = [];
+
+        this.createPaymentsMode(docArea);
     }
     /**
      * Ritorna un array con i pagamenti abilitati per una determina azione
@@ -60,7 +67,43 @@ export class Payment  {
         }
     }
 
+    createPaymentsMode(docArea: Area) {
+        if (docArea) {
+            if (docArea.AREAPAYMENTSETTINGS && docArea.AREAPAYMENTSETTINGS.length) {
 
+                for (let index = 0; index < docArea.AREAPAYMENTSETTINGS.length; index++) {
+
+                    const element = docArea.AREAPAYMENTSETTINGS[index];
+
+                    //Se c'e' il settore a cui è riferito il pagamento
+                    if (element.SETTORI && element.SETTORI.length) {
+
+                        let objPayment = new PaymentConfiguration();
+                        objPayment.channel = element.TIPOPAYMENT;
+                        objPayment.addSettori(element.SETTORI);
+                        
+                        switch (element.TIPOPAYMENT) {
+                            case PaymentChannel.paypal:
+                                let settings = objPayment.configPayPal;
+                                    settings.enviroment = element.PPENVIRONMENT;
+                                    settings.account = element.PPACCOUNT;
+                                    settings.clientSecret = element.PPCLIENTSECRET;
+                                    settings.clientIDProduction = element.PPCLIENTIDPRODUCTION;
+                                    settings.clientIDSandbox = element.PPCLIENTIDSANDBOX;
+                                break;
+                        
+                            default:
+                                break;
+                        }
+    
+                        this.addUpdatePayment(objPayment);
+
+                    }
+                    
+                }
+            }
+        }
+    }
 
     /**
      * Creo oggetti di test
@@ -103,8 +146,9 @@ export class PaymentConfiguration {
     constructor() {
         this.settori = [];
         this.configPayPal = new ConfigPaypal();
-
     }
+
+
     /**
      * Controlla se le informazioni contenute sono valide per effettuare il pagamento
      */
@@ -176,6 +220,29 @@ export class PaymentConfiguration {
         }
 
         return valid;
+    }
+
+    /**
+     * 
+     * @param stringSettori Stringa con i settori separati da ,
+     */
+    addSettori(stringSettori:string) {
+        let value:number;
+        if (stringSettori && stringSettori.length !== 0) {
+            let arSettori = stringSettori.split(';');
+            arSettori.forEach(element => {
+
+                
+                    try {
+                        value = parseInt(element);
+                        this.settori.push(value);
+                    }
+                    catch {
+                        
+                    }
+                
+            });
+        }
     }
   }
   

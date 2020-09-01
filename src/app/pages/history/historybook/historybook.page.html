@@ -87,7 +87,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block">
-    Paga Ora
+  <ion-button expand="block" [disabled]="btnPay.disabled">
+    {{btnPay.text}}
   </ion-button>
 </ion-footer>

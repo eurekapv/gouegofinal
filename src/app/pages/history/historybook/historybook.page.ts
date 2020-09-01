@@ -19,8 +19,10 @@ import { filter } from 'rxjs/operators';
 import { Corso } from 'src/app/models/corso.model';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Area } from 'src/app/models/area.model';
-import { PageType } from 'src/app/models/valuelist.model'
+import { PageType, SettoreAttivita } from 'src/app/models/valuelist.model'
 import { RequestParams } from 'src/app/library/models/requestParams.model';
+import { Gruppo } from 'src/app/models/gruppo.model';
+import { PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
 
 
 @Component({
@@ -40,6 +42,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
   historyId: string;
   myArea:Area;
 
+  //i metodi di pagamento possibili
+  arPayments : PaymentConfiguration[] = [];
 
   sliderOpts={
     slidesPerView: 1,
@@ -60,6 +64,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   //In paramMap leggo IDPrenotazione
   ngOnInit() {
+
+    
+
     let result=true; 
     this.loadingController.create({
       spinner:'circular',
@@ -69,6 +76,11 @@ export class HistorybookPage implements OnInit, OnDestroy {
       loading.present();
       this.subStartConfig=this.startService.startConfig.subscribe(config=>{
         this.startConfig=config;
+
+        //recupero anche le modalità di pagamento per le prenotazioni
+        this.arPayments = this.startConfig.gruppo._PAYMENT_MODE.getPaymentFor(SettoreAttivita.settorePrenotazione);
+        console.log('Modalità pagamento: ');
+        console.log(this.arPayments);
       })
       this.router.paramMap.subscribe(param => {
         if (param.has('historyId')) {
@@ -188,11 +200,14 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                           .catch(err => {
                                                 //Dismetto il loading
                                                 this.loadingController.dismiss();
-                                                this.showMessage('Errore nel caricamento Area2');
+                                                this.showMessage('Errore nel caricamento Area');
                                                 console.log(err);                                                                    
                                           });
 
             }
+
+
+            
 
           // this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
           //   this.docStructureService.decodeAll(element).then(()=>{
@@ -304,6 +319,48 @@ export class HistorybookPage implements OnInit, OnDestroy {
       //share su mobile
       this.socialSharing.share(messaggio,'',logo,url);
     }
+
+  }
+
+  canPayOnline(){
+
+    let show = false;
+    this.arPayments.forEach(element => {
+      if (element.channel == PaymentChannel.paypal){
+        show = true;
+      }
+    })
+
+    return show;
+  }
+
+  get btnPay(){
+    let objBtn = {
+      disabled : false,
+      text : ''
+
+    }
+    //se la prenotazione non è pagata
+    if(this.myPrenotazione.INCASSATO<this.myPrenotazione.IMPORTO){
+
+      //se posso pagare online
+      if (this.canPayOnline()){
+        objBtn.disabled = false;
+        objBtn.text = 'Paga ora';
+      }
+      //se non posso pagare online
+      else{
+        objBtn.disabled = true;
+        objBtn.text = 'Corso Da pagare'
+      }
+    }
+    //se invece ho già pagato
+    else{
+      objBtn.disabled = true;
+      objBtn.text = 'Corso pagato';
+    }
+
+    return objBtn;
 
   }
 

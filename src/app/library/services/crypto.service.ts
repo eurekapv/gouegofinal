@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as CryptoJS from 'crypto-js';
+declare var CryptoJS;
 
 @Injectable({
   providedIn: 'root'

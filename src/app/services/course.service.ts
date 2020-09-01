@@ -11,7 +11,7 @@ import { Sport } from '../models/sport.model';
 import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { Utente } from '../models/utente.model';
-import { LoadingController } from '@ionic/angular';
+
 
 
 @Injectable({
@@ -152,7 +152,7 @@ export class CourseService {
           }))
           .subscribe( resultData => {
 
-            if (resultData[0]&&resultData[0]!={}){
+            if (resultData[0] && resultData[0]!={}){
               let objCorso = new Corso();
               objCorso.setJSONProperty(resultData[0]);
               

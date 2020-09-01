@@ -6,16 +6,13 @@ import { Corso } from '../../../../models/corso.model';
 import { StartService } from '../../../../services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi } from 'src/app/models/valuelist.model';
-import { FilterCorsi } from 'src/app/models/filtercorsi.model';
+
 import { ModalController, NavController, LoadingController, ToastController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { RequestParams, RequestForeign } from 'src/app/library/models/requestParams.model';
-import { filter } from 'rxjs/operators';
-import { Area } from 'src/app/models/area.model';
-import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
-import { element } from 'protractor';
+import { RequestParams } from 'src/app/library/models/requestParams.model';
+import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 
 
 enum PageState{
@@ -100,6 +97,10 @@ export class ListcoursesPage implements OnInit {
   requestCorsi() {
     //quando faccio una richiesta di corsi, l'id location è sempre presente
     this.filtroCorsi.IDLOCATION=this.idLocation;
+
+    this.filtroCorsi.DATAFINE = new Date();
+    this.filtroCorsi.addFilterCondition(OperatorCondition.maggiore,'DATAFINE');
+
     console.log('filtro');
     console.log(this.filtroCorsi);
 
@@ -111,55 +112,21 @@ export class ListcoursesPage implements OnInit {
 
       loading.present();        
       
-      //faccio la richiesta
-      let params = new RequestParams
-      this.docStructureService.requestNew(this.filtroCorsi).then(data => {
+      //Richiesta di decodifica
+      let params = new RequestParams();
+      params.decode.active = true;
+      
+      //Eseguo la richiesta al server
+      this.docStructureService.requestNew(this.filtroCorsi , params)
+          .then(data => {
+              //Chiudo il loading
+              loading.dismiss();
 
-        loading.dismiss();
+              //recupero la lista dei corsi
+              this.listCorsi = data;
 
-        //recupero la lista dei corsi
-        this.listCorsi = data;
-        
-        //li decodifico
-        this.listCorsi.forEach(elCorso => {
-          this.docStructureService.decodeAll(elCorso,true);
-        });
-        
-        console.log('Lista corsi');
-        console.log(this.listCorsi);
-        //filtro subito recuperando solo i corsi per me
-        this.listCorsiMioLivello=this.listCorsi.filter(elCorso => {
-          let ok = true
-
-          if (elCorso.IDLIVELLOENTRATA&&elCorso.IDLIVELLOENTRATA!=''){
-
-              //devo trovare il livello per lo sport
-            let livello = this.docUser.UTENTILIVELLI.find(elLivello => {
-              return elLivello.IDSPORT==elCorso.IDSPORT;
-            })
-
-            //ora faccio i controlli
-            if (livello.IDLIVELLO!=elCorso.IDLIVELLOENTRATA){
-              //il livello non va bene
-              ok=false;
-            }
-          }
-          
-          // if (elCorso.TARGETSESSO!=this.docUser.SESSO){
-          //   //il sesso non va bene
-          //   ok = false;
-          // }
-          // if (){
-          //   //l'età non va bene
-          //   ok = false;
-          // }
-          return true;
-        })
-
-        console.log ('tutti');
-        console.log (this.listCorsi);
-        console.log ('mioLivello');
-        console.log (this.listCorsiMioLivello)
+              //Preparo i dati per il mio livello (se utente loggato)
+              this.prepareForMioLivello();
 
       })
       .catch(error => {
@@ -169,6 +136,53 @@ export class ListcoursesPage implements OnInit {
     })
           
   }
+
+  /**
+   * Preparo i dati per il mio livello
+   */
+  prepareForMioLivello() {
+
+    this.listCorsiMioLivello = [];
+
+    if (this.docUser) {
+        //filtro subito recuperando solo i corsi per me
+        
+        this.listCorsiMioLivello = this.listCorsi.filter(elCorso => {
+          //Corso per l'utente
+          let isForUser = true
+
+          if (elCorso.IDLIVELLOENTRATA && elCorso.IDLIVELLOENTRATA!='') {
+              //Controlliamo se l'utente può partecipare allo sport con il livello passato
+              isForUser = this.docUser.isForLevelSport(elCorso.IDLIVELLOENTRATA, elCorso.IDSPORT);
+          }
+
+          //Controllo TARGETSESSO
+          if (isForUser && elCorso.TARGETSESSO) {
+              isForUser = this.docUser.isForTargetSesso(elCorso.TARGETSESSO);
+          }
+
+          //Controllo CategoriaEta
+          if (isForUser && elCorso.IDCATEGORIEETA && elCorso.IDCATEGORIEETA.length != 0) {
+            if (this.docUser.NATOIL) {
+              let eta = this.docUser.eta;
+              isForUser = this.startService.isValidCategorieEta(elCorso.IDCATEGORIEETA, eta);
+            }
+          }
+          
+          
+          return isForUser;
+        });
+
+        console.log ('tutti');
+        console.log (this.listCorsi);
+        console.log ('mioLivello');
+        console.log (this.listCorsiMioLivello)
+    }
+
+  }
+
+
+
         
   /**
    * Modifica del Segment per la scelta dei corsi

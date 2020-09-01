@@ -427,6 +427,10 @@ requestCategorieEta() {
       .request(actualStartConfig);
             
 }
+
+isValidCategorieEta(idCategoria: string, eta: number): boolean {
+  return this.categoriaEtaService.isValid(idCategoria, eta);
+}
 //#endregion
 
 

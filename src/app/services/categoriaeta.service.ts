@@ -76,4 +76,40 @@ export class CategoriaetaService {
         this._listCategorieEta.next( collEta.concat(objCategoriaEta));
       })
   }
+
+  /**
+   * Cerca e ritorna un record della categoria eta
+   * @param idCategoriaEta idCategoria Scelta
+   */
+  findCategoriaEtaById(idCategoriaEta: string): CategoriaEta {
+    let objCategoria: CategoriaEta;
+    let listaCat = this._listCategorieEta.getValue();
+
+    if (idCategoriaEta && listaCat && listaCat.length != 0 ) {
+        objCategoria = listaCat.find(elCat => {
+          return (elCat.ID == idCategoriaEta);
+        })
+    }
+
+    return objCategoria;
+  }
+
+
+  /**
+   * IDCategoria da controllare se l'età risulta valida
+   * @param idCategoria idCategoria scelta
+   * @param eta Età
+   */
+  isValid(idCategoria: string, eta: number): boolean {
+    let isValid = false;
+    let objCategoria: CategoriaEta;
+
+    objCategoria = this.findCategoriaEtaById(idCategoria);
+
+    if (objCategoria) {
+        isValid = objCategoria.isValid(eta);
+    }
+
+    return isValid;
+  }
 }

@@ -238,4 +238,21 @@ static durataOre(startDate: Date, endDate: Date): number {
 }
 
 
+/**
+ * Calcola il numero di Ore intercorse tra le due date ore
+ * @param inferiorDate Data Ora Iniziale (Inferiore)
+ * @param superiorDate Data Ora Finale (Superiore)
+ */
+static durataAnni(inferiorDate: Date, superiorDate: Date): number {
+    let anni = 0;
+    if (inferiorDate && superiorDate) {
+        let mStart = moment(inferiorDate);
+        let mEnd = moment(superiorDate);
+        anni = mEnd.diff(mStart, 'years', true);
+    }
+
+    return anni;
+}
+
+
 }

@@ -1,7 +1,8 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { Sesso } from './valuelist.model';
+import { Sesso, TargetSesso } from './valuelist.model';
 import { UtenteLivello } from './utentelivello.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
 
 
 export class Utente extends IDDocument {
@@ -40,7 +41,7 @@ export class Utente extends IDDocument {
 
     /**
      * 
-     * @param noInit Non inizializzare il documento, ma crea solo istanza
+     * @param onlyInstance Non inizializzare il documento, ma crea solo istanza
      */
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
@@ -53,6 +54,22 @@ export class Utente extends IDDocument {
 
         this.VERIFICATAMAIL = false;
         this.VERIFICATAMOBILE = false;
+    }
+
+
+    /**
+     * Ritorna l'eta del partecipante
+     */
+    public get eta(): number {
+        let num = 0;
+        let oggi = new Date();
+
+        if (this.NATOIL) {
+            if (this.NATOIL < oggi) {
+                num = MyDateTime.durataAnni(this.NATOIL, oggi);
+            }
+        }
+        return num;
     }
 
     /**
@@ -214,6 +231,49 @@ export class Utente extends IDDocument {
         }
 
         return labelReturn;
+    }
+
+
+    /**
+     * Cerca dentro a Utente Livelli se presente uno sport e un determinato livello
+     * @param idLivello Livello richiesto
+     * @param idSport Sport richiesto
+     */
+    isForLevelSport(idLivello:string, idSport: string): boolean {
+        let isValid = false;
+        let index = -1;
+
+        if (this.UTENTILIVELLI && this.UTENTILIVELLI.length != 0) {
+            index = this.UTENTILIVELLI.findIndex (elLivello => {
+                return (elLivello.IDLIVELLO == idLivello && elLivello.IDSPORT == idSport)
+            });
+        }
+
+        if (index != -1) {
+            isValid = true;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Confronta il target Sesso con il Sesso dell'utente
+     * @param target Target di confronto
+     */
+    isForTargetSesso(target: TargetSesso) {
+        let isValid = false;
+
+        if (target && this.SESSO) {
+            if ((target == TargetSesso.maschile || target == TargetSesso.maschileFemminile) && this.SESSO == Sesso.maschio) {
+                isValid = true;
+            }
+            else if ((target == TargetSesso.femminile || target == TargetSesso.maschileFemminile) && this.SESSO == Sesso.femmina) {
+                isValid = true;
+            }
+        }
+
+        return isValid;
     }
 
 

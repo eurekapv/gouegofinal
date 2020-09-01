@@ -49,5 +49,36 @@ export class CategoriaEta extends IDDocument {
     }
 
 
+    /**
+     * Verifica se l'eta rientra nel range
+     * @param eta Eta da controllare
+     */
+    isValid(eta: number):boolean {
+
+        let isValid = false;
+        if (!this.ETAMINIMA && !this.ETAMASSIMA) {
+            isValid = true;
+        }
+        else if (!this.ETAMASSIMA) {
+            //Non c'e' eta massima solo la minima
+            if (eta >= this.ETAMINIMA) {
+                isValid = true;
+            }
+        }
+        else if (!this.ETAMINIMA) {
+            //Non c'e' eta minima solo la massima
+            if (eta <= this.ETAMASSIMA) {
+                isValid = true;
+            }
+        }
+        else {
+            //Ci sono entrambi le eta
+            if (eta >= this.ETAMINIMA && eta <= this.ETAMASSIMA) {
+                isValid = true;
+            }
+        }
+
+        return isValid;
+    }
    
 }

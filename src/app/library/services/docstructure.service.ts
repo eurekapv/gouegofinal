@@ -338,83 +338,144 @@ export class DocstructureService {
   
 
 
+   /**
+    * Carica una collection figlia del documento passato e la imposta nel documento
+    * @param document  Documento base da cui caricare
+    * @param collectionName Nome collection da caricare
+    * @param params parametri aggiuntivi
+    */
+  loadCollection(document:IDDocument, collectionName: string, params?:RequestParams) {
+    return new Promise<IDDocument>((resolve, reject)=>{
+      let prosegui = true;
+      let objDescriptor: Descriptor;
+      let message: string = '';
+      let defCollection: TypeReflector;
+      let namePrimaryKey = '';
+
+      if (!document) {
+        message = 'Documento null';
+        prosegui = false;
+        reject(message);
+      }
+      else if (!collectionName || collectionName.length == 0) {
+        message = 'Collection non specificata';
+        prosegui = false;
+        reject(message);
+      }
+
+      if (prosegui) {
+        //Recupero il descrittore della classe
+        objDescriptor = document.getDescriptor();
+
+        if (!objDescriptor) {
+          prosegui = false;
+          message = "Document descriptor not find";
+          reject(message);
+        }
+      }
+
+      console.log('Fermati qui');
+
+      //Controllo correttezza configurazione collection
+      if (prosegui) {
+        defCollection = objDescriptor.getByCollectionName(collectionName);
+
+        if (!defCollection) {
+          prosegui = false;
+          message = 'Collection ' + collectionName + 'not found';
+          reject(message);
+        }
+        else if (!defCollection.relFieldDoc || defCollection.relFieldDoc.length == 0) {
+          prosegui = false;
+          message = 'Document in collection ' + collectionName + ' not defined';
+          reject(message);
+        }
+        else if (!defCollection.relFieldName || defCollection.relFieldName.length == 0) {
+          prosegui = false;
+          message = 'Field in ' + defCollection.relFieldDoc + ' to loading collection ' + collectionName + ' not defined';
+          reject(message);
+        }
+      }
+
+      if (prosegui) {
+        namePrimaryKey = objDescriptor.primaryKeyFieldName;
+
+        if (namePrimaryKey.length == 0) {
+          prosegui = false;
+          message = 'Document Descriptor ' + objDescriptor.className + ' without primary key';
+          reject(message);
+        }
+
+      }
+
+      //Preparo il documento di filtro per la chiamata
+      if (prosegui) {
+
+        let filterDocument: any = new DynamicClass(defCollection.relFieldDoc,true);
+        filterDocument[defCollection.relFieldName] = document[namePrimaryKey];
+
+        this.requestNew(filterDocument, params)
+          .then(collReceived => {
+
+            //Devo eliminare i dati precedenti della collection del documento
+            //Svuoto la collection attuale
+            document[defCollection.fieldName] = [];
+
+            document[defCollection.fieldName] = collReceived;
+            resolve(document);
+
+
+          })
+          .catch(error => {
+            reject(error);
+          });
+
+      }
+    });
+  }
+
+
   /**
-   * Effettua chiamate al server 
-   * il document dovrà essere istanziato con i parametri che si desiderano diventare filtri di caricamento
-   * @param document Parametri di configurazione
-   * @param decode Effettua la decodifica dei dati 
+   * Per ogni documento contenuto nella collection viene caricata la collection figlia richiesta
+   * @param collection Collection di Documenti
+   * @param collectionName Collection figlia da caricare
+   * @param params parametri aggiuntivi
    */
-  // request(document: IDDocument, childLevel=2, nElem?: number) {
+  loadCollectionMulti(collection: IDDocument[], collectionName:string, params?:RequestParams) {
+    return new Promise<IDDocument[]>((resolve, reject)=>{
+      let executePromise:Promise<IDDocument>[] = [];
+      if (collection && collection.length !== 0) {
 
-  //   return new Promise<any[]>((resolve, reject)=>{
-      
-  //     let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
-  //     let objDescriptor: Descriptor;
-      
-  //     if (!document) {
-  //       reject('Documento non presente');
-  //     }
-  //     else {
-  //       //Recupero il descrittore della classe
-  //       objDescriptor = document.getDescriptor();
+        for (let index = 0; index < collection.length; index++) {
+          const elDocument = collection[index];
 
-  //       if (!objDescriptor) {
-  //         reject('Documento non descritto');
-  //       }
-  //       else if (objDescriptor.doRemote == false) {
-  //         //Non è gestito esternamente
-  //         reject('Documento non gestito in remoto');
-  //       }
-  //       else {
+          let exPromise = this.loadCollection(elDocument, collectionName, params);
+          executePromise.push(exPromise);
 
-  //         // In Testata c'e' sempre l'AppId
-  //         myHeaders = myHeaders.set('appid',this.myConfig.appId);
-  //         myHeaders = myHeaders.append('child-level', childLevel+'');
+        }
 
-  //         //Preparare i parametri con i filtri arrivati sul documento
-  //         let myParams = this.getHttpParamsFromDoc(document);
-  //         if (nElem){
-  //           myParams=myParams.append('$top',nElem+'');
-  //         }
-  //         let myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
-
-  //         if (!myParams) {
-  //           reject('Request Parametri insufficienti');
-  //         }
-  //         else {
-
-  //           this.apiService
-  //             .httpGet(myUrl, myHeaders, myParams)
-  //             .pipe(map(fullData => {
-  //               return fullData[objDescriptor.classWebApiName]
-  //             }))
-  //             .subscribe (resultData => {
-
-  //               let listElement: IDDocument[] = [];
-  //               if (resultData){
-  //                 resultData.forEach(elData => {
-                    
-  //                   let newClass: any = new DynamicClass(objDescriptor.className);
-  //                   newClass.setJSONProperty(elData);
-  //                   listElement.push(newClass);
-  
-  //                 });
-    
-  //               }
-  //               resolve(listElement);
-
-  //             }, error => {
-  //               reject(error);
-  //             });
-
-  //         }
-          
-  //       }
-  //     }
-      
-  //   });
-
-  // }
+        //Esecuzione di tutte le Promise se presenti
+        if (executePromise.length !== 0) {
+          //Eseguo tutte le Promise
+          Promise.all(executePromise)
+                  .then(() => {
+                    //Ritorno il tutto decodificato
+                    resolve(collection);
+                  })
+                  .catch(err => {
+                    reject(err);
+                  });
+          }
+          else {
+            //Non ho nulla da decodificare e va bene cosi
+            resolve(collection);
+          }
+      }
+      else {
+        reject('Collection not defined');
+      }
+    });
+  }  
 
   /**
    * Effettua chiamate al server 

@@ -11,36 +11,78 @@ export enum TypeDefinition {
 }
 
 /**
- * Classe di associazione NomeCampo -> Tipologia
- */
+* Classe di associazione NomeCampo -> Tipologia
+*/
 export class TypeReflector {
-    fieldName: string;
-    fieldType: TypeDefinition;
-    
 
-    constructor(campoName: string, 
+    private _fieldName: string;
+    private _fieldType: TypeDefinition;
+    //Se il campo è in relazione con un altro documento, qui trovo la relazione con il documento e la proprietà del documento in relazione
+    private _relFieldDoc: string;
+    private _relFieldName: string;
+    private _primaryKey: boolean; //Il campo è una chiave primaria
+
+    get primaryKey(): boolean {
+      return this._primaryKey;
+    }
+  
+    set primaryKey(value: boolean) {
+      this._primaryKey = value;
+    }  
+  
+    get fieldName(): string {
+      return this._fieldName;
+    }
+  
+    set fieldName(value: string) {
+
+        this._fieldName = value;
+        //Se fosse ID lo imposta come chiave primaria
+        this._forceIfPrimaryKey();  
+    }
+  
+    get fieldType(): TypeDefinition {
+      return this._fieldType;
+    }
+  
+    set fieldType(value: TypeDefinition) {
+      this._fieldType = value;
+    }
+
+        /**
+     * Forza impostando come primary Key un campo che si chiama ID
+     */
+    private _forceIfPrimaryKey() {
+        if (this._fieldName == 'ID') {
+        this._primaryKey = true;
+        }
+    }
+  
+    constructor(campoName: string,
                 campoType: TypeDefinition,
                 relDoc?: string,
                 relName?: string) {
-        this.fieldName = campoName;
-        this.fieldType = campoType;
+  
+        this._fieldName = campoName;
+        this._fieldType = campoType;
         this._relFieldDoc = relDoc;
         this._relFieldName = relName;
 
-        
+        //Metto come chiave False, semmai la cambio dopo
+        this._primaryKey = false;
+        //Se fosse ID lo imposta come chiave primaria
+        this._forceIfPrimaryKey();        
+  
     }
-
-    private _relFieldDoc: string;
-    private _relFieldName: string;
-
+  
     get relFieldDoc(): string {
         return this._relFieldDoc;
     }
-
+  
     set relFieldDoc(value:string) {
         this._relFieldDoc = value;
     }
-
+  
     get relFieldName(): string {
         let strReturn = '';
         if (this._relFieldDoc && this._relFieldDoc.length !== 0) {
@@ -51,14 +93,14 @@ export class TypeReflector {
                 strReturn = 'ID';
             }
         }
-
+  
         return strReturn;
     }
-
+  
     set relFieldName(value:string) {
         this._relFieldName = value;
     }
-
+  
     /**
      * Ritorna TRUE se il campo è parte di un servizio Documentale
      * ID, do_deleted etc...
@@ -66,39 +108,39 @@ export class TypeReflector {
     serviceField(): boolean {
         let value = false;
         let arServizi = ['ID','do_updated','do_loaded','do_inserted','do_deleted'];
-        if (arServizi.includes(this.fieldName)) {
+        if (arServizi.includes(this._fieldName)) {
             value = true;
         }
         return value;
     }
-
+  
     /**
      * Ritorna TRUE se il campo è un campo presente anche sul server
      */
     nativeField(): boolean {
         let value = true;
-        if (this.fieldName.substr(0,1) == '_') {
+        if (this._fieldName.substr(0,1) == '_') {
             // I campi che iniziano con _ sono privati di solito di Lookup
             value = false;
         }
-
+  
         return value;
     }
-
-
+  
+  
     /**
      * Controlla e indica se ha una relazione il campo
      */
     get isForeignKey():boolean {
         let result = false;
-
-        if (this.relFieldDoc) {
+  
+        if (this._relFieldDoc) {
             result = true;
         }
-
+  
         return result;
     }
-}
+  }
 
 /**
  * Classe per Tipizzare intere classi
@@ -176,6 +218,23 @@ export class  Descriptor{
         return arForeign;
     }
 
+  /**
+   * Ritorna il nome della chiave primaria se presente
+   */
+  get primaryKeyFieldName(): string {
+    let field: TypeReflector;
+    let fieldName: string = '';
+    field = this.fields.find(elField => {
+      return (elField.primaryKey == true)
+    });
+
+    if (field) {
+      fieldName = field.fieldName;
+    }
+
+    return fieldName;
+  }    
+
     constructor() {
         this._doRemote = false;
 
@@ -185,15 +244,20 @@ export class  Descriptor{
         this.add('do_inserted', TypeDefinition.boolean);
         this.add('do_deleted', TypeDefinition.boolean);
     }
-    /**
-     * Aggiunge un Campo/Tipo all'insieme
-     * @param campoName Nome Campo
-     * @param campoType Tipo Campo
-     */
-    add(campoName: string, campoType: TypeDefinition, relDoc?:string, relField?:string) {
-        let typeR = new TypeReflector(campoName, campoType, relDoc, relField);
-        this.fields.push(typeR);
+
+
+  /**
+   * Aggiunge un Campo/Tipo all'insieme
+   * @param campoName Nome Campo
+   * @param campoType Tipo Campo
+   */
+  add(campoName: string, campoType: TypeDefinition, relDoc?:string, relField?:string) {
+    let typeR = new TypeReflector(campoName, campoType, relDoc, relField);
+    //Se non esiste lo aggiungo
+    if (this.hasFieldName(campoName) == false) {
+      this.fields.push(typeR);
     }
+}
 
 
     /**
@@ -228,6 +292,27 @@ export class  Descriptor{
         }
     }
 
+  /**
+   * Aggiunge una collection alla struttura
+   * @param collectionName Nome Collection
+   * @param relDoc Riferimento ai documenti contenuti nella collection
+   * @param relFieldName Nome campo nel documento di riferimento che crea il legame
+   */
+  addCollection(collectionName: string, relDoc:string, relFieldName: string) {
+    let newField: TypeReflector;
+
+    if (collectionName) {
+      if (this.hasCollection(collectionName) == false) {
+
+        newField = new TypeReflector(collectionName,TypeDefinition.collection);
+        newField.relFieldDoc = relDoc;
+        newField.relFieldName = relFieldName;
+
+        this.fields.push(newField);
+      }
+    }
+  }  
+
     /**
      * Con un nome campo torna la tipologia associata
      * @param campoName Nome del Campo
@@ -255,4 +340,56 @@ export class  Descriptor{
             return el.fieldName == fieldName;
         });
     }
+
+  /**
+   * Ritorna se presente una collection passata come parametro
+   * @param collectionName Nome Collection
+   */
+  getByCollectionName(collectionName: string): TypeReflector {
+
+    let collFind: TypeReflector;
+    collFind = this.fields.find(elField => {
+      return (elField.fieldName == collectionName && elField.fieldType== TypeDefinition.collection);
+    });
+
+    return collFind;
+  }      
+
+  
+  /**
+   * Controlla che la collection passata come parametro esista nel documento
+   * @param collectionName Nome Collection
+   */
+  hasCollection(collectionName: string) {
+    let exist = false;
+    let collFind: TypeReflector;
+    collFind = this.fields.find(elField => {
+      return (elField.fieldName == collectionName && elField.fieldType== TypeDefinition.collection);
+    });
+
+    if (collFind) {
+      exist = true;
+    }
+
+    return exist;
+  }
+
+    /**
+   * Controlla che la collection passata come parametro esista nel documento
+   * @param collectionName Nome Collection
+   */
+  hasFieldName(fieldName: string):boolean {
+    let exist = false;
+    let fieldFind: TypeReflector;
+    fieldFind = this.fields.find(elField => {
+      return (elField.fieldName == fieldName);
+    });
+
+    if (fieldFind) {
+      exist = true;
+    }
+
+    return exist;
+  }
+
 }

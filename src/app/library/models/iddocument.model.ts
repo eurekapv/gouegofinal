@@ -102,6 +102,7 @@ import { MyDateTime } from './mydatetime.model';
      */
     getDescriptor(): Descriptor {
       let objDescriptor = new Descriptor();
+      objDescriptor.add('ID',TypeDefinition.char);
       return objDescriptor;
     }
 

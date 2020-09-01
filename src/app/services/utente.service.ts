@@ -31,6 +31,10 @@ export class UtenteService {
     return this._utenteLoggato.asObservable();
   }
 
+  get actualLoggato(){
+    return this._utenteLoggato.getValue();
+  }
+
   get actualUtente() {
     return this._utente.getValue();
   }

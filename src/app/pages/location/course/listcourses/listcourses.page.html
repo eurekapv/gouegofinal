@@ -21,9 +21,8 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
     
-  <!-- NON IN RICERCA E CORSI TROVATI -->
-  <!-- VISUALIZZAZIONE CORSI -->
-  <div *ngIf="ricevuti && listCorsi.length !== 0" id="crs-lista">
+  <!-- VISUALIZZAZIONE TUTTI -->
+  <div *ngIf="listCorsi.length !== 0 && statoPagina==pageState.TUTTI" id="crs-lista">
     <ion-grid>
       <ion-row >
         <ion-col *ngFor="let corso of listCorsi" 
@@ -56,7 +55,41 @@
 
   </div>
 
-  <div *ngIf="ricevuti && listCorsi.length === 0" class="nofind-cnt">
+  <!-- VISUALIZZAZIONE MIEI -->
+  <div *ngIf="listCorsi.length !== 0 && statoPagina==pageState.MIEI" id="crs-lista">
+    <ion-grid>
+      <ion-row >
+        <ion-col *ngFor="let corso of listCorsiMioLivello" 
+                  sizeXs="12" 
+
+                  sizeSm="8"  
+                  offsetSm="2" 
+                  
+                  sizeMd="6"
+                  offsetMd="0"
+                  
+                  sizeLg="5"
+                  offsetLg="0.5"
+
+                  sizeXl = "4"
+                  offsetXl = "0"
+                  >
+          <!-- <app-card-course 
+              [myCorso]="corso" 
+              (clickCalendar)="onClickCardCalendar($event)"
+              (clickDetail)="onClickCardDetail($event)"></app-card-course> -->
+              <app-card-course 
+              [myCorso]="corso" 
+              (clickDetail)="onClickCardDetail($event)"></app-card-course>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+
+
+  </div>
+
+  <div *ngIf="listCorsi.length === 0" class="nofind-cnt">
     <ion-label>Nessun corso disponibile</ion-label>
     <ion-label>Modifica i parametri</ion-label>
     <ion-label>di Ricerca</ion-label>
@@ -74,11 +107,11 @@
   color="medium"
   value="corsiall"
        id="crs:button">
-       <ion-segment-button value="corsiall">
+       <ion-segment-button [value]="pageState.TUTTI">
          <ion-label>Tutti</ion-label>
     </ion-segment-button>
     
-    <ion-segment-button value="corsiforme">
+    <ion-segment-button [value]="pageState.MIEI">
       <ion-label>Mio Livello</ion-label>
     </ion-segment-button>
   </ion-segment>

@@ -14,6 +14,15 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { RequestParams, RequestForeign } from 'src/app/library/models/requestParams.model';
 import { filter } from 'rxjs/operators';
 import { Area } from 'src/app/models/area.model';
+import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
+import { element } from 'protractor';
+
+
+enum PageState{
+  TUTTI = 10,
+  MIEI = 20
+}
+
 
 @Component({
   selector: 'app-listcourses',
@@ -22,22 +31,26 @@ import { Area } from 'src/app/models/area.model';
 })
 export class ListcoursesPage implements OnInit {
 
+  pageState : typeof PageState = PageState;
   idLocation = '';
+
   listCorsi: Corso[] = [];
-  corsiListen: Subscription;
-  userLogged = false; //Utente loggato ricavato dal servizio
-  listenUserLogged: Subscription; 
+  listCorsiMioLivello: Corso[] = [];
+
   docUser: Utente; //Informazioni utente loggato
   listenDocUser: Subscription;
 
-  filtriCorsi: FilterCorsi;
+  filtroCorsi: Corso = new Corso(true);
 
   preferList: SegmentCorsi; 
 
+  userLogged= false
+
+  statoPagina = PageState.TUTTI;
+
   
 
-  //Spinner di ricezione corsi
-  ricevuti = false;
+  
   
 
   constructor(private router: ActivatedRoute, 
@@ -46,14 +59,9 @@ export class ListcoursesPage implements OnInit {
               private navController: NavController,
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
-              private docStrService: DocstructureService
+              private docStructureService: DocstructureService
               ) { 
     
-    //Richiedo l'utente e se è loggato
-    this.listenUserLogged = this.startService.utenteLogged.subscribe(value => {
-      this.userLogged = value;
-      
-    });
 
     //Richiedo lo User
     this.listenDocUser = this.startService.utente.subscribe(element => {
@@ -67,8 +75,8 @@ export class ListcoursesPage implements OnInit {
 
   ngOnInit() {
 
-    this.ricevuti = false;
-    
+    //valorizzare userLogged
+    this.userLogged = this.startService.actualUtenteLogged;
     
     // Leggo idLocation 
     this.router.paramMap.subscribe( param => {
@@ -78,18 +86,9 @@ export class ListcoursesPage implements OnInit {
           //Recupero del Location ID
           this.idLocation = param.get('locationId');
           
-          //Inizializzazione dei Filtri
-          this.filtriCorsi = this.startService
-                                    .newFilterCorsi(this.idLocation);
-          
           //Effettuo la richiesta dei corsi
           this.requestCorsi();
 
-          //Mi sottoscrivo alla ricezione
-          this.corsiListen = this.startService.listCorsi.subscribe (element => {
-            //Corsi sono stati ricevuti
-            this.listCorsi = element;
-          })
       }
 
     })
@@ -99,37 +98,74 @@ export class ListcoursesPage implements OnInit {
    * Richiesta dei corsi
    */
   requestCorsi() {
+    //quando faccio una richiesta di corsi, l'id location è sempre presente
+    this.filtroCorsi.IDLOCATION=this.idLocation;
+    console.log('filtro');
+    console.log(this.filtroCorsi);
+
     this.loadingCtrl.create({
       spinner: 'circular',
       message: 'Caricamento',
       backdropDismiss: true
     }).then(loading=>{
-      loading.present();
-      this.ricevuti=false;
-      switch (this.preferList) {
-        case SegmentCorsi.tutti:
-          //Richiedo i corsi
-          this.startService.requestCorsi().then(()=>{
-            this.ricevuti=true;
-            loading.dismiss();
-          }, ()=>{
-            loading.dismiss();
-            this.showMessage('Errore di connessione');
-          });
-          break;
-      case SegmentCorsi.mioLivello:
-        //Richiedo i corsi con il documento utente per effettuare i filtri
-        this.startService.requestCorsi(this.docUser).then(()=>{
-          loading.dismiss();
-          this.ricevuti=true;
-        }, ()=>{
-          loading.dismiss();
-          this.showMessage('Errore di connessione');
+
+      loading.present();        
+      
+      //faccio la richiesta
+      let params = new RequestParams
+      this.docStructureService.requestNew(this.filtroCorsi).then(data => {
+
+        loading.dismiss();
+
+        //recupero la lista dei corsi
+        this.listCorsi = data;
+        
+        //li decodifico
+        this.listCorsi.forEach(elCorso => {
+          this.docStructureService.decodeAll(elCorso,true);
         });
-        break;
-      }
+        
+        console.log('Lista corsi');
+        console.log(this.listCorsi);
+        //filtro subito recuperando solo i corsi per me
+        this.listCorsiMioLivello=this.listCorsi.filter(elCorso => {
+          let ok = true
+
+          if (elCorso.IDLIVELLOENTRATA&&elCorso.IDLIVELLOENTRATA!=''){
+
+              //devo trovare il livello per lo sport
+            let livello = this.docUser.UTENTILIVELLI.find(elLivello => {
+              return elLivello.IDSPORT==elCorso.IDSPORT;
+            })
+
+            //ora faccio i controlli
+            if (livello.IDLIVELLO!=elCorso.IDLIVELLOENTRATA){
+              //il livello non va bene
+              ok=false;
+            }
+          }
           
-          
+          // if (elCorso.TARGETSESSO!=this.docUser.SESSO){
+          //   //il sesso non va bene
+          //   ok = false;
+          // }
+          // if (){
+          //   //l'età non va bene
+          //   ok = false;
+          // }
+          return true;
+        })
+
+        console.log ('tutti');
+        console.log (this.listCorsi);
+        console.log ('mioLivello');
+        console.log (this.listCorsiMioLivello)
+
+      })
+      .catch(error => {
+        this.showMessage('Errore di connessione');
+        console.log(error);
+      })
     })
           
   }
@@ -138,14 +174,8 @@ export class ListcoursesPage implements OnInit {
    * Modifica del Segment per la scelta dei corsi
    */
   onChangeSegmentCorsi(event: any) {
-    this.ricevuti=false
-    if (event.target.value == 'corsiall')  {
-      this.preferList = SegmentCorsi.tutti
-      this.requestCorsi();
-    }
-    else if (event.target.value == 'corsiforme') {
-      this.preferList = SegmentCorsi.mioLivello
-      this.requestCorsi();
+    if (this.userLogged)  {
+      this.statoPagina = event.target.value;
     }
     
   }
@@ -155,7 +185,7 @@ export class ListcoursesPage implements OnInit {
       .create({
         component: FilterPage,
         componentProps: {
-          'myFilter': {...this.filtriCorsi}
+          'myFilter': {...this.filtroCorsi}
         }
       })
       .then(formModal => {
@@ -174,9 +204,8 @@ export class ListcoursesPage implements OnInit {
    * Arrivo di nuovi filtri dalla modale
    * @param filter Filtri impostati nella modale
    */
-  onModalNewFilter(filter: FilterCorsi) {
-    this.filtriCorsi = filter;
-    this.startService.filterCorsi = filter;
+  onModalNewFilter(filter: Corso) {
+    this.filtroCorsi = filter;
     this.requestCorsi();
   }
 
@@ -223,79 +252,10 @@ export class ListcoursesPage implements OnInit {
     //this.testingDecodeAll(corso);
   }
 
-  /**
-   * Test di decodifica semplice con il describe row
-   * @param corso 
-   */
-  testingDecodeSimple(corso: Corso) {
-
-    let useCache = true;
-    
-    this.docStrService.decode(corso,'IDSPORT', useCache);
-
-  }
-
-  /**
-   * Test di decodifica hard con il describe row
-   * @param corso 
-   */
-  testingDecodeHard(corso: Corso) {
-
-    let useCache = true;
-    let describeWith = ['PARTECIPANTI', 'ICONA'];
-    
-    this.docStrService.decode(corso,'IDSPORT', useCache, describeWith)
-        .then(() => {
-            console.log('Sti gran cazzi !!!!')
-        })
-        .catch(err => {
-            console.error(err);
-        });
-
-  }
-
-    /**
-   * Test di decodifica hard con il describe row
-   * @param corso 
-   */
-  testingDecodeAll(corso: Corso) {
-    let params = new RequestParams();
-    let filterCorso = new Corso(true);
-    let objForeign: RequestForeign;
-    
-    console.log(corso);
-    let area: Area;
-    this.docStrService.getRelDoc(corso, ['IDCAMPO','IDLOCATION','IDAREAOPERATIVA'])
-                     .then(docRel => {
-                       console.log(docRel);
-                     })
-                     .catch(err=> {
-                       console.log(err);
-                     })
-
-    //filterCorso.ID = corso.ID;
-    //filterCorso.IDLOCATION = '9742AD87-FE66-44AF-9F2C-59967C4D051F';
-
-    // params.child_level = 1;
-    // params.decode.active = true;
-    // objForeign = params.decode.addForeignField('IDSPORT');
-    // objForeign.addDescribeField('ICONA');
-    // objForeign.addDescribeField('DENOMINAZIONE');
-
-    // objForeign = params.decode.addForeignField('IDLIVELLOENTRATA');
-    // objForeign.addDescribeField('DENOMINAZIONE');
-    
-
-    // this.docStrService.requestNew(filterCorso,params)
-    //                   .then(collection => {
-    //                     console.log(collection);
-    //                   })
-    //                   .catch(err => {
-    //                     console.log('Errore');
-    //                   })
-    
-
-
-  }
 
 }
+
+
+
+ 
+

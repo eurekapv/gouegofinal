@@ -533,6 +533,10 @@ get utenteLogged() {
   return this.utenteService.utenteLoggato;
 }
 
+get actualUtenteLogged() {
+  return this.utenteService.actualLoggato;
+}
+
 /**
  * recupera l'utente loggato (non Obs)
  */

@@ -84,18 +84,11 @@
       <ion-label position="floating">Disponibili da</ion-label>
       <ion-datetime 
           displayFormat="DD/MM/YYYY" 
-          [(ngModel)]="myFilter.DATAFINE"
+          [(ngModel)]="dataFine"
           placeHolder="oggi">
       </ion-datetime>
     </ion-item>
 
-    <ion-item>
-      <ion-label>Con Iscrizioni Aperte</ion-label>
-      <ion-checkbox 
-        color="primary" 
-        slot="end"
-        [(ngModel)]="myFilter._CHECKISCRIZIONEAPERTA"></ion-checkbox>
-    </ion-item>
 
     <ion-button 
       color="danger" 

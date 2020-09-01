@@ -48,13 +48,13 @@
             <ion-list class="ion-no-margin">
               <ion-item lines="none" [color]="colorItem(giornata)">
                 <ion-icon name="play" slot="start"></ion-icon>
-                <ion-label> {{giornata.DATAORAINIZIO | date:'hh:mm'}}</ion-label>
+                <ion-label> {{giornata.DATAORAINIZIO | date:'HH:mm'}}</ion-label>
                 
               </ion-item>
 
               <ion-item lines="none"  >
                 <ion-icon name="pause" slot="start"></ion-icon>
-                <ion-label> {{giornata.DATAORAFINE | date:'hh:mm'}}</ion-label>
+                <ion-label> {{giornata.DATAORAFINE | date:'HH:mm'}}</ion-label>
                 <ion-badge [color]="colorItem(giornata)" slot="end">{{ giornata.ORELEZIONE }} h</ion-badge>
               </ion-item>
 

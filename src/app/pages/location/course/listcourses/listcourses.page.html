@@ -56,7 +56,7 @@
   </div>
 
   <!-- VISUALIZZAZIONE MIEI -->
-  <div *ngIf="listCorsi.length !== 0 && statoPagina==pageState.MIEI" id="crs-lista">
+  <div *ngIf="listCorsiMioLivello.length !== 0 && statoPagina==pageState.MIEI" id="crs-lista">
     <ion-grid>
       <ion-row >
         <ion-col *ngFor="let corso of listCorsiMioLivello" 
@@ -89,7 +89,15 @@
 
   </div>
 
-  <div *ngIf="listCorsi.length === 0" class="nofind-cnt">
+  <!-- SE SONO SU TUTTI, MA NON CI SONO -->
+  <div *ngIf="listCorsi.length === 0&&statoPagina==pageState.TUTTI" class="nofind-cnt">
+    <ion-label>Nessun corso disponibile</ion-label>
+    <ion-label>Modifica i parametri</ion-label>
+    <ion-label>di Ricerca</ion-label>
+  </div>
+
+  <!-- SE SONO SU MIEI, MA NON CI SONO -->
+  <div *ngIf="listCorsiMioLivello.length === 0&&statoPagina==pageState.MIEI" class="nofind-cnt">
     <ion-label>Nessun corso disponibile</ion-label>
     <ion-label>Modifica i parametri</ion-label>
     <ion-label>di Ricerca</ion-label>

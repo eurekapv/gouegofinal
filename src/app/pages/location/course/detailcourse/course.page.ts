@@ -3,9 +3,11 @@ import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, ModalController } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, ToastController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { CalendarPage } from './calendar/calendar.page';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { RequestParams, RequestDecode } from 'src/app/library/models/requestParams.model';
 
 @Component({
   selector: 'app-course',
@@ -25,7 +27,10 @@ export class CoursePage implements OnInit, OnDestroy {
   constructor(private startService: StartService,
               private actRouter: ActivatedRoute,
               private navCtrl: NavController,
-              private mdlController: ModalController) {
+              private mdlController: ModalController,
+              private docStructureService : DocstructureService,
+              private loadingController : LoadingController,
+              private toastController : ToastController) {
 
                 
               }
@@ -38,15 +43,49 @@ export class CoursePage implements OnInit, OnDestroy {
                     //ID Corso
                     idCorso = param.get('courseId');
               
-                      //richiedo il corso al server
-                      this.startService.requestCorsoById(idCorso).then(elCorso=>{
-                        this.myCorso = elCorso;
-                        this.startService.requestLocationByID(this.myCorso.IDLOCATION).then(objLocation=>{
-                          this.myLocation=objLocation;
-                          console.log('bp');
-                          console.log(this.myCorso);
+                    
+                      //preparo il filtro
+                      let filtroCorso = new Corso(true);
+                      filtroCorso.ID=idCorso;
+
+                      //preparo i parametri per decodificare
+                      let params = new RequestParams();
+                      params.decode = new RequestDecode();
+                      params.decode.active = true;
+
+                      this.loadingController.create({
+                        spinner: "circular",
+                        message: 'Caricamento',
+                        backdropDismiss: true
+                      })
+                      .then(elLoading => {
+                        elLoading.present();
+                        
+                        //faccio la richiesta
+                        this.docStructureService.requestNew(filtroCorso, params).then(corso => {
+                          console.log(corso);
+                          
+                          if (corso&&corso!=[]){
+                            //se ho trovato un corso, lo prendo
+                            this.myCorso = corso[0];
+
+                            //ora richiedo la location
+                            this.requestLocationById(this.myCorso.IDLOCATION);
+                          }
+                          else{
+                            elLoading.dismiss();
+                            this.showMessage('Non ho trovato nessun corso');
+                          }
+                        })
+                        .catch(error => {
+                          elLoading.dismiss();
+                          this.showMessage('Errore di connessione');
+                          console.log(error);
                         })
                       })
+
+
+
       
               
                     //Controllo se l'utente è loggato
@@ -55,7 +94,7 @@ export class CoursePage implements OnInit, OnDestroy {
                     });     
                   }
                   else {
-                    this.navCtrl.navigateForward(['/']);
+                    this.navCtrl.navigateRoot(['/']);
                   }
                 })              
               }
@@ -70,6 +109,28 @@ export class CoursePage implements OnInit, OnDestroy {
     }
   }
 
+  requestLocationById(idLocation: string){
+
+    //preparo il filtro
+    let filterLocation = new Location(true);
+    filterLocation.ID = idLocation;
+    
+    //faccio la richiesta
+    this.docStructureService.requestNew(filterLocation).then(elLocation => {
+      this.loadingController.dismiss();
+      if (elLocation && elLocation!=[]){
+
+        //se ho trovato una location me la salvo
+        this.myLocation = elLocation[0];
+      }
+      else{
+        this.showMessage('Non ho trovato la location');
+      }
+    }).catch(error => {
+      this.loadingController.dismiss();
+      this.showMessage('Errore di connessione');
+    })
+  }
 
   /* ****** CALENDAR ******** */
   onClickCardCalendar() {
@@ -102,5 +163,12 @@ export class CoursePage implements OnInit, OnDestroy {
   getIcon(corso:Corso)
   {
     return this.startService.getSportIcon(corso.IDSPORT);
+  }
+
+  showMessage(messaggio:string){
+    this.toastController.create({
+      message: messaggio,
+      duration: 3000
+    })
   }
 }

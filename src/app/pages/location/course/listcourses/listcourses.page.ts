@@ -68,6 +68,11 @@ export class ListcoursesPage implements OnInit {
     //Mostro tutti i corsi
     this.preferList = SegmentCorsi.tutti;
 
+    
+    //inserisco nel filtro la condizione di "corsi non ancora finiti"
+    this.filtroCorsi.DATAFINE = new Date();
+    this.filtroCorsi.addFilterCondition(OperatorCondition.maggiore,'DATAFINE');
+
   }
 
   ngOnInit() {
@@ -82,6 +87,9 @@ export class ListcoursesPage implements OnInit {
       {
           //Recupero del Location ID
           this.idLocation = param.get('locationId');
+
+          //inserisco nel filtro l'id della location
+          this.filtroCorsi.IDLOCATION=this.idLocation;
           
           //Effettuo la richiesta dei corsi
           this.requestCorsi();
@@ -96,10 +104,7 @@ export class ListcoursesPage implements OnInit {
    */
   requestCorsi() {
     //quando faccio una richiesta di corsi, l'id location è sempre presente
-    this.filtroCorsi.IDLOCATION=this.idLocation;
-
-    this.filtroCorsi.DATAFINE = new Date();
-    this.filtroCorsi.addFilterCondition(OperatorCondition.maggiore,'DATAFINE');
+    
 
     console.log('filtro');
     console.log(this.filtroCorsi);
@@ -119,6 +124,7 @@ export class ListcoursesPage implements OnInit {
       //Eseguo la richiesta al server
       this.docStructureService.requestNew(this.filtroCorsi , params)
           .then(data => {
+              console.log('bp2');
               //Chiudo il loading
               loading.dismiss();
 
@@ -199,13 +205,15 @@ export class ListcoursesPage implements OnInit {
       .create({
         component: FilterPage,
         componentProps: {
-          'myFilter': {...this.filtroCorsi}
+          'myFilter': this.filtroCorsi
         }
       })
       .then(formModal => {
         formModal.present();
 
-        formModal.onWillDismiss().then((objReceived:any)=> {
+        formModal.onWillDismiss().then((objReceived)=> {
+          console.log('bp');
+          console.log(objReceived);
           if (objReceived.data.dismissFilter) {
             //Mi è arrivato un filtro da applicare
             this.onModalNewFilter(objReceived.data.dismissFilter);

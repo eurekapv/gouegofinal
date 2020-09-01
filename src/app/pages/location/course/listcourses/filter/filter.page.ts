@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { FilterCorsi } from 'src/app/models/filtercorsi.model';
 import { ValueList, TargetSesso, TipoCorso } from 'src/app/models/valuelist.model';
 import { ModalController } from '@ionic/angular';
+import { Corso } from 'src/app/models/corso.model';
 
 @Component({
   selector: 'app-filter',
@@ -14,7 +15,7 @@ import { ModalController } from '@ionic/angular';
 })
 export class FilterPage implements OnInit, OnDestroy {
 
-  @Input() myFilter: FilterCorsi;
+  @Input() myFilter: Corso;
 
   listSport: Sport[];
   listCatEta: CategoriaEta[];
@@ -23,6 +24,8 @@ export class FilterPage implements OnInit, OnDestroy {
 
   listTargetSesso: ValueList[] = [];
   listTipoCorso: ValueList[] = [];
+
+  dataFine: Date = new Date;
 
   constructor(private startService: StartService,
               private mdlController: ModalController) { 
@@ -73,6 +76,7 @@ export class FilterPage implements OnInit, OnDestroy {
    * Chiudo la videata applicando i filtri impostati
    */
   applyFilter() {
+    this.myFilter.DATAFINE = new Date(this.dataFine);
     this.mdlController.dismiss({
       'dismissFilter': this.myFilter
     });
@@ -84,9 +88,8 @@ export class FilterPage implements OnInit, OnDestroy {
   emptyFilter() {
     this.myFilter.TARGETSESSO = null;
     this.myFilter.TIPO = null;
-    this.myFilter.DATAFINE = null;
     this.myFilter.IDSPORT = null;
     this.myFilter.IDCATEGORIEETA = null;
-    this.myFilter._CHECKISCRIZIONEAPERTA = false;
+    this.myFilter.DATAFINE = new Date();
   }
 }

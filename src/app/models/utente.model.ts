@@ -44,6 +44,7 @@ export class Utente extends IDDocument {
      * @param onlyInstance Non inizializzare il documento, ma crea solo istanza
      */
     constructor(onlyInstance?:boolean) {
+        
         super(onlyInstance);
 
         if (!onlyInstance) {

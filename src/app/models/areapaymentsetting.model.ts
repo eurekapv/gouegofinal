@@ -1,8 +1,5 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { Location } from './location.model';
-import { PageType } from './valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import { AreaLink } from './arealink.model';
 import { PaymentChannel,EnvironmentPaypal } from 'src/app/models/payment.model';
 
 
@@ -16,7 +13,6 @@ export class AreaPaymentSetting extends IDDocument {
     PPCLIENTIDPRODUCTION: string;
     PPCLIENTSECRET: string;
     SETTORI: string;
-
 
 
     constructor(onlyInstance?:boolean) {
@@ -72,5 +68,6 @@ export class AreaPaymentSetting extends IDDocument {
     setJSONProperty(data: any) {
       super.setJSONProperty(data);
     }
+
 
 }

@@ -10,11 +10,12 @@ import { Utente } from 'src/app/models/utente.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Campo } from 'src/app/models/campo.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { PaymentConfiguration, PaymentChannel, PaymentResult } from 'src/app/models/payment.model';
+import { PaymentConfiguration, PaymentChannel, PaymentResult, Payment } from 'src/app/models/payment.model';
 import { SettoreAttivita } from 'src/app/models/valuelist.model';
 import { PaypalPage } from 'src/app/pages/paypal/paypal.page';
 import { AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
+import { Area } from 'src/app/models/area.model';
 const { Browser } = Plugins;
 
 @Component({
@@ -35,6 +36,10 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   
   //Campo in versione normale
   selectedCampo: Campo;
+
+  //Area selezionata
+  docArea: Area;
+  listenArea: Subscription;
   
   userLogged: boolean;      //TRUE-FALSE: Utente Loggato
   subUserLogged: Subscription;  
@@ -74,16 +79,20 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               ) {
 
 
-      this.subStartConfig = this.startService.startConfig.subscribe(elStartConfig => {
-          if (elStartConfig.gruppo) {
-            //Con il gruppo posso chiedere i metodi di pagamento accettati
-            this.docGruppo = elStartConfig.gruppo;
+      // this.subStartConfig = this.startService.startConfig.subscribe(elStartConfig => {
+      //     if (elStartConfig.gruppo) {
 
-            this.initPayment();
+      //       //Con il gruppo posso chiedere i metodi di pagamento accettati
+      //       this.docGruppo = elStartConfig.gruppo;
 
-          }
-      });
+      //     }
+      // });
     
+      //Recupero dell'area selezionata
+      this.docArea = this.startService.areaSelectedValue;
+      
+      //Impostazione tipologie pagamento
+      this.setPaymentConfig();
 
   }
 
@@ -316,24 +325,24 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
   //#region METODI GESTIONE PAGAMENTO
 
-  /**
-   * Prepara le informazioni per gestire i pagamenti
-   */
-  initPayment() {
-    //Chiedo un Array con le configurazioni. Questo array viene passato 
-    //al componente payment-item
-    if (this.docGruppo) {
-      if (this.docGruppo._PAYMENT_MODE) {
-        this.arPaymentConfig = this.docGruppo._PAYMENT_MODE.getPaymentFor(SettoreAttivita.settorePrenotazione);
 
-        if (this.arPaymentConfig) {
-          //Con un solo metodo di pagamento lo imposto gia
-          if (this.arPaymentConfig.length == 1) {
-            this.selectedPayment = this.arPaymentConfig[0];
-          }
+  setPaymentConfig() {
+    this.arPaymentConfig = [];
+    if (this.docArea) {
+      let modePay = new Payment(this.docArea);
+
+      this.arPaymentConfig = modePay.getPaymentFor(SettoreAttivita.settorePrenotazione);
+
+      if (this.arPaymentConfig) {
+        //Con un solo metodo di pagamento lo imposto gia
+        if (this.arPaymentConfig.length == 1) {
+          this.selectedPayment = this.arPaymentConfig[0];
         }
       }
     }
+
+    console.log(this.docArea);
+    console.log(this.arPaymentConfig);
   }
 
   /**

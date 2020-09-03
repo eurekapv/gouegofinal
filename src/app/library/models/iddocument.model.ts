@@ -14,6 +14,9 @@ import { MyDateTime } from './mydatetime.model';
 
     //Condizioni di filtro
     _filterConditions:FilterCondition[];
+
+    //Valori originali
+    _original:IDOriginal;
   
     /**
      * 
@@ -22,6 +25,7 @@ import { MyDateTime } from './mydatetime.model';
     constructor(onlyInstance?:boolean) {
 
         this._filterConditions = [];
+        this._original = new IDOriginal();
 
        if (!onlyInstance) {
           this.ID = this.newID();
@@ -30,6 +34,7 @@ import { MyDateTime } from './mydatetime.model';
        }
     }
 
+    
 
     get inserted(): boolean {
       return this.do_inserted;
@@ -112,8 +117,12 @@ import { MyDateTime } from './mydatetime.model';
      * @param clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
      * @param clearPKProperty Non esporta la Chiave primaria
      * @param clearPrivateProperty Non esporta le proprietà private
+     * @param onlyModified Esporta solo le proprietà diverse dalle original
      */
-    exportToJSON(clearDOProperty: boolean, clearPKProperty: boolean, clearPrivateProperty: boolean) {
+    exportToJSON(clearDOProperty: boolean, 
+                 clearPKProperty: boolean, 
+                 clearPrivateProperty: boolean, 
+                 onlyModified?: boolean) {
       let _this = this;
       let arProperty = Object.keys(_this);
       //Chiedo il Descrittore della classe
@@ -124,7 +133,7 @@ import { MyDateTime } from './mydatetime.model';
       let row = '';
       
 
-      // Vuole eliminare anche le chiavi Primarie, le aggiungo all'Array
+      // Vuole eliminare le doProperty, le aggiungo all'Array
       if (clearDOProperty) {
         //Popolo l'array propExclud con le doProperty
         doProperty.forEach(element => {
@@ -147,6 +156,17 @@ import { MyDateTime } from './mydatetime.model';
           
           useElement = false;
         
+        }
+
+        //Controlliamo se il valore è diverso dal valore original
+        if (onlyModified) {
+          //Chiave primaria devo passarla anche se non modificata
+          if (element != 'ID') {
+            //Controllo se la proprietà risulta modificata o no
+            if (_this.propertyIsModified(element) == false) {
+              useElement = false;
+            }
+          }
         }
 
         if (useElement) {
@@ -376,6 +396,10 @@ import { MyDateTime } from './mydatetime.model';
       this.do_inserted = false;
       this.do_deleted = false;
       this.do_loaded = true;
+
+      //Imposta il documento come originale
+      this._original.setAsOriginal(this);
+
     }
 
 
@@ -449,7 +473,7 @@ import { MyDateTime } from './mydatetime.model';
      * considerando qualsiasi valore undefined, null, nullstring
      * @param fieldName Nome del campo
      */
-    isEmpty(fieldName:string): boolean {
+    propertyIsEmpty(fieldName:string): boolean {
       let inDoc = this.propertyInDoc(fieldName);
       let empty = false;
 
@@ -466,6 +490,19 @@ import { MyDateTime } from './mydatetime.model';
       }
 
       return empty;
+    }
+
+    /**
+     * Controlla se una proprietà risulta modificata
+     * @param propertyName Nome Proprietà
+     */
+    propertyIsModified(propertyName: string): boolean {
+      let modified = false;
+      if (this.propertyInDoc(propertyName)) {
+        modified = this._original.propertyIsModified(this, propertyName);
+      }
+
+      return modified;
     }
 
     //#endregion
@@ -645,6 +682,155 @@ import { MyDateTime } from './mydatetime.model';
     }
   }
 
+  export class IDOriginal {
+    private _propOriginals: IDProperty[];
+
+    
+    public get propOriginals() : IDProperty[] {
+      return this._propOriginals
+    }
+
+    constructor () {
+      this._propOriginals = [];
+    }
+
+    /**
+     * 
+     * @param name Nome Proprieta
+     * @param value Valore
+     */
+    private setOriginalProperty(name: string, value: any): void {
+      let prop: IDProperty;
+      if (name) {
+        prop = this.findPropertyByName(name);
+
+        //Se non lo trovo, creo la proprieta e aggiuno
+        if (!prop) {
+          prop = new IDProperty();
+          prop.name = name;
+          this._propOriginals.push(prop);
+        }
+
+        //Modifico il valore
+        prop.value = value;
+
+      }
+    }
+
+    /**
+     * Reinizializza l'array originals
+     */
+    private clearPropOriginal(): void {
+      this._propOriginals = [];
+    }
+
+    /**
+     * Cerca una proprietà per nome
+     */
+    private findPropertyByName(name: string): IDProperty {
+      let prop: IDProperty;
+
+      if (name) {
+        prop = this._propOriginals.find(element => {
+          return element.name == name;
+        });
+      }
+
+      return prop;
+    }
+
+    /**
+     * Controlla se una proprietà risulta modificata
+     * @param propertyName Nome Proprietà
+     */
+    propertyIsModified(document:IDDocument, propertyName: string): boolean {
+      let modified = false;
+      let propOriginal: IDProperty;
+      if (document && propertyName && propertyName.length != 0) {
+        propOriginal = this.findPropertyByName(propertyName);
+        //Se ho original posso controllare
+        if (propOriginal) {
+          try {
+            if (document[propertyName] != propOriginal.value) {
+              modified = true;
+            }
+          } catch (error) {
+              console.error(error);
+          }
+        }
+      }
+
+      return modified;
+    }
+
+    /**
+     * Richiesta di rendere original un documento
+     * @param document Documento
+     */
+    public setAsOriginal(document: IDDocument): void {
+      let objDescriptor: Descriptor;
+
+      if (document) {
+
+        this.clearPropOriginal();
+
+        objDescriptor = document.getDescriptor();
+
+        if (objDescriptor) {
+
+          //Ciclo sui campi del documento
+          objDescriptor.fields.forEach (elField => {
+            //Se non sono collection
+            if (elField.fieldType != TypeDefinition.collection) {
+              //Controllo che il documento contenga la proprietà
+              if (document.propertyInDoc(elField.fieldName)) {
+                //Contiene la proprietà me la segno come Original
+                this.setOriginalProperty(elField.fieldName, document[elField.fieldName]);
+              }
+              else {
+                //Non la contiene metto null come original
+                this.setOriginalProperty(elField.fieldName, null);
+              }
+            }
+          });
+
+        }
+
+      }
+    }
+    
+  }
+
+  /**
+   * Proprietà di un documento
+   */
+  export class IDProperty {
+    private _name: string;
+    private _value: any;
+
+    
+    public get value() : any {
+      return this._value;
+    }
+
+    
+    public set value(v : any) {
+      this._value = v;
+    }
+    
+    
+    public get name() : string {
+      return this._name;
+    }
+
+    
+    public set name(v : string) {
+      this._name = v;
+    }
+    
+    
+    
+  }
   /**
    * Operatori delle condizioni
    */

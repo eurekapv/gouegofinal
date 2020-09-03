@@ -78,15 +78,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               private alertCtrl: AlertController
               ) {
 
-
-      // this.subStartConfig = this.startService.startConfig.subscribe(elStartConfig => {
-      //     if (elStartConfig.gruppo) {
-
-      //       //Con il gruppo posso chiedere i metodi di pagamento accettati
-      //       this.docGruppo = elStartConfig.gruppo;
-
-      //     }
-      // });
     
       //Recupero dell'area selezionata
       this.docArea = this.startService.areaSelectedValue;
@@ -341,8 +332,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       }
     }
 
-    console.log(this.docArea);
-    console.log(this.arPaymentConfig);
   }
 
   /**

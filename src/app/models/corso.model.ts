@@ -245,14 +245,17 @@ export class Corso extends IDDocument {
      * @param language Lingua
      */
     getTranslateSettimana(language?: Language): Settimana[] {
-      let myWeek = Settimana.getArray(false, language);
+      let myWeek = Settimana.getArray(true, language);
       let arGiorni = this.GIORNIPREVISTI.split(';');
+
+      //GIORNIPREVISTI contiene 1 Dom, 2 Lun, 3 Mart
 
       //Ciclo nei giorni
       arGiorni.forEach(charGiorno => {
 
         let index = parseInt(charGiorno.trim());
-
+        //Vado indietro 
+        index = index -1;
         if (index >= Giorni.domenica && index <= Giorni.sabato) {
             Settimana.selectDayArray(index, myWeek);
         }
@@ -267,14 +270,18 @@ export class Corso extends IDDocument {
      * @param language Lingua
      */
     setSettimana(language?: Language) {
-      this._SETTIMANA = Settimana.getArray(false, language);
+      //Chiedo un Array Settimana con inizio Domenica
+      this._SETTIMANA = Settimana.getArray(true, language);
       let arGiorni = this.GIORNIPREVISTI.split(';');
+
+      //In giorni previsti c'e' Dom 1, Lun 2 etc
 
       //Ciclo nei giorni
       arGiorni.forEach(charGiorno => {
 
         let index = parseInt(charGiorno.trim());
-
+        //Porto a base 0 cosi' Domenica è 0 Lun 1 etc
+        index = index -1;
         if (index >= Giorni.domenica && index <= Giorni.sabato) {
             Settimana.selectDayArray(index, this._SETTIMANA);
         }

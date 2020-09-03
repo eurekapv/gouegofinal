@@ -94,8 +94,9 @@
 
       <!-- Componente scelta Pagamento -->  
         <app-payment-choose 
-        [arPayment]="arPaymentConfig" 
-        (onPaymentChoosed)="onPaymentSelected($event)"></app-payment-choose>
+            [arPayment]="arPaymentConfig"
+            [selectedPayment]=""
+            (onPaymentChoosed)="onPaymentSelected($event)"></app-payment-choose>
 
         <ion-item lines="none" id="item-totale">
           <ion-label slot="start">Totale</ion-label>

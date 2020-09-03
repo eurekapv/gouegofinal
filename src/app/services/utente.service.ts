@@ -170,7 +170,8 @@ export class UtenteService {
     let myUrl = config.urlBase + '/' + doObject;
 
     //Body da inviare
-    body = docUtenteUpdate.toJSON();
+    body = docUtenteUpdate.exportToJSON(true,false,true);
+    body = `{"docUtente": ${body}}`;
 
     //faccio la richiesta
     this.apiService.httpPost(myUrl, myHeaders, myParams, body)
@@ -183,9 +184,9 @@ export class UtenteService {
       let docUtente = new Utente;
       
       if (response.result){
-        //l'operazione è andata a buon fine, restituisco l'utente
-        docUtente.setJSONProperty(response.document);
-        resolve(docUtente);
+          //l'operazione è andata a buon fine, restituisco l'utente
+          docUtente.setJSONProperty(response.document);
+          resolve(docUtente);
       }
       else{
         //il server ha risposto, ma l'operazione non è andata a buon fine, restituisco il messaggio di errore

@@ -19,7 +19,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
   form: FormGroup; 
 
-  utente:Utente=new Utente();
+  utente:Utente = new Utente;
   utenteListen: Subscription;
 
   listSesso: ValueList[]=[];
@@ -41,6 +41,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
           //Recupero l'utente
           this.utente = data; 
           this.createForm();       
+          console.log('bp');
 
       });
 

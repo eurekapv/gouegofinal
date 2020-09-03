@@ -4,12 +4,20 @@
 }
 
 ion-slides {
-    
 
     img {
         padding-top: 10px;
         padding-bottom: 10px;
+        height: 30vh;
+        object-fit: cover;
     }
+
+    @media screen and (max-width: 600px){
+        img{
+            width: 100%;
+        }
+    }
+
 }
 
 .ion-list-margin-bottom {

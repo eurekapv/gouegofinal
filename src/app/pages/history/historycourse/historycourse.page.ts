@@ -7,8 +7,10 @@ import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
 import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { Utente } from 'src/app/models/utente.model';
-import { StatoIscrizione } from 'src/app/models/valuelist.model'
+import { StatoIscrizione, SettoreAttivita } from 'src/app/models/valuelist.model'
 import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calendar/calendar.page';
+import { Area } from 'src/app/models/area.model';
+import { Payment, PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
 @Component({
   selector: 'app-historycourse',
   templateUrl: './historycourse.page.html',
@@ -28,7 +30,9 @@ export class HistorycoursePage implements OnInit {
 
   selectedLocation: Location = new Location(); //il documento location NON OBSERVABLE 
 
+  myArea = new Area();
 
+  arPayments: PaymentConfiguration[] = [];
   constructor(private activatedRoute: ActivatedRoute,
               private startService: StartService,
               private loadingController: LoadingController,
@@ -36,6 +40,8 @@ export class HistorycoursePage implements OnInit {
               private modalController: ModalController) {              }
 
   ngOnInit() {
+    //recupero l'area 
+    this.myArea = this.startService.areaSelectedValue;
     //creo lo spinner e lo presento
     this.loadingController.create({
       message: 'Caricamento',
@@ -65,7 +71,7 @@ export class HistorycoursePage implements OnInit {
                             //e chiudo il loading
                             loading.dismiss();
                             this.debug();
-                          },).catch((error)=>{
+                          }).catch((error)=>{
                             //se invece almeno una richiesta non va a buon fine dismetto il loading
                             loading.dismiss();
                             //e stampo un messaggio di errore
@@ -143,6 +149,61 @@ export class HistorycoursePage implements OnInit {
   onClickPaga()
   {
 
+  }
+
+  get btnPay(){
+    let objBtn = {
+      disabled : false,
+      text : ''
+
+    }
+    //se la prenotazione non è pagata
+    if(this.statoPagamento()!=StatoPagamento.pagato){
+
+      //se posso pagare online
+      if (this.canPayOnline()){
+        objBtn.disabled = false;
+        objBtn.text = 'Paga ora';
+      }
+      //se non posso pagare online
+      else{
+        objBtn.disabled = true;
+        objBtn.text = 'corso da pagare'
+      }
+    }
+    //se invece ho già pagato
+    else{
+      objBtn.disabled = true;
+      objBtn.text ='Corso pagato';
+    }
+
+    return objBtn;
+
+  }
+
+  //funzione che recupera i metodi di pagamento e li inserisce in un array
+  setPaymentFromArea() {
+    if (this.myArea) {
+      let objPayment = new Payment(this.myArea);
+      this.arPayments = [];
+      this.arPayments = objPayment.getPaymentFor(SettoreAttivita.settorePrenotazione);
+    }
+    else {
+      this.arPayments = [];
+    }
+  }
+
+  //ci dice se è possibile pagare online
+  canPayOnline(){
+
+    let show = false;
+    this.arPayments.forEach(element => {
+      if (element.channel == PaymentChannel.paypal){
+        show = true;
+      }
+    })
+
+    return show;
   }
 
 }

@@ -609,12 +609,11 @@ export class VerifyPage implements OnInit {
    
  
    /**
-    * evento scatenato quando l'utente clicca "registrati" 
+    * evento scatenato quando l'utente clicca "aggiorna" 
     * sulla pagina di inserimento dati
     */
    onClickAggiornaDati()
    {
-     //TODO CHECK CF
      this.execAggiornaDati();
    }
    /**
@@ -785,7 +784,9 @@ export class VerifyPage implements OnInit {
                         this.showMessage('Ops..errore aggiornamento');
                   })
                   .catch(error => {
-                    //TODO finire
+                    elLoading.dismiss();
+                    this.showMessage(error);
+                    console.log(error);
                   });
            });
 

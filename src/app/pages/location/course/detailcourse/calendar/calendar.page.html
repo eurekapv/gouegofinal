@@ -18,27 +18,24 @@
 </ion-header>
 
 <ion-content>
-    <!-- IN ATTESA RICEZIONE -->
-    <!-- SPINNER -->
-  <div *ngIf="!ricevuti" id="cal-spinner">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
 
   <!-- RICEVUTI E PRESENTI -->
-  <ion-list *ngIf="ricevuti && calendarCorso.length !== 0" id="cal-find">
+  <ion-list *ngIf="calendarCorso.length !== 0" id="cal-find">
     <ion-item *ngFor="let giornata of calendarCorso" class="ion-no-padding ion-no-margin" color="light">
 
       <ion-col size="4" class="colGiorno">
         <div class="contentGiorno ion-no-padding">
           <h6>
-            {{giornata.DATA | date:'EEEE'}}
+            {{giornata.DATA | date:'EEEE'|titlecase}}
           </h6>
-          <h2>
-            {{giornata.DATA | date:'dd'}}
-          </h2>
           <h5>
-            {{giornata.DATA | date:'MMM' | uppercase}} '{{giornata.DATA | date:'yy'}}
-          </h5>          
+            {{giornata.DATA | date:'d'}}
+            {{giornata.DATA | date:'MMM' | uppercase}} 
+            '{{giornata.DATA | date:'yy'}}
+          </h5>      
+          <h6>
+            {{giornata['_DENOMINAZIONE_Campo']}}
+          </h6>    
         </div>
       </ion-col>
 
@@ -81,12 +78,3 @@
 
 </ion-content>
 
-<ion-footer>
-  <ion-button 
-      color="primary" 
-      fill="solid" 
-      expand="block"
-      (click)="closeCalendar()">
-    Chiudi
-  </ion-button>  
-</ion-footer>

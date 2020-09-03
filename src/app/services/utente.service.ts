@@ -158,20 +158,22 @@ export class UtenteService {
 
     const doObject = 'UTENTE';
 
-    let myHeaders = new HttpHeaders({'Content-type':'application/json'});
+    const metodo = 'updateUtente';
+    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+                                        'X-HTTP-Method-Override': metodo, 
+                                        'appid':config.appId
+                                      });
     const myParams = new HttpParams();
     let body = '';
 
 
-    //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
     let myUrl = config.urlBase + '/' + doObject;
 
     //Body da inviare
     body = docUtenteUpdate.toJSON();
 
     //faccio la richiesta
-    this.apiService.httpPost(myUrl, myHeaders,myParams, body)
+    this.apiService.httpPost(myUrl, myHeaders, myParams, body)
     .pipe(map(rawResponse => {
 
       return rawResponse.update;

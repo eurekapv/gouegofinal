@@ -37,7 +37,12 @@ export class PaymentChooseComponent implements OnInit {
 
 
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    if (this.arPayment.length==1){
+      this.selectedPayment = this.arPayment[0];
+    }
+  }
 
   /**
    * Apertura delle voci di scelta

@@ -335,13 +335,13 @@ export class HistorybookPage implements OnInit, OnDestroy {
       //se non posso pagare online
       else{
         objBtn.disabled = true;
-        objBtn.text = 'Corso Da pagare'
+        objBtn.text = 'Prenotazione da pagare'
       }
     }
     //se invece ho già pagato
     else{
       objBtn.disabled = true;
-      objBtn.text = 'Corso pagato';
+      objBtn.text ='Prenotazione pagata';
     }
 
     return objBtn;

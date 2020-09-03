@@ -166,7 +166,6 @@ export class NewLoginPage implements OnInit {
   {
     if(this.formVeriryTel.valid&&this.formVeriryMail.valid)
     {
-      //TODO qui manca la richiesta di registrazione a gouego
       this.stato=PageState.REGISTRATION;
     }
   }
@@ -175,7 +174,6 @@ export class NewLoginPage implements OnInit {
    * evento scatenato quando l'utente clicca sul pulsante verifica nella videata di inserimento dei contatti
    */
   onClickContinua(){
-    //TODO qui bisogna inserire l'invio di sms ed email
     this.stato=PageState.VERIFY
     
   }
@@ -247,7 +245,6 @@ export class NewLoginPage implements OnInit {
    * evento scatenato quando l'utente tappa su "reinvia codice"
    */
   onClickReinvia(){
-    //TODO manca la richiesta per ricevere un nuovo codice
   }
 
   /**
@@ -258,7 +255,6 @@ export class NewLoginPage implements OnInit {
    * evento scatenato quando l'utente clicca su inizia
    */
   onClickInizia(){
-    //TODO da decidere cosa fare
     this.modalCtrl.dismiss();
   }
   

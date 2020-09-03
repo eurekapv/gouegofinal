@@ -12,7 +12,7 @@
 <ion-content>
   <!-- GALLERY IMAGES -->
   <ion-card class="ion-no-margin ion-no-padding backcolorcard">
-    <ion-slides>
+    <ion-slides pager>
       <ion-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
         <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
       </ion-slide>

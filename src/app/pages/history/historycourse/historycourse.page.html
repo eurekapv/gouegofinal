@@ -57,7 +57,7 @@
                 fill="outline">
   
               <ion-icon name="time" slot="start"></ion-icon>
-              {{myCorso.ORAINIZIO | date:'h:mm'}}
+              {{myCorso.ORAINIZIO | date:'HH:mm'}}
             </ion-button>
           </ion-col>
   
@@ -226,13 +226,11 @@
 
     <!-- PARTE PAGAMENTO -->
 
-  <ion-button *ngIf="statoPagamento()==StatoPagamento.pagato" disabled color="primary"  expand="block">
-    Corso pagato
+  <ion-button  [disabled]="btnPay.disabled" color="primary"  expand="block">
+    {{btnPay.text}}
   </ion-button>
 
-  <ion-button *ngIf="statoPagamento()!=StatoPagamento.pagato" (click)="onClickPaga();"  color="primary"  expand="block">
-    Paga ora
-  </ion-button>
+ 
     
 
     

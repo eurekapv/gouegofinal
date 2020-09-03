@@ -106,6 +106,7 @@ export class CourseService {
       
                 let newCorso = new Corso();
                 newCorso.setJSONProperty(element);
+                
                 //Decodifico i campi chiave
                 newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
       

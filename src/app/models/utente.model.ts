@@ -37,6 +37,7 @@ export class Utente extends IDDocument {
     PROFILAZIONEESTERNA: boolean;
     VERIFICATAMAIL: boolean;
     VERIFICATAMOBILE: boolean;
+    RUOLO: number;
     UTENTILIVELLI: UtenteLivello[];
 
     /**

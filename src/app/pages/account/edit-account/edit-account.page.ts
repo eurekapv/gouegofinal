@@ -38,8 +38,8 @@ export class EditAccountPage implements OnInit, OnDestroy {
       //Chiedo al servizio i dati dell'utente
       this.utenteListen = this.startService.utente.subscribe(data=>{
           
-          //Clono l'utente
-          this.utente = Object.create(data); 
+          //Recupero l'utente
+          this.utente = data; 
           this.createForm();       
 
       });
@@ -129,6 +129,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
   {
     if (this.form.valid)
     {
+
       this.utente.NOME=this.form.value.nome;
       this.utente.COGNOME=this.form.value.cognome;
       this.utente.SESSO=this.form.value.sesso;
@@ -174,8 +175,10 @@ export class EditAccountPage implements OnInit, OnDestroy {
                       // Operazione effettuata
                       elLoading.dismiss();
                       //Aggiornamento corretto
-                            this.showMessage('Info Aggiornate');
-                            this.closePage();
+                      this.showMessage('Info Aggiornate');
+                      this.closePage();
+
+
                   }, error => {
                     elLoading.dismiss();
                     this.showMessage('Errore  di connessione');

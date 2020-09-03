@@ -131,7 +131,7 @@ export class DocstructureService {
 
               
                 //Decodifica se il campo  contiene un valore
-                goToDecode = !(doc.isEmpty(fieldDecode));
+                goToDecode = !(doc.propertyIsEmpty(fieldDecode));
                 
                 //Il campo da decodificare contiene un valore
                 if (goToDecode) {
@@ -821,7 +821,7 @@ export class DocstructureService {
           objFieldType = docStart.getTypeReflectorByFieldName(nameField);
             
           //Il campo esiste e contiene qualcosa
-          if (objFieldType && docStart.isEmpty(nameField)==false) {
+          if (objFieldType && docStart.propertyIsEmpty(nameField)==false) {
 
             //E' un campo in foreing Key
             if (objFieldType.isForeignKey) {

@@ -121,9 +121,15 @@ export class UtenteService {
    * @param JSonUtente Dati Utente
    */
   private loginSuccessfull(JSonUtente: any, webLogin?:string) {
+
     let newUtente = new Utente();
     newUtente.setJSONProperty(JSonUtente);
     newUtente.WEBLOGIN = webLogin;
+
+    //Segno originale come sul server
+    newUtente.setOriginal();
+
+    LogApp.consoleLog(newUtente);
 
     //Emetto Utente
     this._utente.next(newUtente);
@@ -136,6 +142,8 @@ export class UtenteService {
       //Dovrei posizionarlo
       this._idAreaFAV.next(newUtente.IDAREAOPERATIVA);
     }
+
+
   }
 
   /**
@@ -170,8 +178,10 @@ export class UtenteService {
     let myUrl = config.urlBase + '/' + doObject;
 
     //Body da inviare
-    body = docUtenteUpdate.exportToJSON(true,false,true);
+    body = docUtenteUpdate.exportToJSON(true,false,true,true);
     body = `{"docUtente": ${body}}`;
+    LogApp.consoleLog('Request Update utente');
+    LogApp.consoleLog(body);
 
     //faccio la richiesta
     this.apiService.httpPost(myUrl, myHeaders, myParams, body)
@@ -179,14 +189,29 @@ export class UtenteService {
 
       return rawResponse.update;
 
-    })).subscribe((response:PostResponse) => {
+    })).subscribe(response => {
 
-      let docUtente = new Utente;
-      
-      if (response.result){
-          //l'operazione è andata a buon fine, restituisco l'utente
-          docUtente.setJSONProperty(response.document);
-          resolve(docUtente);
+      let myResponse = new PostResponse();
+      myResponse.result = response['result'];
+      myResponse.message = response['message'];
+      myResponse.document = response['document'];
+
+      if (myResponse.result){
+
+        let docUtente = new Utente();
+        let objDocument = myResponse.getDocument();
+
+        if (objDocument) {
+            //l'operazione è andata a buon fine, restituisco l'utente
+            docUtente.setJSONProperty(objDocument);
+            console.log(docUtente);
+            this._utente.next(docUtente);
+            resolve(docUtente);          
+        }
+        else {
+          reject('Errore ricezione dati server');
+        }
+
       }
       else{
         //il server ha risposto, ma l'operazione non è andata a buon fine, restituisco il messaggio di errore

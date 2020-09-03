@@ -118,9 +118,11 @@ export class StartService {
     this.apiService
       .httpGet(myUrl, myHeaders, myParams)
       .pipe(map(fullData => {
+        console.log(fullData);
         return fullData.GRUPPOSPORTIVO.find(singleData => singleData.ID == actualStartConfig.appId)
       }))
       .subscribe(resultData => {
+        console.log(resultData);
         // Sistemo l'oggetto di configurazione 
         // ed emetto un evento di Cambio
         this.onAuthorizationGrant(resultData);

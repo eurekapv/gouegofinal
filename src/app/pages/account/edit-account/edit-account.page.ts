@@ -167,8 +167,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
               // Mostro il loading
               elLoading.present();
 
-              //TODO stiamo usando la nuova procedura updateUtente da testare
-
               //richiesta di aggiornamento al server
               this.startService
                   .updateUtente(this.utente)
@@ -258,14 +256,32 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
   }
 
-  testValidation(){
+  validateTel(){
+    this.modalController.create({
+      component: VerifyPage,
+      componentProps: {
+        params : {
+          tipoVerifica : TipoVerificaAccount.verificasms,
+          updateDocUtente : false
+        }
+      }
+    })
+    .then(elModal => {
+      elModal.present();
+      elModal.onDidDismiss().then(() => {
+
+      });
+    })
+  }
+
+  validateEmail(){
 
     this.modalController.create({
       component: VerifyPage,
       componentProps: {
         params : {
-          tipoVerifica : TipoVerificaAccount.noverifica,
-          updateDocUtente : true
+          tipoVerifica : TipoVerificaAccount.verificaemail,
+          updateDocUtente : false
         }
       }
     })

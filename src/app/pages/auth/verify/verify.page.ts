@@ -771,7 +771,6 @@ export class VerifyPage implements OnInit {
               elLoading.present();
 
               //richiesta di aggiornamento al server
-              //TODO stiamo usando la nuova procedura updateUtente da sistemare e testare 
               this.startService
                   .updateUtente(this.docUtente)
                   .then(result => {
@@ -1122,7 +1121,7 @@ export class VerifyPage implements OnInit {
      if (this.docGruppo) {
        if (this.docGruppo.APPTIPOVERIFICA !== TipoVerificaAccount.noverifica) {
  
-         switch (this.docGruppo.APPTIPOVERIFICA) {
+         switch (this.params.tipoVerifica) {
            case TipoVerificaAccount.verificaemail:
                enable = this.formVerifyMail.valid;
              break;

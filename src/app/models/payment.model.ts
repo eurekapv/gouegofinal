@@ -69,14 +69,14 @@ export class Payment  {
 
     createPaymentsMode(docArea: Area) {
         if (docArea) {
-            if (docArea.AREAPAYMENTSETTINGS && docArea.AREAPAYMENTSETTINGS.length) {
+            if (docArea.AREAPAYMENTSETTINGS && docArea.AREAPAYMENTSETTINGS.length != 0) {
 
                 for (let index = 0; index < docArea.AREAPAYMENTSETTINGS.length; index++) {
 
                     const element = docArea.AREAPAYMENTSETTINGS[index];
 
                     //Se c'e' il settore a cui è riferito il pagamento
-                    if (element.SETTORI && element.SETTORI.length) {
+                    if (element.SETTORI && element.SETTORI.length != 0) {
 
                         let objPayment = new PaymentConfiguration();
                         objPayment.channel = element.TIPOPAYMENT;
@@ -286,7 +286,7 @@ export class PaymentConfiguration {
   //Canali dove effettuare il pagamento, compreso onSite in contanti
   export enum PaymentChannel {
     onSite = 10,
-    paypal = 20
+    paypal = 220
   }
   
   

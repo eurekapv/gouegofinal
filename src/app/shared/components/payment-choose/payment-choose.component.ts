@@ -39,9 +39,6 @@ export class PaymentChooseComponent implements OnInit {
 
   ngOnInit() {
 
-    if (this.arPayment.length==1){
-      this.selectedPayment = this.arPayment[0];
-    }
   }
 
   /**

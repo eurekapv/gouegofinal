@@ -322,9 +322,11 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   setPaymentConfig() {
     this.arPaymentConfig = [];
     if (this.docArea) {
+      console.log(this.docArea);
       let modePay = new Payment(this.docArea);
 
       this.arPaymentConfig = modePay.getPaymentFor(SettoreAttivita.settorePrenotazione);
+      console.log(this.arPaymentConfig);
 
       if (this.arPaymentConfig) {
         //Con un solo metodo di pagamento lo imposto gia

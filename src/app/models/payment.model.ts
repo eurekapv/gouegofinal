@@ -286,7 +286,7 @@ export class PaymentConfiguration {
   //Canali dove effettuare il pagamento, compreso onSite in contanti
   export enum PaymentChannel {
     onSite = 10,
-    paypal = 20
+    paypal = 30
   }
   
   

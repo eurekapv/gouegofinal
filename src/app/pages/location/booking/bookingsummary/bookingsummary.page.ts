@@ -81,6 +81,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     
       //Recupero dell'area selezionata
       this.docArea = this.startService.areaSelectedValue;
+      console.log('area');
+      console.log(this.docArea);
       
       //Impostazione tipologie pagamento
       this.setPaymentConfig();

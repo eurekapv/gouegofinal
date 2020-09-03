@@ -269,7 +269,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
     .then(elModal => {
       elModal.present();
       elModal.onDidDismiss().then(() => {
-
+        this.closePage();
       });
     })
   }
@@ -288,7 +288,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
     .then(elModal => {
       elModal.present();
       elModal.onDidDismiss().then(() => {
-
+        this.closePage();
       });
     })
   }

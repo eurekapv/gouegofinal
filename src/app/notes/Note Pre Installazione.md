@@ -8,18 +8,27 @@ Questo crea la cartella con il progetto Android
 > npx cap add ios
 Questo crea la cartella con il progetto Ios
 
-COMPILAZIONI SUCCESSIVE
+COMPILAZIONI SUCCESSIVE IOS
 > ionic build
+> npx cap sync
 > npx cap copy
 Questo copia il www nelle cartelle dispositivo
+> npx cap open ios
+//Documentazione Capacitor Ios 
+https://capacitorjs.com/docs/ios/configuration
+Se la compilazione Xcode parla di File debug unable to open dare i permessi alla cartella Pods/TargetSupportFile
+
+COMPILAZIONI SUCCESSIVE ANDROID
+> ionic build
+> npx cap sync
+> npx cap copy
+Questo copia il www nelle cartelle dispositivo
+> npx cap open android
 
 Se si installano nuovi plugin eseguire dopo l'installazione del plugin
 > npm install "qualcosa"
 > npx cap update
 
-ESECUZIONE ANDROID/IOS
-> npx cap open android
-> npx cap open Xcode
 
 ESECUZIONE IN LIVE RELOADING
 >ionic capacitor run android -l --external
@@ -35,7 +44,7 @@ Funzionalità Capacitor
 Per l'utilizzo della fotocamera bisogna richiedere i permessi all'utente
 vedi link: https://capacitorjs.com/docs/apis/camera
 
-SISTEMI IOS
+SISTEMI IOS (Sembrano già presenti)
 iOS requires the following usage description be added and filled out for your app in Info.plist:
 
 Name:               Privacy - Camera Usage 

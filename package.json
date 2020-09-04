@@ -1,8 +1,8 @@
 {
-  "name": "gouegofinal",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "name": "gouego",
+  "version": "1.0.0",
+  "author": "Cavallini Pietro - Andrea Cuppini",
+  "homepage": "https://www.gouego.com",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

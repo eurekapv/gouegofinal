@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { StartService } from 'src/app/services/start.service';
-import { Utente } from 'src/app/models/utente.model';
-import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
-import { TipoVerificaAccount } from 'src/app/models/valuelist.model'
+import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
 
 @Component({
   selector: 'app-test',
@@ -12,29 +8,38 @@ import { TipoVerificaAccount } from 'src/app/models/valuelist.model'
 })
 export class TestPage implements OnInit {
 
-  constructor(
-    private modalController : ModalController,
-    private startService : StartService
-  ) { }
+  constructor(private payPal: PayPal) { }
+  paymentAmount: string = '5.00';
+  currency: string = 'EUR';
+  currencyIcon: string = '€';
 
-  ngOnInit() {
-    let docUtente : Utente;
-    let subDocUtente = this.startService.utente.subscribe(elDocUtente => {
-      docUtente = elDocUtente;
-    })
+  ngOnInit(){
 
+  }
 
-    this.modalController.create({
-      component: VerifyPage,
-      componentProps: {
-        params : {
-          tipoVerifica : TipoVerificaAccount.verificaemailsms,
-          updateDocUtente : true
-        }
-      }
-    }).then(elModal => {
-      elModal.present();
-    })
+  payWithPaypal() {
+    this.payPal.init({
+      PayPalEnvironmentProduction: 'YOUR_PRODUCTION_CLIENT_ID',
+      PayPalEnvironmentSandbox: 'AaRz5fCbWZDIV1Cc6aAWCiOgZtcvP3ai39078mHUiTk30Clg31gsnS1PxQ4YQOLaQulptnYWTz9ul67T'
+    }).then(() => {
+      // Environments: PayPalEnvironmentNoNetwork, PayPalEnvironmentSandbox, PayPalEnvironmentProduction
+      this.payPal.prepareToRender('PayPalEnvironmentSandbox', new PayPalConfiguration({
+        // Only needed if you get an "Internal Service Error" after PayPal login!
+        //payPalShippingAddressOption: 2 // PayPalShippingAddressOptionPayPal
+      })).then(() => {
+        let payment = new PayPalPayment(this.paymentAmount, this.currency, 'Description', 'sale');
+        this.payPal.renderSinglePaymentUI(payment).then((res) => {
+          console.log(res);
+          // Successfully paid
+        }, () => {
+          console.log('Error or render dialog closed without being successful')
+        });
+      }, () => {
+        console.log('Error in configuration')
+      });
+    }, () => {
+      console.log('Error in initialization, maybe PayPal is not supported or something else')
+    });
   }
 
 }

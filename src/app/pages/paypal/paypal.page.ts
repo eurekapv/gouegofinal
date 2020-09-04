@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
 import { NavParams, ModalController } from '@ionic/angular';
-import { PaymentConfiguration, PaymentResult, ConfigPaypal, EnvironmentPaypal } from 'src/app/models/payment.model';
+import { PaymentConfiguration, PaymentResult, ConfigPaypal, EnvironmentPaypal, PaymentChannel } from 'src/app/models/payment.model';
 import { get } from 'scriptjs';
 
 // interface Window {
@@ -110,10 +110,9 @@ export class PaypalPage implements OnInit{
    * Chiude la modale annullando il pagamento
    */
   closeModal():void {
-    let resultPayment = new PaymentResult();
+    let resultPayment = new PaymentResult(PaymentChannel.paypal);
     resultPayment.paymentExecuted = true;
     resultPayment.result = false;
-    resultPayment.responseJson = '';
     resultPayment.message = 'Pagamento annullato';
 
     this.modalCtrl.dismiss(resultPayment);
@@ -125,10 +124,9 @@ export class PaypalPage implements OnInit{
    * @param details Dettagli avvenuto pagamento
    */
   onPaymentSuccess(details:any):void {
-    let resultPayment = new PaymentResult();
+    let resultPayment = new PaymentResult(PaymentChannel.paypal);
     resultPayment.paymentExecuted = true;
     resultPayment.result = true;
-    resultPayment.responseJson = details;
     resultPayment.message = 'Pagamento effettuato';
 
     this.modalCtrl.dismiss(resultPayment);
@@ -139,10 +137,9 @@ export class PaypalPage implements OnInit{
    * @param error Errore Pagamento
    */
   onPaymentError(error:any):void {
-    let resultPayment = new PaymentResult();
+    let resultPayment = new PaymentResult(PaymentChannel.paypal);
     resultPayment.paymentExecuted = true;
     resultPayment.result = false;
-    resultPayment.responseJson = error;
     resultPayment.message = 'Pagamento fallito';
 
     this.modalCtrl.dismiss(resultPayment);

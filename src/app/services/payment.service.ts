@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { PaymentConfiguration, PaymentResult, PaymentChannel, EnvironmentPaypal} from '../models/payment.model';
 import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
 import { BehaviorSubject } from 'rxjs';
+import { promise } from 'protractor';
+import { resolve } from 'url';
 
 
 @Injectable({
@@ -9,17 +11,11 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class PaymentService {
 
-  paymentConfig: PaymentConfiguration;
+  paymentConfig: PaymentConfiguration = new PaymentConfiguration();
   paymentAmount: string = '0.00';
   currency: string = 'EUR';
   description = 'Acquisto';
-
-  private _paymentResult = new BehaviorSubject<PaymentResult>(new PaymentResult);
-  
-  get paymentResult() {
-    return this._paymentResult.asObservable();
-  }
-
+ 
   constructor(private payPal: PayPal) { }
 
 
@@ -31,28 +27,22 @@ export class PaymentService {
               valuta?: string,
               descrizione?: string) {
 
-  let myPaymentResult = new PaymentResult();
   this.description = (descrizione ? descrizione:'Acquisto');
   this.currency = (valuta ? valuta:'EUR');
   this.paymentAmount = importo.toLocaleString('en-us', {minimumFractionDigits: 2});
-  
-  //Azzero il result del pagamento
-  this._paymentResult.next(new PaymentResult);
+  this.paymentConfig = paymentMode;
 
+  console.log ('Parametri passati al servizio: ');
+  console.log (this.paymentConfig);
+  console.log (this.paymentAmount);
+  console.log (this.currency);
+  console.log (this.description);
   
-  switch (paymentMode.channel) {
+  
+  switch (this.paymentConfig.channel) {
     case PaymentChannel.paypal:
-      this.payWithPaypal();
-      break;
-  
-    default:
-      //Segnalo un errore
-      myPaymentResult.paymentExecuted = true;
-      myPaymentResult.result = false;
-      myPaymentResult.message = 'Metodo di pagamento non supportato';
-      myPaymentResult.responseJson = '';
-      this._paymentResult.next(myPaymentResult);
-      break;
+     return  (this.payWithPaypal());
+    break;
   }
 
 
@@ -61,91 +51,79 @@ export class PaymentService {
   /**
    * Pagamento tramite paypal
    */
-  private payWithPaypal() {
-    let paypalConfig = this.paymentConfig.configPayPal;
-    let myPaymentResult = new PaymentResult();
+  payWithPaypal() {
+    return new Promise <PaymentResult> ((resolve, reject) => {
+      console.info('Entro in paywithpaypal con:');
+      console.info(this.paymentConfig.configPayPal.clientIDProduction);
+      console.info(this.paymentConfig.configPayPal.clientIDSandbox);
 
-    this.payPal.init({
-      PayPalEnvironmentProduction: paypalConfig.clientIDProduction,
-      PayPalEnvironmentSandbox: paypalConfig.clientIDSandbox
-    }).then(() => {
-      let ambienteToRender = '';
+      this.payPal.init({
+        PayPalEnvironmentProduction: this.paymentConfig.configPayPal.clientIDProduction,
+        PayPalEnvironmentSandbox: this.paymentConfig.configPayPal.clientIDSandbox
+      }).then(() => {
 
-      switch (paypalConfig.enviroment) {
-        case EnvironmentPaypal.sandbox:
-          ambienteToRender = 'PayPalEnvironmentSandbox';
-          break;
+        console.info('Ho inizializzato');
+        //recupero l'environment (test o prod)
+        let environment : string;
+        if (this.paymentConfig.configPayPal.enviroment == EnvironmentPaypal.production){
+          environment = 'PayPalEnvironmentProduction';
+        }
+        else if (this.paymentConfig.configPayPal.enviroment == EnvironmentPaypal.sandbox){
+          environment = 'PayPalEnvironmentSandbox';
+        } 
 
-        case EnvironmentPaypal.sandbox:
-          ambienteToRender = 'PayPalEnvironmentProduction';
-          break;
-      
-        default:
-          ambienteToRender = 'PayPalEnvironmentSandbox';
-          break;
-      }
+        console.log ('Parametri passati al plugin: ');
+        console.log (environment);
+        console.log (this.paymentAmount);
+        console.log (this.currency);
+        console.log (this.description);
+        // Environments: PayPalEnvironmentNoNetwork, PayPalEnvironmentSandbox, PayPalEnvironmentProduction
+        this.payPal.prepareToRender(environment, new PayPalConfiguration({
+          // Only needed if you get an "Internal Service Error" after PayPal login!
+          //payPalShippingAddressOption: 2 // PayPalShippingAddressOptionPayPal
+        })).then(() => {
+          let payment = new PayPalPayment(this.paymentAmount, this.currency, this.description, 'sale');
+          this.payPal.renderSinglePaymentUI(payment).then((res) => {
+            console.log ('Risposta del pagamento: ');
+            console.log(res);
 
-      // Environments: PayPalEnvironmentNoNetwork, PayPalEnvironmentSandbox, PayPalEnvironmentProduction
-      this.payPal.prepareToRender(ambienteToRender, new PayPalConfiguration({
-        // Only needed if you get an "Internal Service Error" after PayPal login!
-        //payPalShippingAddressOption: 2 // PayPalShippingAddressOptionPayPal
-      })).then(() => {
-        let payment = new PayPalPayment(this.paymentAmount, this.currency, this.description, 'sale');
-        this.payPal.renderSinglePaymentUI(payment)
+            // ora che il pagamento è andato a buon fine, creo la risposta
+            let risposta = new PaymentResult(PaymentChannel.paypal);
+            risposta.decodeResponseJson(res);
 
-        .then((res) => {
-          myPaymentResult.paymentExecuted = true;
-          myPaymentResult.result = true;
-          myPaymentResult.message = '';
-          myPaymentResult.responseJson = res;
-          this._paymentResult.next(myPaymentResult);
-          
-          // Successfully paid
+            //se il pagamento è andato a buon fine risolvo, altrimenti rigetto 
+            if (risposta.result&&risposta.paymentExecuted){
+              resolve (risposta);
+            }
+            else{
+              //il pagamento non è andato a buon fine
+              reject (risposta)
+            }
 
-          // Example sandbox response
-          //
-          // {
-          //   "client": {
-          //     "environment": "sandbox",
-          //     "product_name": "PayPal iOS SDK",
-          //     "paypal_sdk_version": "2.16.0",
-          //     "platform": "iOS"
-          //   },
-          //   "response_type": "payment",
-          //   "response": {
-          //     "id": "PAY-1AB23456CD789012EF34GHIJ",
-          //     "state": "approved",
-          //     "create_time": "2016-10-03T13:33:33Z",
-          //     "intent": "sale"
-          //   }
-          // }
-                   
-
+          }, () => {
+            //errore, creo una risposta fittizia con il messaggio di errore da ritornare
+            console.log('Error or render dialog closed without being successful')
+            let risposta = new PaymentResult(PaymentChannel.paypal);
+            risposta.message = 'Error or render dialog closed without being successful';
+            reject (risposta);
+            
+          });
         }, () => {
-          // Error or render dialog closed without being successful
-          myPaymentResult.paymentExecuted = true;
-          myPaymentResult.result = false;
-          myPaymentResult.message = 'Che peccato! Chiusura inaspettata';
-          myPaymentResult.responseJson = '';
-          this._paymentResult.next(myPaymentResult);
-
+          //errore, creo una risposta fittizia con il messaggio di errore da ritornare
+          console.log('Error in configuration')
+          let risposta = new PaymentResult(PaymentChannel.paypal);
+          risposta.message = 'Error in configuration';
+          reject (risposta);
         });
       }, () => {
-          myPaymentResult.paymentExecuted = true;
-          myPaymentResult.result = false;
-          myPaymentResult.message = 'Che peccato! Configurazione errata';
-          myPaymentResult.responseJson = '';
-          this._paymentResult.next(myPaymentResult);
+          //errore, creo una risposta fittizia con il messaggio di errore da ritornare
+          console.log('Error in initialization, maybe PayPal is not supported or something else')
+          let risposta = new PaymentResult(PaymentChannel.paypal);
+          risposta.message = 'Error in initialization, maybe PayPal is not supported or something else';
+          reject (risposta);
       });
-    }, () => {
-          // Error in initialization, maybe PayPal isn't supported or something else
-          myPaymentResult.paymentExecuted = true;
-          myPaymentResult.result = false;
-          myPaymentResult.message =  'Che peccato! Non funziona';
-          myPaymentResult.responseJson = '';
-          this._paymentResult.next(myPaymentResult);          
     });
-  }
+  }  
 }
 
 

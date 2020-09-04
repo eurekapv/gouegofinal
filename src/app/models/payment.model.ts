@@ -260,6 +260,7 @@ export class PaymentConfiguration {
      * Controlla se le impostazioni sono valide
      */
     get isValid(): boolean {
+        //#TODO Bisogna inizializzare entrambi i clientId almeno a stringa vuota, altrimenti non funziona!!!
         let valid = true;
 
         if (!this.enviroment) {
@@ -299,15 +300,57 @@ export class PaymentConfiguration {
     paymentRequestInApp: boolean; //Pagamento con l'App richiesto (Se false pagherà dopo)
     paymentExecuted: boolean;   //Indica se il sistema remoto ha autorizzato il pagamento
     result: boolean;     //Indica se il processo del pagamento è completato (o siamo in attesa)
-
     message: string;
-    responseJson: string;
+    private _responseJson: string;
+    tipoPagamento : PaymentChannel
+    idPagamento : String;
 
-    constructor() {
-        this.result = false;
-        //Richiesto il pagamento con l'app
-        this.paymentRequestInApp = true;
-        //Non eseguito
-        this.paymentExecuted = false;
+    constructor(tipoPagamento : PaymentChannel) {
+
+        //mi salvo anche il tipo di pagamento, così so come fare il parsing del json
+        this.tipoPagamento = tipoPagamento;
+
+        //se il pagamento non è elettronico, faccio finta che sia già andato a buon fine
+        switch (this.tipoPagamento){
+            case PaymentChannel.onSite:
+                this.paymentExecuted = true;
+                this.result = true;
+                this.paymentRequestInApp = false;
+                this.message = 'Pagamento in struttura';
+
+            break;
+            case PaymentChannel.paypal:
+                this.paymentExecuted = false;
+                this.result = false;
+                this.paymentRequestInApp = true
+            break;
+        }
     }
+
+    decodeResponseJson (response){
+
+        //prima di tutto mi salvo la risposta
+        this._responseJson = response;
+
+        //ora, in base a quale metodo di pagamento ho scelto, cerco di interpretare la risposta
+        switch (this.tipoPagamento){
+
+            //se è una risposta di paypal
+            case PaymentChannel.paypal:
+
+                //se è arrivata una risposta corretta
+                if (this._responseJson&&this._responseJson['response']){
+
+                    if (this._responseJson['response']['state']=='approved'){
+
+                        //qui so che il pagamento è andato a buon fine
+                        this.paymentExecuted = true;
+                        this.result = true;
+                        this.message = 'Pagamento effettuato';
+                        this.idPagamento = this._responseJson['response']['id'];
+                    }
+                }
+        }
+    }
+
   }

@@ -63,7 +63,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   arPaymentConfig: PaymentConfiguration[]; //Elenco dei metodi di pagamento accettati
   selectedPayment: PaymentConfiguration;
 
-  paymentResult: PaymentResult = new PaymentResult();
   subPaymentResult: Subscription;
 
   
@@ -362,34 +361,69 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
       //Paga sul posto proseguo subito
       if (this.selectedPayment.channel == PaymentChannel.onSite) {
-        this.paymentResult = new PaymentResult();
-        this.paymentResult.paymentExecuted= false;     //Pagamento non eseguito
-        this.paymentResult.paymentRequestInApp = false; //Pagamento con l'app non necessario
-        this.paymentResult.message = 'Pagamento in struttura';
+        let paymentResult = new PaymentResult(PaymentChannel.onSite);
 
         this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
         this.activePrenotazione.INCASSATO = 0;
 
         //Passo subito al Success
-        this.onPaymentSuccess(this.paymentResult);
+        this.onPaymentSuccess(paymentResult);
 
       }
       else {
         //Altre forme di pagamento
-        //Capacitor o Cordova 
         //Pagamento gestito nel Servizio Payment
-      if (this.platform.is('hybrid')) {
+      if (!this.startService.isDesktop) {
 
-        //Mi metto in attesa dell'Observable di ricezione del pagamento
-        this.onWaitingPaymentResult();
+        // //Mi metto in attesa dell'Observable di ricezione del pagamento
+        // this.onWaitingPaymentResult();
 
-        //Richiedo il pagamento
-        this.startService.execPayment(this.selectedPayment, 
-                                      this.activePrenotazione.TOTALE, 
-                                      'EUR',
-                                      descrizioneAcquisto);
+        // //Richiedo il pagamento
+        // this.startService.execPayment(this.selectedPayment, 
+        //                               this.activePrenotazione.TOTALE, 
+        //                               'EUR',
+        //                               descrizioneAcquisto);
 
-        //Ora attendo la risposta con l'Observable
+        // //Ora attendo la risposta con l'Observable
+
+        //qui devo eseguire il pagamento
+        this.loadingController.create({
+          message: 'Pagamento in corso...',
+          spinner: 'circular',
+          backdropDismiss: true
+        }).
+        then(elLoading => {
+          
+          elLoading.present()
+
+          //ora faccio la richiesta
+          this.startService.execPayment(this.selectedPayment,this.activePrenotazione.TOTALE,'EUR',descrizioneAcquisto)
+          .then(risposta => {
+
+            //quando arriva la risposta
+            elLoading.dismiss();
+
+            if (risposta&&risposta.paymentExecuted&&risposta.result){
+              // è andato tutto bene
+              this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
+              this.activePrenotazione.RESIDUO = 0;
+              this.showMessage(risposta.message);
+              this.onPaymentSuccess(risposta);
+            }
+            else{
+              //Il pagamento non è andato a buon fine
+              this.showMessage(risposta.message);
+            }
+
+
+          })
+          .catch((risposta:PaymentResult) => {
+            //qualcosa è andato storto
+            elLoading.dismiss();
+            this.showMessage(risposta.message);
+          })
+        })
+        
       }
       else {
         //Ambiente Web
@@ -424,40 +458,42 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   }
 
 
-  /**
-   * Attendo risposta del pagamento in versione Mobile
-   * Arrivato in modalità Observable
-   */
-  onWaitingPaymentResult() {
 
-    //Sottoscrivo alla ricezione del pagamento
-    this.subPaymentResult = this.startService.paymentResult.subscribe(resPayment => {
 
-      //Memorizzo nella class il pagamento
-      this.paymentResult = resPayment;
+  // /**
+  //  * Attendo risposta del pagamento in versione Mobile
+  //  * Arrivato in modalità Observable
+  //  */
+  // onWaitingPaymentResult() {
 
-      //L'operazione del pagamento è avvenuta
-      if (resPayment.result == true) {
-        //Pagamento effettuata
-        if (resPayment.paymentExecuted) {
-          //Eseguita correttamente
-          this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
-          this.activePrenotazione.RESIDUO = 0;
+  //   //Sottoscrivo alla ricezione del pagamento
+  //   this.subPaymentResult = this.startService.paymentResult.subscribe(resPayment => {
 
-          this.onPaymentSuccess(resPayment);
-        }
-        else {
-          //Esecuzione fallita
-          this.onPaymentFailed(resPayment);
-        }
+  //     //Memorizzo nella class il pagamento
+  //     this.paymentResult = resPayment;
 
-        //Tolgo la sottoscrizione
-        if (this.subPaymentResult) {
-          this.subPaymentResult.unsubscribe();
-        }
-      }
-    });
-  }
+  //     //L'operazione del pagamento è avvenuta
+  //     if (resPayment.result == true) {
+  //       //Pagamento effettuata
+  //       if (resPayment.paymentExecuted) {
+  //         //Eseguita correttamente
+  //         this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
+  //         this.activePrenotazione.RESIDUO = 0;
+
+  //         this.onPaymentSuccess(resPayment);
+  //       }
+  //       else {
+  //         //Esecuzione fallita
+  //         this.onPaymentFailed(resPayment);
+  //       }
+
+  //       //Tolgo la sottoscrizione
+  //       if (this.subPaymentResult) {
+  //         this.subPaymentResult.unsubscribe();
+  //       }
+  //     }
+  //   });
+  // }
 
   /**
    * Pagamento andato a buon fine

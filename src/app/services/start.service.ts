@@ -964,12 +964,7 @@ requestSlotOccupazioni(templateSlotDay: SlotDay,
 
 //#region PAGAMENTI
 
-/**
- * Observable del Risultato dell'operazione di pagamento
- */
-get paymentResult() {
-  return this.paymentService.paymentResult;
-}
+
 
 /**
  * Promise per il pagamento Mobile
@@ -983,7 +978,7 @@ execPayment(paymentMode: PaymentConfiguration,
             valuta?: string,
             descrizione?: string) {
 
-    this.paymentService.execPayment(paymentMode, importo, valuta, descrizione);
+    return (this.paymentService.execPayment(paymentMode, importo, valuta, descrizione));
 }
 
 

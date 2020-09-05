@@ -8,7 +8,7 @@ import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController, NavController, ModalController } from '@ionic/angular';
 import { Impegno  } from 'src/app/models/impegno.model';
-import { SettoreAttivita, TipoCorso } from '../../models/valuelist.model';
+import { SettoreAttivita, Ruolo, Mansione } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard, ButtonHomeParams } from 'src/app/models/buttoncard.model';
@@ -16,11 +16,12 @@ import { NewsEvento } from 'src/app/models/newsevento.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { LogApp } from 'src/app/models/log.model';
+
 import { RequestParams } from 'src/app/library/models/requestParams.model';
-import { filter } from 'rxjs/operators';
+
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
-import { Gruppo } from 'src/app/models/gruppo.model';
+
+import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 
 
 @Component({
@@ -66,6 +67,12 @@ export class HomePage implements OnInit, OnDestroy{
   noNewsCard: NewsEvento;
   listNews: NewsEvento[] = [];
 
+  //Bottoni da mostrare nella porzione Agenda
+  agendaCards: ButtonCard[] = []; 
+  
+  
+  //Mostra o nasconde Area Agenda
+  showAgenda = false;
   
   //Guarda qui
   //https://swiperjs.com/demos/#responsive_breakpoints
@@ -159,6 +166,9 @@ export class HomePage implements OnInit, OnDestroy{
             //Richiesta nuove News
             this.requestNews();
 
+            //Aggiorno l'agenda
+            this.updateAgenda();
+
     });
 
     // Sottoscrivo alla ricezione delle Locations
@@ -175,11 +185,13 @@ export class HomePage implements OnInit, OnDestroy{
 
       //Aggiorno lista impegni e cerco di visualizzare le card superiori
       this.updateListImpegni(); 
+
+      //Aggiorno l'agenda
+      this.updateAgenda();
            
     });
 
 
-    
     //Sottoscrivo all'ascolto dell'Account
     this.docUtenteListen = this.startService.utente.subscribe(element => {
 
@@ -187,9 +199,12 @@ export class HomePage implements OnInit, OnDestroy{
       //Aggiorno lista impegni e cerco di visualizzare le card superiori
       this.updateListImpegni();
 
+      //Aggiorno l'agenda
+      this.updateAgenda();      
+
     });
 
-    
+
     //Impostazione Iniziale dei Bottoni relativi gli impegni
     this.createButtonCardImpegni();
   }
@@ -550,4 +565,93 @@ export class HomePage implements OnInit, OnDestroy{
 
  }
 
+
+//#region AGENDA
+
+/**
+ * Passa alla pagina dell'agenda
+ */
+onClickShowAgenda() {
+  
+}
+
+ /**
+  * Aggiornamento dell'agenda
+  * Utente non loggato, utente Cliente -> NESSUNA AGENDA VISUALIZZATA
+  */
+ updateAgenda(){
+
+  let richiediOccupazioni = false;
+  let richiediMieiCorsi = false;
+
+  if (this.selectedArea && this.selectedArea.ID) {
+    //Utente Loggato
+    if (this.userLogged) {
+      // Account Presente
+      if (this.docUtente) {
+  
+        if (this.docUtente.RUOLO == Ruolo.admin || this.docUtente.RUOLO == Ruolo.super) {
+            richiediOccupazioni = true;
+        }
+        else if (this.docUtente.RUOLO == Ruolo.collaboratore ) {
+          switch(this.docUtente.MANSIONE) {
+            case Mansione.assistenteTrainer:
+              richiediMieiCorsi = true;
+              break;
+            case Mansione.trainer:
+              richiediMieiCorsi = true;
+              break;
+            case Mansione.custode:
+              richiediOccupazioni = true;
+              break;
+          }
+        }
+      }
+    }
+  
+    if (richiediMieiCorsi) {
+      this.richiediAgendaTrainer();
+    }
+    else if (richiediOccupazioni) {
+      this.richiediAgendaOccupazione();
+    }
+    else {
+  
+      //Nascono l'agenda che non serve
+      this.showAgenda = false;
+  
+      //Elimino l'agenda
+      this.agendaCards = [];
+  
+    }
+
+  }
+
+}
+
+/**
+ * Richiesta Agenda Occupazioni
+ */
+private richiediAgendaOccupazione() {
+
+  let idArea = this.selectedArea.ID;
+  this.showAgenda = true;
+  this.startService.requestOccupazioni(idArea)
+      .then(collList => {
+
+        this.agendaCards = ButtonCard.getButtonAgendaFromOccupazioni(collList);
+      })
+      .catch(error => {
+        console.log(error);
+
+      });
+
+}
+
+private richiediAgendaTrainer() {
+  
+ }
+
+//#endregion
+  
 }

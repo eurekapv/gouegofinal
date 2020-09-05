@@ -38,6 +38,7 @@ export class Utente extends IDDocument {
     VERIFICATAMAIL: boolean;
     VERIFICATAMOBILE: boolean;
     RUOLO: number;
+    MANSIONE: number;
     UTENTILIVELLI: UtenteLivello[];
 
     /**
@@ -103,7 +104,7 @@ export class Utente extends IDDocument {
                     'TELEFONO1',
                     'TELEFONO2'
                     ];
-    let arNumber = ['SESSO'];
+    let arNumber = ['SESSO','RUOLO','MANSIONE'];
     let arBoolean = ['NEWSLETTER','PROFILAZIONEINTERNA','PROFILAZIONEESTERNA','VERIFICATAMAIL','VERIFICATAMOBILE'];
     let arDate = ['NATOIL'];
     let arDateTime =[];

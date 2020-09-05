@@ -2,6 +2,7 @@ import { Impegno } from './impegno.model';
 import { SettoreAttivita } from './valuelist.model';
 import { Settimana } from './settimana.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
+import { OccupazioneCampi } from './occupazionecampi.model';
 
 export class ButtonHomeParams {
     utenteLoggato?: boolean; //Utente loggato
@@ -19,9 +20,12 @@ export class ButtonCard {
     functionCod: string;
     settore: SettoreAttivita;
     id: string;
+    idRefer: string;
 
     constructor() {
         this.settore = 0;
+        this.id = '';
+        this.idRefer = '';
     }
 
 
@@ -65,7 +69,7 @@ export class ButtonCard {
      * Ritorna i Buttoni da mostrare nella Home 
      * nella parte dedicata agli Eventi in programma, 
      * quando non sono presenti eventi
-     * @param userLogged Utente è loggato
+     * @param params Informazioni per la creazione dei Bottoni
      */
     static getButtonHomeImpegni(params?:ButtonHomeParams): ButtonCard[] {
         let arButton: ButtonCard[] = [];
@@ -181,6 +185,62 @@ export class ButtonCard {
         return arButton;
     }
 
+    /**
+     * Ritorna i Buttoni da mostrare nella Home 
+     * nella parte dedicata agli Eventi in programma, 
+     * quando non sono presenti eventi
+     * @param params Informazioni per la creazione dei Bottoni
+     */
+    static getButtonAgendaFromOccupazioni(collOccupazioni: OccupazioneCampi[]): ButtonCard[] {
+        let arButton: ButtonCard[] = [];
+        let newBtn: ButtonCard;
+        
 
+        if (collOccupazioni) {
+            // Occupazioni presenti
+            if (collOccupazioni.length != 0) {
+                collOccupazioni.forEach(element => {
+
+                    newBtn = new ButtonCard();
+                    newBtn.title = element['_DENOMINAZIONE_Location'];
+                    newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
+
+                    newBtn.nameicon = 'calendar-outline';
+                    newBtn.sloticon = "start";
+                    newBtn.color = "primary";
+                    newBtn.iconLink = true;
+
+                    newBtn.functionCod =  "show";
+                    newBtn.id =  element.ID;
+                    newBtn.idRefer = element.IDREF;
+                    newBtn.settore = element.TIPO;
+                    if (newBtn.settore == SettoreAttivita.settoreCorso) {
+                        newBtn.nameicon = 'calendar-outline';
+                    }
+                    else {
+                        newBtn.nameicon = 'school-outline';
+                    }
+                    arButton.push(newBtn);
+
+                });
+            }
+        }
+
+        if (arButton.length == 0) {
+
+            newBtn = new ButtonCard();
+            newBtn.title = 'Nessuna programmazione per la giornata';
+            newBtn.subtitle = 'nessun corso o prenotazione';
+            newBtn.nameicon = 'calendar-outline';
+            newBtn.sloticon = "start";
+            newBtn.color = "primary";
+            newBtn.iconLink = false;
+            newBtn.functionCod = 'noevents';
+    
+            arButton.push(newBtn);
+        }
+
+        return arButton;
+    }
     
 }

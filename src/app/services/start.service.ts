@@ -39,6 +39,12 @@ import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
 import { TipoPrivateImage } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
+import { OccupazioniService } from './occupazioni.service';
+import { IDDocument } from '../library/models/iddocument.model';
+import { decode } from 'punycode';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { OccupazioneCampi } from '../models/occupazionecampi.model';
+import { RequestParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -98,8 +104,16 @@ export class StartService {
     private utenteIscrizioneService: UtenteiscrizioneService,
     private paymentService: PaymentService,
     private codFiscService: CodicefiscaleService,
-    private photoService: PhotoService ) { 
-    }
+    private photoService: PhotoService,
+    private occupazioniService: OccupazioniService,
+    private docStructureService: DocstructureService ) { 
+
+      //Ogni volta che cambia la configurazione la invio 
+      //al servizio docStructure
+      this.startConfig.subscribe(elConfig => {
+        this.docStructureService.setConfig(elConfig);
+      });
+  }
 
   /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
@@ -1035,6 +1049,14 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
 
 //#endregion
 
+
+//#region OCCUPAZIONICAMPI
+
+
+requestOccupazioni(idArea: string,filterDocument?:OccupazioneCampi, params?:RequestParams) {
+  return this.occupazioniService.request(idArea, filterDocument, params);
+}
+//#endregion
 
 
 

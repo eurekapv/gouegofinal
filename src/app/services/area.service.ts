@@ -58,12 +58,11 @@ export class AreaService {
         this.apiService
           .httpGet(myUrl, myHeaders, myParams)
           .pipe(map(fullData => {
-            console.log(fullData);
+            
             return fullData.AREAOPERATIVA;
           }))
           .subscribe(resultData => {
-              console.error('STAMPAMI');
-              console.log(resultData);
+              
               //Ricreo l'array di Aree
               this._listAree.next([]);
     

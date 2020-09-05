@@ -14,6 +14,7 @@ import { MyDateTime } from './mydatetime.model';
 
     //Condizioni di filtro
     _filterConditions:FilterCondition[];
+    
 
     //Valori originali
     _original:IDOriginal;
@@ -109,6 +110,53 @@ import { MyDateTime } from './mydatetime.model';
       let objDescriptor = new Descriptor();
       objDescriptor.add('ID',TypeDefinition.char);
       return objDescriptor;
+    }
+
+
+    /**
+     * Converte e formatta un valore in stringa
+     * Usato per scriverlo nei parametri di chiamata
+     * @param tipo Tipo del dato
+     * @param value Valore
+     */
+    formatValue(tipo: TypeDefinition, value: any): string {
+      let strValue = '';
+      switch (tipo) {
+        case TypeDefinition.char:
+            strValue = value;
+        break;
+      
+        case TypeDefinition.date:
+            strValue = MyDateTime.formatDateISO(value);
+        break;
+
+        case TypeDefinition.dateTime:
+            strValue = MyDateTime.formatDateTimeISO(value);
+        break;
+
+        case TypeDefinition.time:
+            strValue = MyDateTime.formatTime(value);
+        break;
+
+        case TypeDefinition.boolean:
+            if (value) {
+              strValue = '-1'
+            }
+            else {
+              strValue = '0';
+            }
+        break;
+        
+        case TypeDefinition.number:
+        case TypeDefinition.numberDecimal:
+            strValue = value + '';
+          break;
+
+        default:
+          break;
+      }
+
+      return strValue;
     }
 
 
@@ -613,17 +661,24 @@ import { MyDateTime } from './mydatetime.model';
     //#endregion
 
     //#region CONDITION
-    addFilterCondition(operator: OperatorCondition, fieldName: string) {
-      if (operator && fieldName) {
 
-        let objCondition = new FilterCondition(operator, fieldName);
+    /**
+     * Aggiunge una condizione di filtro differente dalla semplice uguaglianza
+     * @param operator    Operatore = > <
+     * @param fieldName   Nome Campo
+     * @param listOrValue Solo per uguaglianza è possibile indicare un array con i valori da mettere in OR
+     */
+    addFilterCondition(operator: OperatorCondition, fieldName: string, listOrValue?:any[]) {
+      if (fieldName) {
+
+        let objCondition = new FilterCondition(operator, fieldName, listOrValue);
         this._filterConditions.push(objCondition);
       }
     }
 
 
     /**
-     * Cerca se nelle Condizioni di Filtro è preseente il campo e ne ritorna l'oggetto FilterCondition
+     * Cerca se nelle Condizioni di Filtro è presente il campo e ne ritorna l'oggetto FilterCondition
      * @param fieldName Nome del campo
      */
     getFilterConditionByFieldName(fieldName: string): FilterCondition {
@@ -670,16 +725,42 @@ import { MyDateTime } from './mydatetime.model';
   }
 
   /**
+   * Specifica alcune condizioni multiple
+   */
+  export class FieldOrCondition {
+    fieldName: string;
+    value: any[];
+  }
+
+  /**
    * Classe di Condizioni di filtro
    */
   export class FilterCondition {
     operator: OperatorCondition;
     fieldName: string;
+    //Valori da mettere in OR (viene applicato sempre con operatore di uguaglianza)
+    private _listOrValue: any[];
+    
+    get listOrValue(): any[] {
+      return this._listOrValue;
+    }
 
-    constructor(operator: OperatorCondition, fieldName: string) {
+    set listOrValue(value: any[]) {
+      this._listOrValue = value;
+    }
+
+    constructor(operator: OperatorCondition, fieldName: string, listOrValue: any[]) {
       this.fieldName = fieldName;
       this.operator = operator;
+      this._listOrValue = [];
+
+      //Se ho valori li imposto
+      if (listOrValue) {
+        this._listOrValue = listOrValue;
+      }
     }
+
+
   }
 
   export class IDOriginal {
@@ -839,6 +920,7 @@ import { MyDateTime } from './mydatetime.model';
     minore = '<',
     maggiore = '>'
   }
+
 
 
 

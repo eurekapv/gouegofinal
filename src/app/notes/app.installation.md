@@ -23,13 +23,14 @@
  * 
  * Usare i due comandi:
  * 
- * npm update
+ > npm update
  * 
- * npm install @ionic/angular@latest @ionic/angular-toolkit@latest --save
+ > npm install @ionic/angular@latest @ionic/angular-toolkit@latest --save
  * 
- * e poi ho installato lo Storage con
+ * e poi ho installato lo Storage (usare versione 2.2.0 altrimenti 2.3 va in errore) con
  * 
- * npm install --save @ionic/storage
+ > npm install --save @ionic/storage@2.2.0
+
  */
 
  /*
@@ -137,6 +138,15 @@ sotto architect.build.options.scripts
 "scripts": [
               "node_modules/crypto-js/crypto-js.js"
             ]
+
+
+Installazione Paypal
+> ionic cordova plugin add com.paypal.cordova.mobilesdk
+> npm install @ionic-native/paypal
+Aggiungere in capacitor.config.json
+"ios": {
+  "cordovaLinkerFlags": ["-ObjC"]
+}
 
 
 

@@ -222,6 +222,33 @@ export class PaymentConfiguration {
         return valid;
     }
 
+    //E' possibile pagare con funzionalità dentro all'App
+    public get paymentInApp():boolean {
+        let inApp: boolean = false;
+
+        switch (this.channel) {
+            case PaymentChannel.onSite:
+                inApp = false;
+                break;
+            case PaymentChannel.paypal:
+                inApp = true;
+                break;
+            case PaymentChannel.bonifico:
+                inApp = false;
+                break;
+            case PaymentChannel.applePay:
+                inApp = true;
+                break;
+            case PaymentChannel.googlePay:
+                inApp = true;
+                break;
+            default:
+                break;
+        }
+
+        return inApp;
+    }
+
     /**
      * 
      * @param stringSettori Stringa con i settori separati da ,
@@ -287,6 +314,9 @@ export class PaymentConfiguration {
   //Canali dove effettuare il pagamento, compreso onSite in contanti
   export enum PaymentChannel {
     onSite = 10,
+    bonifico = 50,
+    applePay = 200,
+    googlePay = 210,
     paypal = 220
   }
   

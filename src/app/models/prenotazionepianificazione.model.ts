@@ -24,6 +24,7 @@ export class PrenotazionePianificazione extends IDDocument {
     TOTALE: number;
     GUIDSERIE: string;
     PROGRESSIVO: string;
+    IDTRANSACTION: string;
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
@@ -56,7 +57,8 @@ export class PrenotazionePianificazione extends IDDocument {
                         'IDSPORT',
                         'IDCAMPO',
                         'GUIDSERIE',
-                        'PROGRESSIVO'];
+                        'PROGRESSIVO',
+                        'IDTRANSACTION'];
         let arNumber = ['ANNO','NUMPARTECIPANTI'];
         let arNumberDecimal = ['DURATAORE',
                                'IMPONIBILE',

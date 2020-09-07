@@ -16,6 +16,7 @@ export class Prenotazione extends IDDocument {
     TOTALE: number;
     MSGINVALID: string;
     PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
+    IDTRANSACTION: string;
 
     ISVALID: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
                      //si puo' procedere al pagamento finale
@@ -32,6 +33,7 @@ export class Prenotazione extends IDDocument {
             this.IMPOSTA = 0;
             this.ISVALID = false;
             this.MSGINVALID = '';
+            this.IDTRANSACTION = '';
         }
 
 
@@ -151,7 +153,8 @@ export class Prenotazione extends IDDocument {
                         'NOMINATIVO',
                         'MOBILENUMBER',
                         'IDTIPOPAGAMENTO',
-                        'MSGINVALID'];
+                        'MSGINVALID',
+                        'IDTRANSACTION'];
         let arNumber = [];
         let arNumberDecimal = ['IMPORTO','INCASSATO','RESIDUO','IMPOSTA','TOTALE'];
         let arBoolean = ['ISVALID'];

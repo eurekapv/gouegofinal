@@ -176,6 +176,22 @@
 </ion-grid>
 <!-- FINE AGENDA -->  
 
+<div *ngIf="showAgenda">
+  <div *ngFor="let loc of listLocation">
+    <ion-list>
+      <ion-list-header>
+        {{loc.DENOMINAZIONE}}
+      </ion-list-header>
+
+      <!-- <ion-item>
+        <ion-label>Label</ion-label>
+      </ion-item> -->
+    </ion-list>
+
+
+  </div>
+</div>
+
   <!-- NEWS ED EVENTI PROSSIMI-->
   <!-- TITOLO -->
   <ion-item 

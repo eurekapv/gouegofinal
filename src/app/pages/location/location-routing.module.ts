@@ -19,7 +19,11 @@ const routes: Routes = [
   {
     path: 'gallery',
     loadChildren: () => import('./gallery/gallery.module').then( m => m.GalleryPageModule)
+  },  {
+    path: 'campi-new',
+    loadChildren: () => import('./campi-new/campi-new.module').then( m => m.CampiNewPageModule)
   }
+
 ];
 
 @NgModule({

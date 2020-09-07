@@ -7,6 +7,7 @@ import { ModalController, NavController } from '@ionic/angular';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
 import { GalleryPage } from './gallery/gallery.page';
 import { CampiPage } from './campi/campi.page';
+import { CampiNewPage } from './campi-new/campi-new.page'
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Subscription } from 'rxjs';
 
@@ -132,7 +133,7 @@ export class LocationPage implements OnInit, OnDestroy {
     //Apertura modale della pagina dei campi
     this.modalCtrl
     .create({
-      component: CampiPage,
+      component: CampiNewPage,
       componentProps: {
         myLocation: this.selectedLocation
       }

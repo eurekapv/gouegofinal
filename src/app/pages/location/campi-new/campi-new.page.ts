@@ -7,17 +7,37 @@ import { Campo } from 'src/app/models/campo.model';
 import { Sport } from 'src/app/models/sport.model'
 import { CampoSport } from 'src/app/models/camposport.model';
 
-  
-@Component({
-  selector: 'app-campi',
-  templateUrl: './campi.page.html',
-  styleUrls: ['./campi.page.scss'],
-})
-export class CampiPage implements OnInit, OnDestroy {
 
+
+@Component({
+  selector: 'app-campi-new',
+  templateUrl: './campi-new.page.html',
+  styleUrls: ['./campi-new.page.scss'],
+})
+export class CampiNewPage implements OnInit {
   myLocation: Location;
   listenLocation: Subscription;
   listSport: Sport[]=[];
+
+  //opzioni dello slider
+
+  getSliderOpts (campo : Campo){
+
+    let _sliderOpts = {
+      slidesPerView: 2.3,
+    }
+
+    if (campo){
+      if (campo.CAMPOSPORT){
+        if (campo.CAMPOSPORT.length <= 2){
+          _sliderOpts.slidesPerView = campo.CAMPOSPORT.length;
+        }
+      }
+    }
+    return _sliderOpts;
+
+  }
+
 
   constructor(private startService: StartService, 
               private mdlController: ModalController) { }
@@ -64,5 +84,7 @@ export class CampiPage implements OnInit, OnDestroy {
       return this.startService.getSportIcon(campoSport.IDSPORT);
     }
   }
+
+  
 
 }

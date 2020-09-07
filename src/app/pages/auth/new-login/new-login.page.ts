@@ -312,7 +312,7 @@ export class NewLoginPage implements OnInit {
         .create({
           message: 'Controllo credenziali'
         })
-        .then(element => {
+        .then((element) => {
 
           //Creo il loading
           element.present();

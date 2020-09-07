@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/historylist">    </ion-back-button>
     </ion-buttons>
-    <ion-title>Prenotazione</ion-title>
+    <ion-title>Prenotazione </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -18,9 +18,14 @@
 <div>
   <ion-slides [options]="sliderOpts">
     <ion-slide *ngFor="let docPianificazione of myPrenotazione.PRENOTAZIONEPIANIFICAZIONE; index as i">
-      <div style="width: 100%;">
+      <div style="width: 100%;" >
         <div class="ion-text-center div-qr">
+            <h6>ID: {{docPianificazione.PROGRESSIVO}}</h6>
             <qrcode [qrdata]="docPianificazione.ID"></qrcode>
+            <p>
+              <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+              Presenta il Qr-code o l'ID prenotazione all'ingresso
+            </p>
         </div>
     
         <div class="ion-text-center div-btns">

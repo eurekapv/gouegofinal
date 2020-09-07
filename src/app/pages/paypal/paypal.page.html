@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="primary">
-      <ion-button (click)="closeModal()">
-        <ion-icon slot="icon-only" ios="close" md="close"></ion-icon>
+      <ion-button (click)="closeModal()" >
+        <ion-icon slot="icon-only" ios="close" md="close" ></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -36,12 +36,12 @@
     <ion-card-content>
         <!-- IN ATTESA DATI  -->
         <!-- DATI  NON RICEVUTI -->
-        <div *ngIf="!paypalAvailable" id="crs-spinner">
+        <div  id="crs-spinner">
           <ion-progress-bar type="indeterminate"></ion-progress-bar>
         </div>
 
 
-      <div *ngIf="paypalAvailable" id="paypal-button-container"></div>
+      <div  id="paypal-button-container"></div>
     </ion-card-content>
   </ion-card>
 </ion-content>

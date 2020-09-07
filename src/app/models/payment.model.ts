@@ -2,6 +2,7 @@ import {SettoreAttivita} from './valuelist.model';
 import { Area } from './area.model';
 import { element } from 'protractor';
 import { isNumber } from 'util';
+import { StartService } from '../services/start.service';
 
 
 export class Payment  {
@@ -287,13 +288,20 @@ export class PaymentConfiguration {
      * Controlla se le impostazioni sono valide
      */
     get isValid(): boolean {
-        //#TODO Bisogna inizializzare entrambi i clientId almeno a stringa vuota, altrimenti non funziona!!!
+        console.log('bene');
+
+        if (!this.clientIDProduction){
+            console.log('Male');
+            this.clientIDProduction = '';
+        }
+        if (!this.clientIDSandbox){
+            console.log('Male');
+            this.clientIDSandbox = '';
+        }
+        
         let valid = true;
 
         if (!this.enviroment) {
-            valid = false;
-        }
-        else if (!this.clientSecret) {
             valid = false;
         }
         else {
@@ -334,8 +342,12 @@ export class PaymentConfiguration {
     private _responseJson: string;
     tipoPagamento : PaymentChannel
     idPagamento : String;
+    desktop : boolean; //la modalità di richiesta (desktop o mobile)
 
-    constructor(tipoPagamento : PaymentChannel) {
+    constructor(tipoPagamento : PaymentChannel, desktop: boolean) {
+
+        //recupero la modalità (desktop o mobile)
+        this.desktop = desktop;
 
         //mi salvo anche il tipo di pagamento, così so come fare il parsing del json
         this.tipoPagamento = tipoPagamento;
@@ -367,19 +379,38 @@ export class PaymentConfiguration {
 
             //se è una risposta di paypal
             case PaymentChannel.paypal:
+                //se è arrivata una risposta
+                if (this._responseJson){
+                    if (this.desktop){
+                        //siamo su desktop 
+                        if (this._responseJson['status']=='COMPLETED'){
 
-                //se è arrivata una risposta corretta
-                if (this._responseJson&&this._responseJson['response']){
+                            //la transazione è andata a buon fine
+                            this.paymentExecuted = true;
+                            this.result = true;
+                            this.message = 'Pagamento effettuato';
+                            this.idPagamento = this._responseJson['id'];
+                        }
+                    }
+                    else{
+                        //siamo su mobile
+                        //se è arrivata una risposta corretta
+                        if (this._responseJson['response']){
+        
+                            if (this._responseJson['response']['state']=='approved'){
+        
+                                //qui so che il pagamento è andato a buon fine
+                                this.paymentExecuted = true;
+                                this.result = true;
+                                this.message = 'Pagamento effettuato';
+                                this.idPagamento = this._responseJson['response']['id'];
+                            }
+                        }
 
-                    if (this._responseJson['response']['state']=='approved'){
-
-                        //qui so che il pagamento è andato a buon fine
-                        this.paymentExecuted = true;
-                        this.result = true;
-                        this.message = 'Pagamento effettuato';
-                        this.idPagamento = this._responseJson['response']['id'];
                     }
                 }
+            break;
+
         }
     }
 

@@ -1,8 +1,21 @@
 .div-qr
 {
-    background-color:#CEE9E7 ;
-    padding-top:6vh;
-    padding-bottom:6vh;
+    h6{
+        margin: 0px;
+        margin-bottom: 8px;
+        color: var(--ion-color-primary);
+        font-weight: 700;
+    }
+    p{
+        font-size: 14px;
+        margin: 0px;
+        margin-top: 8px;
+        color: rgb(43, 43, 43)
+    }
+    background-color: var(--ion-color-light) ;
+    padding-top:3vh;
+    padding-bottom:3vh;
+    
 }
 
 .div-btns
@@ -15,3 +28,4 @@
 {
     margin-top:4vh;
 }
+

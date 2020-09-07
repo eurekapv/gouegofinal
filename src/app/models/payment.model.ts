@@ -260,7 +260,13 @@ export class PaymentConfiguration {
      * Controlla se le impostazioni sono valide
      */
     get isValid(): boolean {
-        //#TODO Bisogna inizializzare entrambi i clientId almeno a stringa vuota, altrimenti non funziona!!!
+        if (!this.clientIDProduction){
+            this.clientIDProduction = '';
+        }
+        if (!this.clientIDSandbox){
+            this.clientIDSandbox = '';
+        }
+        
         let valid = true;
 
         if (!this.enviroment) {

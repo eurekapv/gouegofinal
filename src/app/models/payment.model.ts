@@ -344,7 +344,7 @@ export class PaymentConfiguration {
     idPagamento : string;
     desktop : boolean; //la modalità di richiesta (desktop o mobile)
 
-    constructor(tipoPagamento : PaymentChannel, desktop: boolean) {
+    constructor(tipoPagamento : PaymentChannel, desktop: boolean = false) {
 
         //recupero la modalità (desktop o mobile)
         this.desktop = desktop;
@@ -352,9 +352,11 @@ export class PaymentConfiguration {
         //mi salvo anche il tipo di pagamento, così so come fare il parsing del json
         this.tipoPagamento = tipoPagamento;
 
+        
         //se il pagamento non è elettronico, faccio finta che sia già andato a buon fine
         switch (this.tipoPagamento){
             case PaymentChannel.onSite:
+            case PaymentChannel.bonifico:
                 this.paymentExecuted = true;
                 this.result = true;
                 this.paymentRequestInApp = false;
@@ -364,7 +366,7 @@ export class PaymentConfiguration {
             case PaymentChannel.paypal:
                 this.paymentExecuted = false;
                 this.result = false;
-                this.paymentRequestInApp = true
+                this.paymentRequestInApp = true;
             break;
         }
     }

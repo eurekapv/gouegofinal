@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IDDocument, OperatorCondition } from '../models/iddocument.model';
+import { IDDocument, OperatorCondition, FilterCondition } from '../models/iddocument.model';
 import {RequestParams, RequestDecode, RequestForeign } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
@@ -8,9 +8,10 @@ import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Descriptor, TypeDefinition, TypeReflector } from '../models/descriptor.model';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { CacheListElement } from '../models/cachelistelement.model';
 import { Cache } from '../models/cache.model';
+import { LogApp } from 'src/app/models/log.model';
 
 
 
@@ -30,15 +31,19 @@ export class DocstructureService {
   
 
 
-  constructor(private startService: StartService,
-              private apiService: ApicallService) { 
+  constructor(private apiService: ApicallService) { 
 
+  }
 
-
-    this.startService.startConfig.subscribe(elConfig => {
-      this.myConfig = elConfig;
-    });
-
+  /**
+   * Partendo dal servizio Start Service c'e' un subscribe nel costruttore
+   * che serve a inviarmi la configurazione ad ogni cambiamento
+   * Impostare la configurazione prima delle chiamate
+   * @param configuration Configurazione di Partenza
+   */
+  setConfig(elConfig: StartConfiguration) {
+    this.myConfig = elConfig;
+    LogApp.consoleLog('New Configuration received');
   }
 
   /**
@@ -344,7 +349,7 @@ export class DocstructureService {
     * @param collectionName Nome collection da caricare
     * @param params parametri aggiuntivi
     */
-  loadCollection(document:IDDocument, collectionName: string, params?:RequestParams) {
+  public loadCollection(document:IDDocument, collectionName: string, params?:RequestParams) {
     return new Promise<IDDocument>((resolve, reject)=>{
       let prosegui = true;
       let objDescriptor: Descriptor;
@@ -441,7 +446,7 @@ export class DocstructureService {
    * @param collectionName Collection figlia da caricare
    * @param params parametri aggiuntivi
    */
-  loadCollectionMulti(collection: IDDocument[], collectionName:string, params?:RequestParams) {
+  public loadCollectionMulti(collection: IDDocument[], collectionName:string, params?:RequestParams) {
     return new Promise<IDDocument[]>((resolve, reject)=>{
       let executePromise:Promise<IDDocument>[] = [];
       if (collection && collection.length !== 0) {
@@ -483,7 +488,7 @@ export class DocstructureService {
    * @param filterDocument Parametri di configurazione
    * @param decode Effettua la decodifica dei dati 
    */
-  requestNew(filterDocument: IDDocument, params?:RequestParams) {
+  public requestNew(filterDocument: IDDocument, params?:RequestParams) {
 
     return new Promise<any[]>((resolve, reject)=>{
       
@@ -623,7 +628,7 @@ export class DocstructureService {
 
 
   
-  decodeCollection(collection: IDDocument[], foreignFields?:RequestForeign[]) {
+  public decodeCollection(collection: IDDocument[], foreignFields?:RequestForeign[]) {
     
     //Devo decodificare l'intera collection di dati
     //Versione 1: foreignField non presente
@@ -713,77 +718,114 @@ export class DocstructureService {
     
     let myParams: HttpParams;
     let arProperty = Object.keys(document); //Prendo tutte le proprietà
-    
+    let objDescriptor = document.getDescriptor(); //Descrittore dell'oggetto
 
 
     // CIclo le proprieta dell'oggetto filter
-    arProperty.forEach(element => {
-      let nameProperty = element;
+    objDescriptor.fields.forEach(element => {
+      let nameProperty = element.fieldName;
+      let strValue = '';
+      let tipo = document.getPropertyType(nameProperty);
+      let operatoreSpecial: OperatorCondition; //Condizione speciale sulla proprietà
 
       //Se non inizia con _ è una proprieta da includere
       if (!nameProperty.startsWith('_')) {
-        //Se c'è un valore
-        if (document[nameProperty]) {
+        let filterCondition: FilterCondition;
+        
 
-          let value = document[nameProperty];
-          let strValue = '';
-          let tipo = document.getPropertyType(nameProperty);
+        //Recupero della condizione di filtro speciale
+        filterCondition = document.getFilterConditionByFieldName(nameProperty);
 
-          switch (tipo) {
-            case TypeDefinition.char:
-                strValue = value;
-            break;
-          
-            case TypeDefinition.date:
-                strValue = document.formatDateISO(value);
-            break;
+        //Recupero la condizione speciale (potrebbe non esserci)
+        operatoreSpecial = document.getFilterOperatorByFieldName(nameProperty);
 
-            case TypeDefinition.dateTime:
-                strValue = document.formatDateTimeISO(value);
-            break;
+        //La proprietà non contiene un valore
+        if (!document[nameProperty]) {
+          //C'e' una condizione di filtro speciale
+          if (filterCondition) {
             
-            case TypeDefinition.boolean:
-                if (value) {
-                  strValue = '-1'
+            //Gli elementi contenuti vanno in OR e separati dal punto e virgola
+            if (filterCondition.listOrValue && filterCondition.listOrValue.length != 0) {
+              //Ci sono valori da mettere in OR
+
+              //Devo inserirli separati da ;
+              for (let index = 0; index < filterCondition.listOrValue.length; index++) {
+                const valoreProperty = filterCondition.listOrValue[index];
+                if (strValue && strValue.length != 0) {
+                  strValue += ';';
                 }
-                else {
-                  strValue = '0';
-                }
-            break;
-            
-            case TypeDefinition.number:
-            case TypeDefinition.numberDecimal:
-                strValue = value + '';
-              break;
 
-            default:
-              break;
-          }
+                strValue += document.formatValue(tipo,valoreProperty);
+              }
 
+              //Si inseriscono con l'operatore uguaglianza
+              operatoreSpecial = OperatorCondition.uguale;
 
-
-          if (strValue.length !== 0) {
-
-            //Tutti i parametri vengono aggiunti per uguaglianza o controllando
-            //se presenti con una condizione diversa nel filterCondition
-            let operator: OperatorCondition;
-            //Chiedo l'operatore da applicare
-            operator = document.getFilterOperatorByFieldName(nameProperty);
-
-            //Viene sempre ritornato l'operatore da impostare
-            strValue = operator + strValue;
-            
-            if (myParams == undefined) {
-              myParams = new HttpParams().set(nameProperty, strValue);
-            }
-            else {
-              //Aggiungo il parametro
-              myParams = myParams.append(nameProperty, strValue);
             }
           }
+        }
+        else  {
+
+          //Converto il valore della proprieta
+          strValue = document.formatValue(tipo, document[nameProperty]);
+
+          //Recupero la condizione speciale (potrebbe non esserci)
+          operatoreSpecial = document.getFilterOperatorByFieldName(nameProperty);
+        
+          //Ho creato la procedura superiore invece che ripeterlo qua
+
+          // switch (tipo) {
+          //   case TypeDefinition.char:
+          //       strValue = value;
+          //   break;
           
+          //   case TypeDefinition.date:
+          //       strValue = document.formatDateISO(value);
+          //   break;
 
+          //   case TypeDefinition.dateTime:
+          //       strValue = document.formatDateTimeISO(value);
+          //   break;
+            
+          //   case TypeDefinition.boolean:
+          //       if (value) {
+          //         strValue = '-1'
+          //       }
+          //       else {
+          //         strValue = '0';
+          //       }
+          //   break;
+            
+          //   case TypeDefinition.number:
+          //   case TypeDefinition.numberDecimal:
+          //       strValue = value + '';
+          //     break;
 
+          //   default:
+          //     break;
+          // }
+
+          
+          
+          
+        }
+
+        //Posso aggiungerle ai parametri
+        if (strValue.length !== 0) {
+
+          //Tutti i parametri vengono aggiunti per uguaglianza o controllando
+          //se presenti con una condizione diversa nel filterCondition
+          
+          //Viene sempre ritornato l'operatore da impostare
+          strValue = operatoreSpecial + strValue;
+          
+          if (myParams == undefined) {
+            myParams = new HttpParams().set(nameProperty, strValue);
+          }
+          else {
+            //Aggiungo il parametro
+            myParams = myParams.append(nameProperty, strValue);
+          }
         }
       }
     });
@@ -802,7 +844,7 @@ export class DocstructureService {
    * @param docStart Documento di partenza
    * @param seqField Percorso da seguire per ottenere il documento correlato
    */
-  getRelDoc(docStart:IDDocument, seqField: string[]):Promise<any> {
+  public getRelDoc(docStart:IDDocument, seqField: string[]):Promise<any> {
     return new Promise((resolve, reject)=>{  
 
       let nameField = '';

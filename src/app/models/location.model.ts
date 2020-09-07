@@ -382,6 +382,7 @@ export class Location extends IDDocument {
       return value;
     }
 
+    
 
     /**
      * Cerca nella collection dei campi, verificando se lo Sport passato come parametro, puo' essere

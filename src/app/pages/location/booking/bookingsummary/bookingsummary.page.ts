@@ -359,9 +359,10 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     if (this.selectedPayment) {
 
-      //Paga sul posto proseguo subito
-      if (this.selectedPayment.channel == PaymentChannel.onSite) {
-        let paymentResult = new PaymentResult(PaymentChannel.onSite);
+      //Pagamento non dentro all'App
+      if (this.selectedPayment.paymentInApp == false) {
+
+        let paymentResult = new PaymentResult(this.selectedPayment.channel);
 
         this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
         this.activePrenotazione.INCASSATO = 0;
@@ -386,7 +387,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
         // //Ora attendo la risposta con l'Observable
 
-        //qui devo eseguire il pagamento
+        //Qui devo eseguire il pagamento
         this.loadingController.create({
           message: 'Pagamento in corso...',
           spinner: 'circular',
@@ -394,16 +395,18 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
         }).
         then(elLoading => {
           
-          elLoading.present()
+          //Presento il loading
+          elLoading.present();
 
-          //ora faccio la richiesta
-          this.startService.execPayment(this.selectedPayment,this.activePrenotazione.TOTALE,'EUR',descrizioneAcquisto)
+          //Faccio la richiesta al servizio di pagamento
+          this.startService.execPayment(this.selectedPayment, this.activePrenotazione.TOTALE, 'EUR', descrizioneAcquisto)
           .then(risposta => {
 
             //quando arriva la risposta
             elLoading.dismiss();
 
-            if (risposta&&risposta.paymentExecuted&&risposta.result){
+            //Pagamento eseguito correttamente
+            if (risposta && risposta.paymentExecuted && risposta.result) {
               // è andato tutto bene
               this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
               this.activePrenotazione.RESIDUO = 0;
@@ -411,8 +414,12 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               this.onPaymentSuccess(risposta);
             }
             else{
+
               //Il pagamento non è andato a buon fine
               this.showMessage(risposta.message);
+
+              //Esecuzione fallita
+              this.onPaymentFailed(risposta);
             }
 
 
@@ -420,9 +427,12 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
           .catch((risposta:PaymentResult) => {
             //qualcosa è andato storto
             elLoading.dismiss();
-            this.showMessage(risposta.message);
+
+            //Esecuzione fallita
+            this.onPaymentFailed(risposta);            
+            
           })
-        })
+        });
         
       }
       else {
@@ -458,42 +468,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   }
 
 
-
-
-  // /**
-  //  * Attendo risposta del pagamento in versione Mobile
-  //  * Arrivato in modalità Observable
-  //  */
-  // onWaitingPaymentResult() {
-
-  //   //Sottoscrivo alla ricezione del pagamento
-  //   this.subPaymentResult = this.startService.paymentResult.subscribe(resPayment => {
-
-  //     //Memorizzo nella class il pagamento
-  //     this.paymentResult = resPayment;
-
-  //     //L'operazione del pagamento è avvenuta
-  //     if (resPayment.result == true) {
-  //       //Pagamento effettuata
-  //       if (resPayment.paymentExecuted) {
-  //         //Eseguita correttamente
-  //         this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
-  //         this.activePrenotazione.RESIDUO = 0;
-
-  //         this.onPaymentSuccess(resPayment);
-  //       }
-  //       else {
-  //         //Esecuzione fallita
-  //         this.onPaymentFailed(resPayment);
-  //       }
-
-  //       //Tolgo la sottoscrizione
-  //       if (this.subPaymentResult) {
-  //         this.subPaymentResult.unsubscribe();
-  //       }
-  //     }
-  //   });
-  // }
 
   /**
    * Pagamento andato a buon fine
@@ -570,9 +544,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     //Visualizzo il messaggio
     this.showAlert(message, title);
-
-    //Avviso il server di eliminare la prenotazione
-    //DA IMPLEMENTARE
     
   }
 

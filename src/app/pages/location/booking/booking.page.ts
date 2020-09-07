@@ -524,32 +524,38 @@ export class BookingPage implements OnInit, OnDestroy {
     }
     else {
 
-      //Inizializzo con i dati di Prenotazione
-      
-      this.startService.initActivePrenotazione(this.selectedLocation.IDAREAOPERATIVA);
-      this.startService.setIDUtenteActivePrenotazione(this.docUtente);
+      //TODO QUI BISOGNA CONTROLLARE SE VERIFICARE TEL/EMAIL/AGGIUNGERE DATI
 
-      //Impostiamo Location e Campo
-      docPianificazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
-      docPianificazione.IDLOCATION = this.selectedLocation.ID;
-      docPianificazione.IDCAMPO = this.selectedCampo.ID;
-      docPianificazione.IDSPORT = this.selectedSport.ID;
-      docPianificazione._DESCRCAMPO = this.selectedCampo.DENOMINAZIONE;
-      docPianificazione._DESCRSPORT = this.selectedSport.DENOMINAZIONE;
-
-      //Indico al servizio di memorizzarsi la Pianificazione per poterla passare alle altre pagine
-      this.startService.setPianificazioneSingola(docPianificazione);
-
-      //Indico al servizio di mantenere (non Observable) le info del campo selezionato
-      this.startService.setSelectedCampoPrenotazione(this.selectedCampo);
-
-      //Chiedo al server il calcolo del totale
-      this.calcolaTotale();
+      this.execPrenotazione(docPianificazione);
 
       
     }
     
 
+  }
+
+  private execPrenotazione(docPianificazione: PrenotazionePianificazione) {
+
+    //Inizializzo con i dati di Prenotazione
+    this.startService.initActivePrenotazione(this.selectedLocation.IDAREAOPERATIVA);
+    this.startService.setIDUtenteActivePrenotazione(this.docUtente);
+
+    //Impostiamo Location e Campo
+    docPianificazione.IDAREAOPERATIVA = this.selectedLocation.IDAREAOPERATIVA;
+    docPianificazione.IDLOCATION = this.selectedLocation.ID;
+    docPianificazione.IDCAMPO = this.selectedCampo.ID;
+    docPianificazione.IDSPORT = this.selectedSport.ID;
+    docPianificazione._DESCRCAMPO = this.selectedCampo.DENOMINAZIONE;
+    docPianificazione._DESCRSPORT = this.selectedSport.DENOMINAZIONE;
+
+    //Indico al servizio di memorizzarsi la Pianificazione per poterla passare alle altre pagine
+    this.startService.setPianificazioneSingola(docPianificazione);
+
+    //Indico al servizio di mantenere (non Observable) le info del campo selezionato
+    this.startService.setSelectedCampoPrenotazione(this.selectedCampo);
+
+    //Chiedo al server il calcolo del totale
+    this.calcolaTotale();
   }
 
    /**

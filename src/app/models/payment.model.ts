@@ -341,7 +341,7 @@ export class PaymentConfiguration {
     message: string;
     private _responseJson: string;
     tipoPagamento : PaymentChannel
-    idPagamento : String;
+    idPagamento : string;
     desktop : boolean; //la modalità di richiesta (desktop o mobile)
 
     constructor(tipoPagamento : PaymentChannel, desktop: boolean) {

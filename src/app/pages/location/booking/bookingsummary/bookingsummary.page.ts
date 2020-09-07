@@ -426,6 +426,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                 //E' andato tutto bene
                 this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
                 this.activePrenotazione.RESIDUO = 0;
+                this.activePrenotazione.IDTRANSACTION = response.idPagamento;
                 this.onPaymentSuccess(response);
               }
               else{
@@ -468,6 +469,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               // è andato tutto bene
               this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
               this.activePrenotazione.RESIDUO = 0;
+              this.activePrenotazione.IDTRANSACTION = risposta.idPagamento;
               this.showMessage(risposta.message);
               this.onPaymentSuccess(risposta);
             }
@@ -499,7 +501,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    */
   onPaymentSuccess(resultPayment?: PaymentResult) {
     //Pagamento avvenuto correttamente
-
     //Posso salvare la prenotazione e poi scappare
         //Visualizzo il loading controller
         this.loadingController.create({

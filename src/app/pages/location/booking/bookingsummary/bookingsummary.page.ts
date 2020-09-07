@@ -354,15 +354,13 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    * Versione Web viene aperta una modale per pagare
    */
   onExecPayment() {
-    let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
-    let resPay: PaymentResult;
 
     if (this.selectedPayment) {
 
       //Pagamento non dentro all'App
       if (this.selectedPayment.paymentInApp == false) {
 
-        let paymentResult = new PaymentResult(this.selectedPayment.channel);
+        let paymentResult = new PaymentResult(this.selectedPayment.channel, this.startService.isDesktop);
 
         this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
         this.activePrenotazione.INCASSATO = 0;
@@ -374,32 +372,92 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       else {
         //Altre forme di pagamento
         //Pagamento gestito nel Servizio Payment
-      if (!this.startService.isDesktop) {
+        if (!this.startService.isDesktop) {
+  
+          this.payMobile();  
+        }
+        else {
 
-        // //Mi metto in attesa dell'Observable di ricezione del pagamento
-        // this.onWaitingPaymentResult();
+          //Ambiente Web
 
-        // //Richiedo il pagamento
-        // this.startService.execPayment(this.selectedPayment, 
-        //                               this.activePrenotazione.TOTALE, 
-        //                               'EUR',
-        //                               descrizioneAcquisto);
+          this.payDesktop();
+        }
+      }
 
-        // //Ora attendo la risposta con l'Observable
+    }
+    else {
+      this.showMessage('Selezionare un pagamento');
+    }
 
-        //Qui devo eseguire il pagamento
-        this.loadingController.create({
-          message: 'Pagamento in corso...',
-          spinner: 'circular',
-          backdropDismiss: true
-        }).
-        then(elLoading => {
-          
-          //Presento il loading
-          elLoading.present();
 
-          //Faccio la richiesta al servizio di pagamento
-          this.startService.execPayment(this.selectedPayment, this.activePrenotazione.TOTALE, 'EUR', descrizioneAcquisto)
+  }
+
+
+
+  private payDesktop() {
+    let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
+    switch (this.selectedPayment.channel) {
+      case PaymentChannel.paypal:
+        //Apro la modale del pagamento Paypal
+        this.modalCtrl.create({
+          component: PaypalPage,
+          componentProps: {
+            paymentConfig: this.selectedPayment,
+            amount: this.activePrenotazione.TOTALE,
+            currency: 'EUR',
+            description: descrizioneAcquisto
+          }
+        })
+          .then(modal => {
+
+            //mostro la modale di pagamento
+            modal.present();
+
+            //quando la modale si chiude 
+            modal.onDidDismiss()
+            .then((data) => {
+
+              let response : PaymentResult;
+              response = data['data'];
+              console.log ('Risposta parsed');
+              console.log (response);
+
+              if (response.paymentExecuted&&response.result){
+                //E' andato tutto bene
+                this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
+                this.activePrenotazione.RESIDUO = 0;
+                this.onPaymentSuccess(response);
+              }
+              else{
+                //il pagamento non è riuscito
+                this.onPaymentFailed(response);
+              }
+            })
+          });
+
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private payMobile() {
+    let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
+
+    //Qui devo eseguire il pagamento
+    this.loadingController.create({
+      message: 'Pagamento in corso...',
+      spinner: 'circular',
+      backdropDismiss: true
+    }).
+      then(elLoading => {
+
+        //Presento il loading
+        elLoading.present();
+
+        //Faccio la richiesta al servizio di pagamento
+        this.startService.execPayment(this.selectedPayment, this.activePrenotazione.TOTALE, 'EUR', descrizioneAcquisto)
           .then(risposta => {
 
             //quando arriva la risposta
@@ -413,7 +471,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               this.showMessage(risposta.message);
               this.onPaymentSuccess(risposta);
             }
-            else{
+            else {
 
               //Il pagamento non è andato a buon fine
               this.showMessage(risposta.message);
@@ -424,50 +482,16 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
 
           })
-          .catch((risposta:PaymentResult) => {
+          .catch((risposta: PaymentResult) => {
             //qualcosa è andato storto
             elLoading.dismiss();
 
             //Esecuzione fallita
-            this.onPaymentFailed(risposta);            
-            
-          })
-        });
-        
-      }
-      else {
-        //Ambiente Web
-        switch (this.selectedPayment.channel) {
-          case PaymentChannel.paypal:
-              //Apro la modale del pagamento Paypal
-              this.modalCtrl.create({
-                component: PaypalPage,
-                componentProps: {
-                  paymentConfig: this.selectedPayment,
-                  amount: this.activePrenotazione.TOTALE,
-                  currency: 'EUR',
-                  description: descrizioneAcquisto
-                }
-              })
-              .then(modal => modal.present());
+            this.onPaymentFailed(risposta);
 
-            break;
-        
-          default:
-            break;
-        }
-      }
-      }
-
-    }
-    else {
-      this.showMessage('Selezionare un pagamento');
-    }
-
-
+          });
+      });
   }
-
-
 
   /**
    * Pagamento andato a buon fine

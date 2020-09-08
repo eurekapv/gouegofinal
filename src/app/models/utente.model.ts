@@ -1,8 +1,9 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { Sesso, TargetSesso } from './valuelist.model';
+import { Sesso, TargetSesso, TipoVerificaAccount } from './valuelist.model';
 import { UtenteLivello } from './utentelivello.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
+import { Gruppo } from './gruppo.model';
 
 
 export class Utente extends IDDocument {
@@ -280,6 +281,112 @@ export class Utente extends IDDocument {
     }
 
 
+    get anagraficaOk() {
+        let error = false;
+        if (!(
+            this.COGNOME
+            &&this.NOME
+            &&this.INDIRIZZO
+            &&this.CAP
+            &&this.COMUNE
+            &&this.PROVINCIA
+            &&this.ISOSTATO
+            &&this.SESSO
+            &&this.NATOIL
+            &&this.NATOA
+            &&this.NATOCAP
+            &&this.NATOPROV
+            &&this.NATOISOSTATO
+            &&this.CODICEFISCALE
+        )){
+            error = true;
+        }
+        if (
+            !error 
+            &&this.NOME != ''
+            &&this.INDIRIZZO!= ''
+            &&this.CAP!= ''
+            &&this.COMUNE!= ''
+            &&this.PROVINCIA!= ''
+            &&this.ISOSTATO!= ''
+            &&this.NATOA!= ''
+            &&this.NATOCAP!= ''
+            &&this.NATOPROV!= ''
+            &&this.NATOISOSTATO!= ''
+            &&this.CODICEFISCALE!= ''
+        )
+
+        return !error;
+    }
+
+
+    /**
+     * la funzione restituisce i parametri da passare alla verifyPage, per eseguire tutte le verifiche ancora necessarie
+     * secondo quanto richiesto dal docGruppo. se non ci sono verifiche necessarie, restituisce undefined
+     * @param docGruppo il gruppo sportivo per il quale eseguire l'operazione
+     */
+    getParamsVerifica(docGruppo : Gruppo) : ParamsVerifica{
+        let needVerifyMail: boolean = false;
+        let needVerifyTel: boolean = false;
+        let needUpdateProfile: boolean = false;
+
+        if (docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemail || docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms){
+            //il gruppo richiede la verifica della mail
+
+            if (!this.VERIFICATAMAIL){
+                //non ho verificato la mail, devo farlo
+                needVerifyMail=true;
+            }
+            
+        }
+        if (docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificasms || docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms){
+            //il gruppo richiede la verifica del telefono
+
+            if (!this.VERIFICATAMOBILE){
+                //non ho verificato il telefono, devo farlo
+                needVerifyTel=true;
+            }
+            
+        }
+
+        if (!this.anagraficaOk){
+
+            //devo aggiornare l'anagrafica
+            needUpdateProfile = true;
+        }
+
+        //ora creo i parametri
+        let params = undefined;
+
+        if (needVerifyMail || needVerifyTel || needUpdateProfile){
+
+            //se c'è qualcosa da fare, istanzio params e lo valorizzo
+            params = new ParamsVerifica();
+            if (needVerifyMail && needVerifyTel){
+                //devo verificare sia mail che telefono
+                params.tipoVerifica = TipoVerificaAccount.verificaemailsms
+            }
+            else if (needVerifyMail){
+                //devo verificare solo la mail
+                params.tipoVerifica = TipoVerificaAccount.verificaemail;
+            }
+            else if (needVerifyTel){
+                //devo verificare solo il tel
+                params.tipoVerifica = TipoVerificaAccount.verificasms;
+            }
+            else{
+                //non devo verificare niente
+                params.tipoVerifica = TipoVerificaAccount.noverifica
+            }
+            //segno nei params se aggionare o meno l'anagrafica
+            params.updateDocUtente = needUpdateProfile;
+        }
+        
+        //ritorno i parametri. se non c'è nulla da verificare, params sarà UNDEFINED    
+        return params;
+    }
+
+
 }
 
 export class storageUtente {
@@ -325,4 +432,10 @@ export class storageUtente {
             this.cripted = myObj.cripted;
         }
     }
+}
+
+export class ParamsVerifica{
+
+    tipoVerifica : TipoVerificaAccount;
+    updateDocUtente : boolean;
 }

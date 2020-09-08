@@ -6,7 +6,7 @@ import { Location } from 'src/app/models/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Campo } from 'src/app/models/campo.model';
-import { Utente } from 'src/app/models/utente.model';
+import { Utente, ParamsVerifica } from 'src/app/models/utente.model';
 import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
 import { SlotDay } from 'src/app/models/imdb/slotday.model';
 import { SlotTime } from 'src/app/models/imdb/slottime.model';
@@ -16,6 +16,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { Sport } from 'src/app/models/sport.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
+import { Gruppo } from 'src/app/models/gruppo.model';
+import { VerifyPage } from '../../auth/verify/verify.page';
 
 
 
@@ -524,9 +526,27 @@ export class BookingPage implements OnInit, OnDestroy {
     }
     else {
 
-      //TODO QUI BISOGNA CONTROLLARE SE VERIFICARE TEL/EMAIL/AGGIUNGERE DATI
+      let gruppo : Gruppo;
 
-      this.execPrenotazione(docPianificazione);
+      let paramsVerifica : ParamsVerifica;
+      paramsVerifica = this.docUtente.getParamsVerifica(this.startService.actualStartConfig.gruppo)
+      if (paramsVerifica){
+        //se ci sono parametri, significa che devo chiamare la pagina di verifica
+        this.modalCtrl.create({
+          component: VerifyPage,
+          componentProps:{
+            params: paramsVerifica
+          } 
+        })
+        .then(elModal => {
+          elModal.present();
+        })
+      }
+      else{
+        //sono loggato e l'account è completo; posso prenotare
+        this.execPrenotazione(docPianificazione);
+
+      }
 
       
     }

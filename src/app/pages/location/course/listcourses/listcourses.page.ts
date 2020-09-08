@@ -28,6 +28,7 @@ enum PageState{
 })
 export class ListcoursesPage implements OnInit {
 
+
   pageState : typeof PageState = PageState;
   idLocation = '';
 
@@ -44,6 +45,8 @@ export class ListcoursesPage implements OnInit {
   userLogged= false
 
   statoPagina = PageState.TUTTI;
+
+  showTabs = true;
 
   
 
@@ -274,6 +277,15 @@ export class ListcoursesPage implements OnInit {
     //this.testingDecodeAll(corso);
   }
 
+
+  onScroll(event:any){
+    if (event['detail']['deltaY']>100){
+      this.showTabs = false;
+    }
+    else if (event['detail']['deltaY']<100){
+      this.showTabs = true;
+    }
+  }
 
 }
 

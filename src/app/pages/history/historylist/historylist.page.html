@@ -1,8 +1,10 @@
  <ion-header>
   <ion-toolbar color="primary">
+
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
+
     <ion-title *ngIf="selectedView=='corsi'">I miei corsi</ion-title>
     <ion-title *ngIf="selectedView=='prenotazioni'">Le mie prenotazioni</ion-title>
 
@@ -10,14 +12,25 @@
       <ion-button (click)="onClickSettings()" >
         <ion-icon name="settings-outline">
         </ion-icon>
-
       </ion-button>
-
     </ion-buttons>
+
+  </ion-toolbar>
+  <ion-toolbar color="" *ngIf="showTabs">
+    <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)" mode="md">
+      <ion-segment-button class="ion-no-padding" value="prenotazioni" layout="icon-start">
+        <ion-icon name="calendar"></ion-icon>
+        Prenotazioni
+      </ion-segment-button>
+      <ion-segment-button value="corsi" layout="icon-start">
+        <ion-icon name="school"></ion-icon>
+        corsi
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content scrollEvents (ionScroll)="onScroll($event)">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -96,14 +109,5 @@
 </ion-content>
 
 <ion-footer>
-  <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)" mode="md">
-    <ion-segment-button class="ion-no-padding" value="prenotazioni" layout="icon-start">
-      <ion-icon name="calendar"></ion-icon>
-      Prenotazioni
-    </ion-segment-button>
-    <ion-segment-button value="corsi" layout="icon-start">
-      <ion-icon name="school"></ion-icon>
-      corsi
-    </ion-segment-button>
-  </ion-segment>
+  
 </ion-footer>

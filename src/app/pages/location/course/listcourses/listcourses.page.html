@@ -13,10 +13,30 @@
     </ion-buttons>
 
   </ion-toolbar>
+
+  <ion-toolbar color="" *ngIf="showTabs">
+    <!-- BOTTONI SEGMENTATI -->
+    <ion-segment 
+    *ngIf="userLogged" 
+      (ionChange)="onChangeSegmentCorsi($event)"
+      color="medium"
+      value="corsiall"
+      id="crs:button"
+    >
+      <ion-segment-button [value]="pageState.TUTTI">
+          <ion-label>Tutti</ion-label>
+      </ion-segment-button>
+      
+      <ion-segment-button [value]="pageState.MIEI">
+        <ion-label>Mio Livello</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+
 </ion-header>
  
 
-<ion-content>
+<ion-content scrollEvents (ionScroll)="onScroll($event)">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -51,9 +71,10 @@
       </ion-row>
     </ion-grid>
 
-
-
   </div>
+
+
+
 
   <!-- VISUALIZZAZIONE MIEI -->
   <div *ngIf="listCorsiMioLivello.length !== 0 && statoPagina==pageState.MIEI" id="crs-lista">
@@ -107,20 +128,6 @@
 </ion-content>
 
 <ion-footer>
-   <!-- NON IN RICERCA - PER UTENTE LOGGATO -->
-  <!-- BOTTONI SEGMENTATI -->
-  <ion-segment 
-  *ngIf="userLogged" 
-  (ionChange)="onChangeSegmentCorsi($event)"
-  color="medium"
-  value="corsiall"
-       id="crs:button">
-       <ion-segment-button [value]="pageState.TUTTI">
-         <ion-label>Tutti</ion-label>
-    </ion-segment-button>
-    
-    <ion-segment-button [value]="pageState.MIEI">
-      <ion-label>Mio Livello</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+  
+
 </ion-footer>

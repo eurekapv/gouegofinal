@@ -27,9 +27,12 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 
+ion-footer.ios{
+  padding-bottom: 10px;
+}
+
 
 //questa serve a creare lo scrolling orizzontale
-
 div[scrollX=true] {
     display: flex;
     flex-wrap: nowrap;
@@ -45,6 +48,7 @@ div[scrollX=true] {
   .icon-sport{
     font-family: "sports";
     font-size: 18px;
+    font-style: normal !important;
     
     //padding-left: 20px;
 }
@@ -88,10 +92,6 @@ div[scrollX=true] {
   }
 
 
-  .sport-icon  {
-    font-family: "sports";
-  }
-
   //questa la uso per passare gli stili quando apro il componente auth in modale
   .modal-login{
     >div{
@@ -103,7 +103,3 @@ div[scrollX=true] {
       }
   }
 
-  /*
-  Per aggiungere una icona sport usare il tag i
-  <i class="sport-icon">&#xe804;</i> Valore Esadecimale dell'icona
-  */

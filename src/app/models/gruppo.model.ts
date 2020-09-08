@@ -1,5 +1,5 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { TipoSocieta } from '../models/valuelist.model';
+import { TipoSocieta, TipoVerificaAccount } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { PrivateImage } from './privateimage.model';
 
@@ -21,7 +21,7 @@ export class Gruppo extends IDDocument {
     URLPRIVACY: string;
     PRIVATEIMAGE: PrivateImage[];
     APPFLAGREGISTRAZIONE: boolean;
-    APPTIPOVERIFICA: number;
+    APPTIPOVERIFICA: TipoVerificaAccount;
 
   
     constructor(onlyInstance?:boolean) {

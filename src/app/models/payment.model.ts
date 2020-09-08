@@ -363,6 +363,7 @@ export class PaymentConfiguration {
                 this.message = 'Pagamento in struttura';
 
             break;
+            
             case PaymentChannel.paypal:
                 this.paymentExecuted = false;
                 this.result = false;

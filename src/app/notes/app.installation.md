@@ -149,6 +149,11 @@ Aggiungere in capacitor.config.json
 }
 
 
+Installazione "Choser" (per caricamento documenti)
+>ionic cordova plugin add cordova-plugin-chooser
+>npm install @ionic-native/chooser
+
+
 
 
 

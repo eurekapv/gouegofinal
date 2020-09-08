@@ -20,7 +20,15 @@
 
     <ion-label>Nessun documento</ion-label>
     <ion-label>disponibile</ion-label>
-  </div>
 
+    
+
+  </div>
+  
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="onClickAdd()" color="primary">
+      <ion-icon name="add" ></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   
 </ion-content>

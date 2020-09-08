@@ -33,6 +33,8 @@ export class HistorylistPage implements OnInit {
   listUtenteCorsi: UtenteIscrizione[];
   subListUtenteIscrizioni: Subscription;
 
+  showTabs: boolean = true;
+
 
   today = new Date();
 
@@ -277,6 +279,15 @@ export class HistorylistPage implements OnInit {
 
   onClickSettings(){
     this.navCtrl.navigateForward('/account');
+  }
+
+  onScroll(event:any){
+    if (event['detail']['deltaY']>100){
+      this.showTabs = false;
+    }
+    else if (event['detail']['deltaY']<100){
+      this.showTabs = true;
+    }
   }
 
 

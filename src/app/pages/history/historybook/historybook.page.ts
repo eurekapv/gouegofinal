@@ -6,7 +6,7 @@ import { Campo } from 'src/app/models/campo.model';
 import { Location } from 'src/app/models/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, ToastController, LoadingController} from '@ionic/angular';
+import { NavController, ToastController, LoadingController, AlertController} from '@ionic/angular';
 
 //per lo share mobile con immagini
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
@@ -23,6 +23,7 @@ import { PageType, SettoreAttivita } from 'src/app/models/valuelist.model'
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { PaymentConfiguration, PaymentChannel, Payment } from 'src/app/models/payment.model';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -59,7 +60,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
               private socialSharing: SocialSharing,
               private docStructureService: DocstructureService,
               private loadingController: LoadingController,
-              private docstructrureService: DocstructureService
+              private docstructrureService: DocstructureService,
+              private alertController: AlertController
               ) { }
 
   //In paramMap leggo IDPrenotazione
@@ -163,7 +165,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                                                       //Imposto i dati per i pagamenti
                                                                       this.setPaymentFromArea();
 
-
+                                                                      console.log(this.myPrenotazione)
                                                                       //Qui è arrivato tutto esattamente
                                                                       this.loadingController.dismiss();
                                                                   })
@@ -348,5 +350,24 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   }
 
+
+  onClickTrash(docPianificazione : PrenotazionePianificazione){
+    //per ora no faccio nulla, faccio solo uscire la msgbox
+    this.alertController.create({
+      header: 'Cancellazione',
+      message: 'Contattaci direttamente per cancellare questa prenotazione',
+      backdropDismiss: true,
+      buttons: [
+        {
+          text: 'Ok',
+          handler: ()=>{this.alertController.dismiss()}
+        }
+      ]
+      
+    })
+    .then(elAlert => {
+      elAlert.present();
+    })
+  }
 
 }

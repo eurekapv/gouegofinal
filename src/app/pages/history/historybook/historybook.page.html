@@ -29,7 +29,7 @@
         </div>
     
         <div class="ion-text-center div-btns">
-          <ion-button layout="icon-top" fill="clear" size="large" disabled>
+          <ion-button layout="icon-top" fill="clear" size="large" (click)="onClickTrash()">
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>
           <ion-button fill="clear" size="large" href="{{'mailto:'+docPianificazione['_EMAIL_Location']+'?subject=Prenotazione numero '+docPianificazione.PROGRESSIVO}}">
@@ -51,7 +51,7 @@
               <h2>{{docPianificazione['_DENOMINAZIONE_Sport']}}</h2>
             </ion-label>
             <ion-chip color="primary">
-              <i class="sport-icon"><span [innerHTML]="getIcon(docPianificazione.IDSPORT)"></span></i> 
+              <i class="icon-sport"><span [innerHTML]="getIcon(docPianificazione.IDSPORT)"></span></i> 
             </ion-chip>
           </ion-item>
           <ion-item>
@@ -66,7 +66,8 @@
           <ion-item>
             <ion-label>
               <h2>{{docPianificazione['_DENOMINAZIONE_Campo']}}</h2>
-              <p>{{docPianificazione['_INDIRIZZO_Location']}}</p>
+              <p>{{docPianificazione['_COMUNE_Location']|titlecase}}</p>
+              <p>{{docPianificazione['_INDIRIZZO_Location']|titlecase}}</p>
             </ion-label>
             <ion-chip color="primary">
               {{docPianificazione.NUMPARTECIPANTI}}
@@ -78,14 +79,30 @@
     </ion-slide>
   </ion-slides>
     <ion-item color="light">
-      PAGAMENTO:
+      PAGAMENTO
     </ion-item>
     <ion-item lines="full">
       <ion-label slot="start">
-        Importo:
+        Importo
       </ion-label>
       <ion-label style="text-align: right;">
         {{myPrenotazione.TOTALE | currency : 'EUR'}}
+      </ion-label>
+    </ion-item>
+    <ion-item lines="full"  *ngIf="myPrenotazione.TOTALE!=myPrenotazione.INCASSATO">
+      <ion-label slot="start">
+        Pagato
+      </ion-label>
+      <ion-label style="text-align: right;">
+        {{myPrenotazione.INCASSATO | currency : 'EUR'}}
+      </ion-label>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-label slot="start">
+        Residuo
+      </ion-label>
+      <ion-label style="text-align: right;">
+        {{myPrenotazione.RESIDUO | currency : 'EUR'}}
       </ion-label>
     </ion-item>
   </div>

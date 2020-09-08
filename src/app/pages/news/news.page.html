@@ -15,6 +15,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <div class="sfondo">
     <!-- NEWS PRESENTI -->
     <ion-list *ngIf="listNews.length !== 0">
       <div *ngFor="let news of listNews">
@@ -26,5 +27,7 @@
     <ion-list *ngIf="listNews.length === 0 ">
         <app-news-eventi [myNews]="noNewsCard" ></app-news-eventi>
     </ion-list>
+
+  </div>
 
 </ion-content>

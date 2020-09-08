@@ -112,6 +112,7 @@ export class PrenotazionePianificazione extends IDDocument {
         objForeign = new RequestForeign('IDLOCATION');
         objForeign.addDescribeField('DENOMINAZIONE');
         objForeign.addDescribeField('INDIRIZZO');
+        objForeign.addDescribeField('COMUNE');
         objForeign.addDescribeField('EMAIL');
 
         arRequest.push(objForeign);

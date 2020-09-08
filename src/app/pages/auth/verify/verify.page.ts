@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ModalController, LoadingController, ToastController, NavController, AlertController, NavParams } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { StartService } from 'src/app/services/start.service';
-import { Utente } from 'src/app/models/utente.model';
+import { Utente, ParamsVerifica } from 'src/app/models/utente.model';
 import { Plugins } from '@capacitor/core';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType, RequestPincodeUse, ValueList, Sesso } from 'src/app/models/valuelist.model';
@@ -25,7 +25,7 @@ import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 export class VerifyPage implements OnInit {
 
     //l'oggetto ricevuto come parametro all'apertura della videata in modale
-    params
+    params : ParamsVerifica = new ParamsVerifica
 
    //per utilizzare l'enum nell'html
    pageState: typeof PageState=PageState;
@@ -619,115 +619,7 @@ export class VerifyPage implements OnInit {
    /**
     * Invia al server i dati di registrazione
     */
-   execAggiornaDatiOld(myCodiceFiscale: CodiceFiscale) {
-     let pwd = '';
-     let pwdToSend = '';
-     let splitPwd:string[] = [];
-     let useCrypter: boolean = false;
- 
-       //Imposto il nome e cognome
-       this.docUtente.NOME=this.formRegister.value.name;
-       this.docUtente.COGNOME=this.formRegister.value.surname;
- 
-       //Sarebbe meglio criptare la password con BCrypt ma per ora confidiamo nel https
-       //e quindi non la cripto
-       useCrypter = false;
- 
-       pwd = this.formRegister.value.psw;
- 
-       if (useCrypter) {
-         pwdToSend = this.cryptoService.getBCrypt(pwd);
-       }
-       else {
-         pwdToSend = pwd;
-       }
- 
-       //Splitto la stringa in 2 stringhe che verrà ricostruita dal server
-       splitPwd = this.cryptoService.mySplitPassword(pwdToSend);
- 
-       if (splitPwd) {
-         //Metto la prima parte della password dentro al docRichiesta
-         this.docRichiestaCodici.TOKEN = splitPwd[0];
- 
-         if (useCrypter) {
-           //La seconda parte dentro a SHAPASSWORD
-           //nel caso di criptata
-           this.docUtente.SHAPASSWORD = splitPwd[1];
-           this.docUtente.INPUTPASSWORD = '';
-         }
-         else {
-           this.docUtente.INPUTPASSWORD = splitPwd[1];
-           this.docUtente.SHAPASSWORD = '';
-         }
- 
-         //Inserisco il codice fiscale
-         this.docUtente.CODICEFISCALE = myCodiceFiscale.codiceFiscale;
-         this.docUtente.SESSO = myCodiceFiscale.sesso;
-         this.docUtente.NATOIL = myCodiceFiscale.dataNascita;
-         this.docUtente.NATOA = myCodiceFiscale.comune;
-         this.docUtente.NATOCAP = myCodiceFiscale.cap;
-         this.docUtente.NATOPROV = myCodiceFiscale.provincia;
- 
- 
-         this.docUtente.WEBLOGIN = this.formContact.value.email;
-         this.docUtente.EMAIL = this.formContact.value.email;
-         this.docUtente.MOBILENUMBER = this.formContact.value.telephone;
    
-         if (this.formRegister.value.chkNewsletter == true) {
-           this.docUtente.NEWSLETTER = true;
-         }
-         else {
-           this.docUtente.NEWSLETTER = false;
-         }
-   
-         //Attivo il loading e invio i dati al server
-         this.loadingController
-           .create({
-             message: 'Aggiornamento in corso...'
-           })
-           .then(elLoading => {
-   
-             //Creo il loading
-             elLoading.present();
-   
-             this.startService
-                 .registrationFinalize(this.docUtente, this.docRichiestaCodici)
-                 .then((response:AccountOperationResponse) => {
-   
-                     //Chiudo il Loading
-                     elLoading.dismiss();
-   
-                     //Wow registrazione conclusa
-   
-                     //Posso spostarmi alla pagina successiva
-                     this.nextStepRegistration();
-   
-                     //Dentro a IDREFER c'e' il GUID dell'Utente
- 
-                     //Faccio un accesso automatico dell'utente
-                     this.loginAfterRegister(this.docUtente.WEBLOGIN, pwd);
-   
-                 })
-                 .catch(error => {
-                       //Chiudo il Loading
-                       elLoading.dismiss();
-   
-                       //Mostro il messaggio
-                       this.showMessage(error);
-                 });
-   
-               
-           });
- 
-       }
-       else {
-         this.showMessage('Dati non corretti');
-       }
-       
- 
-     
- 
-   }
 
    execAggiornaDati() {
 
@@ -780,7 +672,6 @@ export class VerifyPage implements OnInit {
                         this.showMessage('Info Aggiornate');
                         this.closeModal();
 
-                        this.showMessage('Ops..errore aggiornamento');
                   })
                   .catch(error => {
                     elLoading.dismiss();

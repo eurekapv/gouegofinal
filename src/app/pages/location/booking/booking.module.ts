@@ -10,6 +10,8 @@ import { BookingPage } from './booking.page';
 import { HomePageModule } from '../../home/home.module';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import{ BookingsummaryPageModule } from './bookingsummary/bookingsummary.module'
+import { VerifyPageModule } from 'src/app/pages/auth/verify/verify.module'
+import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
 
 
 @NgModule({
@@ -20,10 +22,12 @@ import{ BookingsummaryPageModule } from './bookingsummary/bookingsummary.module'
     IonicModule,
     BookingPageRoutingModule,
     HomePageModule,
-    BookingsummaryPageModule
+    BookingsummaryPageModule,
+    VerifyPageModule
+
     
   ],
   declarations: [BookingPage],
-  entryComponents: [BookingsummaryPage]
+  entryComponents: [BookingsummaryPage, VerifyPage]
 })
 export class BookingPageModule {}

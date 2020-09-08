@@ -40,8 +40,7 @@ import { CodiceFiscale } from '../models/codicefiscale.model';
 import { TipoPrivateImage } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { OccupazioniService } from './occupazioni.service';
-import { IDDocument } from '../library/models/iddocument.model';
-import { decode } from 'punycode';
+
 import { DocstructureService } from '../library/services/docstructure.service';
 import { OccupazioneCampi } from '../models/occupazionecampi.model';
 import { RequestParams } from '../library/models/requestParams.model';

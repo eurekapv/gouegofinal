@@ -14,12 +14,12 @@
 
     <ion-item button (click)="showPicker()">
       <ion-icon slot="start" name="document-outline"></ion-icon>
-        <p>{{selectedDocType? selectedDocType.CLASSE : 'Tipo di documento'}}</p>
+        <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : 'Tipo di documento'}}</p>
     </ion-item>
 
     <!-- SE  SIAMO SU DESKTOP -->
     <ion-item *ngIf="isDesktop">
-      <ion-input type="file" [(ngModel)]="loadedFile"></ion-input>
+      <ion-input type="file" (change)="onDesktopUpload($event)"></ion-input>
     </ion-item>
 
     <!-- SE  SIAMO SU MOBILE -->

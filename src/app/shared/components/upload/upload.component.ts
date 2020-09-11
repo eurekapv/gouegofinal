@@ -16,6 +16,8 @@ export class UploadComponent implements OnInit {
   @Input() docTypeList : TipoDocumentazione[];
 
   loadedFile : ChooserResult;
+  loadedFileUrl : string;
+
 
   selectedDocType: TipoDocumentazione;
 
@@ -33,6 +35,8 @@ export class UploadComponent implements OnInit {
   }
 
   onMobileUpload(){
+
+    //caricamento da mobile
     this.chooser.getFile()
     .then(file => {
       this.loadedFile = file;
@@ -85,7 +89,6 @@ export class UploadComponent implements OnInit {
           text: 'Conferma',
           handler: (data)=>{
             this.selectedDocType= data.tipo.value;
-            console.log(this.selectedDocType)
           }
         }
       ]
@@ -95,22 +98,52 @@ export class UploadComponent implements OnInit {
     })
   }
 
-  onSubmit(){
+  onDesktopUpload(event: any){
+    let file : File = event.target.files[0];
+    console.log(file.stream);
+  }
+  
 
-    console.log(this.loadedFile);
-    if (this.loadedFile && this.selectedDocType){
-      //abbiamo tutto, posso chiudere
-      this.modalController.dismiss({
-        'loadedFile': this.loadedFile,
-        'selectedDocType' : this.selectedDocType
-      })
+  onSubmitMobile(){
+    if (this.selectedDocType && this.loadedFile){
+      this.submit(this.loadedFile.dataURI);
     }
-    else if (!this.loadedFile){
-      this.showMessage('Scegli un documento da caricare');
+    else if (!this.loadedFileUrl){
+      this.showMessage('Scegli un file da caricare');
     }
     else{
-      this.showMessage('Indica il tipo di documento che vuoi caricare');
+      this.showMessage('Seleziona il tipo di documento da caricare');
     }
+  }
+ 
+ 
+ 
+  onSubmit(){
+    if(this.isDesktop){
+
+    }
+    else{
+      this.onSubmitMobile();
+    }
+
+    
+  }
+
+  convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
+    const reader = new FileReader;
+    reader.onerror = reject;
+    reader.onload = () => {
+        resolve(reader.result);
+    };
+    reader.readAsDataURL(blob);
+  });
+
+  submit(base64){
+    //abbiamo tutto, posso chiudere
+    this.modalController.dismiss({
+      'loadedFile': base64,
+      'selectedDocType' : this.selectedDocType
+    })
   }
 
   close(){

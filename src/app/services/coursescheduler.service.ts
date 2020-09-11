@@ -31,11 +31,14 @@ export class CourseschedulerService {
    */
   request(config: StartConfiguration, idCorso: string) {
     return new Promise ((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'PIANIFICAZIONECORSO';
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+      
       let myUrl = config.urlBase + '/' + doObject;  
   
       //Nei Parametri imposto il corso richiesto

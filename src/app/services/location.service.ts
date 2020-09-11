@@ -50,11 +50,15 @@ export class LocationService {
    */
   requestByIdArea(config: StartConfiguration, idArea: string) {
     return new Promise((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'LOCATION';
       
+      //FIXME: ELIMINARE
       // In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
+
       // Nei parametri imposto l'Area Operativa
       let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
   
@@ -88,15 +92,18 @@ export class LocationService {
    */
   requestLocationByID(config: StartConfiguration, idLocation: string, _numLivelli?:number) {
     return new Promise<Location>((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'LOCATION';
   
       if (!_numLivelli) {
         _numLivelli = 3;
       }
   
+      //FIXME: ELIMINARE
       // In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
       myHeaders = myHeaders.set('child-level',_numLivelli + '');
   
       // Nei parametri imposto l'Area Operativa
@@ -200,11 +207,13 @@ export class LocationService {
    * Sincronizzo le informazioni degli sport dei campi
    */
   syncInfoCampoSport(config: StartConfiguration, idCampo: string) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    let myHeaders = config.getHttpHeaders();
+    //new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'CAMPOSPORT';
 
+    //FIXME: ELIMINARE
     // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
+    //myHeaders = myHeaders.set('appid',config.appId);
     //myHeaders = myHeaders.set('child-level',"2");
 
     // Nei parametri imposto il Campo

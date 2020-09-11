@@ -5,7 +5,7 @@ import { Sport } from '../models/sport.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { ApicallService } from './apicall.service';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
-import { error } from 'protractor';
+
 
 
 @Injectable({
@@ -47,11 +47,15 @@ export class SportService {
    */
   request(config: StartConfiguration, withLivelli?:boolean) {
     return new Promise((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'SPORT';
   
+      //FIXME: DA ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
+      //TODO: Non mi piace molto il modo
       //Nei Parametri imposto il LivelloAutorizzazione
       let myParams = new HttpParams().set('LivelloAutorizzazione','0');
       let myUrl = config.urlBase + '/' + doObject;
@@ -116,14 +120,17 @@ export class SportService {
   requestLocationSport(config: StartConfiguration, idLocation: string) {
     return new Promise((resolve, reject)=>{
       
-        const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
-                          'X-HTTP-Method-Override':'getSportLocation', 
-                          'appid':config.appId,
-                          'child-level': '1'
-                          });
+        // const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
+        //                   'X-HTTP-Method-Override':'getSportLocation', 
+        //                   'appid':config.appId,
+        //                   'child-level': '1'
+        //                   });
 
+      let myHeaders = config.getHttpHeaders();
       const myParams = new HttpParams().set('idLocation', idLocation);
       const doObject = 'SPORT';
+      myHeaders = myHeaders.append('X-HTTP-Method-Override','getSportLocation');
+      myHeaders = myHeaders.append('child-level', '1');
 
       let myUrl = config.urlBase + '/' + doObject;
 

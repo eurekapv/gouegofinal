@@ -1,6 +1,6 @@
 import { Gruppo } from './gruppo.model';
 import { TipoPrivateImage } from './valuelist.model';
-
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 export class StartConfiguration {
     private _ready: boolean; //Indica se la connessione con il server è avvenuta
@@ -27,7 +27,9 @@ export class StartConfiguration {
 
     private _idAreaSelected: string; //IDArea Operativa Selezionata
     private _urlFileServer: string; //URL per il recupero di file dal server Gouego
-    
+
+    private _authorizationAppCode: string; //Codice di autorizzazione da inviare
+        
     constructor(testingMode: boolean, secureProtocol: boolean) {
 
         this._urlComponent = 'COMPGOUEGO';
@@ -259,9 +261,49 @@ export class StartConfiguration {
         return myUrl;
     }
 
+    get authorizationAppCode(): string {
+        return this._authorizationAppCode;
+    }
 
+    set authorizationAppCode(value: string) {
+        this._authorizationAppCode = value;
+    }
+
+
+    /**
+     * Ritorna l'headerHttp da applicare con l'impostazione 
+     * @param contentType Eventuale content Type da applicare
+     */
+    getHttpHeaders(contentType?:string): HttpHeaders {
+        let content = 'application/json';
+        if (contentType && contentType.length != 0) {
+            content = contentType;
+        }
+
+        let myHeaders = new HttpHeaders({'Content-type':content});
+        myHeaders = myHeaders.append('appid',this._appId);
+        myHeaders = myHeaders.append('fromrequest','gouegoapp');
+
+        //Devo inviare il codice di autorizzazione
+        if (this._authorizationAppCode && this._authorizationAppCode.length != 0) {
+            myHeaders = myHeaders.append('authcode',this._authorizationAppCode);
+            
+        }
+
+        return myHeaders;
+    }
 
     
 
 
+}
+
+export class StartAuthorization {
+
+    result: number;
+    authcode: string;
+    GRUPPOSPORTIVO: Gruppo;
+
+    constructor() {
+    }
 }

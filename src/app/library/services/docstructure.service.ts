@@ -492,7 +492,8 @@ export class DocstructureService {
 
     return new Promise<any[]>((resolve, reject)=>{
       
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      //let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = this.myConfig.getHttpHeaders();
       let objDescriptor: Descriptor;
       let childLevel = -1;
       let orderBy: string = '';

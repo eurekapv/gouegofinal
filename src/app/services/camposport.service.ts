@@ -28,11 +28,14 @@ export class CamposportService {
   request(config: StartConfiguration, 
           idCampo: string) {
     return new Promise((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'CAMPOSPORT';
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+      
       //Nei Parametri imposto IDCampo
       let myParams = new HttpParams().set('IDCAMPO',idCampo);
       let myUrl = config.urlBase + '/' + doObject;

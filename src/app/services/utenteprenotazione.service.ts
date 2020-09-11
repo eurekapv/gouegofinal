@@ -33,12 +33,16 @@ export class UtenteprenotazioneService {
    */
   request(config: StartConfiguration, idUtente: string, maxRecord: number = 0) {
     return new Promise((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      myHeaders = myHeaders.append('order-by','desc');
+      //new HttpHeaders({'Content-type':'text/plain'});
+
       const doObject = 'UTENTEPRENOTAZIONE';
       const filterDateTime = this.getFilterDateTime();
   
+      //FIXME: ELIMINARE  
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
+      //myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
       let myUrl = config.urlBase + '/' + doObject;  
   
       //Nei Parametri imposto l'area richiesta

@@ -35,12 +35,15 @@ export class NewseventiService {
    */
   request_old(config: StartConfiguration, idArea: string, maxRecord: number = 0) {
     return new Promise((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'NEWSEVENTO';
       const filterDateTime = this.getFilterDateTime();
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
       let myUrl = config.urlBase + '/' + doObject;  
   
       //Nei Parametri imposto l'area richiesta
@@ -135,12 +138,14 @@ export class NewseventiService {
    * @param idNews News da richiedere al server
    */
   private _requestServerById(config: StartConfiguration, idNews: string) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+    let myHeaders = config.getHttpHeaders();
+    //new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'NEWSEVENTO';
     
-
+    //FIXME: ELIMINARE
     //In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
+    //myHeaders = myHeaders.set('appid',config.appId);
+
     let myUrl = config.urlBase + '/' + doObject;  
 
     //Nei Parametri imposto l'area richiesta
@@ -166,11 +171,14 @@ export class NewseventiService {
   request(config: StartConfiguration, guidArea:string, n:number){
     return new Promise<NewsEvento[]>((resolve,reject)=>{
 
-      let myHeaders = new HttpHeaders();
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders();
       const doObject = 'NEWSEVENTO';
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
       myHeaders = myHeaders.append('X-HTTP-Method-Override','GETNEXTNEWS')
       let myUrl = config.urlBase + '/' + doObject;  
   

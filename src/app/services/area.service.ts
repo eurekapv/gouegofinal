@@ -40,11 +40,15 @@ export class AreaService {
    */
   request(config: StartConfiguration, _childLevel?:number) {
     return new Promise((resolve, reject)=>{
-        let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+        let myHeaders = config.getHttpHeaders();
+        //new HttpHeaders({'Content-type':'text/plain'});
+
         const doObject = 'AREAOPERATIVA';
         
+        //FIXME: ELIMINARE
         // In Testata c'e' sempre l'AppId
-        myHeaders = myHeaders.set('appid',config.appId);
+        //myHeaders = myHeaders.set('appid',config.appId);
+
         if (!_childLevel){
           _childLevel=2;
         }

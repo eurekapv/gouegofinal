@@ -99,11 +99,15 @@ export class PrenotazioneService {
    */
   request(config: StartConfiguration) {
     return new Promise((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'PRENOTAZIONE';
       
+      //FIXME: ELIMINARE
       // In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
+
       // Nei parametri imposto il gruppo Sportivo
       let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
   
@@ -149,12 +153,15 @@ export class PrenotazioneService {
    * @param idPrenotazione IdPrenotazione 
    */
   requestById(config: StartConfiguration, idPrenotazione: string, numLivelli: number) {
-    let myHeaders = new HttpHeaders({'Content-type':'text/plain'}).append('child-level', numLivelli + '');
+    //let myHeaders = new HttpHeaders({'Content-type':'text/plain'}).append('child-level', numLivelli + '');
+    let myHeaders = config.getHttpHeaders();
     const doObject = 'PRENOTAZIONE';
     
+    //FIXME: Eliminare
     // In Testata c'e' sempre l'AppId
-    myHeaders = myHeaders.set('appid',config.appId);
+    //myHeaders = myHeaders.set('appid',config.appId);
     
+    myHeaders = myHeaders.append('child-level', numLivelli + '');
     // Nei parametri imposto idPrenotazion richiesto
     let myParams = new HttpParams().set('ID',idPrenotazione);
 
@@ -198,12 +205,16 @@ export class PrenotazioneService {
    */
   requestImporto(config: StartConfiguration) {
     let docPrenotazione = this._activePrenotazione.getValue();
-    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                       'X-HTTP-Method-Override':'MOBBOOKINGTOTALE', 
-                                       'child-level': '999',
-                                       'appid':config.appId
-                                      });
-    let myParams = new HttpParams(); 
+    // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+    //                                    'X-HTTP-Method-Override':'MOBBOOKINGTOTALE', 
+    //                                    'child-level': '999',
+    //                                    'appid':config.appId
+    //                                   });
+    let myParams = new HttpParams();
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override','MOBBOOKINGTOTALE');
+    myHeaders = myHeaders.append('child-level','999');
+
     const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
     //Quali proprietà non voglio esportare
     const noExportDO = false;
@@ -238,13 +249,17 @@ export class PrenotazioneService {
 
       return new Promise((resolve, reject)=>{
           let docPrenotazione = this._activePrenotazione.getValue();
-          const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                            'X-HTTP-Method-Override':'MOBBOOKINGSAVE', 
-                                            'child-level': '999',
-                                            'appid':config.appId
-                                            });
+          // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+          //                                   'X-HTTP-Method-Override':'MOBBOOKINGSAVE', 
+          //                                   'child-level': '999',
+          //                                   'appid':config.appId
+          //                                   });
+          let myHeaders = config.getHttpHeaders();                                            
           let myParams = new HttpParams(); 
           const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
+          //Imposto gli header aggiuntivi
+          myHeaders = myHeaders.append('X-HTTP-Method-Override','MOBBOOKINGSAVE');
+          myHeaders = myHeaders.append('child-level','999');
           //Quali proprietà non voglio esportare
           const noExportDO = false;
           const noExportPK = true;

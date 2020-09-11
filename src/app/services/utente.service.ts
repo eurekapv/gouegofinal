@@ -7,9 +7,8 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
-import { promise } from 'protractor';
 import { PostResponse } from '../library/models/postResult.model';
-import { resolve } from 'url';
+
 
 
 
@@ -56,11 +55,14 @@ export class UtenteService {
    */
   request(config: StartConfiguration, idUtente: string) {
     return new Promise((resolve, reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'UTENTE';
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
       let myParams = new HttpParams().set('ID',idUtente);
       let myUrl = config.urlBase + '/' + doObject;
   
@@ -88,14 +90,17 @@ export class UtenteService {
   requestAuthorization(config: StartConfiguration, 
                         username: string, 
                         password: string) {
-    const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
-                                       'X-HTTP-Method-Override':'VERIFICALOGINMOB', 
-                                       'appid':config.appId,
-                                       'child-level': '2'
-                                      });
+    let myHeaders = config.getHttpHeaders();
+    // new HttpHeaders({'Content-type':'text/plain', 
+    //                                    'X-HTTP-Method-Override':'VERIFICALOGINMOB', 
+    //                                    'appid':config.appId,
+    //                                    'child-level': '2'
+    //                                   });
 
     const myParams = new HttpParams().set('Username', username).append('Password', password);
     const doObject = 'ACCOUNT';
+    myHeaders = myHeaders.append('X-HTTP-Method-Override','VERIFICALOGINMOB');
+    myHeaders = myHeaders.append('child-level','2');
 
     let myUrl = config.urlBase + '/' + doObject;
 
@@ -167,10 +172,14 @@ export class UtenteService {
     const doObject = 'UTENTE';
 
     const metodo = 'updateUtente';
-    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                        'X-HTTP-Method-Override': metodo, 
-                                        'appid':config.appId
-                                      });
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
+
+    // = new HttpHeaders({'Content-type':'application/json', 
+    //                                     'X-HTTP-Method-Override': metodo, 
+    //                                     'appid':config.appId
+    //                                   });
+
     const myParams = new HttpParams();
     let body = '';
 
@@ -230,10 +239,13 @@ export class UtenteService {
 
   requestChangePassword(config: StartConfiguration, oldPsw:string, newPsw:string) {
     let actualUtente = this._utente.getValue();
-    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                       'X-HTTP-Method-Override':'CHANGEPWDMOB', 
-                                       'appid':config.appId
-                                      });
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override','CHANGEPWDMOB');
+
+    //  new HttpHeaders({'Content-type':'application/json', 
+    //                                    'X-HTTP-Method-Override':'CHANGEPWDMOB', 
+    //                                    'appid':config.appId
+    //                                   });
 
     const myParams = new HttpParams().set('GUIDUTENTE', actualUtente.ID).append('PWDATTUALE', oldPsw).append('PWDNUOVA',newPsw);
     const doObject = 'ACCOUNT';
@@ -265,10 +277,12 @@ export class UtenteService {
           //Viene effettuata una chiamata al server per ottenere
           //l'invio di una mail e/o un SMS contenente codici PIN
           const metodo = 'registrationSendCodici';
-          const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                              'X-HTTP-Method-Override': metodo, 
-                                              'appid':config.appId
-                                            });
+          let myHeaders = config.getHttpHeaders();
+          myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
+          // new HttpHeaders({'Content-type':'application/json', 
+          //                                     'X-HTTP-Method-Override': metodo, 
+          //                                     'appid':config.appId
+          //                                   });
 
           const myParams = new HttpParams();
           const doObject = 'ACCOUNT';
@@ -319,10 +333,12 @@ export class UtenteService {
   registrationVerifyCodici(config: StartConfiguration, 
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'registrationVerifyCodici';
-        const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                'X-HTTP-Method-Override': metodo, 
-                                'appid':config.appId
-                              });
+        let myHeaders = config.getHttpHeaders();
+        myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
+        // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+        //                         'X-HTTP-Method-Override': metodo, 
+        //                         'appid':config.appId
+        //                       });
 
         const myParams = new HttpParams();
         const doObject = 'ACCOUNT';
@@ -376,10 +392,12 @@ registrationFinalize(config: StartConfiguration,
 
     //Viene inviato al server il documento per chiedere la registrazione utente
     const metodo = 'registrationFinalize';
-    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                          'X-HTTP-Method-Override': metodo, 
-                          'appid':config.appId
-                        });
+    // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+    //                       'X-HTTP-Method-Override': metodo, 
+    //                       'appid':config.appId
+    //                     });
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);                        
 
     const myParams = new HttpParams();
     const doObject = 'ACCOUNT';
@@ -446,11 +464,12 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   //Viene effettuata una chiamata al server per ottenere
   //l'invio di una mail e/o un SMS contenente codici PIN
   const metodo = 'recoverySendCodici';
-  const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                          'X-HTTP-Method-Override': metodo, 
-                          'appid':config.appId
-                        });
-
+  // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+  //                         'X-HTTP-Method-Override': metodo, 
+  //                         'appid':config.appId
+  //                       });
+  let myHeaders = config.getHttpHeaders();
+  myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
   const myParams = new HttpParams();
   const doObject = 'ACCOUNT';
   let bodyRequest = '';
@@ -495,11 +514,12 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   recoveryVerifyCodici(config: StartConfiguration, 
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'recoveryVerifyCodici';
-        const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                'X-HTTP-Method-Override': metodo, 
-                                'appid':config.appId
-                              });
-
+        // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+        //                         'X-HTTP-Method-Override': metodo, 
+        //                         'appid':config.appId
+        //                       });
+        let myHeaders = config.getHttpHeaders();
+        myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
         const myParams = new HttpParams();
         const doObject = 'ACCOUNT';
         let bodyRequest = '';
@@ -544,11 +564,13 @@ recoveryFinalize(config: StartConfiguration,
 
     //Viene inviato al server il documento per chiedere la registrazione utente
     const metodo = 'recoveryFinalize';
-    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                          'X-HTTP-Method-Override': metodo, 
-                          'appid':config.appId
-                        });
+    // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+    //                       'X-HTTP-Method-Override': metodo, 
+    //                       'appid':config.appId
+    //                     });
 
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
     const myParams = new HttpParams();
     const doObject = 'ACCOUNT';
     let bodyRequest = '';
@@ -608,11 +630,12 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     //Viene effettuata una chiamata al server per ottenere
     //l'invio di una mail e/o un SMS contenente codici PIN
     const metodo = 'validationSendCodici';
-    const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                            'X-HTTP-Method-Override': metodo, 
-                            'appid':config.appId
-                          });
-  
+    // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+    //                         'X-HTTP-Method-Override': metodo, 
+    //                         'appid':config.appId
+    //                       });
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
     const myParams = new HttpParams();
     const doObject = 'ACCOUNT';
     let bodyRequest = '';
@@ -660,11 +683,12 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   validationVerifyCodici(config: StartConfiguration, 
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'validationVerifyCodici';
-        const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                'X-HTTP-Method-Override': metodo, 
-                                'appid':config.appId
-                              });
-
+        // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+        //                         'X-HTTP-Method-Override': metodo, 
+        //                         'appid':config.appId
+        //                       });
+        let myHeaders = config.getHttpHeaders();
+        myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
         const myParams = new HttpParams();
         const doObject = 'ACCOUNT';
         let bodyRequest = '';

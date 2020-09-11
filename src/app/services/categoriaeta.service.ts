@@ -34,12 +34,17 @@ export class CategoriaetaService {
    */
   request(config: StartConfiguration) {
     return new Promise((resolve,reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'CATEGORIEETA';
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
+      
       //Nei Parametri imposto il LivelloAutorizzazione
+      //TODO: Fatta cosi non mi piace
       let myParams = new HttpParams().set('LivelloAutorizzazione','0');
       let myUrl = config.urlBase + '/' + doObject;
   

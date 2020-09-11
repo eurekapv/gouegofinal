@@ -21,7 +21,7 @@ import { NewseventiService } from './newseventi.service';
 import { SlotoccupazioneService } from './slotoccupazione.service';
 import { PhotoService } from './photo.service';
 
-import { StartConfiguration } from '../models/start-configuration.model';
+import { StartConfiguration, StartAuthorization } from '../models/start-configuration.model';
 
 import { Location } from '../models/location.model';
 import { Utente, storageUtente } from '../models/utente.model';
@@ -57,10 +57,10 @@ export class StartService {
     secureProtocol = FALSE (chiamata http e non https)
   */
   //Versione Production
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
 
   //Versione LocalTest
-  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
   
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
@@ -114,8 +114,82 @@ export class StartService {
       });
   }
 
-  /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
+
+    /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
   requestStartAuthorization() {
+
+      const doObject = 'AUTHORIZATION';
+      const method = 'requestAuthorization';
+
+      const actualStartConfig = this._startConfig.getValue();
+      //Ricavo gli Header da impostare
+      let myHeaders = actualStartConfig.getHttpHeaders();
+      myHeaders = myHeaders.append('X-HTTP-Method-Override', method);
+
+      //Aggiungo i parametri di chiamata
+      let myParams = new HttpParams().set('withimages', '1');
+      myParams = myParams.append('withoptions','1');
+
+      //Url da chiamare
+      let myUrl = actualStartConfig.urlBase + '/' + doObject;
+  
+      
+      // Effettuo la chiamata per l'autorizzazione
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .subscribe(resultData => {
+
+          console.log(resultData);
+
+          let objAuth: StartAuthorization = resultData;
+
+          if (objAuth.result == -1 && objAuth.authcode && objAuth.authcode.length != 0) {
+
+            // Sistemo l'oggetto di configurazione 
+            // ed emetto un evento di Cambio
+            this.onAuthorizationGrant(objAuth);
+
+          }
+          else {
+            console.log('Authorization failed');
+          }
+        },error => {
+          console.log('Comunication Error');
+        });
+        
+  
+        
+    }
+
+  //Autorizzazione ricevuta
+  onAuthorizationGrant(objAuth: StartAuthorization) {
+
+    let elStartConfig = this._startConfig.getValue();
+
+    //Scrivo in console
+    LogApp.consoleLog('Autorizzazione ricevuta');
+
+
+    //Sistemazione del Gruppo nell'oggetto di configurazione
+    elStartConfig.setGruppoAuthorization(objAuth.GRUPPOSPORTIVO);
+    //Sistemazione dell'authorization code da usare
+    elStartConfig.authorizationAppCode = objAuth.authcode;
+
+    //Emetto l'evento di cambio
+    this._startConfig.next(elStartConfig);
+
+    //Passo a richiedere le Aree
+    this.requestAree();
+
+    // Mi iscrivo alle modifiche dell'Area Selezionata
+    this.onChangeAreaSelezionata();
+
+    //Operazioni ulteriori a seguito dell'autorizzazione
+    this.onAfterAuthorization();
+  }    
+
+  /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
+  requestStartAuthorizationOLD() {
     let myHeaders = new HttpHeaders({'Content-type':'application/json'});
     const actualStartConfig = this._startConfig.getValue();
     const myParams = new HttpParams().set('APPID', actualStartConfig.appId);
@@ -135,7 +209,8 @@ export class StartService {
         return fullData.GRUPPOSPORTIVO.find(singleData => singleData.ID == actualStartConfig.appId)
       }))
       .subscribe(resultData => {
-        console.log(resultData);
+
+          console.log(resultData);
         // Sistemo l'oggetto di configurazione 
         // ed emetto un evento di Cambio
         this.onAuthorizationGrant(resultData);
@@ -146,7 +221,7 @@ export class StartService {
   }
 
   //Autorizzazione ricevuta
-  onAuthorizationGrant(JSONGruppo: any) {
+  onAuthorizationGrantOLD(JSONGruppo: any) {
     let elStartConfig = this._startConfig.getValue();
 
     //Scrivo in console
@@ -1022,13 +1097,16 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
   return new Promise((resolve,reject)=>{
     const doObject='GRUPPOSPORTIVO'
     let config=this._startConfig.getValue();
+    
     let myUrl = config.urlBase + '/' + doObject;  
     
-    let myHeaders=new HttpHeaders({
-      'Content-Type': 'text/plain',
-      'appid': config.appId,
-      'X-HTTP-Method-Override':'getBase64PrivateImage'
-    });
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override','getBase64PrivateImage');
+    // =new HttpHeaders({
+    //   'Content-Type': 'text/plain',
+    //   'appid': config.appId,
+    //   'X-HTTP-Method-Override':'getBase64PrivateImage'
+    // });
     
     let myParams= new HttpParams().set('Tipo', tipo+'');
 

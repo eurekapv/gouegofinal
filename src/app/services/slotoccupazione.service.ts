@@ -65,14 +65,15 @@ export class SlotoccupazioneService {
           docCampo: Campo, 
           dataGiorno: Date) {
     return new Promise((resolve, reject)=>{
-      const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-                                         'X-HTTP-Method-Override':'GETDATESLOTLOCK', 
-                                         'appid':config.appId
-                                        });
-  
+      // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
+      //                                    'X-HTTP-Method-Override':'GETDATESLOTLOCK', 
+      //                                    'appid':config.appId
+      //                                   });
+      let myHeaders = config.getHttpHeaders();
       const doObject = 'CAMPO';
       const strData = moment(dataGiorno).format('YYYY-MM-DD');
-  
+      myHeaders = myHeaders.append('X-HTTP-Method-Override','GETDATESLOTLOCK');
+      
       if (docLocation && docCampo)  {
         
         let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);

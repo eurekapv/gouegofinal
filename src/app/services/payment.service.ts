@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PaymentConfiguration, PaymentResult, PaymentChannel, EnvironmentPaypal} from '../models/payment.model';
 import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
-import { BehaviorSubject } from 'rxjs';
-import { promise } from 'protractor';
-import { resolve } from 'url';
+
 
 
 @Injectable({

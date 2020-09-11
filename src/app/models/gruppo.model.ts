@@ -22,7 +22,7 @@ export class Gruppo extends IDDocument {
     PRIVATEIMAGE: PrivateImage[];
     APPFLAGREGISTRAZIONE: boolean;
     APPTIPOVERIFICA: TipoVerificaAccount;
-
+    
   
     constructor(onlyInstance?:boolean) {
       super(onlyInstance);

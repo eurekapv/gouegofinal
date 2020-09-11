@@ -81,18 +81,22 @@ export class CourseService {
   request (config: StartConfiguration, docUser?:Utente) {
     return new Promise ((resolve, reject)=>{
 
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'CORSO';
       
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
       let myUrl = config.urlBase + '/' + doObject;  
   
       let myParams = this.getHttpParamsFilter(this._filterCorsi);
       
       //Elimino i corsi presenti
       this.emptyCorsi();
+
       //Effettuo la chiamata
       this.apiService
           .httpGet(myUrl, myHeaders, myParams)
@@ -134,12 +138,15 @@ export class CourseService {
         numLivelli='3';
       }
 
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'CORSO';
       
   
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
       myHeaders = myHeaders.set('child-level', numLivelli);
       let myUrl = config.urlBase + '/' + doObject;  
   
@@ -251,11 +258,15 @@ export class CourseService {
    */
   requestCorsoProgramma(config: StartConfiguration, idCorso: string) {
     return new Promise ((resolve,reject)=>{
-      let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'CORSOPROGRAMMA';
-      console.log('Qua');
+      
+      //FIXME: ELIMINARE
       //In Testata c'e' sempre l'AppId
-      myHeaders = myHeaders.set('appid',config.appId);
+      //myHeaders = myHeaders.set('appid',config.appId);
+
+      
       let myUrl = config.urlBase + '/' + doObject; 
       let myParams = new HttpParams().set('IDCORSO', idCorso);
   

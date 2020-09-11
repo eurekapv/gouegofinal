@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { OccupazioneCampi } from '../models/occupazionecampi.model';
-import { IDDocument, OperatorCondition } from '../library/models/iddocument.model';
+import { OperatorCondition } from '../library/models/iddocument.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { SettoreAttivita } from '../models/valuelist.model';
-import { filter } from 'rxjs/operators';
+
 import { RequestParams } from '../library/models/requestParams.model';
 
 @Injectable({
@@ -41,7 +41,7 @@ export class OccupazioniService {
         //e lo passo alla funzione addFilterCondition
         filterTipo.push(SettoreAttivita.settoreCorso);
         filterTipo.push(SettoreAttivita.settorePrenotazione);
-        console.error('QUI');
+        
         filterDocument = new OccupazioneCampi(true);
         filterDocument.DATAINIZIO = adesso;
         filterDocument.ORAINIZIO = adesso;

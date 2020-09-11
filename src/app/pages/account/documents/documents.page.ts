@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Chooser } from '@ionic-native/chooser/ngx';
-import { ToastController } from '@ionic/angular';
+import { ToastController, ModalController } from '@ionic/angular';
+import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
+import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 
 @Component({
   selector: 'app-documents',
@@ -14,9 +16,12 @@ export class DocumentsPage implements OnInit {
   listDocumenti = [];
   inRichiesta = true;
 
+  listaTipiDocumento : TipoDocumentazione[] = [];
+
   constructor(private startService: StartService,
               private chooser: Chooser,
-              private toastController: ToastController
+              private toastController: ToastController,
+              private modalController: ModalController
               ) { 
     this.inRichiesta = true;
   }
@@ -25,31 +30,27 @@ export class DocumentsPage implements OnInit {
     this.inRichiesta = false;
   }
   
+  onClickUpload(){
+    this.modalController.create({
+      component: UploadComponent,
+      componentProps: {
+        'isDesktop': this.startService.isDesktop,
+        'docTypeList': this.listaTipiDocumento
+      }
+    })
+    .then(elModal => {
+      elModal.present();
+      elModal.onWillDismiss()
+      .then(data => {
+        //se mi ha restituito dei parametri, devo fare la richiesta al server
+        if (data){
 
-  onClickAdd(){
-    if (!this.startService.isDesktop){
-      this.chooser.getFile()
-      .then(file => {
-
-        //TODO CHIAMATA AL SERVER PER SALVARE IL FILE
-        console.log(file ? file.name : 'canceled')
+        }
       })
-      .catch((error: any) => {
-        console.error(error)
-      });
-    }
-    else{
-      //TODO MANCA PARTE DESKTOP
-    }
+    })
   }
 
-  showMessage(msg: string){
-    this.toastController.create({
-      message: msg
-    })
-    .then(elToast => {
-      elToast.present();
-    })
+  upload(){
   }
 
 }

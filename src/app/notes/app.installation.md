@@ -150,10 +150,19 @@ Aggiungere in capacitor.config.json
 
 
 Installazione "Choser" (per caricamento documenti)
->ionic cordova plugin add cordova-plugin-chooser
+>npm install cordova-plugin-chooser
 >npm install @ionic-native/chooser
+>ionic cap sync
 
-
+aggiungere a config.xml
+<platform name="android">
+ <edit-config
+   file="app/src/main/AndroidManifest.xml"
+   mode="merge"
+   target="/manifest/application">
+   <application android:largeHeap="true" />
+ </edit-config>
+</platform>
 
 
 

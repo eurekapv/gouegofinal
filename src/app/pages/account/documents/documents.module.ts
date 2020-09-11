@@ -4,6 +4,11 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
+import { Chooser } from '@ionic-native/chooser/ngx';
+
+import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
+
+
 import { DocumentsPageRoutingModule } from './documents-routing.module';
 
 import { DocumentsPage } from './documents.page';
@@ -15,6 +20,8 @@ import { DocumentsPage } from './documents.page';
     IonicModule,
     DocumentsPageRoutingModule
   ],
-  declarations: [DocumentsPage]
+  declarations: [DocumentsPage, UploadComponent],
+  providers: [Chooser],
+  entryComponents: [UploadComponent]
 })
 export class DocumentsPageModule {}

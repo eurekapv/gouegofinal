@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Carica un documento</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+
+    <ion-item button (click)="showPicker()">
+      <ion-icon slot="start" name="document-outline"></ion-icon>
+        <p>{{selectedDocType? selectedDocType.CLASSE : 'Tipo di documento'}}</p>
+    </ion-item>
+
+    <!-- SE  SIAMO SU DESKTOP -->
+    <ion-item *ngIf="isDesktop">
+      <ion-input type="file" [(ngModel)]="loadedFile"></ion-input>
+    </ion-item>
+
+    <!-- SE  SIAMO SU MOBILE -->
+    <ion-item *ngIf="!isDesktop" button (click)="onMobileUpload()">
+      <ion-icon slot="start" name="folder-open-outline"></ion-icon>
+      {{loadedFile? loadedFile.name : 'Scegli File'}}
+    </ion-item>
+
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-button  expand = "block" (click)="onSubmit()">
+    <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+      Carica
+  </ion-button>
+</ion-footer>

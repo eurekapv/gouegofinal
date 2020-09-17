@@ -15,12 +15,15 @@ export class UploadComponent implements OnInit {
   @Input() isDesktop : boolean;
   @Input() docTypeList : TipoDocumentazione[];
 
+  //file caricati (sono tipi diversi a seconda se caricati da mobile o desktop)
   loadedMobileFile : ChooserResult;
   loadedDesktopFile : File;
-  loadedFileUrl : string;
 
-
+  //Tipo di documento che si desidera caricare
   selectedDocType: TipoDocumentazione;
+
+  //Descrizione opzionale del documento
+  docDescription = '';
 
  
 
@@ -122,7 +125,7 @@ export class UploadComponent implements OnInit {
     if (this.selectedDocType && this.loadedMobileFile){
       this.submit(this.loadedMobileFile.dataURI);
     }
-    else if (!this.loadedFileUrl){
+    else if (!this.loadedMobileFile){
       this.showMessage('Scegli un file da caricare');
     }
     else{
@@ -145,7 +148,7 @@ export class UploadComponent implements OnInit {
         this.submit(base64);
       })
     }
-    else if (!this.loadedFileUrl){
+    else if (!this.loadedDesktopFile){
       this.showMessage('Scegli un file da caricare');
     }
     else{
@@ -180,7 +183,8 @@ export class UploadComponent implements OnInit {
     //abbiamo tutto, posso chiudere
     this.modalController.dismiss({
       'loadedFile': base64,
-      'selectedDocType' : this.selectedDocType
+      'selectedDocType' : this.selectedDocType,
+      'docDescription' : this.docDescription
     })
   }
 

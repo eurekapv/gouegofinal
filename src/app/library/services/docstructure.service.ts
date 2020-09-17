@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IDDocument, OperatorCondition, FilterCondition } from '../models/iddocument.model';
-import {RequestParams, RequestDecode, RequestForeign } from '../models/requestParams.model';
+import {RequestParams, RequestDecode, RequestForeign, PostParams } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
 import { ApicallService } from '../../services/apicall.service';
@@ -492,7 +492,7 @@ export class DocstructureService {
 
     return new Promise<any[]>((resolve, reject)=>{
       
-      //let myHeaders = new HttpHeaders({'Content-type':'text/plain'});
+      
       let myHeaders = this.myConfig.getHttpHeaders();
       let objDescriptor: Descriptor;
       let childLevel = -1;
@@ -548,7 +548,7 @@ export class DocstructureService {
           }
 
           // In Testata c'e' sempre l'AppId
-          myHeaders = myHeaders.set('appid',this.myConfig.appId);
+          //myHeaders = myHeaders.set('appid',this.myConfig.appId);
 
           if (childLevel != -1) {
             myHeaders = myHeaders.append('child-level', childLevel+'');
@@ -921,6 +921,85 @@ export class DocstructureService {
       }
 
     });
+
+  }
+
+
+  // ************************************************
+  // ***************  REQUEST POST    ***************
+  // ************************************************
+
+  /**
+   * Effettua una chiamata POST al metodo indicato dell'oggetto specificato
+   * Indicare i parametri nell'array postParams e il body da inviare
+   * 
+   * @param documentCall Documento a cui effettuare la chiamata
+   * @param method nome del metodo statico da chiamare
+   * @param jsonBody body da inviare in formato json
+   * @param postParams Array con i parametri da aggiungere nell'url
+   */
+  public requestPost(documentCall: IDDocument, 
+                     method: string, 
+                     jsonBody:string,
+                     postParams?: PostParams[]
+                     ) {
+
+    return new Promise((resolve,reject) => {
+
+      let myHeaders = this.myConfig.getHttpHeaders();
+      let myParams: HttpParams = new HttpParams();
+      let myUrl = '';
+
+      let objDescriptor: Descriptor;
+
+      if (!this.myConfig) {
+        reject('Configuration non presente');
+      }
+      else if (!documentCall) {
+        reject('Documento non presente');
+      }
+      else if (method.length == 0) {
+        reject('Metodo non presente');        
+      }
+      else {
+         //Recupero il descrittore della classe
+         objDescriptor = documentCall.getDescriptor();
+
+
+         if (!objDescriptor) {
+           reject('Descrittore Documento non presente');
+         }
+         else if (objDescriptor.doRemote == false) {
+           //Non è gestito esternamente
+           reject('Documento non gestito in remoto');
+         }
+         else {
+
+          //Creo URL di chiamata
+          myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
+
+          //Sistemo l'header
+           myHeaders = myHeaders.append('X-HTTP-Method-Override',method);
+
+           if (postParams && postParams.length != 0) {
+             for (let index = 0; index < postParams.length; index++) {
+               const elParam = postParams[index];
+                myParams = myParams.append(elParam.key, elParam.value);
+              }
+          } 
+
+          //Effettuo la chiamata POST
+          this.apiService.httpPost(myUrl,myHeaders,myParams, jsonBody)
+          .subscribe(response => {
+            resolve(response);
+          }, error => {
+            reject(error);
+          });
+
+        }
+      }
+    });
+
 
   }
 

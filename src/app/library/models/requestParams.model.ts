@@ -1,4 +1,11 @@
-//Classe con parametri da impostare nelle Request
+//Classe con parametri Request POST
+export class PostParams {
+  key: string;
+  value: string;
+}
+
+
+//Classe con parametri da impostare nelle Request di tipo Get
   export class RequestParams {
 
     child_level?: number; //Profondita Richiesta

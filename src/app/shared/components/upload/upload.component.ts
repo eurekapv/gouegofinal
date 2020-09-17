@@ -106,7 +106,7 @@ export class UploadComponent implements OnInit {
 
   onChangedDesktopFile(event : any){
     let file : File = event.target.files[0];
-    console.log(file);
+    
     this.loadedDesktopFile=file;
   }
 
@@ -133,20 +133,49 @@ export class UploadComponent implements OnInit {
     }
   }
 
+
+
+  convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
+    const reader = new FileReader;
+    reader.onerror = reject;
+    reader.onload = () => {
+        resolve(reader.result);
+    };
+    reader.readAsDataURL(blob);
+  });
+
   onSubmitDesktop(){
 
     //Abbiamo tutto, prendo l'array buffer del file, lo converto in B64, e dismetto
     if (this.selectedDocType && this.loadedDesktopFile){
-      //@ts-ignore 
-      this.loadedDesktopFile.arrayBuffer().then(blob => {
-        console.log(blob);
 
-        //IMPORTANTE! QUESTO CONVERTE UN ARRAYBUFFER (BLOB) IN BASE64
-        let base64 = btoa(String.fromCharCode(...new Uint8Array(blob)));
+
+      let base64 = '';
+      this.convertBlobToBase64(this.loadedDesktopFile).then(strBase64 => {
+        base64 = strBase64 as string;
         console.log(base64);
-
         this.submit(base64);
-      })
+      });
+
+      //@ts-ignore 
+      // this.loadedDesktopFile.arrayBuffer().then(blob => {
+      //   console.log(blob);
+
+      //   //IMPORTANTE! QUESTO CONVERTE UN ARRAYBUFFER (BLOB) IN BASE64
+
+      //   //TEST 1
+      //   //let base64 = btoa(String.fromCharCode(...new Uint8Array(blob)));
+      //   //FINE TEST 1
+
+      //   //TEST 2
+      //   //const uint8Array = new Uint8Array(blob);
+      //   //const base64 = uint8Array.reduce((acc, i) => acc += String.fromCharCode.apply(null, [i]), '');
+      //   //console.log(base64);
+      //   // FINE TEST 2
+        
+
+        
+      // })
     }
     else if (!this.loadedDesktopFile){
       this.showMessage('Scegli un file da caricare');

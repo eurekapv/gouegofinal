@@ -721,7 +721,7 @@ export class DocstructureService {
     let arProperty = Object.keys(document); //Prendo tutte le proprietà
     let objDescriptor = document.getDescriptor(); //Descrittore dell'oggetto
 
-
+    
     // CIclo le proprieta dell'oggetto filter
     objDescriptor.fields.forEach(element => {
       let nameProperty = element.fieldName;
@@ -741,7 +741,7 @@ export class DocstructureService {
         operatoreSpecial = document.getFilterOperatorByFieldName(nameProperty);
 
         //La proprietà non contiene un valore
-        if (!document[nameProperty]) {
+        if (document[nameProperty] == null || document[nameProperty] == undefined ) {
           //C'e' una condizione di filtro speciale
           if (filterCondition) {
             

@@ -17,7 +17,6 @@ import { FootbookedComponent } from 'src/app/shared/components/footbooked/footbo
 import { PlayerNumberComponent } from 'src/app/shared/components/player-number/player-number.component';
 import { SportScrollComponent } from 'src/app/shared/components/sport-scroll/sport-scroll.component';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
-import { NewsdetailPageModule } from 'src/app/pages/newsdetail/newsdetail.module'
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page'
 import { PswRecoveryPage } from '../auth/psw-recovery/psw-recovery.page'
 

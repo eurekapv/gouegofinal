@@ -8,6 +8,7 @@ import { NewsdetailPageRoutingModule } from './newsdetail-routing.module';
 
 import { NewsdetailPage } from './newsdetail.page';
 
+
 @NgModule({
   imports: [
     CommonModule,

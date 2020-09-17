@@ -14,20 +14,28 @@
 
     <ion-item button (click)="showPicker()">
       <ion-icon slot="start" name="document-outline"></ion-icon>
-        <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : 'Tipo di documento'}}</p>
+        <ion-label position="floating">Tipo di documento</ion-label>
+        <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
     </ion-item>
 
     <!-- SE  SIAMO SU DESKTOP -->
-    <ion-item *ngIf="isDesktop" button (click)="onDesktopUpload()">
-        <input hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
+    <ion-item  *ngIf="isDesktop" button (click)="onDesktopUpload()">
+        <input placeholder="Scegli File" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
         <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-        {{loadedDesktopFile? loadedDesktopFile.name : 'Scegli File'}}
+        <ion-label position="floating">Tipo di documento</ion-label>
+        <p>{{loadedDesktopFile? loadedDesktopFile.name: null}}</p>
     </ion-item>
 
     <!-- SE  SIAMO SU MOBILE -->
-    <ion-item *ngIf="!isDesktop" button (click)="onMobileUpload()">
+    <ion-item placeholder="Scegli File" *ngIf="!isDesktop" button (click)="onMobileUpload()">
       <ion-icon slot="start" name="folder-open-outline"></ion-icon>
       {{loadedMobileFile? loadedMobileFile.name : 'Scegli File'}}
+    </ion-item>
+
+    <ion-item>
+      <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+      <ion-input placeholder="Inserisci una descrizione" type="text" [(ngModel)]="docDescription" ></ion-input>
+      
     </ion-item>
 
   </ion-list>

@@ -18,14 +18,16 @@
     </ion-item>
 
     <!-- SE  SIAMO SU DESKTOP -->
-    <ion-item *ngIf="isDesktop">
-      <ion-input type="file" (change)="onDesktopUpload($event)"></ion-input>
+    <ion-item *ngIf="isDesktop" button (click)="onDesktopUpload()">
+        <input hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
+        <ion-icon slot="start" name="folder-open-outline"></ion-icon>
+        {{loadedDesktopFile? loadedDesktopFile.name : 'Scegli File'}}
     </ion-item>
 
     <!-- SE  SIAMO SU MOBILE -->
     <ion-item *ngIf="!isDesktop" button (click)="onMobileUpload()">
       <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-      {{loadedFile? loadedFile.name : 'Scegli File'}}
+      {{loadedMobileFile? loadedMobileFile.name : 'Scegli File'}}
     </ion-item>
 
   </ion-list>

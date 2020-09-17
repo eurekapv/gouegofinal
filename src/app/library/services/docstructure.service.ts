@@ -845,7 +845,7 @@ export class DocstructureService {
    * @param docStart Documento di partenza
    * @param seqField Percorso da seguire per ottenere il documento correlato
    */
-  public getRelDoc(docStart:IDDocument, seqField: string[]):Promise<any> {
+  public getRelDoc(docStart:IDDocument, seqField: string[], childLevel=2):Promise<any> {
     return new Promise((resolve, reject)=>{  
 
       let nameField = '';
@@ -875,7 +875,10 @@ export class DocstructureService {
 
               idDocFilter.setPrimaryKey(docStart[nameField]);
 
-              this.requestNew(idDocFilter)
+              //creo i filtri per il child level
+              let params : RequestParams = new RequestParams();
+              params.child_level = childLevel;
+              this.requestNew(idDocFilter, params)
                   .then(arElement => {
 
                     if (arElement && arElement.length !== 0) {

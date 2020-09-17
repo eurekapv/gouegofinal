@@ -59,6 +59,7 @@ export class DocumentsPage implements OnInit {
       .then(data => {
         if (data){
           //se mi ha restituito dei parametri, devo fare la richiesta al server
+          console.log('ho dismesso la modale');
           console.log(data);
         }
       })

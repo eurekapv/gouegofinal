@@ -15,7 +15,8 @@ export class UploadComponent implements OnInit {
   @Input() isDesktop : boolean;
   @Input() docTypeList : TipoDocumentazione[];
 
-  loadedFile : ChooserResult;
+  loadedMobileFile : ChooserResult;
+  loadedDesktopFile : File;
   loadedFileUrl : string;
 
 
@@ -34,12 +35,14 @@ export class UploadComponent implements OnInit {
 
   }
 
+  
+
   onMobileUpload(){
 
     //caricamento da mobile
     this.chooser.getFile()
     .then(file => {
-      this.loadedFile = file;
+      this.loadedMobileFile = file;
     })
     .catch((error: any) => {
       this.showMessage('Errore nell\'apertura del file');
@@ -98,15 +101,49 @@ export class UploadComponent implements OnInit {
     })
   }
 
-  onDesktopUpload(event: any){
+  onChangedDesktopFile(event : any){
     let file : File = event.target.files[0];
-    console.log(file.stream);
+    console.log(file);
+    this.loadedDesktopFile=file;
+  }
+
+  onDesktopUpload(){
+
+    let myInput = document.getElementById('myInput');
+
+    myInput.click();
+
+    
   }
   
 
   onSubmitMobile(){
-    if (this.selectedDocType && this.loadedFile){
-      this.submit(this.loadedFile.dataURI);
+
+    if (this.selectedDocType && this.loadedMobileFile){
+      this.submit(this.loadedMobileFile.dataURI);
+    }
+    else if (!this.loadedFileUrl){
+      this.showMessage('Scegli un file da caricare');
+    }
+    else{
+      this.showMessage('Seleziona il tipo di documento da caricare');
+    }
+  }
+
+  onSubmitDesktop(){
+
+    //Abbiamo tutto, prendo l'array buffer del file, lo converto in B64, e dismetto
+    if (this.selectedDocType && this.loadedDesktopFile){
+      //@ts-ignore 
+      this.loadedDesktopFile.arrayBuffer().then(blob => {
+        console.log(blob);
+
+        //IMPORTANTE! QUESTO CONVERTE UN ARRAYBUFFER (BLOB) IN BASE64
+        let base64 = btoa(String.fromCharCode(...new Uint8Array(blob)));
+        console.log(base64);
+
+        this.submit(base64);
+      })
     }
     else if (!this.loadedFileUrl){
       this.showMessage('Scegli un file da caricare');
@@ -116,11 +153,12 @@ export class UploadComponent implements OnInit {
     }
   }
  
- 
+
+
  
   onSubmit(){
     if(this.isDesktop){
-
+      this.onSubmitDesktop();
     }
     else{
       this.onSubmitMobile();
@@ -129,14 +167,14 @@ export class UploadComponent implements OnInit {
     
   }
 
-  convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
-    const reader = new FileReader;
-    reader.onerror = reject;
-    reader.onload = () => {
-        resolve(reader.result);
-    };
-    reader.readAsDataURL(blob);
-  });
+  // convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
+  //   const reader = new FileReader;
+  //   reader.onerror = reject;
+  //   reader.onload = () => {
+  //       resolve(reader.result);
+  //   };
+  //   reader.readAsDataURL(blob);
+  // });
 
   submit(base64){
     //abbiamo tutto, posso chiudere

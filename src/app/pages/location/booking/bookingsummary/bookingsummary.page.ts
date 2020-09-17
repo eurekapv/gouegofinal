@@ -317,7 +317,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
   //#region METODI GESTIONE PAGAMENTO
 
-
   setPaymentConfig() {
     this.arPaymentConfig = [];
     if (this.docArea) {

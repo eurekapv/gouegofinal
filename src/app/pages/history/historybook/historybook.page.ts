@@ -191,7 +191,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
                 //SE NON PRENOTAZIONI PIANIFICAZIONE
                 //CHIEDO L'AREA
                 //Chiedo il recupero del documento Area
-                this.docstructrureService.getRelDoc(this.myPrenotazione, ['IDAREAOPERATIVA'])
+                this.docstructrureService.getRelDoc(this.myPrenotazione, ['IDAREAOPERATIVA'],3)
                                           .then(docArea => {
 
                                               this.myArea = docArea;
@@ -323,16 +323,22 @@ export class HistorybookPage implements OnInit, OnDestroy {
   get btnPay(){
     let objBtn = {
       disabled : false,
-      text : ''
-
+      text : '',
+      handler : () => {}
     }
     //se la prenotazione non è pagata
     if(this.myPrenotazione.INCASSATO<this.myPrenotazione.IMPORTO){
 
       //se posso pagare online
       if (this.canPayOnline()){
-        objBtn.disabled = false;
-        objBtn.text = 'Paga ora';
+        //Per ora non permettiamo di pagare online in un secondo momento
+        // objBtn.disabled = false;
+        // objBtn.text = 'Paga ora';
+        // objBtn.handler = this.payOnline;
+
+        objBtn.disabled = true;
+        objBtn.text = 'Prenotazione da pagare'
+
       }
       //se non posso pagare online
       else{
@@ -350,6 +356,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   }
 
+  payOnline(){
+
+  }
 
   onClickTrash(docPianificazione : PrenotazionePianificazione){
     //per ora no faccio nulla, faccio solo uscire la msgbox

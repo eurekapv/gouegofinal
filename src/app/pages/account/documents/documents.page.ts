@@ -4,6 +4,9 @@ import { Chooser } from '@ionic-native/chooser/ngx';
 import { ToastController, ModalController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
 import { TipoDocumentazione, ClasseDocumento } from 'src/app/models/tipodocumentazione.model';
+import { RequestParams } from 'src/app/library/models/requestParams.model';
+import { OperatorCondition } from 'src/app/library/models/iddocument.model';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 
 @Component({
   selector: 'app-documents',
@@ -21,28 +24,28 @@ export class DocumentsPage implements OnInit {
   constructor(private startService: StartService,
               private chooser: Chooser,
               private toastController: ToastController,
-              private modalController: ModalController
-              ) { 
-    this.inRichiesta = true;
-
-    let tipo1 = new TipoDocumentazione;
-    tipo1.ID = 'dkfjlakrjlak';
-    tipo1.DENOMINAZIONE = 'Certificato Medico';
-    tipo1.CLASSE = ClasseDocumento.certificatoMedico;
-
-    let tipo2 = new TipoDocumentazione;
-    tipo2.ID = 'drere34343ffd';
-    tipo2.DENOMINAZIONE = 'Tessera Fipav';
-    tipo2.CLASSE = ClasseDocumento.documento;
-
-    this.listaTipiDocumento.push(tipo1);
-    this.listaTipiDocumento.push(tipo2);
-  }
+              private modalController: ModalController,
+              private docStructureService: DocstructureService
+              ) { }
 
   ngOnInit() {
     this.inRichiesta = false;
+    this.initTipiDocumento();
 
-    //TODO: RICHIEDERE AL SERVER I TIPI DI DOCUMENTO POSSIBILIS
+  }
+
+  initTipiDocumento(){
+    //creo il documento di filtro
+    let filter = new TipoDocumentazione(true);
+    filter.ZORDER = 0;
+    filter.addFilterCondition(OperatorCondition.maggiore, 'ZORDER');
+
+    //Faccio la richiesta
+    this.docStructureService.requestNew(filter)
+    .then(listaTipiDocumento => {
+      this.listaTipiDocumento = listaTipiDocumento;
+    })
+
   }
   
   onClickUpload(){

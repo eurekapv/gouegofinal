@@ -24,6 +24,8 @@ import { Impegno } from 'src/app/models/impegno.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
+import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
+
 
 
 //https://medium.com/@buddhi.amigo/how-to-create-typescript-classes-dynamically-b29ca7767ee5
@@ -56,7 +58,8 @@ export const Structure: any = {
     AccountOperationResponse , 
     AccountRequestCode, 
     AccountVerifyCode,
-    OccupazioneCampi
+    OccupazioneCampi,
+    TipoDocumentazione
 }
 
 export class DynamicClass {

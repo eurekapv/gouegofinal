@@ -7,8 +7,8 @@ export class TipoDocumentazione extends IDDocument{
     CLASSE : ClasseDocumento;
     ZORDER : number;
 
-    constructor(){
-        super();
+    constructor(onlyInstance?: boolean){
+        super(onlyInstance);
     }
 
     getDescriptor(): Descriptor {

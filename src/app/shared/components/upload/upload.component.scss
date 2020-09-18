@@ -1,4 +1,13 @@
-.prova{
-    color: aqua;
-    height: 100px;   
+.myPlaceholder{
+    color: grey;
+}
+
+.icon-container{
+    padding-top: 20px;
+    text-align: center;
+
+    >ion-icon{
+        font-size: 150px;
+        color: grey;
+    }
 }

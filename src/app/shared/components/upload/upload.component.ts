@@ -3,6 +3,7 @@ import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import { Chooser, ChooserResult } from '@ionic-native/chooser/ngx';
 import { ToastController, PickerController, ModalController } from '@ionic/angular';
 import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
+import { InvioDocumentazione } from 'src/app/models/documentazione.model';
 
 
 @Component({
@@ -209,12 +210,13 @@ export class UploadComponent implements OnInit {
   // });
 
   submit(base64){
-    //abbiamo tutto, posso chiudere
-    this.modalController.dismiss({
-      'loadedFile': base64,
-      'selectedDocType' : this.selectedDocType,
-      'docDescription' : this.docDescription
-    })
+    //abbiamo tutto, posso creare l'oggetto da ritornare, e chiudere
+    let myDocument = new InvioDocumentazione;
+    myDocument.FILE = base64;
+    myDocument.IDTIPODOCUMENTAZIONE = this.selectedDocType.ID;
+    myDocument.DESCRIZIONE = this.docDescription;
+
+    this.modalController.dismiss(myDocument);
   }
 
   close(){

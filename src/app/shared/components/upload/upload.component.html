@@ -10,32 +10,35 @@
 </ion-header>
 
 <ion-content>
+  <div class="icon-container">
+    <ion-icon name="cloud-upload-outline"></ion-icon>  
+  </div>
   <ion-list>
-
     <ion-item button (click)="showPicker()">
       <ion-icon slot="start" name="document-outline"></ion-icon>
-        <ion-label position="floating">Tipo di documento</ion-label>
+        <ion-label *ngIf="!selectedDocType" class="myPlaceholder">Tipo di documento</ion-label>
         <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
     </ion-item>
 
     <!-- SE  SIAMO SU DESKTOP -->
     <ion-item  *ngIf="isDesktop" button (click)="onDesktopUpload()">
-        <input placeholder="Scegli File" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
+        <input hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
         <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-        <ion-label position="floating">Tipo di documento</ion-label>
+        <ion-label *ngIf="!loadedDesktopFile" class="myPlaceholder">Tipo di documento</ion-label>
         <p>{{loadedDesktopFile? loadedDesktopFile.name: null}}</p>
     </ion-item>
 
     <!-- SE  SIAMO SU MOBILE -->
-    <ion-item placeholder="Scegli File" *ngIf="!isDesktop" button (click)="onMobileUpload()">
+    <ion-item *ngIf="!isDesktop" button (click)="onMobileUpload()">
       <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-      {{loadedMobileFile? loadedMobileFile.name : 'Scegli File'}}
+      <ion-label *ngIf="!loadedMobileFile" class="myPlaceholder">Scegli il file</ion-label>
+      {{loadedMobileFile? loadedMobileFile.name : null}}
     </ion-item>
+
 
     <ion-item>
       <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-      <ion-input placeholder="Inserisci una descrizione" type="text" [(ngModel)]="docDescription" ></ion-input>
-      
+      <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
     </ion-item>
 
   </ion-list>

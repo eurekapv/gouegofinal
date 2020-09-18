@@ -61,58 +61,68 @@ export class DocumentsPage implements OnInit {
       }
     })
     .then(elModal => {
+
+      //Mostro la videata per il caricamento
       elModal.present();
+
+      //#region GESTIONE CHIUSURA MODALE
       elModal.onWillDismiss()
       .then(data => {
-       let docUploadDocumentazione : InvioDocumentazione= data['data'];
-       if (docUploadDocumentazione){
-
-        //creo un utente fittizio da passare alla post
-        let fakeUtente = new Utente;
-
-        //creo i parametri
-        let myPostParam = new PostParams;
-        myPostParam.key = 'tokenUtente';
-        myPostParam.value = this.startService.actualUtente.ID;
-        let myPostParams : PostParams[] = [];
-        myPostParams.push(myPostParam);
-
-        //creo il body json
-        let myJson: string = docUploadDocumentazione.exportToJSON(true, true, true, false);
-
-        //ora che ho tutto, faccio la post
-        this.docStructureService.requestPost(fakeUtente, 'uploadDocumentazione', myJson,myPostParams)
-        .then(rawResponse => {
-
-          let myResponse = new PostResponse();
-          myResponse = rawResponse;
-          console.log(myResponse);
-
-          if (myResponse){
-            if (myResponse.result==true){
-              //sappiamo che tutto è andato bene
-              this.showMessage('Caricamento completato');
-            }
+              //Controlliamo se l'utente ha inserito dati
+            let docUploadDocumentazione : InvioDocumentazione = data['data'];
             
-            else{
-              //qualcosa è andato storto sul server
-              this.showMessage(myResponse.message);
-            }
-          }
-          else{
-            //non ho la risposta, c'è stato un errore
-            this.showMessage('Errore di connessione');
-          }
-        })
-        .catch(error => {
+            //Dati presenti
+            if (docUploadDocumentazione){
 
-          //errore di comunicazione col server
-          console.log (error);
-          this.showMessage('Errore di connnessione');
-        })
-       }
-      })
-    })
+              //creo un utente fittizio da passare alla post
+              let fakeUtente = new Utente();
+
+              //Imposto il token utente
+              docUploadDocumentazione.TOKENUTENTE = this.startService.actualUtente.ID;
+
+              //creo il body json
+              let myJson: string = docUploadDocumentazione.exportToJSON(true, true, true, false);
+              
+              //ora che ho tutto, faccio la post
+              this.docStructureService.requestPost(fakeUtente, 'uploadDocumentazione', myJson)
+              .then(rawResponse => {
+
+                
+                let myResponse = new PostResponse();
+                myResponse = rawResponse.response;
+                
+
+                if (myResponse){
+                  if (myResponse.result){
+                    //sappiamo che tutto è andato bene
+                    this.showMessage('Caricamento completato');
+                  }
+                  else{
+                    //qualcosa è andato storto sul server
+                    if (myResponse.message && myResponse.message.length !== 0) {
+                      this.showMessage(myResponse.message);
+                    }
+                    else {
+                      this.showMessage('Errore caricamento');
+                    }
+                  }
+                }
+                else{
+                  //non ho la risposta, c'è stato un errore
+                  this.showMessage('Errore di connessione');
+                }
+              })
+              .catch(error => {
+
+                //errore di comunicazione col server
+                console.log (error);
+                this.showMessage('Errore di connnessione');
+              })
+            }
+      });
+
+      //#endregion
+    });
   }
 
 

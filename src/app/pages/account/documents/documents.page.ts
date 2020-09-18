@@ -10,6 +10,7 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { Utente } from 'src/app/models/utente.model';
 import { InvioDocumentazione } from 'src/app/models/documentazione.model';
 import { error } from 'console';
+import { PostResponse } from 'src/app/library/models/postResult.model';
 
 @Component({
   selector: 'app-documents',
@@ -81,13 +82,33 @@ export class DocumentsPage implements OnInit {
 
         //ora che ho tutto, faccio la post
         this.docStructureService.requestPost(fakeUtente, 'uploadDocumentazione', myJson,myPostParams)
-        .then(response => {
-          console.log(response);
-          this.showMessage('Caricamento completato')
+        .then(rawResponse => {
+
+          let myResponse = new PostResponse();
+          myResponse = rawResponse;
+          console.log(myResponse);
+
+          if (myResponse){
+            if (myResponse.result==true){
+              //sappiamo che tutto è andato bene
+              this.showMessage('Caricamento completato');
+            }
+            
+            else{
+              //qualcosa è andato storto sul server
+              this.showMessage(myResponse.message);
+            }
+          }
+          else{
+            //non ho la risposta, c'è stato un errore
+            this.showMessage('Errore di connessione');
+          }
         })
         .catch(error => {
+
+          //errore di comunicazione col server
           console.log (error);
-          this.showMessage('Purtroppo c\'è stato un errore');
+          this.showMessage('Errore di connnessione');
         })
        }
       })

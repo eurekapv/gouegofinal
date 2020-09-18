@@ -12,27 +12,28 @@
   </ion-toolbar>
 </ion-header>
 
+
+
 <ion-content>
-  <!-- IN RICERCA  -->
-  <!-- NON RICEVUTI -->
-  <div *ngIf="inRichiesta" id="doc-spinner">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div>
 
-  <!-- NON IN RICERCA  -->
   <!-- NESSUN DOCUMENTO PRESENTE -->
-  <div *ngIf="!inRichiesta && listDocumenti.length === 0" class="nofind-cnt">
-
+  <div *ngIf="listDocumenti.length === 0" class="nofind-cnt">
     <ion-label>Nessun documento</ion-label>
     <ion-label>disponibile</ion-label>
-    
-    
   </div>
 
-  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-    <ion-fab-button (click)="onClickUpload($event)" color="primary">
-      <ion-icon name="add" ></ion-icon>
-    </ion-fab-button>
-  </ion-fab> -->
+  <!-- DOCUMENTI PRESENTI  -->
+  <div *ngIf="listDocumenti.length > 0">
+    <ion-list>
+      <ion-item *ngFor="let documento of listDocumenti" button (click)="onClickElement(documento)">
+        <ion-icon slot="start" color ="primary" name="document-text-outline"></ion-icon>
+        <ion-label>
+          <h3>{{documento}}</h3>
+          <p>{{''}}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
   
 </ion-content>

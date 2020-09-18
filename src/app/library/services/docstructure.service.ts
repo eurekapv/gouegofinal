@@ -941,7 +941,7 @@ export class DocstructureService {
   public requestPost(documentCall: IDDocument, 
                      method: string, 
                      jsonBody:string,
-                     postParams?: PostParams[]
+                     postParams?: PostParams[] | PostParams
                      ) {
 
     return new Promise<any>((resolve,reject) => {
@@ -981,11 +981,24 @@ export class DocstructureService {
           //Sistemo l'header
            myHeaders = myHeaders.append('X-HTTP-Method-Override',method);
 
-           if (postParams && postParams.length != 0) {
-             for (let index = 0; index < postParams.length; index++) {
-               const elParam = postParams[index];
-                myParams = myParams.append(elParam.key, elParam.value);
-              }
+           if (postParams) {
+
+             //Se è un Array
+             if ( Array.isArray(postParams) ) {
+
+               if (postParams.length != 0) {
+                 for (let index = 0; index < postParams.length; index++) {
+                   const elParam = postParams[index];
+                    myParams = myParams.append(elParam.key, elParam.value);
+                  }
+             }           
+            }
+            else {
+              //Oggetto semplice
+              myParams = myParams.append(postParams.key, postParams.value);
+            }
+
+
           } 
 
           //Effettuo la chiamata POST

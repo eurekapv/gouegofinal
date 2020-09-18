@@ -2,6 +2,7 @@ import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
 
 export class InvioDocumentazione extends IDDocument{
+    TOKENUTENTE: string;
     IDTIPODOCUMENTAZIONE : string;
     FILE : string;
     DESCRIZIONE : string;
@@ -17,7 +18,8 @@ export class InvioDocumentazione extends IDDocument{
         let objDescriptor = new Descriptor();
         let arString = ['IDTIPODOCUMENTAZIONE',
                         'FILE',
-                        'DESCRIZIONE'];
+                        'DESCRIZIONE',
+                        'TOKENUTENTE'];
         
     
         objDescriptor.className = 'InvioDocumentazione';

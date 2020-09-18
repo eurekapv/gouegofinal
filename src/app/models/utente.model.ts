@@ -4,6 +4,7 @@ import { UtenteLivello } from './utentelivello.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { Gruppo } from './gruppo.model';
+import { Documentazione } from './documentazione.model';
 
 
 export class Utente extends IDDocument {
@@ -41,6 +42,7 @@ export class Utente extends IDDocument {
     RUOLO: number;
     MANSIONE: number;
     UTENTILIVELLI: UtenteLivello[];
+    DOCUMENTAZIONI: Documentazione[];
 
     /**
      * 
@@ -52,6 +54,7 @@ export class Utente extends IDDocument {
 
         if (!onlyInstance) {
             this.UTENTILIVELLI = [];
+            this.DOCUMENTAZIONI = [];
             this.PROFILAZIONEESTERNA = false;
             this.PROFILAZIONEINTERNA = false;
         }
@@ -110,7 +113,7 @@ export class Utente extends IDDocument {
     let arDate = ['NATOIL'];
     let arDateTime =[];
     let arTime = [];
-    let arCollection = ['UTENTILIVELLI'];
+    
 
     objDescriptor.className = 'Utente';
     objDescriptor.doRemote = true;
@@ -124,7 +127,11 @@ export class Utente extends IDDocument {
     objDescriptor.addMultiple(arDate, TypeDefinition.date);
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
-    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    
+                
+    //Aggiungo le collection
+    objDescriptor.addCollection('UTENTILIVELLI','UtenteLivello','IDUTENTE');
+    objDescriptor.addCollection('DOCUMENTAZIONI','Documentazione','IDUTENTE');
 
     
     objDescriptor.setRelation('IDAREAOPERATIVA','Area');
@@ -154,6 +161,11 @@ export class Utente extends IDDocument {
         if (data.hasOwnProperty('UTENTELIVELLO') && data.UTENTELIVELLO !== undefined) {
             this.setCollectionLivelli(data);
         }
+
+        if (data.hasOwnProperty('DOCUMENTAZIONE') && data.DOCUMENTAZIONE !== undefined) {
+            this.setCollectionDocumentazione(data);
+        }
+        
     }
 
 
@@ -171,6 +183,21 @@ export class Utente extends IDDocument {
             this.UTENTILIVELLI.push(newLevel);
         });
     }
+
+    /**
+     * Crea gli oggetti DOCUMENTAZIONE
+     * @param data JSON Received
+     */
+    private setCollectionDocumentazione(data: any) {
+        
+
+        data.DOCUMENTAZIONE.forEach(element => {
+            let NewDoc = new Documentazione();
+
+            NewDoc.setJSONProperty(element);
+            this.DOCUMENTAZIONI.push(NewDoc);
+        });
+    }    
 
 
     /**

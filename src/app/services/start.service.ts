@@ -1101,7 +1101,7 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
     
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override','getBase64PrivateImage');
-    
+
     // =new HttpHeaders({
     //   'Content-Type': 'text/plain',
     //   'appid': config.appId,

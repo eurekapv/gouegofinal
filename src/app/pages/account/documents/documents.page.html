@@ -4,8 +4,8 @@
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
     <ion-title>Documentazione</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="onClickUpload()">
+    <ion-buttons slot="end" *ngIf="listaTipiDocumento?.length != 0">
+      <ion-button (click)="onAddDocument()">
         <ion-icon name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -28,8 +28,8 @@
       <ion-item *ngFor="let documento of listDocumenti" button (click)="onClickElement(documento)">
         <ion-icon slot="start" color ="primary" name="document-text-outline"></ion-icon>
         <ion-label>
-          <h3>{{documento}}</h3>
-          <p>{{''}}</p>
+          <h3>{{documento['_DENOMINAZIONE_TipoDocumentazione']}}</h3>
+          <p>ultimo aggiornamento {{documento.DATAORAMODIFICA | date : 'EEEE dd/LL/yyyy'| titlecase }} alle {{documento.DATAORAMODIFICA | date : 'HH:mm' }}</p>
         </ion-label>
       </ion-item>
     </ion-list>

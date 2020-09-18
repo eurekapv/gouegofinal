@@ -14,27 +14,18 @@ export class TipoDocumentazione extends IDDocument{
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
         let arString = ['DENOMINAZIONE', 'ZORDER'];
-        let arNumber = [];
-        let arBoolean = [];
-        let arDate = [];
-        let arDateTime =[];
-        let arTime = [];
-        let arCollection = [];
+        let arNumber = ['CLASSE'];
+
     
         objDescriptor.className = 'TipoDocumentazione';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'TIPODOCUMENTAZIONE';
-        objDescriptor.describeField = 'CLASSE';
+        objDescriptor.describeField = 'DENOMINAZIONE';
     
     
         objDescriptor.addMultiple(arString, TypeDefinition.char);
         objDescriptor.addMultiple(arNumber, TypeDefinition.number);
-        objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
-        objDescriptor.addMultiple(arDate, TypeDefinition.date);
-        objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
-        objDescriptor.addMultiple(arTime, TypeDefinition.time);
-        objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
-    
+   
                 
         return objDescriptor;
     }

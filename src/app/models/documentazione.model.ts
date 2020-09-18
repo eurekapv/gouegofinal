@@ -1,6 +1,6 @@
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
-import { TipoDocumentazione } from './tipodocumentazione.model';
+import { ClasseDocumento, TipoDocumentazione } from './tipodocumentazione.model';
 
 export class InvioDocumentazione extends IDDocument{
     TOKENUTENTE: string;
@@ -36,12 +36,14 @@ export class InvioDocumentazione extends IDDocument{
 export class Documentazione extends IDDocument{
     IDUTENTE : string;
     IDTIPODOCUMENTAZIONE : string;
-    CLASSE : TipoDocumentazione;
+    CLASSE : ClasseDocumento;
     DESCRIZIONE : string;
     FILENAMEESTENSIONE : string; //percorso relativo
     VALIDOFINO : Date;
     FILETYPE : string;
     CLIENTUPLOAD : boolean;
+    DATAORACARICAMENTO: Date;
+    DATAORAMODIFICA: Date;
     
 
     constructor(onlyInstance = false){
@@ -54,11 +56,12 @@ export class Documentazione extends IDDocument{
                         'IDTIPODOCUMENTAZIONE',
                         'DESCRIZIONE',
                         'FILENAMEESTENSIONE',
-                        'FILETYPE',
-                        'CLIENTUPLOAD'
+                        'FILETYPE'
                         ];
         let arBoolean = ['CLIENTUPLOAD'];
         let arDate = ['VALIDOFINO'];
+        let arDateTime = ['DATAORACARICAMENTO','DATAORAMODIFICA'];
+        let arNumber = ['CLASSE'];
     
         objDescriptor.className = 'Documentazione';
         objDescriptor.doRemote = true;
@@ -67,8 +70,10 @@ export class Documentazione extends IDDocument{
     
     
         objDescriptor.addMultiple(arString, TypeDefinition.char);
+        objDescriptor.addMultiple(arNumber, TypeDefinition.number);
         objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
         objDescriptor.addMultiple(arDate, TypeDefinition.date);
+        objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     
         
         objDescriptor.setRelation('IDUTENTE','Utente');
@@ -77,4 +82,5 @@ export class Documentazione extends IDDocument{
         
         return objDescriptor;
     }
+
 }

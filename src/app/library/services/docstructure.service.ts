@@ -379,7 +379,7 @@ export class DocstructureService {
         }
       }
 
-      console.log('Fermati qui');
+      
 
       //Controllo correttezza configurazione collection
       if (prosegui) {

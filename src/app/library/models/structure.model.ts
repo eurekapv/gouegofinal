@@ -25,6 +25,8 @@ import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
+import { Documentazione } from 'src/app/models/documentazione.model';
+
 
 
 
@@ -59,7 +61,8 @@ export const Structure: any = {
     AccountRequestCode, 
     AccountVerifyCode,
     OccupazioneCampi,
-    TipoDocumentazione
+    TipoDocumentazione,
+    Documentazione
 }
 
 export class DynamicClass {
@@ -70,6 +73,7 @@ export class DynamicClass {
         }
         return new Structure[className](opts);
 
+        
         
     }
 

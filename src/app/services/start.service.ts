@@ -57,10 +57,10 @@ export class StartService {
     secureProtocol = FALSE (chiamata http e non https)
   */
   //Versione Production
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
 
   //Versione LocalTest
-  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
   
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
@@ -1101,6 +1101,7 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
     
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override','getBase64PrivateImage');
+    
     // =new HttpHeaders({
     //   'Content-Type': 'text/plain',
     //   'appid': config.appId,

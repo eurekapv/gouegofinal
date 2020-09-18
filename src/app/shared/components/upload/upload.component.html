@@ -16,7 +16,7 @@
   <ion-list>
     <ion-item button (click)="showPicker()">
       <ion-icon slot="start" name="document-outline"></ion-icon>
-        <ion-label *ngIf="!selectedDocType" class="myPlaceholder">Tipo di documento</ion-label>
+        <ion-label *ngIf="!selectedDocType" class="myPlaceholder">Cosa vuoi caricare ?</ion-label>
         <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
     </ion-item>
 
@@ -24,7 +24,7 @@
     <ion-item  *ngIf="isDesktop" button (click)="onDesktopUpload()">
         <input accept="image/*" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
         <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-        <ion-label *ngIf="!loadedDesktopFile" class="myPlaceholder">Tipo di documento</ion-label>
+        <ion-label *ngIf="!loadedDesktopFile" class="myPlaceholder">Fai clic e scegli il file</ion-label>
         <p>{{loadedDesktopFile? loadedDesktopFile.name: null}}</p>
     </ion-item>
 

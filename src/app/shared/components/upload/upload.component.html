@@ -22,7 +22,7 @@
 
     <!-- SE  SIAMO SU DESKTOP -->
     <ion-item  *ngIf="isDesktop" button (click)="onDesktopUpload()">
-        <input hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
+        <input accept="image/*" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
         <ion-icon slot="start" name="folder-open-outline"></ion-icon>
         <ion-label *ngIf="!loadedDesktopFile" class="myPlaceholder">Tipo di documento</ion-label>
         <p>{{loadedDesktopFile? loadedDesktopFile.name: null}}</p>

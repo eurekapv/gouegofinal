@@ -71,7 +71,8 @@ export class DocumentsPage implements OnInit {
 
         //creo i parametri
         let myPostParam = new PostParams;
-        myPostParam.key = 'tokenUtente', this.startService.actualUtente.ID;
+        myPostParam.key = 'tokenUtente';
+        myPostParam.value = this.startService.actualUtente.ID;
         let myPostParams : PostParams[] = [];
         myPostParams.push(myPostParam);
 

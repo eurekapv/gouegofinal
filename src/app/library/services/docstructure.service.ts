@@ -944,7 +944,7 @@ export class DocstructureService {
                      postParams?: PostParams[]
                      ) {
 
-    return new Promise((resolve,reject) => {
+    return new Promise<any>((resolve,reject) => {
 
       let myHeaders = this.myConfig.getHttpHeaders();
       let myParams: HttpParams = new HttpParams();

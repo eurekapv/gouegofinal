@@ -16,6 +16,10 @@
 
 <ion-content>
 
+  <ion-refresher slot="fixed" (ionRefresh)="requestListaDocumenti($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <!-- NESSUN DOCUMENTO PRESENTE -->
   <div *ngIf="listDocumenti.length === 0" class="nofind-cnt">
     <ion-label>Nessun documento</ion-label>
@@ -26,11 +30,12 @@
   <div *ngIf="listDocumenti.length > 0">
     <ion-list>
       <ion-item *ngFor="let documento of listDocumenti" button (click)="onClickElement(documento)">
-        <ion-icon slot="start" color ="primary" name="document-text-outline"></ion-icon>
+        <ion-icon slot="start" class="icon-left" color ="" name="document-text-outline"></ion-icon>
         <ion-label>
           <h3>{{documento['_DENOMINAZIONE_TipoDocumentazione']}}</h3>
-          <p>ultimo aggiornamento {{documento.DATAORAMODIFICA | date : 'EEEE dd/LL/yyyy'| titlecase }} alle {{documento.DATAORAMODIFICA | date : 'HH:mm' }}</p>
+          <p>Ultima modifica: {{documento.DATAORAMODIFICA | date : 'dd/LL/yyyy' }}</p>
         </ion-label>
+        <ion-icon slot="end" color="primary" name="cloud-download-outline"></ion-icon>
       </ion-item>
     </ion-list>
   </div>

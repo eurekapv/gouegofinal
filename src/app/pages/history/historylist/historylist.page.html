@@ -89,6 +89,7 @@
                 (click)="onClickPrenotazione(prenotazione)">
 
           <ion-icon 
+              class="icon-prenotazioni"
               name="calendar" 
               slot="start" 
               [color]="prenotazione.DATAORAFINE<today? 'light': 'primary'">
@@ -101,7 +102,7 @@
             <h1>{{prenotazione.DATAORAINIZIO | date: 'EEEE'|titlecase}} ore {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}</h1>
             <h3>{{prenotazione.COMUNELOCATION|titlecase}} {{(prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION?', ':'')}} {{prenotazione.INDIRIZZOLOCATION|titlecase}}</h3> <!--anche qui manca decodifica centro sportivo-->
           </ion-label>
-          <ion-chip color="primary">{{prenotazione.DURATAORE}} {{prenotazione.DURATAORE==1? 'Ora' : 'Ore'}}</ion-chip>
+          <ion-chip color="primary">{{prenotazione.DURATAORE>1? prenotazione.DURATAORE : prenotazione.DURATAORE*60}} {{prenotazione.DURATAORE>1? 'Ore' : 'Min.'}}</ion-chip>
         </ion-item>
       </ion-list>
 

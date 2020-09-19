@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Chooser } from '@ionic-native/chooser/ngx';
-import { ToastController, ModalController } from '@ionic/angular';
+import { ToastController, ModalController, LoadingController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
 import { TipoDocumentazione, ClasseDocumento } from 'src/app/models/tipodocumentazione.model';
 import { PostParams, RequestParams } from 'src/app/library/models/requestParams.model';
@@ -29,7 +29,8 @@ export class DocumentsPage implements OnInit {
               private chooser: Chooser,
               private toastController: ToastController,
               private modalController: ModalController,
-              private docStructureService: DocstructureService
+              private docStructureService: DocstructureService,
+              private loadingController: LoadingController
               ) { }
 
   ngOnInit() {
@@ -40,8 +41,9 @@ export class DocumentsPage implements OnInit {
 
   /**
    * Richiedo la lista dei documenti relativa all'utente
+   * @param event usato per chiudere il refresher (se la funzione è stata chiamata da esso)
    */
-  requestListaDocumenti() {
+  requestListaDocumenti(event?: any) {
 
     let reqParams = new RequestParams();
     reqParams.decode.active = true;
@@ -49,18 +51,51 @@ export class DocumentsPage implements OnInit {
 
     if (this.startService.actualUtente) {
 
+      this.loadingController.create({
+        message: 'Caricamento',
+        spinner: 'circular',
+        backdropDismiss: true
+      })
+      .then(elLoading => {
+        if (!event){
+          //se la funzione non è stata chiamata dal refresher, mostro il loading
+          elLoading.present();
+        }
+
         //Chiedo all'utente di caricare la collection dei documenti
         this.docStructureService.loadCollection(this.startService.actualUtente, 'DOCUMENTAZIONI', reqParams)
         .then(objUtente => {
+
+          if (!event){
+            //se la funzione non è stata chiamata dal refresher, chiudo il loadingcontroller
+            elLoading.dismiss();
+          }
+          else{
+            //se la funzione è stata chiamata dal refresher, lo chiudo
+            event.target.complete();
+          }
+
           //Recupero la lista dei documenti
           this.listDocumenti = objUtente['DOCUMENTAZIONI'];
           console.log(this.listDocumenti);
         })
         .catch(error => {
+
+          if (!event){
+            //se la funzione non è stata chiamata dal refresher, chiudo il loadingcontroller
+            elLoading.dismiss();
+          }
+          else{
+            //se la funzione è stata chiamata dal refresher, lo chiudo
+            event.target.complete();
+          }
+
           console.log(error);
+          this.showMessage('Errore di connessione')
           //Azzero la lista documenti
           this.listDocumenti = [];
         });
+      })
     }
     else {
       this.listDocumenti = [];
@@ -127,54 +162,68 @@ export class DocumentsPage implements OnInit {
 
     //Informazioni da inviare al server presenti
     if (docUploadDocumentazione){
-
-      //creo un utente fittizio da passare alla post
-      let fakeUtente = new Utente();
-
-      //Imposto il token utente
-      docUploadDocumentazione.TOKENUTENTE = this.startService.actualUtente.ID;
-
-      //creo il body json
-      let myJson: string = docUploadDocumentazione.exportToJSON(true, true, true, false);
       
-      //ora che ho tutto, faccio la post
-      this.docStructureService.requestPost(fakeUtente, 'uploadDocumentazione', myJson)
-      .then(rawResponse => {
-        
-        //Risposta ricevuta
-        let myResponse = new PostResponse();
-        myResponse = rawResponse.response;
-        
-        if (myResponse){
-          if (myResponse.result) {
-            //sappiamo che tutto è andato bene
-            this.showMessage('Caricamento completato');
-            
-            //Richiedo ancora la lista dei documenti
-            this.requestListaDocumenti();
+      this.loadingController.create({
+        message: 'Caricamento',
+        spinner: 'circular',
+        backdropDismiss: true
+      })
+      .then(elLoading => {
 
+        elLoading.present();
+        
+        //creo un utente fittizio da passare alla post
+        let fakeUtente = new Utente();
+  
+        //Imposto il token utente
+        docUploadDocumentazione.TOKENUTENTE = this.startService.actualUtente.ID;
+  
+        //creo il body json
+        let myJson: string = docUploadDocumentazione.exportToJSON(true, true, true, false);
+        
+        //ora che ho tutto, faccio la post
+        this.docStructureService.requestPost(fakeUtente, 'uploadDocumentazione', myJson)
+        .then(rawResponse => {
+          
+          elLoading.dismiss();
+
+          //Risposta ricevuta
+          let myResponse = new PostResponse();
+          myResponse = rawResponse.response;
+          
+          if (myResponse){
+            if (myResponse.result) {
+              //sappiamo che tutto è andato bene
+              this.showMessage('Caricamento completato');
+              
+              //Richiedo ancora la lista dei documenti
+              this.requestListaDocumenti();
+  
+            }
+            else{
+              //qualcosa è andato storto sul server
+              if (myResponse.message && myResponse.message.length !== 0) {
+                this.showMessage(myResponse.message);
+              }
+              else {
+                this.showMessage('Errore caricamento');
+              }
+            }
           }
           else{
-            //qualcosa è andato storto sul server
-            if (myResponse.message && myResponse.message.length !== 0) {
-              this.showMessage(myResponse.message);
-            }
-            else {
-              this.showMessage('Errore caricamento');
-            }
+            //non ho la risposta, c'è stato un errore
+            this.showMessage('Errore di connessione');
           }
-        }
-        else{
-          //non ho la risposta, c'è stato un errore
-          this.showMessage('Errore di connessione');
-        }
-      })
-      .catch(error => {
+        })
+        .catch(error => {
+  
+          elLoading.dismiss();
 
-        //errore di comunicazione col server
-        console.log (error);
-        this.showMessage('Errore di connnessione');
-      });
+          //errore di comunicazione col server
+          console.log (error);
+          this.showMessage('Errore di connnessione');
+        });
+      })
     }
   }
 

@@ -16,7 +16,7 @@
     </ion-buttons>
 
   </ion-toolbar>
-  <ion-toolbar color="" *ngIf="showTabs">
+  <ion-toolbar *ngIf="showTabs">
     <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)" mode="md">
       <ion-segment-button class="ion-no-padding" value="prenotazioni" layout="icon-start">
         <ion-icon name="calendar"></ion-icon>
@@ -29,8 +29,7 @@
     </ion-segment>
   </ion-toolbar>
 </ion-header>
-
-<ion-content scrollEvents (ionScroll)="onScroll($event)">
+<ion-content  scrollEvents (ionScroll)="onScroll($event)">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -108,7 +107,6 @@
 
   </div>
 </ion-content>
-
 <ion-footer>
   
 </ion-footer>

@@ -281,6 +281,7 @@ export class HistorylistPage implements OnInit {
     this.navCtrl.navigateForward('/account');
   }
 
+
   onScroll(event:any){
     if (event['detail']['deltaY']>100){
       this.showTabs = false;
@@ -288,8 +289,7 @@ export class HistorylistPage implements OnInit {
     else if (event['detail']['deltaY']<100){
       this.showTabs = true;
     }
+
+  
   }
-
-
-
 }

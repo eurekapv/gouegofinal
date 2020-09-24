@@ -183,7 +183,22 @@ poi bisogna fixare il fileopener con jetify
 >npx jetify
 
 
+/* ********************************** */
+/* GEOLOCALIZZAZIONE                  */
+/* ********************************** */
+
+ANDROID:
+
+aggiungere a AndroidManifest.xml
+<!-- Geolocation API -->
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-feature android:name="android.hardware.location.gps" />
 
 
-
+#TODO QUESTO E' DA FARE!!
+APPLE:
+Aggiungere a "Info.plist"
+Name: Privacy - Location Always Usage Description Key: NSLocationAlwaysUsageDescription
+Name: Privacy - Location When In Use Usage Description Key: NSLocationWhenInUseUsageDescription
 

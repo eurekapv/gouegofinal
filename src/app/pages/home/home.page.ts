@@ -23,6 +23,10 @@ import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 
+import { Plugins } from '@capacitor/core';
+
+const { Geolocation } = Plugins;
+
 
 @Component({
   selector: 'app-home',
@@ -331,7 +335,10 @@ export class HomePage implements OnInit, OnDestroy{
   //#endregion
 
   ngOnInit() {
-
+    //prova localizzazione
+    // Geolocation.getCurrentPosition().then(posizione => {
+    //   console.log (posizione);
+    // })
   }
 
   ngOnDestroy() {

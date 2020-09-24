@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Chooser } from '@ionic-native/chooser/ngx';
-import { ToastController, ModalController, LoadingController } from '@ionic/angular';
+import { ToastController, ModalController, LoadingController, Platform } from '@ionic/angular';
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
 import { TipoDocumentazione, ClasseDocumento } from 'src/app/models/tipodocumentazione.model';
 import { PostParams, RequestParams } from 'src/app/library/models/requestParams.model';
@@ -11,6 +11,10 @@ import { Utente } from 'src/app/models/utente.model';
 import { Documentazione, InvioDocumentazione } from 'src/app/models/documentazione.model';
 import { error } from 'console';
 import { PostResponse } from 'src/app/library/models/postResult.model';
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+
+
 
 @Component({
   selector: 'app-documents',
@@ -30,7 +34,10 @@ export class DocumentsPage implements OnInit {
               private toastController: ToastController,
               private modalController: ModalController,
               private docStructureService: DocstructureService,
-              private loadingController: LoadingController
+              private loadingController: LoadingController,
+              private platform: Platform,
+              private file: File,
+              private fileOpener: FileOpener
               ) { }
 
   ngOnInit() {
@@ -231,8 +238,75 @@ export class DocumentsPage implements OnInit {
    * Eseguito un click per lo scaricamento
    */
   onClickElement(elemento: Documentazione){
-    this.showMessage('Funzionalità disponibile a breve');
+    //creo il loading e lo presento
+    this.loadingController.create({
+      message: 'Caricamento',
+      spinner: 'circular',
+      backdropDismiss: true
+    }).then(elLoading => {
+      elLoading.present();
+
+      //ora faccio la get del file
+      this.startService.requestDocumento(elemento.FILENAMEESTENSIONE)
+      .then(blob => {
+        //E' andato tutto bene, ho il blob
+        elLoading.dismiss();
+        console.log(blob);
+
+        if(this.startService.isDesktop){
+          //sono su Desktop
+          this.openDesktop(blob);
+        }
+        else{
+          //sono su mobile
+          this.openMobile(blob);
+        }
+      })
+      .catch(error => {
+        
+        //qualcosa non ha funzionato
+        console.log(error);
+        this.showMessage('Errore di connessione');
+      })
+
+    })
   }
+
+  openDesktop(blob: Blob){
+
+
+    //per scaricare il file creo via javascript un link fittizio agganciando il percorso del blob, e ne scateno l'evento click
+    let name='File'
+    let url  = window.URL.createObjectURL(blob);
+    let link = document.createElement("a");
+    link.download = name;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+
+  }
+
+  openMobile(blob: Blob){
+    let fileName='Documento';         
+    let filePath= this.file.cacheDirectory;      
+    console.log('percorso: '+filePath);  
+
+        this.file.writeFile(filePath, fileName, blob, { replace:true }).then((fileEntry) => {
+
+          console.log("File created!");          
+          this.fileOpener.open(fileEntry.toURL(), blob.type)
+            .then(() => console.log('File is opened'))
+            .catch(err => console.error('Error openening file: ' + err));
+        })
+          .catch((err) => {
+            console.error("Error creating file: ");
+            console.log(err);
+            throw err;  
+          });
+  }
+
 
   /**
    * Visualizza un messaggio

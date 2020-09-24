@@ -9,25 +9,29 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="sfondo">
 
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <div class="sfondo">
     <!-- NEWS PRESENTI -->
-    <ion-list *ngIf="listNews.length !== 0">
-      <div *ngFor="let news of listNews">
-        <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
-      </div>
-    </ion-list>
+    <ion-grid *ngIf="listNews.length != 0 ">
+      <ion-row>
+        <ion-col *ngFor="let news of listNews">
+          <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   
     <!-- NEWS NON PRESENTI -->
-    <ion-list *ngIf="listNews.length === 0 ">
-        <app-news-eventi [myNews]="noNewsCard" ></app-news-eventi>
-    </ion-list>
+    <ion-grid *ngIf="listNews.length === 0 ">
+      <ion-row>
+        <ion-col>
+          <app-news-eventi [myNews]="noNewsCard" ></app-news-eventi>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
-  </div>
 
 </ion-content>

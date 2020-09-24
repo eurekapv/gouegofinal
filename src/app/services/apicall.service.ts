@@ -134,4 +134,25 @@ export class ApicallService {
     return throwError(
       'Si sono verificati errori. Riprovare.');
   };
+
+
+    /**
+   * Esegue una chiamata GET al'Url specificato, controllando l'errore
+   * @param url Url da contattare
+   * @param reqHeaders Testata
+   * @param reqParams  Parametri
+   */
+  httpGetFile(url: string, reqHeaders: HttpHeaders) {
+    LogApp.consoleLog('Chiamata GET a ' + url);
+    
+    
+    //ritorno la get controllando l'errore
+    return this.httpClient.get(url, {
+     headers: reqHeaders,
+     responseType: 'blob'
+    })
+    .pipe(
+      catchError(this.handleError)
+    );
+  }
 }

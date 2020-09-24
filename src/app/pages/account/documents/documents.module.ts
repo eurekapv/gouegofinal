@@ -12,6 +12,10 @@ import { UploadComponent } from 'src/app/shared/components/upload/upload.compone
 import { DocumentsPageRoutingModule } from './documents-routing.module';
 
 import { DocumentsPage } from './documents.page';
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+
+
 
 @NgModule({
   imports: [
@@ -20,8 +24,8 @@ import { DocumentsPage } from './documents.page';
     IonicModule,
     DocumentsPageRoutingModule
   ],
-  declarations: [DocumentsPage, UploadComponent],
-  providers: [Chooser],
+  declarations: [DocumentsPage,  UploadComponent],
+  providers: [Chooser, File, FileOpener],
   entryComponents: [UploadComponent]
 })
 export class DocumentsPageModule {}

@@ -44,6 +44,7 @@ import { OccupazioniService } from './occupazioni.service';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { OccupazioneCampi } from '../models/occupazionecampi.model';
 import { RequestParams } from '../library/models/requestParams.model';
+import { DocumentoService } from './documento.service';
 
 
 @Injectable({
@@ -104,7 +105,8 @@ export class StartService {
     private paymentService: PaymentService,
     private codFiscService: CodicefiscaleService,
     private occupazioniService: OccupazioniService,
-    private docStructureService: DocstructureService ) { 
+    private docStructureService: DocstructureService,
+    private documentoService: DocumentoService ) { 
 
       //Ogni volta che cambia la configurazione la invio 
       //al servizio docStructure
@@ -1134,6 +1136,14 @@ requestOccupazioni(idArea: string,filterDocument?:OccupazioneCampi, params?:Requ
   return this.occupazioniService.request(idArea, filterDocument, params);
 }
 //#endregion
+
+
+////#region DOCUMENTO
+requestDocumento(urlDocumento: string){
+  return this.documentoService.request(this.actualStartConfig, urlDocumento);
+}
+
+////#endregion
 
 
 

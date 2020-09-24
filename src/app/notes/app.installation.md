@@ -166,4 +166,24 @@ aggiungere a config.xml
 
 
 
+/* ********************************** */
+/* FILE OPENER (APERTURA DOCUMENTI)   */
+/* ********************************** */
+
+>npm install cordova-plugin-file-opener2
+>npm install @ionic-native/file-opener
+>ionic cap sync
+
+//bisogna installare anche "File"
+>npm install cordova-plugin-file
+>npm install @ionic-native/file
+>ionic cap sync
+
+poi bisogna fixare il fileopener con jetify
+>npx jetify
+
+
+
+
+
 

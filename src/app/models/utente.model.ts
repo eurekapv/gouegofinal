@@ -41,6 +41,7 @@ export class Utente extends IDDocument {
     VERIFICATAMOBILE: boolean;
     RUOLO: number;
     MANSIONE: number;
+    LISTMANSIONI: string;
     UTENTILIVELLI: UtenteLivello[];
     DOCUMENTAZIONI: Documentazione[];
 
@@ -106,7 +107,8 @@ export class Utente extends IDDocument {
                     'SHAPASSWORD',
                     'INPUTPASSWORD',
                     'TELEFONO1',
-                    'TELEFONO2'
+                    'TELEFONO2',
+                    'LISTMANSIONI'
                     ];
     let arNumber = ['SESSO','RUOLO','MANSIONE'];
     let arBoolean = ['NEWSLETTER','PROFILAZIONEINTERNA','PROFILAZIONEESTERNA','VERIFICATAMAIL','VERIFICATAMOBILE'];
@@ -459,6 +461,8 @@ export class storageUtente {
             this.cripted = myObj.cripted;
         }
     }
+
+
 }
 
 export class ParamsVerifica{

@@ -189,7 +189,7 @@ poi bisogna fixare il fileopener con jetify
 
 ANDROID:
 
-aggiungere a AndroidManifest.xml
+aggiungere a android/app/src/main/AndroidManifest.xml
 <!-- Geolocation API -->
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

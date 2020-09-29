@@ -942,7 +942,7 @@ export class DocstructureService {
                      method: string, 
                      jsonBody:string,
                      postParams?: PostParams[] | PostParams
-                     ) {
+                     ) { 
 
     return new Promise<any>((resolve,reject) => {
 

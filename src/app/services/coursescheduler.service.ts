@@ -19,7 +19,6 @@ import { resolve } from 'url';
 export class CourseschedulerService {
 
   _calendarioCorso = new BehaviorSubject<PianificazioneCorso[]>([]);
-
   _listImpegniTrainer = new BehaviorSubject<PianificazioneCorso[]>([]);
 
   constructor(
@@ -32,6 +31,15 @@ export class CourseschedulerService {
   get calendarioCorso() {
     return this._calendarioCorso.asObservable();
   }
+
+   /**
+   * recupero la lista degli impegni del trainer (observable)
+   */
+  get listImpegniTrainer(){
+    return this._listImpegniTrainer.asObservable();
+  }
+
+
 
     /**
    * Effettua una chiamata al server per il recupero dei corsi
@@ -97,6 +105,18 @@ export class CourseschedulerService {
       })
   }
 
+  /**
+   * Aggiunge una pianificazione alla lista Trainer
+   * @param docPianificazione Documento di Pianificazione
+   */
+  addImpegnotrainer(docPianificazione: PianificazioneCorso) {
+    this.listImpegniTrainer
+      .pipe(take(1))
+      .subscribe( collListImpegni => {
+        this._listImpegniTrainer.next( collListImpegni.concat(docPianificazione));
+      });
+  }
+
 
   /**
    * Svuota il calendario presente
@@ -106,17 +126,35 @@ export class CourseschedulerService {
   }
 
   /**
+   * Svuotare la lista degli impegni del trainer
+   */
+  emptyListImpegniTrainer() {
+    this._listImpegniTrainer.next([]);
+  }
+
+  /**
    * richiede al server gli impegni del trainer con id specificato. ritorna la lista tramite Promise. sulla lista vengono anche effettuate le decodifiche
    * 
    * @param idRef l'id del trainer
    * @param dataInizio data di inizio  
    * @param dataFine data di fine
    */
-  requestImpegniTrainer(idRef: string, dataInizio: Date, dataFine: Date){
+  requestImpegniTrainer(idRef: string, dataInizio: Date, dataFine?: Date){
     return new Promise<PianificazioneCorso[]> ((resolve, reject) => {
       
       const methodName = 'getPianificazioniTrainer'
       const document = new PianificazioneCorso(true);
+
+      if (!dataFine && !dataInizio) {
+        dataInizio = new Date();
+        dataFine = new Date();
+      }
+      else if (!dataInizio && dataFine) {
+        dataInizio = dataFine;
+      }
+      else if (dataInizio && !dataFine) {
+        dataFine = dataInizio;
+      }
   
       let params = {
         'idRef': idRef,
@@ -126,16 +164,56 @@ export class CourseschedulerService {
   
       this.docStructureService.requestPost(document, methodName, JSON.stringify(params))
       .then(response => {
-        let listPianificazioni:PianificazioneCorso[] = response.PIANIFICAZIONECORSO;
-        this.docStructureService.decodeCollection(listPianificazioni, PianificazioneCorso.getReqForeignKeys())
-          .then(() =>{
-            console.log(listPianificazioni);
-            this._listImpegniTrainer.next(listPianificazioni);
-            resolve(listPianificazioni);
-          })
-          .catch(error => {
-            reject(error);
-          })
+
+        let requestDecode = false;
+
+        //Svuotiamo la lista attuale
+        this.emptyListImpegniTrainer();
+        if (response.PIANIFICAZIONECORSO) {
+          if (Array.isArray(response.PIANIFICAZIONECORSO)) {
+
+            /* Ciclo sull'Array ricevuto */
+            for (let index = 0; index < response.PIANIFICAZIONECORSO.length; index++) {
+              requestDecode = true;
+              const element = response.PIANIFICAZIONECORSO[index];
+              let docPianificazioneCorso = new PianificazioneCorso();
+              docPianificazioneCorso.setJSONProperty(element);
+              this.addImpegnotrainer(docPianificazioneCorso);
+            }
+
+            if (requestDecode) {
+              //Recupero la lista Impegni
+              let listPianificazioni:PianificazioneCorso[] = this._listImpegniTrainer.getValue();
+
+              //Chiamo la decodifica collection della lista
+              this.docStructureService.decodeCollection(listPianificazioni)
+                .then(() => {
+                  //Riemetto Observable
+                  this._listImpegniTrainer.next(listPianificazioni);
+                  //Riemetto la resolve
+                  resolve(this._listImpegniTrainer.getValue());
+                })
+                .catch(error => {
+                  console.log(error);
+                  reject(error);
+                });
+
+            }
+            else {
+              //Risolvere con la lista attuale (che sarà vuota)
+              resolve(this._listImpegniTrainer.getValue());
+            }
+          }
+          else {
+              //Risolvere con la lista attuale (che sarà vuota)
+              resolve(this._listImpegniTrainer.getValue());
+          }
+        }
+        else {
+          //Risolvere con la lista attuale (che sarà vuota)
+          resolve(this._listImpegniTrainer.getValue());
+        }
+
       })
       .catch(error => {
         console.log(error);
@@ -144,12 +222,7 @@ export class CourseschedulerService {
     })
   }
 
-  /**
-   * recupero la lista degli impegni del trainer (observable)
-   */
-  get listImpegniTrainer(){
-    return this._listImpegniTrainer.asObservable();
-  }
+
 
   /**
    * Recupera un elemento "impegno del trainer" con l'id specificato. ATTENZIONE: devo prima aver eseguito il metodo requestImpegniTrainer

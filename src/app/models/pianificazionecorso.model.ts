@@ -1,6 +1,7 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { RequestForeign } from '../library/models/requestParams.model';
+import { CorsoPresenze } from './corsopresenze.model';
 
 export class PianificazioneCorso extends IDDocument {
     IDCORSO: string;
@@ -14,12 +15,61 @@ export class PianificazioneCorso extends IDDocument {
     DATAORAINIZIO: Date;
     DATAORAFINE: Date;
     MULTIPLA: boolean;
-
+    CORSOPRESENZE: CorsoPresenze[];
 
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
+
+        this.CORSOPRESENZE = [];
     }
+
+    /**
+     * Imposta le proprietà nell'oggetto
+     * @param data JSON Received
+     */
+    setJSONProperty(data: any) {
+
+      //Chiamo IDDOcument
+      super.setJSONProperty(data);  
+
+      this.setCollection(data);
+
+    }
+
+    /**
+     * Sistema le collection se presenti
+     * @param data JSON Ricevuto
+     */
+    setCollection(data: any) {
+      this.CORSOPRESENZE = [];
+
+      if (data.CORSOPRESENZE) {
+        this.setCollectionCorsoPresenze(data.CORSOPRESENZE);
+      }
+      
+    }    
+
+    /**
+     * Imposta la collection CorsoPresenze
+     * @param arPresenze JSON Ricevuti
+     */
+    setCollectionCorsoPresenze(arPresenze: any[]) {
+
+      this.CORSOPRESENZE = [];
+
+      if (arPresenze) {
+
+        arPresenze.forEach(element => {
+            // Ricerco se esiste già
+            let newProgramma = new CorsoPresenze();
+            newProgramma.setJSONProperty(element);
+            this.CORSOPRESENZE.push(newProgramma);
+        });
+      }
+    }    
+
+    
 
     /**
     * Ritorna il descrittore della Struttura Campi
@@ -36,7 +86,7 @@ export class PianificazioneCorso extends IDDocument {
     let arDate = ['DATA'];
     let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
     let arTime = ['ORAINIZIO'];
-    let arCollection = [];
+    let arCollection = ['CORSOPRESENZE'];
 
     objDescriptor.className = 'PianificazioneCorso';
     objDescriptor.doRemote = true;
@@ -59,6 +109,7 @@ export class PianificazioneCorso extends IDDocument {
 
     return objDescriptor;
 }    
+
 
 static getReqForeignKeys(): RequestForeign[] {
   let arRequest: RequestForeign[] = [];
@@ -86,10 +137,10 @@ static getReqForeignKeys(): RequestForeign[] {
 
    
   
-      /**
-       * Ritorna TRUE, FALSE a seconda se l'evento è passato o no
-       */
-      eventoPassato() {
-        return (new Date() > this.DATAORAFINE );
-      }
+  /**
+   * Ritorna TRUE, FALSE a seconda se l'evento è passato o no
+   */
+  eventoPassato() {
+    return (new Date() > this.DATAORAFINE );
+  }
 }

@@ -48,7 +48,7 @@ export class AgendaTrainerDetailPage implements OnInit {
         this.idCorso = this.selectedPianificazione.IDCORSO;
 
         //recupero la lista degli allievi
-        this.listPresenze = this.selectedPianificazione
+        //this.listPresenze = this.selectedPianificazione
       }
 
 

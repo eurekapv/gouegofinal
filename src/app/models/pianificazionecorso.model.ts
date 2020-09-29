@@ -1,5 +1,6 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
+import { RequestForeign } from '../library/models/requestParams.model';
 
 export class PianificazioneCorso extends IDDocument {
     IDCORSO: string;
@@ -58,6 +59,30 @@ export class PianificazioneCorso extends IDDocument {
 
     return objDescriptor;
 }    
+
+static getReqForeignKeys(): RequestForeign[] {
+  let arRequest: RequestForeign[] = [];
+  let objForeign: RequestForeign;
+
+  objForeign = new RequestForeign('IDAREAOPERATIVA');
+  arRequest.push(objForeign);
+
+  objForeign = new RequestForeign('IDSPORT');
+  arRequest.push(objForeign);
+
+  objForeign = new RequestForeign('IDCAMPO');
+  arRequest.push(objForeign);
+
+  objForeign = new RequestForeign('IDLOCATION');
+  objForeign.addDescribeField('DENOMINAZIONE');
+  objForeign.addDescribeField('INDIRIZZO');
+  objForeign.addDescribeField('COMUNE');
+  objForeign.addDescribeField('EMAIL');
+
+  arRequest.push(objForeign);
+
+  return arRequest;
+}
 
    
   

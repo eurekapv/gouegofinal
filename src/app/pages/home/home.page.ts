@@ -24,6 +24,8 @@ import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 
 import { Plugins } from '@capacitor/core';
+import { Corso } from 'src/app/models/corso.model';
+import { filter } from 'rxjs/operators';
 
 const { Geolocation } = Plugins;
 
@@ -77,6 +79,7 @@ export class HomePage implements OnInit, OnDestroy{
   
   //Mostra o nasconde Area Agenda
   showAgenda = false;
+
   
   //Guarda qui
   //https://swiperjs.com/demos/#responsive_breakpoints
@@ -192,6 +195,7 @@ export class HomePage implements OnInit, OnDestroy{
 
       //Aggiorno l'agenda
       this.updateAgenda();
+
            
     });
 
@@ -204,7 +208,9 @@ export class HomePage implements OnInit, OnDestroy{
       this.updateListImpegni();
 
       //Aggiorno l'agenda
-      this.updateAgenda();      
+      this.updateAgenda();     
+      
+      
 
     });
 
@@ -331,6 +337,23 @@ export class HomePage implements OnInit, OnDestroy{
       modal.present();
     })    
   }
+
+  //#endregion
+
+  //#region TRAINER
+  // updateTrainer(){
+  //   if (this.docUtente.isTrainer){
+  //     this.showTrainer = true;
+
+  //     //creo il filtro e recupero tutti i corsi dell'istruttore loggato
+  //     let filterCorso : Corso = new Corso;
+
+
+  //   }
+  //   else{
+  //     this.showTrainer = false;
+  //   }
+  // }
 
   //#endregion
 
@@ -579,7 +602,7 @@ export class HomePage implements OnInit, OnDestroy{
  * Passa alla pagina dell'agenda
  */
 onClickShowAgenda() {
-  
+  this.navController.navigateForward('/agenda');
 }
 
  /**

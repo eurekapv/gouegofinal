@@ -1,5 +1,5 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { Sesso, TargetSesso, TipoVerificaAccount } from './valuelist.model';
+import { Mansione, Sesso, TargetSesso, TipoVerificaAccount } from './valuelist.model';
 import { UtenteLivello } from './utentelivello.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
@@ -110,7 +110,7 @@ export class Utente extends IDDocument {
                     'TELEFONO2',
                     'LISTMANSIONI'
                     ];
-    let arNumber = ['SESSO','RUOLO','MANSIONE'];
+    let arNumber = ['SESSO','RUOLO'];
     let arBoolean = ['NEWSLETTER','PROFILAZIONEINTERNA','PROFILAZIONEESTERNA','VERIFICATAMAIL','VERIFICATAMOBILE'];
     let arDate = ['NATOIL'];
     let arDateTime =[];
@@ -415,6 +415,24 @@ export class Utente extends IDDocument {
         return params;
     }
 
+    get isTrainer(){
+        if (this.LISTMANSIONI.includes(Mansione.trainer.toString())){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    isCustode(){
+        if (this.LISTMANSIONI.includes(Mansione.custode.toString())){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 
 }
 
@@ -461,7 +479,6 @@ export class storageUtente {
             this.cripted = myObj.cripted;
         }
     }
-
 
 }
 

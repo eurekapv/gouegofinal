@@ -73,10 +73,21 @@ const routes: Routes = [
   {
     path: 'verify',
     loadChildren: () => import('./pages/auth/verify/verify.module').then( m => m.VerifyPageModule)
-  },  {
+  },
+  {
     path: 'test',
     loadChildren: () => import('./pages/test/test.module').then( m => m.TestPageModule)
+  },
+  
+  {
+    path: 'agenda',
+    loadChildren: () => import('./pages/agenda/agenda.module').then( m => m.AgendaPageModule)
+  },
+  {
+    path: 'agenda-trainer',
+    loadChildren: () => import('./pages/agenda-trainer/agenda-trainer.module').then( m => m.AgendaTrainerPageModule)
   }
+
 
 
   //questo lo lascio commentato, perchè in teoria ci si arriva solo da modale

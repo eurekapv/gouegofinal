@@ -100,7 +100,7 @@ export class PianificazioneCorso extends IDDocument {
     objDescriptor.addMultiple(arDate, TypeDefinition.date);
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
-    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    objDescriptor.addCollection('CORSOPRESENZE', 'CorsoPresenze', 'IDPIANIFICAZIONECORSO');
     
     objDescriptor.setRelation('IDAREAOPERATIVA','Area');
     objDescriptor.setRelation('IDLOCATION','Location');

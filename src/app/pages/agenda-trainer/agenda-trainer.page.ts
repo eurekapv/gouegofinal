@@ -76,7 +76,9 @@ export class AgendaTrainerPage implements OnInit {
   }
 
   onClickCorso(elem: PianificazioneCorso){
-    this.navController.navigateForward('/agenda-trainer/' + elem.ID+'-'+elem.IDCORSO);
+    this.navController.navigateForward('/agenda-trainer/' + elem.ID);
+    // this.navController.navigateForward('/agenda-trainer/' + elem.ID+'-'+elem.IDCORSO);
+
   }
 
 

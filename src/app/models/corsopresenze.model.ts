@@ -8,6 +8,8 @@ export class CorsoPresenze extends IDDocument {
     NOMINATIVO: string;
     PRESENTE: boolean;
     NOTES: string;
+    IDUSERSETTING: string;
+    DATAORASETTING: Date
 
     /**
      * Ritorna il descrittore della Struttura Campi
@@ -18,12 +20,13 @@ export class CorsoPresenze extends IDDocument {
             'IDPIANIFICAZIONECORSO',
             'IDUTENTE',
             'NOMINATIVO',
-            'NOTE'
+            'NOTE',
+            'IDUSERSETTING'
         ];
         let arNumber = [];
         let arBoolean = ['PRESENTE'];
         let arDate = [];
-        let arDateTime =[];
+        let arDateTime =['DATAORASETTING'];
         let arTime = [];
 
         objDescriptor.className = 'CorsoPresenze';
@@ -37,6 +40,11 @@ export class CorsoPresenze extends IDDocument {
         objDescriptor.addMultiple(arDate, TypeDefinition.date);
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
+
+        objDescriptor.setRelation('IDPIANIFICAZIONECORSO', 'PianificazioneCorso');
+        objDescriptor.setRelation('IDUTENTE', 'Utente');
+        objDescriptor.setRelation('IDUSERSETTING', 'Utente');
+        
         
         return objDescriptor;
     }

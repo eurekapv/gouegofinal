@@ -34,21 +34,30 @@ export class AgendaTrainerDetailPage implements OnInit {
     this.activatedRoute.paramMap.subscribe(params => {
 
       //recupero id della pianificazione
-      this.idPianificazione = params['pianificazioneCorsoId'];
-
+      this.idPianificazione = params['params']['pianificazioneCorsoId'];
+      console.log (params);
       //recupero la pianificazione tramite l'id
       this.selectedPianificazione =this.startService.getPianificazioneTrainerById(this.idPianificazione);
-      
+
       if (!this.selectedPianificazione){
         this.navController.pop();
       }
       else{
         //Posso andare avanti
+
         //recupero l'id del corso
         this.idCorso = this.selectedPianificazione.IDCORSO;
 
-        //recupero la lista degli allievi
-        //this.listPresenze = this.selectedPianificazione
+        //richiedo la lista degli allievi (inserendola nel documento pianificazione) 
+        this.startService.insertPresenzeIntoPianificazione(this.selectedPianificazione)
+        .then(() => {
+          
+          //ora ho il documento pianificazione con anche le presenze, posso metterle anche in "listpresenze"
+          this.listPresenze  = this.selectedPianificazione.CORSOPRESENZE;
+          
+        })
+
+        console.log(this.listPresenze);
       }
 
 

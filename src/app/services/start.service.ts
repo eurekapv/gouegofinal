@@ -45,6 +45,7 @@ import { DocstructureService } from '../library/services/docstructure.service';
 import { OccupazioneCampi } from '../models/occupazionecampi.model';
 import { RequestParams } from '../library/models/requestParams.model';
 import { DocumentoService } from './documento.service';
+import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 
 
 @Injectable({
@@ -613,8 +614,12 @@ requestCorsoById(idCorso: string){
    * Recupera un elemento "impegno del trainer" con l'id specificato. ATTENZIONE: devo prima aver eseguito il metodo requestImpegniTrainer
    * @param idPianificazione l'id della pianificazione da recuperare
   */
-  getPianificazioneTrainerById(idPianificazione){
+  getPianificazioneTrainerById(idPianificazione: string){
     return this.corsoCalendarioService.getPianificazioneTrainerById(idPianificazione);
+  }
+
+  insertPresenzeIntoPianificazione(docPianificazione: PianificazioneCorso){
+    return this.corsoCalendarioService.insertPresenze(docPianificazione);
   }
 
 

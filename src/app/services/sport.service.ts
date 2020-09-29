@@ -35,8 +35,6 @@ export class SportService {
   }
 
 
-
-
   constructor(private apiService: ApicallService) { 
     this._loaded = false;
   }

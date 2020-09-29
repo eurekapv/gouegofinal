@@ -17,13 +17,13 @@ export class DocumentoService {
 
   request(config: StartConfiguration, fileUrl: string) {
 
-        let myHeaders
-        //myHeaders = config.getHttpHeaders();
+        let myHeaders;
+        //Per ora non dichiaro un tipo (funziona lo stesso)
         //new HttpHeaders({'Content-type':'text/plain'});    
-        // Nei parametri imposto il gruppo Sportivo
+        
     
         let myUrl = config.urlFileServer + '/' + fileUrl;
-        console.log(myUrl);
+        
         return this.apiCallService
           .httpGetFile (myUrl, myHeaders)
           .toPromise<Blob>();

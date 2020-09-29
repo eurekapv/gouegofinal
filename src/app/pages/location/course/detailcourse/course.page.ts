@@ -65,7 +65,7 @@ export class CoursePage implements OnInit, OnDestroy {
                         this.docStructureService.requestNew(filtroCorso, params).then(corso => {
                           console.log(corso);
                           
-                          if (corso&&corso!=[]){
+                          if (corso&&corso!=[]) {
                             //se ho trovato un corso, lo prendo
                             this.myCorso = corso[0];
 

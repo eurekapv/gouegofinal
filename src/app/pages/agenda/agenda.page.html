@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Agenda struttura</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="agendaCards.length != 0" class="grid-agenda">
+    <ion-row>
+      <ion-col *ngFor="let btn of agendaCards">
+        <app-button-card 
+            class="small-button-card" 
+            [smallVersion]="false" 
+            [myButtonCard]="btn">
+        </app-button-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

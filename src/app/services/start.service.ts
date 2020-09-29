@@ -585,23 +585,43 @@ requestCorsoById(idCorso: string){
   return this.corsoService.requestById(actualStartConfig, idCorso);
 }
 
+//#region coursescheduler
 
-/**
- * Ritorna il calendario di un corso
- */
-get calendarioCorso() {
-  return this.corsoCalendarioService.calendarioCorso;
-}
+  /**
+   * Ritorna il calendario di un corso
+   */
+  get calendarioCorso() {
+    return this.corsoCalendarioService.calendarioCorso;
+  }
 
-/**
- * Richiesto il calendario del corso
- * @param idCorso Corso richiesto
- */
-requestCalendarioCorso(idCorso: string) {
-  const actualStartConfig = this._startConfig.getValue();
+  /**
+   * Richiesto il calendario del corso
+   * @param idCorso Corso richiesto
+   */
+  requestCalendarioCorso(idCorso: string) {
+    const actualStartConfig = this._startConfig.getValue();
 
-  return this.corsoCalendarioService.request(actualStartConfig, idCorso);
-}
+    return this.corsoCalendarioService.requestCalendario(actualStartConfig, idCorso);
+  }
+
+  requestImpegniTrainer(idRef: string, dataInizio: Date, dataFine: Date){
+    return this.corsoCalendarioService.requestImpegniTrainer(idRef,dataInizio,dataFine);
+  }
+
+
+  /**
+   * Recupera un elemento "impegno del trainer" con l'id specificato. ATTENZIONE: devo prima aver eseguito il metodo requestImpegniTrainer
+   * @param idPianificazione l'id della pianificazione da recuperare
+  */
+  getPianificazioneTrainerById(idPianificazione){
+    return this.corsoCalendarioService.getPianificazioneTrainerById(idPianificazione);
+  }
+
+
+
+
+//#endregion
+
 
 
 //Ritorna il corso selezionato nel servizio

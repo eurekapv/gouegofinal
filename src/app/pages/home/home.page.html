@@ -7,11 +7,11 @@
 
       </div>
     </ion-title>
-    <!-- <ion-buttons slot="end">
-      <ion-button routerLink="/test">
+    <ion-buttons slot="end">
+      <ion-button routerLink="/agenda-trainer">
         <ion-icon name="code-working-outline"></ion-icon>
       </ion-button>
-    </ion-buttons> -->
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -154,9 +154,9 @@
             [myButtonCard]="btn">
         </app-button-card>
 
-    </ion-slide>
-  </ion-slides>
-</ion-grid>
+      </ion-slide>
+    </ion-slides>
+  </ion-grid>
 
 <ion-grid *ngIf="agendaCards.length > 1 && showAgenda" class="grid-agenda">
 
@@ -191,6 +191,53 @@
 
   </div>
 </div>
+
+<!-- PARTE TRAINER -->
+<!-- <div class="ion-no-padding"> -->
+
+  <!-- TITOLO -->
+  <!-- <ion-item 
+      type="header" 
+      lines="none" 
+      color="primary"
+      *ngIf="showAgenda">
+
+      <ion-icon 
+          slot="start" 
+          name="golf-outline"></ion-icon>
+      <ion-label class="ion-text-nowrap">
+        <h2>Agenda Struttura</h2>
+      </ion-label>
+      
+      <ion-button 
+          slot="end" 
+          color="light" 
+          fill="solid"
+          size = "default"
+          (click)="onClickShowAgenda()">
+          <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
+        Elenco
+      </ion-button>  
+  </ion-item> -->
+
+  <!-- SLIDES -->
+  <!-- <ion-grid *ngIf="agendaCards.length > 1 && showAgenda" class="grid-agenda">
+
+    <ion-slides class="ion-no-padding ion-no-margin" [options]="sliderOpts">
+    <ion-slide 
+        class="ion-no-padding ion-no-margin"
+        *ngFor="let btn of agendaCards"> 
+        
+        <app-button-card 
+            class="small-button-card" 
+            [smallVersion]="false" 
+            [myButtonCard]="btn">
+        </app-button-card>
+  
+    </ion-slide>
+  </ion-slides>
+  </ion-grid>
+</div> -->
 
   <!-- NEWS ED EVENTI PROSSIMI-->
   <!-- TITOLO -->

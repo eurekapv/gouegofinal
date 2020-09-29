@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpHeaders, HttpParams, JsonpInterceptor } from '@angular/common/http';
 
 import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { IDDocument } from '../library/models/iddocument.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
+import { resolve } from 'url';
 
 
 @Injectable({
@@ -16,7 +20,13 @@ export class CourseschedulerService {
 
   _calendarioCorso = new BehaviorSubject<PianificazioneCorso[]>([]);
 
-  constructor(private apiService: ApicallService) { }
+  _listImpegniTrainer = new BehaviorSubject<PianificazioneCorso[]>([]);
+
+  constructor(
+    private apiService: ApicallService,
+    private docStructureService: DocstructureService
+    ) { }
+
 
 
   get calendarioCorso() {
@@ -29,7 +39,7 @@ export class CourseschedulerService {
    * @param config Parametri di configurazione
    * @param idCorso Corso Richiesto
    */
-  request(config: StartConfiguration, idCorso: string) {
+  requestCalendario(config: StartConfiguration, idCorso: string) {
     return new Promise ((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
       //new HttpHeaders({'Content-type':'text/plain'});
@@ -93,5 +103,65 @@ export class CourseschedulerService {
    */
   emptyCalendario() {
     this._calendarioCorso.next([]);
+  }
+
+  /**
+   * richiede al server gli impegni del trainer con id specificato. ritorna la lista tramite Promise. sulla lista vengono anche effettuate le decodifiche
+   * 
+   * @param idRef l'id del trainer
+   * @param dataInizio data di inizio  
+   * @param dataFine data di fine
+   */
+  requestImpegniTrainer(idRef: string, dataInizio: Date, dataFine: Date){
+    return new Promise<PianificazioneCorso[]> ((resolve, reject) => {
+      
+      const methodName = 'getPianificazioniTrainer'
+      const document = new PianificazioneCorso(true);
+  
+      let params = {
+        'idRef': idRef,
+        'dataInizio': MyDateTime.formatDateISO(dataInizio),
+        'dataFine': MyDateTime.formatDateISO(dataFine)
+      }
+  
+      this.docStructureService.requestPost(document, methodName, JSON.stringify(params))
+      .then(response => {
+        let listPianificazioni:PianificazioneCorso[] = response.PIANIFICAZIONECORSO;
+        this.docStructureService.decodeCollection(listPianificazioni, PianificazioneCorso.getReqForeignKeys())
+          .then(() =>{
+            console.log(listPianificazioni);
+            this._listImpegniTrainer.next(listPianificazioni);
+            resolve(listPianificazioni);
+          })
+          .catch(error => {
+            reject(error);
+          })
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      })
+    })
+  }
+
+  /**
+   * recupero la lista degli impegni del trainer (observable)
+   */
+  get listImpegniTrainer(){
+    return this._listImpegniTrainer.asObservable();
+  }
+
+  /**
+   * Recupera un elemento "impegno del trainer" con l'id specificato. ATTENZIONE: devo prima aver eseguito il metodo requestImpegniTrainer
+   * @param idPianificazione l'id della pianificazione da recuperare
+   */
+  getPianificazioneTrainerById(idPianificazione): PianificazioneCorso{
+    let elem: PianificazioneCorso = this._listImpegniTrainer
+      .getValue()
+        .find((elem:PianificazioneCorso) => {
+          return elem.ID == idPianificazione;
+        })
+
+    return elem;
   }
 }

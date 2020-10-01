@@ -16,7 +16,6 @@ import { StartService } from 'src/app/services/start.service';
 })
 export class AgendaTrainerDetailPage implements OnInit {
 
-
   listPresenze : CorsoPresenze[] = [];
   listPresenzeConfermate: CorsoPresenze[] = [];
   listPresenzeInProva: CorsoPresenze[] = [];
@@ -82,7 +81,7 @@ export class AgendaTrainerDetailPage implements OnInit {
   onSubmit(){
 
 
-    
+
     this.navController.pop();
   }
 

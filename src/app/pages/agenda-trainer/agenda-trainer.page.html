@@ -5,10 +5,26 @@
     </ion-buttons>
     <ion-title>I tuoi corsi</ion-title>
   </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-item lines="none" color="primary">
+      <ion-icon slot="start" name="calendar"></ion-icon>
+      <ion-datetime 
+        displayFormat="DDDD - DD/MM/YYYY" 
+        [dayNames]="settimana" 
+        [(ngModel)]="selectedIsoDate" 
+        (ngModelChange)="onChangeFilter()"
+      >
+      </ion-datetime>
+    </ion-item>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
+
+  <ion-list>
+    <app-item-calendario *ngFor="let pianificazione of myListPianificazioni" [pianificazioneElem]="pianificazione"></app-item-calendario>
+  </ion-list>
+  <!-- <ion-grid>
     <ion-row>
       <ion-col *ngFor="let pianificazione of myListPianificazioni">
         <ion-card button (click)="onClickCorso(pianificazione)">
@@ -23,5 +39,5 @@
         </ion-card>
       </ion-col>
     </ion-row>
-  </ion-grid>
+  </ion-grid> -->
 </ion-content>

@@ -18,13 +18,18 @@ export class AgendaTrainerPage implements OnInit {
 
   utente: Utente = new Utente();
   myListPianificazioni: PianificazioneCorso[] = [];
+  selectedDate: Date = new Date();
+  selectedIsoDate: string = this.selectedDate.toISOString();
+
+  settimana = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
+
 
   constructor(
     private startService: StartService,
     private navController: NavController,
     private loadingController: LoadingController,
     private toastController: ToastController
-  ) { }
+  ) {   }
 
   ngOnInit() {
 
@@ -59,7 +64,7 @@ export class AgendaTrainerPage implements OnInit {
       elLoading.present();
       
       //qui stò richiedendo gli impegni che riguardano l'utente in quanto "collaboratore"
-      this.startService.requestImpegniTrainer(this.utente.ID, new Date(), new Date())
+      this.startService.requestImpegniTrainer(this.utente.ID, this.selectedDate)
         .then(result => {
 
           this.myListPianificazioni = result;
@@ -93,6 +98,15 @@ export class AgendaTrainerPage implements OnInit {
     .then(elToast => {
       elToast.present();
     })
+  }
+
+  onChangeFilter(){
+
+
+    // this.selectedDate 
+    console.log(new Date(this.selectedIsoDate));
+    this.selectedDate = (new Date(this.selectedIsoDate)); 
+    this.requestImpegni();
   }
 
 }

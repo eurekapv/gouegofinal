@@ -605,7 +605,7 @@ requestCorsoById(idCorso: string){
     return this.corsoCalendarioService.requestCalendario(actualStartConfig, idCorso);
   }
 
-  requestImpegniTrainer(idRef: string, dataInizio: Date, dataFine: Date){
+  requestImpegniTrainer(idRef: string, dataInizio: Date, dataFine?: Date){
     return this.corsoCalendarioService.requestImpegniTrainer(idRef,dataInizio,dataFine);
   }
 

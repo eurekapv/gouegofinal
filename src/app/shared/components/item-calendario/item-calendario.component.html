@@ -1,0 +1,14 @@
+<ion-item lines="none" (click)="onClick()">
+  <ion-label slot="start" class="left-label">
+    <h4>{{pianificazioneElem.DATAORAINIZIO | date: 'HH.mm'}}</h4>
+    <h4>{{pianificazioneElem.DATAORAFINE | date: 'HH.mm'}}</h4>
+  </ion-label>
+  <ion-label class="right-label past">
+    <h2>{{pianificazioneElem['_DENOMINAZIONE_Corso']}}</h2>
+    <h3>{{pianificazioneElem['_DENOMINAZIONE_Location']}} - {{pianificazioneElem['_DENOMINAZIONE_Campo']}}</h3>
+    <h3>Livello</h3>
+  </ion-label>
+  <ion-badge slot="end">
+    Livello
+  </ion-badge>
+</ion-item>

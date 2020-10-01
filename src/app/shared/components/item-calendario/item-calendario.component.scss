@@ -1,0 +1,32 @@
+ion-item{
+    >ion-label.left-label{
+        display: table;
+    }
+
+    >ion-label.right-label{
+        padding-left: 5px;
+        border-left: 2px;
+        border-left-style: solid;
+    }
+    >ion-label.right-label.past{
+        border-left-color: var(--ion-color-danger)
+    }
+    >ion-label.right-label.future{
+        border-left-color: var(--ion-color-primary);
+    }
+
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(181, 181, 181);
+
+}
+
+h3{
+    color: grey;
+    font-size: 12px;
+    font-weight: 480;
+}
+
+h4{
+    font-size: 14px;
+}

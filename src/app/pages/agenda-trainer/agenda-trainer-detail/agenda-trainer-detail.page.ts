@@ -6,6 +6,7 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
+import { StatoIscrizione } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
@@ -17,6 +18,9 @@ export class AgendaTrainerDetailPage implements OnInit {
 
 
   listPresenze : CorsoPresenze[] = [];
+  listPresenzeConfermate: CorsoPresenze[] = [];
+  listPresenzeInProva: CorsoPresenze[] = [];
+
   selectedPianificazione: PianificazioneCorso = new PianificazioneCorso();
   selectedCorso: Corso;
 
@@ -40,7 +44,7 @@ export class AgendaTrainerDetailPage implements OnInit {
       //recupero la pianificazione tramite l'id
       this.selectedPianificazione =this.startService.getPianificazioneTrainerById(this.idPianificazione);
 
-      if (!this.selectedPianificazione){
+      if (this.selectedPianificazione == null || this.selectedPianificazione == undefined){
         this.navController.navigateBack('/agenda-trainer');
       }
       else{
@@ -55,10 +59,12 @@ export class AgendaTrainerDetailPage implements OnInit {
 
           //ora ho il documento pianificazione con anche le presenze, posso metterle anche in "listpresenze"
           this.listPresenze  = this.selectedPianificazione.CORSOPRESENZE;
+          this.dividiIscrizioni();
           
+          console.log('Lista prima: ')
+          console.log(this.listPresenze);
         })
 
-        console.log(this.listPresenze);
       }   
 
     })
@@ -74,8 +80,9 @@ export class AgendaTrainerDetailPage implements OnInit {
   }
 
   onSubmit(){
-    //richiesta di aggiornamento al server
 
+
+    
     this.navController.pop();
   }
 
@@ -99,6 +106,18 @@ export class AgendaTrainerDetailPage implements OnInit {
       color = 'danger';
     }
     return color;
+  }
+
+  //separa le iscrizioni in due liste (confermate e in prova)
+  dividiIscrizioni(){
+    this.listPresenzeConfermate = this.listPresenze.filter(element => {
+      return element.STATOISCRIZIONE == StatoIscrizione.confermata;
+    });
+
+    this.listPresenzeInProva = this.listPresenze.filter(element => {
+      return element.STATOISCRIZIONE == StatoIscrizione.inProva;
+    });
+
   }
 
 }

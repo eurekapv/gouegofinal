@@ -1,5 +1,6 @@
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
+import { StatoIscrizione } from './valuelist.model';
 
 export class CorsoPresenze extends IDDocument {
 
@@ -11,9 +12,7 @@ export class CorsoPresenze extends IDDocument {
     IDUSERSETTING: string;
     DATAORASETTING: Date;
     DATACERTIFICATOMEDICO: Date;
-
-    //#TODO MANCA ENUM
-    STATOISCRIZIONE: number;
+    STATOISCRIZIONE: StatoIscrizione;
 
     /**
      * Ritorna il descrittore della Struttura Campi
@@ -27,7 +26,7 @@ export class CorsoPresenze extends IDDocument {
             'NOTE',
             'IDUSERSETTING'
         ];
-        let arNumber = [];
+        let arNumber = ['STATOISCRIZIONE'];
         let arBoolean = ['PRESENTE'];
         let arDate = ['DATACERTIFICATOMEDICO'];
         let arDateTime =['DATAORASETTING'];

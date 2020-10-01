@@ -266,8 +266,8 @@ export enum SegmentCorsi {
 }
 
 export enum StatoIscrizione{
-    confermata=-1,
-    inProva=0
+    confermata = -1,
+    inProva = 0
 }
 
 export enum Mesi {
@@ -285,6 +285,8 @@ export enum Mesi {
     dicembre = 12
 
 }
+
+
 
 
 

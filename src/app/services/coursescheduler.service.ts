@@ -11,6 +11,7 @@ import { DocstructureService } from '../library/services/docstructure.service';
 import { IDDocument } from '../library/models/iddocument.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { resolve } from 'url';
+import { promise } from 'protractor';
 
 
 @Injectable({
@@ -236,5 +237,25 @@ export class CourseschedulerService {
         })
 
     return elem;
+  }
+
+  /**
+   * Richiede al server le presenze della pianificazione passata e le inserisce all'interno della stessa
+   * @param docPianificazione IL documento in cui inserire le presenze
+   */
+  insertPresenze(docPianificazione: PianificazioneCorso){
+    
+    return new Promise<PianificazioneCorso>((resolve, reject) => {
+
+      const collName = 'CORSOPRESENZE';
+
+      this.docStructureService.loadCollection(docPianificazione, collName)
+      .then(() => {
+        resolve();
+      })
+      .catch(error => {
+        reject(error);
+      })
+    })
   }
 }

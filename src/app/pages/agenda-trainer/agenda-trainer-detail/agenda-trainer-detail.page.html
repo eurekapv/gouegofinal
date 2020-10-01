@@ -14,9 +14,9 @@
       <ion-icon slot="start" name="school-outline" color="primary">
       </ion-icon>
       <ion-label class="ion-text-wrap">
-        <h1>SettembreVolley</h1>
-        <p>Via Washington - Campo 1</p>
-        <h2>18.00-19.30</h2>
+        <h1>{{selectedPianificazione['_DENOMINAZIONE_Corso']}}</h1>
+        <p>{{(selectedPianificazione['_DENOMINAZIONE_Location'] | titlecase) + ' - ' + (selectedPianificazione['_DENOMINAZIONE_Campo'] | titlecase)}}</p>
+        <h2>{{selectedPianificazione.DATAORAINIZIO | date: 'H.mm'}} - {{selectedPianificazione.DATAORAFINE | date: 'H.mm'}}</h2>
       </ion-label>
     </ion-item>
 
@@ -32,9 +32,15 @@
     <ion-item *ngFor="let presenza of listPresenze" button (click)="onClickElement(presenza)">
       <ion-icon *ngIf="presenza.PRESENTE==true" slot="start" name="thumbs-up-outline" color="primary"></ion-icon>
       <ion-icon *ngIf="presenza.PRESENTE==false" slot="start" name="thumbs-down-outline" color="danger"></ion-icon>
+      <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" name="help"></ion-icon>
       <ion-label>
         <h2>{{presenza.NOMINATIVO}}</h2>
-        <h4>Scad. c. medico: </h4>
+        <h4>
+          Scad. c. medico: 
+          <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
+            {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
+          </ion-badge> 
+        </h4>
       </ion-label>
     </ion-item>
   </ion-list>

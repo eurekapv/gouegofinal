@@ -344,7 +344,8 @@ export class DocstructureService {
 
 
    /**
-    * Carica una collection figlia del documento passato e la imposta nel documento
+    * Carica una collection figlia del documento passato 
+    * e la imposta nel documento
     * @param document  Documento base da cui caricare
     * @param collectionName Nome collection da caricare
     * @param params parametri aggiuntivi

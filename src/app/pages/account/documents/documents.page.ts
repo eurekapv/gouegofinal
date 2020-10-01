@@ -5,7 +5,7 @@ import { ToastController, ModalController, LoadingController, Platform } from '@
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
 import { TipoDocumentazione, ClasseDocumento } from 'src/app/models/tipodocumentazione.model';
 import { PostParams, RequestParams } from 'src/app/library/models/requestParams.model';
-import { OperatorCondition } from 'src/app/library/models/iddocument.model';
+import { OperatorCondition, ParamsExport } from 'src/app/library/models/iddocument.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Utente } from 'src/app/models/utente.model';
 import { Documentazione, InvioDocumentazione } from 'src/app/models/documentazione.model';
@@ -186,7 +186,14 @@ export class DocumentsPage implements OnInit {
         docUploadDocumentazione.TOKENUTENTE = this.startService.actualUtente.ID;
   
         //creo il body json
-        let myJson: string = docUploadDocumentazione.exportToJSON(true, true, true, false);
+        //Questi sono i parametri per l'esportazione
+        let paramExport = new ParamsExport();
+        paramExport.clearDOProperty = true;
+        paramExport.clearPKProperty = true;
+        paramExport.clearPrivateProperty = true;
+        paramExport.onlyModified = false;
+        //Qui Creo il JSON
+        let myJson: string = docUploadDocumentazione.exportToJSON(paramExport);
         
         //ora che ho tutto, faccio la post
         this.docStructureService.requestPost(fakeUtente, 'uploadDocumentazione', myJson)

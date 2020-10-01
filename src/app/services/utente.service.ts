@@ -8,6 +8,7 @@ import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { PostResponse } from '../library/models/postResult.model';
+import { ParamsExport } from '../library/models/iddocument.model';
 
 
 
@@ -175,11 +176,6 @@ export class UtenteService {
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
 
-    // = new HttpHeaders({'Content-type':'application/json', 
-    //                                     'X-HTTP-Method-Override': metodo, 
-    //                                     'appid':config.appId
-    //                                   });
-
     const myParams = new HttpParams();
     let body = '';
 
@@ -187,7 +183,15 @@ export class UtenteService {
     let myUrl = config.urlBase + '/' + doObject;
 
     //Body da inviare
-    body = docUtenteUpdate.exportToJSON(true,false,true,true);
+
+    //Questi sono i parametri per l'esportazione
+    let paramExport = new ParamsExport();
+    paramExport.clearDOProperty = true;
+    paramExport.clearPKProperty = false;
+    paramExport.clearPrivateProperty = true;
+    paramExport.onlyModified = true;
+
+    body = docUtenteUpdate.exportToJSON(paramExport);
     body = `{"docUtente": ${body}}`;
     LogApp.consoleLog('Request Update utente');
     LogApp.consoleLog(body);
@@ -279,10 +283,6 @@ export class UtenteService {
           const metodo = 'registrationSendCodici';
           let myHeaders = config.getHttpHeaders();
           myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-          // new HttpHeaders({'Content-type':'application/json', 
-          //                                     'X-HTTP-Method-Override': metodo, 
-          //                                     'appid':config.appId
-          //                                   });
 
           const myParams = new HttpParams();
           const doObject = 'ACCOUNT';
@@ -294,7 +294,15 @@ export class UtenteService {
             if (docRequestCode) {
 
               //Creo il body da inviare
-              bodyRequest = docRequestCode.exportToJSON(true, true, true);
+
+              //Questi sono i parametri per l'esportazione
+              let paramExport = new ParamsExport();
+              paramExport.clearDOProperty = true;
+              paramExport.clearPKProperty = true;
+              paramExport.clearPrivateProperty = true;
+              
+              bodyRequest = docRequestCode.exportToJSON(paramExport);
+
               bodyRequest = `{"docRequest" : ${bodyRequest}}`;
               console.log(bodyRequest);
 
@@ -335,10 +343,6 @@ export class UtenteService {
         const metodo = 'registrationVerifyCodici';
         let myHeaders = config.getHttpHeaders();
         myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-        // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-        //                         'X-HTTP-Method-Override': metodo, 
-        //                         'appid':config.appId
-        //                       });
 
         const myParams = new HttpParams();
         const doObject = 'ACCOUNT';
@@ -350,7 +354,16 @@ export class UtenteService {
             if (docVerifyCode) {
 
                 //Creo il body da inviare
-                bodyRequest = docVerifyCode.exportToJSON(true, true, true);
+
+                //Questi sono i parametri per l'esportazione
+                let paramExport = new ParamsExport();
+                paramExport.clearDOProperty = true;
+                paramExport.clearPKProperty = true;
+                paramExport.clearPrivateProperty = true;
+                
+
+                bodyRequest = docVerifyCode.exportToJSON(paramExport);
+
                 bodyRequest = `{"docRequest" : ${bodyRequest}}`;
                 
                 //Faccio la chiamata POST
@@ -392,10 +405,7 @@ registrationFinalize(config: StartConfiguration,
 
     //Viene inviato al server il documento per chiedere la registrazione utente
     const metodo = 'registrationFinalize';
-    // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-    //                       'X-HTTP-Method-Override': metodo, 
-    //                       'appid':config.appId
-    //                     });
+
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);                        
 
@@ -411,8 +421,16 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   if (docRequestCode && docUtente) {
 
     //Creo il body da inviare
-    bodyRequest = docRequestCode.exportToJSON(true, true, true);
-    bodyUtente = docUtente.exportToJSON(true,true,true);
+
+    //Questi sono i parametri per l'esportazione
+    let paramExport = new ParamsExport();
+    paramExport.clearDOProperty = true;
+    paramExport.clearPKProperty = true;
+    paramExport.clearPrivateProperty = true;
+    
+
+    bodyRequest = docRequestCode.exportToJSON(paramExport);
+    bodyUtente = docUtente.exportToJSON(paramExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
     
@@ -464,10 +482,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   //Viene effettuata una chiamata al server per ottenere
   //l'invio di una mail e/o un SMS contenente codici PIN
   const metodo = 'recoverySendCodici';
-  // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-  //                         'X-HTTP-Method-Override': metodo, 
-  //                         'appid':config.appId
-  //                       });
+
   let myHeaders = config.getHttpHeaders();
   myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
   const myParams = new HttpParams();
@@ -480,7 +495,16 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   if (docRequestCode) {
 
   //Creo il body da inviare
-  bodyRequest = docRequestCode.exportToJSON(true, true, true);
+
+  //Questi sono i parametri per l'esportazione
+  let paramExport = new ParamsExport();
+  paramExport.clearDOProperty = true;
+  paramExport.clearPKProperty = true;
+  paramExport.clearPrivateProperty = true;
+    
+
+  bodyRequest = docRequestCode.exportToJSON(paramExport);
+
   bodyRequest = `{"docRequest" : ${bodyRequest}}`;
   console.log(bodyRequest);
 
@@ -514,10 +538,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   recoveryVerifyCodici(config: StartConfiguration, 
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'recoveryVerifyCodici';
-        // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-        //                         'X-HTTP-Method-Override': metodo, 
-        //                         'appid':config.appId
-        //                       });
+
         let myHeaders = config.getHttpHeaders();
         myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
         const myParams = new HttpParams();
@@ -530,7 +551,14 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
             if (docVerifyCode) {
 
                 //Creo il body da inviare
-                bodyRequest = docVerifyCode.exportToJSON(true, true, true);
+
+                //Questi sono i parametri per l'esportazione
+                let paramExport = new ParamsExport();
+                paramExport.clearDOProperty = true;
+                paramExport.clearPKProperty = true;
+                paramExport.clearPrivateProperty = true;
+
+                bodyRequest = docVerifyCode.exportToJSON(paramExport);
                 bodyRequest = `{"docRequest" : ${bodyRequest}}`;
                 
                 //Faccio la chiamata POST
@@ -564,10 +592,7 @@ recoveryFinalize(config: StartConfiguration,
 
     //Viene inviato al server il documento per chiedere la registrazione utente
     const metodo = 'recoveryFinalize';
-    // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-    //                       'X-HTTP-Method-Override': metodo, 
-    //                       'appid':config.appId
-    //                     });
+
 
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
@@ -583,8 +608,21 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   if (docRequestCode && docUtente) {
 
     //Creo il body da inviare
-    bodyRequest = docRequestCode.exportToJSON(true, true, true);
-    bodyUtente = docUtente.exportToJSON(true,false,true);
+    //Questi sono i parametri per l'esportazione
+    let paramReqExport = new ParamsExport();
+    paramReqExport.clearDOProperty = true;
+    paramReqExport.clearPKProperty = true;
+    paramReqExport.clearPrivateProperty = true;
+
+    bodyRequest = docRequestCode.exportToJSON(paramReqExport);
+
+    //Questi sono i parametri per l'esportazione
+    let paramUteExport = new ParamsExport();
+    paramUteExport.clearDOProperty = true;
+    paramUteExport.clearPKProperty = false;
+    paramUteExport.clearPrivateProperty = true;
+
+    bodyUtente = docUtente.exportToJSON(paramUteExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
     
@@ -647,9 +685,22 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     return new Promise<AccountOperationResponse>((resolve, reject)=> {
     if (docRequestCode) {
   
+    //Questi sono i parametri per l'esportazione
+    let paramReqExport = new ParamsExport();
+    paramReqExport.clearDOProperty = true;
+    paramReqExport.clearPKProperty = true;
+    paramReqExport.clearPrivateProperty = true;
+
     //Creo il body da inviare
-    bodyRequest = docRequestCode.exportToJSON(true, true, true);
-    bodyUtente = docUtente.exportToJSON(true,false,true);
+    bodyRequest = docRequestCode.exportToJSON(paramReqExport);
+
+    //Questi sono i parametri per l'esportazione
+    let paramUteExport = new ParamsExport();
+    paramUteExport.clearDOProperty = true;
+    paramUteExport.clearPKProperty = false;
+    paramUteExport.clearPrivateProperty = true;
+
+    bodyUtente = docUtente.exportToJSON(paramUteExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
   
@@ -683,10 +734,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   validationVerifyCodici(config: StartConfiguration, 
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'validationVerifyCodici';
-        // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-        //                         'X-HTTP-Method-Override': metodo, 
-        //                         'appid':config.appId
-        //                       });
+
         let myHeaders = config.getHttpHeaders();
         myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
         const myParams = new HttpParams();
@@ -699,7 +747,14 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
             if (docVerifyCode) {
 
                 //Creo il body da inviare
-                bodyRequest = docVerifyCode.exportToJSON(true, true, true);
+
+                //Questi sono i parametri per l'esportazione
+                let paramReqExport = new ParamsExport();
+                paramReqExport.clearDOProperty = true;
+                paramReqExport.clearPKProperty = true;
+                paramReqExport.clearPrivateProperty = true;
+                                
+                bodyRequest = docVerifyCode.exportToJSON(paramReqExport);
                 bodyRequest = `{"docRequest" : ${bodyRequest}}`;
                 
                 //Faccio la chiamata POST

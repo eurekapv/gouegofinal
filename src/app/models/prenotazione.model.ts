@@ -183,15 +183,6 @@ export class Prenotazione extends IDDocument {
     }
 
 
-    /**
-     * Esporta l'oggetto in formato JSON
-     * Cancella le proprietà non utilizzate e non richieste
-     * @param clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
-     * @param clearPKProperty Non esporta la Chiave primaria
-     */
-    exportToJSON(clearDOProperty: boolean, clearPKProperty:boolean, clearPrivateProperty: boolean) {
-        return super.exportToJSON(clearDOProperty, clearPKProperty, clearPrivateProperty);
-    }
 
     /**
      * Converte il JSON ricevuto e ritorna una Prenotazione

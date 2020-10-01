@@ -201,15 +201,15 @@ import { MyDateTime } from './mydatetime.model';
 
     /**
      * Esporta l'oggetto in JSON
-     * @param clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
-     * @param clearPKProperty Non esporta la Chiave primaria
-     * @param clearPrivateProperty Non esporta le proprietà private
-     * @param onlyModified Esporta solo le proprietà diverse dalle original
+     * @param paramExport Oggetto con le caratteristiche esportazione
+     * contiene 
+     *  clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
+     *  clearPKProperty Non esporta la Chiave primaria
+     *  clearPrivateProperty Non esporta le proprietà private
+     *  onlyModified Esporta solo le proprietà diverse dalle original
+     *  numLivelli Numero livelli da esportare
      */
-    exportToJSON(clearDOProperty: boolean, 
-                 clearPKProperty: boolean, 
-                 clearPrivateProperty: boolean, 
-                 onlyModified?: boolean) {
+    exportToJSON(paramExport: ParamsExport) {
       let _this = this;
       let arProperty = Object.keys(_this);
       //Chiedo il Descrittore della classe
@@ -219,9 +219,12 @@ import { MyDateTime } from './mydatetime.model';
       let propExclud = [];
       let row = '';
       
+      if (!paramExport) {
+        paramExport = new ParamsExport();
+      }
 
       // Vuole eliminare le doProperty, le aggiungo all'Array
-      if (clearDOProperty) {
+      if (paramExport.clearDOProperty) {
         //Popolo l'array propExclud con le doProperty
         doProperty.forEach(element => {
           propExclud.push(element);
@@ -229,7 +232,7 @@ import { MyDateTime } from './mydatetime.model';
       }
 
       //Se vuole non esportare la chiave primaria la aggiungo all'Array esclusioni
-      if (clearPKProperty) {
+      if (paramExport.clearPKProperty) {
         propExclud.push('ID');
       }
 
@@ -239,14 +242,14 @@ import { MyDateTime } from './mydatetime.model';
 
         
         //Se devo togliere le proprietà private le elimino
-        if (clearPrivateProperty && element.startsWith('_')) {
+        if (paramExport.clearPrivateProperty && element.startsWith('_')) {
           
           useElement = false;
         
         }
 
         //Controlliamo se il valore è diverso dal valore original
-        if (onlyModified) {
+        if (paramExport.onlyModified) {
           //Chiave primaria devo passarla anche se non modificata
           if (element != 'ID') {
             //Controllo se la proprietà risulta modificata o no
@@ -272,7 +275,7 @@ import { MyDateTime } from './mydatetime.model';
             for (let index = 0; index < arElements.length; index++) {
               let element: IDDocument;
                element = arElements[index];
-               strElArray = element.exportToJSON(clearDOProperty, clearPKProperty, clearPrivateProperty);
+               strElArray = element.exportToJSON(paramExport);
                if (strArray.length !== 0) {
                   strArray += ', '
                }
@@ -363,6 +366,8 @@ import { MyDateTime } from './mydatetime.model';
 
       return strJSON;
     }
+
+
 
     /**
      * Ritorna il documento in Stringa JSON
@@ -681,7 +686,7 @@ import { MyDateTime } from './mydatetime.model';
      * Aggiunge, se non presente il documento alla repositoryRelDoc
      * @param document Documento da includere
      */
-    addToRepositoryRelDoc(document: IDDocument):void {
+    addToRepositoryRelDoc(document: IDDocument): void {
       let docExist: IDDocument;
       let propValue = '';
 

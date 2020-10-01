@@ -107,7 +107,7 @@ import { MyDateTime } from './mydatetime.model';
           if (propName) {
 
             try {            
-              propValue = document[propName];
+              propValue = this[propName];
             } catch (error) {
               propValue = ''  ;
               console.log(error);
@@ -592,8 +592,24 @@ import { MyDateTime } from './mydatetime.model';
      */
     propertyIsModified(propertyName: string): boolean {
       let modified = false;
+      let typeProp = this.getTypeReflectorByFieldName(propertyName);
+      //Proprietà presente
       if (this.propertyInDoc(propertyName)) {
-        modified = this._original.propertyIsModified(this, propertyName);
+        if (typeProp.fieldType != TypeDefinition.collection) {
+          modified = this._original.propertyIsModified(this, propertyName);
+        }
+        else {
+          //E' una collection
+          let arList:IDDocument[] = this[propertyName];
+          for (let index = 0; index < arList.length; index++) {
+            const elDoc = arList[index];
+            modified = elDoc.isModified(10);
+            if (modified) {
+              //Se modificato esco
+              break;
+            }
+          }
+        }
       }
 
       return modified;

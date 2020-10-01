@@ -845,8 +845,13 @@ export class DocstructureService {
    * seqField = ['IDLOCATION', 'IDAREA','IDGRUPPO'] => Gruppo
    * @param docStart Documento di partenza
    * @param seqField Percorso da seguire per ottenere il documento correlato
+   * @param childLevel Profondita dell'ultima chiamata
+   * @param docRepository Aggiunge il documento correlato al documento passato (spesso il docRepository è uguale a docStart)
    */
-  public getRelDoc(docStart:IDDocument, seqField: string[], childLevel=2):Promise<any> {
+  public getRelDoc( docStart: IDDocument, 
+                    seqField: string[], 
+                    childLevel = 2,
+                    docRepository?: IDDocument):Promise<any> {
     return new Promise((resolve, reject)=>{  
 
       let nameField = '';
@@ -878,21 +883,38 @@ export class DocstructureService {
 
               //creo i filtri per il child level
               let params : RequestParams = new RequestParams();
-              params.child_level = childLevel;
+              if (seqField.length == 1) {
+                params.child_level = childLevel;
+              }
+              else {
+                params.child_level = 1;
+              }
+
               this.requestNew(idDocFilter, params)
                   .then(arElement => {
 
                     if (arElement && arElement.length !== 0) {
                       let element = arElement[0];
 
+                      
                       if (seqField.length > 1) {
                         let newSeqField = seqField.slice(1);
 
-                        return resolve(this.getRelDoc(element, newSeqField))
+                        return resolve(this.getRelDoc(element, newSeqField, childLevel, docRepository))
 
                       }
                       else {
+
                         //Il giro è finito
+
+                        //Elemento presente e vuole che venga aggiunto al documento chiamante come relDoc nel Repository
+                        if (element && docRepository) {
+                          
+                          //Aggiungo il documento nel repository
+                          docRepository.addToRepositoryRelDoc(element);
+                        }
+
+
                         return resolve(element);
                       }
                     }
@@ -925,6 +947,45 @@ export class DocstructureService {
 
   }
 
+
+
+  /**
+   * Richiede per tutti i documenti della collection, un documento relativo 
+   * basato sulla sequenza seqField
+   * Il documento correlato viene aggiunto al repository di ogni documento
+   * @param collection Collection di Documenti della stessa tipologia
+   * @param seqField Percorso da seguire per ottenere il documento correlato
+   */
+  public getRelDocCollection( collection: IDDocument[],
+                              seqField: string[]
+                              ) {
+
+    return new Promise((resolve, reject)=>{
+
+      let executePromise:Promise<any>[] = [];
+
+      if (collection) {
+        for (let index = 0; index < collection.length; index++) {
+          const elDoc = collection[index];
+          let elPromise = this.getRelDoc(elDoc, seqField, 1, elDoc);
+          executePromise.push(elPromise);
+        }
+
+        if (executePromise.length != 0) {
+          Promise.all(executePromise)
+            .then( () => {
+              resolve();
+            })
+            .catch(error => {
+              reject(error);
+            });
+        }
+      }
+
+
+    });
+            
+ }
 
   // ************************************************
   // ***************  REQUEST POST    ***************

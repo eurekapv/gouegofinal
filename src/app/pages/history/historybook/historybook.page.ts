@@ -191,7 +191,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
                 //SE NON PRENOTAZIONI PIANIFICAZIONE
                 //CHIEDO L'AREA
                 //Chiedo il recupero del documento Area
-                this.docstructrureService.getRelDoc(this.myPrenotazione, ['IDAREAOPERATIVA'],3)
+                this.docstructrureService.getRelDoc(this.myPrenotazione, ['IDAREAOPERATIVA'], 3)
                                           .then(docArea => {
 
                                               this.myArea = docArea;

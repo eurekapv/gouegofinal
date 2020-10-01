@@ -173,6 +173,10 @@ export class CourseschedulerService {
         if (response.PIANIFICAZIONECORSO) {
           if (Array.isArray(response.PIANIFICAZIONECORSO)) {
 
+
+
+
+
             /* Ciclo sull'Array ricevuto */
             for (let index = 0; index < response.PIANIFICAZIONECORSO.length; index++) {
               requestDecode = true;
@@ -180,13 +184,14 @@ export class CourseschedulerService {
               let docPianificazioneCorso = new PianificazioneCorso();
               docPianificazioneCorso.setJSONProperty(element);
 
+              
               //qui reupero anche il documento livello e me lo salvo nel repository
-              this.docStructureService.getRelDoc(docPianificazioneCorso, ['IDCORSO', 'IDLIVELLOENTRATA'])
-              .then(tempDocLivello => {
-                
-                docPianificazioneCorso.addToRepositoryRelDoc(tempDocLivello)
-              })
+              const addToRepository = false;
+
+              this.docStructureService.getRelDoc(docPianificazioneCorso, ['IDCORSO', 'IDLIVELLOENTRATA'],1,docPianificazioneCorso);
+
               this.addImpegnotrainer(docPianificazioneCorso);
+              
             }
 
             if (requestDecode) {

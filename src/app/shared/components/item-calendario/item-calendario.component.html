@@ -1,13 +1,16 @@
 <ion-item lines="none" (click)="onClick()" button>
+
   <ion-label slot="start" class="left-label">
     <h4>{{params.oraInizio | date: 'HH.mm'}}</h4>
     <h4>{{params.oraFine | date: 'HH.mm'}}</h4>
   </ion-label>
+
   <ion-label class="right-label" [ngClass]="params.isPast? 'past' : 'future'">
     <h2>{{params.riga1Text}}</h2>
     <h3>{{params.riga2Text}}</h3>
     <h3>{{params.riga3Text}}</h3>
   </ion-label>
+
   <ion-badge 
     *ngIf="params.badgeText && params.badgeText.length > 0"
     slot="end"
@@ -15,4 +18,5 @@
   >
     {{params.badgeText}}
   </ion-badge>
+  
 </ion-item>

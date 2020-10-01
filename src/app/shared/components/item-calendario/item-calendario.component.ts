@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 
 @Component({
@@ -8,16 +9,17 @@ import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 })
 export class ItemCalendarioComponent implements OnInit {
 
-  @Input() pianificazioneElem : PianificazioneCorso = new PianificazioneCorso()
+  @Input() params : ItemCalendario = new ItemCalendario()
 
-  @Output() Click: EventEmitter<PianificazioneCorso> = new EventEmitter<PianificazioneCorso>()
+  @Output() click: EventEmitter<any> = new EventEmitter<any>()
 
   constructor() { }
 
   ngOnInit() {}
 
   onClick(){
-    this.Click.emit(this.pianificazioneElem);
+    this.click.emit();
   }
+
 
 }

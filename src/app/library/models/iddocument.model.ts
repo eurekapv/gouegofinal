@@ -14,10 +14,12 @@ import { MyDateTime } from './mydatetime.model';
 
     //Condizioni di filtro
     _filterConditions:FilterCondition[];
-    
 
     //Valori originali
     _original:IDOriginal;
+
+    //Repository per aggiungere documenti di riferimento con quello in esame
+    _repositoryRelDoc: IDDocument[];
   
     /**
      * 
@@ -27,6 +29,7 @@ import { MyDateTime } from './mydatetime.model';
 
         this._filterConditions = [];
         this._original = new IDOriginal();
+        this._repositoryRelDoc = [];
 
        if (!onlyInstance) {
           this.ID = this.newID();
@@ -87,6 +90,34 @@ import { MyDateTime } from './mydatetime.model';
      */
     setPrimaryKey(value:any) {
       this.ID = value;
+    }
+
+    /**
+     * Ritorna il valore della PrimaryKey
+     */
+    getPrimaryKey(): any {
+      
+      let objDescriptor: Descriptor;
+      let propName = '';
+      let propValue = '';
+
+      objDescriptor = this.getDescriptor();
+        if (objDescriptor) {
+          propName = objDescriptor.primaryKeyFieldName;
+          if (propName) {
+
+            try {            
+              propValue = document[propName];
+            } catch (error) {
+              propValue = ''  ;
+              console.log(error);
+            }
+
+          }
+        }
+           
+        return propValue;
+    
     }
 
     
@@ -158,6 +189,14 @@ import { MyDateTime } from './mydatetime.model';
 
       return strValue;
     }
+
+
+    /**
+     * Ritorna se il documento risulta in stato modificato
+     */
+
+
+
 
 
     /**
@@ -418,12 +457,6 @@ import { MyDateTime } from './mydatetime.model';
 
     }
 
-
-
-
-    
-    
-
     //Formatta una data passata in ISO (Solo la parte data)
     formatDateISO(data: Date) {
       
@@ -476,7 +509,10 @@ import { MyDateTime } from './mydatetime.model';
               (value !== '') &&
               !isNaN(Number(value.toString())));
     }
+    
+    //#endregion
 
+    //#region REFLECTOR PROPRIETA'
 
     /**
      * Tipo della proprietà
@@ -515,6 +551,9 @@ import { MyDateTime } from './mydatetime.model';
       return contain;
 
     }
+    //#endregion
+
+
 
     /**
      * Controlla se un campo contiene dei dati oppure è vuoto
@@ -540,6 +579,8 @@ import { MyDateTime } from './mydatetime.model';
       return empty;
     }
 
+    //#region CONTROLLO MODIFICHE DOCUMENTO
+
     /**
      * Controlla se una proprietà risulta modificata
      * @param propertyName Nome Proprietà
@@ -553,10 +594,167 @@ import { MyDateTime } from './mydatetime.model';
       return modified;
     }
 
+    /**
+     * Controlla se il documento è in stato modificato (il documento o i documenti delle sue collection)
+     * @param numLivelli NumLivelli = 0 Controlla solo il documento, 1 il documento e il primo livello etc..
+     */ 
+    isModified(numLivelli = 0): boolean {
+      let objDescriptor: Descriptor;
+      let retModified = false;
+
+      //Chiedo il descrittore dei campi
+      objDescriptor = this.getDescriptor();
+
+      if (objDescriptor) {
+        //Ciclo su tutte le proprietà non di tipo collection
+        for (let index = 0; index < objDescriptor.fields.length; index++) {
+          const element = objDescriptor.fields[index];
+          if (element.fieldType !== TypeDefinition.collection) {
+            //Chiedo alla proprietà se è modificata
+            retModified = this.propertyIsModified(element.fieldName);
+            if (retModified) {
+              //Basta che un valore sia modificato e tutto il documento 
+              //è modificato
+              break;
+            }
+          }
+        }
+
+        //Il documento nelle sue proprietà non è modificato
+        if (!retModified) {
+          //Devo scendere di livello e controllare se sono 
+          //modificati i figli
+          if (numLivelli > 0) {
+            //Ciclo ancora sul descrittore
+            for (let index = 0; index < objDescriptor.fields.length; index++) {
+              const element = objDescriptor.fields[index];
+              //Cerco le collection
+              if (element.fieldType == TypeDefinition.collection) {
+                //il Documento contiene questa collection ?
+                if (this.propertyInDoc(element.fieldName)) {
+                  if (Array.isArray(this[element.fieldName])) {
+                    //Prendo l'array di elementi e ciclo alla ricerca
+                    let arElements:IDDocument[] = this[element.fieldName];
+
+                    //Ciclo sugli elementi dell'array
+                    for (let index = 0; index < arElements.length; index++) {
+                      const elDoc = arElements[index];
+                      retModified = elDoc.isModified(numLivelli - 1);
+                      if (retModified) {
+                        //Ne basta uno e il documento è modificato
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+              
+              if (retModified) {
+                //Ne basta uno per renderlo modificato
+                break;
+              }
+
+            }
+          }
+        }
+        
+      }
+
+
+      return retModified;
+      
+
+    }
+    //#endregion
+
+    //#region REPOSITORY REL DOC
+    /*
+    *  Con il _repositoryRelDoc si consente di includere nell'oggetto altri documenti che hanno un nesso con l'attuale
+    *  Documenti arrivati da una operazione di getRelDoc ad esempio
+    *  
+    * addToRepositoryRelDoc(document: IDDocument) => Si aggiunge un documento al repository (se il documento per chiave primaria esiste gia aggiorna)
+    * findInRepositoryRelDocByPrimaryKey(primaryKey: string) => Torna il documento del repository cercandolo per chiave primaria
+    * getPropertyInRepositoryRelDoc(primaryKey: string, fieldName: string) => Torna il valore della proprietà richiesta del documento con primaryKey passata
+    */
+
+    /**
+     * Aggiunge, se non presente il documento alla repositoryRelDoc
+     * @param document Documento da includere
+     */
+    addToRepositoryRelDoc(document: IDDocument):void {
+      let docExist: IDDocument;
+      let propValue = '';
+
+      //Documento da aggiungere
+      if (document) {
+        //Chiedo la PrimaryKey
+        propValue = document.getPrimaryKey();
+        
+        //Cerco se è già nel repository
+        if (propValue && propValue.length != 0) {
+          docExist = this.findInRepositoryRelDocByPrimaryKey(propValue)
+        }
+
+        //Esiste lo aggiorno
+        if (docExist) {
+          docExist = document;
+        }
+        else {
+          this._repositoryRelDoc.push(document);
+        }
+      }
+    }
+
+    /**
+     * Cerca nel repository la presenza di un documento per chiave primaria
+     * @param primaryKey Valore Chiave primaria
+     */
+    findInRepositoryRelDocByPrimaryKey(primaryKey: string): IDDocument {
+
+      let docReturn: IDDocument;
+      if (primaryKey) {
+        for (let index = 0; index < this._repositoryRelDoc.length; index++) {
+          const element = this._repositoryRelDoc[index];
+          const propValue = element.getPrimaryKey();
+          //Documento trovato lo ritorno
+          if (propValue == primaryKey) {
+              docReturn = element;
+              break;
+          }
+        }
+      }
+
+      return docReturn;
+    }
+
+    /**
+     * Ricerca tra i documenti nel repository, il documento con la primaryKey passata e ritorna il valore della proprietà indicata
+     * @param primaryKey Chiave Primaria documento
+     * @param fieldName Nome della proprietà da decodificare
+     */
+    getPropertyInRepositoryRelDoc(primaryKey: string, fieldName: string): any {
+      let relDoc: IDDocument;
+      let valRet: any;
+      if (primaryKey && fieldName && fieldName.length != 0) {
+        relDoc = this.findInRepositoryRelDocByPrimaryKey(primaryKey);
+
+        if (relDoc) {
+          let inDoc = relDoc.propertyInDoc(fieldName);
+
+          if (inDoc) {
+            valRet = relDoc[fieldName];
+          }
+        }
+      }
+
+      return valRet;
+    }
     //#endregion
 
     //#region JSON MODIFICHE
     /**
+     * UTILIZZATO PRIMA DELLE CREAZIONE DELLA LOGICA ORIGINAL
+     * 
      * L'istanza documento viene popolata con la CHIAVE PRIMARIA 
      * e tutte le proprietà che risultano presenti in docActual ma con un valore modificato in docModify
      * L'istanza del documento puo' essere usata per costruire un JSON di Aggiornamento verso il server
@@ -724,6 +922,23 @@ import { MyDateTime } from './mydatetime.model';
 
   }
 
+  export class ParamsExport {
+    clearDOProperty: boolean; //Non esporta le proprietà do_inserted, do_deleted
+    clearPKProperty: boolean; //Non esporta la chiave primaria 
+    clearPrivateProperty: boolean; //Non esporta le proprietà private identificate da _ 
+    onlyModified: boolean;     //Esporta solo ciò che è modificato
+    numLivelli: number; //Numero livello di esportazione
+
+    constructor() {
+      this.numLivelli = 999;
+      this.onlyModified = false;
+      this.clearDOProperty = false;
+      this.clearPKProperty = false;
+      this.clearPrivateProperty = false;
+
+    }
+  }
+
   /**
    * Specifica alcune condizioni multiple
    */
@@ -763,6 +978,9 @@ import { MyDateTime } from './mydatetime.model';
 
   }
 
+  /**
+   * Insieme delle Proprietà Originali di un documento
+   */
   export class IDOriginal {
     private _propOriginals: IDProperty[];
 

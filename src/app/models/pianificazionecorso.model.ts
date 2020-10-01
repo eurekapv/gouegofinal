@@ -32,7 +32,8 @@ export class PianificazioneCorso extends IDDocument {
 
       //Chiamo IDDOcument
       super.setJSONProperty(data);  
-
+      
+      //Imposto la collection
       this.setCollection(data);
 
     }
@@ -86,7 +87,7 @@ export class PianificazioneCorso extends IDDocument {
     let arDate = ['DATA'];
     let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
     let arTime = ['ORAINIZIO'];
-    let arCollection = ['CORSOPRESENZE'];
+    
 
     objDescriptor.className = 'PianificazioneCorso';
     objDescriptor.doRemote = true;
@@ -106,6 +107,7 @@ export class PianificazioneCorso extends IDDocument {
     objDescriptor.setRelation('IDLOCATION','Location');
     objDescriptor.setRelation('IDCORSO','Corso');
     objDescriptor.setRelation('IDCAMPO','Campo');
+
 
     return objDescriptor;
 }    

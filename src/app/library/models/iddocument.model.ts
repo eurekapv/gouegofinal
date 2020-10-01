@@ -594,7 +594,7 @@ import { MyDateTime } from './mydatetime.model';
       let modified = false;
       let typeProp = this.getTypeReflectorByFieldName(propertyName);
       //Proprietà presente
-      if (this.propertyInDoc(propertyName)) {
+      if (this.propertyInDoc(propertyName)&&typeProp) {
         if (typeProp.fieldType != TypeDefinition.collection) {
           modified = this._original.propertyIsModified(this, propertyName);
         }

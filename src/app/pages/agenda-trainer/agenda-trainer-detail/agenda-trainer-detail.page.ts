@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
@@ -29,7 +29,9 @@ export class AgendaTrainerDetailPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private navController: NavController,
-    private startService: StartService
+    private startService: StartService,
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) { }
 
   ngOnInit() {
@@ -40,32 +42,33 @@ export class AgendaTrainerDetailPage implements OnInit {
       //recupero id della pianificazione
       this.idPianificazione = params['params']['pianificazioneCorsoId'];
       console.log (params);
-      //recupero la pianificazione tramite l'id
-      this.selectedPianificazione =this.startService.getPianificazioneTrainerById(this.idPianificazione);
 
-      if (this.selectedPianificazione == null || this.selectedPianificazione == undefined){
-        this.navController.navigateBack('/agenda-trainer');
+      if(this.startService.getPianificazioneTrainerById(this.idPianificazione)){
+        
+        //se c'è la pianificazione, la recupero tramite l'id
+        this.selectedPianificazione =this.startService.getPianificazioneTrainerById(this.idPianificazione);
       }
       else{
-        //Posso andare avanti
 
-        //recupero l'id del corso
-        this.idCorso = this.selectedPianificazione.IDCORSO;
+        this.navController.navigateRoot('/home');
+      }
 
-        //richiedo la lista degli allievi (inserendola nel documento pianificazione) 
-        this.startService.insertPresenzeIntoPianificazione(this.selectedPianificazione)
-        .then(() => {
+      //Posso andare avanti
 
-          //ora ho il documento pianificazione con anche le presenze, posso metterle anche in "listpresenze"
-          this.listPresenze  = this.selectedPianificazione.CORSOPRESENZE;
-          this.dividiIscrizioni();
-          
-          console.log('Lista prima: ')
-          console.log(this.listPresenze);
-        })
+      //recupero l'id del corso
+      this.idCorso = this.selectedPianificazione.IDCORSO;
 
-      }   
+      //richiedo la lista degli allievi (inserendola nel documento pianificazione) 
+      this.startService.insertPresenzeIntoPianificazione(this.selectedPianificazione)
+      .then(() => {
 
+        //ora ho il documento pianificazione con anche le presenze, posso metterle anche in "listpresenze"
+        this.listPresenze  = this.selectedPianificazione.CORSOPRESENZE;
+        this.dividiIscrizioni();
+        
+        console.log('Lista prima: ')
+        console.log(this.listPresenze);
+      })
     })
   }
 
@@ -79,10 +82,32 @@ export class AgendaTrainerDetailPage implements OnInit {
   }
 
   onSubmit(){
+    
+    this.loadingController.create({
+      message: 'Caricamento',
+      spinner: 'circular',
+      backdropDismiss: true
+    })
+    .then(elLoading => {
+
+      elLoading.present();
+      this.startService.requestUpdatePresenze(this.selectedPianificazione)
+      .then(response => {
+
+        elLoading.dismiss();
+        console.log(response);
+      })
+      .catch(error => {
+
+        elLoading.dismiss();
+        console.log(error)
+        this.showMessage('Errore di connessione');
+      })
+    })
+    
+    // this.navController.pop();
 
 
-
-    this.navController.pop();
   }
 
     getColoreCertificato(presenza: CorsoPresenze): string{
@@ -117,6 +142,19 @@ export class AgendaTrainerDetailPage implements OnInit {
       return element.STATOISCRIZIONE == StatoIscrizione.inProva;
     });
 
+  }
+
+  /**
+   * Visualizza un messaggio
+   */
+  showMessage(messaggio: string){
+    this.toastController.create({
+      message: messaggio,
+      duration: 3000
+    })
+    .then(elToast => {
+      elToast.present();
+    })
   }
 
 }

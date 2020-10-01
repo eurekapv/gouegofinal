@@ -416,21 +416,25 @@ export class Utente extends IDDocument {
     }
 
     get isTrainer(){
-        if (this.LISTMANSIONI.includes(Mansione.trainer.toString())){
-            return true;
+        let isTrainer: boolean =false;
+        if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
+
+            if (this.LISTMANSIONI.includes(Mansione.trainer.toString())){
+                isTrainer = true;
+            }
         }
-        else{
-            return false;
-        }
+        return isTrainer;
     }
 
     isCustode(){
-        if (this.LISTMANSIONI.includes(Mansione.custode.toString())){
-            return true;
+        let isCustode: boolean =false;
+        if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
+
+            if (this.LISTMANSIONI.includes(Mansione.trainer.toString())){
+                isCustode = true;
+            }
         }
-        else{
-            return false;
-        }
+        return isCustode;
     }
 
 

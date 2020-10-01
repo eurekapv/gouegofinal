@@ -23,6 +23,8 @@ export class AgendaTrainerPage implements OnInit {
   selectedDate: Date = new Date();
   selectedIsoDate: string = this.selectedDate.toISOString();
 
+  showFilter: boolean = true;
+
   settimana = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
 
 
@@ -45,7 +47,7 @@ export class AgendaTrainerPage implements OnInit {
       this.requestImpegni();
     }
     else{
-      this.navController.navigateRoot('/');
+      this.navController.navigateRoot('/home');
     }
   }
 
@@ -113,6 +115,22 @@ export class AgendaTrainerPage implements OnInit {
 
   getItemParamsFromPianificazione(pianificazioneElem: PianificazioneCorso){
     return ItemCalendario.getParamsPianificazioneCorso(pianificazioneElem);
+  }
+
+  
+  onScroll(event:any){
+    console.log(event.detail)
+    if(event.detail.currentY < 5){
+      this.showFilter = true;
+    }
+    else{
+      if (event['detail']['deltaY'] > 20){
+        this.showFilter = false;
+      }
+      else if (event['detail']['deltaY'] < -20){
+        this.showFilter = true;
+      }
+    }  
   }
 
 }

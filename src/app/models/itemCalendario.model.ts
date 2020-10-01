@@ -19,10 +19,11 @@ export class ItemCalendario{
         paramsItem.riga1Text = pianificazioneElem['_DENOMINAZIONE_Corso'];
         paramsItem.riga2Text = pianificazioneElem['_DENOMINAZIONE_Location'];
         paramsItem.riga3Text = pianificazioneElem['_DENOMINAZIONE_Campo'];
-        paramsItem.badgeText = pianificazioneElem['_DENOMINAZIONE_Livello'];
-        paramsItem.badgeColor = "primary";
-        
+        if(pianificazioneElem._repositoryRelDoc.length>0){
 
+            paramsItem.badgeText = pianificazioneElem._repositoryRelDoc[0]['DENOMINAZIONE'];
+        }
+        paramsItem.badgeColor = "primary";
         return paramsItem;
     }
 

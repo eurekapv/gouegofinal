@@ -622,6 +622,10 @@ requestCorsoById(idCorso: string){
     return this.corsoCalendarioService.insertPresenze(docPianificazione);
   }
 
+  requestUpdatePresenze(docPianificazione: PianificazioneCorso){
+    return this.corsoCalendarioService.sendPianificazione(docPianificazione);
+  }
+
 
 
 

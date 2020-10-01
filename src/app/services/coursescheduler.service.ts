@@ -8,10 +8,11 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
 import { DocstructureService } from '../library/services/docstructure.service';
-import { IDDocument } from '../library/models/iddocument.model';
+import { IDDocument, ParamsExport } from '../library/models/iddocument.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { resolve } from 'url';
 import { promise } from 'protractor';
+import { PostResponse } from '../library/models/postResult.model';
 
 
 @Injectable({
@@ -267,6 +268,31 @@ export class CourseschedulerService {
       })
       .catch(error => {
         reject(error);
+      })
+    })
+  }
+
+  sendPianificazione(docPianificazione: PianificazioneCorso): Promise<PostResponse>{
+    return new Promise ((res, rej) => {
+
+      //questi sono i parametri per l'esportazione in json
+      
+      let myExportParams: ParamsExport = {
+        clearDOProperty: false,
+        clearPKProperty: false,
+        clearPrivateProperty: true,
+        numLivelli: 3,
+        onlyModified: true
+      }
+      let myJsonBody: string = docPianificazione.exportToJSON(myExportParams);
+
+      //FIXME NON CAPISCO SE C'E' UN METODO DA UTILIZZARE, OPPURE E' SBAGLIATO CHE LA FUNZIONE LO RICHIEDA
+      this.docStructureService.requestPost(docPianificazione, null, myJsonBody)
+      .then((response:PostResponse) => {
+        res(response);
+      })
+      .catch(error => {
+        rej(error);
       })
     })
   }

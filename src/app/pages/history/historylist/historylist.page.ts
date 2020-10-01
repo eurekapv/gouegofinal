@@ -283,13 +283,17 @@ export class HistorylistPage implements OnInit {
 
 
   onScroll(event:any){
-    if (event['detail']['deltaY']>100){
-      this.showTabs = false;
-    }
-    else if (event['detail']['deltaY']<100){
+    console.log(event.detail)
+    if(event.detail.currentY < 5){
       this.showTabs = true;
     }
-
-  
+    else{
+      if (event['detail']['deltaY'] > 20){
+        this.showTabs = false;
+      }
+      else if (event['detail']['deltaY'] < -20){
+        this.showTabs = true;
+      }
+    }  
   }
 }

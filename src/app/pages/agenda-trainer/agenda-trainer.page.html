@@ -5,8 +5,7 @@
     </ion-buttons>
     <ion-title>I tuoi corsi</ion-title>
   </ion-toolbar>
-  <ion-toolbar color="primary">
-    <ion-item lines="none" color="primary">
+    <ion-item lines="none" color="primary" >
       <ion-icon slot="start" name="calendar"></ion-icon>
       <ion-datetime 
         displayFormat="DDDD - DD/MM/YYYY" 
@@ -16,13 +15,17 @@
       >
       </ion-datetime>
     </ion-item>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
   <ion-list>
-    <app-item-calendario *ngFor="let pianificazione of myListPianificazioni" [pianificazioneElem]="pianificazione"></app-item-calendario>
+    <app-item-calendario 
+      *ngFor="let pianificazione of myListPianificazioni" 
+      [params]="getItemParamsFromPianificazione(pianificazione)"
+      (click)="onClickCorso(pianificazione)"
+    >
+    </app-item-calendario>
   </ion-list>
   <!-- <ion-grid>
     <ion-row>

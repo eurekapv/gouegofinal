@@ -1,14 +1,18 @@
-<ion-item lines="none" (click)="onClick()">
+<ion-item lines="none" (click)="onClick()" button>
   <ion-label slot="start" class="left-label">
-    <h4>{{pianificazioneElem.DATAORAINIZIO | date: 'HH.mm'}}</h4>
-    <h4>{{pianificazioneElem.DATAORAFINE | date: 'HH.mm'}}</h4>
+    <h4>{{params.oraInizio | date: 'HH.mm'}}</h4>
+    <h4>{{params.oraFine | date: 'HH.mm'}}</h4>
   </ion-label>
-  <ion-label class="right-label past">
-    <h2>{{pianificazioneElem['_DENOMINAZIONE_Corso']}}</h2>
-    <h3>{{pianificazioneElem['_DENOMINAZIONE_Location']}} - {{pianificazioneElem['_DENOMINAZIONE_Campo']}}</h3>
-    <h3>Livello</h3>
+  <ion-label class="right-label" [ngClass]="params.isPast? 'past' : 'future'">
+    <h2>{{params.riga1Text}}</h2>
+    <h3>{{params.riga2Text}}</h3>
+    <h3>{{params.riga3Text}}</h3>
   </ion-label>
-  <ion-badge slot="end">
-    Livello
+  <ion-badge 
+    *ngIf="params.badgeText && params.badgeText.length > 0"
+    slot="end"
+    [color]="params.badgeColor"
+  >
+    {{params.badgeText}}
   </ion-badge>
 </ion-item>

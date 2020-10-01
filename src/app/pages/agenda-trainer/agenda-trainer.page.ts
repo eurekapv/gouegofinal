@@ -5,6 +5,8 @@ import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { PostParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { Corso } from 'src/app/models/corso.model';
+import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Utente } from 'src/app/models/utente.model';
 import { StartService } from 'src/app/services/start.service';
@@ -107,6 +109,10 @@ export class AgendaTrainerPage implements OnInit {
     console.log(new Date(this.selectedIsoDate));
     this.selectedDate = (new Date(this.selectedIsoDate)); 
     this.requestImpegni();
+  }
+
+  getItemParamsFromPianificazione(pianificazioneElem: PianificazioneCorso){
+    return ItemCalendario.getParamsPianificazioneCorso(pianificazioneElem);
   }
 
 }

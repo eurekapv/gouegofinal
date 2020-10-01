@@ -179,6 +179,13 @@ export class CourseschedulerService {
               const element = response.PIANIFICAZIONECORSO[index];
               let docPianificazioneCorso = new PianificazioneCorso();
               docPianificazioneCorso.setJSONProperty(element);
+
+              //qui reupero anche il documento livello e me lo salvo nel repository
+              this.docStructureService.getRelDoc(docPianificazioneCorso, ['IDCORSO', 'IDLIVELLOENTRATA'])
+              .then(tempDocLivello => {
+                
+                docPianificazioneCorso.addToRepositoryRelDoc(tempDocLivello)
+              })
               this.addImpegnotrainer(docPianificazioneCorso);
             }
 

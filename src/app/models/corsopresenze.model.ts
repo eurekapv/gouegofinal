@@ -9,7 +9,11 @@ export class CorsoPresenze extends IDDocument {
     PRESENTE: boolean;
     NOTES: string;
     IDUSERSETTING: string;
-    DATAORASETTING: Date
+    DATAORASETTING: Date;
+    DATACERTIFICATOMEDICO: Date;
+
+    //#TODO MANCA ENUM
+    STATOISCRIZIONE: number;
 
     /**
      * Ritorna il descrittore della Struttura Campi
@@ -25,7 +29,7 @@ export class CorsoPresenze extends IDDocument {
         ];
         let arNumber = [];
         let arBoolean = ['PRESENTE'];
-        let arDate = [];
+        let arDate = ['DATACERTIFICATOMEDICO'];
         let arDateTime =['DATAORASETTING'];
         let arTime = [];
 

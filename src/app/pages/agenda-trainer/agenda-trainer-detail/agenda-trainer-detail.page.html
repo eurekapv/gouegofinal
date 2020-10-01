@@ -16,7 +16,7 @@
       <ion-label class="ion-text-wrap">
         <h1>{{selectedPianificazione['_DENOMINAZIONE_Corso']}}</h1>
         <p>{{(selectedPianificazione['_DENOMINAZIONE_Location'] | titlecase) + ' - ' + (selectedPianificazione['_DENOMINAZIONE_Campo'] | titlecase)}}</p>
-        <h2>{{selectedPianificazione.DATAORAINIZIO | date: 'H.MM'}} - {{selectedPianificazione.DATAORAFINE | date: 'H.MM'}}</h2>
+        <h2>{{selectedPianificazione.DATAORAINIZIO | date: 'H.mm'}} - {{selectedPianificazione.DATAORAFINE | date: 'H.mm'}}</h2>
       </ion-label>
     </ion-item>
 
@@ -35,7 +35,12 @@
       <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" name="help"></ion-icon>
       <ion-label>
         <h2>{{presenza.NOMINATIVO}}</h2>
-        <h4>Scad. c. medico: </h4>
+        <h4>
+          Scad. c. medico: 
+          <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
+            {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
+          </ion-badge> 
+        </h4>
       </ion-label>
     </ion-item>
   </ion-list>

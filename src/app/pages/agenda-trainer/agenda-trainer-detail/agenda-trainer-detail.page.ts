@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import * as moment from 'moment';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
@@ -76,6 +77,28 @@ export class AgendaTrainerDetailPage implements OnInit {
     //richiesta di aggiornamento al server
 
     this.navController.pop();
+  }
+
+    getColoreCertificato(presenza: CorsoPresenze): string{
+    let today =moment(new Date())
+    let color: string;
+    if (presenza.DATACERTIFICATOMEDICO){
+      
+      let scadenza = moment(presenza.DATACERTIFICATOMEDICO);
+      if (scadenza < today){
+        color = 'danger';
+      }
+      else if (scadenza < today.add(7, 'days')) {
+        color = 'warning';
+      }
+      else{
+        color = 'primary';
+      }
+    }
+    else{
+      color = 'danger';
+    }
+    return color;
   }
 
 }

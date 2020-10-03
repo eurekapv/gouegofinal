@@ -25,6 +25,7 @@ export class AgendaTrainerPage implements OnInit {
 
   showFilter: boolean = true;
 
+  //FIXME: C'e' gia un enum con i giorni della settimana
   settimana = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
 
 
@@ -133,6 +134,15 @@ export class AgendaTrainerPage implements OnInit {
     }  
   }
 
+
+  //FIXME
+  //CONTROLLARE
+  /*
+    1) Controllare il pulsante BACK, se perde la sequenza deve andare alla home
+    2) Il calendario innestato nell'header con lo stesso colore secondo me sfugge, e non si capisce che è cliccabile
+    
+    3) La grafica è perfetta. BRAVO
+  */
 }
 
 

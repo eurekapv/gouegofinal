@@ -157,4 +157,21 @@ export class AgendaTrainerDetailPage implements OnInit {
     })
   }
 
+  //FIXME
+  /*
+  Cosa modificherei:
+    1) Non è chiara l'icona ? io imposterei l'icona user-circle se non c'e' la presensa
+    2) In alto prima sopra la lista io metterei una label di info tipo: Usa l'icona user-circle per segnare la presenza assenza di un partecipante
+    3) La parola PRESENTE e ASSENTE bisogna metterla in un badge a destra (rosso Assente/verde Presente) un badge di tipo small va bene
+    4) L'etichetta 'Scad. c. medico' non è ne bella ne chiara io fare cosi (faccio 3 esempi)
+          Certificato Medico: non consegnato
+          Certificato Medico: fino al 15/09/2020 (Verde)  
+          Certificato Medico: scaduto (rosso) 
+                              Io non riporterei date intanto chissenefrega è scaduto e devi portarlo
+       Questa riga pero' deve essere messa sotto ngIf GruppoSportivo.TIPO = SocietaSportiva (xche alle scuole di lingue ad esempio frega na pippa)
+    
+    
+
+  */
+
 }

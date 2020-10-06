@@ -1,3 +1,4 @@
+import { Livello } from './livello.model';
 import { PianificazioneCorso } from './pianificazionecorso.model';
 
 export class ItemCalendario{
@@ -13,16 +14,18 @@ export class ItemCalendario{
 
         let paramsItem: ItemCalendario;
 
+
         paramsItem = new ItemCalendario();
         paramsItem.oraInizio = pianificazioneElem.DATAORAINIZIO;
         paramsItem.oraFine = pianificazioneElem.DATAORAFINE;
         paramsItem.riga1Text = pianificazioneElem['_DENOMINAZIONE_Corso'];
         paramsItem.riga2Text = pianificazioneElem['_DENOMINAZIONE_Location'];
         paramsItem.riga3Text = pianificazioneElem['_DENOMINAZIONE_Campo'];
-        if(pianificazioneElem._repositoryRelDoc.length>0){
 
-            paramsItem.badgeText = pianificazioneElem._repositoryRelDoc[0]['DENOMINAZIONE'];
-        }
+        
+        paramsItem.badgeText = pianificazioneElem.getDocPropertyInRepository(['IDCORSO','IDLIVELLOENTRATA'],'DENOMINAZIONE');
+        
+        
         paramsItem.badgeColor = "primary";
         return paramsItem;
     }

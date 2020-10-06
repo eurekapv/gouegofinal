@@ -21,6 +21,9 @@ import { MyDateTime } from './mydatetime.model';
 
     //Repository per aggiungere documenti di riferimento con quello in esame
     _repositoryRelDoc: IDRepository[];
+
+    //Tag documentali
+    _tags: IDTag[];
   
     /**
      * 
@@ -31,6 +34,7 @@ import { MyDateTime } from './mydatetime.model';
         this._filterConditions = [];
         this._original = new IDOriginal();
         this._repositoryRelDoc = [];
+        this._tags = [];
 
        if (!onlyInstance) {
           this.ID = this.newID();
@@ -990,7 +994,52 @@ import { MyDateTime } from './mydatetime.model';
     //#endregion
 
     
+    //#region TAG DOCUMENTALI
+    public setTagValue(key:string, value:any) {
+      let idTag: IDTag;
+      if (key && key.length !== 0) {
+        idTag = this._findTag(key);
+        if (idTag) {
+          idTag.value = value;
+        }
+        else {
+          idTag = new IDTag();
+          idTag.key = key;
+          idTag.value = value;
+        }
+      }
+    }
 
+    public getTagValue(key:string): any {
+      let idTag: IDTag;
+      let retValue: any;
+
+      if (key && key.length !== 0) {
+        idTag = this._findTag(key);
+        if (idTag) {
+          retValue = idTag.value;
+        }
+      }
+
+      return retValue;
+    }
+
+
+    /**
+     * @param key Chiave ricercata
+     */
+    private _findTag(key:string):IDTag {
+      let idTag: IDTag;
+      if (this._tags && key && key.length !== 0) {
+
+        idTag = this._tags.find(element => {
+          return element.key == key;
+        });
+
+      }
+      return idTag;
+    }
+    //#endregion
 
   }
 
@@ -1244,6 +1293,15 @@ import { MyDateTime } from './mydatetime.model';
     
     
   }
+
+  /**
+   * Classe dei tag documentali
+   */
+  export class IDTag {
+    key: string;
+    value: any;
+  }
+
   /**
    * Operatori delle condizioni
    */

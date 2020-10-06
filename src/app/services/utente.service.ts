@@ -128,6 +128,9 @@ export class UtenteService {
                               docUtente.WEBLOGIN = username;
                               docUtente.setOriginal();
 
+                              //Imposto come tag authCode il codice di autorizzazione utente ricevuto
+                              docUtente.setTagValue('authCode',response.code);
+
                               //Emetto Utente
                               this._utente.next(docUtente);
 

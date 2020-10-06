@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AgendaTrainerDetailPageRoutingModule } from './agenda-trainer-detail-routing.module';
 
 import { AgendaTrainerDetailPage } from './agenda-trainer-detail.page';
+import { TipoSocieta } from 'src/app/models/valuelist.model';
 
 @NgModule({
   imports: [

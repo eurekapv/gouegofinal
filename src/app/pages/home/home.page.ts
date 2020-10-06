@@ -26,6 +26,7 @@ import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { Plugins } from '@capacitor/core';
 import { Corso } from 'src/app/models/corso.model';
 import { filter } from 'rxjs/operators';
+import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 
 const { Geolocation } = Plugins;
 
@@ -59,6 +60,8 @@ export class HomePage implements OnInit, OnDestroy{
 
   //Elenco delle prossime attività
   myListImpegni: Impegno[]=[];
+
+  myListImpegniTrainer: PianificazioneCorso[] = [];
 
   // L'area viene recuperata dal subscribe
   selectedArea: Area;
@@ -623,19 +626,22 @@ onClickShowAgenda() {
         if (this.docUtente.RUOLO == Ruolo.admin || this.docUtente.RUOLO == Ruolo.super) {
             richiediOccupazioni = true;
         }
-        else if (this.docUtente.RUOLO == Ruolo.collaboratore ) {
-          switch(this.docUtente.MANSIONE) {
-            case Mansione.assistenteTrainer:
-              richiediMieiCorsi = true;
-              break;
-            case Mansione.trainer:
-              richiediMieiCorsi = true;
-              break;
-            case Mansione.custode:
-              richiediOccupazioni = true;
-              break;
-          }
+        if (this.docUtente.isTrainer || this.docUtente.isAssistenteTrainer){
+          richiediMieiCorsi = true;
         }
+        // else if (this.docUtente.RUOLO == Ruolo.collaboratore ) {
+        //   switch(this.docUtente.MANSIONE) {
+        //     case Mansione.assistenteTrainer:
+        //       richiediMieiCorsi = true;
+        //       break;
+        //     case Mansione.trainer:
+        //       richiediMieiCorsi = true;
+        //       break;
+        //     case Mansione.custode:
+        //       richiediOccupazioni = true;
+        //       break;
+        //   }
+        // }
       }
     }
   
@@ -679,9 +685,22 @@ private richiediAgendaOccupazione() {
 }
 
 private richiediAgendaTrainer() {
-  
+  //qui stò richiedendo gli impegni che riguardano l'utente in quanto "collaboratore"
+  this.startService.requestImpegniTrainer(this.docUtente.ID, new Date())
+  .then(result => {
+
+    this.myListImpegniTrainer = result;
+    console.log(this.myListImpegniTrainer);
+  })
+  .catch(error => {
+    console.log(error);
+  });
  }
 
 //#endregion
+getButtonCardTrainer(pianificazioneElem: PianificazioneCorso){
+  return ButtonCard.getButtonAgendaFromPianificazioneCorso(pianificazioneElem);
+}
+
   
 }

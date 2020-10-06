@@ -3,6 +3,9 @@ import { SettoreAttivita } from './valuelist.model';
 import { Settimana } from './settimana.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { OccupazioneCampi } from './occupazionecampi.model';
+import { PianificazioneCorso } from './pianificazionecorso.model';
+import { pipe } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 export class ButtonHomeParams {
     utenteLoggato?: boolean; //Utente loggato
@@ -241,6 +244,23 @@ export class ButtonCard {
         }
 
         return arButton;
+    }
+
+    static getButtonAgendaFromPianificazioneCorso(pianificazioneElem: PianificazioneCorso): ButtonCard{
+        let buttonElem: ButtonCard = new ButtonCard();
+        let datePipe = new DatePipe('it');
+
+        let strSubtitle = datePipe.transform(pianificazioneElem.DATAORAINIZIO, 'HH:mm') + ' - ' + datePipe.transform(pianificazioneElem.DATAORAFINE, 'HH:mm')
+
+        buttonElem.title = pianificazioneElem['_DENOMINAZIONE_Corso'];
+        buttonElem.subtitle = strSubtitle;
+        buttonElem.nameicon = 'school-outline';
+        buttonElem.sloticon = 'start';
+        buttonElem.iconLink = true;
+        buttonElem.color = 'primary'
+
+
+        return buttonElem;
     }
     
 }

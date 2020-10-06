@@ -192,7 +192,48 @@
   </div>
 </div>
 
+
 <!-- PARTE TRAINER -->
+<ion-item 
+type="header" 
+lines="none" 
+color="danger"
+*ngIf="docUtente.isAssistenteTrainer || docUtente.isTrainer">
+
+  <ion-icon 
+      slot="start" 
+      name="school-outline">
+  </ion-icon>
+  <ion-label class="ion-text-nowrap">
+    <h2>Corsi di oggi</h2>
+  </ion-label>
+
+  <ion-button 
+      slot="end" 
+      color="light" 
+      fill="solid"
+      size = "default"
+      (click)="onClickShowAgenda()">
+  <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
+    Tutti
+  </ion-button>  
+</ion-item>
+
+
+<ion-slides class="ion-no-padding ion-no-margin">
+  <ion-slide 
+      class="ion-no-padding ion-no-margin"
+      *ngFor="let impegno  of myListImpegniTrainer"> 
+      
+      <app-button-card 
+          class="small-button-card" 
+          [smallVersion]="false" 
+          [myButtonCard]="getButtonCardTrainer(impegno)">
+      </app-button-card>
+
+    </ion-slide>
+  </ion-slides>
+
 <!-- <div class="ion-no-padding"> -->
 
   <!-- TITOLO -->

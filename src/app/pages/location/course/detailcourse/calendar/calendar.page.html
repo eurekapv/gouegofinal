@@ -20,7 +20,7 @@
 <ion-content>
 
   <!-- RICEVUTI E PRESENTI -->
-  <ion-list *ngIf="calendarCorso.length !== 0" id="cal-find">
+  <ion-list class="ion-no-padding" *ngIf="calendarCorso.length !== 0" id="cal-find">
     <ion-item *ngFor="let giornata of calendarCorso" class="ion-no-padding ion-no-margin" color="light">
 
       <ion-col size="4" class="colGiorno">
@@ -40,7 +40,7 @@
       </ion-col>
 
       <ion-col size="8" class="colOrario">
-        <ion-card class="ion-no-margin ion-no-padding">
+        <ion-card mode="ios" class="ion-no-margin ion-no-padding">
           <ion-card-content class="ion-no-margin ion-no-padding" >
             <ion-list class="ion-no-margin">
               <ion-item lines="none" [color]="colorItem(giornata)">

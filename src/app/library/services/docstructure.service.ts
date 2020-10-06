@@ -4,15 +4,14 @@ import {RequestParams, RequestDecode, RequestForeign, PostParams } from '../mode
 import { DynamicClass } from '../models/structure.model';
 
 import { ApicallService } from '../../services/apicall.service';
-import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
-import { Descriptor, TypeDefinition, TypeReflector } from '../models/descriptor.model';
-import { map, filter } from 'rxjs/operators';
+import { HttpParams } from '@angular/common/http';
+import { Descriptor, TypeReflector } from '../models/descriptor.model';
+import { map } from 'rxjs/operators';
 import { CacheListElement } from '../models/cachelistelement.model';
 import { Cache } from '../models/cache.model';
 import { LogApp } from 'src/app/models/log.model';
-
+import { ParamsExport } from '../models/iddocument.model';
 
 
 
@@ -772,43 +771,7 @@ export class DocstructureService {
           strValue = document.formatValue(tipo, document[nameProperty]);
 
           //Recupero la condizione speciale (potrebbe non esserci)
-          operatoreSpecial = document.getFilterOperatorByFieldName(nameProperty);
-        
-          //Ho creato la procedura superiore invece che ripeterlo qua
-
-          // switch (tipo) {
-          //   case TypeDefinition.char:
-          //       strValue = value;
-          //   break;
-          
-          //   case TypeDefinition.date:
-          //       strValue = document.formatDateISO(value);
-          //   break;
-
-          //   case TypeDefinition.dateTime:
-          //       strValue = document.formatDateTimeISO(value);
-          //   break;
-            
-          //   case TypeDefinition.boolean:
-          //       if (value) {
-          //         strValue = '-1'
-          //       }
-          //       else {
-          //         strValue = '0';
-          //       }
-          //   break;
-            
-          //   case TypeDefinition.number:
-          //   case TypeDefinition.numberDecimal:
-          //       strValue = value + '';
-          //     break;
-
-          //   default:
-          //     break;
-          // }
-
-          
-          
+          operatoreSpecial = document.getFilterOperatorByFieldName(nameProperty);  
           
         }
 
@@ -1043,7 +1006,7 @@ export class DocstructureService {
                      method: string, 
                      jsonBody:string,
                      postParams?: PostParams[] | PostParams
-                     ) { 
+                     ): Promise<any> { 
 
     return new Promise<any>((resolve,reject) => {
 
@@ -1114,6 +1077,81 @@ export class DocstructureService {
       }
     });
 
+
+  }
+
+  // **********************************************
+  // *          REQUEST FOR UPDATE                *
+  // **********************************************
+
+
+  /**
+   * Richiesta effettuata al server per aggiornare un documento
+   * @param document Documento da aggiornare
+   * @param onlyPropModified Invia solo le proprietà modificate
+   */
+  public requestForUpdate(document: IDDocument, onlyPropModified = true): Promise<any> {
+    //Si esegue una PUT con il parametro ID e il body i valori da modificare
+    return new Promise<any>((resolve,reject) => {
+      let myHeaders = this.myConfig.getHttpHeaders();
+      let objDescriptor: Descriptor;
+      let fieldNamePK = '';
+      let fieldValuePK = '';
+      let jsonBody = '';
+      let myParams: HttpParams;
+      let myUrl = '';
+
+      if (!document) {
+        reject('Document null');
+      }
+      else {
+        //Recupero il descrittore della classe
+        objDescriptor = document.getDescriptor();
+
+        if (!objDescriptor) {
+          reject('Descrittore Documento filtro non presente');
+        }
+        else if (objDescriptor.doRemote == false) {
+          //Non è gestito esternamente
+          reject('Documento non gestito in remoto');
+        }
+        else {
+          //Recupero nome e valore della primary Key
+          fieldNamePK = document.getPrimaryKey('name');
+          fieldValuePK = document.getPrimaryKey('value');
+
+          //Vuole che aggiorni le proprietà modificate ma non ne ho
+          //Che facciamo dico che è andata a buon fine
+          if (onlyPropModified && document.isModified() == false) {
+
+          }
+          else {
+
+            //Preparo il body
+
+            //Questi sono i parametri per l'esportazione
+            let paramExport = new ParamsExport();
+
+            paramExport.clearDOProperty = true;
+            paramExport.clearPKProperty = false;
+            paramExport.clearPrivateProperty = true;
+            paramExport.onlyModified = onlyPropModified;
+
+            jsonBody = document.exportToJSON(paramExport);
+    
+            myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;
+
+            this.apiService
+                  .httpPut(myUrl, myHeaders, myParams, jsonBody )
+                  .subscribe(() => {
+                    resolve();
+                  },error => {
+                    reject(error);
+                  });
+          }
+        }
+      }
+    });
 
   }
 

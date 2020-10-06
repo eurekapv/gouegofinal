@@ -47,10 +47,10 @@ export class ApicallService {
    * @param body Body
    */
   httpPut(url: string, 
-            header: HttpHeaders, 
-            
+            header: HttpHeaders,
+            params: HttpParams,
             body: any) {
-    return this._httpPut(url, header, body);
+    return this._httpPut(url, header, params,body);
   }
 
     /**
@@ -105,12 +105,14 @@ export class ApicallService {
    */
   private _httpPut(url: string, 
                    reqHeaders: HttpHeaders,
+                   reqParams: HttpParams,
                    reqBody: any) {
     
     LogApp.consoleLog('Chiamata PUT a ' + url);
 
     return this.httpClient.put(url, reqBody, {
                                         headers: reqHeaders,
+                                        params: reqParams,
                                         observe: 'response'
                               })
                               .pipe(

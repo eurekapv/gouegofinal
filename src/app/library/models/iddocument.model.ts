@@ -94,30 +94,38 @@ import { MyDateTime } from './mydatetime.model';
     }
 
     /**
-     * Ritorna il valore della PrimaryKey
+     * Ritorna la PrimaryKey del documento
+     * @param type = 'value' Torna il fieldValue
+     * @param type = 'name' Torna il fieldName
      */
-    getPrimaryKey(): any {
+    getPrimaryKey(type:string = 'value'): any {
       
       let objDescriptor: Descriptor;
       let propName = '';
-      let propValue = '';
+      let retValue = '';
 
       objDescriptor = this.getDescriptor();
         if (objDescriptor) {
           propName = objDescriptor.primaryKeyFieldName;
           if (propName) {
 
-            try {            
-              propValue = this[propName];
-            } catch (error) {
-              propValue = ''  ;
-              console.log(error);
+            if (type == 'value') {
+
+              try {            
+                retValue = this[propName];
+              } catch (error) {
+                retValue = ''  ;
+                console.log(error);
+              }
+            }
+            else if (type == 'name') {
+              retValue = propName;
             }
 
           }
         }
            
-        return propValue;
+        return retValue;
     
     }
 
@@ -228,7 +236,7 @@ import { MyDateTime } from './mydatetime.model';
 
       //Se vuole non esportare la chiave primaria la aggiungo all'Array esclusioni
       if (paramExport.clearPKProperty) {
-        propExclud.push('ID');
+        propExclud.push(this.getPrimaryKey('name'));
       }
 
       arProperty.forEach(element => {
@@ -246,7 +254,7 @@ import { MyDateTime } from './mydatetime.model';
         //Controlliamo se il valore è diverso dal valore original
         if (paramExport.onlyModified) {
           //Chiave primaria devo passarla anche se non modificata
-          if (element != 'ID') {
+          if (element != this.getPrimaryKey('name')) {
             //Controllo se la proprietà risulta modificata o no
             if (_this.propertyIsModified(element) == false) {
               useElement = false;
@@ -993,13 +1001,15 @@ import { MyDateTime } from './mydatetime.model';
     onlyModified: boolean;     //Esporta solo ciò che è modificato
     numLivelli: number; //Numero livello di esportazione
 
+
+
     constructor() {
       this.numLivelli = 999;
       this.onlyModified = false;
       this.clearDOProperty = false;
       this.clearPKProperty = false;
       this.clearPrivateProperty = false;
-
+      
     }
   }
 

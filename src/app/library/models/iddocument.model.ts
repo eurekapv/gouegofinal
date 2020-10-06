@@ -716,7 +716,7 @@ import { MyDateTime } from './mydatetime.model';
 
         //Cerco se è già nel repository
         if (identity && identity.length != 0) {
-          docExist = this.findInRepositoryRelDoc(identity);
+          docExist = this.getDocInRepository(identity);
         }
 
         //Esiste lo aggiorno
@@ -742,7 +742,7 @@ import { MyDateTime } from './mydatetime.model';
      * Cerca un documento nel repository o per sequenza di campi o per chiave primaria
      * @param pkOrSeq String PrimaryKey oppure Array con la Sequenza
      */
-    findInRepositoryRelDoc(pkOrSeq:any):IDDocument {
+    getDocInRepository(pkOrSeq:any):IDDocument {
 
       let docReturn: IDDocument;
       let identity: string;
@@ -779,7 +779,7 @@ import { MyDateTime } from './mydatetime.model';
      * @param pkOrSeq  Chiave Primaria documento oppure Array con la SeqFields esempio ['IDLOCATION','IAREA']
      * @param fieldName Nome della proprietà da decodificare
      */
-    getRelDocProperty(pkOrSeq: any, fieldName: string): any {
+    getDocPropertyInRepository(pkOrSeq: any, fieldName: string): any {
       let relDoc: IDDocument;
       let valRet: any;
       let identity = '';
@@ -795,7 +795,7 @@ import { MyDateTime } from './mydatetime.model';
 
         //Con una identity cerco il documento
         if (identity) {
-          relDoc = this.findInRepositoryRelDoc(identity);
+          relDoc = this.getDocInRepository(identity);
 
         }
 

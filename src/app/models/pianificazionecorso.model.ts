@@ -140,9 +140,14 @@ static getReqForeignKeys(): RequestForeign[] {
    
   
   /**
-   * Ritorna TRUE, FALSE a seconda se l'evento è passato o no
+   * Ritorna TRUE, FALSE a seconda se 
+   * l'evento è passato o no
    */
   eventoPassato() {
+
     return (new Date() > this.DATAORAFINE );
   }
+
+
+  
 }

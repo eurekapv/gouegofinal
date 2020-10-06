@@ -1,6 +1,7 @@
 import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
 
+
  
   export class IDDocument {
     ID: string;
@@ -19,7 +20,7 @@ import { MyDateTime } from './mydatetime.model';
     _original:IDOriginal;
 
     //Repository per aggiungere documenti di riferimento con quello in esame
-    _repositoryRelDoc: IDDocument[];
+    _repositoryRelDoc: IDRepository[];
   
     /**
      * 
@@ -189,12 +190,6 @@ import { MyDateTime } from './mydatetime.model';
 
       return strValue;
     }
-
-
-    /**
-     * Ritorna se il documento risulta in stato modificato
-     */
-
 
 
 
@@ -694,26 +689,34 @@ import { MyDateTime } from './mydatetime.model';
     *  Documenti arrivati da una operazione di getRelDoc ad esempio
     *  
     * addToRepositoryRelDoc(document: IDDocument) => Si aggiunge un documento al repository (se il documento per chiave primaria esiste gia aggiorna)
-    * findInRepositoryRelDocByPrimaryKey(primaryKey: string) => Torna il documento del repository cercandolo per chiave primaria
-    * getPropertyInRepositoryRelDoc(primaryKey: string, fieldName: string) => Torna il valore della proprietà richiesta del documento con primaryKey passata
+    * findInRepositoryRelDoc(prOrSeq: string || []) => Torna il documento del repository cercandolo per chiave primaria, oppure per sequenza campi
+    * getRelDocProperty(prOrSeq: string || [], fieldName: string) => Torna il valore della proprietà richiesta del documento con primaryKey passata o sequenza campi
     */
 
     /**
      * Aggiunge, se non presente il documento alla repositoryRelDoc
      * @param document Documento da includere
+     * @param seqFields Array con la sequenza dei campi usati per il recupero documentale
      */
-    addToRepositoryRelDoc(document: IDDocument): void {
+    addToRepositoryRelDoc(document: IDDocument, seqFields?:string[]): void {
       let docExist: IDDocument;
-      let propValue = '';
+      let identity = '';
 
       //Documento da aggiungere
       if (document) {
-        //Chiedo la PrimaryKey
-        propValue = document.getPrimaryKey();
-        
+        //Aggiungo con una sequenza 
+        if (seqFields && seqFields.length != 0) {
+          identity = seqFields.toString();
+        }
+        else {
+          //Aggiungo per primaryKey
+          //Chiedo la PrimaryKey
+          identity = document.getPrimaryKey();  
+        }
+
         //Cerco se è già nel repository
-        if (propValue && propValue.length != 0) {
-          docExist = this.findInRepositoryRelDocByPrimaryKey(propValue)
+        if (identity && identity.length != 0) {
+          docExist = this.getDocInRepository(identity);
         }
 
         //Esiste lo aggiorno
@@ -721,44 +724,82 @@ import { MyDateTime } from './mydatetime.model';
           docExist = document;
         }
         else {
-          this._repositoryRelDoc.push(document);
+
+          let newRep = new IDRepository();
+          newRep.relDoc = document;
+
+          if (seqFields && seqFields.length != 0) {
+              newRep.seqFields = seqFields;
+          }
+
+          this._repositoryRelDoc.push(newRep);
         }
+        
       }
     }
 
     /**
-     * Cerca nel repository la presenza di un documento per chiave primaria
-     * @param primaryKey Valore Chiave primaria
+     * Cerca un documento nel repository o per sequenza di campi o per chiave primaria
+     * @param pkOrSeq String PrimaryKey oppure Array con la Sequenza
      */
-    findInRepositoryRelDocByPrimaryKey(primaryKey: string): IDDocument {
+    getDocInRepository(pkOrSeq:any):IDDocument {
 
       let docReturn: IDDocument;
-      if (primaryKey) {
-        for (let index = 0; index < this._repositoryRelDoc.length; index++) {
-          const element = this._repositoryRelDoc[index];
-          const propValue = element.getPrimaryKey();
-          //Documento trovato lo ritorno
-          if (propValue == primaryKey) {
-              docReturn = element;
-              break;
+      let identity: string;
+
+      if (pkOrSeq) {
+        if (Array.isArray(pkOrSeq)) {
+          identity = pkOrSeq.toString();
+        }
+        else {
+          identity = pkOrSeq;
+        }
+
+        if (identity && identity.length != 0) {
+          //Ricerchiamo all'interno del repository
+          for (let index = 0; index < this._repositoryRelDoc.length; index++) {
+            const element = this._repositoryRelDoc[index];
+            
+            //Documento trovato lo ritorno
+            if (identity == element.identifier) {
+                docReturn = element.relDoc;
+                break;
+            }
           }
         }
+
       }
 
       return docReturn;
     }
 
+
     /**
      * Ricerca tra i documenti nel repository, il documento con la primaryKey passata e ritorna il valore della proprietà indicata
-     * @param primaryKey Chiave Primaria documento
+     * @param pkOrSeq  Chiave Primaria documento oppure Array con la SeqFields esempio ['IDLOCATION','IAREA']
      * @param fieldName Nome della proprietà da decodificare
      */
-    getPropertyInRepositoryRelDoc(primaryKey: string, fieldName: string): any {
+    getDocPropertyInRepository(pkOrSeq: any, fieldName: string): any {
       let relDoc: IDDocument;
       let valRet: any;
-      if (primaryKey && fieldName && fieldName.length != 0) {
-        relDoc = this.findInRepositoryRelDocByPrimaryKey(primaryKey);
+      let identity = '';
 
+      if (pkOrSeq && fieldName && fieldName.length != 0) {
+        //Identita di un Documento Correlato è o la chiave primaria o la sequenza dei campi di ricerca
+        if (Array.isArray(pkOrSeq)) {
+          identity = pkOrSeq.toString();
+        }
+        else {
+          identity = pkOrSeq;
+        }
+
+        //Con una identity cerco il documento
+        if (identity) {
+          relDoc = this.getDocInRepository(identity);
+
+        }
+
+        //Se è presente il documento, ricavo la proprietà
         if (relDoc) {
           let inDoc = relDoc.propertyInDoc(fieldName);
 
@@ -770,6 +811,8 @@ import { MyDateTime } from './mydatetime.model';
 
       return valRet;
     }
+
+
     //#endregion
 
     //#region JSON MODIFICHE
@@ -957,6 +1000,46 @@ import { MyDateTime } from './mydatetime.model';
       this.clearPKProperty = false;
       this.clearPrivateProperty = false;
 
+    }
+  }
+
+  /**
+   * Classe repository per i documenti correlati
+   */
+  export class IDRepository {
+    
+    seqFields: string[];
+    relDoc: IDDocument;
+
+    constructor() {
+      this.seqFields = [];
+      
+    }
+
+    /**
+     * Ritorna la primary Key del documento contenuto
+     */
+    get primaryKey(): string {
+      let propValue = '';
+      if (this.relDoc) {
+        propValue = this.relDoc.getPrimaryKey()
+      }
+      
+      return propValue;
+    }
+
+    //Ritorna l'identificatore del documento
+    get identifier(): string {
+      let ident = '';
+      //Se è presente una sequenza, l'identificatore è la sequenza
+      if (this.seqFields && this.seqFields.length !== 0) {
+        ident = this.seqFields.toString();
+      }
+      else {
+        ident = this.primaryKey;
+      }
+
+      return ident;
     }
   }
 

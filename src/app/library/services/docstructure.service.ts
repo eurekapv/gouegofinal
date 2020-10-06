@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IDDocument, OperatorCondition, FilterCondition } from '../models/iddocument.model';
+import { IDDocument, OperatorCondition, FilterCondition, IDRepository } from '../models/iddocument.model';
 import {RequestParams, RequestDecode, RequestForeign, PostParams } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
@@ -835,6 +835,31 @@ export class DocstructureService {
     return myParams;
   }
 
+  /**
+  * Clona un oggetto 
+  */
+  public cloneObject(document:IDDocument): any {
+    let objDescriptor: Descriptor;
+    let cloneObj:any;
+
+    if (document) {
+
+      objDescriptor = document.getDescriptor();
+
+      cloneObj = new DynamicClass(objDescriptor.className, true);
+
+      for (var attribut in document) {
+          if (typeof document[attribut] === "object") {
+              //cloneObj[attribut] = this.cloneObject(document[attribut]);
+          } else {
+              cloneObj[attribut] = document[attribut];
+          }
+      }
+    }
+    
+    return cloneObj;
+
+  }
 
   /**
    * Dato un documento di partenza e una sequenza di campi ritorna il documento correlato
@@ -851,7 +876,8 @@ export class DocstructureService {
   public getRelDoc( docStart: IDDocument, 
                     seqField: string[], 
                     childLevel = 2,
-                    docRepository?: IDDocument):Promise<any> {
+                    docRepository?: IDDocument,
+                    indexSeq = -1):Promise<any> {
     return new Promise((resolve, reject)=>{  
 
       let nameField = '';
@@ -859,12 +885,17 @@ export class DocstructureService {
       let objFieldType: TypeReflector;
 
       if (docStart) {
+        if (seqField && seqField.length !== 0) {
 
-        
+          if (indexSeq == -1) {
+            //Inizio il giro impostando posizione 0
+            indexSeq = 0;
+          }
+        }
 
         if (seqField && seqField.length !== 0) {
           
-          nameField = seqField[0];
+          nameField = seqField[indexSeq];
 
           //Con il nome del campo, ottengo la definizione del campo
           objFieldType = docStart.getTypeReflectorByFieldName(nameField);
@@ -883,7 +914,7 @@ export class DocstructureService {
 
               //creo i filtri per il child level
               let params : RequestParams = new RequestParams();
-              if (seqField.length == 1) {
+              if (seqField.length == indexSeq + 1) {
                 params.child_level = childLevel;
               }
               else {
@@ -897,10 +928,12 @@ export class DocstructureService {
                       let element = arElement[0];
 
                       
-                      if (seqField.length > 1) {
-                        let newSeqField = seqField.slice(1);
-
-                        return resolve(this.getRelDoc(element, newSeqField, childLevel, docRepository))
+                      //Ho ancora relazioni da decodificare
+                      if (indexSeq + 1 < seqField.length) {
+                        //Incremento l'indice sequenza
+                        indexSeq++;
+                        //Eseguo un nuovo relDoc
+                        return this.getRelDoc(element, seqField, childLevel, docRepository, indexSeq);
 
                       }
                       else {
@@ -910,8 +943,8 @@ export class DocstructureService {
                         //Elemento presente e vuole che venga aggiunto al documento chiamante come relDoc nel Repository
                         if (element && docRepository) {
                           
-                          //Aggiungo il documento nel repository
-                          docRepository.addToRepositoryRelDoc(element);
+                          //Aggiungo al repository
+                          docRepository.addToRepositoryRelDoc(element, seqField);
                         }
 
 
@@ -919,18 +952,24 @@ export class DocstructureService {
                       }
                     }
                     else {
-                      return reject('Document rel not found');
+                      console.log('Document rel not found');
+                      return resolve(null);
                     }
 
+                  })
+                  .catch(error => {
+                    return reject(error);
                   })
   
             }
             else {
-              return reject('Foreign Key not find');
+              console.log('Foreign Key not found');
+              return resolve(null);
             }
           }
           else {
-            return reject('Foreign Key field');
+            console.log('Foreign Key not found');
+            return resolve(null);
           }
           
   
@@ -987,9 +1026,9 @@ export class DocstructureService {
             
  }
 
-  // ************************************************
-  // ***************  REQUEST POST    ***************
-  // ************************************************
+  // ****************************************************************
+  // ***************  REQUEST PER I METODI STATICI    ***************
+  // ****************************************************************
 
   /**
    * Effettua una chiamata POST al metodo indicato dell'oggetto specificato

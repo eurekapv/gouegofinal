@@ -22,6 +22,13 @@
 
   </div>
 
+  <div class="ion-padding-horizontal info">
+    <p>
+      <ion-icon name="information-circle-outline" color="primary"></ion-icon> 
+      Clicca su ogni partecipante per impostare la presenza/assenza
+    </p>
+  </div>
+
 
   <ion-list>
 
@@ -35,16 +42,23 @@
       <ion-item *ngFor="let presenza of listPresenzeConfermate" button (click)="onClickElement(presenza)">
         <ion-icon *ngIf="presenza.PRESENTE==true" slot="start" name="thumbs-up-outline" color="primary"></ion-icon>
         <ion-icon *ngIf="presenza.PRESENTE==false" slot="start" name="thumbs-down-outline" color="danger"></ion-icon>
-        <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" name="help"></ion-icon>
+        <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" color="" name="person-circle-outline"></ion-icon>
         <ion-label>
           <h2>{{presenza.NOMINATIVO}}</h2>
-          <h4>
-            Scad. c. medico: 
+          <h4 *ngIf="this.tipoSocieta == TipoSocieta.sportiva">
+            Certificato medico: 
             <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
               {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
             </ion-badge> 
           </h4>
         </ion-label>
+        <ion-badge
+          *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined && isDesktop"
+          slot="end"
+          [color]="presenza.PRESENTE? 'primary' : 'danger'"
+        >
+        {{presenza.PRESENTE? 'Presente' : 'Assente'}}
+        </ion-badge>
       </ion-item>
     </ion-item-group>
 
@@ -58,11 +72,11 @@
       <ion-item *ngFor="let presenza of listPresenzeInProva" button (click)="onClickElement(presenza)">
         <ion-icon *ngIf="presenza.PRESENTE==true" slot="start" name="thumbs-up-outline" color="primary"></ion-icon>
         <ion-icon *ngIf="presenza.PRESENTE==false" slot="start" name="thumbs-down-outline" color="danger"></ion-icon>
-        <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" name="help"></ion-icon>
+        <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" color="" name="person-circle-outline"></ion-icon>
         <ion-label>
           <h2>{{presenza.NOMINATIVO}}</h2>
-          <h4>
-            Scad. c. medico: 
+          <h4 *ngIf="tipoSocieta == TipoSocieta.sportiva">
+            Certificato medico: 
             <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
               {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
             </ion-badge> 

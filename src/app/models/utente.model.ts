@@ -426,11 +426,22 @@ export class Utente extends IDDocument {
         return isTrainer;
     }
 
+    get isAssistenteTrainer(){
+        let isTrainer: boolean =false;
+        if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
+
+            if (this.LISTMANSIONI.includes(Mansione.assistenteTrainer.toString())){
+                isTrainer = true;
+            }
+        }
+        return isTrainer;
+    }
+
     isCustode(){
         let isCustode: boolean =false;
         if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
 
-            if (this.LISTMANSIONI.includes(Mansione.trainer.toString())){
+            if (this.LISTMANSIONI.includes(Mansione.custode.toString())){
                 isCustode = true;
             }
         }

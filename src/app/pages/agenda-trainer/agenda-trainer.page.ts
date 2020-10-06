@@ -43,7 +43,7 @@ export class AgendaTrainerPage implements OnInit {
     console.log(this.utente);
 
     //se sono un trainer
-    if (this.utente.isTrainer){
+    if (this.utente.isTrainer || this.utente.isAssistenteTrainer){
 
       this.requestImpegni();
     }
@@ -120,7 +120,6 @@ export class AgendaTrainerPage implements OnInit {
 
   
   onScroll(event:any){
-    console.log(event.detail)
     if(event.detail.currentY < 5){
       this.showFilter = true;
     }
@@ -135,7 +134,7 @@ export class AgendaTrainerPage implements OnInit {
   }
 
 
-  //FIXME
+  //OK
   //CONTROLLARE
   /*
     1) Controllare il pulsante BACK, se perde la sequenza deve andare alla home

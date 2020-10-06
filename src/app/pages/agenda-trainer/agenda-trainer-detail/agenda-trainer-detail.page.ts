@@ -6,7 +6,7 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
-import { StatoIscrizione } from 'src/app/models/valuelist.model';
+import { StatoIscrizione, TipoSocieta } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
@@ -26,13 +26,33 @@ export class AgendaTrainerDetailPage implements OnInit {
   idPianificazione: string;
   idCorso: string;
 
+  //il tipo di società sportiva
+  tipoSocieta: TipoSocieta;
+
+
+
+  TipoSocieta: typeof TipoSocieta = TipoSocieta;
+
+  isDesktop: boolean;
+  
+
+  
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private navController: NavController,
     private startService: StartService,
     private toastController: ToastController,
     private loadingController: LoadingController
-  ) { }
+  ) 
+    {
+      //recupero il tipo di società
+      this.tipoSocieta = this.startService.actualStartConfig.gruppo.TIPOGRUPPO;
+
+      //capisco se sono su desktop
+      this.isDesktop = startService.isDesktop;
+      
+    }
 
   ngOnInit() {
 
@@ -157,18 +177,18 @@ export class AgendaTrainerDetailPage implements OnInit {
     })
   }
 
-  //FIXME
+  //
   /*
   Cosa modificherei:
-    1) Non è chiara l'icona ? io imposterei l'icona user-circle se non c'e' la presensa
-    2) In alto prima sopra la lista io metterei una label di info tipo: Usa l'icona user-circle per segnare la presenza assenza di un partecipante
-    3) La parola PRESENTE e ASSENTE bisogna metterla in un badge a destra (rosso Assente/verde Presente) un badge di tipo small va bene
+    OK 1) Non è chiara l'icona ? io imposterei l'icona user-circle se non c'e' la presensa
+    OK 2) In alto prima sopra la lista io metterei una label di info tipo: Usa l'icona user-circle per segnare la presenza assenza di un partecipante
+    OK, SOLO SU DESKTOP 3) La parola PRESENTE e ASSENTE bisogna metterla in un badge a destra (rosso Assente/verde Presente) un badge di tipo small va bene
     4) L'etichetta 'Scad. c. medico' non è ne bella ne chiara io fare cosi (faccio 3 esempi)
           Certificato Medico: non consegnato
           Certificato Medico: fino al 15/09/2020 (Verde)  
           Certificato Medico: scaduto (rosso) 
                               Io non riporterei date intanto chissenefrega è scaduto e devi portarlo
-       Questa riga pero' deve essere messa sotto ngIf GruppoSportivo.TIPO = SocietaSportiva (xche alle scuole di lingue ad esempio frega na pippa)
+    OK   Questa riga pero' deve essere messa sotto ngIf GruppoSportivo.TIPO = SocietaSportiva (xche alle scuole di lingue ad esempio frega na pippa)
     
     
 

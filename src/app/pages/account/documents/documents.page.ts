@@ -196,7 +196,7 @@ export class DocumentsPage implements OnInit {
         let myJson: string = docUploadDocumentazione.exportToJSON(paramExport);
         
         //ora che ho tutto, faccio la post
-        this.docStructureService.requestPost(fakeUtente, 'uploadDocumentazione', myJson)
+        this.docStructureService.requestForFunction(fakeUtente, 'uploadDocumentazione', myJson)
         .then(rawResponse => {
           
           elLoading.dismiss();

@@ -15,6 +15,7 @@ import { CryptoService } from 'src/app/library/services/crypto.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
 const { Browser } = Plugins;
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
+import { PostResponse } from 'src/app/library/models/postResult.model';
 
 
 @Component({
@@ -694,12 +695,12 @@ export class VerifyPage implements OnInit {
        // Chiamo il Servizio per eseguire l'autorizzazione
        this.startService
        .requestAuthorization(username, password)
-       .subscribe(dataResult => {
+       .then((dataResult:PostResponse) => {
  
            // E' Arrivata una risposta NEGATIVA
-           if (dataResult.RESULT === 0) {
+           if (!dataResult.result) {
  
-             this.showMessage(dataResult.MESSAGE);
+             this.showMessage(dataResult.message);
            }
            else {
              //LOGIN ACCETTATO

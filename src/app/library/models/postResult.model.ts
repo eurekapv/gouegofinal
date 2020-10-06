@@ -1,13 +1,16 @@
-import { IDDocument } from './iddocument.model';
-
 export class PostResponse {
     //Risposta ottenuta dal server 
     private _document: string;
     result: boolean;
-    message: string;
+    message: string; 
+    code: string; //Eventuale codice ritornato dal server
 
     public set document(value:string) {
         this._document = value;
+    }
+
+    public get document(): string {
+        return this._document;
     }
 
 

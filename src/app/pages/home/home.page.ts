@@ -21,12 +21,9 @@ import { RequestParams } from 'src/app/library/models/requestParams.model';
 
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 
-import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
-
 import { Plugins } from '@capacitor/core';
-import { Corso } from 'src/app/models/corso.model';
-import { filter } from 'rxjs/operators';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
+import { LogApp } from 'src/app/models/log.model';
 
 const { Geolocation } = Plugins;
 
@@ -212,9 +209,6 @@ export class HomePage implements OnInit, OnDestroy{
 
       //Aggiorno l'agenda
       this.updateAgenda();     
-      
-      
-
     });
 
 
@@ -690,7 +684,7 @@ private richiediAgendaTrainer() {
   .then(result => {
 
     this.myListImpegniTrainer = result;
-    console.log(this.myListImpegniTrainer);
+    
   })
   .catch(error => {
     console.log(error);

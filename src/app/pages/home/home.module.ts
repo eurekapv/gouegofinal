@@ -24,7 +24,6 @@ import { PswRecoveryPage } from '../auth/psw-recovery/psw-recovery.page'
 
 //questi 3 da rimuovere perchè inutili
 import { AdvertisingComponent } from 'src/app/shared/components/advertising/advertising.component'
-import { AuthComponent } from 'src/app/shared/components/auth/auth.component'
 import { CircularComponent } from 'src/app/shared/components/circular/circular.component'
 
 
@@ -57,7 +56,6 @@ import { CircularComponent } from 'src/app/shared/components/circular/circular.c
                  NewsdetailPage,
                  //questi 3 da rimuovere perchè inutili
                  AdvertisingComponent,
-                 AuthComponent,
                  CircularComponent,
                  PswRecoveryPage
                  

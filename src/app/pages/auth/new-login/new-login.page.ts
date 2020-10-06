@@ -15,6 +15,7 @@ import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
 import { PswRecoveryPage } from '../psw-recovery/psw-recovery.page';
+import { PostResponse } from 'src/app/library/models/postResult.model';
 const { Browser } = Plugins;
 
 
@@ -320,14 +321,14 @@ export class NewLoginPage implements OnInit {
           // Chiamo il Servizio per eseguire l'autorizzazione
           this.startService
             .requestAuthorization(this.formLogin.value.username, this.formLogin.value.password)
-            .subscribe(dataResult => {
+            .then((dataResult:PostResponse) => {
 
                 //Chiudo lo Spinner
                 element.dismiss();
 
                 // E' Arrivata una risposta NEGATIVA
-                if (dataResult.RESULT === 0) {
-                  this.showMessage(dataResult.MESSAGE);
+                if (!dataResult.result) {
+                  this.showMessage(dataResult.message);
                 }
                 else {
                   //LOGIN ACCETTATO
@@ -1012,12 +1013,11 @@ export class NewLoginPage implements OnInit {
       // Chiamo il Servizio per eseguire l'autorizzazione
       this.startService
       .requestAuthorization(username, password)
-      .subscribe(dataResult => {
+      .then((dataResult:PostResponse) => {
 
           // E' Arrivata una risposta NEGATIVA
-          if (dataResult.RESULT === 0) {
-
-            this.showMessage(dataResult.MESSAGE);
+          if (!dataResult.result) {
+            this.showMessage(dataResult.message);
           }
           else {
             //LOGIN ACCETTATO

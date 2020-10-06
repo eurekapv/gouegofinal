@@ -59,10 +59,10 @@ export class StartService {
     secureProtocol = FALSE (chiamata http e non https)
   */
   //Versione Production
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
 
   //Versione LocalTest
-  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
   
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
@@ -190,60 +190,6 @@ export class StartService {
     this.onAfterAuthorization();
   }    
 
-  /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
-  // requestStartAuthorizationOLD() {
-  //   let myHeaders = new HttpHeaders({'Content-type':'application/json'});
-  //   const actualStartConfig = this._startConfig.getValue();
-  //   const myParams = new HttpParams().set('APPID', actualStartConfig.appId);
-  //   const doObject = 'GRUPPOSPORTIVO';
-  //   //Aggiungo negli header la richiesta delle immagini
-  //   myHeaders = myHeaders.set('with-images','1');
-  //   myHeaders = myHeaders.set('with-options','1');
-
-  //   let myUrl = actualStartConfig.urlBase + '/' + doObject;
-
-    
-  //   // Effettuo la chiamata per l'autorizzazione
-  //   this.apiService
-  //     .httpGet(myUrl, myHeaders, myParams)
-  //     .pipe(map(fullData => {
-  //       console.log(fullData);
-  //       return fullData.GRUPPOSPORTIVO.find(singleData => singleData.ID == actualStartConfig.appId)
-  //     }))
-  //     .subscribe(resultData => {
-
-  //         console.log(resultData);
-  //       // Sistemo l'oggetto di configurazione 
-  //       // ed emetto un evento di Cambio
-  //       this.onAuthorizationGrant(resultData);
-  //     });
-      
-
-      
-  // }
-
-  //Autorizzazione ricevuta
-  // onAuthorizationGrantOLD(JSONGruppo: any) {
-  //   let elStartConfig = this._startConfig.getValue();
-
-  //   //Scrivo in console
-  //   LogApp.consoleLog('Autorizzazione ricevuta');
-
-  //   //Sistemazione del Gruppo nell'oggetto di configurazione
-  //   elStartConfig.setGruppoAuthorization(JSONGruppo);
-
-  //   //Emetto l'evento di cambio
-  //   this._startConfig.next(elStartConfig);
-
-  //   //Passo a richiedere le Aree
-  //   this.requestAree();
-
-  //   // Mi iscrivo alle modifiche dell'Area Selezionata
-  //   this.onChangeAreaSelezionata();
-
-  //   //Operazioni ulteriori a seguito dell'autorizzazione
-  //   this.onAfterAuthorization();
-  // }
 
 
   /**
@@ -703,16 +649,9 @@ loadStorageUtente() {
             
             //Faccio la richiesta al server
             this.requestAuthorization(savedUser.loginUser, savedUser.pwdUser)
-                .subscribe (resultData => {
-                  if (resultData.MESSAGE !== 0) {
-                    //Son riuscito ad accedere correttamente
-                    // IN TEORIA NON DEVO FARE NULLA
-                    //CI PENSANO GLI ALTRI SUBSCRIBE
-                    LogApp.consoleLog('AutoLogin passed');
-
-                  }
+                .then(() => {
+                  LogApp.consoleLog('AutoLogin passed');
                 });
-            
           }
         }
       });
@@ -745,7 +684,7 @@ requestAuthorization(username: string,
   this.onChangeAreaFavListener();
 
   return this.utenteService
-            .requestAuthorization(actualStartConfig, username, password);
+            .requestAuthorization(username, password);
 
 }
 
@@ -768,13 +707,13 @@ onChangeAreaFavListener() {
  * Richiede al server i dati Utente
  * @param idUtente IDUtente
  */
-requestUtente(idUtente: string) {
-  const actualStartConfig = this._startConfig.getValue();
+// requestUtente(idUtente: string) {
+//   const actualStartConfig = this._startConfig.getValue();
 
-  return this.utenteService
-      .request(actualStartConfig, idUtente);
+//   return this.utenteService
+//       .request(actualStartConfig, idUtente);
             
-}
+// }
 
 /**
  * Richiedere al server l'operazione di Update Utente

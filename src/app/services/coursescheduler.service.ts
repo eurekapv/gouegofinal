@@ -164,7 +164,7 @@ export class CourseschedulerService {
         'dataFine': MyDateTime.formatDateISO(dataFine)
       }
   
-      this.docStructureService.requestPost(document, methodName, JSON.stringify(params))
+      this.docStructureService.requestForFunction(document, methodName, JSON.stringify(params))
       .then(response => {
 
         let requestDecode = false;
@@ -284,7 +284,7 @@ export class CourseschedulerService {
       let myJsonBody: string = docPianificazione.exportToJSON(myExportParams);
 
       //FIXME NON CAPISCO SE C'E' UN METODO DA UTILIZZARE, OPPURE E' SBAGLIATO CHE LA FUNZIONE LO RICHIEDA
-      this.docStructureService.requestPost(docPianificazione, null, myJsonBody)
+      this.docStructureService.requestForFunction(docPianificazione, null, myJsonBody)
       .then((response:PostResponse) => {
         res(response);
       })

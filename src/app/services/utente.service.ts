@@ -9,6 +9,10 @@ import { LogApp } from '../models/log.model';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { PostResponse } from '../library/models/postResult.model';
 import { ParamsExport } from '../library/models/iddocument.model';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { Account } from '../models/account.model';
+
+
 
 
 
@@ -21,7 +25,7 @@ export class UtenteService {
   private _utente = new BehaviorSubject<Utente>(new Utente);
   private _utenteLoggato = new BehaviorSubject<boolean>(false);
   private _idAreaFAV = new BehaviorSubject<string>(''); //Avvisa di cambiare l'Area Operativa
-  
+
 
   get utente() {
     return this._utente.asObservable();
@@ -46,40 +50,37 @@ export class UtenteService {
     return this._idAreaFAV.asObservable();
   }
 
- 
-  constructor(private apiService: ApicallService) { }
+
+  constructor(private apiService: ApicallService,
+              private docService: DocstructureService) { }
 
   /**
    * Recupera le informazioni di un utente passato per ID
    * @param config Parametri di configurazione chiamata
    * @param idUtente IDUtente da recuperare
    */
-  request(config: StartConfiguration, idUtente: string) {
-    return new Promise((resolve, reject)=>{
-      let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
-      const doObject = 'UTENTE';
-  
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
+  // request(config: StartConfiguration, idUtente: string) {
+  //   return new Promise((resolve, reject)=>{
+  //     let myHeaders = config.getHttpHeaders();
 
-      let myParams = new HttpParams().set('ID',idUtente);
-      let myUrl = config.urlBase + '/' + doObject;
-  
-      this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-          return data.UTENTE
-        }))
-        .subscribe( resultData => {
-          this.loginSuccessfull(resultData);
-          resolve();
-        }, error=>{
-          reject (error);
-        });
-    })
-  }
+  //     const doObject = 'UTENTE';
+
+  //     let myParams = new HttpParams().set('ID',idUtente);
+  //     let myUrl = config.urlBase + '/' + doObject;
+
+  //     this.apiService
+  //       .httpGet(myUrl, myHeaders, myParams)
+  //       .pipe(map(data => {
+  //         return data.UTENTE
+  //       }))
+  //       .subscribe( resultData => {
+  //         this.loginSuccessfull(resultData);
+  //         resolve();
+  //       }, error=>{
+  //         reject (error);
+  //       });
+  //   })
+  // }
 
 
   /**
@@ -88,69 +89,74 @@ export class UtenteService {
    * @param username Username Utente
    * @param password Password Utente
    */
-  requestAuthorization(config: StartConfiguration, 
-                        username: string, 
-                        password: string) {
-    let myHeaders = config.getHttpHeaders();
-    // new HttpHeaders({'Content-type':'text/plain', 
-    //                                    'X-HTTP-Method-Override':'VERIFICALOGINMOB', 
-    //                                    'appid':config.appId,
-    //                                    'child-level': '2'
-    //                                   });
+  requestAuthorization(username: string,
+                       password: string): Promise<any> {
 
-    const myParams = new HttpParams().set('Username', username).append('Password', password);
-    const doObject = 'ACCOUNT';
-    myHeaders = myHeaders.append('X-HTTP-Method-Override','VERIFICALOGINMOB');
-    myHeaders = myHeaders.append('child-level','2');
+    return new Promise<any>((resolve,reject) => {
+            let myUtente = new Utente();
+            let jsonBody = '';
+            let paramExp = new ParamsExport();
+            let myAccount = new Account();
+            const method = 'authLoginMob';
 
-    let myUrl = config.urlBase + '/' + doObject;
 
-    //Disattivo il login utente
-    this._utenteLoggato.next(false);
+            //Compilo un documento con login e password
+            myUtente.WEBLOGIN = username;
+            myUtente.INPUTPASSWORD = password;
 
-    // Effettuo la chiamata
-    return this.apiService
-              .httpGet(myUrl, myHeaders, myParams)
-              .pipe(tap(element => {
-                //Autorizzazione concessa
-                //Dentro a MESSAGE è presente il documento dell'utente
-                // Avviso il servizio si impostare l'account
-                if (element.RESULT == -1) {
-                  // User accettato
-                  this.loginSuccessfull(element.MESSAGE, username);
-                }
-              }));
+            //Preparo esportazione
+            paramExp.clearDOProperty = true;
+            paramExp.clearPKProperty = true;
+            paramExp.clearPrivateProperty = true;
+            jsonBody = myUtente.exportToJSON(paramExp);
+            jsonBody = `{"docUtente" : ${jsonBody}}`;
+
+
+            //Disattivo il login utente
+            this._utenteLoggato.next(false);
+
+            this.docService.requestForFunction(myAccount,method,jsonBody)
+                          .then((response:PostResponse) => {
+
+                            //Risposta ricevuta
+                            if (response.result) {
+
+                              let docInResponse = JSON.parse(response.document);
+
+                              let docUtente = new Utente();
+                              docUtente.setJSONProperty(docInResponse);
+                              docUtente.WEBLOGIN = username;
+                              docUtente.setOriginal();
+
+                              //Emetto Utente
+                              this._utente.next(docUtente);
+
+                              //Emetto il Boolean TRUE di avvenuto accesso
+                              this._utenteLoggato.next(true);
+
+                              //Utente ha una area preferita
+                              if (docUtente.IDAREAOPERATIVA) {
+                                //Dovrei posizionarlo
+                                this._idAreaFAV.next(docUtente.IDAREAOPERATIVA);
+                              }
+
+                              //Emetto la risposta del server
+                              resolve(response);
+                              
+                            }
+                            else {
+                              reject(response.message);
+                            }
+
+
+                          })
+                          .catch(error => {
+                            reject(error);
+                          });
+      });
+
   }
 
-  /**
-   * Utente loggato
-   * @param JSonUtente Dati Utente
-   */
-  private loginSuccessfull(JSonUtente: any, webLogin?:string) {
-
-    let newUtente = new Utente();
-    newUtente.setJSONProperty(JSonUtente);
-    newUtente.WEBLOGIN = webLogin;
-
-    //Segno originale come sul server
-    newUtente.setOriginal();
-
-    LogApp.consoleLog(newUtente);
-
-    //Emetto Utente
-    this._utente.next(newUtente);
-
-    //Emetto il Boolean TRUE di Log
-    this._utenteLoggato.next(true);
-
-    //Utente ha una area preferita
-    if (newUtente.IDAREAOPERATIVA) {
-      //Dovrei posizionarlo
-      this._idAreaFAV.next(newUtente.IDAREAOPERATIVA);
-    }
-
-
-  }
 
   /**
    * Esecuzione Logoff dell'utente
@@ -219,7 +225,7 @@ export class UtenteService {
             docUtente.setJSONProperty(objDocument);
             console.log(docUtente);
             this._utente.next(docUtente);
-            resolve(docUtente);          
+            resolve(docUtente);
         }
         else {
           reject('Errore ricezione dati server');
@@ -246,8 +252,8 @@ export class UtenteService {
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override','CHANGEPWDMOB');
 
-    //  new HttpHeaders({'Content-type':'application/json', 
-    //                                    'X-HTTP-Method-Override':'CHANGEPWDMOB', 
+    //  new HttpHeaders({'Content-type':'application/json',
+    //                                    'X-HTTP-Method-Override':'CHANGEPWDMOB',
     //                                    'appid':config.appId
     //                                   });
 
@@ -256,10 +262,10 @@ export class UtenteService {
 
     let myUrl = config.urlBase + '/' + doObject;
 
-    
+
     // Ritorno la chiamata
     return this.apiService
-        .httpGet(myUrl, myHeaders, myParams)       
+        .httpGet(myUrl, myHeaders, myParams)
 
   }
 
@@ -269,14 +275,14 @@ export class UtenteService {
 
 
   //#region FASI REGISTRAZIONE
-  
+
 
   /**
    * Invia al server la richiesta per inviare via Mail/SMS i codici per la registrazione account
    * @param config Dati di configurazione
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
-  registrationSendCodici(config: StartConfiguration, 
+  registrationSendCodici(config: StartConfiguration,
                          docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
           //Viene effettuata una chiamata al server per ottenere
           //l'invio di una mail e/o un SMS contenente codici PIN
@@ -300,7 +306,7 @@ export class UtenteService {
               paramExport.clearDOProperty = true;
               paramExport.clearPKProperty = true;
               paramExport.clearPrivateProperty = true;
-              
+
               bodyRequest = docRequestCode.exportToJSON(paramExport);
 
               bodyRequest = `{"docRequest" : ${bodyRequest}}`;
@@ -338,7 +344,7 @@ export class UtenteService {
    * @param config Dati di configurazione
    * @param docVerifyCode Dati da verificare
    */
-  registrationVerifyCodici(config: StartConfiguration, 
+  registrationVerifyCodici(config: StartConfiguration,
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'registrationVerifyCodici';
         let myHeaders = config.getHttpHeaders();
@@ -360,12 +366,12 @@ export class UtenteService {
                 paramExport.clearDOProperty = true;
                 paramExport.clearPKProperty = true;
                 paramExport.clearPrivateProperty = true;
-                
+
 
                 bodyRequest = docVerifyCode.exportToJSON(paramExport);
 
                 bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-                
+
                 //Faccio la chiamata POST
                 this.apiService
                 .httpPost(myUrl, myHeaders, myParams, bodyRequest )
@@ -391,7 +397,7 @@ export class UtenteService {
 
 
 
-}  
+}
 
 /**
  * Invia al server i dati per completare la registrazione di un account
@@ -400,14 +406,14 @@ export class UtenteService {
  * @param docRequestCode Documento di Richiesta codici iniziale
  */
 registrationFinalize(config: StartConfiguration,
-  docUtente: Utente, 
+  docUtente: Utente,
   docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
     //Viene inviato al server il documento per chiedere la registrazione utente
     const metodo = 'registrationFinalize';
 
     let myHeaders = config.getHttpHeaders();
-    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);                        
+    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
 
     const myParams = new HttpParams();
     const doObject = 'ACCOUNT';
@@ -427,13 +433,13 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     paramExport.clearDOProperty = true;
     paramExport.clearPKProperty = true;
     paramExport.clearPrivateProperty = true;
-    
+
 
     bodyRequest = docRequestCode.exportToJSON(paramExport);
     bodyUtente = docUtente.exportToJSON(paramExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
-    
+
     console.log('Richiesta di Registrazione: ' + bodyFinal);
 
     //Faccio la chiamata POST
@@ -468,7 +474,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
 
   //#endregion
-  
+
 
   //#region  FASI RECUPERO PSW
 
@@ -477,7 +483,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
    * @param config Dati di configurazione
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
-  recoverySendCodici(config: StartConfiguration, 
+  recoverySendCodici(config: StartConfiguration,
   docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
   //Viene effettuata una chiamata al server per ottenere
   //l'invio di una mail e/o un SMS contenente codici PIN
@@ -501,7 +507,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   paramExport.clearDOProperty = true;
   paramExport.clearPKProperty = true;
   paramExport.clearPrivateProperty = true;
-    
+
 
   bodyRequest = docRequestCode.exportToJSON(paramExport);
 
@@ -535,7 +541,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
    * @param config Dati di configurazione
    * @param docVerifyCode Dati da verificare
    */
-  recoveryVerifyCodici(config: StartConfiguration, 
+  recoveryVerifyCodici(config: StartConfiguration,
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'recoveryVerifyCodici';
 
@@ -560,7 +566,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
                 bodyRequest = docVerifyCode.exportToJSON(paramExport);
                 bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-                
+
                 //Faccio la chiamata POST
                 this.apiService
                 .httpPost(myUrl, myHeaders, myParams, bodyRequest )
@@ -578,7 +584,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
             }
 
         });
-}  
+}
 
 /**
  * Invia al server i dati per completare la registrazione di un account
@@ -587,7 +593,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
  * @param docRequestCode Documento di Richiesta codici iniziale
  */
 recoveryFinalize(config: StartConfiguration,
-  docUtente: Utente, 
+  docUtente: Utente,
   docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
     //Viene inviato al server il documento per chiedere la registrazione utente
@@ -625,7 +631,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     bodyUtente = docUtente.exportToJSON(paramUteExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
-    
+
     console.log('Richiesta di Registrazione: ' + bodyFinal);
 
     //Faccio la chiamata POST
@@ -662,14 +668,14 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
    * @param config Dati di configurazione
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
-  validationSendCodici(config: StartConfiguration, 
+  validationSendCodici(config: StartConfiguration,
     docUtente:Utente,
     docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
     //Viene effettuata una chiamata al server per ottenere
     //l'invio di una mail e/o un SMS contenente codici PIN
     const metodo = 'validationSendCodici';
-    // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-    //                         'X-HTTP-Method-Override': metodo, 
+    // const myHeaders = new HttpHeaders({'Content-type':'application/json',
+    //                         'X-HTTP-Method-Override': metodo,
     //                         'appid':config.appId
     //                       });
     let myHeaders = config.getHttpHeaders();
@@ -679,12 +685,12 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     let bodyRequest = '';
     let bodyUtente = '';
     let bodyFinal = '';
-  
+
     let myUrl = config.urlBase + '/' + doObject;
-  
+
     return new Promise<AccountOperationResponse>((resolve, reject)=> {
     if (docRequestCode) {
-  
+
     //Questi sono i parametri per l'esportazione
     let paramReqExport = new ParamsExport();
     paramReqExport.clearDOProperty = true;
@@ -703,7 +709,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     bodyUtente = docUtente.exportToJSON(paramUteExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
-  
+
     //Faccio la chiamata POST
     this.apiService
     .httpPost(myUrl, myHeaders, myParams, bodyFinal )
@@ -719,7 +725,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     else {
     reject('Dati mancanti per la richiesta');
     }
-  
+
     });
 
   }
@@ -731,7 +737,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
    * @param config Dati di configurazione
    * @param docVerifyCode Dati da verificare
    */
-  validationVerifyCodici(config: StartConfiguration, 
+  validationVerifyCodici(config: StartConfiguration,
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
         const metodo = 'validationVerifyCodici';
 
@@ -753,10 +759,10 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
                 paramReqExport.clearDOProperty = true;
                 paramReqExport.clearPKProperty = true;
                 paramReqExport.clearPrivateProperty = true;
-                                
+
                 bodyRequest = docVerifyCode.exportToJSON(paramReqExport);
                 bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-                
+
                 //Faccio la chiamata POST
                 this.apiService
                 .httpPost(myUrl, myHeaders, myParams, bodyRequest )
@@ -774,7 +780,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
             }
 
         });
-}  
+}
 
   //#endregion
 }

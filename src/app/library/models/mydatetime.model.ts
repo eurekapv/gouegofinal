@@ -70,9 +70,9 @@ static stringToDateObject(strInput: string): Date {
  arElement = [];
  
 
- if (strInput.length !== 0) {
+ if (strInput && strInput.length !== 0) {
 
-    //Spplitto Data, Ora, TimeZone
+    //Splitto Data, Ora, TimeZone
     arElement = MyDateTime.splitDateTime(strInput);
 
     if (arElement[0].length !== 0) {

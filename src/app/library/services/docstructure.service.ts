@@ -1002,7 +1002,7 @@ export class DocstructureService {
    * @param jsonBody body da inviare in formato json
    * @param postParams Array con i parametri da aggiungere nell'url
    */
-  public requestPost(documentCall: IDDocument, 
+  public requestForFunction(documentCall: IDDocument, 
                      method: string, 
                      jsonBody:string,
                      postParams?: PostParams[] | PostParams

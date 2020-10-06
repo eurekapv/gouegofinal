@@ -698,8 +698,25 @@ private richiediAgendaTrainer() {
  }
 
 //#endregion
-getButtonCardTrainer(pianificazioneElem: PianificazioneCorso){
-  return ButtonCard.getButtonAgendaFromPianificazioneCorso(pianificazioneElem);
+getButtonCardTrainer(pianificazioneElem?: PianificazioneCorso){
+  if (pianificazioneElem){
+    return ButtonCard.getButtonAgendaFromPianificazioneCorso(pianificazioneElem);
+  }
+  else{
+    let btnCard = new ButtonCard();
+
+    btnCard.title = 'Nessun corso previsto per oggi';
+    btnCard.nameicon = 'school-outline';
+    btnCard.sloticon = "start";
+    btnCard.color = "primary";
+
+
+    return btnCard
+  }
+}
+
+onClickImpegnoTrainer(pianificazioneElem: PianificazioneCorso){
+  this.navController.navigateForward('/agenda-trainer/'+pianificazioneElem.ID);
 }
 
   

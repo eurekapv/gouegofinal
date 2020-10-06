@@ -1,24 +1,15 @@
 
 
-.grid-impegni {
-    background-color: var(--ion-color-light-tint);
-}
-
 .card-no-events {
     width: 100%;
 }
 
-#div-content {
-    background-color: var(--ion-color-light-tint);
+
+ion-content{
+    --background: var(--ion-color-light);
 }
 
-.list-news{
-    background: var(--ion-color-light)
-}
 
-.div-impegni{
-    background: var(--ion-color-light);
-}
 
 .logo{
     max-height: 25px;

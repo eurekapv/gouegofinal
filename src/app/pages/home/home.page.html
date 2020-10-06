@@ -20,7 +20,7 @@
   <!-- IMPEGNI -->
 
 
-  <ion-grid *ngIf="listButtonImpegni.length === 1" class="grid-impegni">
+  <ion-grid *ngIf="listButtonImpegni.length === 1" >
 
     <ion-slides class="ion-no-padding ion-no-margin">
     <ion-slide 
@@ -38,7 +38,7 @@
   </ion-slides>
 </ion-grid>
 
-<ion-grid *ngIf="listButtonImpegni.length > 1" class="grid-impegni">
+<ion-grid *ngIf="listButtonImpegni.length > 1" >
 
   <ion-slides class="ion-no-padding ion-no-margin" [options]="sliderOpts">
   <ion-slide 
@@ -213,26 +213,43 @@ color="danger"
       color="light" 
       fill="solid"
       size = "default"
-      (click)="onClickShowAgenda()">
+      routerLink="/agenda-trainer">
   <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
     Tutti
   </ion-button>  
 </ion-item>
 
+<!-- IMPEGNI TRAINER NON PRESENTI -->
 
-<ion-slides class="ion-no-padding ion-no-margin">
+<ion-slides *ngIf="!myListImpegniTrainer || myListImpegniTrainer.length == 0" class="ion-no-padding ion-no-margin">
+  <ion-slide 
+      class="ion-no-padding ion-no-margin"   
+  >   
+      <app-button-card 
+          class="small-button-card" 
+          [smallVersion]="true" 
+          [myButtonCard]="getButtonCardTrainer()"
+      >
+      </app-button-card>
+
+    </ion-slide>
+</ion-slides>
+
+<!-- IMPEGNI TRAINER PRESENTI -->
+<ion-slides *ngIf="myListImpegniTrainer && myListImpegniTrainer.length > 0" class="ion-no-padding ion-no-margin">
   <ion-slide 
       class="ion-no-padding ion-no-margin"
       *ngFor="let impegno  of myListImpegniTrainer"> 
       
       <app-button-card 
           class="small-button-card" 
-          [smallVersion]="false" 
-          [myButtonCard]="getButtonCardTrainer(impegno)">
+          [smallVersion]="true" 
+          [myButtonCard]="getButtonCardTrainer(impegno)"
+          (click)="onClickImpegnoTrainer(impegno)">
       </app-button-card>
 
     </ion-slide>
-  </ion-slides>
+</ion-slides>
 
 <!-- <div class="ion-no-padding"> -->
 
@@ -305,15 +322,21 @@ color="danger"
       </ion-button>  
   </ion-item>
   <!-- NEWS PRESENTI -->
-  <ion-list class="list-news" *ngIf="listNews.length !== 0">
-    <div *ngFor="let news of listNews">
-      <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
-    </div>
-  </ion-list>
+  <ion-grid class="ion-no-padding" *ngIf="listNews.length !== 0">
+    <ion-row>
+      <ion-col *ngFor="let news of listNews" size ="12" sizeLg="6">
+        <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <ion-list class="list-news" *ngIf="listNews.length === 0">
-      <app-news-eventi [myNews]="noNewsCard" ></app-news-eventi>
-  </ion-list>
+  <ion-grid *ngIf="listNews.length === 0">
+    <ion-row>
+      <ion-col>
+        <app-news-eventi [myNews]="noNewsCard" size="12"></app-news-eventi>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <!-- FINE NEWS -->
 

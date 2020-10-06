@@ -30,3 +30,25 @@
         }
     }
 }
+
+// ion-content{
+//     --background: var(--ion-color-light)
+// }
+
+div.info{
+    p{
+        font-style: italic;
+        // color: var(--ion-color-primary);
+        font-weight: 600;
+        ion-icon{
+            font-size: 20px;
+        }
+    }
+}
+
+div.nofind-cnt{
+    padding: 10px;
+    ion-label{
+        text-align: center;
+    }
+}

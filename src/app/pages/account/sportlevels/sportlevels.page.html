@@ -8,30 +8,54 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col *ngFor="let livello of utente.UTENTILIVELLI" id="{{livello.ID}}" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
-        <ion-card [button]="!isDesktop" (click)="onShare(livello.ID)" class="card-livello" >
-            <ion-card-header class="ion-no-padding ion-text-center">
-              <img [src]="logoGruppo" id="img-logo">
-            </ion-card-header>
-            <h2 class="ion-text-center">{{ livello.DESCRSPORT }}</h2>
-          <ion-card-content>
-              <ion-row>
-                <ion-col size="12" class="ion-text-center">
-                  <img  src="/assets/trophy2.png">
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col size="12">
-                  <div class="level-label">
-                    <h1 class="ion-text-center">{{ livello.DESCRLIVELLO }}</h1>
-                  </div>
-                </ion-col>
-              </ion-row>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+  <!-- LIVELLI PRESENTI -->
+  <div class="ion-no-padding" *ngIf="utente.UTENTILIVELLI && utente.UTENTILIVELLI.length > 0">
+    <div style="height: 1vh;"></div>
+    <div class="info" >
+      <ion-item color="light" lines="none">
+        <ion-label>
+          <p class="ion-text-wrap">
+            <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+            I tuoi livelli verranno utilizzati per determinare i corsi più adatti a te Tocca un livello per condividerlo con i tuoi amici
+          </p>
+        </ion-label>
+      </ion-item>
+    </div>
+    
+    <ion-grid >
+      <ion-row>
+        <ion-col *ngFor="let livello of utente.UTENTILIVELLI" id="{{livello.ID}}" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
+          <ion-card [button]="!isDesktop" (click)="onShare(livello.ID)" class="card-livello" >
+              <ion-card-header class="ion-no-padding ion-text-center">
+                <img [src]="logoGruppo" id="img-logo">
+              </ion-card-header>
+              <h2 class="ion-text-center">{{ livello.DESCRSPORT }}</h2>
+            <ion-card-content>
+                <ion-row>
+                  <ion-col size="12" class="ion-text-center">
+                    <img  src="/assets/trophy2.png">
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col size="12">
+                    <div class="level-label">
+                      <h1 class="ion-text-center">{{ livello.DESCRLIVELLO }}</h1>
+                    </div>
+                  </ion-col>
+                </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- LIVELLI NON PRESENTI -->
+  <div
+    *ngIf="!utente.UTENTILIVELLI || utente.UTENTILIVELLI.length == 0" 
+    class="nofind-cnt"
+  >
+    <ion-label>Per il momento non hai ancora nessn livello assegnato, potrai ottenere un livello dopo aver frequentato una prova presso le nostre strutture</ion-label>
+  </div>
 </ion-content>

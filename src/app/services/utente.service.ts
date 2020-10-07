@@ -54,34 +54,6 @@ export class UtenteService {
   constructor(private apiService: ApicallService,
               private docService: DocstructureService) { }
 
-  /**
-   * Recupera le informazioni di un utente passato per ID
-   * @param config Parametri di configurazione chiamata
-   * @param idUtente IDUtente da recuperare
-   */
-  // request(config: StartConfiguration, idUtente: string) {
-  //   return new Promise((resolve, reject)=>{
-  //     let myHeaders = config.getHttpHeaders();
-
-  //     const doObject = 'UTENTE';
-
-  //     let myParams = new HttpParams().set('ID',idUtente);
-  //     let myUrl = config.urlBase + '/' + doObject;
-
-  //     this.apiService
-  //       .httpGet(myUrl, myHeaders, myParams)
-  //       .pipe(map(data => {
-  //         return data.UTENTE
-  //       }))
-  //       .subscribe( resultData => {
-  //         this.loginSuccessfull(resultData);
-  //         resolve();
-  //       }, error=>{
-  //         reject (error);
-  //       });
-  //   })
-  // }
-
 
   /**
    * Effettua la richiesta al Server con i dati dell'Utente
@@ -89,8 +61,10 @@ export class UtenteService {
    * @param username Username Utente
    * @param password Password Utente
    */
-  requestAuthorization(username: string,
-                       password: string): Promise<any> {
+  login(username: string,
+                       password: string,
+                       myStartConfig: BehaviorSubject<StartConfiguration>
+                       ): Promise<any> {
 
     return new Promise<any>((resolve,reject) => {
             let myUtente = new Utente();
@@ -98,7 +72,7 @@ export class UtenteService {
             let paramExp = new ParamsExport();
             let myAccount = new Account();
             const method = 'authLoginMob';
-
+            let startConf: StartConfiguration;
 
             //Compilo un documento con login e password
             myUtente.WEBLOGIN = username;
@@ -117,43 +91,68 @@ export class UtenteService {
 
             this.docService.requestForFunction(myAccount,method,jsonBody)
                           .then((response:PostResponse) => {
+                            let myUserAuthCode = '';
 
                             //Risposta ricevuta
                             if (response.result) {
 
-                              let docInResponse = JSON.parse(response.document);
+                              if (response.document) {
 
-                              let docUtente = new Utente();
-                              docUtente.setJSONProperty(docInResponse);
-                              docUtente.WEBLOGIN = username;
-                              docUtente.setOriginal();
+                                let docInResponse = response.document
+                                
+  
+                                let docUtente = new Utente();
+                                docUtente.setJSONProperty(docInResponse);
+                                docUtente.WEBLOGIN = username;
+                                docUtente.setOriginal();
+  
+                                //Imposto come tag authCode il codice di autorizzazione utente ricevuto
+                                docUtente.setTagValue('authCode',response.code);
+                                myUserAuthCode = response.code;
 
-                              //Imposto come tag authCode il codice di autorizzazione utente ricevuto
-                              docUtente.setTagValue('authCode',response.code);
-
-                              //Emetto Utente
-                              this._utente.next(docUtente);
-
-                              //Emetto il Boolean TRUE di avvenuto accesso
-                              this._utenteLoggato.next(true);
-
-                              //Utente ha una area preferita
-                              if (docUtente.IDAREAOPERATIVA) {
-                                //Dovrei posizionarlo
-                                this._idAreaFAV.next(docUtente.IDAREAOPERATIVA);
+                                startConf = myStartConfig.getValue();
+                                startConf.authorizationUserCode = response.code;
+                                myStartConfig.next(startConf);
+  
+                                //Emetto Utente
+                                this._utente.next(docUtente);
+  
+                                //Emetto il Boolean TRUE di avvenuto accesso
+                                this._utenteLoggato.next(true);
+  
+                                //Utente ha una area preferita
+                                if (docUtente.IDAREAOPERATIVA) {
+                                  //Dovrei posizionarlo
+                                  this._idAreaFAV.next(docUtente.IDAREAOPERATIVA);
+                                }
+  
+                                //Emetto la risposta del server
+                                resolve(response);
                               }
-
-                              //Emetto la risposta del server
-                              resolve(response);
+                              else {
+                                reject("User document not found");
+                              }
                               
                             }
                             else {
                               reject(response.message);
                             }
 
+                            //Reimposto authorization code
+                            startConf = myStartConfig.getValue();
+                            startConf.authorizationUserCode = response.code;
+                            myStartConfig.next(startConf);
+
+
 
                           })
                           .catch(error => {
+
+                            //Reimposto authorization code
+                            startConf = myStartConfig.getValue();
+                            startConf.authorizationUserCode = '';
+                            myStartConfig.next(startConf);
+
                             reject(error);
                           });
       });
@@ -165,6 +164,7 @@ export class UtenteService {
    * Esecuzione Logoff dell'utente
    */
   logoff() {
+
     this._utenteLoggato.next(false);
   }
 

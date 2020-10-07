@@ -105,7 +105,7 @@ export class AccountPage implements OnInit, OnDestroy {
             // Che faccio se mi disconnetto
 
             //Segnalo che esco
-            this.startSrv.logOffAccount();
+            this.startSrv.userLogoff();
 
             //Chiudo la pagina e torno alla Home
             this.navCtrl.navigateBack(['/']);

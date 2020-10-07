@@ -19,7 +19,7 @@ import { CourseschedulerService } from './coursescheduler.service';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
 import { SlotoccupazioneService } from './slotoccupazione.service';
-import { PhotoService } from './photo.service';
+
 
 import { StartConfiguration, StartAuthorization } from '../models/start-configuration.model';
 
@@ -648,7 +648,7 @@ loadStorageUtente() {
             //Devo tentare di accedere
             
             //Faccio la richiesta al server
-            this.requestAuthorization(savedUser.loginUser, savedUser.pwdUser)
+            this.userLogin(savedUser.loginUser, savedUser.pwdUser)
                 .then(() => {
                   LogApp.consoleLog('AutoLogin passed');
                 });
@@ -660,10 +660,19 @@ loadStorageUtente() {
 
 
 
-/** Esegue la disconnessione */
-logOffAccount() {
-  // Avviso del login
+/**
+ * Disconnessione utente richiesta
+ */
+userLogoff() {
+  let myStartConfig = this._startConfig.getValue();
+
+  // Avviso del logoff
   this.utenteService.logoff();
+
+  //Tolgo il codice di autorizzazione utente
+  myStartConfig.authorizationUserCode = '';
+  //Riemetto l'Observable
+  this._startConfig.next(myStartConfig);
 
   //Tolgo le credenziali memorizzate dallo storage
   this.saveStorageUtente('','');
@@ -675,8 +684,8 @@ logOffAccount() {
  * @param username Username Utente
  * @param password Password Utente
  */
-requestAuthorization(username: string, 
-                    password: string) {
+userLogin(username: string, 
+          password: string) {
 
   const actualStartConfig = this._startConfig.getValue();
 
@@ -684,9 +693,11 @@ requestAuthorization(username: string,
   this.onChangeAreaFavListener();
 
   return this.utenteService
-            .requestAuthorization(username, password);
+            .login(username, password,this._startConfig);
 
 }
+
+
 
 /**
  * Ascolta il cambio dell'idAreaChange 

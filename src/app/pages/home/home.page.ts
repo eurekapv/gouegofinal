@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ɵConsole } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 
-import { RequestParams } from 'src/app/library/models/requestParams.model';
+import { RequestDecode, RequestParams } from 'src/app/library/models/requestParams.model';
 
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 
@@ -204,6 +204,7 @@ export class HomePage implements OnInit, OnDestroy{
     this.docUtenteListen = this.startService.utente.subscribe(element => {
 
       this.docUtente = element;
+
       //Aggiorno lista impegni e cerco di visualizzare le card superiori
       this.updateListImpegni();
 

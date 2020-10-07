@@ -360,7 +360,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   }
 
-  onClickTrash(docPianificazione : PrenotazionePianificazione){
+  onClickTrash(){
     //per ora no faccio nulla, faccio solo uscire la msgbox
     this.alertController.create({
       header: 'Cancellazione',

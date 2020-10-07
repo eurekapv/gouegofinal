@@ -18,10 +18,12 @@ export class GalleryPage implements OnInit {
 
   @ViewChild('slider',{ read: ElementRef, static: false })slider: ElementRef;
 
-  constructor(private navParams: NavParams, private modalCtrl: ModalController) { }
+  constructor(private navParams: NavParams, private modalCtrl: ModalController) { 
+  }
 
   ngOnInit() {
     this.imgLocation = this.navParams.get('imgLocation');
+    window.screen.orientation.unlock();
   }
 
   zoom(zoomIn: boolean) {
@@ -37,4 +39,6 @@ export class GalleryPage implements OnInit {
   close() {
     this.modalCtrl.dismiss();
   }
+
+
 }

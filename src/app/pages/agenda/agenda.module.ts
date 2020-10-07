@@ -9,6 +9,7 @@ import { AgendaPageRoutingModule } from './agenda-routing.module';
 import { AgendaPage } from './agenda.page';
 
 import { HomePageModule } from '../home/home.module'
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 
 
@@ -18,7 +19,8 @@ import { HomePageModule } from '../home/home.module'
     FormsModule,
     IonicModule,
     AgendaPageRoutingModule,
-    HomePageModule
+
+    SharedComponentsModule,
   ],
   declarations: [AgendaPage]
 })

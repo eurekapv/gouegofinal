@@ -202,3 +202,13 @@ Aggiungere a "Info.plist"
 Name: Privacy - Location Always Usage Description Key: NSLocationAlwaysUsageDescription
 Name: Privacy - Location When In Use Usage Description Key: NSLocationWhenInUseUsageDescription
 
+
+/* ********************************** */
+/* ROTAZIONE SCHERMO                  */
+/* ********************************** */
+
+Installare il plugin:
+
+>npm install --save cordova-plugin-screen-orientation
+>npx cap update
+

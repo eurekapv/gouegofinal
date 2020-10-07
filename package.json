@@ -51,6 +51,7 @@
     "moment": "^2.27.0",
     "native": "^0.3.3",
     "native-run": "^0.3.0",
+    "ngx-pinch-zoom": "^2.4.4",
     "run": "^1.4.0",
     "rxjs": "^6.6.0",
     "scriptjs": "^2.5.9",

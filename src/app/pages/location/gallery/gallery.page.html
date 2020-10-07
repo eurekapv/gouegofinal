@@ -5,20 +5,13 @@
       <ion-icon name="close" slot="start"></ion-icon>
       Back
     </ion-button>
-  </ion-item>
+  </ion-item> 
 
-  <div class="swiper-zoom-container">
-    <img [src]="imgLocation.IMAGEURL">
+  <div class="custom-div">
+
+    <pinch-zoom class="swiper-zoom-container">
+      <img [src]="imgLocation.IMAGEURL" >
+    </pinch-zoom>
   </div>
-
-  <!-- <div class="swiper-container">
-    <div class="swiper-wrapper">
-        <div class="swiper-slide">
-            <div class="swiper-zoom-container">
-                <img [src]="imgLocation.IMAGEURL">
-            </div>
-        </div>
-    </div>
-  </div> -->
 
 </ion-content>

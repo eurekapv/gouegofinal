@@ -320,7 +320,7 @@ export class NewLoginPage implements OnInit {
 
           // Chiamo il Servizio per eseguire l'autorizzazione
           this.startService
-            .requestAuthorization(this.formLogin.value.username, this.formLogin.value.password)
+            .userLogin(this.formLogin.value.username, this.formLogin.value.password)
             .then((dataResult:PostResponse) => {
 
                 //Chiudo lo Spinner
@@ -1020,7 +1020,7 @@ export class NewLoginPage implements OnInit {
 
       // Chiamo il Servizio per eseguire l'autorizzazione
       this.startService
-      .requestAuthorization(username, password)
+      .userLogin(username, password)
       .then((dataResult:PostResponse) => {
 
           // E' Arrivata una risposta NEGATIVA

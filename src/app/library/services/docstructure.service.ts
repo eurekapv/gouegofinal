@@ -45,6 +45,8 @@ export class DocstructureService {
     LogApp.consoleLog('New Configuration received');
   }
 
+  
+
   /**
    * Decodifica tutte le Foreign Key presenti, eccetto quelle passate nell'array di esclusione
    * @param doc Documento da decodificare

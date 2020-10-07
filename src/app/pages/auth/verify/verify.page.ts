@@ -694,7 +694,7 @@ export class VerifyPage implements OnInit {
  
        // Chiamo il Servizio per eseguire l'autorizzazione
        this.startService
-       .requestAuthorization(username, password)
+       .userLogin(username, password)
        .then((dataResult:PostResponse) => {
  
            // E' Arrivata una risposta NEGATIVA

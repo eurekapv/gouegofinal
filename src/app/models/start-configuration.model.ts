@@ -29,6 +29,7 @@ export class StartConfiguration {
     private _urlFileServer: string; //URL per il recupero di file dal server Gouego
 
     private _authorizationAppCode: string; //Codice di autorizzazione da inviare
+    private _authorizationUserCode: string; //Codice di autorizzazione utente quando loggato da inviare
         
     constructor(testingMode: boolean, secureProtocol: boolean) {
 
@@ -261,6 +262,10 @@ export class StartConfiguration {
         return myUrl;
     }
 
+    /**
+     * Codice autorizzazione Applicazione ottenuto nella fase di 
+     * shaking iniziale da inviare come authcode ad ogni richiesta
+     */
     get authorizationAppCode(): string {
         return this._authorizationAppCode;
     }
@@ -268,6 +273,20 @@ export class StartConfiguration {
     set authorizationAppCode(value: string) {
         this._authorizationAppCode = value;
     }
+
+    /**
+     * Codice autorizzazione utente ottenuto nella fase di login
+     * e da inviare se loggato
+     */
+    get authorizationUserCode(): string {
+        return this._authorizationUserCode;
+    }
+
+    set authorizationUserCode(value: string) {
+        this._authorizationUserCode = value;
+    }
+
+    
 
 
     /**
@@ -284,11 +303,17 @@ export class StartConfiguration {
         myHeaders = myHeaders.append('appid',this._appId);
         myHeaders = myHeaders.append('fromrequest','gouegoapp');
 
-        //Devo inviare il codice di autorizzazione
+        //Devo inviare il codice di autorizzazione app
         if (this._authorizationAppCode && this._authorizationAppCode.length != 0) {
             myHeaders = myHeaders.append('authcode',this._authorizationAppCode);
             
         }
+
+        //Devo inviare il codice di autorizazione utente
+        if (this._authorizationUserCode && this._authorizationUserCode.length != 0) {
+            myHeaders = myHeaders.append('authusercode',this._authorizationUserCode);
+            
+        }        
 
         return myHeaders;
     }

@@ -109,8 +109,11 @@ export class StartConfiguration {
             
         });
 
+        
         if (this._gruppo.DENOMINAZIONE) {
+
             this._companyName = this._gruppo.DENOMINAZIONE;
+
         }
 
         

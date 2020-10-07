@@ -1,7 +1,111 @@
+import { isDate } from 'util';
+import { TypeDefinition } from './descriptor.model';
+import { IDLibrary } from './idlibrary.model';
+
 //Classe con parametri Request POST
 export class PostParams {
   key: string;
-  value: string;
+  value: any;
+
+  /**
+   * Controlla se il value contenuto è di tipo basico
+   */
+  isBasicType(): boolean {
+    let basic = false;
+    let typeVar: TypeDefinition;
+    let arBasicType: TypeDefinition[];
+
+    typeVar = IDLibrary.getValueType(this.value);
+    arBasicType.push(TypeDefinition.boolean);
+    arBasicType.push(TypeDefinition.char);
+    arBasicType.push(TypeDefinition.date);
+    arBasicType.push(TypeDefinition.dateTime);
+    arBasicType.push(TypeDefinition.number);
+    arBasicType.push(TypeDefinition.numberDecimal);
+    arBasicType.push(TypeDefinition.time);
+    
+    if (arBasicType.includes(typeVar)) {
+      basic = true;
+    }
+
+    return basic;
+  }
+
+  
+
+  /**
+   * Esporta l'insieme chiave valore come
+   * "chiave": valore
+   * in formato JSON
+   */
+  exportJSON(): string {
+    let jsonReturn = '';
+    let jsonValue = IDLibrary.exportJSONValue(this.value);
+
+    jsonReturn = `\"${this.key}\":` + jsonValue;
+
+    return jsonReturn;
+  }
+
+
+  /**
+   * Dato un oggetto PostParams o un ArrayPostParams controlla 
+   * che gli elementi siano di tipo basico
+   */
+  static getBasicTypeFrom(myParams: PostParams | PostParams[]): boolean {
+    let basic = false;
+    if (myParams) {
+      if (Array.isArray(myParams)) {
+        basic = true;
+
+        for (let index = 0; index < myParams.length; index++) {
+          const element = myParams[index];
+          if (element.isBasicType() == false) {
+            basic = false;
+            break;
+          }
+        }
+        
+      }
+      else {
+        basic = myParams.isBasicType();
+      }
+    }
+    
+
+    return basic;
+  }
+
+
+  /**
+   * Viene creato un oggetto JSON con gli elementi presenti in myParams
+   * @param myParams Singolo oggetto PostParams o Array di PostParams
+   */
+  static getJsonFrom(myParams: PostParams | PostParams[]): string {
+    let jsonReturn = '';
+    if (myParams) {
+
+      if (Array.isArray(myParams)) {
+        for (let index = 0; index < myParams.length; index++) {
+          const element = myParams[index];
+          let jsonSingle = element.exportJSON();
+          if (jsonReturn.length !== 0) {
+              jsonReturn += ', ';
+          }
+
+          jsonReturn += jsonSingle;
+          
+        }
+      }
+      else {
+        jsonReturn = myParams.exportJSON();
+      }
+    }
+
+    jsonReturn = '{' + jsonReturn + '}';
+
+    return jsonReturn;
+  }
 }
 
 

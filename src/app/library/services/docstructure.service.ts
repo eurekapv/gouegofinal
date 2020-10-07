@@ -45,7 +45,7 @@ export class DocstructureService {
     LogApp.consoleLog('New Configuration received');
   }
 
-  
+
 
   /**
    * Decodifica tutte le Foreign Key presenti, eccetto quelle passate nell'array di esclusione
@@ -997,16 +997,22 @@ export class DocstructureService {
 
   /**
    * Effettua una chiamata POST al metodo indicato dell'oggetto specificato
-   * Indicare i parametri nell'array postParams e il body da inviare
+   * E' possibile indicare a scelta:
+   * 1) un jsonbody stringa o documento (il documento viene convertito in JSON)
+   * 2) postParams:unione di chiavi /valore da inviare nei parametri se i valori non sono oggetti, altrimenti essendo oggetti,
+   *    viene creato un oggetto e innestato nel body
+   * 
+   * 
+   * 
    * 
    * @param documentCall Documento a cui effettuare la chiamata
    * @param method nome del metodo statico da chiamare
-   * @param jsonBody body da inviare in formato json
+   * @param jsonBodyOrDoc body da inviare in formato json o documento
    * @param postParams Array con i parametri da aggiungere nell'url
    */
   public requestForFunction(documentCall: IDDocument, 
                      method: string, 
-                     jsonBody:string,
+                     jsonBodyOrDoc?: string | IDDocument,
                      postParams?: PostParams[] | PostParams
                      ): Promise<any> { 
 
@@ -1015,6 +1021,8 @@ export class DocstructureService {
       let myHeaders = this.myConfig.getHttpHeaders();
       let myParams: HttpParams = new HttpParams();
       let myUrl = '';
+      let myJsonBody = '';
+      let postBasicType = false;
 
       let objDescriptor: Descriptor;
 
@@ -1047,28 +1055,60 @@ export class DocstructureService {
           //Sistemo l'header
            myHeaders = myHeaders.append('X-HTTP-Method-Override',method);
 
+           //Controllo dei parametri post
            if (postParams) {
 
-             //Se è un Array
-             if ( Array.isArray(postParams) ) {
+            //Controllo come sono i parametri di post
+            postBasicType = PostParams.getBasicTypeFrom(postParams);
 
-               if (postParams.length != 0) {
-                 for (let index = 0; index < postParams.length; index++) {
-                   const elParam = postParams[index];
-                    myParams = myParams.append(elParam.key, elParam.value);
-                  }
-             }           
+            if (postBasicType) {
+              //Essendo tutti parametri basici li sistemo come parametri
+              
+              //Se è un Array
+              if ( Array.isArray(postParams) ) {
+  
+                if (postParams.length != 0) {
+                  for (let index = 0; index < postParams.length; index++) {
+                    const elParam = postParams[index];
+                     myParams = myParams.append(elParam.key, elParam.value);
+                   }
+              }           
+             }
+             else {
+               //Oggetto semplice
+               myParams = myParams.append(postParams.key, postParams.value);
+             }
+
+
             }
             else {
-              //Oggetto semplice
-              myParams = myParams.append(postParams.key, postParams.value);
-            }
+              //Costruire un oggetto da sistemare nel body
+              jsonBodyOrDoc = PostParams.getJsonFrom(postParams);
 
+            }
 
           } 
 
+          if (jsonBodyOrDoc) {
+            if (typeof jsonBodyOrDoc == "string") {
+              myJsonBody = jsonBodyOrDoc;
+            }
+            else if (typeof jsonBodyOrDoc == "object") {
+              //Questi sono i parametri per l'esportazione
+              let paramExport = new ParamsExport();
+
+              paramExport.clearDOProperty = true;
+              paramExport.clearPKProperty = false;
+              paramExport.clearPrivateProperty = true;
+              paramExport.onlyModified = true;
+              paramExport.numLivelli = 999;
+
+              myJsonBody = jsonBodyOrDoc.exportToJSON(paramExport);
+            }
+          }
+
           //Effettuo la chiamata POST
-          this.apiService.httpPost(myUrl,myHeaders,myParams, jsonBody)
+          this.apiService.httpPost(myUrl,myHeaders,myParams, jsonBodyOrDoc)
           .subscribe(response => {
             resolve(response);
           }, error => {

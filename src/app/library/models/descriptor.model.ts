@@ -7,7 +7,8 @@ export enum TypeDefinition {
     number = 'Number',
     numberDecimal = 'Float',
     boolean = 'boolean',
-    collection = 'collection'
+    collection = 'collection',
+    document = 'document'
 }
 
 /**

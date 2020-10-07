@@ -7,12 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { ListcoursesPageRoutingModule } from './listcourses-routing.module';
 
 import { ListcoursesPage } from './listcourses.page';
-import { CardCourseComponent } from 'src/app/shared/components/card-course/card-course.component';
 import { FilterPage } from './filter/filter.page';
 import { FilterPageModule } from './filter/filter.module';
 
-import { CalendarPageModule } from '../detailcourse/calendar/calendar.module';
-import { CalendarPage } from '../detailcourse/calendar/calendar.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 
 
@@ -23,11 +21,13 @@ import { CalendarPage } from '../detailcourse/calendar/calendar.page';
     FormsModule,
     IonicModule,
     ListcoursesPageRoutingModule,
-    CalendarPageModule,
-    FilterPageModule
+
+    FilterPageModule,
+    SharedComponentsModule
+    
   ],
-  declarations: [ListcoursesPage, CardCourseComponent],
-  entryComponents: [FilterPage, CalendarPage],
+  declarations: [ListcoursesPage],
+  entryComponents: [FilterPage],
   exports: []
   
 })

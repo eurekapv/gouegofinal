@@ -6,21 +6,22 @@ import { IonicModule } from '@ionic/angular';
 
 import { NewLoginPageRoutingModule } from './new-login-routing.module';
 
-import { HomePageModule } from 'src/app/pages/home/home.module'
 import { NewLoginPage } from './new-login.page'
 import { PswRecoveryPage } from '../psw-recovery/psw-recovery.page'
+import { PswRecoveryPageModule } from '../psw-recovery/psw-recovery.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     IonicModule,
     NewLoginPageRoutingModule,
-    HomePageModule
+    
+    PswRecoveryPageModule,
+    ReactiveFormsModule,
   ],
-  declarations: [],
-  exports: [],
+  declarations: [NewLoginPage],
+  exports: [NewLoginPage],
   entryComponents: [PswRecoveryPage]
 })
 export class NewLoginPageModule {}

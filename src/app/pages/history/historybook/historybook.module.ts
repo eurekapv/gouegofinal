@@ -18,6 +18,7 @@ import { QRCodeModule } from 'angularx-qrcode'
     FormsModule,
     IonicModule,
     HistorybookPageRoutingModule,
+    
     QRCodeModule
       
   ],

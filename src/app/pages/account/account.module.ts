@@ -16,8 +16,9 @@ import {EditLoginPageModule} from './edit-login/edit-login.module'
     FormsModule,
     IonicModule,
     AccountPageRoutingModule,
-   ReactiveFormsModule,
-   EditLoginPageModule
+
+    ReactiveFormsModule,
+    EditLoginPageModule
    
   ],
   declarations: [AccountPage],

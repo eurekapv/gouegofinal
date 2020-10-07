@@ -12,9 +12,10 @@ import { PipesModule } from 'src/app/shared/pipes/pipes.module'
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     IonicModule,
     CampiNewPageRoutingModule,
+    
+    FormsModule,
     PipesModule
   ],
   declarations: [CampiNewPage]

@@ -12,20 +12,18 @@ import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import{ BookingsummaryPageModule } from './bookingsummary/bookingsummary.module'
 import { VerifyPageModule } from 'src/app/pages/auth/verify/verify.module'
 import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
     IonicModule,
     BookingPageRoutingModule,
-    HomePageModule,
-    BookingsummaryPageModule,
-    VerifyPageModule
-
     
+    BookingsummaryPageModule,
+    VerifyPageModule,
+    SharedComponentsModule,    
   ],
   declarations: [BookingPage],
   entryComponents: [BookingsummaryPage, VerifyPage]

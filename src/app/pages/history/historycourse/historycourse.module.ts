@@ -17,11 +17,12 @@ import { CalendarPageModule } from 'src/app/pages/location/course/detailcourse/c
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     IonicModule,
     HistorycoursePageRoutingModule,
+    
     PipesModule,
-    CalendarPageModule
+    CalendarPageModule,
+    FormsModule,
   ],
   entryComponents:[CalendarPage],
   declarations: [HistorycoursePage]

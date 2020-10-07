@@ -7,9 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { NewsPageRoutingModule } from './news-routing.module';
 
 import { NewsPage } from './news.page';
-import { HomePageModule } from '../home/home.module';
 
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { NewsdetailPageModule } from '../newsdetail/newsdetail.module';
 
 
 @NgModule({
@@ -18,7 +19,9 @@ import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
     FormsModule,
     IonicModule,
     NewsPageRoutingModule,
-    HomePageModule,
+    
+    NewsdetailPageModule,
+    SharedComponentsModule
   ],
   declarations: [NewsPage],
   entryComponents:[NewsdetailPage]

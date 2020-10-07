@@ -343,6 +343,14 @@ export class NewLoginPage implements OnInit {
                   this.closeModal();
                 }
             })
+            .catch(error => {
+              
+              //login non andato a buon fine
+              element.dismiss();
+              console.log(error);
+              this.showMessage(error);
+
+            })
         })
     }
 

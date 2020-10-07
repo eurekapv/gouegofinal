@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { Chooser } from '@ionic-native/chooser/ngx';
 
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+
 
 
 import { DocumentsPageRoutingModule } from './documents-routing.module';
@@ -22,9 +24,11 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
     CommonModule,
     FormsModule,
     IonicModule,
-    DocumentsPageRoutingModule
+    DocumentsPageRoutingModule,
+    
+    SharedComponentsModule
   ],
-  declarations: [DocumentsPage,  UploadComponent],
+  declarations: [DocumentsPage],
   providers: [Chooser, File, FileOpener],
   entryComponents: [UploadComponent]
 })

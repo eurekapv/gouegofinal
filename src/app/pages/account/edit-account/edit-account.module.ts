@@ -16,8 +16,9 @@ import { EditAccountPage } from './edit-account.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    ReactiveFormsModule,
     EditAccountPageRoutingModule,
+    
+    ReactiveFormsModule,
     VerifyPageModule
   ],
   declarations: [EditAccountPage],

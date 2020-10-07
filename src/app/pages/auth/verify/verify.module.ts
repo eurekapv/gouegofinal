@@ -16,6 +16,7 @@ import { VerifyPage } from './verify.page';
     VerifyPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [VerifyPage]
+  declarations: [VerifyPage],
+  exports: [VerifyPage]
 })
 export class VerifyPageModule {}

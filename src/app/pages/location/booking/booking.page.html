@@ -1,4 +1,5 @@
 <ion-header>
+
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button  defaultHref="/"></ion-back-button>
@@ -6,40 +7,35 @@
     <ion-title>Prenota</ion-title>
   </ion-toolbar>
 
-      <!-- MODALITA AUTOMATICA, MANUALE-->
-      <!-- <ion-segment 
-        class="ion-no-margin ion-no-padding"
-        (ionChange)="onChangeVersion($event)" 
-        value="manual"
-        *ngIf = "ricevuti">
-  
-      <ion-segment-button 
-        value="manual">
-          <ion-label>Manuale</ion-label>
-      </ion-segment-button>
-  
-      <ion-segment-button 
-        value="auto">
-          <ion-label>Automatico</ion-label>
-      </ion-segment-button>
-    </ion-segment> -->
+  <ion-toolbar>
+    <!-- MODALITA AUTOMATICA, MANUALE-->
+    <!-- <ion-segment 
+      class="ion-no-margin ion-no-padding"
+      (ionChange)="onChangeVersion($event)" 
+      value="manual"
+      *ngIf = "ricevuti">
 
-    <!-- ITEM DEL CAMPO -->
-    
-    <!-- <ion-item button class="item-campo" (click)="onClickSport()">
-      <ion-icon color="primary" slot="start" name="basketball"></ion-icon>
-      <ion-label class="label-header">sdfsdfjslfdk</ion-label>
-    </ion-item> -->
+    <ion-segment-button 
+      value="manual">
+        <ion-label>Manuale</ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button 
+      value="auto">
+        <ion-label>Automatico</ion-label>
+    </ion-segment-button>
+  </ion-segment> -->
+
     <app-sport-scroll [selectedSport]="selectedSport" [sportList]="listLocationSport" (sportChanged)="onChangeSport($event)"></app-sport-scroll>
     <ion-list *ngIf="ricevuti && bookable" 
         class="item-campo ion-no-padding">
-  
+
         <ion-slides 
               class="ion-no-margin ion-no-padding" 
               (ionSlideDidChange)="onDidChangeCampo($event)"
               #sliderCampi>
           <ion-slide *ngFor="let campo of availableFields; let i=index" >
-  
+
             <ion-item lines="none" class="item-campo">
               <ion-icon 
                   name="location" 
@@ -59,21 +55,11 @@
           </ion-slide>    
         </ion-slides>
     </ion-list>
-
-
+  </ion-toolbar>
 
 </ion-header>
 
 <ion-content>
-  <!-- IN ATTESA DATI  -->
-  <!-- DATI  NON RICEVUTI -->
-  <!-- <div *ngIf="!ricevuti" id="crs-spinner">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div> -->
-
-  <!-- <div *ngIf="!ricevuti" class="nofind-cnt">
-    <ion-spinner name="circular"></ion-spinner>
-  </div> -->
 
   <!-- PRENOTAZIONE NON POSSIBILE-->
   <div class="nofind-cnt" *ngIf="ricevuti && !bookable">

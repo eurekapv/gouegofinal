@@ -11,11 +11,13 @@ import { PswRecoveryPage } from './psw-recovery.page';
 @NgModule({
   imports: [
     CommonModule,
+    IonicModule,
+    PswRecoveryPageRoutingModule,
+    
     FormsModule,
     ReactiveFormsModule,
-    IonicModule,
-    PswRecoveryPageRoutingModule
   ],
-  declarations: [PswRecoveryPage]
+  declarations: [PswRecoveryPage],
+  exports: [PswRecoveryPage]
 })
 export class PswRecoveryPageModule {}

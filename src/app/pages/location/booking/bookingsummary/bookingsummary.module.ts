@@ -12,6 +12,7 @@ import { BookingsummaryPage } from './bookingsummary.page';
 import { HomePageModule } from 'src/app/pages/home/home.module';
 import { PaypalPageModule } from '../../../paypal/paypal.module';
 import { PaypalPage } from '../../../paypal/paypal.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 
 
@@ -21,10 +22,11 @@ import { PaypalPage } from '../../../paypal/paypal.page';
     FormsModule,
     IonicModule,
     BookingsummaryPageRoutingModule,
-    HomePageModule,
-    PaypalPageModule
+    
+    PaypalPageModule,
+    SharedComponentsModule
   ],
-  declarations: [BookingsummaryPage, PaymentChooseComponent],
+  declarations: [BookingsummaryPage],
   entryComponents:[PaymentChooseComponent, PaypalPage],
   exports:[BookingsummaryPage]
 })

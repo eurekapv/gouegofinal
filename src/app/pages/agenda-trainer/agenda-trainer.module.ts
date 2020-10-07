@@ -8,14 +8,16 @@ import { AgendaTrainerPageRoutingModule } from './agenda-trainer-routing.module'
 
 import { AgendaTrainerPage } from './agenda-trainer.page';
 import { ItemCalendarioComponent } from 'src/app/shared/components/item-calendario/item-calendario.component';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AgendaTrainerPageRoutingModule
+    AgendaTrainerPageRoutingModule,
+    SharedComponentsModule
   ],
-  declarations: [AgendaTrainerPage, ItemCalendarioComponent]
+  declarations: [AgendaTrainerPage]
 })
 export class AgendaTrainerPageModule {}

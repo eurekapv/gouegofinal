@@ -6,7 +6,6 @@ import { LocationImage } from 'src/app/models/locaton-image.model';
 import { ModalController, NavController } from '@ionic/angular';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
 import { GalleryPage } from './gallery/gallery.page';
-import { CampiPage } from './campi/campi.page';
 import { CampiNewPage } from './campi-new/campi-new.page'
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Subscription } from 'rxjs';

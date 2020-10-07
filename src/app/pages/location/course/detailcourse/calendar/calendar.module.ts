@@ -11,9 +11,10 @@ import { CalendarPage } from './calendar.page';
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     IonicModule,
-    CalendarPageRoutingModule
+    CalendarPageRoutingModule,
+    
+    FormsModule,
   ],
   declarations: [CalendarPage],
   exports: [CalendarPage]

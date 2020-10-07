@@ -1,14 +1,24 @@
 <ion-content fullscreen>
 
-    <ion-item class="close-fake ion-text-center" lines="none" >
-        <ion-button (click)="close()" fill="clear" color="primary">
-          <ion-icon name="close" slot="start"></ion-icon>
-          Back
-        </ion-button>
+  <ion-item class="close-fake ion-text-center" lines="none" >
+    <ion-button (click)="close()" fill="outline" color="light">
+      <ion-icon name="close" slot="start"></ion-icon>
+      Back
+    </ion-button>
+  </ion-item>
 
-    </ion-item>
-    <div class="swiper-zoom-container">
-      <img [src]="imgLocation.IMAGEURL">
+  <div class="swiper-zoom-container">
+    <img [src]="imgLocation.IMAGEURL">
+  </div>
+
+  <!-- <div class="swiper-container">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <div class="swiper-zoom-container">
+                <img [src]="imgLocation.IMAGEURL">
+            </div>
+        </div>
     </div>
+  </div> -->
 
 </ion-content>

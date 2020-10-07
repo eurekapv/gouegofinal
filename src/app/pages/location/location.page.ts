@@ -101,8 +101,21 @@ export class LocationPage implements OnInit, OnDestroy {
         imgLocation: img
       }
     })
-    .then(modal => modal.present());
+    .then(modal => {
+      modal.present();
+      modal.onWillDismiss()
+      .then(() => {
+        //quando la modale si chiude, riblocco lo schermo in verticale
+        window.screen.orientation.lock("portrait");
+        console.log('Ho bloccato lo schermo in verticale');
+
+      })
+    });
+
+    
   }
+
+  
 
   /**
    * Click sul bottone 

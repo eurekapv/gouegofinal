@@ -133,6 +133,22 @@ export class AgendaTrainerPage implements OnInit {
     }  
   }
 
+  doRefresh(event: any){
+    this.startService.requestImpegniTrainer(this.utente.ID, this.selectedDate)
+        .then(result => {
+
+          this.myListPianificazioni = result;
+          console.log(this.myListPianificazioni);
+          event.target.complete();
+        })
+        .catch(error => {
+          event.target.complete();
+          console.log(error);
+          this.showMessage('Errore di connessione');
+        });
+      
+  }
+
 
   //OK
   //CONTROLLARE

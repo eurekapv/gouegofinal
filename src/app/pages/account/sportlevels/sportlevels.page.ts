@@ -80,6 +80,10 @@ export class SportlevelsPage implements OnInit {
     
     
   }
+
+  doRefresh(event: any){
+    event.target.complete();
+  }
   
   
   

@@ -9,9 +9,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="sfondo">
+<ion-content >
 
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" s (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
@@ -25,13 +25,10 @@
     </ion-grid>
   
     <!-- NEWS NON PRESENTI -->
-    <ion-grid *ngIf="listNews.length === 0 ">
-      <ion-row>
-        <ion-col>
-          <app-news-eventi [myNews]="noNewsCard" ></app-news-eventi>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <div class="nofind-cnt ion-padding" *ngIf="listNews.length === 0 ">
+      <ion-label class="ion-padding-horizontal">Nessun evento in programma</ion-label>
+      <ion-label class="ion-padding-horizontal">Torna a trovarci per scoprire i prossimi eventi</ion-label>
+    </div>
 
 
 </ion-content>

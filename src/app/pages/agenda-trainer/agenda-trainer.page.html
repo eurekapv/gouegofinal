@@ -20,6 +20,10 @@
 
 <ion-content scrollEvents (ionScroll)="onScroll($event)">
 
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <div *ngIf="myListPianificazioni && myListPianificazioni.length > 0" class="ion-no-padding">
     <ion-list class="ion-padding-vertical">
       <app-item-calendario 

@@ -121,30 +121,37 @@ export class UtenteService {
                             //Risposta ricevuta
                             if (response.result) {
 
-                              let docInResponse = JSON.parse(response.document);
+                              if (response.document) {
 
-                              let docUtente = new Utente();
-                              docUtente.setJSONProperty(docInResponse);
-                              docUtente.WEBLOGIN = username;
-                              docUtente.setOriginal();
-
-                              //Imposto come tag authCode il codice di autorizzazione utente ricevuto
-                              docUtente.setTagValue('authCode',response.code);
-
-                              //Emetto Utente
-                              this._utente.next(docUtente);
-
-                              //Emetto il Boolean TRUE di avvenuto accesso
-                              this._utenteLoggato.next(true);
-
-                              //Utente ha una area preferita
-                              if (docUtente.IDAREAOPERATIVA) {
-                                //Dovrei posizionarlo
-                                this._idAreaFAV.next(docUtente.IDAREAOPERATIVA);
+                                let docInResponse = response.document
+                                
+  
+                                let docUtente = new Utente();
+                                docUtente.setJSONProperty(docInResponse);
+                                docUtente.WEBLOGIN = username;
+                                docUtente.setOriginal();
+  
+                                //Imposto come tag authCode il codice di autorizzazione utente ricevuto
+                                docUtente.setTagValue('authCode',response.code);
+  
+                                //Emetto Utente
+                                this._utente.next(docUtente);
+  
+                                //Emetto il Boolean TRUE di avvenuto accesso
+                                this._utenteLoggato.next(true);
+  
+                                //Utente ha una area preferita
+                                if (docUtente.IDAREAOPERATIVA) {
+                                  //Dovrei posizionarlo
+                                  this._idAreaFAV.next(docUtente.IDAREAOPERATIVA);
+                                }
+  
+                                //Emetto la risposta del server
+                                resolve(response);
                               }
-
-                              //Emetto la risposta del server
-                              resolve(response);
+                              else {
+                                reject("User document not found");
+                              }
                               
                             }
                             else {

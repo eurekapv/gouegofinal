@@ -59,7 +59,6 @@ static formatDate(data: Date, maskFormat: string) {
 */
 static stringToDateObject(strInput: string): Date {
  //1 - Devo capire cos'è
- let tipo: TypeDefinition;
  let strDate = moment().format('YYYY-MM-DD');
  let strTime = '00:00:00'
  let timeZone = '+01:00';
@@ -254,5 +253,44 @@ static durataAnni(inferiorDate: Date, superiorDate: Date): number {
     return anni;
 }
 
+/**
+ * Aggiungo o sottrae da una data il periodo passato nei parametri
+ * @param dateTime Data Ora di partenza
+ * @param addOrSub Valore numerico positivo per aggiungere, neghativo per sottrarre
+ * @param period Periodo da aggiungere o sottrarre
+ */
+static calcola(dateTime: Date, addOrSub: number, period:TypePeriod): Date {
+    let value: number;
+    let dReturn: Date;
 
+    if (dateTime && period) {
+        let mDate = moment(dateTime); //Oggetto di tipo moment
+        if (addOrSub < 0) {
+            value = addOrSub * -1;
+            mDate.subtract(value, period);
+        }
+        else if (addOrSub > 0) {
+            value = addOrSub;
+            mDate.add(value, period);
+        }
+
+        dReturn = mDate.toDate();
+    }
+
+    return dReturn;
+}
+
+
+}
+
+enum TypePeriod {
+    years       = 'y',
+    quarters    = 'Q',
+    months      = 'M',
+    weeks       = 'w',
+    days	='d',
+    hours	='h',
+    minutes	='m',
+    seconds	='s',
+    milliseconds	='ms'
 }

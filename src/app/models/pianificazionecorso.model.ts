@@ -160,50 +160,68 @@ static getReqForeignKeys(): RequestForeign[] {
     return (new Date() > this.DATAORAFINE );
   }
 
+  /**
+   * Ritorna un valore che indica se la pianificazioneCorso è aggiornabile nelle presenze.
+   * @param gapOre Numero Positivo che indica quante ore di tempo di hanno dalla fine del corso per aggiornare le presenze 
+   */
   canUpdatePresenze(gapOre: number): boolean{
     let canUpdate: boolean = true;
     let now = new Date;
 
+    //Non è ancora iniziato
     if (now < this.DATAORAINIZIO){
       canUpdate = false;
     }
-
-    if (now > MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours)){
-      canUpdate = false;
+    else {
+      if (gapOre !== 0) {
+        if (now > MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours)){
+          canUpdate = false;
+        }
+      }
     }
 
     return canUpdate;
   }
 
+  /**
+   * Messaggio da mostrare all'utente riguardo all'aggiornamento dei dati presenza
+   * @param gapOre Numero Positivo che indica quante ore di tempo di hanno dalla fine del corso per aggiornare le presenze 
+   */
   msgCanUpdatePresenze(gapOre: number): string{
 
     let strReturn = '';
-    let now = new Date;
-
-    // in questo momento possiamo aggiornare
-    if (this.canUpdatePresenze(gapOre)){
+    let now = new Date();
 
 
-      //recupero la data entro cui è possibile aggiornare
-      let scadenza = MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours);
-      //la converto in stringa
-      let strScadenza =MyDateTime.formatDate(scadenza, 'DD/MM/YY');
+    //E' troppo presto
+    if (now < this.DATAORAINIZIO){
+      strReturn = 'Non è ancora possibile modificare le presenze di questa lezione';
+      strReturn = 'E\' possibile modificare le presenze dal ' + MyDateTime.formatDate(this.DATAORAINIZIO, 'DD/MM/YYYY') + ' dalle ' +  MyDateTime.formatTime(this.DATAORAINIZIO, false);
+    }
+    else {
+      //In teoria potrei aggiornare le presenze
+      if (gapOre == 0) {
+        strReturn = 'Aggiorna le presenze e Conferma';
+      }
+      else {
+        //Possiamo aggiornarle
+        if (this.canUpdatePresenze(gapOre)) {
+          //recupero la data entro cui è possibile aggiornare
+          let scadenza = MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours);
 
-      strReturn = 'Presenze aggiornabili fino al ' + strScadenza;
+          //la converto in stringa
+          let strScadenza =MyDateTime.formatDate(scadenza, 'DD/MM/YY');
+
+          strReturn = 'Presenze aggiornabili fino al ' + strScadenza;
+
+        }
+        else {
+          strReturn = 'Non è più possibile modificare le presenze di questa lezione';
+        }
+      }
     }
 
-    //in questo momento non possiamo aggiornare
-    else{
 
-      //E' troppo presto
-      if (now < this.DATAORAINIZIO){
-        strReturn = 'Non è ancora possibile modificare le presenze di questa lezione';
-      }
-  
-      if (now > MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours)){
-        strReturn = 'Non è più possibile modificare le presenze di questa lezione';
-      }
-    }
 
     return strReturn;
   }

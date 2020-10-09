@@ -212,3 +212,9 @@ Installare il plugin:
 >npm install --save cordova-plugin-screen-orientation
 >npx cap update
 
+
+/* ********************************** */
+/* PINCH TO ZOOM                      */
+/* ********************************** */
+>npm i ngx-pinch-zoom
+

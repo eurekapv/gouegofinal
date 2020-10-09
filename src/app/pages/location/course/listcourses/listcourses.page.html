@@ -14,10 +14,9 @@
 
   </ion-toolbar>
 
-  <ion-toolbar color="" *ngIf="showTabs">
+  <ion-toolbar mode="md" *ngIf="showTabs && userLogged">
     <!-- BOTTONI SEGMENTATI -->
     <ion-segment 
-    *ngIf="userLogged" 
       (ionChange)="onChangeSegmentCorsi($event)"
       color="medium"
       value="corsiall"

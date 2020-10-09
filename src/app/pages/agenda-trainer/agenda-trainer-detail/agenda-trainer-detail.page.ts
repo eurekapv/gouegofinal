@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
@@ -34,6 +34,12 @@ export class AgendaTrainerDetailPage implements OnInit {
   TipoSocieta: typeof TipoSocieta = TipoSocieta;
 
   isDesktop: boolean;
+
+  isModified = false;
+
+  showTabs = true;
+
+  selectedSegment= null;
   
 
   
@@ -43,7 +49,8 @@ export class AgendaTrainerDetailPage implements OnInit {
     private navController: NavController,
     private startService: StartService,
     private toastController: ToastController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private alertController: AlertController
   ) 
     {
       //recupero il tipo di società
@@ -82,12 +89,11 @@ export class AgendaTrainerDetailPage implements OnInit {
       this.startService.insertPresenzeIntoPianificazione(this.selectedPianificazione)
       .then(() => {
 
+
         //ora ho il documento pianificazione con anche le presenze, posso metterle anche in "listpresenze"
         this.listPresenze  = this.selectedPianificazione.CORSOPRESENZE;
         this.dividiIscrizioni();
         
-        console.log('Lista prima: ')
-        console.log(this.listPresenze);
       })
     })
   }
@@ -99,6 +105,10 @@ export class AgendaTrainerDetailPage implements OnInit {
     else{
       elem.PRESENTE = !elem.PRESENTE;
     }
+
+    this.selectedSegment = null;
+
+    this.isModified = true;
   }
 
   onSubmit(){
@@ -125,8 +135,8 @@ export class AgendaTrainerDetailPage implements OnInit {
       })
     })
     
-    // this.navController.pop();
 
+    // this.goBack();
 
   }
 
@@ -177,21 +187,72 @@ export class AgendaTrainerDetailPage implements OnInit {
     })
   }
 
-  //
-  /*
-  Cosa modificherei:
-    OK 1) Non è chiara l'icona ? io imposterei l'icona user-circle se non c'e' la presensa
-    OK 2) In alto prima sopra la lista io metterei una label di info tipo: Usa l'icona user-circle per segnare la presenza assenza di un partecipante
-    OK, SOLO SU DESKTOP 3) La parola PRESENTE e ASSENTE bisogna metterla in un badge a destra (rosso Assente/verde Presente) un badge di tipo small va bene
-    4) L'etichetta 'Scad. c. medico' non è ne bella ne chiara io fare cosi (faccio 3 esempi)
-          Certificato Medico: non consegnato
-          Certificato Medico: fino al 15/09/2020 (Verde)  
-          Certificato Medico: scaduto (rosso) 
-                              Io non riporterei date intanto chissenefrega è scaduto e devi portarlo
-    OK   Questa riga pero' deve essere messa sotto ngIf GruppoSportivo.TIPO = SocietaSportiva (xche alle scuole di lingue ad esempio frega na pippa)
-    
-    
 
-  */
+  onGoBack(){
+
+    if (this.isModified){
+      this.alertController.create({
+        header: 'Vuoi davvero uscire?',
+        message: 'Se esci senza confermare, le presenze non verranno salvate',
+        buttons: [
+          {
+            text: 'Esci',
+            handler: () => {this.goBack()}
+          },
+          {
+            text: 'Rimani',
+            role: 'cancel'
+          }
+        ]
+      })
+      .then(elAlert => {
+        elAlert.present();
+      })
+    }
+    else{
+      this.goBack();
+    }
+  }
+
+  goBack(){
+    this.navController.pop()
+    .catch(() => {
+      this.navController.navigateRoot('/home');
+    })
+  }
+
+  onScroll(event:any){
+    if(event.detail.currentY < 5){
+      this.showTabs = true;
+    }
+    else{
+      if (event['detail']['deltaY'] > 20){
+        this.showTabs = false;
+      }
+      else if (event['detail']['deltaY'] < -20){
+        this.showTabs = true;
+      }
+    }  
+  }
+
+  setAll(presente: boolean){
+    this.listPresenze.forEach(elem => {
+      elem.PRESENTE = presente;
+    })
+  }
+
+  onChangeSegment(event: any){
+    console.log(event);
+
+    this.isModified = true;
+
+    if(event['detail']['value'] == 'presente'){
+      this.setAll(true);
+    }
+    else if (event['detail']['value'] == 'assente'){
+      this.setAll(false);
+    }
+    
+  }
 
 }

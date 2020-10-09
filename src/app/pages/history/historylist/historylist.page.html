@@ -16,8 +16,8 @@
     </ion-buttons>
 
   </ion-toolbar>
-  <ion-toolbar *ngIf="showTabs">
-    <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)" mode="md">
+  <ion-toolbar *ngIf="showTabs" mode="md">
+    <ion-segment value="prenotazioni" (ionChange)="onChangeSegment($event)" >
       <ion-segment-button class="ion-no-padding" value="prenotazioni" layout="icon-start">
         <ion-icon name="calendar"></ion-icon>
         Prenotazioni

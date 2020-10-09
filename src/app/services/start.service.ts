@@ -555,7 +555,6 @@ requestCorsoById(idCorso: string){
     return this.corsoCalendarioService.requestImpegniTrainer(idRef,dataInizio,dataFine);
   }
 
-
   /**
    * Recupera un elemento "impegno del trainer" con l'id specificato. ATTENZIONE: devo prima aver eseguito il metodo requestImpegniTrainer
    * @param idPianificazione l'id della pianificazione da recuperare
@@ -571,8 +570,6 @@ requestCorsoById(idCorso: string){
   requestUpdatePresenze(docPianificazione: PianificazioneCorso){
     return this.corsoCalendarioService.sendPianificazione(docPianificazione);
   }
-
-
 
 
 //#endregion

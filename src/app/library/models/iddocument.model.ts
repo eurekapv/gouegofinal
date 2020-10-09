@@ -403,9 +403,7 @@ import { MyDateTime } from './mydatetime.model';
      // Imposta le proprietà basiche dell'oggetto via JSON
      setJSONProperty(dataObject: any) {
       let _this = this;
-      let arProperty = Object.keys(dataObject);
-      let fakeDate = new Date();
-      let stringValue = '';
+      let arProperty = Object.keys(dataObject);      
 
       //Chiedo il Descrittore della classe
       let objDescriptor = _this.getDescriptor();
@@ -467,6 +465,9 @@ import { MyDateTime } from './mydatetime.model';
 
       });
 
+      //Imposto che il documento è originale
+      this.setOriginal();
+
     }
 
     //Formatta una data passata in ISO (Solo la parte data)
@@ -485,6 +486,7 @@ import { MyDateTime } from './mydatetime.model';
 
     /** Imposta il documento Originale come se fosse sul database */
     setOriginal() {
+      
       this.do_updated = false;
       this.do_inserted = false;
       this.do_deleted = false;

@@ -54,11 +54,7 @@ export class CourseschedulerService {
       let myHeaders = config.getHttpHeaders();
       //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'PIANIFICAZIONECORSO';
-  
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
-      
+       
       let myUrl = config.urlBase + '/' + doObject;  
   
       //Nei Parametri imposto il corso richiesto

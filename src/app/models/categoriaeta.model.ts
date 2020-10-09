@@ -46,6 +46,8 @@ export class CategoriaEta extends IDDocument {
 
     setJSONProperty(data: any) {
         super.setJSONProperty(data);
+
+        this.setOriginal();
     }
 
 

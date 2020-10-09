@@ -70,6 +70,8 @@ setJSONProperty(data: any) {
 
   //Chiamo il metodo per le collection
   this.setCollection(data);
+
+  this.setOriginal();
 }
 
 /**

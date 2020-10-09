@@ -13,7 +13,6 @@ export class CorsoCampo extends IDDocument {
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
-
     }
 
     /**
@@ -51,6 +50,8 @@ export class CorsoCampo extends IDDocument {
 
     setJSONProperty(data: any) {
         super.setJSONProperty(data);
+
+        this.setOriginal();
     }
     
 }

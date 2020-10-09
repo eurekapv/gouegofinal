@@ -57,6 +57,8 @@ export class AperturaLocation extends IDDocument {
 
         //Il Giorno che arriva base 1 lo sposto a base 0
         this.GIORNO = this.GIORNO - 1;
+
+        this.setOriginal();
     }
 
 

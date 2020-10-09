@@ -82,6 +82,8 @@ export class Area extends IDDocument {
     setJSONProperty(data: any) {
       super.setJSONProperty(data);
       this.setCollection(data);
+
+      this.setOriginal();
     }
 
     /**

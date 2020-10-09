@@ -133,6 +133,8 @@ export class Corso extends IDDocument {
 
       this.setCollection(data);
 
+      this.setOriginal();
+
     }
 
     /**

@@ -51,6 +51,8 @@ export class AreaLink extends IDDocument {
      */
     setJSONProperty(data: any) {
         super.setJSONProperty(data);
+
+        this.setOriginal();
     }
 
 }

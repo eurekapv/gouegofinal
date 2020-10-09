@@ -67,6 +67,8 @@ export class AreaPaymentSetting extends IDDocument {
      */
     setJSONProperty(data: any) {
       super.setJSONProperty(data);
+
+      this.setOriginal();
     }
 
 

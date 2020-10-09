@@ -58,6 +58,8 @@ export class Sport extends IDDocument {
         super.setJSONProperty(data);
 
         this.setCollection(data);
+        //Imposto che il documento è originale
+        this.setOriginal();
     }
 
     /**

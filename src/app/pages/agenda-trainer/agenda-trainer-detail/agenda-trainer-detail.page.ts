@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
+import { PostResponse } from 'src/app/library/models/postResult.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
@@ -34,8 +35,6 @@ export class AgendaTrainerDetailPage implements OnInit {
   TipoSocieta: typeof TipoSocieta = TipoSocieta;
 
   isDesktop: boolean;
-
-  isModified = false;
 
   showTabs = true;
 
@@ -108,35 +107,54 @@ export class AgendaTrainerDetailPage implements OnInit {
 
     this.selectedSegment = null;
 
-    this.isModified = true;
   }
 
   onSubmit(){
-    
-    this.loadingController.create({
-      message: 'Caricamento',
-      spinner: 'circular',
-      backdropDismiss: true
-    })
-    .then(elLoading => {
 
-      elLoading.present();
-      this.startService.requestUpdatePresenze(this.selectedPianificazione)
-      .then(response => {
-
-        elLoading.dismiss();
-        console.log(response);
+    if(this.selectedPianificazione.isModified(2)){
+      
+      this.loadingController.create({
+        message: 'Caricamento',
+        spinner: 'circular',
+        backdropDismiss: true
       })
-      .catch(error => {
+      .then(elLoading => {
+  
+        elLoading.present();
+        this.startService.requestUpdatePresenze(this.selectedPianificazione)
+        .then(response => {
+  
+          elLoading.dismiss();
+          if (response.result){
+            //è andato tutto bene
+            this.showMessage('Presenze aggiornate')
+            this.goBack();
 
-        elLoading.dismiss();
-        console.log(error)
-        this.showMessage('Errore di connessione');
+          }
+  
+          else{
+  
+            //errore dal server
+            console.log(response);
+            this.showMessage(response.message);
+  
+          }
+          
+        })
+        .catch((error) => {
+  
+          elLoading.dismiss();
+          console.log(error)
+          this.showMessage('Errore di connessione');
+        })
       })
-    })
+      
+    }
     
+    else{
+      this.goBack();
 
-    // this.goBack();
+    }
 
   }
 
@@ -190,7 +208,7 @@ export class AgendaTrainerDetailPage implements OnInit {
 
   onGoBack(){
 
-    if (this.isModified){
+    if (this.selectedPianificazione.isModified(2)){
       this.alertController.create({
         header: 'Vuoi davvero uscire?',
         message: 'Se esci senza confermare, le presenze non verranno salvate',
@@ -244,7 +262,6 @@ export class AgendaTrainerDetailPage implements OnInit {
   onChangeSegment(event: any){
     console.log(event);
 
-    this.isModified = true;
 
     if(event['detail']['value'] == 'presente'){
       this.setAll(true);

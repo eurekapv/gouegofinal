@@ -41,6 +41,9 @@ export class Gruppo extends IDDocument {
       
       //Imposto le collection
       this.setCollection(data);
+
+      //Imposto che il documento è originale
+      this.setOriginal();
     }
 
     /**

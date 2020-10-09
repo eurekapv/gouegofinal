@@ -24,6 +24,9 @@ export class ViewOccupazione extends IDDocument {
 
         //Sistemo le collection
         this.setCollection(data);
+
+        //Imposto che il documento è originale
+        this.setOriginal();
     }
 
     setCollection(data: any)  {

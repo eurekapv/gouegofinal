@@ -27,7 +27,11 @@ const routes: Routes = [
   {
     path: 'edit-login',
     loadChildren: () => import('./edit-login/edit-login.module').then( m => m.EditLoginPageModule)
+  },  {
+    path: 'invoices',
+    loadChildren: () => import('./invoices/invoices.module').then( m => m.InvoicesPageModule)
   }
+
 ];
 
 @NgModule({

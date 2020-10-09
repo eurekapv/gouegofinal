@@ -27,6 +27,8 @@ import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import { Documentazione } from 'src/app/models/documentazione.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
+import { Ricevuta } from 'src/app/models/ricevuta.model';
+
 
 
 
@@ -66,7 +68,8 @@ export const Structure: any = {
     OccupazioneCampi,
     TipoDocumentazione,
     Documentazione,
-    CorsoPresenze
+    CorsoPresenze,
+    Ricevuta
 }
 
 export class DynamicClass {

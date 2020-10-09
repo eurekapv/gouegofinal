@@ -31,6 +31,9 @@ export class Area extends IDDocument {
       this.AREALINKS=[];
       this.LOCATIONS = [];
       this.AREAPAYMENTSETTINGS=[];
+      
+      //0 indica che è sempre possibile aggiornare le presenze (dal server non arriva nulla)
+      this.APPGAPOREPRESENZE = 0;
 
     }
 

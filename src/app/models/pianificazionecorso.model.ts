@@ -201,7 +201,7 @@ static getReqForeignKeys(): RequestForeign[] {
     else {
       //In teoria potrei aggiornare le presenze
       if (gapOre == 0) {
-        strReturn = 'Aggiorna le presenze e Conferma';
+        strReturn = 'Clicca su ogni partecipante per impostare la presenza/assenza';
       }
       else {
         //Possiamo aggiornarle
@@ -212,7 +212,7 @@ static getReqForeignKeys(): RequestForeign[] {
           //la converto in stringa
           let strScadenza =MyDateTime.formatDate(scadenza, 'DD/MM/YY');
 
-          strReturn = 'Presenze aggiornabili fino al ' + strScadenza;
+          strReturn = 'Clicca su ogni partecipante per impostare la presenza/assenza, presenze aggiornabili fino al ' + strScadenza;
 
         }
         else {

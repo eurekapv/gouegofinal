@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import * as moment from 'moment';
+import { start } from 'repl';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
@@ -23,6 +24,8 @@ export class AgendaTrainerDetailPage implements OnInit {
 
   selectedPianificazione: PianificazioneCorso = new PianificazioneCorso();
   selectedCorso: Corso;
+
+  gapAggiornamentoPresenze: number;
 
   idPianificazione: string;
   idCorso: string;
@@ -57,6 +60,8 @@ export class AgendaTrainerDetailPage implements OnInit {
 
       //capisco se sono su desktop
       this.isDesktop = startService.isDesktop;
+
+      this.gapAggiornamentoPresenze = startService.areaSelectedValue.APPGAPOREPRESENZE;
       
     }
 

@@ -29,3 +29,13 @@ div.info{
 
     }
 }
+
+.notes{
+    p{
+        font-style: italic;
+    }
+    textarea{
+        font-style: italic !important;
+        color: grey !important;
+    }
+}

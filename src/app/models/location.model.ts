@@ -98,6 +98,9 @@ export class Location extends IDDocument {
 
       //Chiamo il metodo per le collection
       this.setCollection(data);
+
+      //Imposto che il documento è originale
+      this.setOriginal();
     }
 
 

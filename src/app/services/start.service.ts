@@ -46,6 +46,7 @@ import { OccupazioneCampi } from '../models/occupazionecampi.model';
 import { RequestParams } from '../library/models/requestParams.model';
 import { DocumentoService } from './documento.service';
 import { PianificazioneCorso } from '../models/pianificazionecorso.model';
+import { InvoicesService } from './invoices.service';
 
 
 @Injectable({
@@ -107,7 +108,8 @@ export class StartService {
     private codFiscService: CodicefiscaleService,
     private occupazioniService: OccupazioniService,
     private docStructureService: DocstructureService,
-    private documentoService: DocumentoService ) { 
+    private documentoService: DocumentoService,
+    private invoicesService: InvoicesService ) { 
 
       //Ogni volta che cambia la configurazione la invio 
       //al servizio docStructure
@@ -568,7 +570,7 @@ requestCorsoById(idCorso: string){
   }
 
   requestUpdatePresenze(docPianificazione: PianificazioneCorso){
-    return this.corsoCalendarioService.sendPianificazione(docPianificazione);
+    return this.corsoCalendarioService.updatePresenze(docPianificazione);
   }
 
 
@@ -1120,6 +1122,15 @@ requestDocumento(urlDocumento: string){
 }
 
 ////#endregion
+
+
+//#region INVOICES
+
+insertInvoicesIntoUtente(utente: Utente){
+  return this.invoicesService.insertInvoicesIntoUtente(utente);
+}
+
+//#endregion
 
 
 

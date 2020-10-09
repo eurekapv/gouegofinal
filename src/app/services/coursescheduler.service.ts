@@ -13,6 +13,7 @@ import { MyDateTime } from '../library/models/mydatetime.model';
 import { resolve } from 'url';
 import { promise } from 'protractor';
 import { PostResponse } from '../library/models/postResult.model';
+import { PostParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -265,22 +266,15 @@ export class CourseschedulerService {
     })
   }
 
-  sendPianificazione(docPianificazione: PianificazioneCorso): Promise<PostResponse>{
+  updatePresenze(docPianificazione: PianificazioneCorso): Promise<PostResponse>{
     return new Promise ((res, rej) => {
 
-      //questi sono i parametri per l'esportazione in json
-      
-      let myExportParams: ParamsExport = {
-        clearDOProperty: false,
-        clearPKProperty: false,
-        clearPrivateProperty: true,
-        numLivelli: 3,
-        onlyModified: true
-      }
-      let myJsonBody: string = docPianificazione.exportToJSON(myExportParams);
+      let myPostParams : PostParams = new PostParams();
 
-      //FIXME NON CAPISCO SE C'E' UN METODO DA UTILIZZARE, OPPURE E' SBAGLIATO CHE LA FUNZIONE LO RICHIEDA
-      this.docStructureService.requestForFunction(docPianificazione, null, myJsonBody)
+      myPostParams.key = 'docPianificazione';
+      myPostParams.value = docPianificazione;
+
+      this.docStructureService.requestForFunction(docPianificazione, 'updatePresenze', null, myPostParams)
       .then((response:PostResponse) => {
         res(response);
       })

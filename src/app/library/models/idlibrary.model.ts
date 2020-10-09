@@ -15,6 +15,10 @@ export class IDLibrary {
         let tipo:TypeDefinition;
         let strValue = '';
 
+        
+
+        tipo = this.getValueType(value);
+
         switch (tipo) {
           case TypeDefinition.char:
               strValue = `\"${value}\"`;
@@ -65,7 +69,7 @@ export class IDLibrary {
             break;
 
           case TypeDefinition.document:
-              let paramExport: ParamsExport;
+              let paramExport: ParamsExport = new ParamsExport;
               paramExport.clearDOProperty = true;
               paramExport.clearPKProperty = false;
               paramExport.clearPrivateProperty = true;
@@ -126,9 +130,12 @@ export class IDLibrary {
               else {
                 typeVar = TypeDefinition.document;
               }
-            } catch (error) {
+            } 
+            catch (error) {
                 typeVar = TypeDefinition.undefined;
             }
+
+            break;
         
           default:
             typeVar = TypeDefinition.undefined;

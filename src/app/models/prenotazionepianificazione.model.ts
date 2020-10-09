@@ -40,6 +40,9 @@ export class PrenotazionePianificazione extends IDDocument {
         super.setJSONProperty(data);
 
         this.setCollection(data);
+
+        //Imposto che il documento è originale
+        this.setOriginal();
     }
 
     setCollection(data: any) {

@@ -36,6 +36,9 @@ export class PianificazioneCorso extends IDDocument {
       //Imposto la collection
       this.setCollection(data);
 
+      //Imposto che il documento è originale
+      this.setOriginal();
+
     }
 
     /**

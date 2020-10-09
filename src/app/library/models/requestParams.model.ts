@@ -13,7 +13,7 @@ export class PostParams {
   isBasicType(): boolean {
     let basic = false;
     let typeVar: TypeDefinition;
-    let arBasicType: TypeDefinition[];
+    let arBasicType: TypeDefinition[] = [];
 
     typeVar = IDLibrary.getValueType(this.value);
     arBasicType.push(TypeDefinition.boolean);

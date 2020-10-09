@@ -23,6 +23,7 @@ export class Area extends IDDocument {
     APPSHOW: boolean;
     APPISCRIZIONI: boolean;
     APPPRENOTAZIONI: boolean;
+    APPGAPOREPRESENZE: number; //Indica per quanto tempo (ore) dal termine di una data di corso, il trainer può inserire/aggiornare le presenze
   
     constructor(onlyInstance?:boolean) {
       
@@ -47,7 +48,7 @@ export class Area extends IDDocument {
                       'ISOSTATO',
                       'CONDVENDITACORSI',
                       'CONDVENDPRENOTAZIONI'];
-      let arNumber = ['TIPOAREA'];
+      let arNumber = ['TIPOAREA','APPGAPOREPRESENZE'];
       let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI'];
       let arDate = [];
       let arDateTime =[];

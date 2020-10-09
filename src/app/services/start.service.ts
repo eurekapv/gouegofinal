@@ -143,8 +143,6 @@ export class StartService {
         .httpGet(myUrl, myHeaders, myParams)
         .subscribe(resultData => {
 
-          console.log(resultData);
-
           let objAuth: StartAuthorization = resultData;
 
           if (objAuth.result == -1 && objAuth.authcode && objAuth.authcode.length != 0) {

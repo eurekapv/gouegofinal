@@ -2,6 +2,9 @@ import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { RequestForeign } from '../library/models/requestParams.model';
 import { CorsoPresenze } from './corsopresenze.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
+import { TypePeriod } from '../library/models/mydatetime.model';
+
 
 export class PianificazioneCorso extends IDDocument {
     IDCORSO: string;
@@ -16,9 +19,13 @@ export class PianificazioneCorso extends IDDocument {
     DATAORAFINE: Date;
     MULTIPLA: boolean;
     CORSOPRESENZE: CorsoPresenze[];
+    NOTEADMIN: string;
+    NOTETRAINER: string;
 
 
-    constructor(onlyInstance?:boolean) {
+    constructor(
+      onlyInstance?:boolean
+    ){
         super(onlyInstance);
 
         this.CORSOPRESENZE = [];
@@ -83,7 +90,9 @@ export class PianificazioneCorso extends IDDocument {
     let arString = ['IDCORSO',
                     'IDAREAOPERATIVA',
                     'IDLOCATION',
-                    'IDCAMPO'
+                    'IDCAMPO',
+                    'NOTEADMIN',
+                    'NOTETRAINER'
                     ];
     let arNumber = ['VALUEGIORNO','ORELEZIONE'];
     let arBoolean = ['MULTIPLA'];
@@ -151,6 +160,53 @@ static getReqForeignKeys(): RequestForeign[] {
     return (new Date() > this.DATAORAFINE );
   }
 
+  canUpdatePresenze(gapOre: number): boolean{
+    let canUpdate: boolean = true;
+    let now = new Date;
 
+    if (now < this.DATAORAINIZIO){
+      canUpdate = false;
+    }
+
+    if (now > MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours)){
+      canUpdate = false;
+    }
+
+    return canUpdate;
+  }
+
+  msgCanUpdatePresenze(gapOre: number): string{
+
+    let strReturn = '';
+    let now = new Date;
+
+    // in questo momento possiamo aggiornare
+    if (this.canUpdatePresenze(gapOre)){
+
+
+      //recupero la data entro cui è possibile aggiornare
+      let scadenza = MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours);
+      //la converto in stringa
+      let strScadenza =MyDateTime.formatDate(scadenza, 'DD/MM/YY');
+
+      strReturn = 'Presenze aggiornabili fino al ' + strScadenza;
+    }
+
+    //in questo momento non possiamo aggiornare
+    else{
+
+      //E' troppo presto
+      if (now < this.DATAORAINIZIO){
+        strReturn = 'Non è ancora possibile modificare le presenze di questa lezione';
+      }
   
+      if (now > MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours)){
+        strReturn = 'Non è più possibile modificare le presenze di questa lezione';
+      }
+    }
+
+    return strReturn;
+  }
+
+
 }

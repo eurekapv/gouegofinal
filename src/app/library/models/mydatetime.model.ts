@@ -4,7 +4,7 @@ import { TypeDefinition } from './descriptor.model';
 export class MyDateTime {
 
 //Formatta una data passata in ISO (Solo la parte data)
-static formatDateISO(data: Date) {
+static formatDateISO(data: Date): string {
     let intMese = data.getMonth() + 1;
     let intGiorno = data.getDate();
     let mese = (intMese > 9) ? (intMese + '') : ('0' + intMese);
@@ -15,7 +15,7 @@ static formatDateISO(data: Date) {
     }
 
 //Formatta una data passata in ISO (Data e Ora)
-static formatDateTimeISO(data: Date) {
+static formatDateTimeISO(data: Date): string {
     let prefixDate = MyDateTime.formatDateISO(data);
     let ore = (data.getHours() > 9) ? (data.getHours() + '') : ('0' + data.getHours());
     let minuti = (data.getMinutes() > 9) ? (data.getMinutes() + '') : ('0' + data.getMinutes());
@@ -26,7 +26,7 @@ static formatDateTimeISO(data: Date) {
 }
 
 //Formatta un orario passata  (Data e Ora)
-static formatTime(data: Date, withSeconds:boolean =false) {
+static formatTime(data: Date, withSeconds:boolean =false): string {
 
     
     let ore = (data.getHours() > 9) ? (data.getHours() + '') : ('0' + data.getHours());
@@ -47,7 +47,7 @@ static formatTime(data: Date, withSeconds:boolean =false) {
  * @param data Data
  * @param format Formattazione di moment.js da applicare
  */
-static formatDate(data: Date, maskFormat: string) {
+static formatDate(data: Date, maskFormat: string): string {
     //https://momentjs.com/docs/#/displaying/
     return moment(data).format(maskFormat);
 }
@@ -283,14 +283,14 @@ static calcola(dateTime: Date, addOrSub: number, period:TypePeriod): Date {
 
 }
 
-enum TypePeriod {
-    years       = 'y',
-    quarters    = 'Q',
-    months      = 'M',
-    weeks       = 'w',
-    days	='d',
-    hours	='h',
-    minutes	='m',
-    seconds	='s',
+export enum TypePeriod {
+    years           = 'y',
+    quarters        = 'Q',
+    months          = 'M',
+    weeks           = 'w',
+    days	        ='d',
+    hours	        ='h',
+    minutes	        ='m',
+    seconds	        ='s',
     milliseconds	='ms'
 }

@@ -47,6 +47,8 @@ import { RequestParams } from '../library/models/requestParams.model';
 import { DocumentoService } from './documento.service';
 import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 import { InvoicesService } from './invoices.service';
+import { PosizioneService } from './posizione.service';
+import { Area } from '../models/area.model';
 
 
 @Injectable({
@@ -109,7 +111,8 @@ export class StartService {
     private occupazioniService: OccupazioniService,
     private docStructureService: DocstructureService,
     private documentoService: DocumentoService,
-    private invoicesService: InvoicesService ) { 
+    private invoicesService: InvoicesService,
+    private posizioneService: PosizioneService ) { 
 
       //Ogni volta che cambia la configurazione la invio 
       //al servizio docStructure
@@ -1131,6 +1134,26 @@ insertInvoicesIntoUtente(utente: Utente){
 }
 
 //#endregion
+
+
+//#region posizione
+
+/**
+ * La funzione restituisce una promise con la posizione attuale
+ */
+getCurrentPosition(){
+  return this.posizioneService.getCurrentPosition();
+}
+
+/**
+ * data in input una lista di aree, la funzione restituisce l'oggetto area più vicino alla posizione attuale
+ * @param listAree la lista delle aree tra cui cercare
+ */
+getNearestArea(listAree: Area[]){
+  return this.posizioneService.getNearestArea(listAree);
+}
+
+////#endregion
 
 
 

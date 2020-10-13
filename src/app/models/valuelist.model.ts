@@ -144,6 +144,16 @@ export enum RequestPincodeUse {
     forValidation = 30,
 }
 
+export enum TipoArticolo {
+    prodotto = 10,
+    servizio = 20
+}
+
+export enum TipoPrezzo {
+    alNettoDiImposta = 10,
+    comprensiviDiImposta = 20
+}
+
 
 
 

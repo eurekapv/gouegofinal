@@ -28,6 +28,13 @@ import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import { Documentazione } from 'src/app/models/documentazione.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
 import { Ricevuta } from 'src/app/models/ricevuta.model';
+import { Articolo } from 'src/app/models/articolo.model';
+import { ArticoloColore } from 'src/app/models/articolocolore.model';
+import { ArticoloTaglieMisura } from 'src/app/models/articolotagliemisura.model';
+import { UnitaMisura } from 'src/app/models/unitamisura.model';
+import { Valuta } from 'src/app/models/valuta.model';
+
+
 
 
 
@@ -69,7 +76,12 @@ export const Structure: any = {
     TipoDocumentazione,
     Documentazione,
     CorsoPresenze,
-    Ricevuta
+    Ricevuta,
+    Articolo,
+    ArticoloColore,
+    ArticoloTaglieMisura,
+    Valuta,
+    UnitaMisura
 }
 
 export class DynamicClass {

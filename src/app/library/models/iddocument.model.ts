@@ -225,6 +225,7 @@ import { MyDateTime } from './mydatetime.model';
       let doProperty = ['do_updated',' do_loaded','do_inserted','do_deleted','selected'];
       let propExclud = [];
       let row = '';
+      let skipAll = false;
       
       if (!paramExport) {
         paramExport = new ParamsExport();
@@ -243,133 +244,142 @@ import { MyDateTime } from './mydatetime.model';
         propExclud.push(this.getPrimaryKey('name'));
       }
 
-      arProperty.forEach(element => {
-        
-        let useElement = true;
+      //Se devo controllare solo i modificati, e non ci sono modifiche
+      if (paramExport.onlyModified && !this.isModified(999)) {
+        skipAll = true;
+      }
 
+      if (skipAll) {
         
-        //Se devo togliere le proprietà private le elimino
-        if (paramExport.clearPrivateProperty && element.startsWith('_')) {
+        //Ciclo sulle proprietà
+        arProperty.forEach(element => {
           
-          useElement = false;
-        
-        }
-
-        //Controlliamo se il valore è diverso dal valore original
-        if (paramExport.onlyModified) {
-          //Chiave primaria devo passarla anche se non modificata
-          if (element != this.getPrimaryKey('name')) {
-            //Controllo se la proprietà risulta modificata o no
-            if (_this.propertyIsModified(element) == false) {
-              useElement = false;
-            }
-          }
-        }
-
-        if (useElement) {
-
-          //Inizio la riga con l'elemento
-          row = '\"' + element + '\"' + ':';
-  
-          //Proprietà di tipo Array
-          if (Array.isArray(_this[element]) == true) {
-            //Qui gestisco l'Array
-            let arElements = _this[element];
-            let strArray = '';
-            let strElArray = '';
+          let useElement = true;
+          
+          //Se devo togliere le proprietà private le elimino
+          if (paramExport.clearPrivateProperty && element.startsWith('_')) {
             
-            //Ciclo sugli elementi
-            for (let index = 0; index < arElements.length; index++) {
-              let element: IDDocument;
-               element = arElements[index];
-               strElArray = element.exportToJSON(paramExport);
-               if (strArray.length !== 0) {
-                  strArray += ', '
-               }
-               strArray += strElArray;
-            }
-  
-            row += '[' + strArray + ']';
-  
-            if (strJSON.length !== 0) {
-              strJSON += ', ';
-            }
-  
-            strJSON += row;
+            useElement = false;
+          
           }
-          else {
-            let skip = false;
-            //Vuole eliminare le proprietà DO e private e/o le chiavi primarie
-            if (propExclud.length !== 0) {
-              if (propExclud.includes(element)) {
-                skip = true;
+  
+          //Controlliamo se il valore è diverso dal valore original
+          if (paramExport.onlyModified) {
+            //Chiave primaria devo passarla anche se non modificata
+            if (element != this.getPrimaryKey('name')) {
+              //Controllo se la proprietà risulta modificata o no
+              if (_this.propertyIsModified(element) == false) {
+                useElement = false;
               }
             }
+          }
   
-            //Proseguo con l'esportazione
-            if (!skip) {
+          if (useElement) {
   
-                //Chiedo il Tipo del Campo con il descriptor
-                let tipoCampo = objDescriptor.getType(element);
-  
-                if (tipoCampo !== TypeDefinition.undefined && (_this[element]!== undefined)) {
-  
-                  switch (tipoCampo) {
-  
-                    case TypeDefinition.boolean:
-                      row += _this[element];
-                      break;
-                  
-                    case TypeDefinition.number:
-                      row += _this[element]; 
-                      break;
-  
-                    case TypeDefinition.numberDecimal:
-                      row += _this[element]; 
-                      break;
-  
-                    case TypeDefinition.time:
-                      //E' un orario
-                      row += '\"' + this.formatDateTimeISO(_this[element]) + '\"';
-                      break;
-  
-                    case TypeDefinition.date:
-                      //E' una data
-                      row += '\"' + this.formatDateISO(_this[element]) + '\"';
-                      break;
-  
-                    case TypeDefinition.dateTime:
-                      //Campo di tipo DATAORA
-                      row += '\"' + this.formatDateTimeISO(_this[element]) + '\"' ;
-                      break;
-                    case TypeDefinition.char:
-                      row += '\"' + _this[element] + '\"';
-                      break;
-  
-                    default:
-                      row += _this[element];
-                      break;
-                  }
-  
-                } 
-                else {
-                  row += 'null';
-                }   
-                
-                
-                if (strJSON.length !== 0) {
-                  strJSON += ', ';
+            //Inizio la riga con l'elemento
+            row = '\"' + element + '\"' + ':';
+    
+            //Proprietà di tipo Array
+            if (Array.isArray(_this[element]) == true) {
+              //Qui gestisco l'Array
+              let arElements = _this[element];
+              let strArray = '';
+              let strElArray = '';
+              
+              //Ciclo sugli elementi
+              for (let index = 0; index < arElements.length; index++) {
+                let element: IDDocument;
+                 element = arElements[index];
+                 strElArray = element.exportToJSON(paramExport);
+                 if (strArray.length !== 0) {
+                    strArray += ', '
+                 }
+                 strArray += strElArray;
+              }
+    
+              row += '[' + strArray + ']';
+    
+              if (strJSON.length !== 0) {
+                strJSON += ', ';
+              }
+    
+              strJSON += row;
+            }
+            else {
+              let skip = false;
+              //Vuole eliminare le proprietà DO e private e/o le chiavi primarie
+              if (propExclud.length !== 0) {
+                if (propExclud.includes(element)) {
+                  skip = true;
                 }
-  
-                strJSON += row;
+              }
+    
+              //Proseguo con l'esportazione
+              if (!skip) {
+    
+                  //Chiedo il Tipo del Campo con il descriptor
+                  let tipoCampo = objDescriptor.getType(element);
+    
+                  if (tipoCampo !== TypeDefinition.undefined && (_this[element]!== undefined)) {
+    
+                    switch (tipoCampo) {
+    
+                      case TypeDefinition.boolean:
+                        row += _this[element];
+                        break;
+                    
+                      case TypeDefinition.number:
+                        row += _this[element]; 
+                        break;
+    
+                      case TypeDefinition.numberDecimal:
+                        row += _this[element]; 
+                        break;
+    
+                      case TypeDefinition.time:
+                        //E' un orario
+                        row += '\"' + this.formatDateTimeISO(_this[element]) + '\"';
+                        break;
+    
+                      case TypeDefinition.date:
+                        //E' una data
+                        row += '\"' + this.formatDateISO(_this[element]) + '\"';
+                        break;
+    
+                      case TypeDefinition.dateTime:
+                        //Campo di tipo DATAORA
+                        row += '\"' + this.formatDateTimeISO(_this[element]) + '\"' ;
+                        break;
+                      case TypeDefinition.char:
+                        row += '\"' + _this[element] + '\"';
+                        break;
+    
+                      default:
+                        row += _this[element];
+                        break;
+                    }
+    
+                  } 
+                  else {
+                    row += 'null';
+                  }   
+                  
+                  
+                  if (strJSON.length !== 0) {
+                    strJSON += ', ';
+                  }
+    
+                  strJSON += row;
+              }
+    
             }
   
           }
-
-        }
-      });
-
-      strJSON = '{' + strJSON + '}';
+        });
+  
+        strJSON = '{' + strJSON + '}';
+        
+      }
 
       return strJSON;
     }

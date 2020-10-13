@@ -10,8 +10,9 @@ export class IDLibrary {
      * Usato per scriverlo nei parametri di chiamata
      * @param tipo Tipo del dato
      * @param value Valore
+     * @param onlyPropertyModified In caso di Valore documento, esporta solo i modificati o tutto
      */
-    static exportJSONValue(value: any): string {
+    static exportJSONValue(value: any, onlyPropertyModified = false, onlyDocModified= false): string {
         let tipo:TypeDefinition;
         let strValue = '';
 
@@ -57,8 +58,10 @@ export class IDLibrary {
               strValue = '[';
               for (let index = 0; index < arValues.length; index++) {
                   const element = arValues[index];
-                  const elStr = IDLibrary.exportJSONValue(element);
-                  if (elStr && elStr.length !== 0) {
+                  const elStr = IDLibrary.exportJSONValue(element, onlyPropertyModified, onlyDocModified);
+
+                  if (elStr && elStr.trim().length !== 0) {
+                      //Se la stringa è diversa da 0 aggiungo la virgola
                       if (strValue.length != 0) {
                           strValue += ', ';
                       }
@@ -73,7 +76,8 @@ export class IDLibrary {
               paramExport.clearDOProperty = true;
               paramExport.clearPKProperty = false;
               paramExport.clearPrivateProperty = true;
-              paramExport.onlyModified = true;
+              paramExport.onlyPropertyModified = onlyPropertyModified;
+              paramExport.onlyDocModified = onlyDocModified;
               paramExport.numLivelli = 999;
 
               let document:IDDocument = value;

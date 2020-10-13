@@ -191,7 +191,9 @@ export class DocumentsPage implements OnInit {
         paramExport.clearDOProperty = true;
         paramExport.clearPKProperty = true;
         paramExport.clearPrivateProperty = true;
-        paramExport.onlyModified = false;
+        paramExport.onlyPropertyModified = false;
+        paramExport.onlyDocModified = false;
+        
         //Qui Creo il JSON
         let myJson: string = docUploadDocumentazione.exportToJSON(paramExport);
         

@@ -6,6 +6,13 @@ import { IDLibrary } from './idlibrary.model';
 export class PostParams {
   key: string;
   value: any;
+  exportOnlyDocModified: boolean; //Se Value è un documento, indica se esportare solo i documenti modificati
+  exportOnlyPropertyModified: boolean; //Se Value è un documento, indica se esportare solo le proprietà modificate o tutte
+
+  constructor() {
+    this.exportOnlyPropertyModified = false;
+    this.exportOnlyDocModified = false;
+  }
 
   /**
    * Controlla se il value contenuto è di tipo basico
@@ -40,7 +47,7 @@ export class PostParams {
    */
   exportJSON(): string {
     let jsonReturn = '';
-    let jsonValue = IDLibrary.exportJSONValue(this.value);
+    let jsonValue = IDLibrary.exportJSONValue(this.value, this.exportOnlyPropertyModified, this.exportOnlyDocModified);
 
     jsonReturn = `\"${this.key}\":` + jsonValue;
 

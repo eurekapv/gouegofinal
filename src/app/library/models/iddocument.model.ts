@@ -244,12 +244,12 @@ import { MyDateTime } from './mydatetime.model';
         propExclud.push(this.getPrimaryKey('name'));
       }
 
-      //Se devo controllare solo i modificati, e non ci sono modifiche
-      if (paramExport.onlyModified && !this.isModified(999)) {
+      //Devo esportare solo i documenti modificati e non ci sono modifiche
+      if (paramExport.onlyDocModified && !this.isModified(999)) {
         skipAll = true;
       }
 
-      if (skipAll) {
+      if (!skipAll) {
         
         //Ciclo sulle proprietà
         arProperty.forEach(element => {
@@ -264,7 +264,7 @@ import { MyDateTime } from './mydatetime.model';
           }
   
           //Controlliamo se il valore è diverso dal valore original
-          if (paramExport.onlyModified) {
+          if (paramExport.onlyPropertyModified) {
             //Chiave primaria devo passarla anche se non modificata
             if (element != this.getPrimaryKey('name')) {
               //Controllo se la proprietà risulta modificata o no
@@ -291,10 +291,13 @@ import { MyDateTime } from './mydatetime.model';
                 let element: IDDocument;
                  element = arElements[index];
                  strElArray = element.exportToJSON(paramExport);
-                 if (strArray.length !== 0) {
-                    strArray += ', '
+
+                 if (strElArray && strElArray.trim().length != 0) {
+                   if (strArray.length !== 0) {
+                      strArray += ', '
+                   }
+                   strArray += strElArray;
                  }
-                 strArray += strElArray;
               }
     
               row += '[' + strArray + ']';
@@ -378,7 +381,7 @@ import { MyDateTime } from './mydatetime.model';
         });
   
         strJSON = '{' + strJSON + '}';
-        
+
       }
 
       return strJSON;
@@ -1059,18 +1062,19 @@ import { MyDateTime } from './mydatetime.model';
     clearDOProperty: boolean; //Non esporta le proprietà do_inserted, do_deleted
     clearPKProperty: boolean; //Non esporta la chiave primaria 
     clearPrivateProperty: boolean; //Non esporta le proprietà private identificate da _ 
-    onlyModified: boolean;     //Esporta solo ciò che è modificato
+    onlyDocModified: boolean; //Esporta solo i documenti modificati
+    onlyPropertyModified: boolean;     //Esporta solo le proprietà modificate oppure tutte
     numLivelli: number; //Numero livello di esportazione
 
 
 
     constructor() {
       this.numLivelli = 999;
-      this.onlyModified = false;
+      this.onlyPropertyModified = false;
+      this.onlyDocModified = false;
       this.clearDOProperty = false;
       this.clearPKProperty = false;
       this.clearPrivateProperty = false;
-      
     }
   }
 

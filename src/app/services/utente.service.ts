@@ -198,7 +198,7 @@ export class UtenteService {
     paramExport.clearDOProperty = true;
     paramExport.clearPKProperty = false;
     paramExport.clearPrivateProperty = true;
-    paramExport.onlyModified = true;
+    paramExport.onlyPropertyModified = true;
 
     body = docUtenteUpdate.exportToJSON(paramExport);
     body = `{"docUtente": ${body}}`;

@@ -1100,9 +1100,10 @@ export class DocstructureService {
               paramExport.clearDOProperty = true;
               paramExport.clearPKProperty = false;
               paramExport.clearPrivateProperty = true;
-              paramExport.onlyModified = true;
-              paramExport.numLivelli = 999;
+              paramExport.onlyPropertyModified = true;
+              paramExport.onlyDocModified = true;
 
+              paramExport.numLivelli = 999;
               myJsonBody = jsonBodyOrDoc.exportToJSON(paramExport);
             }
           }
@@ -1132,7 +1133,7 @@ export class DocstructureService {
    * @param document Documento da aggiornare
    * @param onlyPropModified Invia solo le proprietà modificate
    */
-  public requestForUpdate(document: IDDocument, onlyPropModified = true): Promise<any> {
+  public requestForUpdate(document: IDDocument, onlyPropModified = true, onlyDocModified = false): Promise<any> {
     //Si esegue una PUT con il parametro ID e il body i valori da modificare
     return new Promise<any>((resolve,reject) => {
       let myHeaders = this.myConfig.getHttpHeaders();
@@ -1177,8 +1178,9 @@ export class DocstructureService {
             paramExport.clearDOProperty = true;
             paramExport.clearPKProperty = false;
             paramExport.clearPrivateProperty = true;
-            paramExport.onlyModified = onlyPropModified;
-
+            paramExport.onlyPropertyModified = onlyPropModified;
+            paramExport.onlyDocModified = onlyDocModified;
+            
             jsonBody = document.exportToJSON(paramExport);
     
             myUrl = this.myConfig.urlBase + '/' + objDescriptor.classWebApiName;

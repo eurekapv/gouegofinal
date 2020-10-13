@@ -273,7 +273,10 @@ export class CourseschedulerService {
 
       myPostParams.key = 'docPianificazione';
       myPostParams.value = docPianificazione;
-
+      myPostParams.exportOnlyPropertyModified = true;
+      myPostParams.exportOnlyDocModified = true;
+      
+      console.log('Fermati qui');
       this.docStructureService.requestForFunction(docPianificazione, 'updatePresenze', null, myPostParams)
       .then((response:PostResponse) => {
         res(response);

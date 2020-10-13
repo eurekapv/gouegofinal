@@ -22,6 +22,7 @@ export class Gruppo extends IDDocument {
     PRIVATEIMAGE: PrivateImage[];
     APPFLAGREGISTRAZIONE: boolean;
     APPTIPOVERIFICA: TipoVerificaAccount;
+    FLAGAPPSHOPONLINE: boolean;
     
   
     constructor(onlyInstance?:boolean) {
@@ -90,7 +91,7 @@ export class Gruppo extends IDDocument {
                     'URLPRIVACY'                   
                     ];
     let arNumber = ['TIPOGRUPPO','APPTIPOVERIFICA'];
-    let arBoolean = ['APPFLAGREGISTRAZIONE'];
+    let arBoolean = ['APPFLAGREGISTRAZIONE','FLAGAPPSHOPONLINE'];
     let arDate = [];
     let arDateTime =[];
     let arTime = [];

@@ -11,11 +11,11 @@
     <ion-segment [disabled]="!selectedPianificazione.canUpdatePresenze(gapAggiornamentoPresenze)" id="segment" [(ngModel)]="selectedSegment" (ionChange)="onChangeSegment($event)" color="primary"  >
       <ion-segment-button value="presente" fill="outline" layout="icon-start">
         <ion-icon color="primary" name="thumbs-up"></ion-icon>
-        <ion-label>Tutti</ion-label>
+        <ion-label>Tutti presenti</ion-label>
       </ion-segment-button >
       <ion-segment-button value="assente" layout="icon-start">
         <ion-icon color="primary" name="thumbs-down"></ion-icon>
-        <ion-label>Tutti</ion-label>
+        <ion-label>Tutti assenti</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -118,7 +118,7 @@
     <ion-item-group class="notes" >
       <ion-item-divider>
         <ion-label>
-          Note
+          Note per la segreteria
         </ion-label>
       </ion-item-divider>
       <ion-item>

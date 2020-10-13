@@ -153,6 +153,16 @@ export class HomePage implements OnInit, OnDestroy{
           this.listAree = aree.filter(objArea=>{
             return objArea.APPSHOW;
           });
+
+          //quando le aree sono arrivate, se non sono loggato seleziono la più vicina
+          if(!this.userLogged){
+            this.startService.getNearestArea(this.listAree)
+            .then(nearestArea => {
+  
+              //trovata l'area, posso passarne l'id al metodo selectarea
+              this.startService.selectAreaByID(nearestArea.ID);
+            })
+          }
     });
 
     //Mi sottoscrivo alla ricezione della Area Selezionata

@@ -27,12 +27,12 @@
       </ion-item>
     </div>
     
-    <ion-grid >
+    <ion-grid>
       <ion-row>
         <ion-col *ngFor="let livello of utente.UTENTILIVELLI" [id]="livello.ID" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
           <ion-card [button]="!isDesktop" (click)="onShare(livello.ID)" class="card-livello" >
               <ion-card-header class="ion-no-padding ion-text-center">
-                <img [src]="logoGruppo" id="img-logo">
+                <img *ngIf="showLogoGruppo" [src]="logoGruppoBase64" id="img-logo">
               </ion-card-header>
               <h2 class="ion-text-center">{{ livello.DESCRSPORT }}</h2>
             <ion-card-content>

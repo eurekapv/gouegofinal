@@ -72,32 +72,36 @@ export class HistorylistPage implements OnInit {
 
   }
 
-  ionViewDidEnter(){
-    const gesture: Gesture = this.gestureCtrl.create({
-      el: document.getElementById('content'),
-      threshold: 15,
-      gestureName: 'my-gesture',
-      direction: 'x',
-      onMove: ev => this.onSwipe(ev)
-    }, true);
+  // ionViewDidEnter(){
+  //   const gesture: Gesture = this.gestureCtrl.create({
+  //     el: document.getElementById('content'),
+  //     threshold: 15,
+  //     gestureName: 'my-gesture',
+  //     direction: 'x',
+  //     maxAngle: 1,
+  //     onMove: ev => this.onSwipe(ev)
+  //   }, true);
 
-    gesture.enable(true);
-  }
+  //   gesture.enable(true);
+  // }
 
-  onSwipe(detail){
+  // onSwipe(detail){
 
-    console.log(detail);
+  //   console.log(detail);
 
-    //scroll verso sinistra
-    if (this.selectedView == 'prenotazioni' && (detail.velocityX < 0) ){
-      this.selectedView = 'corsi';
-    }
+  //   if (detail.deltaY > -50 && detail.deltaY < 50){
+    
+  //     //scroll verso sinistra
+  //     if (this.selectedView == 'prenotazioni' && (detail.velocityX < 0) ){
+  //       this.selectedView = 'corsi';
+  //     }
 
-    //scroll verso destra
-    else if (this.selectedView == 'corsi' && (detail.velocityX > 0)){
-      this.selectedView = 'prenotazioni';
-    }
-  }
+  //     //scroll verso destra
+  //     else if (this.selectedView == 'corsi' && (detail.velocityX > 0)){
+  //       this.selectedView = 'prenotazioni';
+  //     }
+  //   }
+  // }
 
   /**
    * Richiede al server le Prenotazioni

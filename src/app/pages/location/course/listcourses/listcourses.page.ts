@@ -7,7 +7,7 @@ import { StartService } from '../../../../services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi } from 'src/app/models/valuelist.model';
 
-import { ModalController, NavController, LoadingController, ToastController } from '@ionic/angular';
+import { ModalController, NavController, LoadingController, ToastController, Gesture, GestureController } from '@ionic/angular';
 import { FilterPage } from './filter/filter.page';
 import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
@@ -29,7 +29,7 @@ enum PageState{
 export class ListcoursesPage implements OnInit {
 
 
-  pageState : typeof PageState = PageState;
+  PageState : typeof PageState = PageState;
   idLocation = '';
 
   listCorsi: Corso[] = [];
@@ -59,7 +59,8 @@ export class ListcoursesPage implements OnInit {
               private navController: NavController,
               private loadingCtrl: LoadingController,
               private toastCtrl: ToastController,
-              private docStructureService: DocstructureService
+              private docStructureService: DocstructureService,
+              private gestureCtrl: GestureController
               ) { 
     
 
@@ -101,6 +102,37 @@ export class ListcoursesPage implements OnInit {
 
     })
   }
+
+  // ionViewDidEnter(){
+  //   const gesture: Gesture = this.gestureCtrl.create({
+  //     el: document.getElementById('content'),
+  //     threshold: 15,
+  //     gestureName: 'my-gesture',
+  //     direction: 'x',
+  //     maxAngle: 90,
+  //     onMove: ev => this.onSwipe(ev),
+  //   }, true);
+
+  //   gesture.enable(true);
+  // }
+
+  // onSwipe(detail){
+
+  //   console.log(detail);
+
+  //   //scroll verso sinistra
+  //   if (detail.deltaY > -50 && detail.deltaY < 50){
+
+  //     if (this.statoPagina == PageState.TUTTI && (detail.velocityX < 0) ){
+  //       this.statoPagina = PageState.MIEI;
+  //     }
+  
+  //     //scroll verso destra
+  //     else if (this.statoPagina == PageState.MIEI && (detail.velocityX > 0)){
+  //       this.statoPagina = PageState.TUTTI;
+  //     }
+  //   }
+  // }
 
   /**
    * Richiesta dei corsi

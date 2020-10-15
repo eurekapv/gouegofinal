@@ -19,14 +19,14 @@
     <ion-segment 
       (ionChange)="onChangeSegmentCorsi($event)"
       color="medium"
-      value="corsiall"
+      [(ngModel)]="statoPagina"
       id="crs:button"
     >
-      <ion-segment-button [value]="pageState.TUTTI">
+      <ion-segment-button [value]="PageState.TUTTI">
           <ion-label>Tutti</ion-label>
       </ion-segment-button>
       
-      <ion-segment-button [value]="pageState.MIEI">
+      <ion-segment-button [value]="PageState.MIEI">
         <ion-label>Mio Livello</ion-label>
       </ion-segment-button>
     </ion-segment>
@@ -35,13 +35,13 @@
 </ion-header>
  
 
-<ion-content scrollEvents (ionScroll)="onScroll($event)">
+<ion-content id="content" scrollEvents (ionScroll)="onScroll($event)">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
     
   <!-- VISUALIZZAZIONE TUTTI -->
-  <div *ngIf="listCorsi.length !== 0 && statoPagina==pageState.TUTTI" id="crs-lista">
+  <div *ngIf="listCorsi.length !== 0 && statoPagina==PageState.TUTTI" id="crs-lista">
     <ion-grid>
       <ion-row >
         <ion-col *ngFor="let corso of listCorsi" 
@@ -76,7 +76,7 @@
 
 
   <!-- VISUALIZZAZIONE MIEI -->
-  <div *ngIf="listCorsiMioLivello.length !== 0 && statoPagina==pageState.MIEI" id="crs-lista">
+  <div *ngIf="listCorsiMioLivello.length !== 0 && statoPagina==PageState.MIEI" id="crs-lista">
     <ion-grid>
       <ion-row >
         <ion-col *ngFor="let corso of listCorsiMioLivello" 
@@ -110,14 +110,14 @@
   </div>
 
   <!-- SE SONO SU TUTTI, MA NON CI SONO -->
-  <div *ngIf="listCorsi.length === 0&&statoPagina==pageState.TUTTI" class="nofind-cnt">
+  <div *ngIf="listCorsi.length === 0&&statoPagina==PageState.TUTTI" class="nofind-cnt">
     <ion-label>Nessun corso disponibile</ion-label>
     <ion-label>Modifica i parametri</ion-label>
     <ion-label>di Ricerca</ion-label>
   </div>
 
   <!-- SE SONO SU MIEI, MA NON CI SONO -->
-  <div *ngIf="listCorsiMioLivello.length === 0&&statoPagina==pageState.MIEI" class="nofind-cnt">
+  <div *ngIf="listCorsiMioLivello.length === 0&&statoPagina==PageState.MIEI" class="nofind-cnt">
     <ion-label>Nessun corso disponibile</ion-label>
     <ion-label>Modifica i parametri</ion-label>
     <ion-label>di Ricerca</ion-label>

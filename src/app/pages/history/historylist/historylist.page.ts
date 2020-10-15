@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Corso } from 'src/app/models/corso.model';
 import { Language } from 'src/app/models/valuelist.model';
-import { NavController, LoadingController, ToastController } from '@ionic/angular';
+import { NavController, LoadingController, ToastController, Gesture, GestureController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
 import { Subscription } from 'rxjs';
 import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
@@ -43,10 +43,16 @@ export class HistorylistPage implements OnInit {
     private startService:StartService,
     private loadingCtrl:LoadingController,
     private toastCtrl: ToastController,
-    private docstructureService:DocstructureService
-  ) { }
+    private docstructureService:DocstructureService,
+    private gestureCtrl: GestureController
+  ) 
+  { 
+     
+  }
 
   ngOnInit() {
+
+ 
     //Mi sottoscrivo alla ricezione Prenotazioni e Iscrizioni Corsi
     //Verranno richiesti successivamente
     this.sottoscrizionePrenotazioni();
@@ -64,6 +70,33 @@ export class HistorylistPage implements OnInit {
 
                           });
 
+  }
+
+  ionViewDidEnter(){
+    const gesture: Gesture = this.gestureCtrl.create({
+      el: document.getElementById('content'),
+      threshold: 15,
+      gestureName: 'my-gesture',
+      direction: 'x',
+      onMove: ev => this.onSwipe(ev)
+    }, true);
+
+    gesture.enable(true);
+  }
+
+  onSwipe(detail){
+
+    console.log(detail);
+
+    //scroll verso sinistra
+    if (this.selectedView == 'prenotazioni' && (detail.velocityX < 0) ){
+      this.selectedView = 'corsi';
+    }
+
+    //scroll verso destra
+    else if (this.selectedView == 'corsi' && (detail.velocityX > 0)){
+      this.selectedView = 'prenotazioni';
+    }
   }
 
   /**
@@ -169,7 +202,8 @@ export class HistorylistPage implements OnInit {
    */
   onChangeSegment(value)
   {
-    this.selectedView=value.detail.value;
+    //this.selectedView=value.detail.value;
+    console.log(this.selectedView);
     switch (this.selectedView) {
       case 'prenotazioni':
         this.requestPrenotazioni();
@@ -283,7 +317,6 @@ export class HistorylistPage implements OnInit {
 
 
   onScroll(event:any){
-    console.log(event.detail)
     if(event.detail.currentY < 5){
       this.showTabs = true;
     }

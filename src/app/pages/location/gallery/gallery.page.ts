@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 import { LocationImage } from 'src/app/models/locaton-image.model';
+import { StartAuthorization } from 'src/app/models/start-configuration.model';
+import { StartService } from 'src/app/services/start.service';
 
 @Component({
   selector: 'app-gallery',
@@ -8,6 +10,8 @@ import { LocationImage } from 'src/app/models/locaton-image.model';
   styleUrls: ['./gallery.page.scss'],
 })
 export class GalleryPage implements OnInit {
+
+  showButtons: boolean;
 
   imgLocation: LocationImage;
   sliderOpts = {
@@ -18,7 +22,18 @@ export class GalleryPage implements OnInit {
 
   @ViewChild('slider',{ read: ElementRef, static: false })slider: ElementRef;
 
-  constructor(private navParams: NavParams, private modalCtrl: ModalController) { 
+  constructor(
+    private navParams: NavParams, 
+    private modalCtrl: ModalController,
+    private startService: StartService ) { 
+
+
+    if (this.startService.isDesktop){
+      this.showButtons = true;
+    }
+    else{
+      this.showButtons = false;
+    }
   }
 
   ngOnInit() {
@@ -39,6 +54,13 @@ export class GalleryPage implements OnInit {
   close() {
     this.modalCtrl.dismiss();
   }
+
+  onTap(){
+    if (!this.startService.isDesktop){
+      this.showButtons = !this.showButtons;
+    }
+  }
+
 
 
 }

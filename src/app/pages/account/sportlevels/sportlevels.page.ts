@@ -148,7 +148,7 @@ export class SportlevelsPage implements OnInit {
               console.log(error);
             });
         }
-        else if (method = 'JPG') {
+        else if (method == 'JPG') {
 
           htmlToImage.toJpeg(DOMCard, options)
           .then(urlImage => {

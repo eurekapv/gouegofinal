@@ -6,8 +6,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { Sport } from 'src/app/models/sport.model';
 import { TipoPrivateImage, PageType } from 'src/app/models/valuelist.model';
-import domtoimage from 'dom-to-image';
-
+import htmlToImage from 'html-to-image'
 
 
 
@@ -22,24 +21,44 @@ export class SportlevelsPage implements OnInit {
   utente:Utente;
   utenteListener: Subscription;
   sport: Sport;
-  logoGruppo:string;
+  logoGruppoBase64:string;
+  showLogoGruppo: boolean;
+
   constructor(private startService: StartService,
-              private socialSharing: SocialSharing,
-              )  {
-    this.utenteListener=this.startService.utente.subscribe(data=>{
-      this.utente=data;
-    })
+              private socialSharing: SocialSharing)  {
+
+                this.showLogoGruppo = false;
+
+                //Attendo la ricezione dei dati Utente
+                this.utenteListener=this.startService.utente.subscribe(data=>{
+                  this.utente=data;
+                });
+
+                //Recupero il logo del gruppo
+                this.startService.requestBase64Image(TipoPrivateImage.logo)
+                  .then(b64Image=>{
+
+                      //Arriva in Base64
+                      this.logoGruppoBase64=b64Image;
+
+                      if (this.logoGruppoBase64.length != 0) {
+                        this.showLogoGruppo = true;
+                      }
+                      else {
+                        this.showLogoGruppo = false;
+                      }
+                  })
+                  .catch(error => {
+                    this.showLogoGruppo = false;
+                    console.log('Logo Gruppo failed: ' + error);
+                  });
+
   }
   
 
   ngOnInit() {
+
     this.isDesktop=this.startService.isDesktop;
-    console.log('bp0');
-    this.startService.requestBase64Image(TipoPrivateImage.logo).then(b64Image=>{
-      this.logoGruppo=b64Image;
-    })
-
-
       
   }
 
@@ -82,45 +101,76 @@ export class SportlevelsPage implements OnInit {
   // }
 
 
-  onShare(id: string)
+  /**
+   * Tento di condividere 
+   * @param sportLevelPrimaryKey Chiave Primaria del record di SportLevel
+   */
+  onShare(sportLevelPrimaryKey: string)
   {
-    if (true){
+    let method = 'SVG';
+    let options = { width:350, height:600 };
+    let messaggio = '';
+
+    if (!this.startService.isDesktop || this.startService.isDesktop){
 
       console.log('bp');
+
       //recupero il livello
-      let livello:UtenteLivello;
-      livello = this.utente.UTENTILIVELLI.find(elem=>{
-        return elem.ID==id;
+      let docLivello:UtenteLivello;
+      docLivello = this.utente.UTENTILIVELLI.find(elem=>{
+        return elem.ID==sportLevelPrimaryKey;
       });
-      console.log(livello);
-      //compongo il messaggio
-      let messaggio: string = this.utente.NOME + ' ha ottenuto il livello ' + livello.DESCRLIVELLO +  ' a ' + livello.DESCRSPORT + '! Complimenti!!';
-        console.log(messaggio);
-      //recupero l'immagine della card
-      let card=document.getElementById(id);
-      console.log(card);
-      domtoimage.toJpeg(card)
-      .then(urlImage => {
-        console.log(urlImage);
-        console.error('OK qui!');
-        
-        //recupero l'url del sito aziendale
-        let area=this.startService.areaSelectedValue;
-        console.log(area);
-        let urlArea = area.findAreaLinkByPageType(PageType.home);
-        console.log(urlArea);
-        if(urlArea){
-          this.socialSharing.share(messaggio,'',urlImage, urlArea.REFERURL);
+
+      if (docLivello) {
+
+        console.log('Creo l\'immagine per');
+        console.log(docLivello);
+
+        //compongo il messaggio
+        messaggio = this.utente.NOME + ' ha ottenuto il livello ' + docLivello.DESCRLIVELLO +  ' a ' + docLivello.DESCRSPORT + '! Complimenti!!';
+          
+        //recupero l'immagine della card
+        let DOMCard=document.getElementById(sportLevelPrimaryKey);
+        console.log(DOMCard);
+
+        //Immagine in SVG
+        if (method == 'SVG') {
+
+          htmlToImage.toSvgDataURL(DOMCard,options)
+            .then(dataUrl => {
+              console.log('Fatto: ');
+              console.log(dataUrl);
+            })
+            .catch(error => {
+              console.log(error);
+            });
         }
-        else{
-          this.socialSharing.share(messaggio,'',urlImage);
+        else if (method == 'JPG') {
+
+          htmlToImage.toJpeg(DOMCard, options)
+          .then(urlImage => {
+            console.log(urlImage);
+            console.error('OK qui!');
+            
+            //recupero l'url del sito aziendale
+            let area=this.startService.areaSelectedValue;
+            console.log(area);
+            let urlArea = area.findAreaLinkByPageType(PageType.home);
+            console.log(urlArea);
+            if(urlArea){
+              this.socialSharing.share(messaggio,'',urlImage, urlArea.REFERURL);
+            }
+            else{
+              this.socialSharing.share(messaggio,'',urlImage);
+            }
+          })
+          .catch(error => {
+            console.error('Errore qui!');
+            console.log(error);
+          })
         }
-      })
-      .catch(error => {
-        console.error('Errore qui!');
-        console.log(error);
-      })
-      .finally(() => {console.log('Finally')});
+
+      }
       
     }    
   }

@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Utente } from 'src/app/models/utente.model';
-import { Subscription, Observable, Observer } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import htmlToImage from 'html-to-image';
 import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { Sport } from 'src/app/models/sport.model';
 import { TipoPrivateImage, PageType } from 'src/app/models/valuelist.model';
-import { url } from 'inspector';
-import { start } from 'repl';
 
 
 

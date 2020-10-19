@@ -27,7 +27,7 @@ import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import { Documentazione } from 'src/app/models/documentazione.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
-import { Ricevuta } from 'src/app/models/ricevuta.model';
+import { MasterDocumento } from 'src/app/models/ricevuta.model';
 import { Articolo } from 'src/app/models/articolo.model';
 import { ArticoloColore } from 'src/app/models/articolocolore.model';
 import { ArticoloTaglieMisura } from 'src/app/models/articolotagliemisura.model';
@@ -76,7 +76,7 @@ export const Structure: any = {
     TipoDocumentazione,
     Documentazione,
     CorsoPresenze,
-    Ricevuta,
+    MasterDocumento,
     Articolo,
     ArticoloColore,
     ArticoloTaglieMisura,

@@ -5,7 +5,7 @@ import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { Gruppo } from './gruppo.model';
 import { Documentazione } from './documentazione.model';
-import { Ricevuta } from './ricevuta.model';
+import { MasterDocumento } from './ricevuta.model';
 
 
 export class Utente extends IDDocument {
@@ -45,7 +45,6 @@ export class Utente extends IDDocument {
     LISTMANSIONI: string;
     UTENTILIVELLI: UtenteLivello[];
     DOCUMENTAZIONI: Documentazione[];
-    RICEVUTE: Ricevuta[];
 
     /**
      * 
@@ -136,7 +135,6 @@ export class Utente extends IDDocument {
     //Aggiungo le collection
     objDescriptor.addCollection('UTENTILIVELLI','UtenteLivello','IDUTENTE');
     objDescriptor.addCollection('DOCUMENTAZIONI','Documentazione','IDUTENTE');
-    objDescriptor.addCollection('RICEVUTE','Ricevuta','IDUTENTE');
 
 
     

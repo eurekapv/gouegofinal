@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
-import { Ricevuta } from 'src/app/models/ricevuta.model';
+import { MasterDocumento } from 'src/app/models/ricevuta.model';
 import { StartService } from 'src/app/services/start.service';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Utente } from 'src/app/models/utente.model';
+import { PostResponse } from 'src/app/library/models/postResult.model';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 
 @Component({
   selector: 'app-invoices',
@@ -15,7 +17,9 @@ export class InvoicesPage implements OnInit {
 
   actualUtente: Utente = new Utente();
 
-  listRicevute: Ricevuta[] = [];
+  listRicevute: MasterDocumento[] = [];
+
+  selectedYear = new Date().toISOString();
 
   constructor(
     private loadingController: LoadingController,
@@ -27,7 +31,9 @@ export class InvoicesPage implements OnInit {
     
 
 
-  ) { }
+  ) {
+
+   }
 
 
   ngOnInit() {
@@ -55,13 +61,20 @@ export class InvoicesPage implements OnInit {
    * @param event Evento opzionale da completare dopo aver eseguito l'aggiornamento (usato per il refresher)
    */
   requestRicevute(event?: any){
+    
+    //prima di tutto calcolo l'anno
+    let myDate = new Date(this.selectedYear);
+    let anno = myDate.getFullYear();
+
+    console.log('Anno: ', anno);
+    
 
     if(event){
       //La funzione è stata chiamata dal refresher
-      this.startService.insertInvoicesIntoUtente(this.actualUtente)
-      .then((docUtente:Utente) => {
-        this.actualUtente = docUtente;
-        this.listRicevute = this.actualUtente.RICEVUTE;
+      this.startService.requestInvoices(this.actualUtente, anno)
+      .then((listRicevute) => {
+
+        this.listRicevute = listRicevute;
         event.target.complete();
       })
       .catch(error => {
@@ -72,16 +85,15 @@ export class InvoicesPage implements OnInit {
     }
 
     else{
-      //la funzione non è stata chiamata dal refresher
 
+      //la funzione non è stata chiamata dal refresher
       this.loadingController.create()
       .then(elLoading => {
 
         elLoading.present();
-        this.startService.insertInvoicesIntoUtente(this.actualUtente)
-        .then((docUtente:Utente) => {
-          this.actualUtente = docUtente;
-          this.listRicevute = this.actualUtente.RICEVUTE;
+        this.startService.requestInvoices(this.actualUtente, anno)
+        .then((listRicevute) => {
+          this.listRicevute = listRicevute;
           elLoading.dismiss();
         })
         .catch(error => {
@@ -97,7 +109,7 @@ export class InvoicesPage implements OnInit {
   }
 
   
-  onClickElement(elemento: Ricevuta){
+  onClickElement(elemento: MasterDocumento){
     //creo il loading e lo presento
     this.loadingController.create({
       message: 'Caricamento',
@@ -107,28 +119,46 @@ export class InvoicesPage implements OnInit {
       elLoading.present();
 
       //ora faccio la get del file
-      this.startService.requestDocumento(elemento.FILENAMEESTENSIONE)
-      .then(blob => {
-        //E' andato tutto bene, ho il blob
+      this.startService.downloadInvoice(elemento)
+      .then((response: PostResponse) => {
+        
+        //risposta ricevuta
         elLoading.dismiss();
-        console.log(blob);
 
-        if(this.startService.isDesktop){
-          //sono su Desktop
-          this.openDesktop(blob);
+        if (response.result){
+
+          // è andato tutto bene, converto il base64 in blob
+          this.startService.base64toBlob(response.code)
+          .then(blob => {
+
+            //ora che ho il blob, lo posso aprire
+            if(this.startService.isDesktop){
+
+              //apertura per desktop
+              this.openDesktop(blob);
+            }
+            else{
+
+              //apertura per mobile
+              this.openMobile(blob);
+            }
+          })
+          
         }
+
         else{
-          //sono su mobile
-          this.openMobile(blob);
+          //la richiesta non è andata a buon fine
+          this.showMessage(response.message);
         }
+
       })
       .catch(error => {
-        
-        //qualcosa non ha funzionato
+
+        //errore di connessione
+        elLoading.dismiss();
         console.log(error);
         this.showMessage('Errore di connessione');
       })
-
     })
   }
 

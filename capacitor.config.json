@@ -1,6 +1,6 @@
 {
-  "appId": "com.gouego",
-  "appName": "gouego",
+  "appId": "com.Gouego",
+  "appName": "Gouego",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

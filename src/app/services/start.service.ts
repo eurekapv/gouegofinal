@@ -49,6 +49,8 @@ import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 import { InvoicesService } from './invoices.service';
 import { PosizioneService } from './posizione.service';
 import { Area } from '../models/area.model';
+import { MasterDocumento } from '../models/ricevuta.model';
+import { PostResponse } from '../library/models/postResult.model';
 
 
 @Injectable({
@@ -1127,9 +1129,33 @@ requestDocumento(urlDocumento: string){
 
 //#region INVOICES
 
-insertInvoicesIntoUtente(utente: Utente){
-  return this.invoicesService.insertInvoicesIntoUtente(utente);
+
+/**
+ * Richiede l'elenco delle ricevute per l'utente passato
+ * @param utente il documento utente
+ */
+  requestInvoices(utente: Utente, anno: number){
+    return this.invoicesService.requestInvoices(utente, anno);
 }
+
+ /**
+   * Dato un elemento MasterDocumento, la funzione lo scarica e restituisce la postResponse contenente il B64
+   * @param documento elemento MasterDocumento che si vuole scaricare
+   */
+  downloadInvoice(documento: MasterDocumento):Promise<PostResponse>{
+    return this.invoicesService.downloadInvoice(documento);
+  }
+
+    /**
+   * la funzione, presa una stringa b64 e il content-type, restituisce il blob
+   * @param b64Data stringa B64 SENZA tipo di file
+   * @param contentType stringa tipo file (default: application/pdf)
+   */
+  base64toBlob(b64Data, contentType='application/pdf'){
+    return this.invoicesService.base64toBlob(b64Data, contentType);
+  }
+
+
 
 //#endregion
 

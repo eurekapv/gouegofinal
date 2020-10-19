@@ -110,7 +110,16 @@ export class AgendaTrainerDetailPage implements OnInit {
       elem.PRESENTE = !elem.PRESENTE;
     }
 
-    this.selectedSegment = null;
+    if (this.tuttiPresenti){
+      this.selectedSegment = 'presente';
+    }
+    else if (this.tuttiAssenti){
+      this.selectedSegment = 'assente';
+    }
+    else{
+
+      this.selectedSegment = null;
+    }
 
   }
 
@@ -276,5 +285,27 @@ export class AgendaTrainerDetailPage implements OnInit {
     }
     
   }
+
+  get tuttiPresenti(): boolean{
+    let tuttiPresenti: boolean = true;
+    this.listPresenze.forEach(elem => {
+      if (!elem.PRESENTE){
+        tuttiPresenti = false;
+      }
+    })
+    return tuttiPresenti;
+  }
+
+
+  get tuttiAssenti(): boolean{
+    let tuttiAssenti: boolean = true;
+    this.listPresenze.forEach(elem => {
+      if (elem.PRESENTE){
+        tuttiAssenti = false;
+      }
+    })
+    return tuttiAssenti;
+  }
+
 
 }

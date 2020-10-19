@@ -1,7 +1,7 @@
-<ion-content fullscreen>
+<ion-content fullscreen (click)="onTap()">
 
-  <ion-item class="close-fake ion-text-center" lines="none" >
-    <ion-button (click)="close()" fill="outline" color="light">
+  <ion-item class="close-fake ion-text-center" *ngIf="showButtons" lines="none" >
+    <ion-button (click)="close($event)" fill="outline" color="light">
       <ion-icon name="close" slot="start"></ion-icon>
       Back
     </ion-button>

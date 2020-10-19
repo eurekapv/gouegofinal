@@ -1,14 +1,23 @@
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
-import { MyDateTime } from '../library/models/mydatetime.model';
-import { ClasseDocumento, TipoDocumentazione } from './tipodocumentazione.model';
+import { TipoMasterDocumento } from './valuelist.model';
 
 
-export class Ricevuta extends IDDocument{
-    IDUTENTE : string;
-    DESCRIZIONE : string;
-    FILENAMEESTENSIONE : string; //percorso relativo
-    DATAORAEMISSIONE : Date;
+export class MasterDocumento extends IDDocument{
+    IDANAGRAFICA : string;
+    NOTESTAMPA : string;
+    
+    DATADOCUMENTO : Date;
+    IDVALUTA: string;
+    NUMERODOCUMENTO: number;
+    TIPOLOGIA: TipoMasterDocumento;
+    TOTDOCUMENTO: number;
+    ANNO: number;
+
+
+
+
+
     
 
     constructor(onlyInstance = false){
@@ -17,19 +26,19 @@ export class Ricevuta extends IDDocument{
 
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
-        let arString = ['IDUTENTE',
-                        'DESCRIZIONE',
-                        'FILENAMEESTENSIONE',
+        let arString = ['IDANAGRAFICA',
+                        'NOTESTAMPA',
+                        'IDVALUTA'
                         ];
         let arBoolean = [];
-        let arDate = [];
-        let arDateTime = ['DATAEMISSIONE'];
-        let arNumber = [];
+        let arDate = ['DATADOCUMENTO'];
+        let arDateTime = [];
+        let arNumber = ['NUMERODOCUMENTO', 'TOTDOCUMENTO', 'TIPOLOGIA', ];
     
-        objDescriptor.className = 'Ricevuta';
+        objDescriptor.className = 'MasterDocumento';
         objDescriptor.doRemote = true;
-        objDescriptor.classWebApiName = 'RICEVUTA';
-        objDescriptor.describeField = 'DESCRIZIONE';
+        objDescriptor.classWebApiName = 'MASTERDOCUMENTO';
+        objDescriptor.describeField = 'NOTESTAMPA';
     
     
         objDescriptor.addMultiple(arString, TypeDefinition.char);
@@ -39,7 +48,6 @@ export class Ricevuta extends IDDocument{
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     
         
-        objDescriptor.setRelation('IDUTENTE','Utente');
     
         
         return objDescriptor;

@@ -21,16 +21,16 @@
         <ion-label>
           <p class="ion-text-wrap">
             <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-            I tuoi livelli verranno utilizzati per determinare i corsi più adatti a te Tocca un livello per condividerlo con i tuoi amici
-          </p>
+            I tuoi livelli verranno utilizzati per determinare i corsi più adatti a te.
+            <!-- Tocca un livello per condividerlo con i tuoi amici -->
         </ion-label>
       </ion-item>
     </div>
     
     <ion-grid>
       <ion-row>
-        <ion-col *ngFor="let livello of utente.UTENTILIVELLI" [id]="livello.ID" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
-          <ion-card [button]="!isDesktop" (click)="onShare(livello.ID)" class="card-livello" >
+        <ion-col *ngFor="let livello of utente.UTENTILIVELLI"  [id]="livello.ID" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
+          <ion-card  [button]="!isDesktop" class="card-livello" >
               <ion-card-header class="ion-no-padding ion-text-center">
                 <img *ngIf="showLogoGruppo" [src]="logoGruppoBase64" id="img-logo">
               </ion-card-header>

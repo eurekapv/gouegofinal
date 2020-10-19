@@ -155,6 +155,14 @@ export enum TipoPrezzo {
 }
 
 
+export enum TipoMasterDocumento{
+    preventivo = 10,
+    fattura = 500,
+    notaDiCredito = 510,
+    ricevuta = 530
+}
+
+
 
 
 

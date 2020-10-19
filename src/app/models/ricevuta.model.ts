@@ -5,20 +5,18 @@ import { TipoMasterDocumento } from './valuelist.model';
 
 export class MasterDocumento extends IDDocument{
     IDANAGRAFICA : string;
-    NOTESTAMPA : string;
+    NOTESSTAMPA : string;
     
     DATADOCUMENTO : Date;
     IDVALUTA: string;
+    SERIE: string;
     NUMERODOCUMENTO: number;
+    NUMEROSTAMPA: string;
     TIPOLOGIA: TipoMasterDocumento;
     TOTDOCUMENTO: number;
     ANNO: number;
 
-
-
-
-
-    
+   
 
     constructor(onlyInstance = false){
         super(onlyInstance);
@@ -27,18 +25,20 @@ export class MasterDocumento extends IDDocument{
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
         let arString = ['IDANAGRAFICA',
-                        'NOTESTAMPA',
-                        'IDVALUTA'
+                        'NOTESSTAMPA',
+                        'IDVALUTA',
+                        'SERIE',
+                        'NUMEROSTAMPA'
                         ];
         let arBoolean = [];
         let arDate = ['DATADOCUMENTO'];
         let arDateTime = [];
-        let arNumber = ['NUMERODOCUMENTO', 'TOTDOCUMENTO', 'TIPOLOGIA', ];
+        let arNumber = ['NUMERODOCUMENTO', 'TOTDOCUMENTO', 'TIPOLOGIA','ANNO' ];
     
         objDescriptor.className = 'MasterDocumento';
         objDescriptor.doRemote = true;
         objDescriptor.classWebApiName = 'MASTERDOCUMENTO';
-        objDescriptor.describeField = 'NOTESTAMPA';
+        objDescriptor.describeField = 'NOTESSTAMPA';
     
     
         objDescriptor.addMultiple(arString, TypeDefinition.char);

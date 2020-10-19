@@ -10,6 +10,7 @@ import { StatoPrenotazionePipe } from './stato-prenotazione.pipe';
 import { AmbitoNewsPipe } from './ambito-news.pipe';
 import { GiorniPrevistiPipe } from './giorni-previsti.pipe';
 import { ClasseDocumentoPipe } from './classe-documento.pipe';
+import { TipomasterdocumentoPipe } from './tipomasterdocumento.pipe';
 
 @NgModule({
     declarations: [LabelGiornoPipe, 
@@ -22,7 +23,8 @@ import { ClasseDocumentoPipe } from './classe-documento.pipe';
                    StatoPrenotazionePipe, 
                    AmbitoNewsPipe, 
                    GiorniPrevistiPipe, 
-                   ClasseDocumentoPipe],
+                   ClasseDocumentoPipe, 
+                   TipomasterdocumentoPipe],
     imports: [],
     exports: [LabelGiornoPipe, 
               StrutturaCampoPipe, 
@@ -33,7 +35,9 @@ import { ClasseDocumentoPipe } from './classe-documento.pipe';
               StatoSlotPipe,
               StatoPrenotazionePipe, 
               AmbitoNewsPipe,
-              GiorniPrevistiPipe]
+              GiorniPrevistiPipe,
+              ClasseDocumentoPipe, 
+              TipomasterdocumentoPipe]
 })
 export class PipesModule{}
 

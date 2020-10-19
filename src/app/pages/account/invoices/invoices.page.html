@@ -39,8 +39,9 @@
       <ion-item *ngFor="let ricevuta of listRicevute" button (click)="onClickElement(ricevuta)">
         <ion-icon slot="start" class="icon-left" color ="" name="document-text-outline"></ion-icon>
         <ion-label>
-          <h3>{{ricevuta.NOTESTAMPA}}</h3>
+          <h3>{{ricevuta.TIPOLOGIA | tipomasterdocumento}} num. {{ricevuta.NUMEROSTAMPA}}</h3>
           <p>Emessa il: {{ricevuta.DATADOCUMENTO | date : 'dd/LL/yyyy' }}</p>
+          <p *ngIf="ricevuta.NOTESSTAMPA && ricevuta.NOTESSTAMPA.length !== 0">{{ricevuta.NOTESSTAMPA}}</p>
         </ion-label>
         <ion-chip color="primary" slot="end">{{ricevuta.TOTDOCUMENTO | currency: 'EUR'}}</ion-chip>
         <!-- <ion-badge color="light" slot="end">{{ricevuta.TOTDOCUMENTO | currency: 'EUR'}}</ion-badge> -->

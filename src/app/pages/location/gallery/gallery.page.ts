@@ -51,7 +51,7 @@ export class GalleryPage implements OnInit {
     }
   }
 
-  close() {
+  close(params:any) {
     this.modalCtrl.dismiss();
   }
 

@@ -45,7 +45,7 @@ export class ButtonCard {
             newBtn = new ButtonCard();
             newBtn.title = 'Prenota un campo';
             newBtn.subtitle = 'organizza un incontro con i tuoi amici';
-            newBtn.nameicon = 'chatbubbles-outline';
+            newBtn.nameicon = 'calendar';
             newBtn.sloticon = "start";
             newBtn.color = "primary";
             newBtn.iconLink = true;

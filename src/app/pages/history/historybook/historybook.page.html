@@ -32,10 +32,10 @@
           <ion-button layout="icon-top" fill="clear" size="large" (click)="onClickTrash()">
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>
-          <ion-button fill="clear" size="large" href="{{'mailto:'+docPianificazione['_EMAIL_Location']+'?subject=Prenotazione numero '+docPianificazione.PROGRESSIVO}}">
+          <ion-button *ngIf="docPianificazione && docPianificazione['_EMAIL_Location']" fill="clear" size="large" href="{{'mailto:'+docPianificazione['_EMAIL_Location']+'?subject=Prenotazione numero '+docPianificazione.PROGRESSIVO}}">
             <ion-icon name="mail-outline"></ion-icon>
           </ion-button>
-          <ion-button fill="clear" size="large" (click)="onShare(docPianificazione)">
+          <ion-button  fill="clear" size="large" (click)="onShare(docPianificazione)">
             <ion-icon name="share-social-outline"></ion-icon>
           </ion-button>
         </div>

@@ -107,6 +107,15 @@ export class AperturaLocation extends IDDocument {
         return this.APERTOCHIUSO;
     }
 
+    get isAlwaysOpen(){
+        if (this.isOpen() && !this.DALLE1 && !this.DALLE2){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     /**
      * Ritorna l'orario impostato minore o maggiore di apertura o chiusura
      * UNDEFINED se non trovato oppure se la Location è chiusa

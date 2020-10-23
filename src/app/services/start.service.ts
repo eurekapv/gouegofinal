@@ -508,33 +508,14 @@ newFilterCorsi(idLocation: string) {
 }
 
 
-/**
- * Richiede al server le Categorie Eta
- * @param docUser Documento Utente per estrarre corsi solo dedicati all'utente
- */
-requestCorsi(docUser?:Utente, ricezione?: boolean) {
-  const actualStartConfig = this._startConfig.getValue();
-  const listSport = this.sportService.actualListSport;
-  const listCategoriaEta = this.categoriaEtaService.actualListCategorieEta;
-  const listLivelli = this.livelloService.actualListLivelli;
-
-
-  //Preparo il Servizio Corsi con le liste di decodifica
-  this.corsoService.decodeListEta = listCategoriaEta;
-  this.corsoService.decodeListLivelli = listLivelli;
-  this.corsoService.decodeListSport = listSport;
-
-
- 
-  //Chiamo il servizio per il recupero corsi
-  return this.corsoService
-      .request(actualStartConfig, 
-               docUser);            
-}
 
 requestCorsoById(idCorso: string){
   const actualStartConfig = this._startConfig.getValue();
   return this.corsoService.requestById(actualStartConfig, idCorso);
+}
+
+newRequestCorsoById(idcorso: string){
+  return this.corsoService.newRequestById(idcorso);
 }
 
 //#region coursescheduler
@@ -579,6 +560,8 @@ requestCorsoById(idCorso: string){
 
 //#endregion
 
+////#region corsi
+
 
 
 //Ritorna il corso selezionato nel servizio
@@ -586,11 +569,7 @@ get selectedCorso() {
   return this.corsoService.selectedCorso;
 }
 
-//Richiede il programma del Corso
-requestCorsoProgramma(idCorso: string) {
-  const actualStartConfig = this._startConfig.getValue();
-  return this.corsoService.requestCorsoProgramma(actualStartConfig, idCorso);
-}
+
 //#endregion
 
 //#region UTENTE

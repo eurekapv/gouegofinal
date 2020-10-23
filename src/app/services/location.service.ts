@@ -271,6 +271,7 @@ export class LocationService {
       let daySlot = weekTemplate.getSlotDay(elApertura.GIORNO);
       let minDateTime: Date;
       let maxDateTime: Date;
+
       //APERTO
       if (elApertura.APERTOCHIUSO) {
 
@@ -279,7 +280,8 @@ export class LocationService {
         //Imposto orari standard di apertura
         daySlot.setStandardTime();
 
-        //Ora devo recuperare ora iniziale e finale definite sulla apertura location
+        //Ora devo recuperare ora iniziale e finale definite 
+        //sulla apertura location
         minDateTime = elApertura.getOrario('min');
         maxDateTime = elApertura.getOrario('max');
 
@@ -288,6 +290,13 @@ export class LocationService {
           daySlot.STARTTIME = minDateTime;
           daySlot.ENDTIME = maxDateTime;
 
+        }
+        else {
+          //Vuol dire che è aperto tutto il giorno
+          let adesso = new Date();
+          daySlot.STARTTIME = new Date(adesso.getFullYear(), adesso.getMonth(), adesso.getDate(), 0,0,0);
+          daySlot.ENDTIME = new Date(adesso.getFullYear(), adesso.getMonth(), adesso.getDate(), 23,59,59);
+          
         }
 
       }

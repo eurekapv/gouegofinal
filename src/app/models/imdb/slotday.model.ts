@@ -1,7 +1,8 @@
 import { SlotTime } from './slottime.model';
 import { PrenotazionePianificazione } from '../prenotazionepianificazione.model';
-import { MyDateTime } from '../../library/models/mydatetime.model';
+import { MyDateTime, TypePeriod } from '../../library/models/mydatetime.model';
 import { LogApp } from '../log.model';
+import { StatoSlot } from '../valuelist.model';
 
 export class SlotDay {
     WEEKDAY:    number;
@@ -179,7 +180,14 @@ export class SlotDay {
                         }
                         else if (findStart) {
                             //Ho trovato l'inizio e non ho ancora finito
-                            element.selected = true;
+
+                            //Qua in mezzo c'e' qualcosa di chiuso o occupato e quindi mi devo fermare
+                            if (element.STATO == StatoSlot.chiuso || element.STATO == StatoSlot.occupato) {
+                                break;
+                            }
+                            else {
+                                element.selected = true;
+                            }
                         }
                     }
                     
@@ -188,6 +196,7 @@ export class SlotDay {
             }
 
         }
+
         //Lo faccio fuori dagli If cosi creo sempre un oggetto
         //Qui cerco di creare un oggetto di PrenotazionePianificazione da restituire
         docPianificazione = this.getPrenotazionePianificazione();
@@ -211,12 +220,22 @@ export class SlotDay {
                 if (elSlot.selected) {
                     if (findStart) {
                         docPianificazione.DATAORAFINE = elSlot.END;
+                        //Nel caso lo slot di End sia alle 00:00 allora sono le 00:00 del giorno seguente
+                        if (elSlot.END.getHours() == 0 || elSlot.END.getMinutes() == 0) {
+                            docPianificazione.DATAORAFINE = MyDateTime.calcola(elSlot.END, 1, TypePeriod.days);
+                        }
+
                         docPianificazione.DURATAORE = MyDateTime.durataOre(docPianificazione.DATAORAINIZIO, docPianificazione.DATAORAFINE);
                     }
                     else {
                         findStart = true;
                         docPianificazione.DATAORAINIZIO = elSlot.START;
                         docPianificazione.DATAORAFINE = elSlot.END;
+                        
+                        if (elSlot.END.getHours() == 0 || elSlot.END.getMinutes() == 0) {
+                            docPianificazione.DATAORAFINE = MyDateTime.calcola(elSlot.END, 1, TypePeriod.days);
+                        }
+
                         docPianificazione.DURATAORE = MyDateTime.durataOre(docPianificazione.DATAORAINIZIO, docPianificazione.DATAORAFINE);
                     }
                 }

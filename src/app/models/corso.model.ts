@@ -86,7 +86,6 @@ export class Corso extends IDDocument {
     let arDate = ['DATAINIZIO','DATAFINE','ISCRIZIONEDAL','ISCRIZIONEAL'];
     let arDateTime =[];
     let arTime = ['ORAINIZIO'];
-    let arCollection = ['_SETTIMANA', 'CORSOPROGRAMMA','PIANIFICAZIONECORSO'];
 
     objDescriptor.className = 'Corso';
     objDescriptor.classWebApiName = 'CORSO';
@@ -100,7 +99,10 @@ export class Corso extends IDDocument {
     objDescriptor.addMultiple(arDate, TypeDefinition.date);
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
-    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+
+    objDescriptor.addCollection('CORSOPROGRAMMA','CorsoProgramma','IDCORSO');
+    objDescriptor.addCollection('PIANIFICAZIONECORSO','PianificazioneCorso','IDCORSO');
+
 
     objDescriptor.setRelation('IDSPORT','Sport');
     objDescriptor.setRelation('IDAREAOPERATIVA','Area');

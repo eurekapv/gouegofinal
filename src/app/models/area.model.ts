@@ -35,7 +35,10 @@ export class Area extends IDDocument {
       this.AREAPAYMENTSETTINGS=[];
       
       //0 indica che è sempre possibile aggiornare le presenze (dal server non arriva nulla)
-      this.APPGAPOREPRESENZE = 0;
+      if (!onlyInstance){
+
+        this.APPGAPOREPRESENZE = 0;
+      }
 
     }
 

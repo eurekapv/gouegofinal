@@ -78,7 +78,7 @@
   <div *ngIf="ricevuti && bookable">
     
     <!-- TITOLO SLOT TIME -->
-    <ion-item class="item-transparent">
+    <ion-item class="item-transparent" *ngIf="actualSlotDay.APERTOCHIUSO">
       <ion-label class="ion-padding-horizontal">SCEGLI L'ORARIO:</ion-label>
       <ion-spinner name="circular" color="primary" *ngIf="actualSlotDay._TEMPLATELOCK"></ion-spinner>
     </ion-item>

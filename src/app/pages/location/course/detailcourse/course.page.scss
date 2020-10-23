@@ -10,8 +10,14 @@
     font-size: 25px;
 }
 
-.title{
+//card titolo
+ion-card.title{
     --background: var(--ion-color-light);
+
+    //descrizione corso
+    ion-card-content span{
+        font-style: italic;
+    }
 }
 
 

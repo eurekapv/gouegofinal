@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Corso } from '../models/corso.model';
@@ -11,6 +11,8 @@ import { Sport } from '../models/sport.model';
 import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { Utente } from '../models/utente.model';
+import { RequestDecode, RequestParams } from '../library/models/requestParams.model';
+import { DocstructureService } from '../library/services/docstructure.service';
 
 
 
@@ -26,6 +28,14 @@ export class CourseService {
   private _decodeListLivelli: Livello[];
   private _decodeListEta: CategoriaEta[];
   private _selectedCorso = new BehaviorSubject<Corso>(new Corso());
+
+
+  constructor(
+    private docStructureService: DocstructureService,
+    private apiService: ApicallService
+  ){
+
+  }
 
 
 
@@ -69,7 +79,7 @@ export class CourseService {
     return this._filterCorsi;
   }
 
-  constructor(private apiService: ApicallService) { }
+
 
   /**
    * Effettua una chiamata al server per il recupero dei corsi
@@ -78,57 +88,6 @@ export class CourseService {
    * @param docUser Documento Utente loggato. Se presente i corsi vengono proposti solo quelli validi all'utente
    */
 
-  request (config: StartConfiguration, docUser?:Utente) {
-    return new Promise ((resolve, reject)=>{
-
-      let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
-      const doObject = 'CORSO';
-      
-  
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
-
-      let myUrl = config.urlBase + '/' + doObject;  
-  
-      let myParams = this.getHttpParamsFilter(this._filterCorsi);
-      
-      //Elimino i corsi presenti
-      this.emptyCorsi();
-
-      //Effettuo la chiamata
-      this.apiService
-          .httpGet(myUrl, myHeaders, myParams)
-          .pipe(map(data => {
-            return data.CORSO
-          }))
-          .subscribe( resultData => {
-  
-            if (resultData) {
-              resultData.forEach(element => {
-      
-                let newCorso = new Corso();
-                newCorso.setJSONProperty(element);
-                
-                //Decodifico i campi chiave
-                newCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
-      
-                //Decodifico i campi chiave
-                newCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
-      
-                //Decodifico i campi chiave
-                newCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
-      
-                this.addCorso(newCorso); 
-                resolve();     
-              });
-            }
-          }, error=>{
-            reject(error);
-          })
-    })
-  }
 
 
   requestById (config: StartConfiguration, idCorso: string, numLivelli?:string) {
@@ -143,9 +102,6 @@ export class CourseService {
       const doObject = 'CORSO';
       
   
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
 
       myHeaders = myHeaders.set('child-level', numLivelli);
       let myUrl = config.urlBase + '/' + doObject;  
@@ -185,6 +141,46 @@ export class CourseService {
           })
     })
   }
+
+  newRequestById(idCorso: string){
+    return new Promise ((resolve, reject) => {
+      //preparo il filtro
+      let filtroCorso = new Corso(true);
+      filtroCorso.ID=idCorso;
+
+      //preparo i parametri per decodificare
+      let params = new RequestParams();
+      params.decode = new RequestDecode();
+      params.decode.active = true;
+
+
+       //faccio la richiesta
+       this.docStructureService.requestNew(filtroCorso, params)
+       .then((listCorsi:Corso[]) => {
+
+          console.log(listCorsi);
+          //se è arrivato un corso
+          if (listCorsi&&listCorsi!=[]) {
+            
+            //ora richiedo anche il programma
+            this.docStructureService.loadCollection(listCorsi[0], 'CORSOPROGRAMMA')
+            .then(() => {
+              resolve(listCorsi[0]);
+
+            })
+            .catch(error => {
+              reject(error);
+            })
+          }
+          else{
+            resolve();
+          }
+      })
+      .catch(error => {
+        reject(error);
+      })
+  })
+}
 
 
   /**
@@ -250,49 +246,5 @@ export class CourseService {
     this._listCorsi.next([]);
   }
 
-  /**
-   * Chiama il server per il recupero del programma di corso, alla ricezione emette le modifiche
-   * su selectedCorso di tipo Observable
-   * @param config Configurazione Call
-   * @param idCorso idCorso di cui far richiesta
-   */
-  requestCorsoProgramma(config: StartConfiguration, idCorso: string) {
-    return new Promise ((resolve,reject)=>{
-      let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
-      const doObject = 'CORSOPROGRAMMA';
-      
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
 
-      
-      let myUrl = config.urlBase + '/' + doObject; 
-      let myParams = new HttpParams().set('IDCORSO', idCorso);
-  
-      this.apiService
-          .httpGet(myUrl, myHeaders, myParams)
-          .pipe(map(data => {
-              return data.CORSOPROGRAMMA
-          }))
-          .subscribe(returnData => {
-              let myCorso = this._listCorsi.getValue().find(element => {
-                return (element.ID == idCorso)
-              });
-              if (myCorso) {
-                //Imposto la collection
-                myCorso.setCollectionCorsoProgramma(returnData);
-                this._selectedCorso.next(myCorso);
-                resolve();
-              }
-              else
-              {
-                reject('corso non trovato');
-              }
-          },
-          error=>{
-            reject(error);
-          })
-    })
-  }
 }

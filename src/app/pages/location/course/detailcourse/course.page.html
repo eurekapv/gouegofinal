@@ -1,203 +1,203 @@
 <ion-header class="ion-no-border">
-    <ion-toolbar color="primary">
+  <ion-toolbar color="primary">
       <ion-buttons slot="start">
         <ion-back-button defaultHref="/"></ion-back-button>
       </ion-buttons>
       <ion-title>{{ myCorso.TIPO | tipoCorso }}</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <ion-card class="title">
-      <ion-item color="light" button="false" lines="none">
-        <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
-        <ion-label>
-          <h1 class="ion-text-wrap">
-            {{ myCorso.DENOMINAZIONE }}
-          </h1>
-          <h3 class="ion-text-wrap">
-            {{ myCorso._DESCRSPORT }}
-          </h3>
-        </ion-label>
-      </ion-item>
+  </ion-toolbar>
+</ion-header>
 
-    
+<ion-content>
+  <ion-card class="title">
+    <ion-item color="light" button="false" lines="none">
+      <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
+      <ion-label>
+        <h1 class="ion-text-wrap">
+          {{ myCorso.DENOMINAZIONE }}
+        </h1>
+        <h3 class="ion-text-wrap">
+          {{ myCorso['_DENOMINAZIONE_Sport'] }}
+        </h3>
+      </ion-label>
+    </ion-item>
+  
     <ion-card-content 
       *ngFor="let programma of myCorso.CORSOPROGRAMMA"
-      class="ion-padding-horizontal">
-
-        <div [innerHTML]="programma.TESTOHTML"></div> 
+      class="ion-padding-horizontal"
+    >
+    <p>
+      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+      <span [innerHTML]="programma.TESTOHTML"></span> 
+    </p>
 
     </ion-card-content>
+</ion-card>
 
 
+  <ion-list class="ion-no-padding">
+  <!-- GIORNATE -->
+    <ion-item-group>
+      <ion-item-divider color="light">
+        <ion-label>
+          <h2>Quando</h2>
+        </ion-label>
+        <ion-label slot="end" *ngIf="myCorso.NUMEROLEZIONI">
+          <p class="num-lezioni">{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</p>
+        </ion-label>
+      </ion-item-divider>
 
-  </ion-card>
-
-
-    <ion-list class="ion-no-padding">
-    <!-- GIORNATE -->
-      <ion-item-group>
-        <ion-item-divider color="light">
-          <ion-label>
-            <h2>Quando</h2>
-          </ion-label>
-          <ion-label slot="end" *ngIf="myCorso.NUMEROLEZIONI">
-            <p class="num-lezioni">{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</p>
-          </ion-label>
-        </ion-item-divider>
-
-        <!-- ORA E DURATA -->
-        <ion-grid>
-          <ion-row>
-            <ion-col size="6" size-sm="6">
-              <ion-button 
-                  size="small" 
-                  color="primary" 
-                  expand="block" 
-                  fill="outline">
-    
-                <ion-icon name="time" slot="start"></ion-icon>
-                {{myCorso.ORAINIZIO | date:'HH:mm'}}
-              </ion-button>
-            </ion-col>
-    
-            <ion-col size="6" size-sm="6">
-              <ion-button 
+      <!-- ORA E DURATA -->
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6" size-sm="6">
+            <ion-button 
                 size="small" 
                 color="primary" 
                 expand="block" 
                 fill="outline">
-                <ion-icon name="infinite" slot="start"></ion-icon>
-                {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
-              </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+  
+              <ion-icon name="time" slot="start"></ion-icon>
+              {{myCorso.ORAINIZIO | date:'HH:mm'}}
+            </ion-button>
+          </ion-col>
+  
+          <ion-col size="6" size-sm="6">
+            <ion-button 
+              size="small" 
+              color="primary" 
+              expand="block" 
+              fill="outline">
+              <ion-icon name="infinite" slot="start"></ion-icon>
+              {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
 
-      
-          <!-- GIORNATA SETTIMANA -->
-            <table style="width: 100%;">
-              <tr>
-                <td class="ion-text-center" *ngFor="let giorno of myCorso._SETTIMANA">
-                  <ion-button 
-                      [color]="giorno.selected? 'primary':'secondary'" 
-                      size="small" 
-                      [fill]="giorno.selected ?'solid':'outline'">
-                    {{giorno.xsLabel | uppercase}}
-                  </ion-button>
-                </td>
-              </tr>
-            </table>
+    
+        <!-- GIORNATA SETTIMANA -->
+          <table style="width: 100%;">
+            <tr>
+              <td class="ion-text-center" *ngFor="let giorno of myCorso._SETTIMANA">
+                <ion-button 
+                    [color]="giorno.selected? 'primary':'secondary'" 
+                    size="small" 
+                    [fill]="giorno.selected ?'solid':'outline'">
+                  {{giorno.xsLabel | uppercase}}
+                </ion-button>
+              </td>
+            </tr>
+          </table>
 
-          <ion-item button="false" lines="none">
-            <ion-label>
-              <p *ngIf="myCorso.tempoCorso()=='next'">dal {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}} al {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
-              <p *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
-              <p *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
-            </ion-label>
-              <ion-button 
-                  size="small" 
-                  fill="outline"
-                  slot="end"
-                  (click)="onClickCardCalendar()">
-                  <ion-icon slot="start" name="calendar"></ion-icon>
-                  Calendario
-              </ion-button>
+        <ion-item button="false" lines="none">
+          <ion-label>
+            <p *ngIf="myCorso.tempoCorso()=='next'">dal {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}} al {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+            <p *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+            <p *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+          </ion-label>
+            <ion-button 
+                size="small" 
+                fill="outline"
+                slot="end"
+                (click)="onClickCardCalendar()">
+                <ion-icon slot="start" name="calendar"></ion-icon>
+                Calendario
+            </ion-button>
 
-          </ion-item>
+        </ion-item>
 
-      </ion-item-group>
+    </ion-item-group>
 
-  <!-- ADATTO A -->
+<!-- ADATTO A -->
+<ion-item-group>
+
+  <ion-item-divider color="light">
+    <ion-label>
+      <h2>Rivolto a</h2>
+    </ion-label>
+  </ion-item-divider>
+
+  <ion-item>
+    <ion-icon 
+        name="stats-chart-outline"
+        slot="start" 
+        [color]="iconColor"></ion-icon>
+  <ion-label>{{myCorso['_DENOMINAZIONE_Livello']?myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-icon 
+        name="bookmark-outline" 
+        slot="start" 
+        [color]="iconColor"></ion-icon>
+    <ion-label>{{myCorso['_DESCTOOLTIP_CategoriaEta']?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-icon 
+      name="transgender-outline" 
+      slot="start" 
+      [color]="iconColor"></ion-icon>
+    <ion-label>{{myCorso.TARGETSESSO | targetSesso}}</ion-label>
+  </ion-item>
+
+  </ion-item-group>
+
+<!-- LOCATION --> 
+
   <ion-item-group>
 
     <ion-item-divider color="light">
       <ion-label>
-        <h2>Rivolto a</h2>
+        <h2>Dove</h2>
       </ion-label>
     </ion-item-divider>
 
-    <ion-item>
+    <!-- COMUNE -->
+    <ion-item *ngIf="myLocation?.COMUNE">
       <ion-icon 
-          name="stats-chart-outline"
+          name="home-outline" 
           slot="start" 
           [color]="iconColor"></ion-icon>
-    <ion-label>{{myCorso['_DENOMINAZIONE_Livello']?myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}</ion-label>
+      <ion-label>{{myLocation?.COMUNE}}</ion-label>
     </ion-item>
-  
-    <ion-item>
+
+    <!-- INDIRIZZO -->
+    <ion-item *ngIf="myLocation?.INDIRIZZO">
       <ion-icon 
-          name="bookmark-outline" 
-          slot="start" 
-          [color]="iconColor"></ion-icon>
-      <ion-label>{{myCorso['_DESCTOOLTIP_CategoriaEta']?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
+        name="navigate-outline" 
+        slot="start" 
+        [color]="iconColor">
+      </ion-icon>
+
+      <ion-label>
+        {{myLocation?.INDIRIZZO}}
+      </ion-label>
+
     </ion-item>
-  
-    <ion-item lines="none">
+
+    <ion-item *ngIf="myLocation?.TELEFONO">
       <ion-icon 
-        name="transgender-outline" 
+        name="call-outline" 
         slot="start" 
         [color]="iconColor"></ion-icon>
-      <ion-label>{{myCorso.TARGETSESSO | targetSesso}}</ion-label>
+      <ion-label>{{myLocation?.TELEFONO}}</ion-label>
     </ion-item>
 
-    </ion-item-group>
+  </ion-item-group>
+</ion-list>   
+<!-- END LOCATION -->
+</ion-content>
 
-  <!-- LOCATION --> 
-
-    <ion-item-group>
-
-      <ion-item-divider color="light">
-        <ion-label>
-          <h2>Dove</h2>
-        </ion-label>
-      </ion-item-divider>
-
-      <!-- COMUNE -->
-      <ion-item *ngIf="myLocation?.COMUNE">
-        <ion-icon 
-            name="home-outline" 
-            slot="start" 
-            [color]="iconColor"></ion-icon>
-        <ion-label>{{myLocation?.COMUNE}}</ion-label>
-      </ion-item>
-
-      <!-- INDIRIZZO -->
-      <ion-item *ngIf="myLocation?.INDIRIZZO">
-        <ion-icon 
-          name="navigate-outline" 
-          slot="start" 
-          [color]="iconColor">
-        </ion-icon>
-
-        <ion-label>
-          {{myLocation?.INDIRIZZO}}
-        </ion-label>
-
-      </ion-item>
-
-      <ion-item *ngIf="myLocation?.TELEFONO">
-        <ion-icon 
-          name="call-outline" 
-          slot="start" 
-          [color]="iconColor"></ion-icon>
-        <ion-label>{{myLocation?.TELEFONO}}</ion-label>
-      </ion-item>
-
-    </ion-item-group>
-  </ion-list>   
-  <!-- END LOCATION -->
-  </ion-content>
-
-  <ion-footer *ngIf="myCorso.tempoCorso() !== 'stop' && userLogged">
-    
-      <!-- <ion-button 
-          color="primary" 
-          fill="solid" 
-          expand="block"
-          (click)="onClickIscrizione()">
-        Iscriviti
-      </ion-button> -->
-    
-  </ion-footer>
+<ion-footer *ngIf="myCorso.tempoCorso() !== 'stop' && userLogged">
+  
+    <!-- <ion-button 
+        color="primary" 
+        fill="solid" 
+        expand="block"
+        (click)="onClickIscrizione()">
+      Iscriviti
+    </ion-button> -->
+  
+</ion-footer>

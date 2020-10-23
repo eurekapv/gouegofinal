@@ -43,6 +43,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
   historyId: string;
   myArea:Area;
 
+
+
   //i metodi di pagamento possibili
   arPayments : PaymentConfiguration[] = [];
 
@@ -67,7 +69,6 @@ export class HistorybookPage implements OnInit, OnDestroy {
   //In paramMap leggo IDPrenotazione
   ngOnInit() {
 
-    
 
     let result=true; 
     this.loadingController.create({

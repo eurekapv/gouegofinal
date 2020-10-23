@@ -24,16 +24,15 @@ export class CoursePage implements OnInit, OnDestroy {
   userLogged = false;
   subUserLogged: Subscription;
 
-  constructor(private startService: StartService,
-              private actRouter: ActivatedRoute,
-              private navCtrl: NavController,
-              private mdlController: ModalController,
-              private docStructureService : DocstructureService,
-              private loadingController : LoadingController,
-              private toastController : ToastController) {
-
-                
-              }
+  constructor(
+    private startService: StartService,
+    private actRouter: ActivatedRoute,
+    private navCtrl: NavController,
+    private mdlController: ModalController,
+    private docStructureService : DocstructureService,
+    private loadingController : LoadingController,
+    private toastController : ToastController
+  ) {}
               
               ngOnInit() {
                 let idCorso = '';
@@ -41,52 +40,43 @@ export class CoursePage implements OnInit, OnDestroy {
                   if (param.has('courseId')) {
                     
                     //ID Corso
-                    idCorso = param.get('courseId');
-              
-                    
-                      //preparo il filtro
-                      let filtroCorso = new Corso(true);
-                      filtroCorso.ID=idCorso;
+                    idCorso = param.get('courseId')
 
-                      //preparo i parametri per decodificare
-                      let params = new RequestParams();
-                      params.decode = new RequestDecode();
-                      params.decode.active = true;
+                    //creo il loading
 
-                      this.loadingController.create({
-                        spinner: "circular",
-                        message: 'Caricamento',
-                        backdropDismiss: true
-                      })
-                      .then(elLoading => {
-                        elLoading.present();
-                        
-                        //faccio la richiesta
-                        this.docStructureService.requestNew(filtroCorso, params).then(corso => {
+                    this.loadingController.create({
+                      spinner: "circular",
+                      message: 'Caricamento',
+                      backdropDismiss: true
+                    })
+                    .then(elLoading => {
+                      elLoading.present();
+                      
+                      //faccio la richiesta
+                      this.startService.newRequestCorsoById(idCorso)
+                      .then((corso:Corso) => {
+
+                        if (corso) {
+
+                          //se ho trovato un corso, lo prendo
+                          this.myCorso = corso;
+
                           console.log(corso);
-                          
-                          if (corso&&corso!=[]) {
-                            //se ho trovato un corso, lo prendo
-                            this.myCorso = corso[0];
-
-                            //ora richiedo la location
-                            this.requestLocationById(this.myCorso.IDLOCATION);
-                          }
-                          else{
-                            elLoading.dismiss();
-                            this.showMessage('Non ho trovato nessun corso');
-                          }
-                        })
-                        .catch(error => {
+        
+                          //ora richiedo la location
+                          this.requestLocationById(this.myCorso.IDLOCATION);
+                        }
+                        else{
                           elLoading.dismiss();
-                          this.showMessage('Errore di connessione');
-                          console.log(error);
-                        })
+                          this.showMessage('Non ho trovato nessun corso');
+                        }
                       })
-
-
-
-      
+                      .catch(error => {
+                        elLoading.dismiss();
+                        this.showMessage('Errore di connessione');
+                        console.log(error);
+                      })
+                    })      
               
                     //Controllo se l'utente è loggato
                     this.subUserLogged = this.startService.utenteLogged.subscribe(element => {

@@ -206,8 +206,7 @@ export class HistorylistPage implements OnInit {
    */
   onChangeSegment(value)
   {
-    //this.selectedView=value.detail.value;
-    console.log(this.selectedView);
+    
     switch (this.selectedView) {
       case 'prenotazioni':
         this.requestPrenotazioni();

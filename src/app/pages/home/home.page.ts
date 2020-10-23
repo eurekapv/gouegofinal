@@ -480,8 +480,6 @@ export class HomePage implements OnInit, OnDestroy{
         handler: ()=>{
           //Chiedo al servizio di cambiare l'Area Selezionata
           this.startService.selectAreaByID(iterator.ID);
-          
-          console.log(this.startService.areaSelectedValue);
         }
       }
 

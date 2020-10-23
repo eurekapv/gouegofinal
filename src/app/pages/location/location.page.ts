@@ -107,7 +107,7 @@ export class LocationPage implements OnInit, OnDestroy {
       .then(() => {
         //quando la modale si chiude, riblocco lo schermo in verticale
         window.screen.orientation.lock("portrait");
-        console.log('Ho bloccato lo schermo in verticale');
+        
 
       })
     });
@@ -122,7 +122,7 @@ export class LocationPage implements OnInit, OnDestroy {
    * @param btn Bottone utilizzato
    */
   onClickButtonCard(btn: ButtonCard) {
-    console.log('qui');
+    
     switch (btn.functionCod) {
       case 'book':
         //Prenotazioni

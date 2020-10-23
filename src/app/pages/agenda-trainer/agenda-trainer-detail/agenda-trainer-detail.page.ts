@@ -72,7 +72,7 @@ export class AgendaTrainerDetailPage implements OnInit {
 
       //recupero id della pianificazione
       this.idPianificazione = params['params']['pianificazioneCorsoId'];
-      console.log (params);
+      
 
       if(this.startService.getPianificazioneTrainerById(this.idPianificazione)){
         
@@ -274,7 +274,7 @@ export class AgendaTrainerDetailPage implements OnInit {
   }
 
   onChangeSegment(event: any){
-    console.log(event);
+    
 
 
     if(event['detail']['value'] == 'presente'){

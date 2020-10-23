@@ -30,10 +30,10 @@ export class PhotoService {
     this.platform = platform;
 
     if (this.platform.is('hybrid')) {
-      console.log('Hibrida');
+      //hibrida
     }
     else {
-      console.log('Desktop');
+      //Desktop
     }
    }
 

@@ -288,14 +288,14 @@ export class PaymentConfiguration {
      * Controlla se le impostazioni sono valide
      */
     get isValid(): boolean {
-        console.log('bene');
+        
 
         if (!this.clientIDProduction){
-            console.log('Male');
+            
             this.clientIDProduction = '';
         }
         if (!this.clientIDSandbox){
-            console.log('Male');
+            
             this.clientIDSandbox = '';
         }
         

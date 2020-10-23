@@ -115,14 +115,13 @@ export class HistorybookPage implements OnInit, OnDestroy {
     let idPren = '';
     let idPian = '';
 
-    console.log(historyId);
+    
 
     if (historyId.length !== 0) {
       idPren = historyId.substr(0,36);
       idPian = historyId.substr(37,36);
 
-      console.log('IDPre: ' + idPren);
-      console.log('IDPia: ' + idPian);
+      
 
       if (idPren.length !== 36 || idPian.length !== 36) {
         result = false;
@@ -166,7 +165,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                                                       //Imposto i dati per i pagamenti
                                                                       this.setPaymentFromArea();
 
-                                                                      console.log(this.myPrenotazione)
+                                                                      
                                                                       //Qui è arrivato tutto esattamente
                                                                       this.loadingController.dismiss();
                                                                   })

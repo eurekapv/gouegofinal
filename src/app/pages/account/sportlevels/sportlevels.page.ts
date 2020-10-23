@@ -63,42 +63,8 @@ export class SportlevelsPage implements OnInit {
   }
 
 
-  // async onOldShare(id: string)
-  // {
-  //   if (!this.startService.isDesktop){
 
-  //     console.log('bp');
-  //     //recupero il livello
-  //     let livello:UtenteLivello;
-  //     livello= await this.utente.UTENTILIVELLI.find(elem=>{
-  //       return elem.ID==id;
-  //     });
-  //     console.log(livello);
-  //     //compongo il messaggio
-  //     let messaggio: string = this.utente.NOME + ' ha ottenuto il livello ' + livello.DESCRLIVELLO +  ' a ' + livello.DESCRSPORT + '! Complimenti!!';
-  //       console.log(messaggio);
-  //     //recupero l'immagine della card
-  //     let card=document.getElementById(id);
-  //     console.log(card);
-  //     let urlImage: string = await htmlToImage.toJpeg(card,{
-  //       width:350,
-  //       height:600
-        
-  //     })
-  //     console.log(urlImage);
-  //     //recupero l'url del sito aziendale
-  //     let area=this.startService.areaSelectedValue;
-  //     console.log(area);
-  //     let urlArea=await area.findAreaLinkByPageType(PageType.home);
-  //     console.log(urlArea);
-  //     if(urlArea){
-  //       this.socialSharing.share(messaggio,'',urlImage, urlArea.REFERURL);
-  //     }
-  //     else{
-  //       this.socialSharing.share(messaggio,'',urlImage);
-  //     }
-  //   }    
-  // }
+  
 
 
   /**
@@ -113,7 +79,7 @@ export class SportlevelsPage implements OnInit {
 
     if (!this.startService.isDesktop || this.startService.isDesktop){
 
-      console.log('bp');
+      
 
       //recupero il livello
       let docLivello:UtenteLivello;
@@ -123,15 +89,14 @@ export class SportlevelsPage implements OnInit {
 
       if (docLivello) {
 
-        console.log('Creo l\'immagine per');
-        console.log(docLivello);
+
 
         //compongo il messaggio
         messaggio = this.utente.NOME + ' ha ottenuto il livello ' + docLivello.DESCRLIVELLO +  ' a ' + docLivello.DESCRSPORT + '! Complimenti!!';
           
         //recupero l'immagine della card
         let DOMCard=document.getElementById(sportLevelPrimaryKey);
-        console.log(DOMCard);
+        
 
         //Immagine in SVG
         if (method == 'SVG') {
@@ -150,7 +115,7 @@ export class SportlevelsPage implements OnInit {
           htmlToImage.toJpeg(DOMCard, options)
           .then(urlImage => {
             console.log(urlImage);
-            console.error('OK qui!');
+            
             
             //recupero l'url del sito aziendale
             let area=this.startService.areaSelectedValue;

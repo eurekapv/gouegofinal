@@ -72,7 +72,7 @@ export class CalendarscrollComponent implements OnInit {
       }
 
       this.sliderOpts.initialSlide = startSlide;
-      console.log('StartSlide: ' + startSlide);
+      
   }
 
 

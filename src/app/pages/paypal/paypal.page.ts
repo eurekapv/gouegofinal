@@ -126,7 +126,7 @@ export class PaypalPage implements OnInit{
             return actions.order.capture()
               .then((details) => {
                 // Show a success message to the buyer
-                console.log(details);
+                
                 this.onPaymentSuccess(details);
               })
               .catch(err => {

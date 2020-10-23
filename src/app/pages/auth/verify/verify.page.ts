@@ -131,7 +131,7 @@ export class VerifyPage implements OnInit {
       this.closeModal();
     }
      
-    console.log(this.params);
+    
 
 
     //recupero le decodifiche della lista sesso
@@ -344,7 +344,7 @@ export class VerifyPage implements OnInit {
  
          //Chiamo il servizio
 
-         console.log(this.docUtente);
+         
          this.startService
                .validationSendCodici(this.docRichiestaCodici, this.docUtente)
                .then((responseServer:AccountOperationResponse) => {
@@ -375,7 +375,7 @@ export class VerifyPage implements OnInit {
                 }
                 else{
                   //se il server ha risposto, ma non è riuscito ad inviare
-                  console.log(responseServer);
+                  
                   this.showMessage(customErrorMessage);
                 }
                })
@@ -628,7 +628,7 @@ export class VerifyPage implements OnInit {
     //recupero tutti i dati dal form
     if (this.formRegister.valid)
     {
-      console.log('bp');
+      
       this.docUtente.NOMINATIVO='';
       this.docUtente.NOME=this.formRegister.value.nome;
       this.docUtente.COGNOME=this.formRegister.value.cognome;

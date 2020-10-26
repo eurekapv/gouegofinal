@@ -283,28 +283,51 @@ export class HistorybookPage implements OnInit, OnDestroy {
     
     
 
-    for (const iterator of this.myArea.AREALINKS) {
-      if (iterator.TIPOURL==PageType.home){
-        url=iterator.REFERURL;
-        break;
-      }      
-    }
-    if(!url){
-      url='';
-    }
-    logo=this.startConfig.getUrlLogo();
-    messaggio=this.myPrenotazione.NOMINATIVO+' ha prenotato il '+docPianificazione.DATAORAINIZIO.toLocaleDateString()+' alle '
-      +docPianificazione.DATAORAINIZIO.toLocaleTimeString()+' presso '+this.startConfig.companyName+' '+docPianificazione['_INDIRIZZO_Location']
-      +' (Campo: '+docPianificazione['_DENOMINAZIONE_Campo']+', Attività: '+docPianificazione['_DENOMINAZIONE_Sport']+')';
-    oggetto='Prenotazione '+docPianificazione.PROGRESSIVO;
+    if (this.myPrenotazione && docPianificazione){
 
-    if(this.startService.isDesktop){
-      //share via mail su desktop
-      window.open('mailto:?subject='+oggetto+'&body='+messaggio);
+      for (const iterator of this.myArea.AREALINKS) {
+        if (iterator.TIPOURL==PageType.home){
+          url=iterator.REFERURL;
+          break;
+        }      
+      }
+      if(!url){
+        url='';
+      }
+      logo=this.startConfig.getUrlLogo();
+      messaggio=this.myPrenotazione.NOMINATIVO+' ha prenotato il '+docPianificazione.DATAORAINIZIO.toLocaleDateString()+' alle '+docPianificazione.DATAORAINIZIO.toLocaleTimeString();
+      
+      if (this.startConfig.companyName){
+        messaggio += ' presso '+this.startConfig.companyName;
+      }
+  
+      if (docPianificazione['_INDIRIZZO_Location']){
+        messaggio += ' '+docPianificazione['_INDIRIZZO_Location'];
+      }
+  
+      if (docPianificazione['_DENOMINAZIONE_Campo']){
+        messaggio += ' (Campo: '+docPianificazione['_DENOMINAZIONE_Campo'];
+      }
+  
+      if (docPianificazione['_DENOMINAZIONE_Sport']){
+        messaggio += ', Attività: '+docPianificazione['_DENOMINAZIONE_Sport']+')';
+      }
+  
+  
+      oggetto='Prenotazione '+docPianificazione.PROGRESSIVO;
+  
+      if(this.startService.isDesktop){
+        //share via mail su desktop
+        window.open('mailto:?subject='+oggetto+'&body='+messaggio);
+      }
+      else{
+        //share su mobile
+        this.socialSharing.share(messaggio,'',logo,url);
+      }
     }
+
     else{
-      //share su mobile
-      this.socialSharing.share(messaggio,'',logo,url);
+      this.showMessage('Errore nella condivisione');
     }
 
   }

@@ -26,17 +26,18 @@
     </ion-segment-button>
   </ion-segment> -->
 
-    <app-sport-scroll [selectedSport]="selectedSport" [sportList]="listLocationSport" (sportChanged)="onChangeSport($event)"></app-sport-scroll>
+    <app-sport-scroll [selectedSport]="selectedSport" [sportList]="listLocationSport" (sportChanged)="onChangeSport($event)" ></app-sport-scroll>
     <ion-list *ngIf="ricevuti && bookable" 
         class="item-campo ion-no-padding">
 
         <ion-slides 
               class="ion-no-margin ion-no-padding" 
               (ionSlideDidChange)="onDidChangeCampo($event)"
-              #sliderCampi>
+              #sliderCampi 
+        >
           <ion-slide *ngFor="let campo of availableFields; let i=index" >
 
-            <ion-item lines="none" class="item-campo">
+            <ion-item button (click)="onClickChangeCampo()" lines="none" class="item-campo">
               <ion-icon 
                   name="location" 
                   slot="start" 

@@ -158,7 +158,7 @@ export class CourseService {
        this.docStructureService.requestNew(filtroCorso, params)
        .then((listCorsi:Corso[]) => {
 
-          console.log(listCorsi);
+          
           //se è arrivato un corso
           if (listCorsi&&listCorsi!=[]) {
             

@@ -344,7 +344,7 @@ export class PswRecoveryPage implements OnInit {
                           //quando arriva la risposta chiudo il loading
                           elLoading.dismiss();
 
-                          console.log(risposta);
+                          
 
                           if (risposta.result) {
                             //se è andato tutto bene
@@ -404,7 +404,7 @@ export class PswRecoveryPage implements OnInit {
                     this.idUtente=risposta.idRefer;
                     this.descrUtente = risposta.descrRefer;
 
-                    console.log('Questo è IDUtente ricevuto -> ' + this.idUtente);
+                    
 
                     //Cambio lo stato della pagina
                     this.stato=PageState.cambioPsw;

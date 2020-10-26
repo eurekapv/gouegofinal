@@ -41,9 +41,11 @@ export class SlotTime extends IDDocument {
         let countWrapper = moment(startDate);
         let endWrapper = moment(endDate);
         
+        console.log('QUI');
 
         /** Mentre la data è inferiore o uguale */
-        while (countWrapper.isSameOrBefore(endWrapper)) {
+        //while (countWrapper.isSameOrBefore(endWrapper)) {
+        while (countWrapper.isBefore(endWrapper)) {
 
             //Al count aggiungo i minuti dello slot
             let endSlotWrapper = moment(countWrapper.toDate());

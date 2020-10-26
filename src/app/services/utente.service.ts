@@ -202,8 +202,7 @@ export class UtenteService {
 
     body = docUtenteUpdate.exportToJSON(paramExport);
     body = `{"docUtente": ${body}}`;
-    LogApp.consoleLog('Request Update utente');
-    LogApp.consoleLog(body);
+
 
     //faccio la richiesta
     this.apiService.httpPost(myUrl, myHeaders, myParams, body)
@@ -226,7 +225,7 @@ export class UtenteService {
         if (objDocument) {
             //l'operazione è andata a buon fine, restituisco l'utente
             docUtente.setJSONProperty(objDocument);
-            console.log(docUtente);
+            
             this._utente.next(docUtente);
             resolve(docUtente);
         }
@@ -313,7 +312,7 @@ export class UtenteService {
               bodyRequest = docRequestCode.exportToJSON(paramExport);
 
               bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-              console.log(bodyRequest);
+              
 
               //Faccio la chiamata POST
               this.apiService
@@ -443,7 +442,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
 
-    console.log('Richiesta di Registrazione: ' + bodyFinal);
+    
 
     //Faccio la chiamata POST
     this.apiService
@@ -515,7 +514,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
   bodyRequest = docRequestCode.exportToJSON(paramExport);
 
   bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-  console.log(bodyRequest);
+  
 
   //Faccio la chiamata POST
   this.apiService
@@ -635,7 +634,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
 
-    console.log('Richiesta di Registrazione: ' + bodyFinal);
+    
 
     //Faccio la chiamata POST
     this.apiService

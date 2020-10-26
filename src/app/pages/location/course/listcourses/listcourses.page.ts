@@ -140,10 +140,6 @@ export class ListcoursesPage implements OnInit {
   requestCorsi() {
     //quando faccio una richiesta di corsi, l'id location è sempre presente
     
-
-    console.log('filtro');
-    console.log(this.filtroCorsi);
-
     this.loadingCtrl.create({
       spinner: 'circular',
       message: 'Caricamento',
@@ -159,7 +155,7 @@ export class ListcoursesPage implements OnInit {
       //Eseguo la richiesta al server
       this.docStructureService.requestNew(this.filtroCorsi , params)
           .then(data => {
-              console.log('bp2');
+              
               //Chiudo il loading
               loading.dismiss();
 
@@ -214,10 +210,6 @@ export class ListcoursesPage implements OnInit {
           return isForUser;
         });
 
-        console.log ('tutti');
-        console.log (this.listCorsi);
-        console.log ('mioLivello');
-        console.log (this.listCorsiMioLivello)
     }
 
   }
@@ -247,8 +239,7 @@ export class ListcoursesPage implements OnInit {
         formModal.present();
 
         formModal.onWillDismiss().then((objReceived)=> {
-          console.log('bp');
-          console.log(objReceived);
+          
           if (objReceived.data.dismissFilter) {
             //Mi è arrivato un filtro da applicare
             this.onModalNewFilter(objReceived.data.dismissFilter);

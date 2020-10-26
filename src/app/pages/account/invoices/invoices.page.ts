@@ -66,8 +66,7 @@ export class InvoicesPage implements OnInit {
     let myDate = new Date(this.selectedYear);
     let anno = myDate.getFullYear();
 
-    console.log('Anno: ', anno);
-    
+        
 
     if(event){
       //La funzione è stata chiamata dal refresher
@@ -181,11 +180,11 @@ export class InvoicesPage implements OnInit {
   openMobile(blob: Blob){
     let fileName='Documento';         
     let filePath= this.file.cacheDirectory;      
-    console.log('percorso: '+filePath);  
+    
 
         this.file.writeFile(filePath, fileName, blob, { replace:true }).then((fileEntry) => {
 
-          console.log("File created!");          
+                  
           this.fileOpener.open(fileEntry.toURL(), blob.type)
             .then(() => console.log('File is opened'))
             .catch(err => console.error('Error openening file: ' + err));

@@ -154,7 +154,7 @@ export class UploadComponent implements OnInit {
       let base64 = '';
       this.convertBlobToBase64(this.loadedDesktopFile).then(strBase64 => {
         base64 = strBase64 as string;
-        console.log(base64);
+        
         this.submit(base64);
       });
 

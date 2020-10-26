@@ -112,12 +112,7 @@ export class HistorycoursePage implements OnInit {
   }
 
   debug(){
-    console.log('iscr');
-    console.log(this.myIscrizione);
-    console.log('corso');
-    console.log(this.myCorso);
-    console.log('location');
-    console.log(this.myLocation);
+
   }
 
   showAlert(messaggio: string)

@@ -80,8 +80,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     
       //Recupero dell'area selezionata
       this.docArea = this.startService.areaSelectedValue;
-      console.log('area');
-      console.log(this.docArea);
+      
       
       //Impostazione tipologie pagamento
       this.setPaymentConfig();
@@ -320,11 +319,11 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   setPaymentConfig() {
     this.arPaymentConfig = [];
     if (this.docArea) {
-      console.log(this.docArea);
+      
       let modePay = new Payment(this.docArea);
 
       this.arPaymentConfig = modePay.getPaymentFor(SettoreAttivita.settorePrenotazione);
-      console.log(this.arPaymentConfig);
+      
 
       if (this.arPaymentConfig) {
         //Con un solo metodo di pagamento lo imposto gia
@@ -418,8 +417,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
               let response : PaymentResult;
               response = data['data'];
-              console.log ('Risposta parsed');
-              console.log (response);
+              
 
               if (response.paymentExecuted&&response.result){
                 //E' andato tutto bene
@@ -535,9 +533,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
                 }
 
-                console.log('Salvo');
-                console.log(this.activePrenotazione);
-                console.log(this.docPianificazione);
+                
                 //Eseguo operazioni successive al salvataggio
                 this.onAfterSavePrenotazione();
 

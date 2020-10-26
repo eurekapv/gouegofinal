@@ -41,7 +41,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
           //Recupero l'utente
           this.utente = data; 
           this.createForm();       
-          console.log('bp');
 
       });
 

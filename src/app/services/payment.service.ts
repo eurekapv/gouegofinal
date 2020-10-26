@@ -30,12 +30,6 @@ export class PaymentService {
   this.paymentAmount = importo.toLocaleString('en-us', {minimumFractionDigits: 2});
   this.paymentConfig = paymentMode;
 
-  console.log ('Parametri passati al servizio: ');
-  console.log (this.paymentConfig);
-  console.log (this.paymentAmount);
-  console.log (this.currency);
-  console.log (this.description);
-  
   
   switch (this.paymentConfig.channel) {
     case PaymentChannel.paypal:
@@ -70,11 +64,7 @@ export class PaymentService {
           environment = 'PayPalEnvironmentSandbox';
         } 
 
-        console.log ('Parametri passati al plugin: ');
-        console.log (environment);
-        console.log (this.paymentAmount);
-        console.log (this.currency);
-        console.log (this.description);
+
         // Environments: PayPalEnvironmentNoNetwork, PayPalEnvironmentSandbox, PayPalEnvironmentProduction
         this.payPal.prepareToRender(environment, new PayPalConfiguration({
           // Only needed if you get an "Internal Service Error" after PayPal login!
@@ -82,8 +72,7 @@ export class PaymentService {
         })).then(() => {
           let payment = new PayPalPayment(this.paymentAmount, this.currency, this.description, 'sale');
           this.payPal.renderSinglePaymentUI(payment).then((res) => {
-            console.log ('Risposta del pagamento: ');
-            console.log(res);
+            
 
             // ora che il pagamento è andato a buon fine, creo la risposta
             let risposta = new PaymentResult(PaymentChannel.paypal);

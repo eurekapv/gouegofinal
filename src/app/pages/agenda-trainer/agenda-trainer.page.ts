@@ -40,7 +40,7 @@ export class AgendaTrainerPage implements OnInit {
 
     //recupero l'utente
     this.utente = this.startService.actualUtente;
-    console.log(this.utente);
+    
 
     //se sono un trainer
     if (this.utente.isTrainer || this.utente.isAssistenteTrainer){
@@ -73,7 +73,7 @@ export class AgendaTrainerPage implements OnInit {
         .then(result => {
 
           this.myListPianificazioni = result;
-          console.log(this.myListPianificazioni);
+          
           elLoading.dismiss();
         })
         .catch(error => {
@@ -105,11 +105,7 @@ export class AgendaTrainerPage implements OnInit {
     })
   }
 
-  onChangeFilter(){
-
-
-    // this.selectedDate 
-    console.log(new Date(this.selectedIsoDate));
+  onChangeFilter(){    
     this.selectedDate = (new Date(this.selectedIsoDate)); 
     this.requestImpegni();
   }
@@ -138,7 +134,7 @@ export class AgendaTrainerPage implements OnInit {
         .then(result => {
 
           this.myListPianificazioni = result;
-          console.log(this.myListPianificazioni);
+          
           event.target.complete();
         })
         .catch(error => {

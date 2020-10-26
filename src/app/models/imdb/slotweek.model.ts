@@ -23,8 +23,7 @@ export class SlotWeek {
 
         arGiorni.forEach(element => {
             let daySlot = new SlotDay();
-
-            //Imposto il giorno
+            //Imposto il giorno della settimana
             daySlot.WEEKDAY = element.value;
             this.SLOTDAYS.push(daySlot)
         })

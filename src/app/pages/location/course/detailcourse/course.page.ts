@@ -61,7 +61,7 @@ export class CoursePage implements OnInit, OnDestroy {
                           //se ho trovato un corso, lo prendo
                           this.myCorso = corso;
 
-                          console.log(corso);
+                          
         
                           //ora richiedo la location
                           this.requestLocationById(this.myCorso.IDLOCATION);

@@ -72,7 +72,7 @@ export class CourseschedulerService {
         }))
         .subscribe( resultData => {
   
-          LogApp.consoleLog(resultData);
+          
           
           if (resultData) {
             resultData.forEach(element => {
@@ -276,7 +276,7 @@ export class CourseschedulerService {
       myPostParams.exportOnlyPropertyModified = true;
       myPostParams.exportOnlyDocModified = true;
       
-      console.log('Fermati qui');
+      
       this.docStructureService.requestForFunction(docPianificazione, 'updatePresenze', null, myPostParams)
       .then((response:PostResponse) => {
         res(response);

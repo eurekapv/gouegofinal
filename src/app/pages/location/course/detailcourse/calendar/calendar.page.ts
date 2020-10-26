@@ -63,7 +63,7 @@ export class CalendarPage implements OnInit {
         //dismetto il loading e salvo il calendario
         elLoading.dismiss();
         this.calendarCorso = listCalendar;
-        console.log(this.calendarCorso);
+        
       })
       .catch(error => {
         //dismetto il loading e mostro l'errore

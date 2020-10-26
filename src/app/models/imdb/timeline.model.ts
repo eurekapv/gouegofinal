@@ -1,6 +1,6 @@
 import { Time } from '@angular/common';
 import { StatoSlot } from '../valuelist.model';
-import { stat } from 'fs';
+
 
 export class Timeline {
     private _start: Time;

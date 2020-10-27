@@ -272,6 +272,9 @@ export class LocationService {
       let minDateTime: Date;
       let maxDateTime: Date;
 
+      let middleMinTime: Date;
+      let middleMaxTime: Date;
+
       //APERTO
       if (elApertura.APERTOCHIUSO) {
 
@@ -285,10 +288,19 @@ export class LocationService {
         minDateTime = elApertura.getOrario('min');
         maxDateTime = elApertura.getOrario('max');
 
+        middleMinTime = elApertura.getOrario('middleMin');
+        middleMaxTime = elApertura.getOrario('middleMax');
+
         //Imposto gli orari di inizio e fine se ci sono
         if (minDateTime && maxDateTime) {
           daySlot.STARTTIME = minDateTime;
           daySlot.ENDTIME = maxDateTime;
+
+          //se ci sono gli orari intermedi, li imposto
+          if (middleMaxTime && middleMinTime){
+           daySlot.setChiusuraIntermedia(middleMinTime, middleMaxTime);
+          }
+  
 
         }
         else {

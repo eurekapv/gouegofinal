@@ -140,6 +140,17 @@ export class AperturaLocation extends IDDocument {
                     value = this.ALLE1;
                 }
             }
+            else if (type == 'middleMin'){
+
+                if (this.ALLE1){
+                    value = this.ALLE1;
+                }
+            }
+            else if (type == 'middleMax'){
+                if (this.DALLE2){
+                    value = this. DALLE2;
+                }
+            }
         }
 
         return value;

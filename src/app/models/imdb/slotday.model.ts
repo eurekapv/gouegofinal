@@ -3,6 +3,8 @@ import { PrenotazionePianificazione } from '../prenotazionepianificazione.model'
 import { MyDateTime, TypePeriod } from '../../library/models/mydatetime.model';
 import { LogApp } from '../log.model';
 import { StatoSlot } from '../valuelist.model';
+import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.component';
+import { element } from 'protractor';
 
 export class SlotDay {
     WEEKDAY:    number;
@@ -11,6 +13,9 @@ export class SlotDay {
     SLOTTIMES:  SlotTime[];
     APERTOCHIUSO: boolean;
     _TEMPLATELOCK: boolean; 
+
+    ENDMIDDLE: Date;
+    STARTMIDDLE: Date;
     
     
     constructor() {
@@ -41,6 +46,33 @@ export class SlotDay {
 
             this.SLOTTIMES.push(slot);
         })
+    }
+
+    /**
+     * segna come chiusi gli slot che sforano dentro un eventuale periodo intermedio di chiusura
+     */
+    disableClosedSlots(){
+        if (this.STARTMIDDLE && this.ENDMIDDLE){
+            this.SLOTTIMES.forEach(element => {
+                if (element.END > this.ENDMIDDLE && element.START < this.STARTMIDDLE){
+                    element.STATO = StatoSlot.chiuso;
+                }
+            })
+        }
+    }
+
+
+    /**
+     * setta i parametri di un'eventuale chiusura e riapertura intermedia
+     * @param chiusura l'orario di chiusura intermedia
+     * @param riapertura l'orario di riapertura dopo la chiusura intermedia
+     */
+    setChiusuraIntermedia(chiusura: Date, riapertura: Date){
+        if (chiusura && riapertura){
+            this.ENDMIDDLE = chiusura;
+            this.STARTMIDDLE = riapertura;
+
+        }
     }
 
     setStandardTime() {
@@ -82,6 +114,7 @@ export class SlotDay {
 
             
             this.SLOTTIMES = SlotTime.getArrayStandardSlot(myData, myStart, myEnd, minutiSlot);
+            this.disableClosedSlots();
             
         }
     }
@@ -158,6 +191,8 @@ export class SlotDay {
                         }
                     }
                     else if (element.ID == actualSlot.ID) {
+
+
                         element.selected = true;
                         findSlot = true;
 
@@ -196,8 +231,8 @@ export class SlotDay {
                         }
                     }
 
-                    //Tutto quello che sta dopo il lastIndex deve essere disattivato
-                    if (lastIndex != -1 && lastIndex < this.SLOTTIMES.length) {
+                     //Tutto quello che sta dopo il lastIndex deve essere disattivato
+                     if (lastIndex != -1 && lastIndex < this.SLOTTIMES.length) {
                         for (let index = lastIndex + 1; index < this.SLOTTIMES.length; index++) {
                             const element = this.SLOTTIMES[index];
                             element.selected = false;
@@ -234,7 +269,7 @@ export class SlotDay {
                     if (findStart) {
                         docPianificazione.DATAORAFINE = elSlot.END;
                         //Nel caso lo slot di End sia alle 00:00 allora sono le 00:00 del giorno seguente
-                        if (elSlot.END.getHours() == 0 || elSlot.END.getMinutes() == 0) {
+                        if (elSlot.END.getHours() == 0 && elSlot.END.getMinutes() == 0) {
                             docPianificazione.DATAORAFINE = MyDateTime.calcola(elSlot.END, 1, TypePeriod.days);
                         }
 
@@ -245,7 +280,7 @@ export class SlotDay {
                         docPianificazione.DATAORAINIZIO = elSlot.START;
                         docPianificazione.DATAORAFINE = elSlot.END;
                         
-                        if (elSlot.END.getHours() == 0 || elSlot.END.getMinutes() == 0) {
+                        if (elSlot.END.getHours() == 0 && elSlot.END.getMinutes() == 0) {
                             docPianificazione.DATAORAFINE = MyDateTime.calcola(elSlot.END, 1, TypePeriod.days);
                         }
 

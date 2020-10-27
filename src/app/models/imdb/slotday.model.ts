@@ -167,11 +167,15 @@ export class SlotDay {
 
                 //Ora se ci sono 2 selezione posso selezionare tutto cio' che sta in mezzo
                 if (contaSelected == 2) {
+
                     findStart = false;
+                    let lastIndex = -1;
+
                     for (let index = 0; index < this.SLOTTIMES.length; index++) {
                         const element = this.SLOTTIMES[index];
                         if (element.selected && findStart) {
                             //Ho finito di selezionare - esco
+                            lastIndex = index;
                             break;
                         }
                         else if (element.selected && !findStart) {
@@ -183,11 +187,20 @@ export class SlotDay {
 
                             //Qua in mezzo c'e' qualcosa di chiuso o occupato e quindi mi devo fermare
                             if (element.STATO == StatoSlot.chiuso || element.STATO == StatoSlot.occupato) {
+                                lastIndex = index;
                                 break;
                             }
                             else {
                                 element.selected = true;
                             }
+                        }
+                    }
+
+                    //Tutto quello che sta dopo il lastIndex deve essere disattivato
+                    if (lastIndex != -1 && lastIndex < this.SLOTTIMES.length) {
+                        for (let index = lastIndex + 1; index < this.SLOTTIMES.length; index++) {
+                            const element = this.SLOTTIMES[index];
+                            element.selected = false;
                         }
                     }
                     

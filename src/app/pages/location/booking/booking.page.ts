@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, IonSlides, LoadingController, ToastController, ModalController } from '@ionic/angular';
+import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -70,13 +70,15 @@ export class BookingPage implements OnInit, OnDestroy {
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
   indexCount: number = 0;
 
+  
 
   constructor(private router: ActivatedRoute, 
               private startService:StartService,
               private navController: NavController,
               private loadingController: LoadingController,
               private toastCtrl: ToastController,
-              private modalCtrl: ModalController) { 
+              private modalCtrl: ModalController,
+              private actionSheetController: ActionSheetController) { 
 
 
 
@@ -694,6 +696,38 @@ export class BookingPage implements OnInit, OnDestroy {
     // return an observable with a user-facing error message
       return throwError('Si sono verificati errori. Riprovare AHIME.');
   };
+
+
+  onClickChangeCampo(){
+    
+    
+    //creo i bottoni
+    let buttons = [];
+    this.availableFields.forEach(element => {
+      let btn = {
+        text: element.DENOMINAZIONE,
+        icon: 'location',
+        handler: () =>{
+          this.selectedCampo = element;
+          this.getOccupazioni();
+        }
+      }
+
+      buttons.push(btn);
+    });
+
+
+    //ora che ho i bottoni, creo l'actionsheet e lo presento
+    this.actionSheetController.create({
+      header: 'Scegli il campo',
+      buttons: buttons
+    })
+    .then(elActionSheet => {
+      elActionSheet.present();
+    })
+  }
+
+  
 
 
 }

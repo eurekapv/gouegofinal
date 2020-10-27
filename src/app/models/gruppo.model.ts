@@ -115,5 +115,9 @@ export class Gruppo extends IDDocument {
     return objDescriptor;
   }
 
+  isClosedFromCalendar(){
+    
+  }
+
 }
 

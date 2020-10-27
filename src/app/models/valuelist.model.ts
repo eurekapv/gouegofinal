@@ -162,6 +162,25 @@ export enum TipoMasterDocumento{
     ricevuta = 530
 }
 
+export enum TipoChiusura{
+    rangeDate = 10,
+    natale = 20,
+    santoStefano = 30,
+    pasquaCattolica = 40,
+    lunediDellAngelo = 50,
+    ferragosto = 60,
+    aprile25 = 70,
+    maggio1 = 80,
+    dicembre8 = 90, 
+    giugno2 = 100 
+}
+
+export enum AttivitaChiusura{
+    tutte = -1,
+    affittoStrutture = 10,
+    svolgimentoCorsi = 20
+}
+
 
 
 

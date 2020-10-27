@@ -33,6 +33,8 @@ import { ArticoloColore } from 'src/app/models/articolocolore.model';
 import { ArticoloTaglieMisura } from 'src/app/models/articolotagliemisura.model';
 import { UnitaMisura } from 'src/app/models/unitamisura.model';
 import { Valuta } from 'src/app/models/valuta.model';
+import { DataChiusura } from 'src/app/models/datachiusura.model';
+
 
 
 
@@ -81,7 +83,8 @@ export const Structure: any = {
     ArticoloColore,
     ArticoloTaglieMisura,
     Valuta,
-    UnitaMisura
+    UnitaMisura,
+    DataChiusura
 }
 
 export class DynamicClass {

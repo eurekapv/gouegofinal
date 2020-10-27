@@ -45,9 +45,7 @@ export class AreaService {
 
         const doObject = 'AREAOPERATIVA';
         
-        //FIXME: ELIMINARE
-        // In Testata c'e' sempre l'AppId
-        //myHeaders = myHeaders.set('appid',config.appId);
+
 
         if (!_childLevel){
           _childLevel=2;

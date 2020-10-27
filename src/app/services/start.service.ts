@@ -51,6 +51,8 @@ import { PosizioneService } from './posizione.service';
 import { Area } from '../models/area.model';
 import { MasterDocumento } from '../models/ricevuta.model';
 import { PostResponse } from '../library/models/postResult.model';
+import { DataChiusuraService } from './data-chiusura.service';
+import { DataChiusura } from '../models/datachiusura.model';
 
 
 @Injectable({
@@ -114,7 +116,8 @@ export class StartService {
     private docStructureService: DocstructureService,
     private documentoService: DocumentoService,
     private invoicesService: InvoicesService,
-    private posizioneService: PosizioneService ) { 
+    private posizioneService: PosizioneService,
+    private dataChiusuraService: DataChiusuraService ) { 
 
       //Ogni volta che cambia la configurazione la invio 
       //al servizio docStructure
@@ -201,6 +204,18 @@ export class StartService {
    * Alcune operazioni a seguito dell'autorizzazioni
    */
   onAfterAuthorization() {
+
+    //TODO CONTROLLARE
+    //0- RECUPERO LE CHIUSURE DEL GRUPPO
+    this.dataChiusuraService.request()
+    .then((listChiusure: DataChiusura[]) => {
+      
+      this._startConfig.getValue().gruppo.DATECHIUSURE = listChiusure; 
+      console.log('LISTA CHIUSURE');
+      console.log(this._startConfig.getValue().gruppo.DATECHIUSURE) ; 
+
+    } ) 
+
     // 1- CHIEDO ELENCO SPORT, LIVELLI, CATEGORIEETA che mi servono sempre
     let elStartConfig = this._startConfig.getValue();
 

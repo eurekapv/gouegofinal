@@ -2,6 +2,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 import { TipoSocieta, TipoVerificaAccount } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { PrivateImage } from './privateimage.model';
+import { DataChiusura } from './datachiusura.model';
 
 
 
@@ -23,6 +24,7 @@ export class Gruppo extends IDDocument {
     APPFLAGREGISTRAZIONE: boolean;
     APPTIPOVERIFICA: TipoVerificaAccount;
     FLAGAPPSHOPONLINE: boolean;
+    DATECHIUSURE: DataChiusura[];
     
   
     constructor(onlyInstance?:boolean) {

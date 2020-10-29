@@ -42,10 +42,6 @@ export class LivelloService {
       //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'LIVELLO';
   
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
-
       
       //Nei Parametri imposto il LivelloAutorizzazione
       let myParams = new HttpParams().set('LivelloAutorizzazione','0');

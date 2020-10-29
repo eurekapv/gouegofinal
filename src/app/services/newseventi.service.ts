@@ -40,9 +40,6 @@ export class NewseventiService {
       const doObject = 'NEWSEVENTO';
       const filterDateTime = this.getFilterDateTime();
   
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
 
       let myUrl = config.urlBase + '/' + doObject;  
   
@@ -142,9 +139,6 @@ export class NewseventiService {
     //new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'NEWSEVENTO';
     
-    //FIXME: ELIMINARE
-    //In Testata c'e' sempre l'AppId
-    //myHeaders = myHeaders.set('appid',config.appId);
 
     let myUrl = config.urlBase + '/' + doObject;  
 
@@ -175,9 +169,6 @@ export class NewseventiService {
       //new HttpHeaders();
       const doObject = 'NEWSEVENTO';
   
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
 
       myHeaders = myHeaders.append('X-HTTP-Method-Override','GETNEXTNEWS')
       let myUrl = config.urlBase + '/' + doObject;  

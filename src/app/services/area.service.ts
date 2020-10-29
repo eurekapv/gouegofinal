@@ -45,8 +45,6 @@ export class AreaService {
 
         const doObject = 'AREAOPERATIVA';
         
-
-
         if (!_childLevel){
           _childLevel=2;
         }

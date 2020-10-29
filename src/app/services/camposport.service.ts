@@ -32,9 +32,6 @@ export class CamposportService {
       //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'CAMPOSPORT';
   
-      //FIXME: ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
       
       //Nei Parametri imposto IDCampo
       let myParams = new HttpParams().set('IDCAMPO',idCampo);

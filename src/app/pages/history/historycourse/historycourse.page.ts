@@ -54,6 +54,7 @@ export class HistorycoursePage implements OnInit {
         if(route.has('historyId')){
           //se ho l'id dell'iscrizione, faccio la riciesta al server
           let idIscrizione=route.get('historyId');
+          
           this.startService.requestIscrizioneById(idIscrizione).then(docIscrizione=>{
             //quando arriva la risposta, valorizzo la proprietà
             this.myIscrizione=docIscrizione;

@@ -71,48 +71,46 @@ export class DataChiusuraService {
   }
 
   /**
-   * dati un'area, una location e un campo, mi dice se il giorno indicato, il campo risulta chiuso secondo le chiusure impostate nel calendario
-   * @param area L'area
-   * @param location la location
-   * @param campo il campo
+   * Ritorna se la Data passata è una festività di chiusura
+   * @param idArea L'area
+   * @param idLocation la location
+   * @param idCampo il campo
    * @param data la data da controllare
    */
-  isOpenForDateChiusura(area: Area, location: Location, campo: Campo, data: Date): boolean{
+  idFestivita(idArea: string, idLocation: string, idCampo: string, data: Date): boolean{
     let aperto = true;
 
-    if (this._listChiusure && this._listChiusure != []){
+    if (this._listChiusure){
       
 
-      //se ho le chiusure, le scorro
-      this._listChiusure.forEach(elemChiusura => {
+      for (let index = 0; index < this._listChiusure.length; index++) {
+        const elemChiusura = this._listChiusure[index];
 
-        if(
-          (elemChiusura.IDAREA == area.ID) && 
-          (elemChiusura.IDLOCATION == undefined || elemChiusura.IDLOCATION == location.ID) && 
-          (elemChiusura.IDCAMPO == undefined || elemChiusura.IDCAMPO == campo.ID )
-        ){
-
-          //la chiusura riguarda il campo che devo controllare
-          if (elemChiusura.TIPOCHIUSURA == MyDateTime.getFesta(data)){
-
-            //nel giorno  c'è una festa in cui il centro chiude
-            aperto = false;
-          }
-  
-          if (elemChiusura.TIPOCHIUSURA == TipoChiusura.rangeDate && elemChiusura.DATADAL <= data && data <= elemChiusura.DATAAL){
-
-            //il giorno  ricade in un range di date di chiusura
-            aperto = false;
-          }
-          
+        if( elemChiusura.IDAREA == idArea && 
+            (elemChiusura.IDLOCATION == undefined || elemChiusura.IDLOCATION == idLocation) && 
+            (elemChiusura.IDCAMPO == undefined || elemChiusura.IDCAMPO == idCampo )) {
+        
+              //REGOLA VALIDA DA CONTROLLARE - IN QUESTO GIORNO SIAMO CHIUSI
+              if (elemChiusura.TIPOCHIUSURA == TipoChiusura.rangeDate && elemChiusura.DATADAL <= data && data <= elemChiusura.DATAAL){
+        
+                //il giorno  ricade in un range di date di chiusura
+                aperto = false;
+                break;
+              }
+              else if (elemChiusura.TIPOCHIUSURA == MyDateTime.getFesta(data)){
+                    //nel giorno  c'è una festa in cui il centro chiude
+                    aperto = false;
+                    break;
+              }
+              
         }
         
-        
-      })
+      }
+                
 
     }
         
-    return aperto;
+    return (!aperto);
   }
 
   

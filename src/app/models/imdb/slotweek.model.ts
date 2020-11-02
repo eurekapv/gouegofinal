@@ -57,12 +57,7 @@ export class SlotWeek {
         if (mySlot) {
             //Creo un nuovo oggetto e copio tutte le proprietà
             myCopySlot = new SlotDay();
-            myCopySlot.copyFrom(mySlot);
-
-            //mi chiedo se in quella data siamo chiusi
-
-            
-            
+            myCopySlot.copyFrom(mySlot);    
 
             /* TUTTI GLI SLOTTIMES DEVONO RICEVERE LA STESSA GIORNATA */
             if (changeTimeDate) {

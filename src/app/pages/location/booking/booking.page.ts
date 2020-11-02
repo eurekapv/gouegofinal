@@ -459,8 +459,27 @@ export class BookingPage implements OnInit, OnDestroy {
    * 
    */
   getOccupazioni() {
+    let isFestivita = true;
+
     //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata (TRUE-> Chiedo di aggiornare la data su tutti i record figli SLOTTIME)
     this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
+
+    //Per gli orario del centro saremmo aperti (come giornata)
+    if (this.actualSlotDay.APERTOCHIUSO == true) {
+      //Controlliamo se per caso è un giorno FESTIVO o di chiusura generale
+      //this.actualBookDay è il giorno
+      isFestivita = this.startService.isFestivita(this.actualBookDay, 
+                                                this.selectedLocation.IDAREAOPERATIVA, 
+                                                this.selectedLocation.ID, 
+                                                this.selectedCampo.ID);
+      if (isFestivita) {
+        this.actualSlotDay.APERTOCHIUSO = false;
+      }
+      else {
+        this.actualSlotDay.APERTOCHIUSO = true;
+      }
+    }
+
 
     this.myDebug('Richiesta Slot Occupazioni');
 

@@ -205,16 +205,12 @@ export class StartService {
    */
   onAfterAuthorization() {
 
-    //TODO CONTROLLARE
     //0- RECUPERO LE CHIUSURE DEL GRUPPO
     this.dataChiusuraService.request()
-    .then((listChiusure: DataChiusura[]) => {
-      
-      this._startConfig.getValue().gruppo.DATECHIUSURE = listChiusure; 
-      console.log('LISTA CHIUSURE');
-      console.log(this._startConfig.getValue().gruppo.DATECHIUSURE) ; 
-
-    } ) 
+                  .then((listChiusure: DataChiusura[]) => {
+                        console.log('LISTA CHIUSURE');
+                        console.log(listChiusure); 
+    });
 
     // 1- CHIEDO ELENCO SPORT, LIVELLI, CATEGORIEETA che mi servono sempre
     let elStartConfig = this._startConfig.getValue();
@@ -227,6 +223,8 @@ export class StartService {
     this.loadStorageUtente();
 
   }
+
+
 
   //#region AREE
     
@@ -1171,8 +1169,13 @@ getNearestArea(listAree: Area[]){
   return this.posizioneService.getNearestArea(listAree);
 }
 
-////#endregion
+//#endregion
 
+//#region DATECHIUSURE
+isFestivita(data: Date, idArea: string, idLocation: string, idCampo: string) {
+  return this.dataChiusuraService.idFestivita(idArea, idLocation, idCampo, data);
+}
+//#endregion
 
 
 }

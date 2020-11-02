@@ -282,49 +282,61 @@ static calcola(dateTime: Date, addOrSub: number, period:TypePeriod): Date {
 }
 
 
+/**
+ * Torna un valore della Value List TipoChiusura per indicare la festività
+ * @param data Data da controllare
+ */
 static getFesta(data: Date): TipoChiusura{
 
     let tipoChiusura: TipoChiusura;
 
     let giornoMese: string = data.getDate().toString()+data.getMonth().toString();
 
-    let dataPasqua = MyDateTime.calcolaPasqua(data.getFullYear())
+    let dataAngelo: Date;
+    let maskAngelo: string = '';
+
+    let dataPasqua: Date; 
+    let maskPasqua: string =  '';
+
+    dataPasqua = MyDateTime.calcolaPasqua(data.getFullYear());
+    maskPasqua = moment(dataPasqua).format('MMDD');
+    dataAngelo = MyDateTime.calcola(dataPasqua, 1, TypePeriod.days);
+    maskAngelo = moment(dataAngelo).format('MMDD');
 
     switch (giornoMese){
-        case '253':
+        case '0325':
           tipoChiusura = TipoChiusura.aprile25
           break;
   
-        case '811':
+        case '1208':
             tipoChiusura = TipoChiusura.dicembre8
             break;
   
-        case '157':
+        case '0815':
           tipoChiusura = TipoChiusura.ferragosto;
           break;
   
-        case '25':
+        case '0602':
           tipoChiusura = TipoChiusura.giugno2;
           break;
   
-          
-        case '14':
+        case '0501':
             tipoChiusura = TipoChiusura.maggio1;
         break;
         
-        case '2511':
+        case '1225':
             tipoChiusura = TipoChiusura.natale;
         break;
             
-        case '2611':
+        case '1226':
             tipoChiusura = TipoChiusura.santoStefano;
         break;
             
-        case (dataPasqua.getDate().toString() + dataPasqua.getMonth().toString()):
+        case maskPasqua:
             tipoChiusura = TipoChiusura.pasquaCattolica;
         break;
                   
-        case ((dataPasqua.getDate() +1).toString() + dataPasqua.getMonth().toString()):
+        case maskAngelo:
             tipoChiusura = TipoChiusura.pasquaCattolica;
         break;
 
@@ -337,8 +349,11 @@ static getFesta(data: Date): TipoChiusura{
 
 }
 
-
-static calcolaPasqua(anno: number): Date{
+/**
+ * Calcola la data di Pasqua per l'anno
+ * @param anno Anno
+ */
+static calcolaPasqua(anno: number): Date {
 
     let a=0, b=0, c=0, d=0, e=0, m=0, n=0, giorno=0, mese=0;
 

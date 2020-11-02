@@ -54,10 +54,6 @@ export class LocationService {
       //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'LOCATION';
       
-      //FIXME: ELIMINARE
-      // In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
-
 
       // Nei parametri imposto l'Area Operativa
       let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
@@ -100,9 +96,6 @@ export class LocationService {
         _numLivelli = 3;
       }
   
-      //FIXME: ELIMINARE
-      // In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
 
       myHeaders = myHeaders.set('child-level',_numLivelli + '');
   
@@ -210,11 +203,6 @@ export class LocationService {
     let myHeaders = config.getHttpHeaders();
     //new HttpHeaders({'Content-type':'text/plain'});
     const doObject = 'CAMPOSPORT';
-
-    //FIXME: ELIMINARE
-    // In Testata c'e' sempre l'AppId
-    //myHeaders = myHeaders.set('appid',config.appId);
-    //myHeaders = myHeaders.set('child-level',"2");
 
     // Nei parametri imposto il Campo
     let myParams = new HttpParams().set('IDCAMPO', idCampo);

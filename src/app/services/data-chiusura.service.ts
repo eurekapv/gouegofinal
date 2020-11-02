@@ -43,6 +43,8 @@ export class DataChiusuraService {
 
     return new Promise ((resolve, reject) => {
 
+      
+      //creo il filtro
       let filterDocument = new DataChiusura(true);
 
   

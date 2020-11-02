@@ -109,10 +109,6 @@ export class SlotoccupazioneService {
     })
 
   
-  
-
-
-
   } 
   
   /**

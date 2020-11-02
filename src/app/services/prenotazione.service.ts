@@ -104,9 +104,6 @@ export class PrenotazioneService {
       //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'PRENOTAZIONE';
       
-      //FIXME: ELIMINARE
-      // In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
 
 
       // Nei parametri imposto il gruppo Sportivo
@@ -158,9 +155,6 @@ export class PrenotazioneService {
     let myHeaders = config.getHttpHeaders();
     const doObject = 'PRENOTAZIONE';
     
-    //FIXME: Eliminare
-    // In Testata c'e' sempre l'AppId
-    //myHeaders = myHeaders.set('appid',config.appId);
     
     myHeaders = myHeaders.append('child-level', numLivelli + '');
     // Nei parametri imposto idPrenotazion richiesto

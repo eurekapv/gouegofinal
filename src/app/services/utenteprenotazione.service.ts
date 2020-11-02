@@ -40,9 +40,6 @@ export class UtenteprenotazioneService {
       const doObject = 'UTENTEPRENOTAZIONE';
       const filterDateTime = this.getFilterDateTime();
   
-      //FIXME: ELIMINARE  
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId).append('order-by','desc');
       let myUrl = config.urlBase + '/' + doObject;  
   
       //Nei Parametri imposto l'area richiesta

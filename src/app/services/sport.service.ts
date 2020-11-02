@@ -49,9 +49,7 @@ export class SportService {
       //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'SPORT';
   
-      //FIXME: DA ELIMINARE
-      //In Testata c'e' sempre l'AppId
-      //myHeaders = myHeaders.set('appid',config.appId);
+
 
       //TODO: Non mi piace molto il modo
       //Nei Parametri imposto il LivelloAutorizzazione

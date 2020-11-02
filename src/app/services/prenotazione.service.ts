@@ -207,21 +207,17 @@ export class PrenotazioneService {
     myHeaders = myHeaders.append('child-level','999');
 
     const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
-    //Quali proprietà non voglio esportare
-    const noExportDO = false;
-    const noExportPK = true;
-    const noExportPrivate = true;
+
     const doObject = 'PRENOTAZIONE';
     let myUrl = config.urlBase + '/' + doObject;
 
     //Questi sono i parametri per l'esportazione
     let paramExport = new ParamsExport();
     paramExport.clearDOProperty = false;
-    paramExport.clearPKProperty = true;
+    paramExport.clearPKProperty = false;
     paramExport.clearPrivateProperty = true;
     
-    //Creo il JSON del documento , eliminando le proprietà do e private (true) e le chiavi primarie(true)
-    //let myBodyJSON = docPrenotazione.exportToJSON(noExportDO, noExportPK, noExportPrivate);
+    //Creo il JSON del documento , eliminando le proprietà private (clear = true) ed inviando le proprietà do e le chiavi primarie(clear = false)
     let myBodyJSON = docPrenotazione.exportToJSON(paramExport);
 
     //Il parametro inviato nel body deve essere strutturato cosi

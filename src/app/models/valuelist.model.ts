@@ -1,4 +1,3 @@
-import { IDDocument } from '../library/models/iddocument.model';
 
 
 export enum TipoArea {
@@ -266,7 +265,7 @@ export class ValueList {
         let retElements: ValueList[] = [];
 
         Object.keys(objEnum).forEach(key => {
-            if (IDDocument.isNumber(key) == false) {
+            if (ValueList.isNumber(key) == false) {
                 let field = key;
                 let value = objEnum[field];
                 let decodifica = ValueList.decode(objEnum, value);
@@ -277,6 +276,17 @@ export class ValueList {
         });
 
         return retElements;
+    }
+
+    /**
+     * Ritorna TRUE / FALSE a seconda se un elemento è Numerico o No
+     * @param value Valore da controllare
+     */
+    static isNumber(value: string | number): boolean
+    {
+      return ((value != null) &&
+              (value !== '') &&
+              !isNaN(Number(value.toString())));
     }
 }
 

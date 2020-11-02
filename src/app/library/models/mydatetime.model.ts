@@ -290,7 +290,7 @@ static getFesta(data: Date): TipoChiusura{
 
     let tipoChiusura: TipoChiusura;
 
-    let giornoMese: string = data.getDate().toString()+data.getMonth().toString();
+    let meseGiorno: string = moment(data).format('MMDD');
 
     let dataAngelo: Date;
     let maskAngelo: string = '';
@@ -303,7 +303,7 @@ static getFesta(data: Date): TipoChiusura{
     dataAngelo = MyDateTime.calcola(dataPasqua, 1, TypePeriod.days);
     maskAngelo = moment(dataAngelo).format('MMDD');
 
-    switch (giornoMese){
+    switch (meseGiorno){
         case '0325':
           tipoChiusura = TipoChiusura.aprile25
           break;
@@ -408,7 +408,7 @@ static calcolaPasqua(anno: number): Date {
     }
     
     
-    let dataReturn = new Date(anno, Math.floor(mese), Math.floor(giorno));
+    let dataReturn = new Date(anno, Math.floor(mese-1), Math.floor(giorno));
     return dataReturn;
     
 }

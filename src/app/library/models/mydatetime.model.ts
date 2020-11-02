@@ -1,4 +1,5 @@
 import * as moment from "moment";
+import { TipoChiusura } from 'src/app/models/valuelist.model';
 import { TypeDefinition } from './descriptor.model';
 
 export class MyDateTime {
@@ -279,6 +280,126 @@ static calcola(dateTime: Date, addOrSub: number, period:TypePeriod): Date {
 
     return dReturn;
 }
+
+
+static getFesta(data: Date): TipoChiusura{
+
+    let tipoChiusura: TipoChiusura;
+
+    let giornoMese: string = data.getDate().toString()+data.getMonth().toString();
+
+    let dataPasqua = MyDateTime.calcolaPasqua(data.getFullYear())
+
+    switch (giornoMese){
+        case '253':
+          tipoChiusura = TipoChiusura.aprile25
+          break;
+  
+        case '811':
+            tipoChiusura = TipoChiusura.dicembre8
+            break;
+  
+        case '157':
+          tipoChiusura = TipoChiusura.ferragosto;
+          break;
+  
+        case '25':
+          tipoChiusura = TipoChiusura.giugno2;
+          break;
+  
+          
+        case '14':
+            tipoChiusura = TipoChiusura.maggio1;
+        break;
+        
+        case '2511':
+            tipoChiusura = TipoChiusura.natale;
+        break;
+            
+        case '2611':
+            tipoChiusura = TipoChiusura.santoStefano;
+        break;
+            
+        case (dataPasqua.getDate().toString() + dataPasqua.getMonth().toString()):
+            tipoChiusura = TipoChiusura.pasquaCattolica;
+        break;
+                  
+        case ((dataPasqua.getDate() +1).toString() + dataPasqua.getMonth().toString()):
+            tipoChiusura = TipoChiusura.pasquaCattolica;
+        break;
+
+        default:
+            tipoChiusura = 0;
+        break;
+      }
+    return tipoChiusura;
+
+
+}
+
+
+static calcolaPasqua(anno: number): Date{
+
+    let a=0, b=0, c=0, d=0, e=0, m=0, n=0, giorno=0, mese=0;
+
+    
+    if(anno <= 2099){
+        m = 24;
+        n = 5;
+    }
+    else if(anno <= 2199){
+        m = 24;
+        n = 6;
+    }
+    else if(anno <= 2299){
+        m = 25;
+        n = 0;
+    }
+    else if(anno <= 2399){
+        m = 26;
+        n = 1;
+    }
+    else if(anno <= 2499){
+        m = 25;
+        n = 1;
+    }
+
+    a = anno% 19;
+    b = anno% 4;
+    c = anno% 7;
+
+    d = ((19 * a) + m) % 30;
+    e = ((2*b) + (4*c) + (6*d) + n) % 7;
+
+
+
+    if ((d + e) < 10){
+        giorno = d + e + 22;
+        mese = 3;
+    }
+    else {
+        giorno = d + e - 9;
+        mese = 4;
+    }
+
+    if (Math.floor(giorno) == 26 && Math.floor(mese) == 4){
+        giorno = 19;
+        mese = 4;
+    }
+
+    if (Math.floor(giorno) == 25 && Math.floor(mese) == 4 && d == 20 && e == 6 && a > 10){
+        giorno = 10;
+        mese = 4;
+    }
+    
+    
+    let dataReturn = new Date(anno, Math.floor(mese), Math.floor(giorno));
+    return dataReturn;
+    
+}
+
+
+
 
 
 }

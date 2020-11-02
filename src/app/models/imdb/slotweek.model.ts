@@ -59,6 +59,8 @@ export class SlotWeek {
             myCopySlot = new SlotDay();
             myCopySlot.copyFrom(mySlot);
 
+            //mi chiedo se in quella data siamo chiusi
+
             
             
 

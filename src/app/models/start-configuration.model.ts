@@ -54,7 +54,8 @@ export class StartConfiguration {
         this._companyUrlIcon = this._appUrlIcon;
 
 
-        this._appId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; 
+        this._appId = 'CCBA34A5-24F5-4C22-8485-D891823E3434';
+        //Vecchio appId - '00F15A91-5395-445C-B7F4-5BA594E55D2F'; 
         this._idAreaSelected = '';
         
         if (secureProtocol) {

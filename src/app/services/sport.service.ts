@@ -72,15 +72,22 @@ export class SportService {
     
             //Arrivati dal server
             this._loaded = true;
+            if (resultData) {
+
+              resultData.forEach(element => {
+                
+                let newSport = new Sport();
+                newSport.setJSONProperty(element);
+                this.add2ListSport(newSport);
+                resolve();
+                
+              });
+
+            }
+            else {
+              reject('No data Attività retrieved');
+            }
             
-            resultData.forEach(element => {
-              
-              let newSport = new Sport();
-              newSport.setJSONProperty(element);
-              this.add2ListSport(newSport);
-              resolve();
-              
-            });
           }, error=>{
             reject(error);
           });

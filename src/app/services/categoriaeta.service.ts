@@ -49,15 +49,21 @@ export class CategoriaetaService {
         .pipe(map(data => {
           return data.CATEGORIEETA
         }))
-        .subscribe(
-           resultData => {
+        .subscribe(resultData => {
   
+          if (resultData) {
+            
             resultData.forEach(element => {
               let newCategoria = new CategoriaEta();
               newCategoria.setJSONProperty(element);
               this.addCategoriaEta(newCategoria);
               resolve();
             });
+          }
+          else {
+            reject('no data Categoria Eta retrieved');
+          }
+
            },
            error=>{
              reject(error);

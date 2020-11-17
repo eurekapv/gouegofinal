@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription, Observable } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 
 import { Storage } from '@ionic/storage';
 
@@ -53,6 +53,9 @@ import { MasterDocumento } from '../models/ricevuta.model';
 import { PostResponse } from '../library/models/postResult.model';
 import { DataChiusuraService } from './data-chiusura.service';
 import { DataChiusura } from '../models/datachiusura.model';
+import { Router } from '@angular/router';
+import { PlatformLocation } from '@angular/common';
+import { Gruppo } from '../models/gruppo.model';
 
 
 @Injectable({
@@ -60,21 +63,15 @@ import { DataChiusura } from '../models/datachiusura.model';
 })
 export class StartService {
 
-  /* 
-    Creo l'oggetto per iniziare la configurazione passando 
-    testingMode = TRUE (verra chiamato un localhost e non gouego)
-    secureProtocol = FALSE (chiamata http e non https)
-  */
-  //Versione Production
-  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(false,true));
+  //Oggetto contentente la configurazione
+  private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration());
 
-  //Versione LocalTest
-  //private _startConfig = new BehaviorSubject<StartConfiguration>(new StartConfiguration(true,false));
-  
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
   private listenLocation: Subscription;
-
+  
+  //Determina se la connessione sarà a un database locale, o al server
+  private _localConnection = false;
   
   get appReady() {
     return this._appReady.asObservable();
@@ -91,6 +88,16 @@ export class StartService {
   //Ritorna se l'applicazione sta girando su desktop
   get isDesktop() {
     return !this.platformService.is('hybrid');
+  }
+
+  //Ritorna se l'applicazione sta girando dentro al web, quindi non in capacitor o cordova
+  get isOnWeb() {
+    let result = true;
+    if (this.platformService.is("cordova") || this.platformService.is("capacitor")) {
+      result = false;
+    }
+
+    return result;
   }
 
 
@@ -117,13 +124,182 @@ export class StartService {
     private documentoService: DocumentoService,
     private invoicesService: InvoicesService,
     private posizioneService: PosizioneService,
-    private dataChiusuraService: DataChiusuraService ) { 
+    private dataChiusuraService: DataChiusuraService,
+    private urlLocation: PlatformLocation) { 
 
       //Ogni volta che cambia la configurazione la invio 
       //al servizio docStructure
       this.startConfig.subscribe(elConfig => {
         this.docStructureService.setConfig(elConfig);
       });
+
+  }
+
+
+  /**
+   * PRIMO STEP DI CONFIGURAZIONE
+   * 
+   * //TODO: QUESTO METODO E' IMPORTANTE PERCHE' INSTRADA L'APPLICAZIONE 
+   * A SECONDA SE SIAMO SU CAPACITOR/CORDOVA AL CORRETTO APP ID
+   * In caso di Capacitor/Cordova bisogna impostare il valore myAppId a mano
+   * Negli altri casi, l'appid viene recuperato grazie all URL di chiamata
+   * 
+   * Impostazioni iniziali
+   * 1) _localConnection -> TRUE per modalità di debug e punta ai database in locale
+   * 2) prefixDomain -> prefisso letto sull'url
+   * 3) myAppId -> Application id da utilizzare (modo automatico o manuale)
+   */
+  settingStartStepOne() {
+    let myUrl = '';
+    let myAppId = '';    
+    let arUrl = [];
+    let prefixDomain = '';
+
+    //Recupero lo StartConfig, cosi da modificarlo al termine
+    let myConfig = this._startConfig.getValue();
+
+    //Modalità Web
+    if (this.isOnWeb) {
+
+        //Qui posso cambiare strategia per puntare localmente
+        this._localConnection = false;
+
+        if (this._localConnection) {
+          //Modalità di Test metto un AppId di test
+          myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F';
+        }
+        else {
+
+          //Recupero URL del browser
+          myUrl = this.urlLocation.hostname;
+  
+          //Simulazione URL
+          //myUrl = 'openbeach.gouego.com';
+  
+          //Sto aprendo in localhost ma voglio far puntare al server
+          //ancora una volta metto un appId fisso
+          if (myUrl == 'localhost') {
+
+            //myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; //Demo AppId
+            myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
+
+          }
+          else {
+            //Prendo URL e lo separo
+            arUrl = myUrl.split('.');
+
+            if (arUrl.length != 0) {
+
+              //Prendo il prefisso e sulla base di questo ricavo l'AppID
+              prefixDomain = arUrl[0];
+
+            }
+          }
+
+        }
+    }
+    else {
+
+      //Non è mai in localconnection
+      this._localConnection = false;
+
+      //VALORIZZARE L'APP ID PER CAPACITOR
+      //TODO: VALORIZZARE APPID PER INSTALLAZIONE CAPACITOR
+      myAppId = '';
+
+      //Sono su capacitor o cordova
+      prefixDomain = '';
+    }
+
+    //Imposto URL di chiamata
+    myConfig.setUrlLocation(this._localConnection);
+
+    //Reimposto Observable
+    this._startConfig.next(myConfig);
+
+    //Il secondo step si preoccupa di ricavare l'app id se mancante, 
+    //Impostare i dati nell'oggetti startConfiguration
+    //ed iniziare la comunicazione server
+    this.settingStartStepTwo(prefixDomain, myAppId);
+
+  }
+
+  /**
+   * SECONDO STEP DI CONFIGURAZIONE
+   * Il metodo tenta il recupero di un appId se non ne possiede già uno, e se prefixdomain vale qualcosa
+   */
+  settingStartStepTwo(prefixDomain: string, myAppId: string) {
+
+    let docGruppo = new Gruppo(true);
+    let params = new RequestParams();
+
+    if (myAppId.length == 0) {
+
+      if (prefixDomain.length != 0) {
+        //Chiedo al server 
+        //Preparo il documento di filtro
+        docGruppo.PREFIXDOMAIN = prefixDomain;
+
+        //Effettuo la chiamata
+        this.docStructureService.requestNew(docGruppo)
+          .then(collGruppo => {
+            //Vediamo appId ricevuto
+            let appIdReceived = '';
+
+            if (collGruppo) {
+
+              let myList: Gruppo[] = collGruppo;
+              let myGruppo: Gruppo; 
+
+              //Se riesco recupero appID
+              if (myList && myList.length != 0) {
+                myGruppo = myList[0];
+                appIdReceived = myGruppo.APPID;
+
+              }  
+            }
+
+            //Step 3 (Se il valore passato è '' siamo in errore)
+            this.settingStartStepThree(appIdReceived);
+          })
+          .catch(error => {
+            console.log(error);
+
+            //Vado allo Step 3 in errore passando stringa vuota
+            this.settingStartStepThree('');
+          })
+
+      }
+      else {
+        //Non ho AppId e non ho trovato modo di leggere URL
+
+        //Vado allo Step 3 in errore passando stringa vuota
+        this.settingStartStepThree('');
+
+      }
+    }
+    else {
+      //Sono già in possesso dell'AppId
+      this.settingStartStepThree(myAppId);
+    }
+  }
+
+  /**
+   * Fase finale di Start
+   * Se il valore di myAppID = '', siamo in errore
+   */
+  settingStartStepThree(myAppId: string) {
+
+    //Recupero lo StartConfig, cosi da modificarlo al termine
+    let myConfig = this._startConfig.getValue();
+
+    myConfig.appId = myAppId;
+    
+    //Reimposto Observable
+    this._startConfig.next(myConfig);
+
+    this.requestStartAuthorization();
+
   }
 
 
@@ -208,16 +384,28 @@ export class StartService {
     //0- RECUPERO LE CHIUSURE DEL GRUPPO
     this.dataChiusuraService.request()
                   .then((listChiusure: DataChiusura[]) => {
-                        console.log('LISTA CHIUSURE');
-                        console.log(listChiusure); 
-    });
+                  });
 
     // 1- CHIEDO ELENCO SPORT, LIVELLI, CATEGORIEETA che mi servono sempre
     let elStartConfig = this._startConfig.getValue();
 
-    this.sportService.request(elStartConfig, false);
-    this.livelloService.request(elStartConfig);
-    this.categoriaEtaService.request(elStartConfig);
+    this.sportService
+      .request(elStartConfig, false)
+      .catch(error => {
+        console.log(error);
+      });
+
+    this.livelloService
+      .request(elStartConfig)
+      .catch(error => {
+        console.log(error);
+      });
+
+    this.categoriaEtaService
+        .request(elStartConfig)
+        .catch(error => {
+          console.log(error);
+        });
 
     // 2 - TENTO L'ACCESSO AUTOMATICO
     this.loadStorageUtente();
@@ -644,11 +832,18 @@ loadStorageUtente() {
             //Faccio la richiesta al server
             this.userLogin(savedUser.loginUser, savedUser.pwdUser)
                 .then(() => {
-                  LogApp.consoleLog('AutoLogin passed');
+                  LogApp.consoleLog('AutoLogin passed: ');
+                })
+                .catch(error => {
+                  LogApp.consoleLog('AutoLogin failed: ' + error);
                 });
           }
         }
+      })
+      .catch(error => {
+        //Failed load Storage
       });
+      
 }
 
 

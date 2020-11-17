@@ -2,8 +2,13 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
+  /* ORIGINALI
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)},
+  */
+  // Ho provato a cambiare e mandare home al path vuoto (che carica la pagina Home)
+  { path: 'home', redirectTo: '', pathMatch: 'full' },
+  { path: '', loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)},
   // { path: 'auth',
   //   children: [
   //     {
@@ -88,22 +93,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/agenda-trainer/agenda-trainer.module').then( m => m.AgendaTrainerPageModule)
   }
 
-
-
   //questo lo lascio commentato, perchè in teoria ci si arriva solo da modale
   // {
   //   path: 'psw-recovery',
   //   loadChildren: () => import('./pages/auth/psw-recovery/psw-recovery.module').then( m => m.PswRecoveryPageModule)
   // }
-
-  
-
  
-
-
-
-
-  
 ];
 
 @NgModule({

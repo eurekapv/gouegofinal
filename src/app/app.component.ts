@@ -58,7 +58,8 @@ export class AppComponent {
                         });
 
       // Richiedo l'autorizzazione
-      this.startService.requestStartAuthorization();
+      //this.startService.requestStartAuthorization();
+      this.startService.settingStartStepOne();
 
     });
   }

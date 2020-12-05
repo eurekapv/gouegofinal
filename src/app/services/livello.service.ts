@@ -54,17 +54,24 @@ export class LivelloService {
         }))
         .subscribe(resultData => {
   
-          //Arrivati dal server
-          this._loaded = true;
-  
-          resultData.forEach(element => {
-  
-            let newLivello = new Livello();
-            newLivello.setJSONProperty(element);
-            this.addLivello(newLivello);
-            
-          });
-          resolve();
+          if (resultData) {
+
+            //Arrivati dal server
+            this._loaded = true;
+    
+            resultData.forEach(element => {
+    
+              let newLivello = new Livello();
+              newLivello.setJSONProperty(element);
+              this.addLivello(newLivello);
+              
+            });
+            resolve();
+
+          }
+          else {
+            reject('No data Livello retrieved');
+          }
   
         }, error=>{
           reject(error);

@@ -18,6 +18,7 @@ export class Gruppo extends IDDocument {
     CODICEFISCALE: string;
     PARTITAIVA: string;
     APPID: string;
+    PREFIXDOMAIN: string;
     TIPOGRUPPO: TipoSocieta;
     URLPRIVACY: string;
     PRIVATEIMAGE: PrivateImage[];
@@ -90,6 +91,7 @@ export class Gruppo extends IDDocument {
                     'CODICEFISCALE',
                     'PARTITAIVA',
                     'APPID',
+                    'PREFIXDOMAIN',
                     'URLPRIVACY'                   
                     ];
     let arNumber = ['TIPOGRUPPO','APPTIPOVERIFICA'];

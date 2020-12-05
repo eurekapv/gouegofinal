@@ -31,7 +31,7 @@ export class StartConfiguration {
     private _authorizationAppCode: string; //Codice di autorizzazione da inviare
     private _authorizationUserCode: string; //Codice di autorizzazione utente quando loggato da inviare
         
-    constructor(testingMode: boolean, secureProtocol: boolean) {
+    constructor() {
 
         this._urlComponent = 'COMPGOUEGO';
         this._ready = false;
@@ -53,34 +53,38 @@ export class StartConfiguration {
         //Questa è inizialmente come appUrlIcon ma il server puo' mandarcene un'altra
         this._companyUrlIcon = this._appUrlIcon;
 
-
-        this._appId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; 
+        //AppId gestito dagli eventi dello Start Service
+        this._appId = '';
         this._idAreaSelected = '';
         
-        if (secureProtocol) {
-            this._urlProtocol = 'https'
-        }
-        else {
-            this._urlProtocol = 'http'
-        }
 
-        if (testingMode) {
+    }
+
+    /**
+     * 
+     * @param prefixDomain Prefisso del dominio es (openbeach,demo, localhost)
+     * @param testingMode 
+     */
+    setUrlLocation(testingMode = false) {
+        if (testingMode == true) {
+            //Modalità di test
+
             //Modalità in locale
             //Protocollo per forza http
             this._urlProtocol = 'http';
             this._urlDomain = 'localhost/gouegoapi';
             
             this._urlFileServer = 'localhost/gouego';
+
         }
         else {
+            //Non sono in test perchè voglio collegarmi al server, ma da dentro ionic serve
+            this._urlProtocol = 'https';
             //Modalità Server
             this._urlDomain = 'www.gouego.com/gouegoapi';
             this._urlFileServer = 'www.gouego.com/gouego';
-            
+
         }
-        
-
-
     }
 
     // Utilizzato al termine di una chiamata di 
@@ -303,7 +307,17 @@ export class StartConfiguration {
         }
 
         let myHeaders = new HttpHeaders({'Content-type':content});
-        myHeaders = myHeaders.append('appid',this._appId);
+        
+        //Se ho l'app-id lo imposto, 
+        //altrimenti 
+        if (this._appId && this._appId.length != 0) {
+
+            myHeaders = myHeaders.append('appid',this._appId);
+        }
+        else {
+            myHeaders = myHeaders.append('dashrequest','-1');
+        }
+
         myHeaders = myHeaders.append('fromrequest','gouegoapp');
 
         //Devo inviare il codice di autorizzazione app
@@ -315,8 +329,7 @@ export class StartConfiguration {
         //Devo inviare il codice di autorizazione utente
         if (this._authorizationUserCode && this._authorizationUserCode.length != 0) {
             myHeaders = myHeaders.append('authusercode',this._authorizationUserCode);
-            
-        }        
+        }
 
         return myHeaders;
     }

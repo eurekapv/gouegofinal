@@ -19,7 +19,7 @@ export class CalendarPage implements OnInit {
   listenCalendarCorso: Subscription;
   ricevuti = false; //Indica se gli orari sono stati ricevuti
 
-  constructor(private startService: StartService,
+  constructor(
               private mdlController: ModalController,
               private docStructureService: DocstructureService,
               private loadingController : LoadingController,

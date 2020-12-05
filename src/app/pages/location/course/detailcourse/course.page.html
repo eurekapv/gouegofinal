@@ -4,6 +4,12 @@
         <ion-back-button defaultHref="/"></ion-back-button>
       </ion-buttons>
       <ion-title>{{ myCorso.TIPO | tipoCorso }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button>
+        </ion-button>
+        <ion-button>
+        </ion-button>
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -22,16 +28,32 @@
     </ion-item>
   
     <ion-card-content 
-      *ngFor="let programma of myCorso.CORSOPROGRAMMA"
-      class="ion-padding-horizontal"
-    >
-    <p>
+    *ngFor="let programma of myCorso.CORSOPROGRAMMA"
+    class="ion-padding-horizontal" 
+    style="display: flex;">
       <ion-icon name="information-circle-outline" color="primary"></ion-icon>
       <span [innerHTML]="programma.TESTOHTML"></span> 
-    </p>
-
     </ion-card-content>
-</ion-card>
+    
+  </ion-card>
+
+  <ion-grid class="links">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" fill="solid" color="light" (click)="onClickCardCalendar()">
+          <ion-icon name="calendar" slot="start"></ion-icon>
+          Calendario
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <!-- PER ORA BOTTONE ALLEGATI SEMPRE DISABILITATO SU QUESTA PAGINA -->
+        <ion-button disabled expand="block" fill="solid" color="light">
+          <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+          Allegati
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 
   <ion-list class="ion-no-padding">
@@ -96,15 +118,6 @@
             <p *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
             <p *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
           </ion-label>
-            <ion-button 
-                size="small" 
-                fill="outline"
-                slot="end"
-                (click)="onClickCardCalendar()">
-                <ion-icon slot="start" name="calendar"></ion-icon>
-                Calendario
-            </ion-button>
-
         </ion-item>
 
     </ion-item-group>

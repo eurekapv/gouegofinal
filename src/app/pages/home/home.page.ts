@@ -24,6 +24,7 @@ import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 import { Plugins } from '@capacitor/core';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { LogApp } from 'src/app/models/log.model';
+import { AllegatilistPage } from '../history/historycourse/allegatilist/allegatilist.page';
 
 const { Geolocation } = Plugins;
 
@@ -722,5 +723,31 @@ onClickImpegnoTrainer(pianificazioneElem: PianificazioneCorso){
   this.navController.navigateForward('/agenda-trainer/'+pianificazioneElem.ID);
 }
 
-  
+
+/**
+ * se viene dato un valore a "componente", apre in modale quel componente, altrimenti apre la pagina di test
+ */
+onTest(){
+
+  const componente = AllegatilistPage;
+  const componentProps = undefined;
+
+
+  if(componente){
+    this.modalController.create({
+      component: componente,
+      componentProps: componentProps
+    })
+    .then(elModal => {
+      elModal.present();
+    })
+
+  }
+
+  else{
+    this.navController.navigateForward('/test');
+  }
+
+
+}
 }

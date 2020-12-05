@@ -181,6 +181,19 @@ export enum AttivitaChiusura{
 }
 
 
+export enum FileType{
+    immagini = "file-photo-o",
+    video = "file-movie-o",
+    audio = "file-audio-o",
+    zip = "file-archive-o",
+    text = "file-text-o",
+    indefinito = "file-o",
+    word = "file-word-o",
+    excel = "file-excel-o",
+    powerpoint = "file-powerpoint-o",
+    pdf = "file-pdf-o",
+}
+
 
 
 

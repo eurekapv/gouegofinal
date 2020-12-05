@@ -14,8 +14,6 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
 import { DocumentsPageRoutingModule } from './documents-routing.module';
 
 import { DocumentsPage } from './documents.page';
-import { File } from '@ionic-native/file/ngx';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 
 
@@ -29,7 +27,7 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
     SharedComponentsModule
   ],
   declarations: [DocumentsPage],
-  providers: [Chooser, File, FileOpener],
+  providers: [Chooser],
   entryComponents: [UploadComponent]
 })
 export class DocumentsPageModule {}

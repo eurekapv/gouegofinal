@@ -21,6 +21,9 @@ import { PayPal } from '@ionic-native/paypal/ngx';
 
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { CryptoService } from './library/services/crypto.service';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { File } from '@ionic-native/file/ngx';
+
 
 
 
@@ -44,7 +47,9 @@ registerLocaleData(localeIt,'it');
     { provide: LOCALE_ID, useValue: 'it' },
     PayPal,
     SocialSharing,
-    CryptoService
+    CryptoService,
+    File,
+    FileOpener,
 
   ],
   bootstrap: [AppComponent]

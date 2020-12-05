@@ -11,6 +11,7 @@ import { StatoIscrizione, SettoreAttivita } from 'src/app/models/valuelist.model
 import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calendar/calendar.page';
 import { Area } from 'src/app/models/area.model';
 import { Payment, PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
+import { AllegatilistPage } from './allegatilist/allegatilist.page';
 @Component({
   selector: 'app-historycourse',
   templateUrl: './historycourse.page.html',
@@ -63,11 +64,12 @@ export class HistorycoursePage implements OnInit {
             
             //questo risolve la promise (e quindi dismette il loading) solo quando entrambe le promise
             //passate sono risolte
-            Promise.all([this.startService.requestCorsoById(this.myIscrizione.IDCORSO),
+            Promise.all([this.startService.newRequestCorsoById(this.myIscrizione.IDCORSO),
                           this.startService.requestLocationByID(this.myIscrizione.IDLOCATION)])
                           .then(results=>{
                             //quando entrambe le richieste sono andate a buon fine, valorizzo le proprietà
-                            this.myCorso=results[0];
+                            let rawCorso: any = results[0];
+                            this.myCorso=rawCorso;
                             this.myLocation=results[1];
                             //e chiudo il loading
                             loading.dismiss();
@@ -114,6 +116,18 @@ export class HistorycoursePage implements OnInit {
 
   debug(){
 
+  }
+
+  onClickAllegati(){
+    this.modalController.create({
+      component: AllegatilistPage,
+      componentProps:{
+        'myCorso' : this.myCorso
+      }
+    })
+    .then(elModal => {
+      elModal.present()
+    })
   }
 
   showAlert(messaggio: string)

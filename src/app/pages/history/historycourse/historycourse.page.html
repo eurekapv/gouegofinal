@@ -7,6 +7,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+
+
   <ion-card class="title">
     <ion-item color="light" button="false" lines="none">
       <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
@@ -15,7 +17,7 @@
           {{ myCorso.DENOMINAZIONE }}
         </h1>
         <h3 class="ion-text-wrap">
-          {{ myCorso._DESCRSPORT }}
+          {{ myCorso['_DENOMINAZIONE_Sport'] }}
         </h3>
       </ion-label>
     </ion-item>
@@ -23,15 +25,30 @@
   
   <ion-card-content 
     *ngFor="let programma of myCorso.CORSOPROGRAMMA"
-    class="ion-padding-horizontal">
-
-      <div [innerHTML]="programma.TESTOHTML"></div> 
-
+    class="ion-padding-horizontal" 
+    style="display: flex;">
+      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+      <span [innerHTML]="programma.TESTOHTML"></span> 
   </ion-card-content>
 
-
-
 </ion-card>
+
+<ion-grid class="links">
+  <ion-row>
+    <ion-col>
+      <ion-button expand="block" fill="solid" color="light" (click)="onClickCalendar()">
+        <ion-icon name="calendar" slot="start"></ion-icon>
+        Calendario
+      </ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" fill="solid" color="light" (click)="onClickAllegati()">
+        <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+        Allegati
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
 
 
   <ion-list class="ion-no-padding">
@@ -96,15 +113,7 @@
             <p *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
             <p *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
           </ion-label>
-            <ion-button 
-                size="small" 
-                fill="outline"
-                slot="end"
-                (click)="onClickCalendar()">
-                <ion-icon slot="start" name="calendar"></ion-icon>
-                Calendario
-            </ion-button>
-
+           
         </ion-item>
 
     </ion-item-group>

@@ -13,6 +13,8 @@ import { error } from 'console';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { throwError } from 'rxjs';
+import { FileService } from 'src/app/services/file.service';
 
 
 
@@ -37,7 +39,8 @@ export class DocumentsPage implements OnInit {
               private loadingController: LoadingController,
               private platform: Platform,
               private file: File,
-              private fileOpener: FileOpener
+              private fileOpener: FileOpener,
+              private fileService: FileService
               ) { }
 
   ngOnInit() {
@@ -248,75 +251,44 @@ export class DocumentsPage implements OnInit {
    */
   onClickElement(elemento: Documentazione){
     //creo il loading e lo presento
-    this.loadingController.create({
-      message: 'Caricamento',
-      spinner: 'circular',
-      backdropDismiss: true
-    }).then(elLoading => {
-      elLoading.present();
+    if(elemento && elemento.FILENAMEESTENSIONE && elemento.FILENAMEESTENSIONE.length > 0){
 
-      //ora faccio la get del file
-      this.startService.requestDocumento(elemento.FILENAMEESTENSIONE)
-      .then(blob => {
-        //E' andato tutto bene, ho il blob
-        elLoading.dismiss();
-        console.log(blob);
+      this.loadingController.create({
+        message: 'Caricamento',
+        spinner: 'circular',
+        backdropDismiss: true
+      }).then(elLoading => {
+        elLoading.present();
+  
+        //ora faccio la get del file
+        this.startService.requestDocumento(elemento.FILENAMEESTENSIONE)
+        .then(blob => {
+          //E' andato tutto bene, ho il blob
+          elLoading.dismiss();
+          console.log(blob);
+          if(blob){
+            this.fileService.open(blob)
 
-        if(this.startService.isDesktop){
-          //sono su Desktop
-          this.openDesktop(blob);
-        }
-        else{
-          //sono su mobile
-          this.openMobile(blob);
-        }
-      })
-      .catch(error => {
-        
-        //qualcosa non ha funzionato
-        console.log(error);
-        this.showMessage('Errore di connessione');
-      })
-
-    })
-  }
-
-  openDesktop(blob: Blob){
-
-
-    //per scaricare il file creo via javascript un link fittizio agganciando il percorso del blob, e ne scateno l'evento click
-    let name='File'
-    let url  = window.URL.createObjectURL(blob);
-    let link = document.createElement("a");
-    link.download = name;
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-
-  }
-
-  openMobile(blob: Blob){
-    let fileName='Documento';         
-    let filePath= this.file.cacheDirectory;      
-    console.log('percorso: '+filePath);  
-
-        this.file.writeFile(filePath, fileName, blob, { replace:true }).then((fileEntry) => {
-
-          console.log("File created!");          
-          this.fileOpener.open(fileEntry.toURL(), blob.type)
-            .then(() => console.log('File is opened'))
-            .catch(err => console.error('Error openening file: ' + err));
+          }
+          else{
+            return (new Error())
+          }
         })
-          .catch((err) => {
-            console.error("Error creating file: ");
-            console.log(err);
-            throw err;  
-          });
+        .catch(error => {
+          
+          //qualcosa non ha funzionato
+          console.log(error);
+          this.showMessage('Impossibile scaricare il file');
+        })
+  
+      })
+    }
+    else{
+      this.showMessage('Errore, file non presente in archivio');
+    }
   }
 
-
+ 
   /**
    * Visualizza un messaggio
    */

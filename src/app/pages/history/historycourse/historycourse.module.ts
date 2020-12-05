@@ -10,6 +10,9 @@ import { HistorycoursePage } from './historycourse.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calendar/calendar.page';
 import { CalendarPageModule } from 'src/app/pages/location/course/detailcourse/calendar/calendar.module';
+import { AllegatilistPageModule } from 'src/app/pages/history/historycourse/allegatilist/allegatilist.module';
+import { AllegatilistPage } from './allegatilist/allegatilist.page';
+
 
 
 
@@ -22,9 +25,10 @@ import { CalendarPageModule } from 'src/app/pages/location/course/detailcourse/c
     
     PipesModule,
     CalendarPageModule,
+    AllegatilistPageModule,
     FormsModule,
   ],
-  entryComponents:[CalendarPage],
+  entryComponents:[CalendarPage, AllegatilistPage],
   declarations: [HistorycoursePage]
 })
 export class HistorycoursePageModule {}

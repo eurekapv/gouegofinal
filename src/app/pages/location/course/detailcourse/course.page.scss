@@ -13,10 +13,17 @@
 //card titolo
 ion-card.title{
     --background: var(--ion-color-light);
+    margin-bottom: 0px;
 
     //descrizione corso
     ion-card-content span{
         font-style: italic;
+    }
+}
+
+.links{
+    ion-button{
+        font-weight: 700;
     }
 }
 

@@ -3,7 +3,9 @@
       [button]="myButtonCard.iconLink" 
       (click)="onClickElement(myButtonCard)" 
       lines="none"
-      [detail] = "myButtonCard.iconLink">
+      [detail] = "myButtonCard.iconLink"
+      [disabled] = "myButtonCard.disabled"
+      >
 
     <ion-icon 
         [slot]="myButtonCard.sloticon" 

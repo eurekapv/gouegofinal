@@ -443,7 +443,7 @@ export class Utente extends IDDocument {
         return isTrainer;
     }
 
-    isCustode(){
+    get isCustode(): boolean{
         let isCustode: boolean =false;
         if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
 

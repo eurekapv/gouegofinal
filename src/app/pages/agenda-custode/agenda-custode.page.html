@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Occupazione strutture</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="showFilter()">
+        <ion-icon name="filter"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content scrollEvents (ionScroll)="onScroll($event)">
+
+  <ion-refresher slot="fixed" (ionRefresh)="request($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="listOccupazioni && listOccupazioni.length > 0" class="ion-no-padding">
+    <ion-list class="ion-padding-vertical">
+      <app-item-calendario 
+        *ngFor="let occupazione of listOccupazioni" 
+        [params]="getItemCalendario(occupazione)"
+        (click)="onClickOccupazione(occupazione)"
+      >
+      </app-item-calendario>
+    </ion-list>
+  </div>
+
+  <!-- NESSUN ELEMENTO -->
+  <div class="nofind-cnt" *ngIf="!listOccupazioni || listOccupazioni.length <= 0">
+    <ion-label>Nessuna occupanzione prevista</ion-label>
+  </div>
+</ion-content>
+
+
+<ion-footer>
+  <ion-button color="primary" expand="block" [disabled]="this.startService.isDesktop">
+    <ion-icon slot="start" name="qr-code-outline" (click)="scanQr()" ></ion-icon>
+    Qr-Code
+  </ion-button>
+</ion-footer>

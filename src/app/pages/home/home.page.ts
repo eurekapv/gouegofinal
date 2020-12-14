@@ -7,7 +7,7 @@ import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController, NavController, ModalController } from '@ionic/angular';
-import { Impegno  } from 'src/app/models/impegno.model';
+import { Impegno } from 'src/app/models/impegno.model';
 import { SettoreAttivita, Ruolo, Mansione } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
@@ -25,6 +25,8 @@ import { Plugins } from '@capacitor/core';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { LogApp } from 'src/app/models/log.model';
 import { AllegatilistPage } from '../history/historycourse/allegatilist/allegatilist.page';
+import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
+import { Button } from 'protractor';
 
 const { Geolocation } = Plugins;
 
@@ -34,7 +36,7 @@ const { Geolocation } = Plugins;
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit, OnDestroy{
+export class HomePage implements OnInit, OnDestroy {
 
   // Parametri Iniziali di Configurazione
   startConfig: StartConfiguration;
@@ -42,7 +44,7 @@ export class HomePage implements OnInit, OnDestroy{
 
   //Identificativo Utente Loggato
   userLogged: boolean;
-  userLoggedListen : Subscription;
+  userLoggedListen: Subscription;
 
   //Utente Loggato
   docUtente: Utente;
@@ -54,10 +56,11 @@ export class HomePage implements OnInit, OnDestroy{
 
   // Elenco delle Location da mostrare
   listLocation: Location[] = [];
+
   listLocationListen: Subscription;
 
   //Elenco delle prossime attività
-  myListImpegni: Impegno[]=[];
+  myListImpegni: Impegno[] = [];
 
   myListImpegniTrainer: PianificazioneCorso[] = [];
 
@@ -75,139 +78,163 @@ export class HomePage implements OnInit, OnDestroy{
   listNews: NewsEvento[] = [];
 
   //Bottoni da mostrare nella porzione Agenda
-  agendaCards: ButtonCard[] = []; 
-  
-  
+  agendaCards: ButtonCard[] = [];
+
+  listOccupazioni: any[]= []; //array di array di occupazioni, divise per locations
+
+
   //Mostra o nasconde Area Agenda
   showAgenda = false;
 
-  
+  get showTrainer(): boolean {
+    return (this.userLogged && (this.docUtente.isAssistenteTrainer || this.docUtente.isTrainer))
+  }
+
+  get showCustode(): boolean {
+    return (this.userLogged && this.docUtente.isCustode)
+  }
+
+
   //Guarda qui
   //https://swiperjs.com/demos/#responsive_breakpoints
-  sliderOpts={
+  sliderOpts = {
     slidesPerView: 1.2,
     spaceBetween: 0,
     initialSlide: 0,
-        // Dovrei farla variabile
-        // Responsive breakpoints   
-         breakpoints: {  
-   
-            // when window width is <= 320px     
-            320: {       
-               slidesPerView:  1.2,
-               spaceBetween: 0     
-            },     
-            // when window width is <= 480px     
-            480: {       
-               slidesPerView:  1.2,       
-               spaceBetween: 0     
-            },   
-        
-            // when window width is <= 640px     
-            640: {       
-               slidesPerView:  1.2,       
-               spaceBetween: 0     
-            },
+    // Dovrei farla variabile
+    // Responsive breakpoints   
+    breakpoints: {
 
-            1024: {
-              slidesPerView: 2.5,       
-              spaceBetween: 1  
-            },
+      // when window width is <= 320px     
+      320: {
+        slidesPerView: 1.2,
+        spaceBetween: 0
+      },
+      // when window width is <= 480px     
+      480: {
+        slidesPerView: 1.2,
+        spaceBetween: 0
+      },
 
-            1440: {
-              slidesPerView: 4,       
-              spaceBetween: 1 
-            },
+      // when window width is <= 640px     
+      640: {
+        slidesPerView: 1.2,
+        spaceBetween: 0
+      },
 
-            1920: {
-              slidesPerView: 6,       
-              spaceBetween: 1 
-            }
+      1024: {
+        slidesPerView: 2.5,
+        spaceBetween: 1
+      },
+
+      1440: {
+        slidesPerView: 4,
+        spaceBetween: 1
+      },
+
+      1920: {
+        slidesPerView: 6,
+        spaceBetween: 1
+      }
 
 
-        
-         }
-         
-         
+
+    }
+
+
   }
-  
+
 
   constructor(private startService: StartService,
-              private actionSheetController: ActionSheetController,
-              private navController: NavController,
-              private modalController:ModalController,
-              private docStructureService: DocstructureService
-              ) {
+    private actionSheetController: ActionSheetController,
+    private navController: NavController,
+    private modalController: ModalController,
+    private docStructureService: DocstructureService
+  ) {
 
     //Recupero la card che dice che non ci sono news
     this.noNewsCard = NewsEvento.getNoNews();
- 
+
     // Parametri di Configurazione Iniziale Applicazione
     this.startConfigListen = this.startService.startConfig
       .subscribe(element => {
         this.startConfig = element;
       });
-    
+
     // Sottoscrivo alla ricezione delle Aree
     this.listAreeListen = this.startService.listAree
-       .subscribe(aree => {
-          this.listAree = aree.filter(objArea=>{
-            return objArea.APPSHOW;
-          });
+      .subscribe(aree => {
+        this.listAree = aree.filter(objArea => {
+          return objArea.APPSHOW;
+        });
 
-          //quando le aree sono arrivate, se non sono loggato seleziono la più vicina
-          if(!this.userLogged){
-            this.startService.getNearestArea(this.listAree)
+        //quando le aree sono arrivate, se non sono loggato seleziono la più vicina
+        if (!this.userLogged) {
+          this.startService.getNearestArea(this.listAree)
             .then(nearestArea => {
-  
+
               //trovata l'area, posso passarne l'id al metodo selectarea
               this.startService.selectAreaByID(nearestArea.ID);
             })
-          }
-    });
+        }
+      });
 
+
+    //QUESTO E' IMPORTANTE, QUI POSSO AGGANCIARE EVENTI A SEGUITO DEL CAMBIO DI AREA
     //Mi sottoscrivo alla ricezione della Area Selezionata
     this.selectedAreaListen = this.startService.areaSelected
-        .subscribe( areaSel => {
-            //controllo se nell'array di aree è presente quella selezionata
-            if (this.listAree.includes(areaSel)){
-              //Cambio Area Selezionata
-              this.selectedArea = areaSel;
-            }
-            //altrimenti setto come area selezionata la prima disponibile
-            else{
-              this.selectedArea=this.listAree[0];
-            }
-            //richiedo le location sulla base della nuova area selezionata
-            startService.requestLocation(this.selectedArea.ID);
+      .subscribe(areaSel => {
+        //controllo se nell'array di aree è presente quella selezionata
+        if (this.listAree.includes(areaSel)) {
+          //Cambio Area Selezionata
+          this.selectedArea = areaSel;
+        }
+        //altrimenti setto come area selezionata la prima disponibile
+        else {
+          this.selectedArea = this.listAree[0];
+        }
+        //richiedo le location sulla base della nuova area selezionata
+        startService.requestLocation(this.selectedArea.ID)
+       
 
-            //Richiesta nuove News
-            this.requestNews();
+        //Richiesta nuove News
+        this.requestNews();
 
-            //Aggiorno l'agenda
-            this.updateAgenda();
+        //Aggiorno l'agenda
+        this.updateAgenda();
 
-    });
+        // this.richiediAgendaOccupazione();
 
+
+      });
+
+    
+    // QUI POSSO AGGANCIARE EVENTI ALL'ARRIVO DELLE LOCATIONS
     // Sottoscrivo alla ricezione delle Locations
     this.listLocationListen = this.startService.listLocation
-        .subscribe(locations => {
-          this.listLocation = locations;
-    })
+      .subscribe(locations => {
+        this.listLocation = locations;
+        if(this.listLocation && this.listLocation.length > 0){
+          
+          this.richiediAgendaOccupazione()
+
+        }
+      })
 
     //Sottoscrivo all'ascolto di un utente loggato
-    this.userLoggedListen = this.startService.utenteLogged.subscribe( element => {
+    this.userLoggedListen = this.startService.utenteLogged.subscribe(element => {
 
       //Recupero l'utente
       this.userLogged = element;
 
       //Aggiorno lista impegni e cerco di visualizzare le card superiori
-      this.updateListImpegni(); 
+      this.updateListImpegni();
 
       //Aggiorno l'agenda
-      this.updateAgenda();
+      // this.updateAgenda();
+      // this.richiediAgendaOccupazione();
 
-           
+
     });
 
 
@@ -220,7 +247,8 @@ export class HomePage implements OnInit, OnDestroy{
       this.updateListImpegni();
 
       //Aggiorno l'agenda
-      this.updateAgenda();     
+      // this.updateAgenda(); 
+      // this.richiediAgendaOccupazione();
     });
 
 
@@ -237,14 +265,14 @@ export class HomePage implements OnInit, OnDestroy{
     if (this.selectedArea) {
 
       //Chiedo al servizio le News
-      this.startService.requestNews(this.selectedArea.ID,3).then(listNews=>{
-        this.listNews=listNews;
+      this.startService.requestNews(this.selectedArea.ID, 3).then(listNews => {
+        this.listNews = listNews;
       });
 
-   }
+    }
   }
 
- 
+
 
   ionViewDidEnter() {
 
@@ -281,23 +309,23 @@ export class HomePage implements OnInit, OnDestroy{
    */
   onClickButtonCardImpegni(btn: ButtonCard) {
 
-    
+
     if (btn) {
       switch (btn.functionCod) {
         case 'register':
-            // Apro il Login
-            this.openLogin();
+          // Apro il Login
+          this.openLogin();
           break;
 
         case 'login':
-            // Apro il Login
-            this.openLogin();
-        break;
-        
+          // Apro il Login
+          this.openLogin();
+          break;
+
         case 'show':
           this.redirectFromButtonCard(btn);
-        break;
-      
+          break;
+
         default:
           break;
       }
@@ -312,39 +340,39 @@ export class HomePage implements OnInit, OnDestroy{
     if (btn.id && btn.id.length !== 0) {
       switch (btn.settore) {
         case SettoreAttivita.settoreCorso:
-          this.navController.navigateForward(['/','historylist','course',btn.id]);
+          this.navController.navigateForward(['/', 'historylist', 'course', btn.id]);
           break;
 
         case SettoreAttivita.settorePrenotazione:
-            this.navController.navigateForward(['/','historylist','booking',btn.id]);
-            break;
-      
+          this.navController.navigateForward(['/', 'historylist', 'booking', btn.id]);
+          break;
+
         default:
           break;
       }
+    }
   }
-}
 
   //#endregion
 
   //#region NEWS ED EVENTI AZIENDA
 
   onClickShowAllNews() {
-    this.navController.navigateForward(['/','news']);
+    this.navController.navigateForward(['/', 'news']);
   }
 
   /**
    * Apre in modalità modale la news
    * @param news News da leggere
    */
-  onClickNews(news: NewsEvento, event:any) {
-    
+  onClickNews(news: NewsEvento, event: any) {
+
     this.modalController.create({
-      component:NewsdetailPage,
-      componentProps:{myNews:news}
-    }).then(modal=>{
+      component: NewsdetailPage,
+      componentProps: { myNews: news }
+    }).then(modal => {
       modal.present();
-    })    
+    })
   }
 
   //#endregion
@@ -399,7 +427,7 @@ export class HomePage implements OnInit, OnDestroy{
     }
 
 
-    
+
   }
 
 
@@ -412,7 +440,7 @@ export class HomePage implements OnInit, OnDestroy{
     else {
       // Apro il Login
       this.openLogin();
-      
+
     }
   }
 
@@ -421,7 +449,7 @@ export class HomePage implements OnInit, OnDestroy{
    * @param location Location Selezionata
    */
   onClickPrenota(location: Location) {
-    this.navController.navigateForward(['/','location',location.ID,'booking']);
+    this.navController.navigateForward(['/', 'location', location.ID, 'booking']);
   }
 
   /**
@@ -429,14 +457,14 @@ export class HomePage implements OnInit, OnDestroy{
    * @param location Location selezionata
    */
   onClickLocation(location: Location) {
-    this.navController.navigateForward(['/','location',location.ID]);
+    this.navController.navigateForward(['/', 'location', location.ID]);
   }
 
 
 
   /** Apertura Videata Login */
   async openLogin() {
-    
+
     //**Apro in versione moale la NewLogin
     const modal = await this.modalController.create({
       component: NewLoginPage
@@ -455,7 +483,7 @@ export class HomePage implements OnInit, OnDestroy{
   /**
    * Visualizza le form per la scelta del centro
    */
-  showSceltaCentro(ev:any) {
+  showSceltaCentro(ev: any) {
     //Per ora faccio uguale, vediamo poi se vale la pena 
     //cambiare per il desktop
     if (this.startService.isDesktop) {
@@ -469,16 +497,15 @@ export class HomePage implements OnInit, OnDestroy{
 
 
   /** funzione per mostrare il popup di scelta campo */
-  async presentActionSheet()
-  {
-    let buttonsArray: any[]=[];
+  async presentActionSheet() {
+    let buttonsArray: any[] = [];
     let singleButton: any;
     //popolo l'array di bottoni con i nomi delle aree operative
     for (const iterator of this.listAree) {
-      singleButton={
+      singleButton = {
         text: iterator.DENOMINAZIONE,
         icon: 'location-outline',
-        handler: ()=>{
+        handler: () => {
           //Chiedo al servizio di cambiare l'Area Selezionata
           this.startService.selectAreaByID(iterator.ID);
         }
@@ -487,267 +514,296 @@ export class HomePage implements OnInit, OnDestroy{
       buttonsArray.push(singleButton);
     }
     const actionSheet = await this.actionSheetController.create
-    ({
-      header: 'Scegli la Sede',
-      buttons: buttonsArray      
-    });
+      ({
+        header: 'Scegli la Sede',
+        buttons: buttonsArray
+      });
     await actionSheet.present();
   }
 
 
- //#region GESTIONE INTERFACCIA
- /** Ritorna il color a seconda dello stato di Login */
- btnFooterColor() {
+  //#region GESTIONE INTERFACCIA
+  /** Ritorna il color a seconda dello stato di Login */
+  btnFooterColor() {
 
-   let color = 'primary';
-  
+    let color = 'primary';
+
     if (this.userLogged) {
       color = 'success'
     }
     else {
       color = 'primary'
     }
-    
+
     return color;
- }
-
- btnFooterCaption() {
-  let retCaption = '';
-  const captionAccedi = 'Accedi';
-
-  retCaption = captionAccedi;
-  //Utente Loggato
-  if (this.userLogged) {
-    // Account Presente
-    if (this.docUtente) {
-        retCaption = this.docUtente.NOMINATIVO ? this.docUtente.NOMINATIVO : captionAccedi      
-    }
   }
 
-  return retCaption;
- }
+  btnFooterCaption() {
+    let retCaption = '';
+    const captionAccedi = 'Accedi';
 
- btnFooterIcon() {
-  let retIcon = '';
-  const iconAccedi = 'log-in-outline';
-
-  retIcon = iconAccedi;
-  //Utente Loggato
-  if (this.userLogged) {
-    // Account Presente
-    if (this.docUtente) {
-        retIcon = this.docUtente.NOMINATIVO ? 'person-outline' : iconAccedi      
-    }
-  }
-
-  return retIcon;
- }
- //#endregion
-
- /**
-  * Richiede gli impegni dell'utente
-  * e successivamente prepara la listButtonImpegni
-  */
- updateListImpegni(){
-  let reqParam = new RequestParams();
-
-  reqParam.top = 10;
-  reqParam.child_level = 1;
-  reqParam.decode.active = true;
-  reqParam.orderBy = 'asc';
-  
-  reqParam.decode.foreignFields = Impegno.getReqForeignKeys();
-
-  
-  if (this.userLogged){
-
-    if (this.docUtente) {
-      //Devo richiedere gli impegni
-
-      //Imposto nel filtro l'Utente
-      let filterImpegno = new Impegno(true);
-      filterImpegno.IDUTENTE=this.docUtente.ID;
-
-      filterImpegno.DATAORAINIZIO = new Date();
-      //Applico una condizione per la dataorainizio
-      filterImpegno.addFilterCondition(OperatorCondition.maggiore, 'DATAORAINIZIO');
-
-
-      this.docStructureService.requestNew(filterImpegno,reqParam)
-                .then( listImpegni =>{
-
-                    this.myListImpegni=listImpegni;
-
-                    //Reimposto l'area impegni
-                    this.createButtonCardImpegni();
-
-                })
-                .catch(error=>{
-                  this.myListImpegni=[];
-                  console.log(error);
-                });
-    }
-    else {
-      this.myListImpegni=[];
-      //Reimposto l'area impegni
-      this.createButtonCardImpegni();
-    }
-  }
-  else{
-    this.myListImpegni=[];
-    //Reimposto l'area impegni
-    this.createButtonCardImpegni();
-  }
-
-
- }
-
-
-//#region AGENDA
-
-/**
- * Passa alla pagina dell'agenda
- */
-onClickShowAgenda() {
-  this.navController.navigateForward('/agenda');
-}
-
- /**
-  * Aggiornamento dell'agenda
-  * Utente non loggato, utente Cliente -> NESSUNA AGENDA VISUALIZZATA
-  */
- updateAgenda(){
-
-  let richiediOccupazioni = false;
-  let richiediMieiCorsi = false;
-
-  if (this.selectedArea && this.selectedArea.ID) {
+    retCaption = captionAccedi;
     //Utente Loggato
     if (this.userLogged) {
       // Account Presente
       if (this.docUtente) {
-  
-        if (this.docUtente.RUOLO == Ruolo.admin || this.docUtente.RUOLO == Ruolo.super) {
-            richiediOccupazioni = true;
-        }
-        if (this.docUtente.isTrainer || this.docUtente.isAssistenteTrainer){
-          richiediMieiCorsi = true;
-        }
-        // else if (this.docUtente.RUOLO == Ruolo.collaboratore ) {
-        //   switch(this.docUtente.MANSIONE) {
-        //     case Mansione.assistenteTrainer:
-        //       richiediMieiCorsi = true;
-        //       break;
-        //     case Mansione.trainer:
-        //       richiediMieiCorsi = true;
-        //       break;
-        //     case Mansione.custode:
-        //       richiediOccupazioni = true;
-        //       break;
-        //   }
-        // }
+        retCaption = this.docUtente.NOMINATIVO ? this.docUtente.NOMINATIVO : captionAccedi
       }
     }
-  
-    if (richiediMieiCorsi) {
-      this.richiediAgendaTrainer();
+
+    return retCaption;
+  }
+
+  btnFooterIcon() {
+    let retIcon = '';
+    const iconAccedi = 'log-in-outline';
+
+    retIcon = iconAccedi;
+    //Utente Loggato
+    if (this.userLogged) {
+      // Account Presente
+      if (this.docUtente) {
+        retIcon = this.docUtente.NOMINATIVO ? 'person-outline' : iconAccedi
+      }
     }
-    else if (richiediOccupazioni) {
-      this.richiediAgendaOccupazione();
+
+    return retIcon;
+  }
+  //#endregion
+
+  /**
+   * Richiede gli impegni dell'utente
+   * e successivamente prepara la listButtonImpegni
+   */
+  updateListImpegni() {
+    let reqParam = new RequestParams();
+
+    reqParam.top = 10;
+    reqParam.child_level = 1;
+    reqParam.decode.active = true;
+    reqParam.orderBy = 'asc';
+
+    reqParam.decode.foreignFields = Impegno.getReqForeignKeys();
+
+
+    if (this.userLogged) {
+
+      if (this.docUtente) {
+        //Devo richiedere gli impegni
+
+        //Imposto nel filtro l'Utente
+        let filterImpegno = new Impegno(true);
+        filterImpegno.IDUTENTE = this.docUtente.ID;
+
+        filterImpegno.DATAORAINIZIO = new Date();
+        //Applico una condizione per la dataorainizio
+        filterImpegno.addFilterCondition(OperatorCondition.maggiore, 'DATAORAINIZIO');
+
+
+        this.docStructureService.requestNew(filterImpegno, reqParam)
+          .then(listImpegni => {
+
+            this.myListImpegni = listImpegni;
+
+            //Reimposto l'area impegni
+            this.createButtonCardImpegni();
+
+          })
+          .catch(error => {
+            this.myListImpegni = [];
+            console.log(error);
+          });
+      }
+      else {
+        this.myListImpegni = [];
+        //Reimposto l'area impegni
+        this.createButtonCardImpegni();
+      }
     }
     else {
-  
-      //Nascono l'agenda che non serve
-      this.showAgenda = false;
-  
-      //Elimino l'agenda
-      this.agendaCards = [];
-  
+      this.myListImpegni = [];
+      //Reimposto l'area impegni
+      this.createButtonCardImpegni();
+    }
+
+
+  }
+
+
+  //#region AGENDA
+
+  /**
+   * Passa alla pagina dell'agenda
+   */
+  onClickShowAgenda() {
+    this.navController.navigateForward('/agenda');
+  }
+
+  /**
+   * Aggiornamento dell'agenda
+   * Utente non loggato, utente Cliente -> NESSUNA AGENDA VISUALIZZATA
+   */
+  updateAgenda() {
+
+    let richiediOccupazioni = false;
+    let richiediMieiCorsi = false;
+
+    if (this.selectedArea && this.selectedArea.ID) {
+      //Utente Loggato
+      if (this.userLogged) {
+        // Account Presente
+        if (this.docUtente) {
+
+          if (this.docUtente.RUOLO == Ruolo.admin || this.docUtente.RUOLO == Ruolo.super) {
+            richiediOccupazioni = true;
+          }
+          if (this.docUtente.isTrainer || this.docUtente.isAssistenteTrainer) {
+            richiediMieiCorsi = true;
+          }
+          // else if (this.docUtente.RUOLO == Ruolo.collaboratore ) {
+          //   switch(this.docUtente.MANSIONE) {
+          //     case Mansione.assistenteTrainer:
+          //       richiediMieiCorsi = true;
+          //       break;
+          //     case Mansione.trainer:
+          //       richiediMieiCorsi = true;
+          //       break;
+          //     case Mansione.custode:
+          //       richiediOccupazioni = true;
+          //       break;
+          //   }
+          // }
+        }
+      }
+
+      if (richiediMieiCorsi) {
+        this.richiediAgendaTrainer();
+      }
+      else if (richiediOccupazioni) {
+        // this.richiediAgendaOccupazione();
+      }
+      else {
+
+        //Nascono l'agenda che non serve
+        this.showAgenda = false;
+
+        //Elimino l'agenda
+        this.agendaCards = [];
+
+      }
+
     }
 
   }
 
-}
+  /**
+   * Richiesta Agenda Occupazioni
+   */
+  private richiediAgendaOccupazione() {
 
-/**
- * Richiesta Agenda Occupazioni
- */
-private richiediAgendaOccupazione() {
+    if(this.listLocation && this.listLocation.length > 0){
+      let idArea = this.selectedArea.ID;
+      // this.showAgenda = true;
 
-  let idArea = this.selectedArea.ID;
-  this.showAgenda = true;
-  this.startService.requestOccupazioni(idArea)
-      .then(collList => {
+      this.listLocation.forEach(elLocation => {
 
-        this.agendaCards = ButtonCard.getButtonAgendaFromOccupazioni(collList);
+        this.startService.requestOccupazioni(idArea, elLocation.ID, 4, undefined, new Date())
+          .then(listOccupazioni => {
+            elLocation._LISTOCCUPAZIONI = listOccupazioni;
+          })
+          .catch(error => {
+            console.log(error);
+    
+          });
+      })
+
+    }
+
+  }
+
+  private richiediAgendaTrainer() {
+    //qui stò richiedendo gli impegni che riguardano l'utente in quanto "collaboratore"
+    this.startService.requestImpegniTrainer(this.docUtente.ID, new Date())
+      .then(result => {
+
+        this.myListImpegniTrainer = result;
+
       })
       .catch(error => {
         console.log(error);
-
       });
-
-}
-
-private richiediAgendaTrainer() {
-  //qui stò richiedendo gli impegni che riguardano l'utente in quanto "collaboratore"
-  this.startService.requestImpegniTrainer(this.docUtente.ID, new Date())
-  .then(result => {
-
-    this.myListImpegniTrainer = result;
-    
-  })
-  .catch(error => {
-    console.log(error);
-  });
- }
-
-//#endregion
-getButtonCardTrainer(pianificazioneElem?: PianificazioneCorso){
-  if (pianificazioneElem){
-    return ButtonCard.getButtonAgendaFromPianificazioneCorso(pianificazioneElem);
   }
-  else{
+
+  //#endregion
+  getButtonCardTrainer(pianificazioneElem?: PianificazioneCorso) {
+    if (pianificazioneElem) {
+      return ButtonCard.getButtonAgendaFromPianificazioneCorso(pianificazioneElem);
+    }
+    else {
+      let btnCard = new ButtonCard();
+
+      btnCard.title = 'Nessun corso previsto per oggi';
+      btnCard.nameicon = 'school-outline';
+      btnCard.sloticon = "start";
+      btnCard.color = "primary";
+      btnCard.disabled = true;
+
+
+      return btnCard
+    }
+  }
+
+  getButtonEmptyOccupazione(){
     let btnCard = new ButtonCard();
+    btnCard.title = 'Nessuna occupazione campi presente oggi';
+    btnCard.nameicon ='calendar-outline';
+    btnCard.sloticon = 'start';
+    btnCard.color = 'primary';
+    btnCard.disabled = true;
+  
 
-    btnCard.title = 'Nessun corso previsto per oggi';
-    btnCard.nameicon = 'school-outline';
-    btnCard.sloticon = "start";
-    btnCard.color = "primary";
-
-
-    return btnCard
-  }
-}
-
-onClickImpegnoTrainer(pianificazioneElem: PianificazioneCorso){
-  this.navController.navigateForward('/agenda-trainer/'+pianificazioneElem.ID);
-}
-
-
-/**
- * se viene dato un valore a "componente", apre in modale quel componente, altrimenti apre la pagina di test
- */
-onTest(){
-
-  const componente = AllegatilistPage;
-  const componentProps = undefined;
-
-
-  if(componente){
-    this.modalController.create({
-      component: componente,
-      componentProps: componentProps
-    })
-    .then(elModal => {
-      elModal.present();
-    })
-
+    return btnCard;
   }
 
-  else{
-    this.navController.navigateForward('/test');
+  onClickImpegnoTrainer(pianificazioneElem: PianificazioneCorso) {
+    this.navController.navigateForward('/agenda-trainer/' + pianificazioneElem.ID);
   }
 
 
-}
+  /**
+   * se viene dato un valore a "componente", apre in modale quel componente, altrimenti apre la pagina di test
+   */
+  onTest() {
+
+    const componente = undefined;
+    const componentProps = undefined;
+
+    let idArea = this.startService.areaSelectedValue.ID;
+
+    const path:string = '/agenda-custode/' + idArea;
+
+
+    if (componente) {
+      this.modalController.create({
+        component: componente,
+        componentProps: componentProps
+      })
+        .then(elModal => {
+          elModal.present();
+        })
+
+    }
+
+    else if (path){
+      this.navController.navigateForward(path)
+    }
+
+    else {
+      this.navController.navigateForward('/test');
+    }
+
+
+  }
+
+
 }

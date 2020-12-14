@@ -4,6 +4,7 @@ import { Campo } from './campo.model';
 import { AperturaLocation } from './aperturalocation.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CampoSport } from './camposport.model';
+import { OccupazioneCampi } from './occupazionecampi.model';
 
 export class Location extends IDDocument {
 
@@ -25,6 +26,7 @@ export class Location extends IDDocument {
     LOCATIONIMAGE: LocationImage[];
     CAMPO: Campo[];
     APERTURALOCATION: AperturaLocation[];
+    _LISTOCCUPAZIONI:OccupazioneCampi[] = [];
     
   
     constructor(onlyInstance?:boolean) {

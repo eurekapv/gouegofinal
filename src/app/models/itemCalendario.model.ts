@@ -1,5 +1,7 @@
 import { Livello } from './livello.model';
+import { OccupazioneCampi } from './occupazionecampi.model';
 import { PianificazioneCorso } from './pianificazionecorso.model';
+import { SettoreAttivita } from './valuelist.model';
 
 export class ItemCalendario{
     oraInizio: Date;
@@ -9,6 +11,8 @@ export class ItemCalendario{
     riga3Text: string;
     badgeText: string;
     badgeColor: string;
+
+    badgeIcon: string;
 
     static getParamsPianificazioneCorso(pianificazioneElem: PianificazioneCorso): ItemCalendario{
 
@@ -39,6 +43,27 @@ export class ItemCalendario{
         else{
         return false
         }
+    }
+
+
+    static getParamsOccupazioneCampo(occupazioneElem: OccupazioneCampi): ItemCalendario{
+        let paramsItem: ItemCalendario = new ItemCalendario();
+        paramsItem.oraInizio = occupazioneElem.DATAORAINIZIO;
+        paramsItem.oraFine = occupazioneElem.DATAORAFINE;
+        if(occupazioneElem.TIPO == SettoreAttivita.settoreCorso){
+            paramsItem.riga1Text = occupazioneElem.getDocPropertyInRepository(['IDREF'], 'DENOMINAZIONE');
+            paramsItem.badgeIcon = "school-outline";
+        }
+        else if(occupazioneElem.TIPO == SettoreAttivita.settorePrenotazione){
+            paramsItem.riga1Text = occupazioneElem.getDocPropertyInRepository(['IDREF'], 'NOMINATIVO');
+            paramsItem.badgeIcon = "calendar-outline"
+        }
+        paramsItem.riga2Text = occupazioneElem['_DENOMINAZIONE_Location'];
+        paramsItem.riga3Text = occupazioneElem['_DENOMINAZIONE_Campo'];
+
+        paramsItem.badgeColor = "primary";
+
+        return paramsItem;
     }
 
     

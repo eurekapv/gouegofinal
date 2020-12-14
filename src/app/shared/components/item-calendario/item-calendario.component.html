@@ -16,10 +16,14 @@
         </ion-col>
         <ion-col class="ion-no-padding col-right">
           <ion-badge 
-            *ngIf="params.badgeText && params.badgeText.length > 0"
+            *ngIf="tipoBadge != TipoBadge.noBadge"
             [color]="params.badgeColor"
+            [class]="badgeClass"
           >
-            {{params.badgeText}}
+            <ion-icon *ngIf="tipoBadge == TipoBadge.iconAndText || tipoBadge == TipoBadge.onlyIcon" [name]="params.badgeIcon"></ion-icon>
+            <span *ngIf="tipoBadge == TipoBadge.iconAndText || tipoBadge == TipoBadge.onlyText">
+              {{params.badgeText}}
+            </span>
           </ion-badge>
         </ion-col>
       </ion-row>

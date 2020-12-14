@@ -91,7 +91,14 @@ const routes: Routes = [
   {
     path: 'agenda-trainer',
     loadChildren: () => import('./pages/agenda-trainer/agenda-trainer.module').then( m => m.AgendaTrainerPageModule)
-  }
+  },
+  {
+    path: 'agenda-custode',
+    loadChildren: () => import('./pages/agenda-custode/agenda-custode.module').then( m => m.AgendaCustodePageModule)
+  },
+  // {
+  //   path: 'agenda-custode/:idImpegno',
+  // },  
 
   //questo lo lascio commentato, perchè in teoria ci si arriva solo da modale
   // {

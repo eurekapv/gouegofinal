@@ -56,6 +56,10 @@ import { DataChiusura } from '../models/datachiusura.model';
 import { Router } from '@angular/router';
 import { PlatformLocation } from '@angular/common';
 import { Gruppo } from '../models/gruppo.model';
+import { CorsoallegatoService } from './corsoallegato.service';
+import { promise } from 'protractor';
+import { CorsoAllegato } from '../models/corsoallegato.model';
+import { IDDocument } from '../library/models/iddocument.model';
 
 
 @Injectable({
@@ -125,7 +129,9 @@ export class StartService {
     private invoicesService: InvoicesService,
     private posizioneService: PosizioneService,
     private dataChiusuraService: DataChiusuraService,
-    private urlLocation: PlatformLocation) { 
+    private urlLocation: PlatformLocation,
+    private corsoAllegatoService: CorsoallegatoService
+    ) { 
 
       //Ogni volta che cambia la configurazione la invio 
       //al servizio docStructure
@@ -174,7 +180,7 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          //myUrl = 'openbeach.gouego.com';
+          myUrl = 'demo.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso
@@ -484,6 +490,7 @@ export class StartService {
                           //App entra in stato pronto
                           this._appReady.next(true);
 
+
                           LogApp.consoleLog('Avvio AppReady');
 
                           //Dopo che l'app è partita in questo contento non 
@@ -523,6 +530,10 @@ export class StartService {
     const actualStartConfig = this._startConfig.getValue();
     
     return this.locationService.requestByIdArea(actualStartConfig, idArea);
+  }
+
+  newRequestLocation(idArea: string){
+    return this.locationService.newRequestByIdArea(idArea);
   }
 
   /** Effettua la richiesta al server di una Location precisa
@@ -1300,8 +1311,12 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
 //#region OCCUPAZIONICAMPI
 
 
-requestOccupazioni(idArea: string,filterDocument?:OccupazioneCampi, params?:RequestParams) {
-  return this.occupazioniService.request(idArea, filterDocument, params);
+requestOccupazioni(idArea: string, idLocation?: string, top?, params?: RequestParams, fromTime?: Date) {
+  return this.occupazioniService.request(idArea, idLocation, params, top, fromTime);
+}
+
+requestOccupazioniByFilter(filter: OccupazioneCampi, params?: RequestParams){
+  return this.occupazioniService.requestByFilter(filter, params);
 }
 //#endregion
 
@@ -1371,6 +1386,12 @@ isFestivita(data: Date, idArea: string, idLocation: string, idCampo: string) {
   return this.dataChiusuraService.idFestivita(idArea, idLocation, idCampo, data);
 }
 //#endregion
+
+//#region CORSOALLEGATO
+
+  requestListAllegatiByIdCorso(idCorso: string): Promise<CorsoAllegato[]>{
+    return this.corsoAllegatoService.requestByIdCorso(idCorso);
+  }
 
 
 }

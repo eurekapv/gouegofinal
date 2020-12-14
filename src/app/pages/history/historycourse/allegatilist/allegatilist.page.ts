@@ -37,14 +37,7 @@ export class AllegatilistPage implements OnInit {
 
   requestListAllegati(event?: any){
 
-    //filtro per la richiesta
-    let myFilter = new CorsoAllegato(true);
-    myFilter.IDCORSO = this.myCorso.ID;
-
-     //Parametri per la richiesta
-     let myParams = new RequestParams();
-     myParams.decode = new RequestDecode();
-     myParams.decode.active = true;
+    
 
     this.loadingController.create({
       message: 'Caricamento...',
@@ -57,7 +50,7 @@ export class AllegatilistPage implements OnInit {
       if(!event){
         elLoading.present();
       }
-      return this.docStructureService.requestNew(myFilter, myParams);
+      return this.startService.requestListAllegatiByIdCorso(this.myCorso.ID);
     })
     .then(listAllegati => {
 

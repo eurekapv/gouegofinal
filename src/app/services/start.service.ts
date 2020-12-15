@@ -1318,6 +1318,10 @@ requestOccupazioni(idArea: string, idLocation?: string, top?, params?: RequestPa
 requestOccupazioniByFilter(filter: OccupazioneCampi, params?: RequestParams){
   return this.occupazioniService.requestByFilter(filter, params);
 }
+
+requestOccupazioneById(idOccupazione: string, getRelReservation = false){
+  return this.occupazioniService.requestById(idOccupazione, getRelReservation);
+}
 //#endregion
 
 

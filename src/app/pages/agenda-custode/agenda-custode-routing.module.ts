@@ -8,10 +8,10 @@ const routes: Routes = [
     path: '',
     component: AgendaCustodePage
   },
-  {
-    path: 'filter-custode',
-    loadChildren: () => import('./filter-custode/filter-custode.module').then( m => m.FilterCustodePageModule)
-  },
+  // {
+  //   path: 'filter-custode',
+  //   loadChildren: () => import('./filter-custode/filter-custode.module').then( m => m.FilterCustodePageModule)
+  // },
   {
     path: ':idPianificazione',
     loadChildren: () => import('./agenda-custode-details/agenda-custode-details.module').then( m => m.AgendaCustodeDetailsPageModule)

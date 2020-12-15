@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 
-import { ActionSheetController, NavController, ModalController } from '@ionic/angular';
+import { ActionSheetController, NavController, ModalController, ToastController } from '@ionic/angular';
 import { Impegno } from 'src/app/models/impegno.model';
 import { SettoreAttivita, Ruolo, Mansione } from '../../models/valuelist.model';
 
@@ -149,7 +149,8 @@ export class HomePage implements OnInit, OnDestroy {
     private actionSheetController: ActionSheetController,
     private navController: NavController,
     private modalController: ModalController,
-    private docStructureService: DocstructureService
+    private docStructureService: DocstructureService,
+    private toastController: ToastController
   ) {
 
     //Recupero la card che dice che non ci sono news
@@ -803,6 +804,28 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
 
+  }
+
+  goToPianificazioneDetail(docOccupazione: OccupazioneCampi){
+    if(docOccupazione && docOccupazione.TIPO == SettoreAttivita.settorePrenotazione){
+      this.navController.navigateForward(`/agenda-custode/${docOccupazione.ID}`)
+    }
+    else{
+      this.showMessage('Puoi visualizzare solo il dettaglio delle prenotazioni');
+    }
+  }
+
+    /**
+   * Visualizza un messaggio
+   */
+  showMessage(messaggio: string){
+    this.toastController.create({
+      message: messaggio,
+      duration: 3000
+    })
+    .then(elToast => {
+      elToast.present();
+    })
   }
 
 

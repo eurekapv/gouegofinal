@@ -7,6 +7,7 @@ import { StartService } from 'src/app/services/start.service';
 import { FilterCustodePage } from './filter-custode/filter-custode.page';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { start } from 'repl';
+import { SettoreAttivita } from 'src/app/models/valuelist.model';
 
 @Component({
   selector: 'app-agenda-custode',
@@ -96,7 +97,7 @@ export class AgendaCustodePage implements OnInit {
 
 
   onClickOccupazione(elOccupazione: OccupazioneCampi){
-    this.goToDetail(elOccupazione.ID);
+    this.goToReservationDetail(null, elOccupazione);
   }
 
   getItemCalendario(elOccupazione: OccupazioneCampi){
@@ -144,7 +145,7 @@ export class AgendaCustodePage implements OnInit {
             console.log(text);
             this.qrScanner.hide;
             qrSubscription.unsubscribe();
-            this.goToDetail(text);
+            this.goToReservationDetail(text);
   
           });
         }
@@ -163,7 +164,41 @@ export class AgendaCustodePage implements OnInit {
     }
   }
 
-  goToDetail(idOccupazione: string){
-    this.navController.navigateForward(`/agenda-custode/${idOccupazione}`);
+  /**
+   * Naviga alla pagina di dettaglio dell'occupazione specificata (SOLO PER PRENOTAZIONI)
+   * @param idOccupazione id del docOccupazione
+   * @param docOccupazione 
+   */
+  goToReservationDetail(idOccupazione: string = undefined, docOccupazione: OccupazioneCampi = undefined){
+
+    //se mi passano il doc, basta controllare il tipo e posso passare direttamente
+    if(docOccupazione){
+      if(docOccupazione.TIPO == SettoreAttivita.settorePrenotazione){
+        this.navController.navigateForward(`/agenda-custode/${docOccupazione.ID}`);
+      }
+      else{
+        this.showMessage('Puoi visualizzare solo il dettaglio delle prenotazioni')
+      }
+    }
+
+    //se mi danno solo l'id, devo recuperare l'occupazione, controllare il tipo, e solo a quel punto posso spostarmi
+    else if(idOccupazione && idOccupazione.length > 0){
+      this.startService.requestOccupazioneById(idOccupazione)
+      .then(elOccupazione => {
+        if(elOccupazione && elOccupazione.TIPO == SettoreAttivita.settorePrenotazione){
+          this.navController.navigateForward(`/agenda-custode/${elOccupazione.ID}`);
+        }
+        else{
+          this.showMessage('Puoi visualizzare solo il dettaglio delle prenotazioni')
+        }
+      })
+      .catch(error => {
+        this.showMessage('Errore di connessione');
+        console.log(error);
+      })
+    }
+
   }
+
+  
 }

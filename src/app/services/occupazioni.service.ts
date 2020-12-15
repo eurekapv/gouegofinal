@@ -6,6 +6,8 @@ import { DocstructureService } from '../library/services/docstructure.service';
 import { SettoreAttivita } from '../models/valuelist.model';
 
 import { RequestParams } from '../library/models/requestParams.model';
+import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
+import { Prenotazione } from '../models/prenotazione.model';
 
 @Injectable({
   providedIn: 'root'
@@ -153,6 +155,79 @@ export class OccupazioniService {
       else{
         reject('Documento filtro non definito');
       }
+    })
+  }
+
+  /**
+   * Richiede una singola occupazione cercando per id, se il secondo parametro è true, richiede anche il docprenotazione collegato e lo inserisce nel repository
+   * il docprenotazione viene inoltre decodificato, e contiene l'elenco delle pianificazioni; anch'esse decodificate
+   * @param idOccupazione id da cercare
+   * @param requestRelatedReservation indica se richiedere anche il documento prenotazione collegato e inserirlo nel docrepository
+   */
+  requestById(idOccupazione: string, requestRelatedReservation = false): Promise<OccupazioneCampi>{
+
+
+    return new Promise((resolve, reject) => {
+      //filtro e parametri
+      let myFilter = new OccupazioneCampi(true);
+      let myParams = new RequestParams();
+
+      //controllo di avere un id
+      if(idOccupazione && idOccupazione.length > 0){
+        //preparo i parametri
+        myFilter.ID = idOccupazione;
+        myParams.decode.active = true;
+
+        //faccio la richiesta
+        this.docStructureService.requestNew(myFilter, myParams)
+
+        .then((resultList: OccupazioneCampi[]) => {
+          //se ho ottenuto qualcosa, lo ritorno al prossimo .then
+          if (resultList[0]){
+            return(resultList[0]);
+          }
+          //altrimenti rigetto
+          else{
+            reject('Nessuna occupazione presente con id indicato');
+          }
+        })
+
+        .then((elOccupazione: OccupazioneCampi) => {
+          //adesso che ho l'elemento, se mi è stato chiesto recupero il docprenotazione
+          if(requestRelatedReservation){
+            this.docStructureService.getRelDoc(elOccupazione, ['IDREF'], 3, elOccupazione)
+            .then(() => {
+              //@ts-ignore
+              let docPrenotazione: Prenotazione = elOccupazione.getDocInRepository(elOccupazione.IDREF)
+              //ora devo decodificare la prenotazione e le pianificazioni
+
+              Promise.all([
+                (this.docStructureService.decodeAll(docPrenotazione, true)),
+                (this.docStructureService.decodeCollection(docPrenotazione.PRENOTAZIONEPIANIFICAZIONE))
+               ])
+
+              
+              .then(() => {
+                resolve(elOccupazione);
+              })
+            })
+            .catch(error => {reject (error);})
+          }
+          else{
+            resolve (elOccupazione);
+          }
+        })
+
+        .catch(error => {
+          reject(error);
+        })
+      }
+
+
+      else{
+        reject('Id non fornito');
+      }
+
     })
   }
 

@@ -45,4 +45,17 @@ div.custom-element{
         text-align: end;
     }
 
+
+
+    ion-badge.badge-icon-only{
+        font-size: 30px;
+
+        ion-icon{
+            padding-top: 4px;
+        }
+    }
+
+    ion-badge.badge-icon-text{
+    }
+
 }

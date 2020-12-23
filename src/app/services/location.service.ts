@@ -12,6 +12,8 @@ import { SlotWeek } from '../models/imdb/slotweek.model';
 import { LoadingController } from '@ionic/angular';
 import { error } from 'protractor';
 import { LogApp } from '../models/log.model';
+import { RequestDecode, RequestParams } from '../library/models/requestParams.model';
+import { DocstructureService } from '../library/services/docstructure.service';
 
 
 
@@ -38,8 +40,11 @@ export class LocationService {
     return this._activeLocation.asObservable();
   }
 
-  constructor(private apiService:ApicallService,
-              private loadingCtrl: LoadingController) { }
+  constructor(
+                private apiService:ApicallService,
+                private loadingCtrl: LoadingController,
+                private docStructureService: DocstructureService
+              ) { }
 
 
 
@@ -48,7 +53,7 @@ export class LocationService {
    * @param config Parametri di configurazione
    * @param idArea Area di riferimento
    */
-  requestByIdArea(config: StartConfiguration, idArea: string) {
+  requestByIdArea(config: StartConfiguration, idArea: string): Promise<Location[]> {
     return new Promise((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
       //new HttpHeaders({'Content-type':'text/plain'});
@@ -78,6 +83,31 @@ export class LocationService {
             reject(error);
           });
       
+    })
+  }
+
+  /**
+   * Richiede un elenco di location con idArea passato, e lo risolve direttamente, senza passare da nessun'altra parte (usa il nuovo docstructure per fare la richiesta)
+   * @param idArea l'id dell'area
+   */
+  newRequestByIdArea(idArea: string): Promise<Location[]>{
+
+    return new Promise((resolve, reject) => {
+      let myFilter = new Location(true);
+      myFilter.IDAREAOPERATIVA = idArea;
+  
+      let myParams = new RequestParams();
+      myParams.decode = new RequestDecode();
+      myParams.decode.active = true;
+  
+      this.docStructureService.requestNew(myFilter, myParams)
+      .then(listLocation => {
+        resolve (listLocation);
+      })
+      .catch(error => {
+        reject (error);
+      })
+
     })
   }
 

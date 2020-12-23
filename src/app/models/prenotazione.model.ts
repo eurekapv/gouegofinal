@@ -106,12 +106,21 @@ export class Prenotazione extends IDDocument {
    
 
     /**
-     * Ritorna il primo documento di pianificazione presente
+     * ritorna il docPianificazione con id specificato; se id non è specificato, ritorna il primo documento di pianificazione presente
      */
-    getPianificazione() {
+    getPianificazione(idPianificazione?: string) {
         let docPianificazione: PrenotazionePianificazione;
+        let index: number;
+
         if (this.PRENOTAZIONEPIANIFICAZIONE.length !== 0) {
-            docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[0];
+
+            if(idPianificazione && idPianificazione.length > 0){
+                index = this.getIndexPianificazione(idPianificazione);
+            }   
+            else{
+                index = 0;
+            }
+            docPianificazione = this.PRENOTAZIONEPIANIFICAZIONE[index];
         }
         return docPianificazione;
     }

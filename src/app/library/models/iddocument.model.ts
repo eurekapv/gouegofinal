@@ -788,7 +788,8 @@ import { MyDateTime } from './mydatetime.model';
             const element = this._repositoryRelDoc[index];
             
             //Documento trovato lo ritorno
-            if (identity == element.identifier) {
+            //FIXME aggiunta seconda condizione, da vedere se va tutto bnene
+            if (identity == element.identifier || identity == element.relDoc.ID) {
                 docReturn = element.relDoc;
                 break;
             }

@@ -24,11 +24,13 @@ export class ButtonCard {
     settore: SettoreAttivita;
     id: string;
     idRefer: string;
+    disabled: boolean;
 
     constructor() {
         this.settore = 0;
         this.id = '';
         this.idRefer = '';
+        this.disabled = false;
     }
 
 

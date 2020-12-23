@@ -17,6 +17,7 @@ export class OccupazioneCampi extends IDDocument {
     ORAINIZIO: Date;
     ORAFINE: Date;
 
+
     //a Seconda di TIPO cambiano le logiche di ID e IDREF
     //Tipo = SettoreAttivita.Corso -> ID = IDPianificazioneCorso IDREF = IDCorso 
     //Tipo = SettoreAttivita.Prenotazione -> ID = IDPianificazionePrenotazione e IDREF = IDPrenotazione
@@ -61,8 +62,30 @@ export class OccupazioneCampi extends IDDocument {
       objDescriptor.setRelation('IDAREA','Area');
       objDescriptor.setRelation('IDLOCATION','Location');
       objDescriptor.setRelation('IDCAMPO','Campo');
+
+      if(this.TIPO == SettoreAttivita.settorePrenotazione){
+          objDescriptor.setRelation('IDREF', 'Prenotazione');
+      }
+      else if (this.TIPO == SettoreAttivita.settoreCorso){
+        objDescriptor.setRelation('IDREF', 'Corso');
+      }
       
       return objDescriptor;
+  }
+
+  get iconName(): string{
+    let iconName: string = '';
+    switch(this.TIPO){
+        case SettoreAttivita.settoreCorso:
+            iconName = 'school';
+            break;
+
+        case SettoreAttivita.settorePrenotazione:
+            iconName = 'calendar-outline';
+            break;
+    }
+
+    return iconName;
   }
 
 

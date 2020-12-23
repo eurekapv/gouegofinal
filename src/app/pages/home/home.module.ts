@@ -14,6 +14,8 @@ import { NewsdetailPageModule } from '../newsdetail/newsdetail.module'
 import { HomePageRoutingModule } from './home-routing.module'
 import { PswRecoveryPageModule } from '../auth/psw-recovery/psw-recovery.module';
 import { SharedComponentsModule } from '../../shared/components/shared-components.module';
+import { AllegatilistPageModule } from '../history/historycourse/allegatilist/allegatilist.module';
+import { AllegatilistPage } from '../history/historycourse/allegatilist/allegatilist.page';
 
 
 @NgModule({
@@ -26,7 +28,8 @@ import { SharedComponentsModule } from '../../shared/components/shared-component
     NewsdetailPageModule,
     NewLoginPageModule,
     PswRecoveryPageModule,
-    SharedComponentsModule
+    SharedComponentsModule,
+    AllegatilistPageModule
     
     // RouterModule.forChild([
     //   {
@@ -45,6 +48,7 @@ import { SharedComponentsModule } from '../../shared/components/shared-component
     NewLoginPage,
     PswRecoveryPage,
     NewsdetailPage,
+    AllegatilistPage
   ]
 })
 export class HomePageModule {}

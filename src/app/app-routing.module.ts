@@ -2,25 +2,13 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  /* ORIGINALI
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)},
-  */
+  /* ORIGINALI*/
+  //{ path: '', redirectTo: 'home', pathMatch: 'full' },
+  //{ path: 'home', loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)},
+  
   // Ho provato a cambiare e mandare home al path vuoto (che carica la pagina Home)
   { path: 'home', redirectTo: '', pathMatch: 'full' },
   { path: '', loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)},
-  // { path: 'auth',
-  //   children: [
-  //     {
-  //       path: '',
-  //       redirectTo: 'new-login', pathMatch: 'full'
-  //     },
-  //     {
-  //       path: 'new-login',
-  //       loadChildren: () => import('./pages/auth/new-login/new-login.module').then( m => m.NewLoginPageModule)
-  //     }
-  //   ]
-  // }, 
   {
     path: 'historylist',
     children: [

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">gouego</string>
-    <string name="title_activity_main">gouego</string>
+    <string name="app_name">Gouego</string>
+    <string name="title_activity_main">Gouego</string>
     <string name="package_name">com.gouego</string>
     <string name="custom_url_scheme">com.gouego</string>
 </resources>

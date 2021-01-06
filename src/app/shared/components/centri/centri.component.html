@@ -10,7 +10,7 @@
     vertical="top"
     *ngIf="location.ENABLEPRENOTAZIONI">
     <ion-button 
-        color="success" 
+        color="danger" 
         size="large" 
         (click)="onClickPrenota(); $event.stopPropagation();">
       <ion-icon 
@@ -23,6 +23,8 @@
 
 
   <ion-card-header >
+    <ion-card-title>{{location.DENOMINAZIONE | titlecase}}</ion-card-title>
+
     <ion-card-subtitle>
       <div *ngIf="location.INDIRIZZO">
         <span>{{ location.INDIRIZZO }}</span>
@@ -31,8 +33,6 @@
         Centro Sportivo
       </div>
     </ion-card-subtitle>
-
-    <ion-card-title>{{location.DENOMINAZIONE | titlecase}}</ion-card-title>
   </ion-card-header>
 </ion-card>
 

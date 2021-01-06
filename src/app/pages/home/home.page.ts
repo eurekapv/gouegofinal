@@ -756,7 +756,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   getButtonEmptyOccupazione(){
     let btnCard = new ButtonCard();
-    btnCard.title = 'Nessuna occupazione campi presente oggi';
+    btnCard.title = 'Nessun evento presente oggi nella struttura';
+    btnCard.subtitle = 'controlla domani';
     btnCard.nameicon ='calendar-outline';
     btnCard.sloticon = 'start';
     btnCard.color = 'primary';

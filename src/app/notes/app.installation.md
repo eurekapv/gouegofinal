@@ -218,3 +218,8 @@ Installare il plugin:
 /* ********************************** */
 >npm i ngx-pinch-zoom
 
+/* ********************************** */
+/* QRCODE SCANNER                     */
+/* ********************************** */
+>npm install cordova-plugin-qrscanner
+>npm install @ionic-native/qr-scanner

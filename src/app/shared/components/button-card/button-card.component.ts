@@ -10,6 +10,7 @@ export class ButtonCardComponent implements OnInit {
 
   @Input() myButtonCard: ButtonCard = new ButtonCard();
   @Input() smallVersion = false; //Small Version usa H2 e P invece di H1 e H3
+  @Input() homeCustodeVersion;
   @Input() disabled = false;
   @Output() clickElement = new EventEmitter<ButtonCard>();
   

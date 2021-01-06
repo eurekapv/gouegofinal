@@ -211,7 +211,7 @@ export class StartService {
 
       //VALORIZZARE L'APP ID PER CAPACITOR
       //TODO: VALORIZZARE APPID PER INSTALLAZIONE CAPACITOR
-      myAppId = '';
+      myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F';
 
       //Sono su capacitor o cordova
       prefixDomain = '';

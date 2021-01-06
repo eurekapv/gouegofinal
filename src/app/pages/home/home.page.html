@@ -222,14 +222,14 @@
 
 
   <!-- GRIGLIA PRENOTAZIONI -->
-  <ion-slides class="reservations-grid">
+  <ion-slides class="reservations-grid" scrollbar>
     <ion-slide *ngFor="let location of listLocation" >
       <ion-grid>
         
         <ion-row>
-          <ion-col>
+          <ion-col class="ion-no-padding">
             <ion-text color="primary">
-              <h4 class="ion-text-center">{{location.DENOMINAZIONE | titlecase}}</h4>
+              <h4 class="ion-no-margin ion-text-center">{{location.DENOMINAZIONE | titlecase}}</h4>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -240,14 +240,16 @@
           <ion-col 
             sizeXs="6" 
             sizeSm="3" 
-            sizeLg="2" 
-            sizeXl="1" 
             *ngFor="let occupazione of location._LISTOCCUPAZIONI"
-          >
+            >
+            <!-- sizeLg="2" 
+            sizeXl="1"  -->
             <ion-card button (click)="goToPianificazioneDetail(occupazione)">
-              <ion-icon [name]="occupazione.iconName"></ion-icon>
-              <p>{{occupazione['_DENOMINAZIONE_Campo']}}</p>
-              <p>{{occupazione.DATAORAINIZIO | date: 'HH:mm'}} - {{occupazione.DATAORAFINE | date: 'HH:mm'}}</p>
+              <!-- <ion-card-content> -->
+                <ion-icon [name]="occupazione.iconName"></ion-icon>
+                <p>{{occupazione['_DENOMINAZIONE_Campo']}}</p>
+                <p>{{occupazione.DATAORAINIZIO | date: 'HH:mm'}} - {{occupazione.DATAORAFINE | date: 'HH:mm'}}</p>
+              <!-- </ion-card-content> -->
             </ion-card>
           </ion-col>
         </ion-row>
@@ -258,6 +260,7 @@
             <app-button-card 
             class="" 
             [smallVersion]="true" 
+            [homeCustodeVersion]="true"
             [myButtonCard]="getButtonEmptyOccupazione()"
         >
         </app-button-card>

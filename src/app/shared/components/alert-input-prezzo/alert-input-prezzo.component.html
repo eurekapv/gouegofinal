@@ -1,0 +1,15 @@
+<div class="input-prezzo">
+  <ion-backdrop [tappable]="true" [visible]="true" [stopPropagation]="true" (ionBackdropTap)="onClickBackdrop()"></ion-backdrop>
+  <ion-card>
+    <ion-card-content>
+      <p *ngIf="description">
+        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        <span>{{description}}</span>
+      </p>
+      <ion-input clearInput="true" inputmode="numeric"  [placeholder]="placeholder | currency:'EUR'" [(ngModel)]="value"></ion-input>
+      <ion-button expand="block" color="primary" fill="clear" (click)="onClickBtn()">
+        {{btnText? btnText : 'Conferma'}}
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</div>

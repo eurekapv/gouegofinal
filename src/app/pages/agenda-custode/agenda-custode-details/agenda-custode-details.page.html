@@ -1,20 +1,99 @@
+
+
+
+  <app-alert-input-prezzo 
+    *ngIf="_showInputPrezzo"
+    [placeholder]="myPianificazione.INCASSATO" 
+    description="Inserisci l'importo incassato per questa prenotazione"
+    (onDismiss)="dismissInputPrezzo($event)"
+  >
+  </app-alert-input-prezzo>
+
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>Dettaglio prenotazione</ion-title>
+    <ion-title>Prenotazione {{myPianificazione.PROGRESSIVO}}</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
+  <ion-list class="info-list">
+    <ion-item-divider color="light">INFO PRENOTAZIONE:</ion-item-divider>
+    <ion-item button class="item-nominativo"
+      [href]="myPrenotazione.MOBILENUMBER? ('tel:'+myPrenotazione.MOBILENUMBER) : ''">
+      <ion-label>{{myPrenotazione?.NOMINATIVO | titlecase}}</ion-label>
+      <ion-chip color="primary" *ngIf="myPrenotazione.MOBILENUMBER">
+        <ion-icon name="call"></ion-icon>
+        <ion-label>{{myPrenotazione?.MOBILENUMBER}}</ion-label>
+      </ion-chip>
+    </ion-item>
+    <ion-item class="item-sport">
+      <ion-label>{{myPianificazione['_DENOMINAZIONE_Sport'] | titlecase}}</ion-label>
+      <ion-chip color="primary">
+        <i class="icon-sport"><span [innerHTML]="getIcon(myPianificazione?.IDSPORT)"></span></i>
+      </ion-chip>
+    </ion-item>
+    <ion-item class="item-data">
+      <ion-label>
+        <h2>{{myPianificazione?.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'|titlecase}}</h2>
+        <p>dalle {{myPianificazione?.DATAORAINIZIO | date : 'HH:mm'}} alle
+          {{myPianificazione?.DATAORAFINE | date : 'HH:mm'}} </p>
+      </ion-label>
+      <ion-chip color="primary">
+        {{myPianificazione?.DURATAORE}} {{myPianificazione?.DURATAORE==1? 'Ora':'Ore'}}
+      </ion-chip>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        <h2>{{myPianificazione['_DENOMINAZIONE_Campo']}}</h2>
+        <p>{{myPianificazione['_COMUNE_Location']|titlecase}}</p>
+        <p>{{myPianificazione['_INDIRIZZO_Location']|titlecase}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
+  <ion-item-divider color="light">CHECKOUT:</ion-item-divider>
+
+  <ion-grid class="checkout-grid">
+    <ion-row class="row-persone">
+      <ion-col>
+       
+        <app-player-number [numPlayer]="myPianificazione.NUMPARTECIPANTI"
+          (changeNumPlayer)="onChangedNumPlayer($event)"></app-player-number>
+
+      </ion-col>
+    </ion-row>
+    <ion-row class="row-importi">
+      <ion-col>
+        <ion-card button disabled>
+          <ion-label class="label-info">Dovuto: </ion-label>
+          <ion-card-content>
+            <ion-label class="label-importo">{{myPianificazione.TOTALE | currency: 'EUR'}}</ion-label>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card button (click)="showInputPrezzo()">
+          <ion-label class="label-info">Pagato: </ion-label>
+          <ion-card-content>
+            <ion-label class="label-importo">
+              <ion-text [color]="myPianificazione.INCASSATO < myPianificazione.TOTALE? 'danger' : 'primary'">
+                {{myPianificazione.INCASSATO | currency: 'EUR'}}
+              </ion-text>
+            </ion-label>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 
 <ion-footer>
-  <ion-button color="primary"  expand="block" (click)="onSubmit()">
+  <ion-button color="primary" expand="block" (click)="onSubmit()">
     <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
     Conferma
   </ion-button>
 </ion-footer>
+

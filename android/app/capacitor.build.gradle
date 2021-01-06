@@ -12,10 +12,11 @@ dependencies {
 
     implementation "com.android.support:support-v4:27.+"
     implementation "com.android.support:support-v4:27.+"
+    implementation "com.android.support:support-v4:27.+"
 }
 apply from: "../../node_modules/card.io.cordova.mobilesdk/src/android/build.gradle"
 apply from: "../../node_modules/com.paypal.cordova.mobilesdk/src/android/build.gradle"
-apply from: "../../node_modules/cordova-plugin-qrscanner/src/android/qrscanner.gradle"
+apply from: "../../node_modules/phonegap-plugin-barcodescanner/src/android/barcodescanner.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()

@@ -201,9 +201,12 @@ export class OccupazioniService {
               let docPrenotazione: Prenotazione = elOccupazione.getDocInRepository(elOccupazione.IDREF)
               //ora devo decodificare la prenotazione e le pianificazioni
 
+              let reqForeign = PrenotazionePianificazione.getReqForeignKeys();
+
               Promise.all([
                 (this.docStructureService.decodeAll(docPrenotazione, true)),
-                (this.docStructureService.decodeCollection(docPrenotazione.PRENOTAZIONEPIANIFICAZIONE))
+                (this.docStructureService.decodeCollection(docPrenotazione.PRENOTAZIONEPIANIFICAZIONE, reqForeign))
+
                ])
 
               

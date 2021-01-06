@@ -13,7 +13,7 @@
 
 </ion-header>
 
-<ion-content scrollEvents (ionScroll)="onScroll($event)">
+<ion-content scrollEvents>
 
   <ion-refresher slot="fixed" (ionRefresh)="request($event)">
     <ion-refresher-content></ion-refresher-content>
@@ -39,7 +39,7 @@
 
 
 <ion-footer>
-  <ion-button color="primary" expand="block" [disabled]="this.startService.isDesktop" (click)="scanQr()"> 
+  <ion-button color="primary" expand="block" [disabled]="myIsDesktop" (click)="scanQr()"> 
     <ion-icon slot="start" name="qr-code-outline"  ></ion-icon>
     Qr-Code
   </ion-button>

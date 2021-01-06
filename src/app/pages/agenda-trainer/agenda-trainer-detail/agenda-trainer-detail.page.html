@@ -49,7 +49,7 @@
   <ion-list>
   <!-- Iscritti confermati -->
     <ion-item-group *ngIf="listPresenzeConfermate.length > 0">
-      <ion-item-divider>
+      <ion-item-divider color="light">
           <ion-label>
             Partecipanti
           </ion-label>
@@ -83,7 +83,7 @@
 
     <!-- Iscritti in prova -->
     <ion-item-group *ngIf="listPresenzeInProva.length > 0">
-      <ion-item-divider>
+      <ion-item-divider color="light">
         <ion-label>
           In Prova
         </ion-label>
@@ -116,7 +116,7 @@
 
     <!-- Note istruttore -->
     <ion-item-group class="notes" >
-      <ion-item-divider>
+      <ion-item-divider color="light">
         <ion-label>
           Note per la segreteria
         </ion-label>
@@ -129,7 +129,7 @@
 
     <!-- Note segreteria -->
     <ion-item-group class="notes" *ngIf="selectedPianificazione.NOTEADMIN && selectedPianificazione.NOTEADMIN.length > 0">  
-      <ion-item-divider>
+      <ion-item-divider color="light">
         <ion-label>
           Note dalla segreteria
         </ion-label>

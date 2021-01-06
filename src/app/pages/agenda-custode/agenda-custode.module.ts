@@ -7,12 +7,11 @@ import { IonicModule } from '@ionic/angular';
 import { AgendaCustodePageRoutingModule } from './agenda-custode-routing.module';
 
 import { AgendaCustodePage } from './agenda-custode.page';
-import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { FilterCustodePageModule } from './filter-custode/filter-custode.module';
 import { FilterCustodePage } from './filter-custode/filter-custode.page';
-import { QRCodeModule } from 'angularx-qrcode';
-import { QRScanner } from '@ionic-native/qr-scanner/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+
 
 @NgModule({
   imports: [
@@ -25,6 +24,6 @@ import { QRScanner } from '@ionic-native/qr-scanner/ngx';
   ],
   declarations: [AgendaCustodePage],
   entryComponents: [FilterCustodePage],
-  providers: [QRScanner]
+  providers: [BarcodeScanner]
 })
 export class AgendaCustodePageModule {}

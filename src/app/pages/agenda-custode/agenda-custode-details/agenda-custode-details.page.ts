@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController, NavController, NavParams, ToastController } from '@ionic/angular';
+import { LoadingController, NavController, NavParams, PickerController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
+import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { StartService } from 'src/app/services/start.service';
+
 
 @Component({
   selector: 'app-agenda-custode-details',
   templateUrl: './agenda-custode-details.page.html',
   styleUrls: ['./agenda-custode-details.page.scss'],
 })
-export class AgendaCustodeDetailsPage implements OnInit {
+export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
   selectedIdPianificazione: string;
   myOccupazione: OccupazioneCampi;
@@ -21,13 +24,19 @@ export class AgendaCustodeDetailsPage implements OnInit {
 
   subParaMap: Subscription;
 
+  _showInputPrezzo: boolean = false;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private navController: NavController,
     private startService: StartService,
     private loadingController: LoadingController,
-    private toastController: ToastController
-  ) { }
+    private toastController: ToastController,
+  ) { 
+    this.myPianificazione = new PrenotazionePianificazione();
+    this.myPrenotazione = new Prenotazione();
+    
+  }
 
   ngOnInit() {
     this.subParaMap = this.activatedRoute.paramMap.subscribe(route => {
@@ -64,6 +73,8 @@ export class AgendaCustodeDetailsPage implements OnInit {
       console.log(this.myOccupazione);
       console.log(this.myPrenotazione);
       console.log(this.myPianificazione);
+
+      
       
     })
 
@@ -76,7 +87,7 @@ export class AgendaCustodeDetailsPage implements OnInit {
   }
 
   onSubmit(){
-    //TODO
+    //TODO inviare il docpianificazione a gouego
 
     this.navController.pop();
   }
@@ -88,6 +99,35 @@ export class AgendaCustodeDetailsPage implements OnInit {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
     this.subParaMap.unsubscribe();
+  }
+
+  getIcon (idSport){
+    return this.startService.getSportIcon(idSport);
+  }
+
+  onChangedNumPlayer(nPlayer: number)
+  {
+    //Memorizzo il numero Partecipanti
+    this.myPianificazione.NUMPARTECIPANTI=nPlayer;
+
+    console.log(this.myPianificazione);
+
+    // this.calcolaTotale();
+  }
+
+ 
+
+  showInputPrezzo(){
+    this._showInputPrezzo = true;
+  }
+
+  dismissInputPrezzo(value){
+    if(value){
+      this.myPianificazione.INCASSATO = value;
+      console.log(this.myPianificazione);
+    }
+
+    this._showInputPrezzo = false;
   }
 
 }

@@ -38,7 +38,17 @@ ion-footer{
 
 .reservations-grid{
     ion-card{
+        
         margin: 0px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 4px;
+        padding-bottom: 6px;
+        max-width: 160px;
+
+        // .ion-col{
+        //     text-align: center;
+        // }
 
         ion-icon{
             font-size: 40px;
@@ -49,12 +59,15 @@ ion-footer{
             margin: 2px;
         }
 
+        
+
     }
 
     h4{
         font-style: italic;
-        margin: 2px;
+        // margin: 2px;
         font-weight: 300;
+        font-size: 15px;
     }
 }
 

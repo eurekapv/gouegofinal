@@ -23,10 +23,6 @@
     <param name="ios-package" value="FileOpener2"/>
   </feature>
 
-  <feature name="QRScanner">
-    <param name="ios-package" value="QRScanner"/>
-  </feature>
-
   <feature name="CDVOrientation">
     <param name="ios-package" value="CDVOrientation"/>
   </feature>
@@ -34,6 +30,10 @@
   <feature name="SocialSharing">
     <param name="ios-package" value="SocialSharing"/>
     <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="BarcodeScanner">
+    <param name="ios-package" value="CDVBarcodeScanner"/>
   </feature>
 
   <feature name="Device">

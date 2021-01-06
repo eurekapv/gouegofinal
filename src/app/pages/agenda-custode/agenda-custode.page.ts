@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
-import { timeStamp } from 'console';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { StartService } from 'src/app/services/start.service';
 import { FilterCustodePage } from './filter-custode/filter-custode.page';
-import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
-import { start } from 'repl';
 import { SettoreAttivita } from 'src/app/models/valuelist.model';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-agenda-custode',
@@ -21,12 +19,12 @@ export class AgendaCustodePage implements OnInit {
   filter:OccupazioneCampi;
 
   constructor(
+    private barcodeScanner: BarcodeScanner,
     private loadingController: LoadingController,
     private startService: StartService,
     private toastController: ToastController,
     private modalController: ModalController,
     private navController: NavController,
-    private qrScanner: QRScanner
     
   ) { 
     this.filter = new OccupazioneCampi(true);
@@ -134,35 +132,93 @@ export class AgendaCustodePage implements OnInit {
   }
 
   scanQr(){
-
-    //TODO Da testare se funziona; in alternativa, barcode scanner dovrebbe funzionare
     if(!this.startService.isDesktop){
-      this.qrScanner.prepare()
-      .then((status: QRScannerStatus) => {
-        if(status.authorized){
-          let qrSubscription = this.qrScanner.scan()
-          .subscribe((text: string) => {
-            console.log(text);
-            this.qrScanner.hide;
-            qrSubscription.unsubscribe();
-            this.goToReservationDetail(text);
-  
-          });
-        }
-        else{
-          throw new Error('Permessi fotocamera non concessi');
-        }
+      this.barcodeScanner
+      .scan()
+      
+      .then(data => {
+        let myId = data.text;
+        console.log('dati: ');
+        console.log(data);
+        this.goToReservationDetail(myId);
       })
+
       .catch(error => {
-        this.showMessage('Errore nella scansione del Qr-Code');
         console.log(error);
+        this.showMessage('Errore nella lettura del codice')
+
       })
-    
-    }
-    else{
-      console.warn('Attenzione, Scanner Qr non disponibile su desktop');
     }
   }
+
+  // startScan = async () => {
+  //   const { BarcodeScanner } = Plugins;
+  
+  //   BarcodeScanner.hideBackground(); // make background of WebView transparent
+  
+  //   const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
+  
+  //   // if the result has content
+  //   if (result.hasContent) {
+  //     console.log(result.content); // log the raw scanned content
+  //   }
+  // };
+
+  // newScanQr(){
+  //   console.log('ci provo');
+  //   if(!this.startService.isDesktop){
+  //     console.log('sono su mobile');
+  //     const {BarcodeScanner} = Plugins;
+  //     console.log(BarcodeScanner);
+  //     BarcodeScanner.hideBackground();
+  //     BarcodeScanner.startScan()
+  //     .then(result => {
+  //       console.log('scannerizzato');
+  //       if(result && result.hasContent){
+  //         console.log('risultato:');
+  //         console.log(result.content);
+  //       }
+  //     })
+  //   }
+  // }
+
+  // scanQr(){
+  //   console.log('ci provo');
+
+  //   //TODO Da testare se funziona; in alternativa, barcode scanner dovrebbe funzionare
+  //   if(!this.startService.isDesktop){
+  //     console.log('non sono su desktop');
+  //     this.qrScanner.prepare()
+  //     .then((status: QRScannerStatus) => {
+  //       console.log('preparato');
+  //       if(status.authorized){
+  //       console.log('autorizzato');
+
+  //         let qrSubscription = this.qrScanner.scan()
+  //         .subscribe((text: string) => {
+  //           console.log('scannerizzato');
+
+  //           console.log(text);
+  //           this.qrScanner.hide;
+  //           qrSubscription.unsubscribe();
+  //           this.goToReservationDetail(text);
+  
+  //         });
+  //       }
+  //       else{
+  //         throw new Error('Permessi fotocamera non concessi');
+  //       }
+  //     })
+  //     .catch(error => {
+  //       this.showMessage('Errore nella scansione del Qr-Code');
+  //       console.log(error);
+  //     })
+    
+  //   }
+  //   else{
+  //     console.warn('Attenzione, Scanner Qr non disponibile su desktop');
+  //   }
+  // }
 
   /**
    * Naviga alla pagina di dettaglio dell'occupazione specificata (SOLO PER PRENOTAZIONI)
@@ -185,11 +241,20 @@ export class AgendaCustodePage implements OnInit {
     else if(idOccupazione && idOccupazione.length > 0){
       this.startService.requestOccupazioneById(idOccupazione)
       .then(elOccupazione => {
-        if(elOccupazione && elOccupazione.TIPO == SettoreAttivita.settorePrenotazione){
-          this.navController.navigateForward(`/agenda-custode/${elOccupazione.ID}`);
+        if(elOccupazione){
+          //ho trovato un'occupazione, l'id era valido
+          if(elOccupazione.TIPO == SettoreAttivita.settorePrenotazione){
+            //è una prenotazione, procedo
+            this.navController.navigateForward(`/agenda-custode/${elOccupazione.ID}`);
+          }
+          else{
+            //non è una prenotazione, non la mostro
+            this.showMessage('Puoi visualizzare solo il dettaglio delle prenotazioni')
+          }
         }
         else{
-          this.showMessage('Puoi visualizzare solo il dettaglio delle prenotazioni')
+          //non ho trovato nessuna occupazione, il codice non era valido
+          this.showMessage('Codice non valido');
         }
       })
       .catch(error => {

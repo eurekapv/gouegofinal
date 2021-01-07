@@ -1,3 +1,4 @@
+import { MyDateTime } from '../library/models/mydatetime.model';
 import { Livello } from './livello.model';
 import { OccupazioneCampi } from './occupazionecampi.model';
 import { PianificazioneCorso } from './pianificazionecorso.model';
@@ -58,8 +59,8 @@ export class ItemCalendario{
             paramsItem.riga1Text = occupazioneElem.getDocPropertyInRepository(['IDREF'], 'NOMINATIVO');
             paramsItem.badgeIcon = "calendar-outline"
         }
-        paramsItem.riga2Text = occupazioneElem['_DENOMINAZIONE_Location'];
-        paramsItem.riga3Text = occupazioneElem['_DENOMINAZIONE_Campo'];
+        paramsItem.riga2Text = `${occupazioneElem['_DENOMINAZIONE_Location']} - ${occupazioneElem['_DENOMINAZIONE_Campo']}`;
+        paramsItem.riga3Text = MyDateTime.formatDate(occupazioneElem.DATAINIZIO, 'DD/MM/YYYY');
 
         paramsItem.badgeColor = "primary";
 

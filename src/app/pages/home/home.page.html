@@ -2,18 +2,18 @@
   <ion-toolbar color="primary">
     <ion-title class="title-image">
       <div>
-        <img [src]="this.startConfig.getUrlLogo()">
+        <!-- <img [src]="this.startConfig.getUrlLogo()"> -->
         {{startConfig?.companyName | titlecase }}
 
       </div>
     </ion-title>
 
     <!-- BOTTONE PER EVENTUALE TEST  -->
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button (click)="onTest()">
         <ion-icon name="code-working-outline"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
@@ -58,13 +58,156 @@
 </ion-slides>
 </ion-grid>
 
+<!-- NUOVA AGENDA OCCUPAZIONI PER IL CUSTODE -->
+<div *ngIf="this.showCustode">
+  
+  <ion-item 
+      type="header" 
+      lines="none" 
+      color="danger"
+      *ngIf="this.showCustode">
+
+      <ion-icon 
+          slot="start" 
+          name="calendar-outline"></ion-icon>
+      <ion-label class="ion-text-nowrap">
+        <h2>Occupazioni struttura</h2>
+      </ion-label>
+      
+      <ion-button 
+          slot="end" 
+          color="light" 
+          fill="solid"
+          size = "default"
+          routerLink="/agenda-custode">
+          <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
+        Elenco
+      </ion-button>  
+  </ion-item>
+
+
+
+  <!-- GRIGLIA OCCUPAZIONI -->
+  <ion-slides class="reservations-grid" scrollbar>
+    <ion-slide *ngFor="let location of listLocation" >
+      <ion-grid>
+        
+        <ion-row>
+          <ion-col class="ion-no-padding">
+            <ion-text color="primary">
+              <h4 class="ion-no-margin ion-text-center">{{location.DENOMINAZIONE | titlecase}}</h4>
+            </ion-text>
+          </ion-col>
+        </ion-row>
+        
+        <!-- OCCUPAZIONI PRESENTI -->
+        <ion-row *ngIf="location && location._LISTOCCUPAZIONI && location._LISTOCCUPAZIONI.length > 0">
+         
+          <ion-col 
+            sizeXs="6" 
+            sizeSm="3" 
+            *ngFor="let occupazione of location._LISTOCCUPAZIONI"
+            >
+            <!-- sizeLg="2" 
+            sizeXl="1"  -->
+            <ion-card button (click)="goToPianificazioneDetail(occupazione)">
+              <!-- <ion-card-content> -->
+                <ion-icon [name]="occupazione.iconName"></ion-icon>
+                <p>{{occupazione['_DENOMINAZIONE_Campo']}}</p>
+                <p>{{occupazione.DATAORAINIZIO | date: 'HH:mm'}} - {{occupazione.DATAORAFINE | date: 'HH:mm'}}</p>
+              <!-- </ion-card-content> -->
+            </ion-card>
+          </ion-col>
+        </ion-row>
+        
+        <!-- NESSUNA OCCUPAZIONE PER OGGI -->
+        <ion-row *ngIf="!location || !location._LISTOCCUPAZIONI || location._LISTOCCUPAZIONI.length <= 0">
+          <ion-col>
+            <app-button-card 
+            class="" 
+            [smallVersion]="true" 
+            [homeCustodeVersion]="true"
+            [myButtonCard]="getButtonEmptyOccupazione()"
+        >
+        </app-button-card>
+          </ion-col>
+        </ion-row>
+        
+
+      </ion-grid>
+    </ion-slide>
+  </ion-slides>
+
+</div>
+
+
+<!-- PARTE TRAINER -->
+<div class="ion-no-padding" *ngIf="this.showTrainer"> 
+  
+  <ion-item 
+  type="header" 
+  lines="none" 
+  color="danger"
+  >
+  
+    <ion-icon 
+        slot="start" 
+        name="school-outline">
+    </ion-icon>
+    <ion-label class="ion-text-nowrap">
+      <h2>Corsi odierni</h2>
+    </ion-label>
+  
+    <ion-button 
+        slot="end" 
+        color="light" 
+        fill="solid"
+        size = "default"
+        routerLink="/agenda-trainer">
+    <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
+      Elenco
+    </ion-button>  
+  </ion-item>
+  
+  <!-- IMPEGNI TRAINER NON PRESENTI -->
+  
+  <ion-slides *ngIf="!myListImpegniTrainer || myListImpegniTrainer.length == 0" class="ion-no-padding ion-no-margin">
+    <ion-slide 
+        class="ion-no-padding ion-no-margin"   
+    >   
+        <app-button-card 
+            class="small-button-card card-corsi-vuoti" 
+            [smallVersion]="true" 
+            [myButtonCard]="getButtonCardTrainer()"
+        >
+        </app-button-card>
+  
+      </ion-slide>
+  </ion-slides>
+  
+  <!-- IMPEGNI TRAINER PRESENTI -->
+  <ion-slides *ngIf="myListImpegniTrainer && myListImpegniTrainer.length > 0" class="ion-no-padding ion-no-margin">
+    <ion-slide 
+        class="ion-no-padding ion-no-margin"
+        *ngFor="let impegno  of myListImpegniTrainer"> 
+        
+        <app-button-card 
+            class="small-button-card" 
+            [smallVersion]="true" 
+            [myButtonCard]="getButtonCardTrainer(impegno)"
+            (click)="onClickImpegnoTrainer(impegno)">
+        </app-button-card>
+  
+      </ion-slide>
+  </ion-slides>
+</div>
 
   <!-- AREA OPERATIVA -->
   <!-- TITOLO AREA -->
   <ion-item 
       type="header" 
       lines="none" 
-      color="danger">
+      color="warning">
 
     <ion-icon 
         slot="start" 
@@ -193,148 +336,7 @@
 </div> -->
 
 
-<!-- NUOVA AGENDA OCCUPAZIONI -->
-<div *ngIf="this.showCustode">
-  <ion-item 
-      type="header" 
-      lines="none" 
-      color="primary"
-      *ngIf="this.showCustode">
 
-      <ion-icon 
-          slot="start" 
-          name="calendar-outline"></ion-icon>
-      <ion-label class="ion-text-nowrap">
-        <h2>Prenotazioni</h2>
-      </ion-label>
-      
-      <ion-button 
-          slot="end" 
-          color="light" 
-          fill="solid"
-          size = "default"
-          routerLink="/agenda-custode">
-          <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
-        Tutte
-      </ion-button>  
-  </ion-item>
-
-
-
-  <!-- GRIGLIA PRENOTAZIONI -->
-  <ion-slides class="reservations-grid" scrollbar>
-    <ion-slide *ngFor="let location of listLocation" >
-      <ion-grid>
-        
-        <ion-row>
-          <ion-col class="ion-no-padding">
-            <ion-text color="primary">
-              <h4 class="ion-no-margin ion-text-center">{{location.DENOMINAZIONE | titlecase}}</h4>
-            </ion-text>
-          </ion-col>
-        </ion-row>
-        
-        <!-- OCCUPAZIONI PRESENTI -->
-        <ion-row *ngIf="location && location._LISTOCCUPAZIONI && location._LISTOCCUPAZIONI.length > 0">
-         
-          <ion-col 
-            sizeXs="6" 
-            sizeSm="3" 
-            *ngFor="let occupazione of location._LISTOCCUPAZIONI"
-            >
-            <!-- sizeLg="2" 
-            sizeXl="1"  -->
-            <ion-card button (click)="goToPianificazioneDetail(occupazione)">
-              <!-- <ion-card-content> -->
-                <ion-icon [name]="occupazione.iconName"></ion-icon>
-                <p>{{occupazione['_DENOMINAZIONE_Campo']}}</p>
-                <p>{{occupazione.DATAORAINIZIO | date: 'HH:mm'}} - {{occupazione.DATAORAFINE | date: 'HH:mm'}}</p>
-              <!-- </ion-card-content> -->
-            </ion-card>
-          </ion-col>
-        </ion-row>
-        
-        <!-- NESSUNA OCCUPAZIONE PER OGGI -->
-        <ion-row *ngIf="!location || !location._LISTOCCUPAZIONI || location._LISTOCCUPAZIONI.length <= 0">
-          <ion-col>
-            <app-button-card 
-            class="" 
-            [smallVersion]="true" 
-            [homeCustodeVersion]="true"
-            [myButtonCard]="getButtonEmptyOccupazione()"
-        >
-        </app-button-card>
-          </ion-col>
-        </ion-row>
-        
-
-      </ion-grid>
-    </ion-slide>
-  </ion-slides>
-
-</div>
-
-
-<!-- PARTE TRAINER -->
-<div class="ion-no-padding" *ngIf="this.showTrainer"> 
-  
-  <ion-item 
-  type="header" 
-  lines="none" 
-  color="primary"
-  >
-  
-    <ion-icon 
-        slot="start" 
-        name="school-outline">
-    </ion-icon>
-    <ion-label class="ion-text-nowrap">
-      <h2>Corsi di oggi</h2>
-    </ion-label>
-  
-    <ion-button 
-        slot="end" 
-        color="light" 
-        fill="solid"
-        size = "default"
-        routerLink="/agenda-trainer">
-    <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
-      Tutti
-    </ion-button>  
-  </ion-item>
-  
-  <!-- IMPEGNI TRAINER NON PRESENTI -->
-  
-  <ion-slides *ngIf="!myListImpegniTrainer || myListImpegniTrainer.length == 0" class="ion-no-padding ion-no-margin">
-    <ion-slide 
-        class="ion-no-padding ion-no-margin"   
-    >   
-        <app-button-card 
-            class="small-button-card card-corsi-vuoti" 
-            [smallVersion]="true" 
-            [myButtonCard]="getButtonCardTrainer()"
-        >
-        </app-button-card>
-  
-      </ion-slide>
-  </ion-slides>
-  
-  <!-- IMPEGNI TRAINER PRESENTI -->
-  <ion-slides *ngIf="myListImpegniTrainer && myListImpegniTrainer.length > 0" class="ion-no-padding ion-no-margin">
-    <ion-slide 
-        class="ion-no-padding ion-no-margin"
-        *ngFor="let impegno  of myListImpegniTrainer"> 
-        
-        <app-button-card 
-            class="small-button-card" 
-            [smallVersion]="true" 
-            [myButtonCard]="getButtonCardTrainer(impegno)"
-            (click)="onClickImpegnoTrainer(impegno)">
-        </app-button-card>
-  
-      </ion-slide>
-  </ion-slides>
-</div>
 
 <!-- <div class="ion-no-padding"> -->
 
@@ -388,7 +390,7 @@
   <ion-item 
       type="header" 
       lines="none" 
-      color="danger">
+      color="medium">
 
       <ion-icon 
           slot="start" 
@@ -404,7 +406,7 @@
           size = "default"
           (click)="onClickShowAllNews()">
           <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
-        Tutti
+        Elenco
       </ion-button>  
   </ion-item>
   <!-- NEWS PRESENTI -->

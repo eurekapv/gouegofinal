@@ -15,7 +15,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 export class AgendaCustodePage implements OnInit {
 
   listOccupazioni: OccupazioneCampi[] = [];
-
+  myIsDesktop: boolean;
   filter:OccupazioneCampi;
 
   constructor(
@@ -30,6 +30,7 @@ export class AgendaCustodePage implements OnInit {
     this.filter = new OccupazioneCampi(true);
     this.filter.IDAREA = this.startService.areaSelectedValue.ID;
     this.filter.DATAINIZIO = new Date();
+    this.myIsDesktop = this.startService.isDesktop;
   }
 
   ngOnInit() {
@@ -37,9 +38,7 @@ export class AgendaCustodePage implements OnInit {
     this.request();
   }
 
-  onScroll(){
 
-  }
 
 
   /**

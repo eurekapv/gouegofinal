@@ -25,7 +25,7 @@
 
   <!-- DOCUMENTI PRESENTI -->
   <ion-list *ngIf="listAllegati.length > 0">
-    <ion-item *ngFor="let allegato of listAllegati" button (click)="downloadAllegato()">
+    <ion-item *ngFor="let allegato of listAllegati" button (click)="downloadAllegato(allegato)">
       <ion-icon slot="start" class="" color ="" [name]="allegato.fileTypeIconName"></ion-icon>
         <ion-label>
           <h3>{{allegato.DESCRIZIONE}}</h3>

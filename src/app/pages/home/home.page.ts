@@ -530,7 +530,7 @@ export class HomePage implements OnInit, OnDestroy {
     let color = 'primary';
 
     if (this.userLogged) {
-      color = 'success'
+      color = 'warning'
     }
     else {
       color = 'primary'

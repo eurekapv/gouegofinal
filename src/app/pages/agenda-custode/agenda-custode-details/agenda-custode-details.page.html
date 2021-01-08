@@ -3,7 +3,7 @@
 
   <app-alert-input-prezzo 
     *ngIf="_showInputPrezzo"
-    [placeholder]="myPianificazione.INCASSATO" 
+    [placeholder]="myPianificazione._INCASSOCUSTODE" 
     description="Inserisci l'importo incassato per questa prenotazione"
     (onDismiss)="dismissInputPrezzo($event)"
   >
@@ -67,19 +67,42 @@
     <ion-row class="row-importi">
       <ion-col>
         <ion-card button disabled>
-          <ion-label class="label-info">Dovuto: </ion-label>
+          <ion-label class="label-info">Totale prenotazione: </ion-label>
           <ion-card-content>
             <ion-label class="label-importo">{{myPianificazione.TOTALE | currency: 'EUR'}}</ion-label>
           </ion-card-content>
         </ion-card>
       </ion-col>
+
       <ion-col>
-        <ion-card button (click)="showInputPrezzo()">
-          <ion-label class="label-info">Pagato: </ion-label>
+        <ion-card button disabled>
+          <ion-label class="label-info">Incassato precedentemente:</ion-label>
           <ion-card-content>
             <ion-label class="label-importo">
-              <ion-text [color]="myPianificazione.INCASSATO < myPianificazione.TOTALE? 'danger' : 'primary'">
                 {{myPianificazione.INCASSATO | currency: 'EUR'}}
+            </ion-label>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="row-importi">
+      <ion-col>
+        <ion-card button disabled>
+          <ion-label class="label-info">Residuo da incassare:</ion-label>
+          <ion-card-content>
+            <ion-label class="label-importo">{{myPianificazione.RESIDUO | currency: 'EUR'}}</ion-label>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col>
+        <ion-card button (click)="showInputPrezzo()">
+          <ion-label class="label-info">Incassato: </ion-label>
+          <ion-card-content>
+            <ion-label class="label-importo">
+              <ion-text [color]="myPianificazione.RESIDUO == myPianificazione._INCASSOCUSTODE? 'success' : 'danger'">
+                {{myPianificazione._INCASSOCUSTODE | currency: 'EUR'}}
               </ion-text>
             </ion-label>
           </ion-card-content>
@@ -91,7 +114,7 @@
 
 
 <ion-footer>
-  <ion-button color="primary" expand="block" (click)="onSubmit()">
+  <ion-button color="primary" expand="block" (click)="onClickConferma()">
     <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
     Conferma
   </ion-button>

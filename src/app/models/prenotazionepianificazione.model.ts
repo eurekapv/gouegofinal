@@ -26,6 +26,8 @@ export class PrenotazionePianificazione extends IDDocument {
     PROGRESSIVO: string;
     IDTRANSACTION: string;
 
+    _INCASSOCUSTODE: number;
+
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
 

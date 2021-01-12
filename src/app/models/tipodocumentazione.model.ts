@@ -36,6 +36,8 @@ export enum ClasseDocumento {
     attestato = 20,
     documento = 30,
     certificazioneIsee = 40,
+    certificazione = 50,
+    curriculum = 60,
     documentazione = 1000
 
 }

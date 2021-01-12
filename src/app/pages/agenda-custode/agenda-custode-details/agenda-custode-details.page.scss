@@ -24,7 +24,29 @@
         }
     }
 
-    .row-importi{
+    
+    .row-importi-1{
+        ion-card{
+            // height: fit-content;
+            display: flex;
+            padding-top: 8px;
+
+            ion-label.label-importo{
+                margin: auto;
+                display: table;
+                font-size: 22px;
+            }
+
+            ion-label.label-info{
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                font-size: 12px;
+            }
+        }
+    }
+
+    .row-importi-2{
         ion-card{
             height: 100px;
             display: flex;
@@ -39,7 +61,7 @@
                 position: absolute;
                 top: 10px;
                 left: 10px;
-        }
+            }
         }
     }
 }

@@ -425,7 +425,7 @@ export class Utente extends IDDocument {
         let isTrainer: boolean =false;
         if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
 
-            if (this.LISTMANSIONI.includes(Mansione.trainer.toString())){
+            if (this.LISTMANSIONI.includes(`"${Mansione.trainer.toString()}"`)){
                 isTrainer = true;
             }
         }
@@ -436,7 +436,7 @@ export class Utente extends IDDocument {
         let isTrainer: boolean =false;
         if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
 
-            if (this.LISTMANSIONI.includes(Mansione.assistenteTrainer.toString())){
+            if (this.LISTMANSIONI.includes(`"${Mansione.assistenteTrainer.toString()}"`)){
                 isTrainer = true;
             }
         }
@@ -447,7 +447,7 @@ export class Utente extends IDDocument {
         let isCustode: boolean =false;
         if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
 
-            if (this.LISTMANSIONI.includes(Mansione.custode.toString())){
+            if (this.LISTMANSIONI.includes(`"${Mansione.custode.toString()}"`)){
                 isCustode = true;
             }
         }

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController, NavController, NavParams, PickerController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, NavParams, PickerController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
@@ -26,12 +26,15 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
   _showInputPrezzo: boolean = false;
 
+  incassoAttuale: number;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private navController: NavController,
     private startService: StartService,
     private loadingController: LoadingController,
     private toastController: ToastController,
+    private alertController: AlertController
   ) { 
     this.myPianificazione = new PrenotazionePianificazione();
     this.myPrenotazione = new Prenotazione();
@@ -70,6 +73,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
       //@ts-ignore
       this.myPrenotazione = elOccupazione.getDocInRepository(elOccupazione.IDREF);
       this.myPianificazione = this.myPrenotazione.getPianificazione(this.myOccupazione.ID);
+      this.myPianificazione._INCASSOCUSTODE = this.myPianificazione.RESIDUO;
       console.log(this.myOccupazione);
       console.log(this.myPrenotazione);
       console.log(this.myPianificazione);
@@ -86,9 +90,33 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     })
   }
 
+  onClickConferma(){
+
+    let alertOptions = {
+      header: 'Sei sicuro',
+      message: 'Una volta confermato l\'importo, non potrai più modificarlo',
+      buttons: [
+        {
+          text: 'Conferma',
+          handler: ()=> {this.onSubmit()}
+        },
+        {
+          text: 'Annulla',
+          role: 'cancel'
+        }
+      ]
+    }
+    this.alertController.create(alertOptions)
+    .then(elAlert => {
+      elAlert.present()
+    })
+
+    
+  }
+
   onSubmit(){
     //TODO inviare il docpianificazione a gouego
-
+    console.log(this.myPianificazione);
     this.navController.pop();
   }
   
@@ -110,7 +138,6 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     //Memorizzo il numero Partecipanti
     this.myPianificazione.NUMPARTECIPANTI=nPlayer;
 
-    console.log(this.myPianificazione);
 
     // this.calcolaTotale();
   }
@@ -121,10 +148,9 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     this._showInputPrezzo = true;
   }
 
-  dismissInputPrezzo(value){
+  dismissInputPrezzo(value:number){
     if(value){
-      this.myPianificazione.INCASSATO = value;
-      console.log(this.myPianificazione);
+      this.myPianificazione._INCASSOCUSTODE = value;
     }
 
     this._showInputPrezzo = false;

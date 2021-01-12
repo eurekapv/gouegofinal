@@ -761,11 +761,11 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     .subscribe((response:AccountOperationResponse) => {
       resolve(response);
     }, error => {
-    reject(error);
+      reject(error);
     })
     }
     else {
-    reject('Dati mancanti per la richiesta');
+      reject('Dati mancanti per la richiesta');
     }
 
     });
@@ -807,7 +807,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
                 //Faccio la chiamata POST
                 this.apiService
-                .httpPost(myUrl, myHeaders, myParams, bodyRequest )
+                .httpPost(myUrl, myHeaders, myParams, bodyRequest)
                 .pipe(map(received => {
                     return received.validation;
                 }))
@@ -820,7 +820,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
                     reject(error);
                   })
                 }, error => {
-                  reject(error);
+                    reject(error);
                 })
             }
             else {

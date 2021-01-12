@@ -189,7 +189,6 @@ export class StartService {
 
             myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; //Demo AppId
             //myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
-
           }
           else {
             //Prendo URL e lo separo

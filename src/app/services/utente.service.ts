@@ -105,6 +105,7 @@ export class UtenteService {
                                 docUtente.setJSONProperty(docInResponse);
                                 docUtente.WEBLOGIN = username;
                                 docUtente.setOriginal();
+                                console.log(docUtente);
   
                                 //Imposto come tag authCode il codice di autorizzazione utente ricevuto
                                 docUtente.setTagValue('authCode',response.code);
@@ -711,7 +712,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     bodyUtente = docUtente.exportToJSON(paramUteExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
-
+    console.log(bodyFinal);
     //Faccio la chiamata POST
     this.apiService
     .httpPost(myUrl, myHeaders, myParams, bodyFinal )

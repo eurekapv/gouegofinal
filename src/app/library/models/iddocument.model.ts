@@ -354,7 +354,12 @@ import { MyDateTime } from './mydatetime.model';
                         row += '\"' + this.formatDateTimeISO(_this[element]) + '\"' ;
                         break;
                       case TypeDefinition.char:
-                        row += '\"' + _this[element] + '\"';
+                        let valore = _this[element];
+                        //Se la stringa contenesse all'interno simboli di " devono essere esportati come \"
+                        //Esempio: "ciao";"tuo" => \"ciao\";\"tuo\"
+                        valore = valore.replace(/"/g, "\\\"");
+                        row += '\"' + valore + '\"';
+                        
                         break;
     
                       default:

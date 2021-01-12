@@ -43,20 +43,24 @@
         <ion-label>Nessuna Iscrizione Corso</ion-label>
         <ion-label>trovata</ion-label>
       </div>
-
+      <!-- LISTA CORSI -->
         <ion-list *ngIf="listUtenteCorsi!.length !== 0">
           <ion-item button *ngFor="let corso of listUtenteCorsi" (click)="onClickCorso(corso)" >
             <ion-buttons slot="start">
               <ion-grid class="ion-no-padding">
                 <ion-row class="ion-no-padding">
                   <ion-col class="ion-no-padding ion-text-center">
-                    <ion-icon name="school" class="icon-school" [color]="corso.DATAFINECORSO>today&&corso.DATAINIZIOCORSO<today? 'primary': 'light'"></ion-icon>
+                    <ion-icon name="school" 
+                      class="icon-school" 
+                      [color]="corso.DATAFINECORSO > today && corso.DATAINIZIOCORSO < today ? 'success': 'danger'">
+                    </ion-icon>
+
                   </ion-col>
                 </ion-row>
                 <ion-row class="ion-no-padding">
                   <ion-col class="ion-no-padding ion-text-center">
-                    <p class="icon-text ion-no-margin">{{corso.DATAFINECORSO<today? 'Fino al':'Dal'}}</p>
-                    <p class="icon-text">{{corso.DATAFINECORSO<today? (corso.DATAINIZIOCORSO | date: 'dd/LL/yy'): (corso.DATAFINECORSO|date: 'dd/LL/yy')}}</p>
+                    <p class="icon-text ion-no-margin" *ngIf="corso.DATAFINECORSO">{{corso.DATAFINECORSO < today ? 'Fino al':'Dal'}}</p>
+                    <p class="icon-text">{{corso.DATAFINECORSO < today ? (corso.DATAINIZIOCORSO | date: 'dd/LL/yy'): (corso.DATAFINECORSO|date: 'dd/LL/yy')}}</p>
                   </ion-col>
                 </ion-row>
               </ion-grid>
@@ -93,7 +97,7 @@
               class="icon-prenotazioni"
               name="calendar" 
               slot="start" 
-              [color]="prenotazione.DATAORAFINE<today? 'light': 'primary'">
+              [color]="prenotazione.DATAORAFINE < today ? 'danger': 'success'">
 
           </ion-icon>
           
@@ -101,9 +105,15 @@
           <ion-label>
             <p>{{prenotazione.DATAORAINIZIO | date : 'dd/MM/yyyy'}}</p>
             <h1>{{prenotazione.DATAORAINIZIO | date: 'EEEE'|titlecase}} ore {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}</h1>
-            <h3>{{prenotazione.COMUNELOCATION|titlecase}} {{(prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION?', ':'')}} {{prenotazione.INDIRIZZOLOCATION|titlecase}}</h3> <!--anche qui manca decodifica centro sportivo-->
+            <h3>{{prenotazione.COMUNELOCATION|titlecase}} 
+              <span>{{( (prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION) ? ', ':'')}}</span> 
+              <span>{{prenotazione.INDIRIZZOLOCATION|titlecase}}</span>
+            </h3> <!--anche qui manca decodifica centro sportivo-->
+
           </ion-label>
-          <ion-chip color="primary">{{prenotazione.DURATAORE>1? prenotazione.DURATAORE : prenotazione.DURATAORE*60}} {{prenotazione.DURATAORE>1? 'Ore' : 'Min.'}}</ion-chip>
+          <ion-chip color="primary">
+            {{prenotazione.DURATAORE > 1 ? prenotazione.DURATAORE : prenotazione.DURATAORE*60}} {{prenotazione.DURATAORE>1? 'Ore' : 'Min.'}}
+          </ion-chip>
         </ion-item>
       </ion-list>
 

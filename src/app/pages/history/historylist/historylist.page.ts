@@ -163,6 +163,7 @@ export class HistorylistPage implements OnInit {
             this.docstructureService.requestNew(filterUtenteIscrizioni)
                   .then(list=>{
                         this.listUtenteCorsi=list;
+                      console.log(this.listUtenteCorsi)
                         loading.dismiss();
                   })
                   .catch(error=>{
@@ -251,7 +252,7 @@ export class HistorylistPage implements OnInit {
     switch (this.selectedView) {
       case 'prenotazioni':
 
-        let filterUtentePrenotazioni= new UtentePrenotazione(true);
+        let filterUtentePrenotazioni = new UtentePrenotazione(true);
         filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
 
 

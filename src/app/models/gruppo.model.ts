@@ -121,5 +121,22 @@ export class Gruppo extends IDDocument {
     
   }
 
+  get needEmailVerify(){
+    if(this.APPTIPOVERIFICA == TipoVerificaAccount.verificaemail || this.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  get needMobileVerify(){
+    if(this.APPTIPOVERIFICA == TipoVerificaAccount.verificasms || this.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 }
 

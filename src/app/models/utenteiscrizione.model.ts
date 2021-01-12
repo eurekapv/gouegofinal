@@ -8,9 +8,9 @@ export class UtenteIscrizione extends IDDocument {
         IDAREAOPERATIVA:       string; //
         TIPOCORSO:             number;
         DENOMINAZIONECORSO:    string;
-        DATAINIZIOCORSO:       Date;
-        ORAINIZIOCORSO:        Date;
-        DATAFINECORSO:         Date;
+        DATAINIZIO:            Date;
+        ORAINIZIO:             Date;
+        DATAFINE:              Date;
         ORELEZIONE:            number;
         GIORNIPREVISTI:        string;
         IDUTENTE:              string; //
@@ -64,8 +64,8 @@ export class UtenteIscrizione extends IDDocument {
         let arNumber = ['TIPOCORSO','ANNOISCRIZIONE','CODICEINT','STATOISCRIZIONE'];
         let arNumberDecimal = ['IMPORTO','VERSATO','RESIDUO','ORELEZIONE'];
         let arBoolean = [];
-        let arDate = ['DATAINIZIOCORSO','DATAFINECORSO','DATAISCRIZIONE'];
-        let arDateTime =['ORAINIZIOCORSO'];
+        let arDate = ['DATAINIZIO','DATAFINE','DATAISCRIZIONE'];
+        let arDateTime =['ORAINIZIO'];
         let arTime = [];
 
         objDescriptor.className = 'UtenteIscrizione';

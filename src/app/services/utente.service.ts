@@ -11,6 +11,7 @@ import { PostResponse } from '../library/models/postResult.model';
 import { ParamsExport } from '../library/models/iddocument.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { Account } from '../models/account.model';
+import { promise } from 'protractor';
 
 
 
@@ -167,6 +168,48 @@ export class UtenteService {
   logoff() {
 
     this._utenteLoggato.next(false);
+  }
+
+
+  /**
+   * Richiede nuovamente al server i dati dell'utente (esattamente come al login); dopodichè il docutente viene riemesso aggiornato
+   * @param authUserCode codice autorizzativo legato all'utente
+   */
+  updateClientData(): Promise<Utente>{
+    
+    return new Promise((resolve, reject) => {
+      const method = 'GetActiveUtente';  //Da decidere 
+      const document = new Account();
+
+      //faccio la richiesta
+      this.docService.requestForFunction(document, method)
+      .then(result => {
+
+        if(result){
+
+          let newUtente: Utente = new Utente();
+          newUtente.setJSONProperty(result);
+          this._utenteLoggato.next(true);
+          this._utente.next(newUtente);
+
+          resolve(newUtente);
+        }
+        else{
+          throw new Error('Nessuna risposta dal server');
+        }
+
+        //recupero l'utente
+        //lo metto nella proprietà
+        //riemetto il next della proprietà
+        //risolvo
+
+
+      })
+      .catch(error => {
+        reject(error); 
+      })
+      
+    })
   }
 
 
@@ -773,7 +816,13 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
                     return received.validation;
                 }))
                 .subscribe((response:AccountOperationResponse) => {
-                  resolve(response);
+                  this.updateClientData()
+                  .then(() => {
+                    resolve(response);
+                  })
+                  .catch(error => {
+                    reject(error);
+                  })
                 }, error => {
                   reject(error);
                 })

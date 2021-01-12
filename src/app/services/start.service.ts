@@ -181,14 +181,14 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          //myUrl = 'demo.gouego.com';
+          myUrl = 'demo.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso
           if (myUrl == 'localhost') {
 
-            //myAppId = '00F15A91-5d395-445C-B7F4-5BA594E55D2F'; //Demo AppId
-            myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
+            myAppId = '00F15A91-5d395-445C-B7F4-5BA594E55D2F'; //Demo AppId
+            // myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
 
           }
           else {
@@ -820,6 +820,10 @@ saveStorageUtente(username: string, passwd: string) {
 
   this.storageAccess.set('gouegoser',strAccount);
   LogApp.consoleLog('Saved credential');
+}
+
+updateClientUtenteData(){
+  return this.utenteService.updateClientData();
 }
 
 /**

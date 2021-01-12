@@ -119,6 +119,9 @@
           <ion-input formControlName="comNascita"></ion-input>
         </ion-item>
       </ion-item-group>
+
+
+      <!-- CELLULARE ED EMAIL -->
       <ion-item-group>
         <ion-item-divider color="light">
           <ion-icon 
@@ -127,15 +130,36 @@
             color="primary"></ion-icon>
           <ion-label>Cellulare e Email</ion-label>
         </ion-item-divider>
-        <ion-item button (click)="validateTel()">
+
+        <!-- VERIFICA CELLULARE NECESSARIA -->
+        <ion-item *ngIf="docGruppo.needMobileVerify" button (click)="validateTel()">
           <ion-label>{{utente.MOBILENUMBER}}</ion-label>
           <ion-badge color="success">{{utente.getLabelVerificaMobile()}}</ion-badge>
         </ion-item>
-        <ion-item button (click)="validateEmail()">
+
+        <!-- VERIFICA MAIL NECESSARIA -->
+        <ion-item *ngIf="docGruppo.needEmailVerify" button (click)="validateEmail()">
           <ion-label>{{utente.EMAIL}}</ion-label>
           <ion-badge color="success">{{utente.getLabelVerificaMail()}}</ion-badge>
         </ion-item>
+
+        <!-- VERIFICA CELLULARE NON NECESSARIA -->
+        <ion-item *ngIf="!docGruppo.needMobileVerify">
+          <ion-label position="floating">Cellulare</ion-label>
+          <ion-input formControlName="mobile"></ion-input>
+        </ion-item>
+
+        <!-- VERIFICA MAIL NON NECESSARIA -->
+        <ion-item *ngIf="!docGruppo.needEmailVerify">
+          <ion-label position="floating">E-Mail</ion-label>
+          <ion-input formControlName="email"></ion-input>
+        </ion-item>
+
+
       </ion-item-group>
+
+
+
     </ion-list>
   </form>
 </ion-content>

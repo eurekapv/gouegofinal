@@ -8,6 +8,9 @@ import { NavController, ToastController, LoadingController, ModalController } fr
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
 import { TipoVerificaAccount } from 'src/app/models/valuelist.model'
+import { Gruppo } from 'src/app/models/gruppo.model';
+import { StartConfiguration } from 'src/app/models/start-configuration.model';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -25,6 +28,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
   listSesso: ValueList[]=[];
   showLoading: boolean;
 
+  docGruppo: Gruppo = new Gruppo();
   today:string; //questo serve per impostare la data di nascita max ad oggi
 
   constructor(
@@ -47,11 +51,14 @@ export class EditAccountPage implements OnInit, OnDestroy {
       //Preparo un Array con le decodifiche del Sesso
       this.listSesso=ValueList.getArray(Sesso);
 
+
    }
 
   ngOnInit() {
     
     this.today=MyDateTime.formatDateISO(new Date);
+
+    this.docGruppo = this.startService.actualStartConfig.gruppo;
     
     //this.createForm();
   }
@@ -123,6 +130,25 @@ export class EditAccountPage implements OnInit, OnDestroy {
         validators: [Validators.pattern(patternCodice)]
       })
     })
+
+    if(!this.docGruppo.needMobileVerify){
+      //devo creare il campo mail
+      let mobile = new FormControl(this.utente.MOBILENUMBER, {
+        updateOn: 'change',
+        validators: [Validators.pattern('^[0-9]*$')]
+      })
+
+      this.form.addControl('mobile', mobile)
+    } 
+
+    if(!this.docGruppo.needEmailVerify){
+      //devo creare il campo tel
+      let email = new FormControl(this.utente.EMAIL, {
+        updateOn: 'change',
+        validators: [Validators.email]
+      })
+      this.form.addControl('email', email)
+    }
   }
 
   onSubmit()
@@ -153,8 +179,15 @@ export class EditAccountPage implements OnInit, OnDestroy {
       this.utente.NATOPROV=this.form.value.provNascita;
       this.utente.NATOISOSTATO=this.form.value.statoNascita;
       
-      //EMAIL E NUMERO DI TELEFONO NON LI MODIFICO MAI
-      
+      //EMAIL E NUMERO DI TELEFONO LI MODIFICO SOLO SE NON DEVONO ESSERE VERIFICATI, ALTRIMENTI VERRA' CHIAMATA LA VIDEATA APPOSITA
+      if(!this.docGruppo.needEmailVerify){
+        this.utente.EMAIL = this.form.value.email;
+      }
+      if(!this.docGruppo.needMobileVerify){
+        this.utente.MOBILENUMBER = this.form.value.mobile;
+      }
+      console.log('mando');
+      console.log(this.utente);
 
       //USO IL LOADING CONTROLLER 
       this.loadingController
@@ -267,9 +300,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
     })
     .then(elModal => {
       elModal.present();
-      elModal.onDidDismiss().then(() => {
-        this.closePage();
-      });
     })
   }
 
@@ -286,11 +316,9 @@ export class EditAccountPage implements OnInit, OnDestroy {
     })
     .then(elModal => {
       elModal.present();
-      elModal.onDidDismiss().then(() => {
-        this.closePage();
-      });
     })
   }
+
 }
 
 

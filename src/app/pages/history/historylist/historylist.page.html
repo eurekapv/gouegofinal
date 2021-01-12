@@ -10,7 +10,7 @@
 
     <ion-buttons slot="primary">
       <ion-button (click)="onClickSettings()" >
-        <ion-icon name="settings-outline">
+        <ion-icon name="ellipsis-horizontal-outline">
         </ion-icon>
       </ion-button>
     </ion-buttons>
@@ -35,6 +35,8 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+
+
   <!-- PARTE CORSI -->
   <div class="contentExpand" *ngIf="selectedView=='corsi'">
 
@@ -50,17 +52,18 @@
               <ion-grid class="ion-no-padding">
                 <ion-row class="ion-no-padding">
                   <ion-col class="ion-no-padding ion-text-center">
-                    <ion-icon name="school" 
+                    <ion-icon 
+                      name="school" 
                       class="icon-school" 
-                      [color]="corso.DATAFINECORSO > today && corso.DATAINIZIOCORSO < today ? 'success': 'danger'">
+                      [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
                     </ion-icon>
 
                   </ion-col>
                 </ion-row>
                 <ion-row class="ion-no-padding">
                   <ion-col class="ion-no-padding ion-text-center">
-                    <p class="icon-text ion-no-margin" *ngIf="corso.DATAFINECORSO">{{corso.DATAFINECORSO < today ? 'Fino al':'Dal'}}</p>
-                    <p class="icon-text">{{corso.DATAFINECORSO < today ? (corso.DATAINIZIOCORSO | date: 'dd/LL/yy'): (corso.DATAFINECORSO|date: 'dd/LL/yy')}}</p>
+                    <p class="icon-text ion-no-margin article" *ngIf="corso.DATAINIZIO">{{corso.DATAFINE < today ? 'Fino al':'Dal'}}</p>
+                    <p class="icon-text">{{corso.DATAFINE < today ? (corso.DATAINIZIO | date: 'dd/LL/yy'): (corso.DATAFINE|date: 'dd/LL/yy')}}</p>
                   </ion-col>
                 </ion-row>
               </ion-grid>
@@ -71,12 +74,15 @@
               <p>{{corso.GIORNIPREVISTI|giorniPrevisti: lingua|titlecase}} </p>
               <h3>{{corso.COMUNELOCATION|titlecase}}, {{corso.INDIRIZZOLOCATION|titlecase}}</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
             </ion-label>
-            <ion-chip color="primary">
-              {{corso.ORAINIZIOCORSO|date: 'HH:mm'}}
+            <ion-chip color="primary" *ngIf="corso.ORAINIZIO">
+              {{corso.ORAINIZIO|date: 'HH:mm'}}
             </ion-chip>
           </ion-item>
         </ion-list>
   </div>
+
+
+
 
   <!-- PARTE PRENOTAZIONI -->
   <div class="contentExpand" *ngIf="selectedView=='prenotazioni'">

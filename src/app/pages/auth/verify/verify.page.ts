@@ -572,10 +572,10 @@ export class VerifyPage implements OnInit {
                  this.docUtente.MOBILENUMBER = this.docRichiestaCodici.TELEPHONE;
                }
                
-               this.showMessage("Verifica completata con successo");
-
-               //Posso spostarmi alla pagina successiva
-               this.nextStepRegistration();
+              
+                this.showMessage("Verifica completata con successo");
+                //Posso spostarmi alla pagina successiva
+                this.nextStepRegistration();
  
              }
              else {

@@ -28,6 +28,8 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
   incassoAttuale: number;
 
+  myToday: Date = new Date();
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private navController: NavController,
@@ -115,9 +117,12 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   }
 
   onSubmit(){
-    //TODO inviare il docpianificazione a gouego
-    console.log(this.myPianificazione);
-    this.navController.pop();
+    if(this.canEditData()){
+      //TODO inviare il docpianificazione a gouego
+      console.log(this.myPianificazione);
+      this.navController.pop();
+
+    }
   }
   
   
@@ -154,6 +159,15 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     }
 
     this._showInputPrezzo = false;
+  }
+
+  canEditData(){
+    if(this.myPrenotazione.DATA  <= this.myToday){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
 }

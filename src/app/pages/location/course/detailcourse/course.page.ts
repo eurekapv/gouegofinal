@@ -23,7 +23,7 @@ export class CoursePage implements OnInit, OnDestroy {
   iconColor = 'primary';
   userLogged = false;
   subUserLogged: Subscription;
-
+  isDesktop: boolean;
   constructor(
     private startService: StartService,
     private actRouter: ActivatedRoute,
@@ -35,6 +35,7 @@ export class CoursePage implements OnInit, OnDestroy {
   ) {}
               
               ngOnInit() {
+                this.isDesktop = this.startService.isDesktop;
                 let idCorso = '';
                 this.actRouter.paramMap.subscribe(param => {
                   if (param.has('courseId')) {

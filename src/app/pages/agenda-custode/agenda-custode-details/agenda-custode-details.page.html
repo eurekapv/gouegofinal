@@ -117,7 +117,7 @@
 
 
 <ion-footer>
-  <ion-button color="primary" expand="block" (click)="onClickConferma()">
+  <ion-button color="primary" expand="block" [disabled]="!this.canEditData()" (click)="onClickConferma()">
     <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
     Conferma
   </ion-button>

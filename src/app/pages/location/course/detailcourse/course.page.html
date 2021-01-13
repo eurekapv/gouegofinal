@@ -106,7 +106,12 @@
                     [color]="giorno.selected? 'primary':'secondary'" 
                     size="small" 
                     [fill]="giorno.selected ?'solid':'outline'">
-                  {{giorno.xsLabel | uppercase}}
+                    <span *ngIf="isDesktop">
+                      {{giorno.label | uppercase}}
+                    </span>
+                    <span *ngIf="!isDesktop">
+                      {{giorno.xsLabel | uppercase}}
+                    </span>
                 </ion-button>
               </td>
             </tr>

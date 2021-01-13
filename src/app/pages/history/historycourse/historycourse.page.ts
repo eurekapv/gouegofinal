@@ -34,6 +34,9 @@ export class HistorycoursePage implements OnInit {
   myArea = new Area();
 
   arPayments: PaymentConfiguration[] = [];
+
+  isDesktop: boolean;
+
   constructor(private activatedRoute: ActivatedRoute,
               private startService: StartService,
               private loadingController: LoadingController,
@@ -41,6 +44,8 @@ export class HistorycoursePage implements OnInit {
               private modalController: ModalController) {              }
 
   ngOnInit() {
+    
+    this.isDesktop = this.startService.isDesktop;
     //recupero l'area 
     this.myArea = this.startService.areaSelectedValue;
     //creo lo spinner e lo presento

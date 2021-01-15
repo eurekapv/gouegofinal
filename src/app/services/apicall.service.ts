@@ -4,12 +4,18 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { LogApp } from '../models/log.model';
 
+import { CustomEncriptionService } from './custom-encription.service';
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApicallService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private httpClient: HttpClient,
+    private customEncriptionService: CustomEncriptionService
+    ) { }
 
   
   /**
@@ -61,7 +67,9 @@ export class ApicallService {
    */
   private _httpGet(url: string, reqHeaders: HttpHeaders, reqParams?: HttpParams) {
     LogApp.consoleLog('Chiamata GET a ' + url);
+    console.log()
     
+    reqHeaders = reqHeaders.append('authsig', this.customEncriptionService.getB64EncryptedSignature());
     //ritorno la get controllando l'errore
     return this.httpClient.get<any>(url, {
       headers: reqHeaders,
@@ -84,6 +92,8 @@ export class ApicallService {
                     reqParams: HttpParams, 
                     reqBody: any
                     ) {
+
+    reqHeaders = reqHeaders.append('authsig', this.customEncriptionService.getB64EncryptedSignature());
     LogApp.consoleLog('Chiamata POST a ' + url);
 
     return this.httpClient.post<any>(url, reqBody, {
@@ -109,6 +119,8 @@ export class ApicallService {
                    reqBody: any) {
     
     LogApp.consoleLog('Chiamata PUT a ' + url);
+
+    reqHeaders = reqHeaders.append('authsig', this.customEncriptionService.getB64EncryptedSignature());
 
     return this.httpClient.put(url, reqBody, {
                                         headers: reqHeaders,

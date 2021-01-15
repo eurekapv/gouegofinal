@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  appSignature: 'DKFJDLFAUOIKDFLSDAIUIALRJKA'
+  appSignature: '2316854354984354687654684698'
 
 };

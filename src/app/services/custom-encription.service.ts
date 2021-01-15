@@ -7,45 +7,39 @@ import { environment } from 'src/environments/environment'
 })
 export class CustomEncriptionService {
 
-  private privateKey: string
-  private dimTable: number = 10;
+  private privateKey: string = '5468765198654984964198';
   private table = [];
 
 
   constructor() {
-    if(environment.hasOwnProperty('appSignature')){
-      this.privateKey = environment.appSignature;
-    }
 
     this._initTable();
   }
   
 
   private _initTable(){
-    //devo fare 9 righe
-    for (let i = 0; i < this.dimTable; i++){
-
-       //Creo la colonna
-       let row = [];
-
-       //nella colonna devo inserire 9 numeri; il primo numero deve aumentare ogni volta
-       let myNum = i;
-       for(let i2 = 0; i2<this.dimTable; i2++ ){
-           if(myNum == this.dimTable){
-               //sono arrivato a 9, devo ricominciare
-               myNum = 0;
-           }
-
-           row.push(myNum);
-           myNum ++;
-       }
-
-       //la riga è pronta, la aggiungo
-       this.table.push(row);
-    }
-   console.log(this.table);
+    this.table = [
+      ['D','d','8','Y','R','g','z','9','B','A' ],          
+      ['G','p','B','y','f','M','Z','A','Y','a' ],          
+      ['b','P','5','0','N','r','8','a','C','G' ],          
+      ['a','r','3','F','1','2','n','X','6','R' ],          
+      ['C','N','A','l','g','6','B','Y','5','1' ],          
+      ['h','A','0','t','2','7','e','1','J','6' ],          
+      ['H','O','R','T','3','A','L','6','h','7' ],          
+      ['Q','o','l','w','B','c','R','4','q','2' ],          
+      ['j','I','J','6','c','1','4','2','D','5' ],          
+      ['1','2','I','5','4','B','c','W','w','b' ],          
+    ]
   }
 
+  private _getUTCTimestamp(){
+    let utc: number;
+    let now = new Date()
+    // utc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())
+
+    utc = now.getTime();
+    return utc;
+  }
 
   private _encrypt(str){
     let encryptedStr = '';
@@ -115,35 +109,86 @@ export class CustomEncriptionService {
 
   }
 
-  private _getStringToEncript(){
-    let myNow = new Date();
-    let str = '' + myNow.getUTCFullYear() + (myNow.getUTCMonth()+ 1) + myNow.getUTCDate() + myNow.getUTCHours() + myNow.getUTCMinutes() + myNow.getUTCSeconds();
+  private _getSignatureToEncrypt(){
+    let str= '';
+
+    let currentTimestamp = this._getUTCTimestamp();
+
+    let time1 = currentTimestamp;
+    let time2 = currentTimestamp * 2;
+    let time3 = currentTimestamp * 3;
+
+    str = str + time1 + time2 + time3;
+
+    
     return str;
   }
 
-  public encrypt(str, nLayers = 1){
-    let encryptedStr = str;
-    for(let i = 0; i < nLayers; i++){
-        encryptedStr = this._encrypt(encryptedStr);
-    }
+  private _convertToB64(stringToConvert: string){
+    //@ts-ignore
+    let buff = Buffer.from(stringToConvert);
 
-    return encryptedStr;
+    return buff.toString('base64');
   }
 
-  public decrypt(str, nLayers = 1){
+  private _convertFromB64(stringToConvert: string){
+    //@ts-ignore
+    let buff = Buffer.from(stringToConvert, 'base64');
+    return buff.toString('ascii');
+  }
+
+
+  /**
+   * crittografa una stringa usando la tabella e la chiave
+   * @param str stringa da crittografare
+   */
+  public encrypt(str){
+    return this._encrypt(str);
+  }
+
+  /**
+   * decrittografa la stringa guardando chiave e tabella
+   * @param str stringa da decrittografare
+   */
+  public decrypt(str){
     
-      let decryptedStr = str;
-      for(let i = 0; i < nLayers; i++){
-          decryptedStr = this._decrypt(decryptedStr);
-      }
-
-      return decryptedStr;
+      return this._decrypt(str);
   }
 
 
-  public getSignature(){
-     let signature = this._getStringToEncript();
-     signature = this.encrypt(signature);
-     return signature;
+  /**
+   * restituisce una firma secondo le specifiche. Encodata in B64
+   */
+  public getB64EncryptedSignature(){
+    let signature = this._getSignatureToEncrypt();
+    signature = this.encrypt(signature);
+    //@ts-ignore
+    signature = window.btoa(signature);
+    return signature;
   }
+
+
+
+  public decodeB64Signature(b64EncryptedSignature){
+    let encryptedSignature = this._convertFromB64(b64EncryptedSignature);
+    let decryptedSignature = this.decrypt(encryptedSignature);
+
+    let tok1 = decryptedSignature.substring(0, 13);
+    let tok2 = decryptedSignature.substring(13, 26);
+    let tok3 = decryptedSignature.substring(26, 39);
+
+    let tok1n = parseInt(tok1, 10);
+    let tok2n = parseInt(tok2, 10) / 2;
+    let tok3n = parseInt(tok3, 10) / 3;
+
+    let myDate = new Date(100);
+    if(tok1n == tok2n && tok1n == tok3n){
+
+      myDate.setTime(tok1n);
+      
+    }
+    return  myDate;
+   
+  }
+   
 }

@@ -32,6 +32,7 @@ export class CustomEncriptionService {
     ]
   }
 
+
   private _getUTCTimestamp(){
     let utc: number;
     let now = new Date()
@@ -55,7 +56,7 @@ export class CustomEncriptionService {
         let keyValue = this.privateKey[keyPointer];
 
         //recupero dalla matrice il valore codificato
-        let finalValue = this.table[initialValue][keyValue];
+        let finalValue = this.table[keyValue][initialValue];
 
         //aggiungo il valore trovato alla stringa finale codificata
         encryptedStr += finalValue
@@ -124,18 +125,18 @@ export class CustomEncriptionService {
     return str;
   }
 
-  private _convertToB64(stringToConvert: string){
-    //@ts-ignore
-    let buff = Buffer.from(stringToConvert);
+  // private _convertToB64(stringToConvert: string){
+  //   //@ts-ignore
+  //   let buff = Buffer.from(stringToConvert);
 
-    return buff.toString('base64');
-  }
+  //   return buff.toString('base64');
+  // }
 
-  private _convertFromB64(stringToConvert: string){
-    //@ts-ignore
-    let buff = Buffer.from(stringToConvert, 'base64');
-    return buff.toString('ascii');
-  }
+  // private _convertFromB64(stringToConvert: string){
+  //   //@ts-ignore
+  //   let buff = Buffer.from(stringToConvert, 'base64');
+  //   return buff.toString('ascii');
+  // }
 
 
   /**
@@ -169,26 +170,26 @@ export class CustomEncriptionService {
 
 
 
-  public decodeB64Signature(b64EncryptedSignature){
-    let encryptedSignature = this._convertFromB64(b64EncryptedSignature);
-    let decryptedSignature = this.decrypt(encryptedSignature);
+  // public decodeB64Signature(b64EncryptedSignature){
+  //   let encryptedSignature = this._convertFromB64(b64EncryptedSignature);
+  //   let decryptedSignature = this.decrypt(encryptedSignature);
 
-    let tok1 = decryptedSignature.substring(0, 13);
-    let tok2 = decryptedSignature.substring(13, 26);
-    let tok3 = decryptedSignature.substring(26, 39);
+  //   let tok1 = decryptedSignature.substring(0, 13);
+  //   let tok2 = decryptedSignature.substring(13, 26);
+  //   let tok3 = decryptedSignature.substring(26, 39);
 
-    let tok1n = parseInt(tok1, 10);
-    let tok2n = parseInt(tok2, 10) / 2;
-    let tok3n = parseInt(tok3, 10) / 3;
+  //   let tok1n = parseInt(tok1, 10);
+  //   let tok2n = parseInt(tok2, 10) / 2;
+  //   let tok3n = parseInt(tok3, 10) / 3;
 
-    let myDate = new Date(100);
-    if(tok1n == tok2n && tok1n == tok3n){
+  //   let myDate = new Date(100);
+  //   if(tok1n == tok2n && tok1n == tok3n){
 
-      myDate.setTime(tok1n);
+  //     myDate.setTime(tok1n);
       
-    }
-    return  myDate;
+  //   }
+  //   return  myDate;
    
-  }
+  // }
    
 }

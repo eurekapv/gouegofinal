@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-
-import { environment } from 'src/environments/environment'
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -163,8 +162,10 @@ export class CustomEncriptionService {
   public getB64EncryptedSignature(){
     let signature = this._getSignatureToEncrypt();
     signature = this.encrypt(signature);
+    LogApp.consoleLog('Signature: ' + signature);
     //@ts-ignore
-    //signature = window.btoa(signature);
+    signature = window.btoa(signature);
+    LogApp.consoleLog('Signature Base64: ' + signature);
     return signature;
   }
 

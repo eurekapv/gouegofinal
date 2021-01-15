@@ -67,9 +67,8 @@ export class ApicallService {
    */
   private _httpGet(url: string, reqHeaders: HttpHeaders, reqParams?: HttpParams) {
     LogApp.consoleLog('Chiamata GET a ' + url);
-    console.log()
-    
-    reqHeaders = reqHeaders.append('authsig', this.customEncriptionService.getB64EncryptedSignature());
+        
+    reqHeaders = reqHeaders.append('authsign', this.customEncriptionService.getB64EncryptedSignature());
     //ritorno la get controllando l'errore
     return this.httpClient.get<any>(url, {
       headers: reqHeaders,
@@ -93,7 +92,7 @@ export class ApicallService {
                     reqBody: any
                     ) {
 
-    reqHeaders = reqHeaders.append('authsig', this.customEncriptionService.getB64EncryptedSignature());
+    reqHeaders = reqHeaders.append('authsign', this.customEncriptionService.getB64EncryptedSignature());
     LogApp.consoleLog('Chiamata POST a ' + url);
 
     return this.httpClient.post<any>(url, reqBody, {
@@ -120,7 +119,7 @@ export class ApicallService {
     
     LogApp.consoleLog('Chiamata PUT a ' + url);
 
-    reqHeaders = reqHeaders.append('authsig', this.customEncriptionService.getB64EncryptedSignature());
+    reqHeaders = reqHeaders.append('authsign', this.customEncriptionService.getB64EncryptedSignature());
 
     return this.httpClient.put(url, reqBody, {
                                         headers: reqHeaders,

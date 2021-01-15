@@ -163,7 +163,7 @@ export class CustomEncriptionService {
     let signature = this._getSignatureToEncrypt();
     signature = this.encrypt(signature);
     //@ts-ignore
-    signature = window.btoa(signature);
+    //signature = window.btoa(signature);
     return signature;
   }
 

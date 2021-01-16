@@ -9,6 +9,8 @@ import { GalleryPage } from './gallery/gallery.page';
 import { CampiNewPage } from './campi-new/campi-new.page'
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Subscription } from 'rxjs';
+import { StartConfiguration } from 'src/app/models/start-configuration.model';
+import { TipoSocieta } from 'src/app/models/valuelist.model';
 
 @Component({
   selector: 'app-location',
@@ -19,6 +21,7 @@ export class LocationPage implements OnInit, OnDestroy {
 
   selectedLocation = new Location();
   subSelectedLocation: Subscription;
+  myStartConfig: StartConfiguration;
 
   aperture: AperturaLocation[] = [];
   listButtonCard: ButtonCard[] = []; // Lista dei Bottoni
@@ -39,6 +42,11 @@ export class LocationPage implements OnInit, OnDestroy {
 
       //Imposto i bottoni da mostrare 
       this.setButtonCard();
+
+      //Recupero il documento di start config
+      this.startService.startConfig.subscribe(elData => {
+        this.myStartConfig = elData;
+      })
 
   }
 
@@ -84,10 +92,16 @@ export class LocationPage implements OnInit, OnDestroy {
 
 
   setButtonCard() {
-    
+    let tipoSocieta: TipoSocieta;
+
+    //Recupero il tipo di società
+    if (this.myStartConfig && this.myStartConfig.gruppo) {
+      tipoSocieta = this.myStartConfig.gruppo.TIPOGRUPPO;
+    }
+
     // Recupero i Bottoni che devo mostrare in videata
     // A seconda se posso Prenotare nella location oppure no
-    this.listButtonCard = ButtonCard.getButtonActionLocation(this.selectedLocation.ENABLEPRENOTAZIONI);
+    this.listButtonCard = ButtonCard.getButtonActionLocation(this.selectedLocation.ENABLEPRENOTAZIONI, tipoSocieta);
 
   }
 
@@ -151,5 +165,36 @@ export class LocationPage implements OnInit, OnDestroy {
       }
     })
     .then(modal => modal.present());
+  }
+
+
+  /**
+   * Ritorna l'etichetta da mostrare nell'item Aule/Campi
+   */
+  getLabelCampiDisponibili() {
+    let text = 'Struttura';
+    let singolare = true;
+    
+    if (this.selectedLocation.getNumCampi() > 1 ) {
+      singolare = false;
+    }
+
+    if (this.myStartConfig && this.myStartConfig.gruppo) {
+
+      switch (this.myStartConfig.gruppo.TIPOGRUPPO) {
+        case TipoSocieta.formazione:
+            text = (singolare ? 'Aula disponibile' : 'Aule disponibili');
+          break;
+
+        case TipoSocieta.sportiva:
+            text = (singolare ? 'Campo disponibile' : 'Campi disponibili');
+          break;
+      
+        default:
+          break;
+      }
+    }
+    
+    return text;
   }
 }

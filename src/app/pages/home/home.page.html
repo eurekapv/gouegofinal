@@ -238,7 +238,8 @@
           <app-centri 
               (clickPrenota)="onClickPrenota($event)"
               (clickLocation)="onClickLocation($event)"
-              [location]="listLocation[0]">
+              [location]="listLocation[0]"
+              [myStartConfig]="startConfig">
               
           </app-centri>
 
@@ -251,7 +252,8 @@
           *ngFor="let locationItem of listLocation"
           (clickPrenota)="onClickPrenota($event)"
           (clickLocation)="onClickLocation($event)"
-          [location]="locationItem">
+          [location]="locationItem"
+          [myStartConfig]="startConfig">
           
         </app-centri>    
     </div>

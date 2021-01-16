@@ -5,6 +5,7 @@ import { AperturaLocation } from './aperturalocation.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CampoSport } from './camposport.model';
 import { OccupazioneCampi } from './occupazionecampi.model';
+import { TipoSocieta } from './valuelist.model';
 
 export class Location extends IDDocument {
 
@@ -112,7 +113,7 @@ export class Location extends IDDocument {
     setStandardCover() {
 
       this.LOCATIONIMAGE = [];
-      let standardImage = 'assets/img/sport2_mini.png';
+      let standardImage = 'assets/img/cardhome_ge.png';
       
       //Immagine Cover nell'oggetto
       this.IMAGEURL = standardImage;
@@ -128,13 +129,29 @@ export class Location extends IDDocument {
     }
 
     /** Ritorna il percorso da applicare al tag image */
-    getUrlImage() {
+    getUrlImage(tipoSocieta?: TipoSocieta) {
       let returnImage = '';
       if (this.IMAGEURL) {
         returnImage = this.IMAGEURL;
       }
       else {
-        returnImage = 'assets/img/sport2_mini.png';
+        if (tipoSocieta) {
+          switch (tipoSocieta) {
+            case TipoSocieta.sportiva:
+              returnImage = 'assets/img/cardhome_sp.png';    
+              break;
+
+            case TipoSocieta.formazione:
+              returnImage = 'assets/img/cardhome_fo.png';    
+              break;
+          
+            default:
+              break;
+          }
+        }
+        else {
+          returnImage = 'assets/img/cardhome_ge.png';
+        }
       }
 
       return returnImage;

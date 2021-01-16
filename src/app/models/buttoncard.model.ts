@@ -1,5 +1,5 @@
 import { Impegno } from './impegno.model';
-import { SettoreAttivita } from './valuelist.model';
+import { SettoreAttivita, TipoSocieta } from './valuelist.model';
 import { Settimana } from './settimana.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { OccupazioneCampi } from './occupazionecampi.model';
@@ -39,14 +39,26 @@ export class ButtonCard {
      * Ritorna i Botton Action per la location
      * @param canBooking E' possibile prenotare ?
      */
-    static getButtonActionLocation(canBooking?:boolean): ButtonCard[] {
+    static getButtonActionLocation(canBooking?:boolean, tipoSocieta?:TipoSocieta): ButtonCard[] {
         let arButton: ButtonCard[] = [];
         let newBtn: ButtonCard;
 
         if (canBooking) {
             newBtn = new ButtonCard();
-            newBtn.title = 'Prenota un campo';
-            newBtn.subtitle = 'organizza un incontro con i tuoi amici';
+
+            if (tipoSocieta == undefined) {
+                newBtn.title = 'Prenota';
+                newBtn.subtitle = 'organizza un evento in questa location';
+            }
+            else if (tipoSocieta == TipoSocieta.formazione) {
+                newBtn.title = 'Prenota un\'aula';
+                newBtn.subtitle = 'organizza un corso per il tuo team';
+            }
+            else if (tipoSocieta == TipoSocieta.sportiva) {
+                newBtn.title = 'Prenota un campo';
+                newBtn.subtitle = 'organizza un incontro con i tuoi amici';
+            }
+            
             newBtn.nameicon = 'calendar';
             newBtn.sloticon = "start";
             newBtn.color = "primary";

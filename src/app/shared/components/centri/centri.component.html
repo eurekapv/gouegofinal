@@ -3,7 +3,7 @@
       button="true"
       (click)="onClickLocation($event); $event.stopPropagation();">
 
-  <img [src]="location.getUrlImage()">
+  <img [src]="getUrlCoverImage()">
 
   <ion-fab 
     horizontal="start" 
@@ -26,11 +26,8 @@
     <ion-card-title>{{location.DENOMINAZIONE | titlecase}}</ion-card-title>
 
     <ion-card-subtitle>
-      <div *ngIf="location.INDIRIZZO">
-        <span>{{ location.INDIRIZZO }}</span>
-      </div>
-      <div *ngIf="!location.INDIRIZZO">
-        Centro Sportivo
+      <div>
+        <span>{{ getTextIndirizzo() }}</span>
       </div>
     </ion-card-subtitle>
   </ion-card-header>

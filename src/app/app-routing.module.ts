@@ -84,6 +84,14 @@ const routes: Routes = [
     path: 'agenda-custode',
     loadChildren: () => import('./pages/agenda-custode/agenda-custode.module').then( m => m.AgendaCustodePageModule)
   },
+
+  {
+    // ** dovrebbe rappresentare tutti i percorsi che non vengono intercettati dalle rotte precedenti
+    path: '**',
+    redirectTo: ''
+  }
+
+  
   // {
   //   path: 'agenda-custode/:idImpegno',
   // },  

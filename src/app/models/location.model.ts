@@ -138,7 +138,7 @@ export class Location extends IDDocument {
         if (tipoSocieta) {
           switch (tipoSocieta) {
             case TipoSocieta.sportiva:
-              returnImage = 'assets/img/cardhome_sp.png';    
+              returnImage = 'assets/img/cardhome_ss.png';    
               break;
 
             case TipoSocieta.formazione:

@@ -194,6 +194,14 @@ export enum FileType{
     pdf = "file-pdf-o",
 }
 
+//Indica chi puo' visualizzare la location nell'app
+//Tutti, Nessuno (Location nascosta), Utenti Specifici (quando la location ha un IDAZIENDACLIENTE, solo gli Utenti legati alla azienda)
+export enum LocationAppVisibility {
+    tutti = -1,
+    nessuno = 0,
+    utentiSpecifici = -2
+}
+
 
 
 

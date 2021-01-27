@@ -14,6 +14,7 @@ import { error } from 'protractor';
 import { LogApp } from '../models/log.model';
 import { RequestDecode, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
+import { LocationAppVisibility } from '../models/valuelist.model';
 
 
 
@@ -58,11 +59,15 @@ export class LocationService {
       let myHeaders = config.getHttpHeaders();
       //new HttpHeaders({'Content-type':'text/plain'});
       const doObject = 'LOCATION';
+      const locVisTutti = LocationAppVisibility.tutti; //Queste sono le location pubbliche
       
 
       // Nei parametri imposto l'Area Operativa
       let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
   
+      //Chiedo solo le location Pubbliche (In teoria qui bisognerà gestire il caso di Location legate a una azienda a cui l'utente è collegato)
+      myParams = myParams.append('APPVISIBILITY', (locVisTutti + ''));
+
       let myUrl = config.urlBase + '/' + doObject;
   
       this.apiService
@@ -77,7 +82,7 @@ export class LocationService {
   
             //Inserisco le location
             this._addMultipleLocation(resultData);
-            resolve();
+            resolve(resultData);
   
           },error=>{
             reject(error);

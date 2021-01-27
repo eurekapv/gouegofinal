@@ -53,13 +53,13 @@ import { MasterDocumento } from '../models/ricevuta.model';
 import { PostResponse } from '../library/models/postResult.model';
 import { DataChiusuraService } from './data-chiusura.service';
 import { DataChiusura } from '../models/datachiusura.model';
-import { Router } from '@angular/router';
+
 import { PlatformLocation } from '@angular/common';
 import { Gruppo } from '../models/gruppo.model';
 import { CorsoallegatoService } from './corsoallegato.service';
-import { promise } from 'protractor';
+
 import { CorsoAllegato } from '../models/corsoallegato.model';
-import { IDDocument } from '../library/models/iddocument.model';
+
 
 
 @Injectable({
@@ -168,8 +168,8 @@ export class StartService {
     if (this.isOnWeb) {
 
         //Qui posso cambiare strategia per puntare localmente
-        this._localConnection = false;
-        //this._localConnection = true;
+        //this._localConnection = false;
+        this._localConnection = true;
 
         if (this._localConnection) {
           //Modalità di Test metto un AppId di test

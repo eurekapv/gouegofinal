@@ -24,6 +24,8 @@ export class Location extends IDDocument {
     ENABLEPRENOTAZIONI: boolean;
     MINUTISLOTPRENOTAZIONE: number;
     MINUTIPREAVVISOPRENOTAZIONE: number;
+    APPVISIBILITY: number;
+    IDAZIENDACLIENTE: string;
     LOCATIONIMAGE: LocationImage[];
     CAMPO: Campo[];
     APERTURALOCATION: AperturaLocation[];
@@ -65,9 +67,10 @@ export class Location extends IDDocument {
                     'IMAGEURL',
                     'DESCRIZIONEMOB',
                     'TELEFONO',
-                    'EMAIL'
+                    'EMAIL',
+                    'IDAZIENDACLIENTE'
                     ];
-    let arNumber = ['MINUTISLOTPRENOTAZIONE','MINUTIPREAVVISOPRENOTAZIONE'];
+    let arNumber = ['MINUTISLOTPRENOTAZIONE','MINUTIPREAVVISOPRENOTAZIONE','APPVISIBILITY'];
     let arBoolean = ['FAVORITE','ENABLEPRENOTAZIONI'];
     let arDate = [];
     let arDateTime =[];

@@ -5,7 +5,7 @@ export class LogApp {
      * @param data Dati da stampare in console
      */
     static consoleLog(data: any) {
-        let showDebug = true;
+        let showDebug = false;
 
         if (showDebug) {
             console.log(data);

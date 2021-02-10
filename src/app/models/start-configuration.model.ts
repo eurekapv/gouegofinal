@@ -81,8 +81,9 @@ export class StartConfiguration {
             //Non sono in test perchè voglio collegarmi al server, ma da dentro ionic serve
             this._urlProtocol = 'https';
             //Modalità Server
-            this._urlDomain = 'www.gouego.com/gouegoapi';
-            this._urlFileServer = 'www.gouego.com/gouego';
+            this._urlDomain = 'api.gouego.com';            
+            this._urlFileServer = 'app.gouego.com/admin';
+            
 
         }
     }

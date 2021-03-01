@@ -1,5 +1,5 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni } from '../models/valuelist.model';
+import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni, ModalitaFruizione } from '../models/valuelist.model';
 import { Settimana } from './settimana.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CorsoProgramma } from './corsoprogramma.model';
@@ -36,6 +36,8 @@ export class Corso extends IDDocument {
     DURATA: number;
     CORSOPROGRAMMA: CorsoProgramma[];
     PIANIFICAZIONECORSO: PianificazioneCorso[];
+    MODFRUIZIONE: ModalitaFruizione;
+    
     
 
     constructor(onlyInstance?:boolean) {

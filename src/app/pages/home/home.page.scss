@@ -11,9 +11,7 @@ ion-content{
 
 
 
-.logo{
-    max-height: 25px;
-}
+
 
 ion-title.title-image{
     
@@ -21,8 +19,11 @@ ion-title.title-image{
         display: flex !important;
         align-items: center !important;
             >img{
-                height: 30px;
+                height: 50px;
                 margin-right: 1vw;
+                max-height: 50px;
+                max-height: 50px;
+                margin-right: 20px;
             }
     }
 }
@@ -75,5 +76,24 @@ ion-footer{
     margin-left: 9px;
     margin-right: 9px;
 }
+
+.white{
+    color: white;
+}
+
+ion-item{
+    h2{
+        font-weight: 800;
+    }
+}
+
+ion-item ion-button{
+    font-size: 12px ;
+}
+
+ion-card-title{
+    font-size: 25px;
+}
+
 
 

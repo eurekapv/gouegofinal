@@ -13,18 +13,18 @@
         [color]="myButtonCard.color"></ion-icon>
 
     <ion-label *ngIf="!smallVersion">
-      <h1 class="ion-text-wrap">
+      <h2 class="ion-text-wrap">
         {{ myButtonCard.title }}
-      </h1>
+      </h2>
       <h3 class="ion-text-wrap">
         {{ myButtonCard.subtitle }}
       </h3>
     </ion-label>
 
     <ion-label *ngIf="smallVersion">
-      <h2 class="ion-text-wrap">
+      <h3 class="ion-text-wrap">
         {{ myButtonCard.title }}
-      </h2>
+      </h3>
       <p class="ion-text-wrap">
         {{ myButtonCard.subtitle }}
       </p>

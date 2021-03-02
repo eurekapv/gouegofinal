@@ -525,19 +525,19 @@ export class HomePage implements OnInit, OnDestroy {
 
   //#region GESTIONE INTERFACCIA
   /** Ritorna il color a seconda dello stato di Login */
-  btnFooterColor() {
+  // btnFooterColor() {
 
-    let color = 'primary';
+  //   let color = 'primary';
 
-    if (this.userLogged) {
-      color = 'warning'
-    }
-    else {
-      color = 'primary'
-    }
+  //   if (this.userLogged) {
+  //     color = 'warning'
+  //   }
+  //   else {
+  //     color = 'primary'
+  //   }
 
-    return color;
-  }
+  //   return color;
+  // }
 
   btnFooterCaption() {
     let retCaption = '';

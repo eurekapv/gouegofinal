@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-title class="title-image">
       <div>
-        <!-- <img [src]="this.startConfig.getUrlLogo()"> -->
+        <img class="logo" [src]="this.startConfig.getUrlLogo()">
         {{startConfig?.companyName | titlecase }}
 
       </div>
@@ -64,14 +64,15 @@
   <ion-item 
       type="header" 
       lines="none" 
-      color="danger"
+      color="medium"
       *ngIf="this.showCustode">
 
       <ion-icon 
           slot="start" 
-          name="calendar-outline"></ion-icon>
-      <ion-label class="ion-text-nowrap">
-        <h2>Occupazioni</h2>
+          name="calendar-outline"
+          ></ion-icon>
+      <ion-label class="ion-text-nowrap" >
+          <h2>Occupazioni</h2>
       </ion-label>
       
       <ion-button 
@@ -147,7 +148,7 @@
   <ion-item 
   type="header" 
   lines="none" 
-  color="danger"
+  color="medium"
   >
   
     <ion-icon 
@@ -155,7 +156,7 @@
         name="school-outline">
     </ion-icon>
     <ion-label class="ion-text-nowrap">
-      <h2>Corsi odierni</h2>
+      <h2>I tuoi corsi</h2>
     </ion-label>
   
     <ion-button 
@@ -207,7 +208,7 @@
   <ion-item 
       type="header" 
       lines="none" 
-      color="warning">
+      color="tertiary">
 
     <ion-icon 
         slot="start" 
@@ -398,7 +399,7 @@
           slot="start" 
           name="newspaper-outline"></ion-icon>
       <ion-label class="ion-text-nowrap">
-        <h2>News ed Eventi</h2>
+        <h2>News</h2>
       </ion-label>
       
       <ion-button 
@@ -439,13 +440,14 @@
 
 <ion-footer>
   <ion-button 
-    [color]="btnFooterColor()"
+    color="tertiary"
     expand="block" 
     size="large"
     (click)="onClickfooterButton()">
       <ion-icon 
         slot="start" 
-        [name]="btnFooterIcon()"></ion-icon>
+        [name]="btnFooterIcon()"
+        color="primary"></ion-icon>
       {{btnFooterCaption()}}
     </ion-button>
     

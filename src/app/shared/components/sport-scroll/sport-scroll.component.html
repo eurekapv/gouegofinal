@@ -2,7 +2,7 @@
 <div >
   <ion-slides *ngIf="sportList.length==1" [options]="sliderOpts1" class="ion-text-center">
     <ion-slide *ngFor="let sport of sportList" >
-      <ion-card class="card-sport" [color]="sport==selectedSport? 'primary':'light'" button (click)="onChangeSport(sport)">
+      <ion-card class="card-sport" [color]="sport==selectedSport? 'secondary':'light'" button (click)="onChangeSport(sport)">
         <ion-grid>
           <ion-row class="ion-align-items-center">
             <ion-col size="4">
@@ -21,7 +21,7 @@
 <div >
   <ion-slides *ngIf="sportList.length==2" [options]="sliderOpts2" class="ion-text-center">
     <ion-slide *ngFor="let sport of sportList" >
-      <ion-card class="card-sport" [color]="sport==selectedSport? 'primary':'light'" button (click)="onChangeSport(sport)">
+      <ion-card class="card-sport" [color]="sport==selectedSport? 'secondary':'light'" button (click)="onChangeSport(sport)">
         <ion-grid>
           <ion-row class="ion-align-items-center">
             <ion-col size="4">
@@ -40,7 +40,7 @@
 <div >
   <ion-slides *ngIf="sportList.length>2" [options]="sliderOpts3" class="ion-text-center">
     <ion-slide *ngFor="let sport of sportList" >
-      <ion-card class="card-sport" [color]="sport==selectedSport? 'primary':'light'" button (click)="onChangeSport(sport)">
+      <ion-card class="card-sport" [color]="sport==selectedSport? 'medium':'light'" button (click)="onChangeSport(sport)">
         <ion-grid>
           <ion-row class="ion-align-items-center">
             <ion-col size="4">

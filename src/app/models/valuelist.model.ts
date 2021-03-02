@@ -202,6 +202,10 @@ export enum LocationAppVisibility {
     utentiSpecifici = -2
 }
 
+export enum ModalitaFruizione{
+    inPresenza = 10,
+    inRemoto = 20
+}
 
 
 

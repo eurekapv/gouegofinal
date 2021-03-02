@@ -11,19 +11,22 @@
     *ngIf="location.ENABLEPRENOTAZIONI">
     <ion-button 
         color="danger" 
-        size="large" 
         (click)="onClickPrenota(); $event.stopPropagation();">
       <ion-icon 
           slot="start" 
           name="calendar-outline">
       </ion-icon>
-      Prenota
+        PRENOTA
     </ion-button>
   </ion-fab>
 
 
   <ion-card-header >
-    <ion-card-title>{{location.DENOMINAZIONE | titlecase}}</ion-card-title>
+    <ion-card-title>
+      <h2>
+        {{location.DENOMINAZIONE}}
+      </h2>
+    </ion-card-title>
 
     <ion-card-subtitle>
       <div>

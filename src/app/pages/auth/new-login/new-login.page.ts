@@ -76,6 +76,7 @@ export class NewLoginPage implements OnInit {
   smsVerificationYES: boolean = false;
   emailVerificata: string = ''; //Email verificata
   telVerificato: string = ''; //Numero telefono Verificato
+  colorButton = 'tertiary'; //Colore dei bottoni di login
 
   //#region questi servono per accedere ai corrispettivi elementi in HTML
   @ViewChild('c1',{static:false}) c1;

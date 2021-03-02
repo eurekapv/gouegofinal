@@ -328,7 +328,7 @@
          *ngIf="actualStatePage==pageState.LOGIN">
         <ion-button 
         class="btn-confirm" 
-        color="primary" 
+        [color]="colorButton"
         expand="block" 
         (click)="onClickFooterAvanti()" 
         [disabled]="!formLogin.valid">
@@ -338,7 +338,7 @@
 
     <div id="footer-contact" *ngIf="actualStatePage==pageState.CONTACT">
         <ion-button 
-                color="primary"
+                [color]="colorButton"
                 class="btn-confirm" 
                 expand="block"
         [disabled]="!this.formContact.valid"
@@ -349,7 +349,7 @@
 
         <ion-button 
             class="btn-confirm"
-            color="primary"
+            [color]="colorButton"
             expand="block"
             (click)="onClickFooterAvanti()"
             [disabled]="!isEnableAvantiOnVerify()">
@@ -364,7 +364,7 @@
 
             <ion-button 
                 class="btn-confirm" 
-                color="primary" 
+                [color]="colorButton"
                 expand="block" 
                 (click)="onClickFooterAvanti()" 
                 [disabled]="!formRegister.valid">
@@ -376,7 +376,7 @@
     <div id="footer-welcome" *ngIf="actualStatePage==pageState.WELCOME">
         <ion-button
             class="btn-confirm"
-            color="primary"
+            [color]="colorButton"
             expand="block" 
             (click)="closeModal()">
             Inizia

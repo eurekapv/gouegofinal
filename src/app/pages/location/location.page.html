@@ -35,7 +35,7 @@
     <!-- INFO CENTRO-->
     <ion-item-group>
 
-        <ion-item-divider color="light">
+        <ion-item-divider color="tertiary">
           <ion-label>
             <h2>Info Centro</h2>
           </ion-label>
@@ -100,7 +100,7 @@
 
     <!-- CONTATTI TEL E EMAIL -->
     <ion-item-group *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL">
-      <ion-item-divider color="light">
+      <ion-item-divider color="tertiary">
         
         <ion-label><h2>Contatti</h2></ion-label>
         
@@ -130,7 +130,7 @@
         <!-- ORARI CENTRO -->
         <ion-item-group id="loc-orari" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
 
-          <ion-item-divider color="light">
+          <ion-item-divider color="tertiary">
             
             <ion-label><h2>Orari Centro</h2></ion-label>
           </ion-item-divider>

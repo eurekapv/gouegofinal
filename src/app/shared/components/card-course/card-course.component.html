@@ -54,7 +54,7 @@
         <tr>
           <td *ngFor="let giorno of myCorso._SETTIMANA">
             <ion-button 
-                [color]="giorno.selected? 'primary': 'secondary'" 
+                color="secondary"
                 size="small" 
                 [fill]="giorno.selected ?'solid':'outline'">
               {{giorno.xsLabel | uppercase}}

@@ -74,7 +74,10 @@
               <p>{{corso.GIORNIPREVISTI|giorniPrevisti: lingua|titlecase}} </p>
               <h3>{{corso.COMUNELOCATION|titlecase}}, {{corso.INDIRIZZOLOCATION|titlecase}}</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
             </ion-label>
-            <ion-chip color="primary" *ngIf="corso.ORAINIZIO">
+            <ion-chip 
+                [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'" 
+                *ngIf="corso.ORAINIZIO"
+            >
               {{corso.ORAINIZIO|date: 'HH:mm'}}
             </ion-chip>
           </ion-item>
@@ -117,7 +120,7 @@
             </h3> <!--anche qui manca decodifica centro sportivo-->
 
           </ion-label>
-          <ion-chip color="primary">
+          <ion-chip [color]="prenotazione.DATAORAFINE < today ? 'danger': 'success'">
             {{prenotazione.DURATAORE > 1 ? prenotazione.DURATAORE : prenotazione.DURATAORE*60}} {{prenotazione.DURATAORE>1? 'Ore' : 'Min.'}}
           </ion-chip>
         </ion-item>

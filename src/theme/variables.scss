@@ -223,7 +223,7 @@
 
 
   // VERSIONE BLU OCEANO 57,102,135
-  :root {
+  :root{
     --ion-color-primary: #325a77;
     --ion-color-primary-rgb: 50,90,119;
     --ion-color-primary-contrast: #ffffff;
@@ -314,7 +314,11 @@
   }
 
   //VERSIONE COLORI OB
-  :root-OB {
+  :root-ob {
+
+    //avere tre sfumature di giallo per la pagina location
+
+
     --ion-color-primary: #192333;
     --ion-color-primary-rgb: 25,35,51;
     --ion-color-primary-contrast: #ffffff;
@@ -332,6 +336,7 @@
     --ion-color-tertiary: #fad47a;
     --ion-color-tertiary-rgb: 250,212,122;
     --ion-color-tertiary-contrast: #192333;
+    // --ion-color-tertiary-contrast: #ffffff;
     --ion-color-tertiary-contrast-rgb: 0,0,0;
     --ion-color-tertiary-shade: #dcbb6b;
     --ion-color-tertiary-tint: #fbd887;

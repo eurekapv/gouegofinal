@@ -49,7 +49,7 @@ ion-card {
 
 .slot-free {
     //Background of the button
-    --background: lightgreen;
+    --background: var(--ion-color-success);
     //var(--ion-color-success-tint);
 }
 

@@ -223,7 +223,7 @@
 
 
   // VERSIONE BLU OCEANO 57,102,135
-  :root {
+  :root-common{
     --ion-color-primary: #325a77;
     --ion-color-primary-rgb: 50,90,119;
     --ion-color-primary-contrast: #ffffff;
@@ -303,7 +303,7 @@
   
     --ion-color-light: #f4f5f8;
     --ion-color-light-rgb: 244,244,244;
-    --ion-color-light-contrast: #000000;
+    --ion-color-light-contrast: #31536b;
     --ion-color-light-contrast-rgb: 0,0,0;
     --ion-color-light-shade: #d7d8da;
     --ion-color-light-tint: #f5f6f9;
@@ -314,7 +314,11 @@
   }
 
   //VERSIONE COLORI OB
-  :root-OB {
+  :root {
+
+    //avere tre sfumature di giallo per la pagina location
+
+
     --ion-color-primary: #192333;
     --ion-color-primary-rgb: 25,35,51;
     --ion-color-primary-contrast: #ffffff;
@@ -332,16 +336,24 @@
     --ion-color-tertiary: #fad47a;
     --ion-color-tertiary-rgb: 250,212,122;
     --ion-color-tertiary-contrast: #192333;
+    // --ion-color-tertiary-contrast: #ffffff;
     --ion-color-tertiary-contrast-rgb: 0,0,0;
     --ion-color-tertiary-shade: #dcbb6b;
     --ion-color-tertiary-tint: #fbd887;
   
-    --ion-color-success: #2dd36f;
-    --ion-color-success-rgb: 45,211,111;
-    --ion-color-success-contrast: #ffffff;
-    --ion-color-success-contrast-rgb: 255,255,255;
-    --ion-color-success-shade: #28ba62;
-    --ion-color-success-tint: #42d77d;
+    // --ion-color-success: #2dd36f;
+    // --ion-color-success-rgb: 45,211,111;
+    // --ion-color-success-contrast: #ffffff;
+    // --ion-color-success-contrast-rgb: 255,255,255;
+    // --ion-color-success-shade: #28ba62;
+    // --ion-color-success-tint: #42d77d;
+
+    --ion-color-success: #9fd18b;
+  --ion-color-success-rgb: 159,209,139;
+  --ion-color-success-contrast: #000000;
+  --ion-color-success-contrast-rgb: 0,0,0;
+  --ion-color-success-shade: #8cb87a;
+  --ion-color-success-tint: #a9d697;
   
     --ion-color-warning: #f9c959;
     --ion-color-warning-rgb: 249,201,89;

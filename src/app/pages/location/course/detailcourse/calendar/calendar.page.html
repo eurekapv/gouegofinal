@@ -25,14 +25,14 @@
 
       <ion-col size="4" class="colGiorno">
         <div class="contentGiorno ion-no-padding">
-          <h6>
-            {{giornata.DATA | date:'EEEE'|titlecase}}
-          </h6>
           <h5>
+            {{giornata.DATA | date:'EEEE'|titlecase}}
+          </h5>
+          <h4>
             {{giornata.DATA | date:'d'}}
             {{giornata.DATA | date:'MMM' | uppercase}} 
             '{{giornata.DATA | date:'yy'}}
-          </h5>      
+          </h4>      
           <h6>
             {{giornata['_DENOMINAZIONE_Campo']}}
           </h6>    

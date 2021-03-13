@@ -188,7 +188,7 @@ export class StartService {
           if (myUrl == 'localhost') {
 
             // myAppId = '00F15A91-5d395-445C-B7F4-5BA594E55D2F'; //Demo AppId
-            myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
+            //myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
             // myAppId = 'FD291600-D873-49CF-A90C-525926CA2CDC'; //Key Element
 
           }
@@ -214,6 +214,7 @@ export class StartService {
       //VALORIZZARE L'APP ID PER CAPACITOR
       //TODO: VALORIZZARE APPID PER INSTALLAZIONE CAPACITOR
       myAppId = 'CCBA34A5-24F5-4C22-8485-D891823E3434';
+      
 
       //Sono su capacitor o cordova
       prefixDomain = '';

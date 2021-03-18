@@ -187,7 +187,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                 //Spegno il controllo
                 this.checkBookId = false;
                 //Id Book è diverso da quello in arrivo dalla prenotazione
-                if (this.idPrenotazione != this.activePrenotazione.ID) {
+                if ((this.idPrenotazione != this.activePrenotazione.ID) || this.activePrenotazione == null || this.docPianificazione == null) {
                   this.onBookIdWrong();
                 }
               }

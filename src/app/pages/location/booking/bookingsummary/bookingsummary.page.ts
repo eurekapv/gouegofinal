@@ -52,6 +52,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
   idPrenotazione = '';
   idLocation = '';
+  
 
   //Viene effettuato il controllo tra Id Prenotazione e Id del bookId
   checkBookId = true; 

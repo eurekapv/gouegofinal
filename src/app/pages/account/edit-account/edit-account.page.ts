@@ -30,6 +30,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
   docGruppo: Gruppo = new Gruppo();
   today:string; //questo serve per impostare la data di nascita max ad oggi
+  showCapNascita = false; //Nasconde il cap di nascita
 
   constructor(
       private startService : StartService,
@@ -43,7 +44,10 @@ export class EditAccountPage implements OnInit, OnDestroy {
       this.utenteListen = this.startService.utente.subscribe(data=>{
           
           //Recupero l'utente
-          this.utente = data; 
+          this.utente = data;
+          if (this.utente.MOBILENUMBER == null)  {
+            this.utente.MOBILENUMBER = '';
+          }
           this.createForm();       
 
       });

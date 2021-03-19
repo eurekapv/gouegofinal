@@ -33,7 +33,9 @@
       <p>
           <span><ion-icon name="information-circle-outline"></ion-icon></span>
           <span>&nbsp;</span>
-          <span>Indica una email o un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
+          <span *ngIf="canUseMail && canUseMobile">Indica una email o un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
+          <span *ngIf="canUseMail && !canUseMobile">Indica una email utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
+          <span *ngIf="!canUseMail && canUseMobile">Indica un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
       </p>
 
       <p>

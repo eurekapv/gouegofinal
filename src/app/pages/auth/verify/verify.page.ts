@@ -25,6 +25,8 @@ import { PostResponse } from 'src/app/library/models/postResult.model';
 })
 export class VerifyPage implements OnInit {
 
+    //se mostrare l'input cap nascita
+    showInputCapNascita = false
     //l'oggetto ricevuto come parametro all'apertura della videata in modale
     params : ParamsVerifica = new ParamsVerifica
 
@@ -830,7 +832,9 @@ export class VerifyPage implements OnInit {
       }),
       capNascita:new FormControl(this.docUtente.NATOCAP, {
         updateOn:'change',
-        validators: [Validators.required]
+        validators: [
+          
+        ]
       }),
       provResidenza:new FormControl(this.docUtente.PROVINCIA, {
         updateOn:'change',

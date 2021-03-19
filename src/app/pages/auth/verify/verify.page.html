@@ -234,29 +234,27 @@
                 color="primary"></ion-icon>
               <ion-label>Dove vivi ?</ion-label>
             </ion-item-divider>
+
             <ion-item>
               <ion-label position="floating">Indirizzo</ion-label>
               <ion-input formControlName="indResidenza"></ion-input>
             </ion-item>
-            <ion-item>
-              <ion-row>
-                <ion-col size="4" class="ion-no-padding" >
-                  <ion-label position="floating">Cap</ion-label>
-                  <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
-                </ion-col>
-                <ion-col size="4" class="ion-no-padding"  >
-                  <ion-label position="floating">Provincia</ion-label>
-                  <ion-input formControlName="provResidenza"></ion-input>
-                </ion-col>
-                <ion-col size="4" class="ion-no-padding">
-                  <ion-label position="floating">Stato</ion-label>
-                  <ion-input formControlName="statoResidenza"></ion-input>
-                </ion-col>
-              </ion-row>
-            </ion-item>
+
             <ion-item>
               <ion-label position="floating">Comune</ion-label>
               <ion-input formControlName="comResidenza"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Cap</ion-label>
+              <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
+            </ion-item>
+              <ion-item>
+              <ion-label position="floating">Provincia</ion-label>
+              <ion-input formControlName="provResidenza"></ion-input>
+            </ion-item>
+            <ion-item>
+                    <ion-label position="floating">Stato</ion-label>
+                    <ion-input formControlName="statoResidenza"></ion-input>
             </ion-item>
             
           </ion-item-group>
@@ -275,24 +273,20 @@
                             [max]="today"></ion-datetime>
             </ion-item>
             <ion-item>
-              <ion-row>
-                <ion-col size="4" class="ion-no-padding">
-                  <ion-label position="floating">Cap</ion-label>
-                  <ion-input formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>              
-                </ion-col>
-                <ion-col size="4" class="ion-no-padding">
-                  <ion-label position="floating">Provincia</ion-label>
-                  <ion-input formControlName="provNascita"></ion-input>
-                </ion-col>
-                <ion-col size="4" class="ion-no-padding">
-                  <ion-label position="floating">Stato</ion-label>
-                  <ion-input formControlName="statoNascita"></ion-input>
-                </ion-col>
-              </ion-row>
-            </ion-item>
-            <ion-item>
               <ion-label position="floating">Comune</ion-label>
               <ion-input formControlName="comNascita"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="showInputCapNascita">
+              <ion-label position="floating">Cap</ion-label>
+              <ion-input formControlName="capNascita"></ion-input>
+            </ion-item>
+            <ion-item> 
+              <ion-label position="floating">Provincia</ion-label>
+              <ion-input formControlName="provNascita"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Stato</ion-label>
+              <ion-input formControlName="statoNascita"></ion-input>
             </ion-item>
           </ion-item-group>
         </ion-list>

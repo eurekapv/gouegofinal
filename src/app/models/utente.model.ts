@@ -329,7 +329,7 @@ export class Utente extends IDDocument {
             &&this.SESSO
             &&this.NATOIL
             &&this.NATOA
-            &&this.NATOCAP
+            //&&this.NATOCAP
             &&this.NATOPROV
             &&this.NATOISOSTATO
             &&this.CODICEFISCALE
@@ -345,7 +345,7 @@ export class Utente extends IDDocument {
             &&this.PROVINCIA!= ''
             &&this.ISOSTATO!= ''
             &&this.NATOA!= ''
-            &&this.NATOCAP!= ''
+            //&&this.NATOCAP!= ''
             &&this.NATOPROV!= ''
             &&this.NATOISOSTATO!= ''
             &&this.CODICEFISCALE!= ''

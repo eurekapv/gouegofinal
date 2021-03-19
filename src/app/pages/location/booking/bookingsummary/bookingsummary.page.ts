@@ -204,13 +204,14 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     this.showMessage('Errore dati prenotazione');
 
-    close();
-    if (this.idLocation.length !== 0) {
-      this.navCtrl.navigateForward(['/','location',this.idLocation,'booking']);
-    }
-    else {
-      this.navCtrl.navigateForward(['/']);
-    }
+    // close();
+    // if (this.idLocation.length !== 0) {
+    //   this.navCtrl.navigateForward(['/','location',this.idLocation,'booking']);
+    // }
+    // else {
+    //   this.navCtrl.navigateForward(['/']);
+    // }
+    this.closeModal()
   }
 
   /**

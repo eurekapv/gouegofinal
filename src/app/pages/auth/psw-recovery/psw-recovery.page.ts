@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { ModalController, LoadingController, ToastController } from '@ionic/angular';
-import { type } from 'os';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
-import { RequestPincodeUse } from 'src/app/models/valuelist.model';
+import { RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
 import { CryptoService } from 'src/app/library/services/crypto.service';
 
@@ -74,6 +73,17 @@ export class PswRecoveryPage implements OnInit {
 
     //recupero la startconfig
     this.startConfig=this.startService.actualStartConfig;
+
+    this.canUseMail = (
+      this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.noverifica ||
+      this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemail ||
+      this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms
+      )
+
+    this.canUseMobile = (
+      this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms ||
+      this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificasms
+    )
 
   }
 

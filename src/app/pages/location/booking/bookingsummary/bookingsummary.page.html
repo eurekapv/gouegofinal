@@ -30,13 +30,13 @@
             <ion-grid>
               <ion-row class="ion-align-items-center">
                 <ion-col size="3" class="ion-text-center  left-col">
-                  <h6 class="ion-no-margin">{{ docPianificazione.DATAORAINIZIO | date: "EEE" | uppercase}}</h6>
-                  <h4 class="ion-no-margin" style="margin-top: 0px; margin-bottom: 0px;">{{docPianificazione.DATAORAINIZIO | date: "dd"}}</h4>
-                  <p class="ion-no-margin">{{ docPianificazione.DATAORAINIZIO | date: "MMMM" | titlecase}}</p>
+                  <h6 class="ion-no-margin">{{ docPianificazione?.DATAORAINIZIO | date: "EEE" | uppercase}}</h6>
+                  <h4 class="ion-no-margin" style="margin-top: 0px; margin-bottom: 0px;">{{docPianificazione?.DATAORAINIZIO | date: "dd"}}</h4>
+                  <p class="ion-no-margin">{{ docPianificazione?.DATAORAINIZIO | date: "MMMM" | titlecase}}</p>
                 </ion-col>
                 <ion-col size="9">
-                  <h6>{{docPianificazione._DESCRSPORT}}</h6>
-                  <h4>{{selectedCampo!.DENOMINAZIONE}}</h4>
+                  <h6>{{docPianificazione?._DESCRSPORT}}</h6>
+                  <h4>{{selectedCampo?.DENOMINAZIONE}}</h4>
                   <h6>{{getAddressLocation()|titlecase}}</h6>
                 </ion-col>
               </ion-row>
@@ -50,11 +50,11 @@
             <ion-grid>
               <ion-row class="ion-align-items-center">
                 <ion-col size="3" class="ion-text-center left-col">
-                  <h6 class="ion-no-margin">{{docPianificazione.DATAORAINIZIO | date: "HH:mm" | uppercase}}</h6>
-                  <h6 class="ion-no-margin">{{docPianificazione.DATAORAFINE | date: "HH:mm"}}</h6>
+                  <h6 class="ion-no-margin">{{docPianificazione?.DATAORAINIZIO | date: "HH:mm" | uppercase}}</h6>
+                  <h6 class="ion-no-margin">{{docPianificazione?.DATAORAFINE | date: "HH:mm"}}</h6>
                 </ion-col>
                 <ion-col size="9">
-                  <h5 class="ion-no-margin">{{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE!=1? "Ore":"Ora"}}</h5>
+                  <h5 class="ion-no-margin">{{docPianificazione?.DURATAORE}} {{docPianificazione?.DURATAORE!=1? "Ore":"Ora"}}</h5>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -63,7 +63,7 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <app-player-number [numPlayer]="docPianificazione.NUMPARTECIPANTI" (changeNumPlayer)="onChangedNumPlayer($event)" ></app-player-number>
+          <app-player-number [numPlayer]="docPianificazione?.NUMPARTECIPANTI" (changeNumPlayer)="onChangedNumPlayer($event)" ></app-player-number>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -101,7 +101,7 @@
         <ion-item lines="none" id="item-totale">
           <ion-label slot="start">Totale</ion-label>
           <ion-label style="text-align:right;">
-          {{activePrenotazione.TOTALE | currency: "EUR"}}
+          {{activePrenotazione?.TOTALE | currency: "EUR"}}
           </ion-label>
         </ion-item>
 
@@ -113,7 +113,7 @@
             color="tertiary" 
             expand="block" 
             class="full-buttons" 
-            [disabled]="!disclaimer || !activePrenotazione.ISVALID || !selectedPayment " 
+            [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !selectedPayment " 
             (click)="onConfirm()">
           Conferma Prenotazione
         </ion-button>

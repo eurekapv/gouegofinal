@@ -81,7 +81,6 @@ export class BookingPage implements OnInit, OnDestroy {
               private actionSheetController: ActionSheetController) { 
 
 
-
     //Creo un documento di Pianificazione
     this.actualPlanning = new PrenotazionePianificazione;
     
@@ -735,6 +734,10 @@ export class BookingPage implements OnInit, OnDestroy {
         handler: () =>{
           this.selectedCampo = element;
           this.getOccupazioni();
+          let newPosition = this.availableFields.findIndex(el => {
+            return el.ID == this.selectedCampo.ID
+          })
+          this.sliderCampi.slideTo(newPosition);
         }
       }
 

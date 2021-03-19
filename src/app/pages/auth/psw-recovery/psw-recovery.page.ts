@@ -123,10 +123,25 @@ export class PswRecoveryPage implements OnInit {
   }
   //creazione del ReactiveForm di inserimento del telefono/mail
   createContactForm(){
+    let myValidators = [Validators.required];
+
+    //posso usare sia mail che mobile
+    if(this.canUseMail && this.canUseMobile){
+      //non serve alcun validator extra
+    }
+    //posso usare solo mail
+    else if(this.canUseMail){
+      myValidators.push(Validators.email)
+    }
+    //posso usare solo mobile
+    else if(this.canUseMobile){
+      myValidators.push(Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/))
+    }
+     
     this.formContact=new FormGroup({
       contatto: new FormControl(null, {
         updateOn: 'change',
-        validators: [Validators.required]
+        validators: myValidators
       })
     })
   }

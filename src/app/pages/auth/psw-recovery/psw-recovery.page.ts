@@ -356,7 +356,7 @@ export class PswRecoveryPage implements OnInit {
                           else{
                             //se la richiesta è andata a buon fine, ma il server non è riuscito ad inviare il messaggio, presumo che 
                             //l'utente non esista
-                            this.showMessage("Account non trovato");
+                            this.showMessage("Prova con altre credenziali");
                             this.docRichiestaCodici.IDREFER = "";
                             console.log(risposta.message);
                           }

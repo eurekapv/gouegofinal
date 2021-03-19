@@ -62,7 +62,29 @@
           <ion-label position="floating">Indirizzo</ion-label>
           <ion-input formControlName="indResidenza"></ion-input>
         </ion-item>
+
         <ion-item>
+          <ion-label position="floating">Comune</ion-label>
+          <ion-input formControlName="comResidenza"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Cap</ion-label>
+          <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Provincia</ion-label>
+          <ion-input formControlName="provResidenza"></ion-input>          
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Stato</ion-label>
+          <ion-input formControlName="statoResidenza"></ion-input>
+        </ion-item>
+
+        <!-- VERSIONE A COLONNE NON FUNZIONANTE -->
+        <!-- <ion-item>
           <ion-row>
             <ion-col size="4" class="ion-no-padding" >
               <ion-label position="floating">Cap</ion-label>
@@ -77,11 +99,9 @@
               <ion-input formControlName="statoResidenza"></ion-input>
             </ion-col>
           </ion-row>
-        </ion-item>
-        <ion-item>
-          <ion-label position="floating">Comune</ion-label>
-          <ion-input formControlName="comResidenza"></ion-input>
-        </ion-item>
+        </ion-item> -->
+
+
         
       </ion-item-group>
       <ion-item-group>
@@ -92,32 +112,62 @@
             color="primary"></ion-icon>
           <ion-label>Quando sei nato ?</ion-label>
         </ion-item-divider>
+
         <ion-item>
           <ion-label position="floating">Data</ion-label>
           <ion-datetime formControlName="nascita" 
                         displayFormat="DD-MM-YYYY"
                         [max]="today"></ion-datetime>
         </ion-item>
+
         <ion-item>
+          <ion-label position="floating">Comune</ion-label>
+          <ion-input formControlName="comNascita"></ion-input>
+        </ion-item>
+
+        <!-- CAP NON VISUALIZZATA -->
+        <ion-item *ngIf="showCapNascita">
+          <ion-label position="floating">Cap</ion-label>
+           <ion-input formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>  
+        </ion-item>
+
+        <ion-item>
+          <ion-col size="4" class="ion-no-padding">
+            <ion-label position="floating">Provincia</ion-label>
+            <ion-input formControlName="provNascita"></ion-input>
+          </ion-col>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Stato</ion-label>
+          <ion-input formControlName="statoNascita"></ion-input>
+        </ion-item> 
+
+
+
+        <!-- VERSIONE SU UNA RIGA CHE NON FUNZIONA -->
+        <!-- <ion-item>
+          <ion-list>
           <ion-row>
             <ion-col size="4" class="ion-no-padding">
               <ion-label position="floating">Cap</ion-label>
               <ion-input formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>              
             </ion-col>
+
             <ion-col size="4" class="ion-no-padding">
               <ion-label position="floating">Provincia</ion-label>
               <ion-input formControlName="provNascita"></ion-input>
             </ion-col>
+
             <ion-col size="4" class="ion-no-padding">
               <ion-label position="floating">Stato</ion-label>
               <ion-input formControlName="statoNascita"></ion-input>
             </ion-col>
           </ion-row>
-        </ion-item>
-        <ion-item>
-          <ion-label position="floating">Comune</ion-label>
-          <ion-input formControlName="comNascita"></ion-input>
-        </ion-item>
+        </ion-list>
+        </ion-item> -->
+
+
       </ion-item-group>
 
 
@@ -133,13 +183,13 @@
 
         <!-- VERIFICA CELLULARE NECESSARIA -->
         <ion-item *ngIf="docGruppo.needMobileVerify" button (click)="validateTel()">
-          <ion-label>{{utente.MOBILENUMBER}}</ion-label>
+          <ion-label>{{utente.MOBILENUMBER ? utente.MOBILENUMBER : 'Non definito'}}</ion-label>
           <ion-badge color="success">{{utente.getLabelVerificaMobile()}}</ion-badge>
         </ion-item>
 
         <!-- VERIFICA MAIL NECESSARIA -->
         <ion-item *ngIf="docGruppo.needEmailVerify" button (click)="validateEmail()">
-          <ion-label>{{utente.EMAIL}}</ion-label>
+          <ion-label>{{utente.EMAIL ? utente.EMAIL:'Non definita'}}</ion-label>
           <ion-badge color="success">{{utente.getLabelVerificaMail()}}</ion-badge>
         </ion-item>
 

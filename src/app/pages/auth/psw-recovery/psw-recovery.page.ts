@@ -96,6 +96,24 @@ export class PswRecoveryPage implements OnInit {
     return this.startService.isDesktop;
   }
 
+  /**
+   * Crea un placeHolder per ion-input
+   */
+  getPlaceHolder() {
+    let placeH = '';
+    if (this.canUseMail && this.canUseMobile) {
+      placeH = 'Email o Cellulare';
+    }
+    else if (this.canUseMail && !this.canUseMobile) {
+      placeH = 'Email';
+    }
+    else if (!this.canUseMail && this.canUseMobile) {
+      placeH = 'Cellulare';
+    }
+
+    return placeH;
+  }
+
   //creazione del ReactiveForm di inserimento del codice
   createVerifyForm(){
     this.formVerify=new FormGroup({
@@ -350,6 +368,8 @@ export class PswRecoveryPage implements OnInit {
         this.docRichiestaCodici.REQUESTSMSCODE=true;
         this.docRichiestaCodici.REQUESTEMAILCODE=false;
       }
+
+      
       //inserisco nell'oggetto le altre info necessarie
       this.docRichiestaCodici.USE=RequestPincodeUse.forRecovery;
       this.docRichiestaCodici.IDAREA=this.startService.areaSelectedValue.ID;

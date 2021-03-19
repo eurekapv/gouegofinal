@@ -22,7 +22,7 @@
     <form [formGroup]="formContact">
       <ion-item >
         <ion-icon slot="start" name="at-outline"></ion-icon>
-        <ion-input type="text" placeholder="E-Mail o Cellulare" formControlName="contatto"></ion-input>
+        <ion-input type="text" [placeholder]="getPlaceHolder()" formControlName="contatto"></ion-input>
       </ion-item>
     </form>
     <ion-button  [disabled]="!this.formContact.valid" color="primary" [ngClass]="this.isDesktop? 'btn-send-code desktop':'btn-send-code'" (click)="onClickInviaCodice()">
@@ -34,7 +34,7 @@
           <span><ion-icon name="information-circle-outline"></ion-icon></span>
           <span>&nbsp;</span>
           <span *ngIf="canUseMail && canUseMobile">Indica una email o un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
-          <span *ngIf="canUseMail && !canUseMobile">Indica una email utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
+          <span *ngIf="canUseMail && !canUseMobile">Indica una email utilizzata nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
           <span *ngIf="!canUseMail && canUseMobile">Indica un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
       </p>
 

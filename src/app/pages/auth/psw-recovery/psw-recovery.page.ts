@@ -17,6 +17,11 @@ import { CryptoService } from 'src/app/library/services/crypto.service';
 })
 export class PswRecoveryPage implements OnInit {
 
+
+  canUseMail = false;
+  canUseMobile = false;
+
+
   //questo è per usare l'enum PageState nell'html
   PageState : typeof PageState =PageState;
 
@@ -69,6 +74,7 @@ export class PswRecoveryPage implements OnInit {
 
     //recupero la startconfig
     this.startConfig=this.startService.actualStartConfig;
+
   }
 
   close(){
@@ -348,7 +354,7 @@ export class PswRecoveryPage implements OnInit {
 
                           if (risposta.result) {
                             //se è andato tutto bene
-                            this.showMessage("Il codice di verifica è stato inviato");
+                            this.showMessage(risposta.message);
 
                             //Imposto IDRefer che devo reinviare quando chiedo di verificare il codice
                             this.docRichiestaCodici.IDREFER = risposta.idRefer;
@@ -356,7 +362,7 @@ export class PswRecoveryPage implements OnInit {
                           else{
                             //se la richiesta è andata a buon fine, ma il server non è riuscito ad inviare il messaggio, presumo che 
                             //l'utente non esista
-                            this.showMessage("Prova con altre credenziali");
+                            this.showMessage(risposta.message);
                             this.docRichiestaCodici.IDREFER = "";
                             console.log(risposta.message);
                           }
@@ -469,7 +475,7 @@ export class PswRecoveryPage implements OnInit {
                   else {
                     
                     //la richiesta non è andata in errore, ma la modifica non è riuscita... stampo un errore generico
-                    this.showMessage('Purtroppo c\'è stato un errore, riprova');
+                    this.showMessage(risposta.message);
 
                     console.log(risposta.message);
                   }

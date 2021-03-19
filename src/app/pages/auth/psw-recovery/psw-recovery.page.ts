@@ -61,16 +61,13 @@ export class PswRecoveryPage implements OnInit {
     private cryptoService:CryptoService
   )
    {
-      //SETUP INIZIALE      
-      //creo i formGroups
-      this.createVerifyForm();
-      this.createContactForm();
-      this.createPswForm();
+     
       
    }
 
   ngOnInit() {
 
+    
     //recupero la startconfig
     this.startConfig=this.startService.actualStartConfig;
 
@@ -84,6 +81,12 @@ export class PswRecoveryPage implements OnInit {
       this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms ||
       this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificasms
     )
+
+     //SETUP INIZIALE      
+      //creo i formGroups
+      this.createVerifyForm();
+      this.createContactForm();
+      this.createPswForm();
 
   }
 

@@ -65,6 +65,9 @@ export class CodicefiscaleService {
                               //Nome comune
                               if (data.hasOwnProperty('nome')) {
                                 docCF.comune = data['nome'];
+
+                                //se ho il comune, significa che il cf è italiano
+                                docCF.stato = 'Italia'
                               }
 
                               //Regione
@@ -83,7 +86,7 @@ export class CodicefiscaleService {
                               }
 
                               if(data.hasOwnProperty('stato')){
-                                docCF.cap = data['stato']
+                                docCF.stato = data['stato']
                               }
 
                             }

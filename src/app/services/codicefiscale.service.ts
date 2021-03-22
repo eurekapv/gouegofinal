@@ -82,6 +82,10 @@ export class CodicefiscaleService {
                                 docCF.cap = data['cap'];
                               }
 
+                              if(data.hasOwnProperty('stato')){
+                                docCF.cap = data['stato']
+                              }
+
                             }
 
 

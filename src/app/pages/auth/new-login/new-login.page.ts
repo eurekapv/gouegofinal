@@ -949,6 +949,7 @@ export class NewLoginPage implements OnInit {
         this.docUtente.NATOA = myCodiceFiscale.comune;
         this.docUtente.NATOCAP = myCodiceFiscale.cap;
         this.docUtente.NATOPROV = myCodiceFiscale.provincia;
+        this.docUtente.NATOISOSTATO = myCodiceFiscale.stato;
 
 
         this.docUtente.WEBLOGIN = this.formContact.value.email;

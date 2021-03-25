@@ -18,6 +18,10 @@ Questo copia il www nelle cartelle dispositivo
 https://capacitorjs.com/docs/ios/configuration
 Se la compilazione Xcode parla di File debug unable to open dare i permessi alla cartella Pods/TargetSupportFile
 
+IN CASO DI MODIFICHE A ICONE E SPLASH ( i seguenti comandi funzionano con cordova-res: se non presente npm install cordova-res)
+> cordova-res ios --skip-config --copy
+> cordova-res android --skip-config --copy
+
 COMPILAZIONI SUCCESSIVE ANDROID
 > ionic build
 > npx cap sync
@@ -28,6 +32,7 @@ Questo copia il www nelle cartelle dispositivo
 Se si installano nuovi plugin eseguire dopo l'installazione del plugin
 > npm install "qualcosa"
 > npx cap update
+
 
 
 ESECUZIONE IN LIVE RELOADING

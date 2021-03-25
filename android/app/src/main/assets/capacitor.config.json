@@ -1,6 +1,6 @@
 {
-  "appId": "com.Gouego",
-  "appName": "Open Beach Family",
+  "appId": "com.Gouego.OpenBeach",
+  "appName": "Open Beach",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

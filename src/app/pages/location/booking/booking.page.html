@@ -27,7 +27,15 @@
   </ion-segment> -->
 
     <app-sport-scroll [selectedSport]="selectedSport" [sportList]="listLocationSport" (sportChanged)="onChangeSport($event)" ></app-sport-scroll>
-    <ion-list *ngIf="ricevuti && bookable" 
+    <app-campi-scroll 
+        [selectedCampo]="selectedCampo" 
+        [campiList]="availableFields" 
+        [canChoose]="ricevuti && bookable"
+        [selectedLocation]="selectedLocation"
+        (campoChanged)="onChangeCampo($event)"></app-campi-scroll>
+
+        <!-- VECCHIA MODALITA  -->
+    <!-- <ion-list *ngIf="ricevuti && bookable" 
         class="item-campo ion-no-padding">
 
         <ion-slides 
@@ -55,7 +63,8 @@
             </ion-item>
           </ion-slide>    
         </ion-slides>
-    </ion-list>
+    </ion-list> -->
+
   </ion-toolbar>
 
 </ion-header>

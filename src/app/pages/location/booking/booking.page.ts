@@ -386,6 +386,16 @@ export class BookingPage implements OnInit, OnDestroy {
   }
 
   /**
+   * E' stato richiesta la modifica del campo Selezionato
+   * @param newCampo nuovo Campo
+   */
+  onChangeCampo(newCampo: Campo) {
+    this.selectedCampo = newCampo;
+    //Richiedo le occupazioni
+    this.getOccupazioni();
+  }
+
+  /**
    * Ha cambiato il campo nello Slide
    */
   onDidChangeCampo(e: any) {

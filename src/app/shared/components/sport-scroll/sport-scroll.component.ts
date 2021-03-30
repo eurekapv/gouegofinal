@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Sport } from 'src/app/models/sport.model';
 import { StartService } from 'src/app/services/start.service';
-import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-sport-scroll',
@@ -14,6 +14,7 @@ export class SportScrollComponent implements OnInit {
   @Output() sportChanged= new EventEmitter<Sport>();
   @Input() sportList:Sport[];
   
+
   
   sliderOpts1={
     slidesPerView: 1,

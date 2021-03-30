@@ -69,7 +69,7 @@ export class BookingPage implements OnInit, OnDestroy {
 
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
   indexCount: number = 0;
-
+  showExtraToolbar = true;
   
 
   constructor(private router: ActivatedRoute, 
@@ -88,13 +88,17 @@ export class BookingPage implements OnInit, OnDestroy {
     this.myDebug(this.actualPlanning);
   }
   
+// Problematica dell'animazione toolbar
+//https://github.com/ionic-team/ionic-framework/issues/17728
+//https://github.com/ionic-team/ionic-framework/pull/17224
+
 
   /**
    * 
    * @param element Element 
    */
   myDebug(element) {
-    let actDebug = true;
+    let actDebug = false;
     if (actDebug) {
       console.log(element);
     }
@@ -228,6 +232,7 @@ export class BookingPage implements OnInit, OnDestroy {
 });
     
   }
+
 
   
   ngOnDestroy() {

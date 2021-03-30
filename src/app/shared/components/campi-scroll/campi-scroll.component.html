@@ -1,12 +1,15 @@
-
-<div >
-  <ion-slides *ngIf="campiList.length!=0" [options]="getSliderOptions()" class="ion-text-center">
+<div class="slideCampi">
+  <ion-slides 
+      *ngIf="campiList.length!=0" 
+      [options]="getSliderOptions()" 
+      class="ion-text-center"
+      #sliderCampi>
     <ion-slide *ngFor="let campo of campiList" >
 
       <ion-button 
         expand = "block"
         [fill] = "getFill(campo)"
-        size = "default"
+        size = "large"
         shape = "round"
         [color]="getColor(campo)" 
         (click)="onChangeCampo(campo)"
@@ -16,7 +19,11 @@
               *ngIf="isSelected(campo)"    
               name="location">
         </ion-icon>
-        <ion-label><h4>{{campo.DENOMINAZIONE}}</h4></ion-label>
+
+        <ion-label class="ion-text-nowrap">
+          <p>{{campo.DENOMINAZIONE}}</p>
+        </ion-label>
+
       </ion-button>
 
     </ion-slide>
@@ -24,17 +31,27 @@
 </div>
 
 <div *ngIf="selectedCampo && selectedLocation">
-  <ion-item lines="none">
-    <ion-icon slot="start" name="grid">
+  <ion-list>
+    <ion-item 
+    lines="none"
+    color="tertiary"
+    type="header"
+    >
+    <ion-icon slot="end" name="location">
 
     </ion-icon>
-    <ion-label class="ion-text-wrap">
+    <ion-label class="ion-text-wrap ion-padding-start">
       <p>Stai visualizzando le disponibilità di</p>
       <h4><strong>{{selectedCampo?.DENOMINAZIONE}}</strong> presso <strong>{{selectedLocation?.DENOMINAZIONE}}.</strong></h4>
       <p style="font-size: x-small;">in caso di slot occupati ricerca su altre giornate/struttura</p>
     </ion-label>
   </ion-item>
+  </ion-list>
+
 </div>
+
+
+
 
 <!-- <div >
   <ion-slides *ngIf="campiList.length==2" [options]="sliderOpts2" class="ion-text-center">

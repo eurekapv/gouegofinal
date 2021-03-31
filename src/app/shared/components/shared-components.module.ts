@@ -22,6 +22,7 @@ import { SlottimeComponent } from './slottime/slottime.component'
 import { SportScrollComponent } from './sport-scroll/sport-scroll.component'
 import { UploadComponent } from './upload/upload.component'
 import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prezzo.component';
+import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
 
 /**
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
@@ -56,7 +57,8 @@ import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prez
         SlottimeComponent,
         SportScrollComponent,
         UploadComponent,
-        AlertInputPrezzoComponent
+        AlertInputPrezzoComponent,
+        CampiScrollComponent
         
     ],
     exports: [
@@ -78,6 +80,7 @@ import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prez
         SportScrollComponent,
         AlertInputPrezzoComponent,
         UploadComponent,
+        CampiScrollComponent
     ]
 })
 export class SharedComponentsModule {}

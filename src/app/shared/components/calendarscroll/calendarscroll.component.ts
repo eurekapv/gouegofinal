@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import * as moment from "moment";
-import { PickerController } from '@ionic/angular';
+import { IonSlides, PickerController } from '@ionic/angular';
 import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
 import { ValueList, Mesi } from 'src/app/models/valuelist.model';
-import { async } from '@angular/core/testing';
+
 
 
 @Component({
@@ -16,6 +16,7 @@ export class CalendarscrollComponent implements OnInit {
 
   @Input() activeDay = new Date();
   @Output() onChangeActiveDay = new EventEmitter<Date>();
+  @ViewChild('sliderDays', {static:false})sliderDays: IonSlides;
 
   listDay: number[] = [];
   listMesi: ValueList[] = []; //Elenco dei mesi da visualizzare nel Picker
@@ -75,7 +76,15 @@ export class CalendarscrollComponent implements OnInit {
       
   }
 
-
+  /**
+   * Si posiziona sulla Slide richiesta
+   * @param indexSlideZeroBased Indice della Slide
+   */
+  goToSlide(indexSlideZeroBased: number) {
+    if (this.sliderDays) {
+      this.sliderDays.slideTo(indexSlideZeroBased);
+    }
+  }
 
   ngOnInit() {
     this.setListDay();
@@ -294,7 +303,7 @@ export class CalendarscrollComponent implements OnInit {
     let activeA = this.activeDay.getFullYear();
     let activeG = this.activeDay.getDate();
     let message = '';
-
+    let oggi = new Date();
 
 
     // message = `Nuovo (M-A): ${meseOneBasedNew} - ${annoNew} / Attuali (M-A): ${activeM} - ${activeA}`;
@@ -303,16 +312,35 @@ export class CalendarscrollComponent implements OnInit {
     // Cambiato il mese o l'anno
     if ((meseOneBasedNew - 1) !== activeM || annoNew !== activeA) {
       
-      //Qual'e' il giorno piu' alto nel nuovo mese scelto
-      let maxDay = this.getMaxDayInMont((meseOneBasedNew - 1), annoNew);
-      if (activeG > maxDay) {
-        activeG = maxDay;
+      //Ci siamo spostati sul mese/anno di oggi
+      if ((meseOneBasedNew - 1) == oggi.getMonth() && annoNew == oggi.getFullYear()) {
+        
+        //Allora spostiamo il giorno scelto a oggi
+        activeG = oggi.getDate();
+
       }
+      else {
+        //Lo portiamo al primo del mese
+        activeG = 1;
+
+        // //Qual'e' il giorno piu' alto nel nuovo mese scelto
+        // let maxDay = this.getMaxDayInMont((meseOneBasedNew - 1), annoNew);
+        // if (activeG > maxDay) {
+        //   activeG = maxDay;
+        // }
+
+      }
+
+
 
       //Cambio il Giorno attivo
       this.activeDay = new Date(annoNew, (meseOneBasedNew - 1), activeG);
 
+      //Ripreparo la lista dei giorni
       this.setListDay();
+
+      //Si posiziona sulla Slide
+      this.goToSlide(this.activeDay.getDate() -1);
 
       //Lancio evento di cambio giorno
       this.onChangeActiveDay.emit(this.activeDay);

@@ -9,6 +9,7 @@
     <ion-slide 
           *ngFor="let sport of sportList" >
       <ion-card 
+          mode="md"
           class="card-sport" 
           [color]="getColor(sport)" 
           button (click)="onChangeSport(sport)">

@@ -11,16 +11,17 @@
         [fill] = "getFill(campo)"
         size = "large"
         shape = "round"
+        mode = "ios"
         [color]="getColor(campo)" 
         (click)="onChangeCampo(campo)"
         [disabled]="!canChoose">
         <ion-icon 
               slot = "start"
-              *ngIf="isSelected(campo)"    
-              name="location">
+              *ngIf = "isSelected(campo)" 
+              name = "location-outline">
         </ion-icon>
 
-        <ion-label class="ion-text-nowrap">
+        <ion-label class="ion-text-wrap">
           <p>{{campo.DENOMINAZIONE}}</p>
         </ion-label>
 

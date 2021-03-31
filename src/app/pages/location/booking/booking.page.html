@@ -7,7 +7,9 @@
     <ion-title>Prenota</ion-title>
   </ion-toolbar>
 
-  <div class="custom-toolbar">
+  <div 
+    class="custom-toolbar" 
+    *ngIf = "ricevuti">
     <!-- MODALITA AUTOMATICA, MANUALE-->
     <!-- <ion-segment 
       class="ion-no-margin ion-no-padding"
@@ -27,14 +29,13 @@
   </ion-segment> -->
 
     <app-sport-scroll 
-        *ngIf = "ricevuti"
+        
         [selectedSport]="selectedSport" 
         [sportList]="listLocationSport" 
         (sportChanged)="onChangeSport($event)" >
     </app-sport-scroll>
 
     <app-campi-scroll 
-        *ngIf = "ricevuti"
         [selectedCampo]="selectedCampo" 
         [campiList]="availableFields" 
         [canChoose]="ricevuti && bookable"
@@ -73,7 +74,7 @@
         </ion-item>
     
         <!-- VISUALIZZO GLI SLOT TIME SE E' APERTO-->
-        <!-- <ion-grid *ngIf="actualSlotDay.APERTOCHIUSO"> -->
+        
           <ion-grid>
           <ion-row class="ion-no-margin ion-no-padding">
             <ion-col
@@ -85,7 +86,10 @@
                 sizeMd="6"
                 sizeSm="12"
                 sizeXs="12">
-              <app-slottime  [mySlot]="slot" [readOnly]="actualSlotDay._TEMPLATELOCK" (clickSlot)="myClickSlot($event)"></app-slottime>
+              <app-slottime  
+                [mySlot]="slot" 
+                [readOnly]="actualSlotDay._TEMPLATELOCK" 
+                (clickSlot)="myClickSlot($event)"></app-slottime>
             </ion-col>
           </ion-row>
         </ion-grid>

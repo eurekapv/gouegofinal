@@ -2,10 +2,12 @@ ion-button {
     width: 90%;
 }
 
-
-
-
 .list-nopadding {
+    margin-top: 5px;
     padding-bottom: 0px;
+}
+
+ion-button ion-icon {
+    zoom: 0.5;
 }
 

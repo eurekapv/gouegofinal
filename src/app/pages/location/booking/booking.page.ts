@@ -482,8 +482,7 @@ export class BookingPage implements OnInit,  OnDestroy {
     //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata (TRUE-> Chiedo di aggiornare la data su tutti i record figli SLOTTIME)
     this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
     
-    
-    
+      
     this.myDebug('Richiesta Slot Occupazioni');
     
     //Step b) Chiamo il servizio

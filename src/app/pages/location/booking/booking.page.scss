@@ -1,5 +1,5 @@
 ion-content {
-    --background: var(--ion-back-booking);
+    --background: var(--ion-color-light-tint);
   }
 
 ion-segment {
@@ -7,7 +7,7 @@ ion-segment {
 }
 
 .item-campo, .item-transparent {
-  --background: var(--ion-back-booking);
+  --background: var(--ion-color-light-tint);
 
   h6 {
     color: #999999;

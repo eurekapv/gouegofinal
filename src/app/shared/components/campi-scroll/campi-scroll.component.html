@@ -17,8 +17,8 @@
         [disabled]="!canChoose">
         <ion-icon 
               slot = "start"
-              *ngIf = "isSelected(campo)" 
-              name = "location-outline">
+              [name] = "isSelected(campo)?'location-outline':'locate-outline'" 
+              >
         </ion-icon>
 
         <ion-label class="ion-text-wrap">

@@ -104,6 +104,30 @@ export class StartService {
     return result;
   }
 
+  /**
+   * Controlla l'esecuzione su IOS
+   */
+  get isOnAppleSystem() {
+    let result = true;
+    if (this.platformService.is("ios")) {
+      result = false;
+    }
+
+    return result;
+  }
+
+  /**
+   * Controlla l'esecuzione su IOS
+   */
+   get isOnAndroidSystem() {
+    let result = true;
+    if (this.platformService.is("android")) {
+      result = false;
+    }
+
+    return result;
+  }  
+
 
   constructor(private platformService: Platform,
     private apiService: ApicallService,

@@ -70,6 +70,7 @@ export class BookingPage implements OnInit,  OnDestroy {
   @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
   indexCount: number = 0;
   showExtraToolbar = true;
+  isOnAppleSystem = false; //Sta girando su sistemi IOS (Introdotto per animare diversamente la toolbar Hide)
   
 
   constructor(private router: ActivatedRoute, 
@@ -86,6 +87,10 @@ export class BookingPage implements OnInit,  OnDestroy {
     
     this.myDebug('Constructor Booking Page');
     this.myDebug(this.actualPlanning);
+    //Ricavo la piattaforma di esecuzione
+    //in HTML sul content viene usata una direttiva per una animazione diversa della toolbar in Ios
+    this.isOnAppleSystem = this.startService.isOnAppleSystem;
+
   }
   
 // Problematica dell'animazione toolbar

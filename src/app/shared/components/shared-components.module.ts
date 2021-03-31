@@ -23,6 +23,7 @@ import { SportScrollComponent } from './sport-scroll/sport-scroll.component'
 import { UploadComponent } from './upload/upload.component'
 import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prezzo.component';
 import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
+import { HideHeaderDirective } from '../directives/hide-header.directive';
 
 /**
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
@@ -58,7 +59,8 @@ import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
         SportScrollComponent,
         UploadComponent,
         AlertInputPrezzoComponent,
-        CampiScrollComponent
+        CampiScrollComponent,
+        HideHeaderDirective
         
     ],
     exports: [
@@ -80,7 +82,8 @@ import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
         SportScrollComponent,
         AlertInputPrezzoComponent,
         UploadComponent,
-        CampiScrollComponent
+        CampiScrollComponent,
+        HideHeaderDirective
     ]
 })
 export class SharedComponentsModule {}

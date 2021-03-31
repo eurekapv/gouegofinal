@@ -2,10 +2,13 @@ ion-button {
     width: 90%;
 }
 
-
-ion-toolbar{
-    background-color: white;
+ion-header{
+    div,ion-toolbar{
+        background-color: white;
+    }
 }
+
+
 .list-nopadding {
     padding-bottom: 0px;
 }

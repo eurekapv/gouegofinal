@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header #headBook>
 
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
@@ -38,7 +38,7 @@
 
 </ion-header>
 
-<ion-content>
+<ion-content [scrollEvents]="true" appHideHeader [header]="headBook" [scrollThreshold]="isOnAppleSystem ? 50 : 0">
 
   <!-- PRENOTAZIONE NON POSSIBILE-->
   <div class="nofind-cnt" *ngIf="ricevuti && !bookable">

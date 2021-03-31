@@ -25,6 +25,7 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
 
 
+
 registerLocaleData(localeIt,'it');
 
 @NgModule({

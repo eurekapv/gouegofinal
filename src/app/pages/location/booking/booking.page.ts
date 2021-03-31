@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController } from '@ionic/angular';
@@ -27,7 +27,7 @@ import { VerifyPage } from '../../auth/verify/verify.page';
   templateUrl: './booking.page.html',
   styleUrls: ['./booking.page.scss'],
 })
-export class BookingPage implements OnInit, OnDestroy {
+export class BookingPage implements OnInit,  OnDestroy {
 
   idLocation = '';
   versionBooking = 'manual'; //Versione di Booking (Automatico, Manuale)
@@ -46,7 +46,7 @@ export class BookingPage implements OnInit, OnDestroy {
   subDocUtente: Subscription; 
 
   ricevuti: boolean; //Dati Ricevuti
-  bookable: boolean; //Ho ricevuto dei campi, quindi potrei effettuare prenotazioni
+  bookable: boolean = false; //Ho ricevuto dei campi, quindi potrei effettuare prenotazioni
 
   templateWeekSlot: SlotWeek = new SlotWeek(); //Template con gli slotTime settimanali relativi alla location
   

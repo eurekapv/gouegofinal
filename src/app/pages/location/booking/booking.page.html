@@ -34,14 +34,14 @@
         [selectedLocation]="selectedLocation"
         (campoChanged)="onChangeCampo($event)"></app-campi-scroll>
 
-  </ion-toolbar>
+</ion-toolbar>
 
 </ion-header>
 
 <ion-content>
 
   <!-- PRENOTAZIONE NON POSSIBILE-->
-  <div class="nofind-cnt" *ngIf="ricevuti && !bookable">
+  <div class="nofind-cnt" *ngIf="!bookable">
     <ion-label>Prenotazione</ion-label>
     <ion-label>non disponibile</ion-label>
   </div>

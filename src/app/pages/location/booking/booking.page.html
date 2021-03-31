@@ -26,65 +26,85 @@
     </ion-segment-button>
   </ion-segment> -->
 
-    <app-sport-scroll [selectedSport]="selectedSport" [sportList]="listLocationSport" (sportChanged)="onChangeSport($event)" ></app-sport-scroll>
+    <app-sport-scroll 
+        *ngIf = "ricevuti"
+        [selectedSport]="selectedSport" 
+        [sportList]="listLocationSport" 
+        (sportChanged)="onChangeSport($event)" >
+    </app-sport-scroll>
+
     <app-campi-scroll 
+        *ngIf = "ricevuti"
         [selectedCampo]="selectedCampo" 
         [campiList]="availableFields" 
         [canChoose]="ricevuti && bookable"
         [selectedLocation]="selectedLocation"
-        (campoChanged)="onChangeCampo($event)"></app-campi-scroll>
+        (campoChanged)="onChangeCampo($event)">
+    </app-campi-scroll>
 
 </ion-toolbar>
 
 </ion-header>
 
-<ion-content [scrollEvents]="true" appHideHeader [header]="headBook" [scrollThreshold]="isOnAppleSystem ? 50 : 0">
+<ion-content [scrollEvents]="ricevuti && bookable" 
+              appHideHeader 
+              [header]="headBook" 
+              [scrollThreshold]="isOnAppleSystem ? 50 : 0">
 
-  <!-- PRENOTAZIONE NON POSSIBILE-->
-  <div class="nofind-cnt" *ngIf="!bookable">
-    <ion-label>Prenotazione</ion-label>
-    <ion-label>non disponibile</ion-label>
-  </div>
-
-  
-  <!-- ITEM DEL CALENDARIO -->
-  <app-calendarscroll 
-    *ngIf="ricevuti && bookable" 
-    [activeDay]="actualBookDay"
-    (onChangeActiveDay)="onChangeBookDay($event)"></app-calendarscroll>
-
-        
-  <div *ngIf="ricevuti && bookable">
+  <!-- SE SIAMO PRONTI A MOSTRARE LA PAGINA -->
+  <div *ngIf="ricevuti">
     
-    <!-- TITOLO SLOT TIME -->
-    <ion-item class="item-transparent" *ngIf="actualSlotDay.APERTOCHIUSO">
-      <ion-label class="ion-padding-horizontal">SCEGLI L'ORARIO:</ion-label>
-      <ion-spinner name="circular" color="primary" *ngIf="actualSlotDay._TEMPLATELOCK"></ion-spinner>
-    </ion-item>
-
-    <!-- VISUALIZZO GLI SLOT TIME SE E' APERTO-->
-    <ion-grid *ngIf="actualSlotDay.APERTOCHIUSO">
-      <ion-row class="ion-no-margin ion-no-padding">
-        <ion-col
-            class="ion-no-margin ion-no-padding" 
-            *ngFor="let slot of actualSlotDay.SLOTTIMES"
-            size="6"
-            sizeXl="3"
-            sizeLg="4"
-            sizeMd="6"
-            sizeSm="12"
-            sizeXs="12">
-          <app-slottime  [mySlot]="slot" [readOnly]="actualSlotDay._TEMPLATELOCK" (clickSlot)="myClickSlot($event)"></app-slottime>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-
-    <div class="nofind-cnt" *ngIf="!actualSlotDay.APERTOCHIUSO">
-      <ion-label>Centro Chiuso</ion-label>
-      <ion-label>nella giornata selezionata</ion-label>
+    
+    <!-- ITEM DEL CALENDARIO POTREI VISUALIZZARLO SEMPRE -->
+    <!-- *ngIf="ricevuti && bookable"  -->
+    <app-calendarscroll 
+      [activeDay]="actualBookDay"
+      (onChangeActiveDay)="onChangeBookDay($event)"></app-calendarscroll>
+  
+    <!-- DIV CON  DTI RICEVUTI E BOOK DISPONIBILE-->      
+    <div *ngIf="ricevuti && bookable">
+      
+      <!-- TITOLO SLOT TIME -->
+      <div *ngIf="actualSlotDay.APERTOCHIUSO">
+  
+        <ion-item class="item-transparent" >
+          <ion-label class="ion-padding-horizontal">SCEGLI L'ORARIO:</ion-label>
+          <ion-spinner name="circular" color="primary" *ngIf="actualSlotDay._TEMPLATELOCK"></ion-spinner>
+        </ion-item>
+    
+        <!-- VISUALIZZO GLI SLOT TIME SE E' APERTO-->
+        <!-- <ion-grid *ngIf="actualSlotDay.APERTOCHIUSO"> -->
+          <ion-grid>
+          <ion-row class="ion-no-margin ion-no-padding">
+            <ion-col
+                class="ion-no-margin ion-no-padding" 
+                *ngFor="let slot of actualSlotDay.SLOTTIMES"
+                size="6"
+                sizeXl="3"
+                sizeLg="4"
+                sizeMd="6"
+                sizeSm="12"
+                sizeXs="12">
+              <app-slottime  [mySlot]="slot" [readOnly]="actualSlotDay._TEMPLATELOCK" (clickSlot)="myClickSlot($event)"></app-slottime>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+  
+      </div>
+  
+  
+      <div class="nofind-cnt" *ngIf="!actualSlotDay.APERTOCHIUSO">
+        <ion-label>Centro Chiuso</ion-label>
+        <ion-label>nella giornata selezionata</ion-label>
+      </div>
+  
     </div>
 
+    <!-- PRENOTAZIONE NON POSSIBILE-->
+    <div class="nofind-cnt" *ngIf="!bookable">
+      <ion-label>Prenotazione</ion-label>
+      <ion-label>non disponibile</ion-label>
+    </div>
   </div>
 
 

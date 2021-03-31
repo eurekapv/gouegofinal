@@ -181,7 +181,7 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          //myUrl = 'openbeach.gouego.com';
+          myUrl = 'openbeach.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso

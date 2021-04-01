@@ -27,9 +27,9 @@ export class CamposportService {
    */
   request(config: StartConfiguration, 
           idCampo: string) {
-    return new Promise((resolve, reject)=>{
+    return new Promise<CampoSport[]>((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
+      
       const doObject = 'CAMPOSPORT';
   
       
@@ -45,15 +45,19 @@ export class CamposportService {
         .pipe(map(data => {
           return data.CATEGORIEETA
         }))
-        .subscribe(
-           resultData => {
+        .subscribe(resultData => {
   
-            resultData.forEach(element => {
+            for (let index = 0; index < resultData.length; index++) {
+              const element = resultData[index];
+
               let newCampoSport = new CampoSport();
               newCampoSport.setJSONProperty(element);
               this.addCampoSport(newCampoSport);
-              resolve();
-            });
+              
+            }
+
+            resolve(this._listCampiSport.getValue());
+
            },
            error=>{
              reject(error);

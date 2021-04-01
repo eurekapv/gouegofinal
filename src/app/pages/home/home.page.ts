@@ -564,7 +564,7 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.userLogged) {
       // Account Presente
       if (this.docUtente) {
-        retIcon = this.docUtente.NOMINATIVO ? 'person-outline' : iconAccedi
+        retIcon = this.docUtente.NOMINATIVO ? 'person-circle-outline' : iconAccedi
       }
     }
 

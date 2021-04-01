@@ -118,13 +118,16 @@ export class PrenotazioneService {
         }))
         .subscribe( resultData => {
   
-          resultData.forEach(elPrenotazione => {
-  
+          for (let index = 0; index < resultData.length; index++) {
+            const element = resultData[index];
+
             let docPrenotazione = new Prenotazione();
-            docPrenotazione.setJSONProperty(elPrenotazione);
+            docPrenotazione.setJSONProperty(element);
             this.add2ListPrenotazioni(docPrenotazione);
-          });
-          resolve();
+          }
+
+          resolve(this._listPrenotazioni.getValue());
+
         }, error=>{
           reject (error);
         });

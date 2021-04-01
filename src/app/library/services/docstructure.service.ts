@@ -54,9 +54,9 @@ export class DocstructureService {
    */
   decodeAll(doc:IDDocument, useCache:boolean=true, fieldsExclude?:string[]){
     
-    return new Promise((resolve, reject)=>{       
+    return new Promise<void>((resolve, reject)=>{       
 
-      let executePromise:Promise<any>[] = [];
+      let executePromise:Promise<any|void>[] = [];
 
       if (doc) {
         //Chiedo le ForeignKeys del documento
@@ -118,7 +118,7 @@ export class DocstructureService {
          useCache:boolean=true, 
          newDecodeField?:string[]) {
 
-    return new Promise((resolve, reject)=>{          
+    return new Promise<void>((resolve, reject)=>{          
           //Step 1: field Decode esiste in doc
           //Step 2: field Decode è in una relazione
           let definition: TypeReflector;
@@ -206,7 +206,7 @@ export class DocstructureService {
                             definition: TypeReflector, 
                             newDecodeField?:string[]) {
     
-    return new Promise((resolve, reject)=>{
+    return new Promise<void>((resolve, reject)=>{
 
           let docFilter: any = new DynamicClass(definition.relFieldDoc,true);
           
@@ -964,7 +964,7 @@ export class DocstructureService {
                               seqField: string[]
                               ) {
 
-    return new Promise((resolve, reject)=>{
+    return new Promise<void>((resolve, reject)=>{
 
       let executePromise:Promise<any>[] = [];
 
@@ -1135,7 +1135,7 @@ export class DocstructureService {
    */
   public requestForUpdate(document: IDDocument, onlyPropModified = true, onlyDocModified = false): Promise<any> {
     //Si esegue una PUT con il parametro ID e il body i valori da modificare
-    return new Promise<any>((resolve,reject) => {
+    return new Promise<void>((resolve,reject) => {
       let myHeaders = this.myConfig.getHttpHeaders();
       let objDescriptor: Descriptor;
       let fieldNamePK = '';

@@ -37,9 +37,9 @@ export class LivelloService {
    * @param config Parametri configurazione chiamata
    */
   request(config: StartConfiguration) {
-    return new Promise((resolve, reject)=>{
+    return new Promise<Livello[]>((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
+      
       const doObject = 'LIVELLO';
   
       
@@ -59,14 +59,14 @@ export class LivelloService {
             //Arrivati dal server
             this._loaded = true;
     
-            resultData.forEach(element => {
-    
+            for (let index = 0; index < resultData.length; index++) {
+              const element = resultData[index];
               let newLivello = new Livello();
               newLivello.setJSONProperty(element);
               this.addLivello(newLivello);
-              
-            });
-            resolve();
+            }
+
+            resolve(this.actualListLivelli);
 
           }
           else {

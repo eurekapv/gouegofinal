@@ -64,11 +64,8 @@ export class SlotoccupazioneService {
           docLocation: Location, 
           docCampo: Campo, 
           dataGiorno: Date) {
-    return new Promise((resolve, reject)=>{
-      // const myHeaders = new HttpHeaders({'Content-type':'application/json', 
-      //                                    'X-HTTP-Method-Override':'GETDATESLOTLOCK', 
-      //                                    'appid':config.appId
-      //                                   });
+    return new Promise<void>((resolve, reject)=>{
+
       let myHeaders = config.getHttpHeaders();
       const doObject = 'CAMPO';
       const strData = moment(dataGiorno).format('YYYY-MM-DD');
@@ -93,6 +90,7 @@ export class SlotoccupazioneService {
               //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
               this.syncResult(resultData, templateSlotDay);
               resolve();
+              
             }, error=>{
               reject(error);
             });

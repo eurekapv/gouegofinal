@@ -27,60 +27,6 @@ export class NewseventiService {
   constructor(private apiService: ApicallService) { }
 
 
-  /**
-   * 
-   * @param config Dati configurazione
-   * @param idArea Area richiesta
-   * @param maxRecord Max Record da recuperare
-   */
-  request_old(config: StartConfiguration, idArea: string, maxRecord: number = 0) {
-    return new Promise((resolve, reject)=>{
-      let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
-      const doObject = 'NEWSEVENTO';
-      const filterDateTime = this.getFilterDateTime();
-  
-
-      let myUrl = config.urlBase + '/' + doObject;  
-  
-      //Nei Parametri imposto l'area richiesta
-      let myParams = new HttpParams().set('IDAREAOPERATIVA',idArea);
-      myParams = myParams.append('PUBBLICATADAL',filterDateTime);
-      myParams = myParams.append('$top', (maxRecord + '') );
-  
-      //Elimino gli attuali
-      this._listNews.next([]);
-  
-      this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-            
-              let arReturn = [];
-              if (data.NEWSEVENTO) {
-                arReturn = data.NEWSEVENTO;
-              }
-  
-              return arReturn;
-            
-        }))
-        .subscribe (resultData => {
-  
-            resultData.forEach(element => {
-
-
-
-              let newNews = new NewsEvento();
-              newNews.setJSONProperty(element);
-              this.addNews(newNews);
-
-
-              resolve();
-            });
-        }, error=>{
-          reject(error);
-        })
-    })
-  }
 
   /**
    * Aggiunge una news
@@ -162,35 +108,54 @@ export class NewseventiService {
 
   }
 
+  /**
+   * 
+   * @param config Parametri di configurazione
+   * @param guidArea GUID Area di riferimento
+   * @param n Numero massimo di elementi
+   * @returns Promise<NewsEvento[]>
+   */
   request(config: StartConfiguration, guidArea:string, n:number){
     return new Promise<NewsEvento[]>((resolve,reject)=>{
 
       let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders();
+      
       const doObject = 'NEWSEVENTO';
   
-
       myHeaders = myHeaders.append('X-HTTP-Method-Override','GETNEXTNEWS')
       let myUrl = config.urlBase + '/' + doObject;  
   
       //Nei Parametri imposto l'area richiesta
       let myParams = new HttpParams().set('guidArea',guidArea);
+
       myParams = myParams.append('$top', n+'');
-      this.apiService.httpGet(myUrl, myHeaders, myParams).pipe(map(data=>{
+
+      this.apiService.httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(data=>{
         let arReturn = [];
         if (data.NEWSEVENTO){
           arReturn=data.NEWSEVENTO;
         }
         return arReturn;
-      })).subscribe(objList=>{
+      }))
+      .subscribe(myListReceived => {
 
-        let newsEventi: NewsEvento[]=[];
-        objList.forEach(obJElement=>{
-          let newsEvento= new NewsEvento()
-          newsEvento.setJSONProperty(obJElement);
-          newsEventi.push(newsEvento);
-        })
-        resolve(newsEventi);
+        let myListNews: NewsEvento[]=[];
+
+        for (let index = 0; index < myListReceived.length; index++) {
+
+          const objElement = myListReceived[index];
+          //Creo un nuovo oggetto
+          let newsEvento= new NewsEvento();
+          //Copio le proprietà
+          newsEvento.setJSONProperty(objElement);
+          //Inserisco nell'array
+          myListNews.push(newsEvento);
+
+        }
+        //La Promise ritorna l'elenco news
+        resolve(myListNews);
+
       }, error=>{
         reject(error);
       })

@@ -61,6 +61,8 @@ export class HistorycoursePage implements OnInit {
           //se ho l'id dell'iscrizione, faccio la riciesta al server
           let idIscrizione=route.get('historyId');
           
+          //#TODO RISCRIVERE Pezzo scritto male e infatti Angular 9 non lo compila più 
+
           this.startService.requestIscrizioneById(idIscrizione).then(docIscrizione=>{
             //quando arriva la risposta, valorizzo la proprietà
             this.myIscrizione=docIscrizione;
@@ -71,11 +73,11 @@ export class HistorycoursePage implements OnInit {
             //passate sono risolte
             Promise.all([this.startService.newRequestCorsoById(this.myIscrizione.IDCORSO),
                           this.startService.requestLocationByID(this.myIscrizione.IDLOCATION)])
-                          .then(results=>{
+                          .then(results => {
                             //quando entrambe le richieste sono andate a buon fine, valorizzo le proprietà
                             let rawCorso: any = results[0];
                             this.myCorso=rawCorso;
-                            this.myLocation=results[1];
+                            //this.myLocation=results[1];
                             //e chiudo il loading
                             loading.dismiss();
                             this.debug();
@@ -86,7 +88,7 @@ export class HistorycoursePage implements OnInit {
                             this.showAlert('Errore nel caricamento');
                             console.log(error);
 
-                          })
+                          });
           })
         }
       })

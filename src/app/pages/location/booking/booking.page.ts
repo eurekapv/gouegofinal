@@ -67,7 +67,7 @@ export class BookingPage implements OnInit,  OnDestroy {
 
   availableFields: Campo[]=[]; //un array dei soli campi per lo sport selezionato
 
-  @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
+  @ViewChild('sliderCampi')sliderCampi: IonSlides;
   indexCount: number = 0;
   showExtraToolbar = true;
   isOnAppleSystem = false; //Sta girando su sistemi IOS (Introdotto per animare diversamente la toolbar Hide)

@@ -14,7 +14,7 @@ export class SportScrollComponent implements OnInit {
   @Input() selectedSport: Sport;
   @Output() sportChanged= new EventEmitter<Sport>();
   @Input() sportList:Sport[];
-  @ViewChild('sliderSport', {static:false})sliderSport: IonSlides;
+  @ViewChild('sliderSport')sliderSport: IonSlides;
 
   
   sliderOpts1={

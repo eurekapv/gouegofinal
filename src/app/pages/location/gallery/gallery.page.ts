@@ -20,7 +20,7 @@ export class GalleryPage implements OnInit {
     }
   };
 
-  @ViewChild('slider',{ read: ElementRef, static: false })slider: ElementRef;
+  @ViewChild('slider',{ read: ElementRef })slider: ElementRef;
 
   constructor(
     private navParams: NavParams, 

@@ -68,18 +68,6 @@ export class NewsPage implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Richiesta al servizio delle News
-   */
-  // requestNews() {
-  //   if (this.areaSelected) {
-  //     if (this.areaSelected.ID) {
-  //       this.loading = true;
-  //       //Faccio la richiesta al server
-  //       this.startService.requestNews_old(this.areaSelected.ID, 20);
-  //     }
-  //   }
-  //}
 
 
   /** Eseguo un refresh delle news */

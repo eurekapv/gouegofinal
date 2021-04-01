@@ -46,10 +46,8 @@ export class SportService {
   request(config: StartConfiguration, withLivelli?:boolean) {
     return new Promise((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
+     
       const doObject = 'SPORT';
-  
-
 
       //TODO: Non mi piace molto il modo
       //Nei Parametri imposto il LivelloAutorizzazione
@@ -74,14 +72,13 @@ export class SportService {
             this._loaded = true;
             if (resultData) {
 
-              resultData.forEach(element => {
-                
+              for (let index = 0; index < resultData.length; index++) {
+                const element = resultData[index];
                 let newSport = new Sport();
                 newSport.setJSONProperty(element);
-                this.add2ListSport(newSport);
-                resolve();
-                
-              });
+                this.add2ListSport(newSport);                
+              }
+              resolve(this._listSport);
 
             }
             else {
@@ -155,7 +152,7 @@ export class SportService {
                         this.add2ListLocationSport(newSport);
                         
                       });
-                      resolve();
+                      resolve(this._listLocationSport);
                 }, error=>{
                   reject(error);
                 });

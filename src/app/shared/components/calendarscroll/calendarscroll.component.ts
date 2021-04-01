@@ -16,7 +16,7 @@ export class CalendarscrollComponent implements OnInit {
 
   @Input() activeDay = new Date();
   @Output() onChangeActiveDay = new EventEmitter<Date>();
-  @ViewChild('sliderDays', {static:false})sliderDays: IonSlides;
+  @ViewChild('sliderDays')sliderDays: IonSlides;
 
   listDay: number[] = [];
   listMesi: ValueList[] = []; //Elenco dei mesi da visualizzare nel Picker
@@ -284,7 +284,9 @@ export class CalendarscrollComponent implements OnInit {
 
                     //Applico le nuove colonne
                     elPicker.columns = pickColumns;
-                    elPicker.forceUpdate();
+
+                    //Il metodo ForceUpdate non esiste più
+                    //elPicker.forceUpdate();
 
               }
 

@@ -22,13 +22,13 @@ export class UtenteiscrizioneService {
   constructor(private apiService: ApicallService) { }
 
    /**
-   * 
+   * Richiede l'elenco delle Iscrizioni Corsi
    * @param config Dati configurazione
    * @param idUtente Utente che effettua richiesta
    * @param maxRecord Max Record da recuperare
    */
   request(config: StartConfiguration, idUtente: string, maxRecord: number = 0) {
-    return new Promise((resolve, reject)=>{
+    return new Promise<UtenteIscrizione[]>((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
       myHeaders = myHeaders.append('order-by','desc');
 
@@ -60,12 +60,15 @@ export class UtenteiscrizioneService {
         }))
         .subscribe (resultData => {
   
-            resultData.forEach(element => {
-              let newUtenteIscrizione = new UtenteIscrizione();
-              newUtenteIscrizione.setJSONProperty(element);
-              this.addUtenteIscrizione(newUtenteIscrizione);
-            });
-            resolve();
+          for (let index = 0; index < resultData.length; index++) {
+            const element = resultData[index];
+            let newUtenteIscrizione = new UtenteIscrizione();
+            newUtenteIscrizione.setJSONProperty(element);
+            this.addUtenteIscrizione(newUtenteIscrizione);            
+          }
+
+            resolve(this._listUtenteIscrizione.getValue());
+
         }, error=>{
           reject (error);
         })

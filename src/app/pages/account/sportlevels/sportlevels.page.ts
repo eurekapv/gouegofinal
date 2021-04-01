@@ -6,7 +6,7 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { Sport } from 'src/app/models/sport.model';
 import { TipoPrivateImage, PageType } from 'src/app/models/valuelist.model';
-import htmlToImage from 'html-to-image'
+
 
 
 
@@ -68,7 +68,8 @@ export class SportlevelsPage implements OnInit {
 
 
   /**
-   * Tento di condividere 
+   * FUNZIONE DEPRECATA NON SUPPORTATA E NON COMPLETA
+   * HTML TO IMAGE E' STATO ELIMINATO
    * @param sportLevelPrimaryKey Chiave Primaria del record di SportLevel
    */
   onShare(sportLevelPrimaryKey: string)
@@ -98,42 +99,8 @@ export class SportlevelsPage implements OnInit {
         let DOMCard=document.getElementById(sportLevelPrimaryKey);
         
 
-        //Immagine in SVG
-        if (method == 'SVG') {
 
-          htmlToImage.toSvgDataURL(DOMCard,options)
-            .then(dataUrl => {
-              console.log('Fatto: ');
-              console.log(dataUrl);
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        }
-        else if (method == 'JPG') {
 
-          htmlToImage.toJpeg(DOMCard, options)
-          .then(urlImage => {
-            console.log(urlImage);
-            
-            
-            //recupero l'url del sito aziendale
-            let area=this.startService.areaSelectedValue;
-            console.log(area);
-            let urlArea = area.findAreaLinkByPageType(PageType.home);
-            console.log(urlArea);
-            if(urlArea){
-              this.socialSharing.share(messaggio,'',urlImage, urlArea.REFERURL);
-            }
-            else{
-              this.socialSharing.share(messaggio,'',urlImage);
-            }
-          })
-          .catch(error => {
-            console.error('Errore qui!');
-            console.log(error);
-          })
-        }
 
       }
       

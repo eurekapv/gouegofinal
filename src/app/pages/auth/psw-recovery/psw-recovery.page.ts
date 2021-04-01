@@ -46,11 +46,11 @@ export class PswRecoveryPage implements OnInit {
 
 
    //#region questi servono per accedere ai corrispettivi elementi in HTML
-   @ViewChild('c1',{static:false}) c1;
-   @ViewChild('c2',{static:false}) c2;
-   @ViewChild('c3',{static:false}) c3;
-   @ViewChild('c4',{static:false}) c4;
-   @ViewChild('c5',{static:false}) c5; 
+   @ViewChild('c1') c1;
+   @ViewChild('c2') c2;
+   @ViewChild('c3') c3;
+   @ViewChild('c4') c4;
+   @ViewChild('c5') c5; 
    //#endregion
 
   constructor(

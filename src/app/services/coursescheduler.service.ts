@@ -51,9 +51,9 @@ export class CourseschedulerService {
    * @param idCorso Corso Richiesto
    */
   requestCalendario(config: StartConfiguration, idCorso: string) {
-    return new Promise ((resolve, reject)=>{
+    return new Promise<void>((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
+      
       const doObject = 'PIANIFICAZIONECORSO';
        
       let myUrl = config.urlBase + '/' + doObject;  
@@ -61,7 +61,6 @@ export class CourseschedulerService {
       //Nei Parametri imposto il corso richiesto
       let myParams = new HttpParams().set('IDCORSO',idCorso);
   
-      
       //Elimino le schedulazioni presenti
       this.emptyCalendario();
   
@@ -258,7 +257,7 @@ export class CourseschedulerService {
 
       this.docStructureService.loadCollection(docPianificazione, collName)
       .then(() => {
-        resolve();
+        resolve(docPianificazione);
       })
       .catch(error => {
         reject(error);

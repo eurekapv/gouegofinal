@@ -35,16 +35,21 @@
             ],
             "styles": [
               {
-                "input": "src/theme/variables.scss"
+                "input": "src/theme/variables.scss",
+                "inject": true
               },
               {
-                "input": "src/global.scss"
+                "input": "src/global.scss",
+                "inject": true
               },
               {
-                "input": "node_modules/sportsfont/css/sports.css"
+                "input": "node_modules/sportsfont/css/sports.css",
+                "inject": true
               }
             ],
-            "scripts": ["node_modules/crypto-js/crypto-js.js"]
+            "scripts": [
+              "node_modules/crypto-js/crypto-js.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -57,7 +62,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,

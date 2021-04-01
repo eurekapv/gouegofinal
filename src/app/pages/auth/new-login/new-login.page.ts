@@ -309,7 +309,7 @@ export class NewLoginPage implements OnInit {
     }
     else
     {
-      
+      //Apro il loading Controller per verificare
       this.loadingCtrl
         .create({
           message: 'Controllo credenziali'

@@ -76,6 +76,8 @@ export class StartService {
   
   //Determina se la connessione sarà a un database locale, o al server
   private _localConnection = false;
+
+  private _forceIdAreaOnLogin = ''; //Se impostato è l'area da mantenere a seguito del login (Usata quando nella booking non sono loggatto, e al termine devo rimanere sull'area)
   
   get appReady() {
     return this._appReady.asObservable();
@@ -127,6 +129,20 @@ export class StartService {
 
     return result;
   }  
+
+  /**
+   * Prende l'Area Attiva e la imposta nella proprietà
+   * _forceIdAreaOnLogin 
+   * Quando il valore della proprietàè settato, a seguito del Login bisogna rimanere su questa area
+   */
+  setIdAreaForcedForLogin() {
+    if (this.areaService.areaSelectedValue) {
+      this._forceIdAreaOnLogin = this.areaService.areaSelectedValue.ID;
+    }
+    else {
+      this._forceIdAreaOnLogin = '';
+    }
+  }
 
 
   constructor(private platformService: Platform,
@@ -923,8 +939,13 @@ userLogin(username: string,
   //Mi metto in ascolto per i cambi di Area Favorite a seguito della login
   this.onChangeAreaFavListener();
 
+  //Chiamo il servizio Utente passando username, password, la configurazione e
+  //l'eventuale area da Impostare come attiva dopo il login
   return this.utenteService
-            .login(username, password,this._startConfig);
+            .login( username, 
+                    password,
+                    this._startConfig,
+                    this._forceIdAreaOnLogin);
 
 }
 

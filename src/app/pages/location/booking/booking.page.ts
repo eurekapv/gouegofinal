@@ -559,19 +559,23 @@ export class BookingPage implements OnInit,  OnDestroy {
    */
   myClickPrenota(docPianificazione: PrenotazionePianificazione) {
     
+    //Non solo loggato, devo loggarmi
     if (!this.userLogged) {
 
+      //Prima di aprire la pagina di login
+      //impostare nel servizio Start forceIdArea = 
+      this.startService.setIdAreaForcedForLogin();
+      
+      //Ora preparo e creo la pagina di Login
       this.modalCtrl.create({
         component:NewLoginPage
       })
         .then(modal=>{
           modal.present();
-        })
+        });
 
     }
     else {
-
-      let gruppo : Gruppo;
 
       let paramsVerifica : ParamsVerifica;
       paramsVerifica = this.docUtente.getParamsVerifica(this.startService.actualStartConfig.gruppo)

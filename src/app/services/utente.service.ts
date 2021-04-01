@@ -61,11 +61,13 @@ export class UtenteService {
    * @param config Parametri di configurazione
    * @param username Username Utente
    * @param password Password Utente
+   * @param forceIdArea Se impostata, l'area favorita dell'utente diventa questa
    */
   login(username: string,
-                       password: string,
-                       myStartConfig: BehaviorSubject<StartConfiguration>
-                       ): Promise<any> {
+        password: string,
+        myStartConfig: BehaviorSubject<StartConfiguration>,
+        forceIdArea?:string 
+        ): Promise<any> {
 
     return new Promise<any>((resolve,reject) => {
             let myUtente = new Utente();
@@ -122,6 +124,11 @@ export class UtenteService {
                                 //Emetto il Boolean TRUE di avvenuto accesso
                                 this._utenteLoggato.next(true);
   
+                                //Se devo forzare l'area preferita la imposto
+                                if (forceIdArea && forceIdArea.length !== 0) {
+                                  docUtente.IDAREAOPERATIVA = forceIdArea;
+                                }
+
                                 //Utente ha una area preferita
                                 if (docUtente.IDAREAOPERATIVA) {
                                   //Dovrei posizionarlo

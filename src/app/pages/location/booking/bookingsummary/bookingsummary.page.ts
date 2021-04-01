@@ -82,7 +82,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       //Recupero dell'area selezionata
       this.docArea = this.startService.areaSelectedValue;
       
-      
       //Impostazione tipologie pagamento
       this.setPaymentConfig();
 
@@ -98,6 +97,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     //#region MODALE
     /* VERSIONE MODALE*/
       this.idLocation = this.navParams.get('locationId');
+
       if (this.idLocation.length !== 0) {
         // Chiedo Location
         this.selectedLocation = this.startService.findLocationByID(this.idLocation);        

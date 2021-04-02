@@ -108,7 +108,7 @@ export class UtenteService {
                                 docUtente.setJSONProperty(docInResponse);
                                 docUtente.WEBLOGIN = username;
                                 docUtente.setOriginal();
-                                console.log(docUtente);
+                                // console.log(docUtente);
   
                                 //Imposto come tag authCode il codice di autorizzazione utente ricevuto
                                 docUtente.setTagValue('authCode',response.code);

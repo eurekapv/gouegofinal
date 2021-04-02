@@ -133,7 +133,7 @@ export class HistorylistPage implements OnInit {
             this.docstructureService.requestNew(filterUtenteIscrizioni)
                   .then(list=>{
                         this.listUtenteCorsi=list;
-                      console.log(this.listUtenteCorsi)
+                      // console.log(this.listUtenteCorsi)
                         loading.dismiss();
                   })
                   .catch(error=>{

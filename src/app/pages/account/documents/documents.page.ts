@@ -4,16 +4,14 @@ import { Chooser } from '@ionic-native/chooser/ngx';
 import { ToastController, ModalController, LoadingController, Platform } from '@ionic/angular';
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
 import { TipoDocumentazione, ClasseDocumento } from 'src/app/models/tipodocumentazione.model';
-import { PostParams, RequestParams } from 'src/app/library/models/requestParams.model';
+import {  RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition, ParamsExport } from 'src/app/library/models/iddocument.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Utente } from 'src/app/models/utente.model';
 import { Documentazione, InvioDocumentazione } from 'src/app/models/documentazione.model';
-import { error } from 'console';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
-import { throwError } from 'rxjs';
 import { FileService } from 'src/app/services/file.service';
 
 
@@ -87,7 +85,7 @@ export class DocumentsPage implements OnInit {
 
           //Recupero la lista dei documenti
           this.listDocumenti = objUtente['DOCUMENTAZIONI'];
-          console.log(this.listDocumenti);
+          // console.log(this.listDocumenti);
         })
         .catch(error => {
 
@@ -265,7 +263,7 @@ export class DocumentsPage implements OnInit {
         .then(blob => {
           //E' andato tutto bene, ho il blob
           elLoading.dismiss();
-          console.log(blob);
+          // console.log(blob);
           if(blob){
             this.fileService.open(blob)
 

@@ -32,9 +32,9 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.splashScreen.hide(); // Nasconde l'immagine statica
+    // this.splashScreen.hide(); // Nasconde l'immagine statica
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
+      // this.statusBar.styleDefault();
 
       this.listenAppReady = this.startService.appReady
                                   .subscribe(valueReady => {

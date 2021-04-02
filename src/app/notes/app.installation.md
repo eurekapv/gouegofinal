@@ -1,4 +1,4 @@
-
+https://update.angular.io/?v=8.1-11.0
 /***********************************/
 /*  HELP COME TRADURRE IN ITALIANO  */
 /***********************************/  

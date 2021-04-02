@@ -1,9 +1,10 @@
 {
-  "appId": "com.Gouego.OpenBeach",
+  "appId": "com.gouego.openBeach",
   "appName": "Open Beach",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
+  "backgroundColor": "#ffffffff",
   "ios": {
     "cordovaLinkerFlags": ["-ObjC"]
   },

@@ -26,7 +26,7 @@ export class UtenteprenotazioneService {
   constructor(private apiService: ApicallService) { }
 
   /**
-   * 
+   * Effettua la richiesta dell'elenco Prenotazioni di un utente
    * @param config Dati configurazione
    * @param idUtente Utente che effettua richiesta
    * @param maxRecord Max Record da recuperare
@@ -35,7 +35,7 @@ export class UtenteprenotazioneService {
     return new Promise((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
       myHeaders = myHeaders.append('order-by','desc');
-      //new HttpHeaders({'Content-type':'text/plain'});
+      
 
       const doObject = 'UTENTEPRENOTAZIONE';
       const filterDateTime = this.getFilterDateTime();
@@ -69,12 +69,15 @@ export class UtenteprenotazioneService {
               newUtentePrenotazione.setJSONProperty(element);
               this.addUtentePrenotazione(newUtentePrenotazione);
             });
-            resolve();
+
+            //Al termine ritorno la nuova lista
+            resolve(this._listUtentePrenotazione);
+
         }, error=>{
           reject (error);
         })
       
-    })
+    });
   }
 
   /**

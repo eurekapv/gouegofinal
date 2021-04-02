@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { CalendarscrollComponent } from './calendarscroll.component';
@@ -7,7 +7,7 @@ describe('CalendarscrollComponent', () => {
   let component: CalendarscrollComponent;
   let fixture: ComponentFixture<CalendarscrollComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CalendarscrollComponent ],
       imports: [IonicModule.forRoot()]

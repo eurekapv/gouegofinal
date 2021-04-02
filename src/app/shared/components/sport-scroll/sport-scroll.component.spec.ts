@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { SportScrollComponent } from './sport-scroll.component';
@@ -7,7 +7,7 @@ describe('SportScrollComponent', () => {
   let component: SportScrollComponent;
   let fixture: ComponentFixture<SportScrollComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SportScrollComponent ],
       imports: [IonicModule.forRoot()]

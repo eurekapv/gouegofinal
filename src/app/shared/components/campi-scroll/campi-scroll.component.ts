@@ -18,7 +18,7 @@ export class CampiScrollComponent implements OnInit {
   @Input() campiList:Campo[];
   @Input() selectedLocation: Location;
   @Input() canChoose: boolean; //Indica se è possibile modificare la scelta con i pulsanti
-  @ViewChild('sliderCampi', {static:false})sliderCampi: IonSlides;
+  @ViewChild('sliderCampi')sliderCampi: IonSlides;
   
   sliderOpts1={
     slidesPerView: 1,

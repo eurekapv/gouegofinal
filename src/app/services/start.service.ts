@@ -583,7 +583,7 @@ export class StartService {
    * @param idLocation Location scelta 
    * 
    */
-  requestLocationByID(idLocation: string, _numLivelli?:number) {
+  requestLocationByID(idLocation: string, _numLivelli?:number):Promise<Location> {
     const actualStartConfig = this._startConfig.getValue();
     
     return this.locationService.requestLocationByID(actualStartConfig, idLocation, _numLivelli);
@@ -1223,16 +1223,6 @@ get listNews() {
 
 
 
-/**
- * Recupera le news dal server
- * @param maxRecord Massimo Numero record restituiti (0 = Tutti)
- */
-requestNews_old(idArea: string, maxRecord: number = 0) {
-  const actualStartConfig = this._startConfig.getValue();
-
-  //Chiedo il recupero delle News
-  return this.newsEventiService.request_old(actualStartConfig, idArea, maxRecord);
-}
 
   /**
    * Recupera le news relative ad un'area

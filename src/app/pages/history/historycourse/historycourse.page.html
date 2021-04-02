@@ -12,7 +12,7 @@
   <ion-card class="title">
     <ion-item color="light" button="false" lines="none">
       <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
-      <ion-label>
+      <ion-label *ngIf="myCorso">
         <h1 class="ion-text-wrap">
           {{ myCorso.DENOMINAZIONE }}
         </h1>
@@ -20,16 +20,18 @@
           {{ myCorso['_DENOMINAZIONE_Sport'] }}
         </h3>
       </ion-label>
+      <ion-label *ngIf="!myCorso">Corso</ion-label>
     </ion-item>
 
-  
-  <ion-card-content 
-    *ngFor="let programma of myCorso.CORSOPROGRAMMA"
-    class="ion-padding-horizontal" 
-    style="display: flex;">
-      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-      <span [innerHTML]="programma.TESTOHTML"></span> 
-  </ion-card-content>
+  <div *ngIf="myCorso && myCorso.CORSOPROGRAMMA">
+    <ion-card-content 
+      *ngFor="let programma of myCorso.CORSOPROGRAMMA"
+      class="ion-padding-horizontal" 
+      style="display: flex;">
+        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        <span [innerHTML]="programma.TESTOHTML"></span> 
+    </ion-card-content>
+  </div>
 
 </ion-card>
 
@@ -53,7 +55,7 @@
 
   <ion-list class="ion-no-padding">
   <!-- GIORNATE -->
-    <ion-item-group>
+    <ion-item-group *ngIf="myCorso">
       <ion-item-divider color="light">
         <ion-label>
           <h2>Quando</h2>
@@ -124,7 +126,7 @@
     </ion-item-group>
 
 <!-- ADATTO A -->
-<ion-item-group>
+<ion-item-group *ngIf="myCorso">
 
   <ion-item-divider color="light">
     <ion-label>

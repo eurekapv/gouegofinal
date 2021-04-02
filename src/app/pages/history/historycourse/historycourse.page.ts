@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ParamMap, ActivatedRoute } from '@angular/router';
-import { NavParams, LoadingController, ToastController, ModalController } from '@ionic/angular';
+import { NavParams, LoadingController, ToastController, ModalController, NavController } from '@ionic/angular';
 import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -12,6 +12,7 @@ import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calenda
 import { Area } from 'src/app/models/area.model';
 import { Payment, PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
 import { AllegatilistPage } from './allegatilist/allegatilist.page';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 @Component({
   selector: 'app-historycourse',
   templateUrl: './historycourse.page.html',
@@ -41,67 +42,193 @@ export class HistorycoursePage implements OnInit {
               private startService: StartService,
               private loadingController: LoadingController,
               private toastController: ToastController,
-              private modalController: ModalController) {              }
+              private navCtr: NavController,
+              private modalController: ModalController,
+              private docstructrureService: DocstructureService) {              }
 
   ngOnInit() {
     
     this.isDesktop = this.startService.isDesktop;
     //recupero l'area 
     this.myArea = this.startService.areaSelectedValue;
+
     //creo lo spinner e lo presento
     this.loadingController.create({
       message: 'Caricamento',
       spinner: 'circular',
       backdropDismiss: true
     }).then(loading=>{
+      //Mostro il loading
       loading.present();
+
       //recupero l'id dell'iscrizione
       this.activatedRoute.paramMap.subscribe(route=>{
-        if(route.has('historyId')){
-          //se ho l'id dell'iscrizione, faccio la riciesta al server
-          let idIscrizione=route.get('historyId');
+        if(route.has('historyId')) {
+          //se ho l'id dell'iscrizione, faccio la richiesta al server
+          let idIscrizione = route.get('historyId');
           
-          this.startService.requestIscrizioneById(idIscrizione).then(docIscrizione=>{
-            //quando arriva la risposta, valorizzo la proprietà
-            this.myIscrizione=docIscrizione;
+          //Chiedo il documento della Iscrizione
+          this.requestIscrizione(idIscrizione)
+          .then(docIscrizione => {
+                //quando arriva la risposta, valorizzo la proprietà
+                this.myIscrizione = docIscrizione;
+                //Chiedo lo scaricamento del documento corso e location
+                if (this.myIscrizione) {
+                  
+                  //Richiedo la Location (senza controllare se arriva)
+                  this.requestLocation(this.myIscrizione);
 
-            //#FIXME quando la subscribe va in errore, le promise non vengono rigettate
-            
-            //questo risolve la promise (e quindi dismette il loading) solo quando entrambe le promise
-            //passate sono risolte
-            Promise.all([this.startService.newRequestCorsoById(this.myIscrizione.IDCORSO),
-                          this.startService.requestLocationByID(this.myIscrizione.IDLOCATION)])
-                          .then(results=>{
-                            //quando entrambe le richieste sono andate a buon fine, valorizzo le proprietà
-                            let rawCorso: any = results[0];
-                            this.myCorso=rawCorso;
-                            this.myLocation=results[1];
-                            //e chiudo il loading
-                            loading.dismiss();
-                            this.debug();
-                          }).catch((error)=>{
-                            //se invece almeno una richiesta non va a buon fine dismetto il loading
-                            loading.dismiss();
-                            //e stampo un messaggio di errore
-                            this.showAlert('Errore nel caricamento');
-                            console.log(error);
+                  //Richiedo anche Corso e Corso Programma verificando l'arrivo
+                  this.requestCorso(this.myIscrizione)
+                    .then(docCorso => {
+                        //Chiudo il loading Controller
+                        this.loadingController.dismiss();
+                        //Corso caricato
+                        if (docCorso) {
+                          //Corso caricato con la collction CORSOPROGRAMMA
+                          this.myCorso = docCorso;
 
-                          })
+
+
+                        }
+                        else {
+                          //Corso nullo
+                          this.showAlert('Corso non trovato');
+                          this.goBack();
+                        }
+                    })
+                    .catch(error => {
+                      //Corso non recuperato
+                      this.showAlert(error);
+                      this.goBack();
+                    });
+                }
+                else {
+                  //Documento Iscrizione non recuperato
+                  //Chiudo il loading
+                  this.loadingController.dismiss();
+                  //Documento nullo
+                  this.showAlert('Iscrizione non trovata');
+                  //Torno alla pagina di Lista
+                  this.goBack();
+                }
           })
+          .catch(error => {
+            //Errore recupero Iscrizione
+            //Chiudo il loading
+            this.loadingController.dismiss();
+            this.showAlert(error);
+            //Torno alla pagina di Lista
+            this.goBack();
+          });
+
+        }
+        else {
+          //Non trovo idIscrizione
+
+          //Chiudo il loading
+          loading.dismiss();
+          //Mostro un messaggio
+          this.showAlert('Nessuna Iscrizione trovata');
+          //Torno alla lista
+          this.goBack();
         }
       })
     })
   }
+
+  /**
+   * Richiede al server una Iscrizione per ID
+   * @param myIdIscrizione idIscrizione richiesta
+   * @returns Promise<UtenteIscrizione>
+   */
+  requestIscrizione(myIdIscrizione:string): Promise<UtenteIscrizione> {
+
+    return new Promise<UtenteIscrizione>((resolve, reject) => {
+      if (myIdIscrizione && myIdIscrizione.length != 0) {
+        this.startService.requestIscrizioneById(myIdIscrizione)
+          .then(docIscrizione => {
+            resolve(docIscrizione);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      }
+      else {
+        reject('Iscrizione non trovata');
+      }
+
+    });
+
+  }
+
+  /**
+   * Richiede un documento correlato del Corso e la collection CORSOPROGRAMMA
+   * @param docIscrizione documento della Iscrizione Corso
+   */
+  requestCorso(docIscrizione: UtenteIscrizione): Promise<Corso> {
+    return new Promise<Corso>((resolve, reject) => {
+    this.docstructrureService.getRelDoc(docIscrizione, ['IDCORSO'],1)
+      .then(docCorso => {
+      
+
+        if (docCorso) {
+          //Scarico la collection CORSO PROGRAMMA
+          this.docstructrureService.loadCollection(docCorso, 'CORSOPROGRAMMA')
+                  .then(() => {
+                    resolve( docCorso );
+                  })
+                  .catch(error => {
+                    reject(error);
+                  });
+        }
+        else {
+          reject('Corso non trovato');
+        }
+
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    });
+
+  }
+
+  /**
+   * Richiede un documento correlato della Location ed imposto this.myLocation
+   * @param docIscrizione documento della Iscrizione Corso
+   */
+  requestLocation(docIscrizione: UtenteIscrizione): void {
+    this.docstructrureService.getRelDoc(docIscrizione, ['IDLOCATION'],1)
+      .then(docLocation => {
+        this.myLocation = docLocation;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+
   /**
    * chiama il servizio passandogli l'id dell'oggetto corso, e restituisce la stringa dell'icona
    * @param corso l'oggetto corso per cui si richiede l'icona
    */
   getIcon(corso:Corso)
   {
-    return this.startService.getSportIcon(corso.IDSPORT);
+    let myIdSport = '';
+    if (corso) {
+      myIdSport = corso.IDSPORT;
+    }
+    return this.startService.getSportIcon(myIdSport);
   }
 
-
+  /**
+   * Ritorna alla pagina della lista
+   */
+  goBack() {
+    
+    this.navCtr.navigateBack(['/','historylist']);
+  }
 
   /* ****** CALENDAR ******** */
   onClickCalendar() {
@@ -135,6 +262,10 @@ export class HistorycoursePage implements OnInit {
     })
   }
 
+  /**
+   * Visualizza un Toast con il mssaggio
+   * @param messaggio Messaggio
+   */
   showAlert(messaggio: string)
   {
     this.toastController.create({

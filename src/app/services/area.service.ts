@@ -39,15 +39,15 @@ export class AreaService {
    * @param config Parametri di configurazione
    */
   request(config: StartConfiguration, _childLevel?:number) {
-    return new Promise((resolve, reject)=>{
+    return new Promise<void>((resolve, reject)=>{
         let myHeaders = config.getHttpHeaders();
-        //new HttpHeaders({'Content-type':'text/plain'});
 
         const doObject = 'AREAOPERATIVA';
         
         if (!_childLevel){
-          _childLevel=2;
+          _childLevel = 2;
         }
+
         myHeaders=myHeaders.set('child-level',_childLevel+'');
 
         // Nei parametri imposto il gruppo Sportivo
@@ -68,6 +68,7 @@ export class AreaService {
     
               //Aggiungo i valori
               this._addMultipleAree(resultData, true);
+
               resolve();
           },
           error=>{

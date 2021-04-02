@@ -143,7 +143,7 @@ export class CourseService {
   }
 
   newRequestById(idCorso: string){
-    return new Promise ((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       //preparo il filtro
       let filtroCorso = new Corso(true);
       filtroCorso.ID=idCorso;
@@ -152,29 +152,34 @@ export class CourseService {
       let params = new RequestParams();
       params.decode = new RequestDecode();
       params.decode.active = true;
+      
 
 
        //faccio la richiesta
        this.docStructureService.requestNew(filtroCorso, params)
-       .then((listCorsi:Corso[]) => {
+       .then((listCorsi : Corso[]) => {
 
-          
-          //se è arrivato un corso
-          if (listCorsi&&listCorsi!=[]) {
-            
+          let myCorso: Corso;
+          if (listCorsi && listCorsi.length != 0) {
+            //Prendo il primo corso (in teoria anche l'unico)
+            myCorso = listCorsi[0];
+          }
+
+          if (myCorso) {
             //ora richiedo anche il programma
-            this.docStructureService.loadCollection(listCorsi[0], 'CORSOPROGRAMMA')
+            this.docStructureService.loadCollection(myCorso, 'CORSOPROGRAMMA')
             .then(() => {
-              resolve(listCorsi[0]);
+              resolve(myCorso);
 
             })
             .catch(error => {
               reject(error);
-            })
+            });
           }
-          else{
-            resolve();
+          else {
+            reject('Errore recupero corso');
           }
+          
       })
       .catch(error => {
         reject(error);

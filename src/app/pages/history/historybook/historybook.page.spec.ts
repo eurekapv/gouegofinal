@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { HistorybookPage } from './historybook.page';
@@ -7,7 +7,7 @@ describe('HistorydetailPage', () => {
   let component: HistorybookPage;
   let fixture: ComponentFixture<HistorybookPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HistorybookPage ],
       imports: [IonicModule.forRoot()]

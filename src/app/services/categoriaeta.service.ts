@@ -33,7 +33,7 @@ export class CategoriaetaService {
    * @param config Parametri configurazione chiamata
    */
   request(config: StartConfiguration) {
-    return new Promise((resolve,reject)=>{
+    return new Promise<void>((resolve,reject)=>{
       let myHeaders = config.getHttpHeaders();
 
       const doObject = 'CATEGORIEETA';

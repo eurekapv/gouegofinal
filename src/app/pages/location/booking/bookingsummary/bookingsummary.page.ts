@@ -11,7 +11,7 @@ import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianifica
 import { Campo } from 'src/app/models/campo.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { PaymentConfiguration, PaymentChannel, PaymentResult, Payment } from 'src/app/models/payment.model';
-import { SettoreAttivita } from 'src/app/models/valuelist.model';
+import { SettoreAttivita, SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
 import { PaypalPage } from 'src/app/pages/paypal/paypal.page';
 import { AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
@@ -324,7 +324,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       
       let modePay = new Payment(this.docArea);
 
-      this.arPaymentConfig = modePay.getPaymentFor(SettoreAttivita.settorePrenotazione);
+      this.arPaymentConfig = modePay.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione);
       
 
       if (this.arPaymentConfig) {

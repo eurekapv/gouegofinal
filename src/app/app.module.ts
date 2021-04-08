@@ -1,7 +1,7 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { RouteReuseStrategy } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { HttpClientModule} from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 
@@ -37,7 +37,8 @@ registerLocaleData(localeIt,'it');
             IonicModule.forRoot(), 
             IonicStorageModule.forRoot(),
             AppRoutingModule,
-            QRCodeModule       
+            QRCodeModule,
+              
             ],
   providers: [
     StatusBar,
@@ -49,6 +50,7 @@ registerLocaleData(localeIt,'it');
     CryptoService,
     File,
     FileOpener,
+    
 
   ],
   bootstrap: [AppComponent]

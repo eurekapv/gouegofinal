@@ -219,7 +219,7 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          myUrl = 'demo.gouego.com';
+          //myUrl = 'demo.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso

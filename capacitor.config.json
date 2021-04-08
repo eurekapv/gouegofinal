@@ -1,14 +1,16 @@
 {
-  "appId": "com.gouego.openBeach",
-  "appName": "Open Beach",
+  "appId": "com.gouego.openbeach",
+  "appName": "ios",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
   "backgroundColor": "#ffffffff",
   "ios": {
-    "cordovaLinkerFlags": ["-ObjC"]
+    "cordovaLinkerFlags": [
+      "-ObjC"
+    ]
   },
-  "plugins":{
+  "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0,
       "launchAutoHide": true,
@@ -32,7 +34,6 @@
       "SplashScreen": "screen",
       "SplashScreenDelay": "0",
       "androidScaleType": "CENTER_CROP"
-
     }
   }
 }

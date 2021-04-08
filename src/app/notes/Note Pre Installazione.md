@@ -1,6 +1,6 @@
 # Preparare progetto Android
 >Controllare nella cartella resources i file icon.png e splash.png
-
+    npm install cordova-res
 Se le immagine sono modificate, rieseguire
 
     cordova-res ios --skip-config --copy
@@ -9,8 +9,8 @@ Se le immagine sono modificate, rieseguire
 #### Eseguire il build dell'app
     ionic build --prod
 #### Risincronizzazione dei progetti
-    npx cap cap sync
-    npx cap cap copy
+    npx cap sync
+    npx cap copy
 #### Apertura progetti Android / Xcode
     npx cap open android
     npx cap open ios

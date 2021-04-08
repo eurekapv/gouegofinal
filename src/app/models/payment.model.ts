@@ -1,8 +1,6 @@
-import {SettoreAttivita} from './valuelist.model';
+import {SettorePagamentiAttivita} from './valuelist.model';
 import { Area } from './area.model';
-import { element } from 'protractor';
-import { isNumber } from 'util';
-import { StartService } from '../services/start.service';
+
 
 
 export class Payment  {
@@ -21,7 +19,7 @@ export class Payment  {
      * Controlla anche la validità delle configurazioni
      * @param action Azione da pagare
      */
-    getPaymentFor(action: SettoreAttivita): PaymentConfiguration[] {
+    getPaymentFor(action: SettorePagamentiAttivita): PaymentConfiguration[] {
         let arPayment: PaymentConfiguration[];
 
         arPayment = [];
@@ -113,19 +111,19 @@ export class Payment  {
         //Contanti
         let objContanti = new PaymentConfiguration();
         objContanti.channel = PaymentChannel.onSite;
-        objContanti.settori.push(SettoreAttivita.settorePrenotazione);
-        objContanti.settori.push(SettoreAttivita.settoreCorso);
+        objContanti.settori.push(SettorePagamentiAttivita.settorePagamentoPrenotazione);
+        objContanti.settori.push(SettorePagamentiAttivita.settorePagamentoCorso);
         this.addUpdatePayment(objContanti);
 
 
         let objPaypal = new PaymentConfiguration();
 
         objPaypal.channel = PaymentChannel.paypal;
-        objPaypal.settori.push(SettoreAttivita.settorePrenotazione);
-        objPaypal.settori.push(SettoreAttivita.settoreCorso);
+        objPaypal.settori.push(SettorePagamentiAttivita.settorePagamentoPrenotazione);
+        objPaypal.settori.push(SettorePagamentiAttivita.settorePagamentoCorso);
 
         let settings = objPaypal.configPayPal;
-        settings.enviroment = EnvironmentPaypal.sandbox;
+        settings.enviroment = EnvironmentElectronicPayment.sandbox;
         settings.account = 'info-facilitator@cavallinipietro.com';
         settings.clientIDSandbox = 'AaRz5fCbWZDIV1Cc6aAWCiOgZtcvP3ai39078mHUiTk30Clg31gsnS1PxQ4YQOLaQulptnYWTz9ul67T';
         settings.clientIDProduction = '';
@@ -142,7 +140,7 @@ export class PaymentConfiguration {
     channel: PaymentChannel;       //Esempio OnSite, Paypal
     configPayPal: ConfigPaypal;    //Eventuale Configurazione Paypal
     configStrip: any;              //Configurazione altri sistemi
-    settori: SettoreAttivita[];    //Settore dove utilizzato (Corsi, Prenotazioni)
+    settori: SettorePagamentiAttivita[];    //Settore dove utilizzato (Corsi, Prenotazioni)
     
     constructor() {
         this.settori = [];
@@ -278,7 +276,7 @@ export class PaymentConfiguration {
    * Configurazione Paypal
    */
   export class ConfigPaypal {
-    enviroment: EnvironmentPaypal;
+    enviroment: EnvironmentElectronicPayment;
     account: string;
     clientIDSandbox: string;
     clientIDProduction: string;
@@ -305,10 +303,10 @@ export class PaymentConfiguration {
             valid = false;
         }
         else {
-            if (this.enviroment == EnvironmentPaypal.sandbox && !this.clientIDSandbox) {
+            if (this.enviroment == EnvironmentElectronicPayment.sandbox && !this.clientIDSandbox) {
                 valid = false;
             }
-            else if (this.enviroment == EnvironmentPaypal.production && !this.clientIDProduction) {
+            else if (this.enviroment == EnvironmentElectronicPayment.production && !this.clientIDProduction) {
                 valid = false;
             }
         }
@@ -325,11 +323,12 @@ export class PaymentConfiguration {
     bonifico = 50,
     applePay = 200,
     googlePay = 210,
-    paypal = 220
+    paypal = 220,
+    stripe = 240
   }
   
   
-  export enum EnvironmentPaypal {
+  export enum EnvironmentElectronicPayment {
     sandbox = 10,
     production = 20
   }
@@ -368,6 +367,18 @@ export class PaymentConfiguration {
                 this.paymentExecuted = false;
                 this.result = false;
                 this.paymentRequestInApp = true;
+            break;
+
+            case PaymentChannel.stripe:
+                this.paymentExecuted = false;
+                this.result = false;
+                this.paymentRequestInApp = true;
+            break;   
+            
+            default:
+                this.paymentExecuted = false;
+                this.result = false;
+                this.paymentRequestInApp = false;                
             break;
         }
     }

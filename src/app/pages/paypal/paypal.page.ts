@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
 import { NavParams, ModalController } from '@ionic/angular';
-import { PaymentConfiguration, PaymentResult, ConfigPaypal, EnvironmentPaypal, PaymentChannel } from 'src/app/models/payment.model';
+import { PaymentConfiguration, PaymentResult, ConfigPaypal, EnvironmentElectronicPayment, PaymentChannel } from 'src/app/models/payment.model';
 import { get } from 'scriptjs';
 import { StartService } from 'src/app/services/start.service';
 
@@ -94,7 +94,7 @@ export class PaypalPage implements OnInit{
 
         //Configurazione Paypal
         this.configPaypal = this.paymentConfig.configPayPal;
-        if (this.configPaypal.enviroment == EnvironmentPaypal.production) {
+        if (this.configPaypal.enviroment == EnvironmentElectronicPayment.production) {
           clientId = this.configPaypal.clientIDProduction;
         }
 

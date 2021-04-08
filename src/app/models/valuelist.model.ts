@@ -11,6 +11,13 @@ export enum SettoreAttivita {
     settoreTorneo = 30
 }
 
+export enum SettorePagamentiAttivita {
+    settorePagamentoCorso = 10,
+    settorePagamentoPrenotazione = 20,
+    settorePagamentoTorneo = 30,
+    settorePagamentoShop = 40
+}
+
 export enum TipoCampo {
     campo = 10,
     aulaIndividuale = 100,

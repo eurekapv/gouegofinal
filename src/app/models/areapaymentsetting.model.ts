@@ -1,18 +1,21 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import { PaymentChannel,EnvironmentPaypal } from 'src/app/models/payment.model';
+import { PaymentChannel,EnvironmentElectronicPayment } from 'src/app/models/payment.model';
 
 
 export class AreaPaymentSetting extends IDDocument {
     
     IDAREAOPERATIVA: string;
     TIPOPAYMENT: PaymentChannel;
-    PPENVIRONMENT: EnvironmentPaypal;
+    PPENVIRONMENT: EnvironmentElectronicPayment;
     PPACCOUNT: string;
     PPCLIENTIDSANDBOX: string;
     PPCLIENTIDPRODUCTION: string;
     PPCLIENTSECRET: string;
     SETTORI: string;
+    STPUBLICKEY: string;
+    STPUBLICKEYTEST: string;
+    STENVIRONMENT: EnvironmentElectronicPayment;
 
 
     constructor(onlyInstance?:boolean) {
@@ -30,8 +33,11 @@ export class AreaPaymentSetting extends IDDocument {
                       'PPCLIENTIDSANDBOX',
                       'PPCLIENTIDPRODUCTION',
                       'PPCLIENTSECRET',
-                      'SETTORI'];
-      let arNumber = ['TIPOPAYMENT','PPENVIRONMENT'];
+                      'SETTORI',
+                      'STPUBLICKEY',
+                      'STPUBLICKEYTEST'
+                    ];
+      let arNumber = ['TIPOPAYMENT','PPENVIRONMENT','STENVIRONMENT'];
       let arBoolean = [];
       let arDate = [];
       let arDateTime =[];

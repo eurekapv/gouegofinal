@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PaymentConfiguration, PaymentResult, PaymentChannel, EnvironmentPaypal} from '../models/payment.model';
+import { PaymentConfiguration, PaymentResult, PaymentChannel, EnvironmentElectronicPayment} from '../models/payment.model';
 import { PayPal, PayPalPayment, PayPalConfiguration } from '@ionic-native/paypal/ngx';
 
 
@@ -57,10 +57,10 @@ export class PaymentService {
         console.info('Ho inizializzato');
         //recupero l'environment (test o prod)
         let environment : string;
-        if (this.paymentConfig.configPayPal.enviroment == EnvironmentPaypal.production){
+        if (this.paymentConfig.configPayPal.enviroment == EnvironmentElectronicPayment.production){
           environment = 'PayPalEnvironmentProduction';
         }
-        else if (this.paymentConfig.configPayPal.enviroment == EnvironmentPaypal.sandbox){
+        else if (this.paymentConfig.configPayPal.enviroment == EnvironmentElectronicPayment.sandbox){
           environment = 'PayPalEnvironmentSandbox';
         } 
 

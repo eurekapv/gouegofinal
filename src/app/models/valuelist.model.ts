@@ -187,6 +187,28 @@ export enum AttivitaChiusura{
     svolgimentoCorsi = 20
 }
 
+export enum StatoPagamento {
+    daPagare=0,
+    pagatoInParte=10,
+    pagato=20
+  
+}
+
+//Canali dove effettuare il pagamento, compreso onSite in contanti
+export enum PaymentChannel {
+    onSite = 10,
+    bonifico = 50,
+    applePay = 200,
+    googlePay = 210,
+    paypal = 220,
+    stripe = 240
+}
+
+export enum PaymentEnvironment {
+    test = 10,
+    production = 20
+}
+
 
 export enum FileType{
     immagini = "file-photo-o",

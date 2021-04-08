@@ -222,6 +222,41 @@ export class Prenotazione extends IDDocument {
         }
       }
 
+      /**
+       * Ritorna il valore che è necessario pagare
+       */
+      get amountPayment(): number {
+        let myAmount: number = 0;
+        if(this.INCASSATO < this.IMPORTO) {
+            myAmount = this.IMPORTO - this.INCASSATO;
+        }
+
+        return myAmount;
+      }
+
+
+      /**
+       * Stato del pagamento in formato testo
+       * @param showForPay: se TRUE verrà restituito un messaggio per effettuare il pagamento
+       */
+      getCaptionStatePayment(showForPay: boolean = false): string {
+        let caption = '';
+
+        if (this.amountPayment != 0) {
+            if (showForPay) {
+                caption = 'Paga Ora';
+            }
+            else {
+                caption = 'Prenotazione da pagare';
+            }
+        }
+        else {
+
+            caption = 'Prenotazione pagata';
+        }
+        return caption;
+      }
+
 
       
     

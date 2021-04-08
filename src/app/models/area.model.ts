@@ -1,6 +1,6 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { Location } from '../models/location.model';
-import { TipoArea, PageType } from '../models/valuelist.model';
+import { TipoArea, PageType, SettorePagamentiAttivita } from '../models/valuelist.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { AreaLink } from './arealink.model';
 import { AreaPaymentSetting } from './areapaymentsetting.model';
@@ -213,6 +213,34 @@ export class Area extends IDDocument {
         dist = dist * 1.609344
         return dist
       }
+  }
+
+
+  /**
+   * Dato un settore di pagamento, torna i pagamenti che supportano il settore
+   * @param Settore Settore dove si richiedono i pagamenti
+   */
+  getPaymentFor(settore: SettorePagamentiAttivita):AreaPaymentSetting[] {
+    let arSetting: AreaPaymentSetting[] = [];
+
+    
+
+    if (this.AREAPAYMENTSETTINGS && this.AREAPAYMENTSETTINGS.length != 0) {
+
+      //Ciclo sui modi di pagamento
+      for (let index = 0; index < this.AREAPAYMENTSETTINGS.length; index++) {
+
+          const elPaymentSetting = this.AREAPAYMENTSETTINGS[index];
+
+          /* Se il pagamento è adatto al settore */
+          if (elPaymentSetting && elPaymentSetting.isFor(settore)) {
+            arSetting.push(elPaymentSetting);
+          }
+          
+      }
+    }    
+    
+    return arSetting;
   }
 
 

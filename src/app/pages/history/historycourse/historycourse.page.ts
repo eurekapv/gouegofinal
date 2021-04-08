@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { ParamMap, ActivatedRoute } from '@angular/router';
-import { NavParams, LoadingController, ToastController, ModalController, NavController } from '@ionic/angular';
+import {  ActivatedRoute } from '@angular/router';
+import {  LoadingController, ToastController, ModalController, NavController } from '@ionic/angular';
 import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
 import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { Utente } from 'src/app/models/utente.model';
-import { StatoIscrizione, SettoreAttivita } from 'src/app/models/valuelist.model'
+import { StatoIscrizione, StatoPagamento } from 'src/app/models/valuelist.model'
 import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calendar/calendar.page';
-import { Area } from 'src/app/models/area.model';
-import { Payment, PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
+
 import { AllegatilistPage } from './allegatilist/allegatilist.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+
 @Component({
   selector: 'app-historycourse',
   templateUrl: './historycourse.page.html',
@@ -32,9 +33,7 @@ export class HistorycoursePage implements OnInit {
 
   selectedLocation: Location = new Location(); //il documento location NON OBSERVABLE 
 
-  myArea = new Area();
-
-  arPayments: PaymentConfiguration[] = [];
+  arPayments: AreaPaymentSetting[] = [];
 
   isDesktop: boolean;
 
@@ -49,8 +48,6 @@ export class HistorycoursePage implements OnInit {
   ngOnInit() {
     
     this.isDesktop = this.startService.isDesktop;
-    //recupero l'area 
-    this.myArea = this.startService.areaSelectedValue;
 
     //creo lo spinner e lo presento
     this.loadingController.create({
@@ -87,9 +84,6 @@ export class HistorycoursePage implements OnInit {
                         if (docCorso) {
                           //Corso caricato con la collction CORSOPROGRAMMA
                           this.myCorso = docCorso;
-
-
-
                         }
                         else {
                           //Corso nullo
@@ -280,83 +274,22 @@ export class HistorycoursePage implements OnInit {
     return this.myIscrizione.STATOISCRIZIONE==StatoIscrizione.confermata? true: false;
   }
 
-  statoPagamento(): StatoPagamento{
-    let statoPagamento: StatoPagamento;
-    if (this.myIscrizione.RESIDUO!=0 && this.myIscrizione.VERSATO==0)
-      statoPagamento=StatoPagamento.daPagare;
-    else if (this.myIscrizione.RESIDUO!=0 && this.myIscrizione.VERSATO!=0)
-      statoPagamento=StatoPagamento.pagatoInParte;
-    else
-      statoPagamento=StatoPagamento.pagato;
 
-    return statoPagamento;
-  }
 
   onClickPaga()
   {
 
   }
 
-  get btnPay(){
-    let objBtn = {
-      disabled : false,
-      text : ''
 
-    }
-    //se la prenotazione non è pagata
-    if(this.statoPagamento()!=StatoPagamento.pagato){
-
-      //se posso pagare online
-      if (this.canPayOnline()){
-        objBtn.disabled = false;
-        objBtn.text = 'Paga ora';
-      }
-      //se non posso pagare online
-      else{
-        objBtn.disabled = true;
-        objBtn.text = 'corso da pagare'
-      }
-    }
-    //se invece ho già pagato
-    else{
-      objBtn.disabled = true;
-      objBtn.text ='Corso pagato';
-    }
-
-    return objBtn;
-
-  }
 
   //funzione che recupera i metodi di pagamento e li inserisce in un array
   setPaymentFromArea() {
-    if (this.myArea) {
-      let objPayment = new Payment(this.myArea);
-      this.arPayments = [];
-      this.arPayments = objPayment.getPaymentFor(SettoreAttivita.settorePrenotazione);
-    }
-    else {
-      this.arPayments = [];
-    }
+    //TODO: Per impostare l'array dei pagamenti bisogna scaricare 
+    //dal server l'Area perchè potrebbe essere diversa dall'attuale
   }
 
-  //ci dice se è possibile pagare online
-  canPayOnline(){
-
-    let show = false;
-    this.arPayments.forEach(element => {
-      if (element.channel == PaymentChannel.paypal){
-        show = true;
-      }
-    })
-
-    return show;
-  }
 
 }
 
-enum StatoPagamento{
-  daPagare=0,
-  pagatoInParte=10,
-  pagato=20
 
-}

@@ -1,9 +1,7 @@
-import { Component, OnInit, OnDestroy, Pipe } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
-import { Subscription, from } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
-import { Campo } from 'src/app/models/campo.model';
-import { Location } from 'src/app/models/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, ToastController, LoadingController, AlertController} from '@ionic/angular';
@@ -15,15 +13,12 @@ import { Plugins } from '@capacitor/core';
 const { Share } = Plugins;
 
 import { DocstructureService } from 'src/app/library/services/docstructure.service'
-import { filter } from 'rxjs/operators';
-import { Corso } from 'src/app/models/corso.model';
+
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Area } from 'src/app/models/area.model';
-import { PageType, SettoreAttivita } from 'src/app/models/valuelist.model'
+import { PageType } from 'src/app/models/valuelist.model'
 import { RequestParams } from 'src/app/library/models/requestParams.model';
-import { Gruppo } from 'src/app/models/gruppo.model';
-import { PaymentConfiguration, PaymentChannel, Payment } from 'src/app/models/payment.model';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 
 
 @Component({
@@ -46,7 +41,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
 
   //i metodi di pagamento possibili
-  arPayments : PaymentConfiguration[] = [];
+  arPayments : AreaPaymentSetting[] = [];
 
   sliderOpts={
     slidesPerView: 1,
@@ -231,14 +226,8 @@ export class HistorybookPage implements OnInit, OnDestroy {
    * Imposta i pagamenti a seconda dell'area
    */
   setPaymentFromArea() {
-    if (this.myArea) {
-      let objPayment = new Payment(this.myArea);
-      this.arPayments = [];
-      this.arPayments = objPayment.getPaymentFor(SettoreAttivita.settorePrenotazione);
-    }
-    else {
-      this.arPayments = [];
-    }
+    //TODO: Per impostare l'array dei pagamenti bisogna scaricare 
+    //dal server l'Area perchè potrebbe essere diversa dall'attuale
   }
   
 
@@ -331,57 +320,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
   }
 
-  canPayOnline(){
 
-    let show = false;
-    this.arPayments.forEach(element => {
-      if (element.channel == PaymentChannel.paypal){
-        show = true;
-      }
-    })
-
-    return show;
-  }
-
-  get btnPay(){
-    let objBtn = {
-      disabled : false,
-      text : '',
-      handler : () => {}
-    }
-    //se la prenotazione non è pagata
-    if(this.myPrenotazione.INCASSATO<this.myPrenotazione.IMPORTO){
-
-      //se posso pagare online
-      if (this.canPayOnline()){
-        //Per ora non permettiamo di pagare online in un secondo momento
-        // objBtn.disabled = false;
-        // objBtn.text = 'Paga ora';
-        // objBtn.handler = this.payOnline;
-
-        objBtn.disabled = true;
-        objBtn.text = 'Prenotazione da pagare'
-
-      }
-      //se non posso pagare online
-      else{
-        objBtn.disabled = true;
-        objBtn.text = 'Prenotazione da pagare'
-      }
-    }
-    //se invece ho già pagato
-    else{
-      objBtn.disabled = true;
-      objBtn.text ='Prenotazione pagata';
-    }
-
-    return objBtn;
-
-  }
-
-  payOnline(){
-
-  }
 
   onClickTrash(){
     //per ora no faccio nulla, faccio solo uscire la msgbox

@@ -33,8 +33,7 @@ import { Prenotazione } from '../models/prenotazione.model';
 import { UtenteprenotazioneService } from './utenteprenotazione.service';
 import { UtenteiscrizioneService } from './utenteiscrizione.service';
 import { Platform } from '@ionic/angular';
-import { PaymentService } from './payment.service';
-import { PaymentConfiguration } from '../models/payment.model';
+
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
 import { TipoPrivateImage } from 'src/app/models/valuelist.model'
@@ -161,7 +160,6 @@ export class StartService {
     private slotOccupazioneService: SlotoccupazioneService,
     private utentePrenotazioneService: UtenteprenotazioneService,
     private utenteIscrizioneService: UtenteiscrizioneService,
-    private paymentService: PaymentService,
     private codFiscService: CodicefiscaleService,
     private occupazioniService: OccupazioniService,
     private docStructureService: DocstructureService,
@@ -221,7 +219,7 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          //myUrl = 'openbeach.gouego.com';
+          myUrl = 'demo.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso
@@ -1273,23 +1271,6 @@ requestSlotOccupazioni(templateSlotDay: SlotDay,
 //#endregion
 
 //#region PAGAMENTI
-
-
-
-/**
- * Promise per il pagamento Mobile
- * @param paymentMode Configurazione del Modo di pagamento
- * @param importo     Importo pagamento 
- * @param valuta      Valuta
- * @param descrizione Descrizione del pagamento visibile in paypal
- */
-execPayment(paymentMode: PaymentConfiguration, 
-            importo: number,
-            valuta?: string,
-            descrizione?: string) {
-
-    return (this.paymentService.execPayment(paymentMode, importo, valuta, descrizione));
-}
 
 
 

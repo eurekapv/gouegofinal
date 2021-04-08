@@ -109,7 +109,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="btnPay.handler()" [disabled]="btnPay.disabled" color="tertiary">
-    {{btnPay.text}}
+  <ion-button expand="block" [disabled]="true" color="tertiary">
+    {{myPrenotazione.getCaptionStatePayment(false)}}
   </ion-button>
 </ion-footer>

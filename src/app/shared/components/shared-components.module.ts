@@ -24,6 +24,7 @@ import { UploadComponent } from './upload/upload.component'
 import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prezzo.component';
 import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
 import { HideHeaderDirective } from '../directives/hide-header.directive';
+import { PaymentModeComponent } from './payment-mode/payment-mode.component';
 
 /**
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
@@ -54,6 +55,7 @@ import { HideHeaderDirective } from '../directives/hide-header.directive';
         ItemCalendarioComponent,
         NewsEventiComponent,
         PaymentChooseComponent,
+        PaymentModeComponent,
         PlayerNumberComponent,
         SlottimeComponent,
         SportScrollComponent,
@@ -77,6 +79,7 @@ import { HideHeaderDirective } from '../directives/hide-header.directive';
         ItemCalendarioComponent,
         NewsEventiComponent,
         PaymentChooseComponent,
+        PaymentModeComponent,
         PlayerNumberComponent,
         SlottimeComponent,
         SportScrollComponent,

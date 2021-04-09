@@ -65,7 +65,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   //Configurazioni di pagamento
   myListPayment: AreaPaymentSetting[];
   mySelectedPayment: AreaPaymentSetting;
-
+  
 
 
   subPaymentResult: Subscription;

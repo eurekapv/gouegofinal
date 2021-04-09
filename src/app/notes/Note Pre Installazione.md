@@ -3,8 +3,9 @@
     npm install cordova-res
 Se le immagine sono modificate, rieseguire
 
-    cordova-res ios --skip-config --copy
-    cordova-res android --skip-config --copy
+Cancellare dalle cartelle android o ios i file e rieseguire 
+    cordova-res ios --copy --skip-config 
+    cordova-res android --copy --skip-config 
 
 #### Eseguire il build dell'app
     ionic build --prod

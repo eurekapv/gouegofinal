@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
-import { ActivatedRoute } from '@angular/router';
 import { NavController, LoadingController, ToastController, NavParams, ModalController, Platform } from '@ionic/angular';
 
 import { Subscription } from 'rxjs';
@@ -10,12 +9,13 @@ import { Utente } from 'src/app/models/utente.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Campo } from 'src/app/models/campo.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { PaymentConfiguration, PaymentChannel, PaymentResult, Payment } from 'src/app/models/payment.model';
-import { SettoreAttivita } from 'src/app/models/valuelist.model';
-import { PaypalPage } from 'src/app/pages/paypal/paypal.page';
+import { PaymentResult } from 'src/app/models/payment-result.model';
+import { SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
+
 import { AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { Area } from 'src/app/models/area.model';
+import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 const { Browser } = Plugins;
 
 @Component({
@@ -60,9 +60,13 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   //accettazione delle condizioni di vendita
   disclaimer: boolean =false;
 
-  //Gestione pagamento
-  arPaymentConfig: PaymentConfiguration[]; //Elenco dei metodi di pagamento accettati
-  selectedPayment: PaymentConfiguration;
+
+
+  //Configurazioni di pagamento
+  myListPayment: AreaPaymentSetting[];
+  mySelectedPayment: AreaPaymentSetting;
+
+
 
   subPaymentResult: Subscription;
 
@@ -83,7 +87,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       this.docArea = this.startService.areaSelectedValue;
       
       //Impostazione tipologie pagamento
-      this.setPaymentConfig();
+      this.setListPayment();
 
   }
 
@@ -203,15 +207,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   onBookIdWrong() {
 
     this.showMessage('Errore dati prenotazione');
+    this.closeModal();
 
-    // close();
-    // if (this.idLocation.length !== 0) {
-    //   this.navCtrl.navigateForward(['/','location',this.idLocation,'booking']);
-    // }
-    // else {
-    //   this.navCtrl.navigateForward(['/']);
-    // }
-    this.closeModal()
   }
 
   /**
@@ -318,21 +315,28 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
   //#region METODI GESTIONE PAGAMENTO
 
-  setPaymentConfig() {
-    this.arPaymentConfig = [];
+  /**
+   * Recupera i metodi di pagamento sulla base dell'Area e popola 
+   * l'array myListPayment e l'elemento mySelectedPayament
+   */  
+  setListPayment() {
+
+    //Svuota l'array
+    this.myListPayment = [];
+
+
+    //Ho il documento dell'Area
     if (this.docArea) {
       
-      let modePay = new Payment(this.docArea);
+      this.myListPayment = this.docArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
-      this.arPaymentConfig = modePay.getPaymentFor(SettoreAttivita.settorePrenotazione);
-      
-
-      if (this.arPaymentConfig) {
-        //Con un solo metodo di pagamento lo imposto gia
-        if (this.arPaymentConfig.length == 1) {
-          this.selectedPayment = this.arPaymentConfig[0];
-        }
+      if (this.myListPayment && this.myListPayment.length != 0) {
+        this.mySelectedPayment = this.myListPayment[0];
       }
+      else {
+        this.mySelectedPayment = null;
+      }
+
     }
 
   }
@@ -342,7 +346,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    * @param value Valore Pagamento
    */
   onPaymentSelected(value) {
-    this.selectedPayment = value;
+    this.mySelectedPayment = value;
   }
 
 
@@ -355,13 +359,16 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    */
   onExecPayment() {
 
-    if (this.selectedPayment) {
+    //L'utente ha selezionato  
+    if (this.mySelectedPayment) {
 
       //Pagamento non dentro all'App
-      if (this.selectedPayment.paymentInApp == false) {
+      if (this.mySelectedPayment.paymentInApp == false) {
 
-        let paymentResult = new PaymentResult(this.selectedPayment.channel, this.startService.isDesktop);
-
+        //Creo il risultato del pagamento
+        let paymentResult = new PaymentResult();
+        paymentResult.paymentRequestInApp = false;
+        
         this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
         this.activePrenotazione.INCASSATO = 0;
 
@@ -370,23 +377,14 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
       }
       else {
-        //Altre forme di pagamento
-        //Pagamento gestito nel Servizio Payment
-        if (!this.startService.isDesktop) {
-  
-          this.payMobile();  
-        }
-        else {
+        //Qui invece bisogna gestire il pagamento
 
-          //Ambiente Web
-
-          this.payDesktop();
-        }
       }
 
     }
     else {
-      this.showMessage('Selezionare un pagamento');
+      //Pagamento non selezionato
+      this.showMessage('E\' necessario selezionare un pagamento');
     }
 
 
@@ -395,103 +393,103 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
 
   private payDesktop() {
-    let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
-    switch (this.selectedPayment.channel) {
-      case PaymentChannel.paypal:
-        //Apro la modale del pagamento Paypal
-        this.modalCtrl.create({
-          component: PaypalPage,
-          componentProps: {
-            paymentConfig: this.selectedPayment,
-            amount: this.activePrenotazione.TOTALE,
-            currency: 'EUR',
-            description: descrizioneAcquisto
-          }
-        })
-          .then(modal => {
+    // let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
+    // switch (this.selectedPayment.channel) {
+    //   case PaymentChannel.paypal:
+    //     //Apro la modale del pagamento Paypal
+    //     this.modalCtrl.create({
+    //       component: PaypalPage,
+    //       componentProps: {
+    //         paymentConfig: this.selectedPayment,
+    //         amount: this.activePrenotazione.TOTALE,
+    //         currency: 'EUR',
+    //         description: descrizioneAcquisto
+    //       }
+    //     })
+    //       .then(modal => {
 
-            //mostro la modale di pagamento
-            modal.present();
+    //         //mostro la modale di pagamento
+    //         modal.present();
 
-            //quando la modale si chiude 
-            modal.onDidDismiss()
-            .then((data) => {
+    //         //quando la modale si chiude 
+    //         modal.onDidDismiss()
+    //         .then((data) => {
 
-              let response : PaymentResult;
-              response = data['data'];
+    //           let response : PaymentResult;
+    //           response = data['data'];
               
 
-              if (response.paymentExecuted&&response.result){
-                //E' andato tutto bene
-                this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
-                this.activePrenotazione.RESIDUO = 0;
-                this.activePrenotazione.IDTRANSACTION = response.idPagamento;
-                this.onPaymentSuccess(response);
-              }
-              else{
-                //il pagamento non è riuscito
-                this.onPaymentFailed(response);
-              }
-            })
-          });
+    //           if (response.paymentExecuted&&response.result){
+    //             //E' andato tutto bene
+    //             this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
+    //             this.activePrenotazione.RESIDUO = 0;
+    //             this.activePrenotazione.IDTRANSACTION = response.idPagamento;
+    //             this.onPaymentSuccess(response);
+    //           }
+    //           else{
+    //             //il pagamento non è riuscito
+    //             this.onPaymentFailed(response);
+    //           }
+    //         })
+    //       });
 
-        break;
+    //     break;
 
-      default:
-        break;
-    }
+    //   default:
+    //     break;
+    // }
   }
 
   private payMobile() {
-    let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
+    // let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
 
-    //Qui devo eseguire il pagamento
-    this.loadingController.create({
-      message: 'Pagamento in corso...',
-      spinner: 'circular',
-      backdropDismiss: true
-    }).
-      then(elLoading => {
+    // //Qui devo eseguire il pagamento
+    // this.loadingController.create({
+    //   message: 'Pagamento in corso...',
+    //   spinner: 'circular',
+    //   backdropDismiss: true
+    // }).
+    //   then(elLoading => {
 
-        //Presento il loading
-        elLoading.present();
+    //     //Presento il loading
+    //     elLoading.present();
 
-        //Faccio la richiesta al servizio di pagamento
-        this.startService.execPayment(this.selectedPayment, this.activePrenotazione.TOTALE, 'EUR', descrizioneAcquisto)
-          .then(risposta => {
+    //     //Faccio la richiesta al servizio di pagamento
+    //     this.startService.execPayment(this.selectedPayment, this.activePrenotazione.TOTALE, 'EUR', descrizioneAcquisto)
+    //       .then(risposta => {
 
-            //quando arriva la risposta
-            elLoading.dismiss();
+    //         //quando arriva la risposta
+    //         elLoading.dismiss();
 
-            //Pagamento eseguito correttamente
-            if (risposta && risposta.paymentExecuted && risposta.result) {
-              // è andato tutto bene
-              this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
-              this.activePrenotazione.RESIDUO = 0;
-              this.activePrenotazione.IDTRANSACTION = risposta.idPagamento;
-              this.showMessage(risposta.message);
-              this.onPaymentSuccess(risposta);
-            }
-            else {
+    //         //Pagamento eseguito correttamente
+    //         if (risposta && risposta.paymentExecuted && risposta.result) {
+    //           // è andato tutto bene
+    //           this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
+    //           this.activePrenotazione.RESIDUO = 0;
+    //           this.activePrenotazione.IDTRANSACTION = risposta.idPagamento;
+    //           this.showMessage(risposta.message);
+    //           this.onPaymentSuccess(risposta);
+    //         }
+    //         else {
 
-              //Il pagamento non è andato a buon fine
-              this.showMessage(risposta.message);
+    //           //Il pagamento non è andato a buon fine
+    //           this.showMessage(risposta.message);
 
-              //Esecuzione fallita
-              this.onPaymentFailed(risposta);
-            }
+    //           //Esecuzione fallita
+    //           this.onPaymentFailed(risposta);
+    //         }
 
 
-          })
-          .catch((risposta: PaymentResult) => {
-            //qualcosa è andato storto
-            elLoading.dismiss();
+    //       })
+    //       .catch((risposta: PaymentResult) => {
+    //         //qualcosa è andato storto
+    //         elLoading.dismiss();
 
-            //Esecuzione fallita
-            this.onPaymentFailed(risposta);
+    //         //Esecuzione fallita
+    //         this.onPaymentFailed(risposta);
 
-          });
-      });
+    //       });
+    //   });
   }
 
   /**
@@ -612,6 +610,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     })
   }
   
+
   openLink(url:string)
   {
     Browser.open({url:url})

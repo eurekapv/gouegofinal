@@ -1,6 +1,6 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import {  TipoCorso } from '../models/valuelist.model';
+import {  StatoPagamento, TipoCorso } from '../models/valuelist.model';
 
 export class UtenteIscrizione extends IDDocument {
 
@@ -113,5 +113,56 @@ export class UtenteIscrizione extends IDDocument {
   
         return nameIcon;
         
+      }
+
+     /**
+     * Ritorna il valore che è necessario pagare
+     */
+     get amountPayment(): number {
+
+        let myAmount: number = 0;
+        
+        myAmount = this.RESIDUO;
+
+        return myAmount;
+     }
+  
+  
+      /**
+       * Stato del pagamento in formato testo
+       * @param showForPay: se TRUE verrà restituito un messaggio per effettuare il pagamento
+       */
+      getCaptionStatePayment(showForPay: boolean = false): string {
+        let caption = '';
+
+        if (this.amountPayment != 0) {
+            if (showForPay) {
+                caption = 'Paga Ora';
+            }
+            else {
+                caption = 'Corso da pagare';
+            }
+        }
+        else {
+
+            caption = 'Corso pagato';
+        }
+        return caption;
+      }
+
+      /**
+       * Ritorna lo Stato del pagamento Iscrizione
+       */
+      getStatoPagamento(): StatoPagamento {
+        let myStato = StatoPagamento.daPagare;
+
+        if (this.RESIDUO == 0 ) {
+          myStato = StatoPagamento.pagato;
+        }
+        else if (this.RESIDUO != 0 && this.RESIDUO != this.IMPORTO) {
+          myStato = StatoPagamento.pagatoInParte;
+        }
+
+        return myStato;
       }
 }

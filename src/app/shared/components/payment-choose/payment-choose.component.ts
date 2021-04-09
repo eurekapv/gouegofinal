@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PaymentConfiguration, PaymentChannel } from 'src/app/models/payment.model';
 import { Platform, ActionSheetController } from '@ionic/angular';
+import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 
 @Component({
   selector: 'app-payment-choose',
@@ -10,14 +10,15 @@ import { Platform, ActionSheetController } from '@ionic/angular';
 export class PaymentChooseComponent implements OnInit {
 
   //Elenco dei pagamenti accettati
-  @Input() arPayment: PaymentConfiguration[] = [];
-  @Output() onPaymentChoosed = new EventEmitter<PaymentConfiguration>();
-  @Input() selectedPayment: PaymentConfiguration;
+  @Input() arPayment: AreaPaymentSetting[] = [];
+  @Output() onPaymentChoosed = new EventEmitter<AreaPaymentSetting>();
+  @Input() selectedPayment: AreaPaymentSetting;
 
   isMobile = false;
 
   constructor(private platform: Platform,
               private actionSheetController: ActionSheetController) { 
+
     if (platform.is('hybrid')) {
       this.isMobile = true;
     }
@@ -28,6 +29,7 @@ export class PaymentChooseComponent implements OnInit {
 
   get itemIcon() {
     let nameIcon = 'cart-outline';
+
     if (this.selectedPayment) {
       nameIcon = this.selectedPayment.icon;
     }
@@ -96,7 +98,7 @@ export class PaymentChooseComponent implements OnInit {
    * Cambio di selezione nel pagamento
    * @param value Nuova selezione
    */
-  onChangePaymentSelection(value:PaymentConfiguration) {
+  onChangePaymentSelection(value:AreaPaymentSetting) {
     //Memorizzo il pagamento
     this.selectedPayment = value;
 

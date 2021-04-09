@@ -94,8 +94,8 @@
 
       <!-- Componente scelta Pagamento -->  
         <app-payment-choose 
-            [arPayment]="arPaymentConfig"
-            [selectedPayment]="selectedPayment"
+            [arPayment]="myListPayment"
+            [selectedPayment]="mySelectedPayment"
             (onPaymentChoosed)="onPaymentSelected($event)"></app-payment-choose>
 
         <ion-item lines="none" id="item-totale">
@@ -113,7 +113,7 @@
             color="tertiary" 
             expand="block" 
             class="full-buttons" 
-            [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !selectedPayment " 
+            [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !mySelectedPayment " 
             (click)="onConfirm()">
           Conferma Prenotazione
         </ion-button>

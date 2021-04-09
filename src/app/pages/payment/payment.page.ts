@@ -19,6 +19,8 @@ export class PaymentPage implements OnInit{
   @Input() paymentData: OnlinePaymentCheckoutData
 
   @Input() listAreaPaymentSetting: AreaPaymentSetting[]
+
+  filterdAreaPaymentSettings: AreaPaymentSetting[];
   
   payPalScriptUrl = 'https://www.paypalobjects.com/api/checkout.js'
   constructor(private modalController: ModalController) {
@@ -31,14 +33,24 @@ export class PaymentPage implements OnInit{
     console.log(this.paymentData);
     console.log(this.listAreaPaymentSetting);
 
+      this.setFilteredAreaPaymentSettings();
       this.initPaymentMethods();
+  }
+
+  setFilteredAreaPaymentSettings(){
+    this.filterdAreaPaymentSettings = this.listAreaPaymentSetting.filter(elPaymentSetting => {
+      return elPaymentSetting.paymentInApp;
+    })
   }
 
   initPaymentMethods(){
 
+
+
     //devo scorrere tutti i pagamenti possibili e gestirli
-    if(this.listAreaPaymentSetting != undefined && this.listAreaPaymentSetting.length > 0){
-      this.listAreaPaymentSetting.forEach(elSettingPayment => {
+
+    if(this.filterdAreaPaymentSettings != undefined && this.filterdAreaPaymentSettings.length > 0){
+      this.filterdAreaPaymentSettings.forEach(elSettingPayment => {
         switch (elSettingPayment.TIPOPAYMENT){
           case PaymentChannel.paypal:
 

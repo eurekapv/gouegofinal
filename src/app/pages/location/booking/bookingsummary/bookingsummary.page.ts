@@ -17,7 +17,7 @@ import { Plugins } from '@capacitor/core';
 import { Area } from 'src/app/models/area.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { OnlinePaymentCheckoutData } from 'src/app/models/online-payment-checkout-data.model';
-import { PaymentPage } from 'src/app/pages/paypal/payment.page';
+import { PaymentPage } from 'src/app/pages/payment/payment.page';
 const { Browser } = Plugins;
 
 @Component({

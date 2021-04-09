@@ -11,7 +11,6 @@ export class AreaPaymentSetting extends IDDocument {
     PPACCOUNT: string;
     PPCLIENTIDSANDBOX: string;
     PPCLIENTIDPRODUCTION: string;
-    PPCLIENTSECRET: string;
     SETTORI: string;
     STPUBLICKEY: string;
     STPUBLICKEYTEST: string;

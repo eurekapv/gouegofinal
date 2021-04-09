@@ -16,6 +16,8 @@ import { AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { Area } from 'src/app/models/area.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+import { OnlinePaymentCheckoutData } from 'src/app/models/online-payment-checkout-data.model';
+import { PaymentPage } from 'src/app/pages/paypal/payment.page';
 const { Browser } = Plugins;
 
 @Component({
@@ -378,6 +380,46 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       }
       else {
         //Qui invece bisogna gestire il pagamento
+
+        //Mi serve:
+        //1) array con le modalità di pagamento SOLO in-app disponibili
+        let myListPaymentInApp = this.myListPayment.filter(elPaymentSetting => {
+          return elPaymentSetting.paymentInApp
+        });
+
+        //2) oggetto con i dettagli del checkout
+        let myCheckOutObj = new OnlinePaymentCheckoutData()
+        myCheckOutObj.amount = this.activePrenotazione.RESIDUO;
+        myCheckOutObj.description = 'Prenotazione campo';
+        myCheckOutObj.currency = 'EUR';
+
+        //ora posso mostrare la modale
+        this.modalCtrl.create({
+          component: PaymentPage,
+          componentProps: {
+            paymentData: myCheckOutObj,
+            listAreaPaymentSettings: myListPaymentInApp
+          }
+        })
+        .then(elModal => {
+          elModal.present();
+
+          return elModal.onDidDismiss()
+        })
+        .then((returnData) => {
+
+          //recupero il risultato del pagamento
+          let myPaymentResult: PaymentResult = returnData['data'];
+
+          //controllo se il pagamento è andato a buon fine, e mi muovo di conseguenzq
+          if (myPaymentResult.paymentExecuted && myPaymentResult.result){
+            this.onPaymentSuccess(myPaymentResult); 
+          }
+          else{
+            this.onPaymentFailed(myPaymentResult);
+          }
+        })
+
 
       }
 

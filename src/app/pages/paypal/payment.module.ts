@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PaypalPageRoutingModule } from './paypal-routing.module';
+import { PaypalPageRoutingModule } from './payment-routing.module';
 
-import { PaypalPage } from './paypal.page';
+import { PaymentPage } from './payment.page';
 
 @NgModule({
   imports: [
@@ -15,7 +15,7 @@ import { PaypalPage } from './paypal.page';
     IonicModule,
     PaypalPageRoutingModule
   ],
-  declarations: [PaypalPage],
-  exports: [PaypalPage]
+  declarations: [PaymentPage],
+  exports: [PaymentPage]
 })
 export class PaypalPageModule {}

@@ -18,7 +18,7 @@ export class PaymentPage implements OnInit{
 
   @Input() paymentData: OnlinePaymentCheckoutData
 
-  @Input() listAreaPaymentSetting: AreaPaymentSetting[]
+  @Input() listAreaPaymentSettings: AreaPaymentSetting[]
 
   filterdAreaPaymentSettings: AreaPaymentSetting[];
   
@@ -31,14 +31,14 @@ export class PaymentPage implements OnInit{
 
   ngOnInit(): void {
     console.log(this.paymentData);
-    console.log(this.listAreaPaymentSetting);
+    console.log(this.listAreaPaymentSettings);
 
       this.setFilteredAreaPaymentSettings();
       this.initPaymentMethods();
   }
 
   setFilteredAreaPaymentSettings(){
-    this.filterdAreaPaymentSettings = this.listAreaPaymentSetting.filter(elPaymentSetting => {
+    this.filterdAreaPaymentSettings = this.listAreaPaymentSettings.filter(elPaymentSetting => {
       return elPaymentSetting.paymentInApp;
     })
   }

@@ -1,6 +1,6 @@
 {
   "appId": "com.gouego.openbeach",
-  "appName": "ios",
+  "appName": "Open Beach",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

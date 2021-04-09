@@ -351,6 +351,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.mySelectedPayment = value;
   }
 
+  
+
 
   /**
    * Richiesta di esecuzione del pagamento di qualsiasi tipologia

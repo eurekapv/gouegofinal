@@ -19,6 +19,8 @@ export class CampiScrollComponent implements OnInit {
   @Input() selectedLocation: Location;
   @Input() canChoose: boolean; //Indica se è possibile modificare la scelta con i pulsanti
   @ViewChild('sliderCampi')sliderCampi: IonSlides;
+
+  styleInfoMessage: number = 2; //Stile del messaggio visualizzato
   
   sliderOpts1={
     slidesPerView: 1,
@@ -195,5 +197,18 @@ export class CampiScrollComponent implements OnInit {
     }
 
     return isSel;
+  }
+
+
+  /**
+   * Cambia la modalità del messaggio informativo
+   */
+  onChangeInfoStyle() {
+    if (this.styleInfoMessage == 1) {
+      this.styleInfoMessage = 2;
+    }
+    else {
+      this.styleInfoMessage = 1;
+    }
   }
 }

@@ -8,6 +8,7 @@ import { PaymentChannel } from 'src/app/models/valuelist.model';
 //questo mi rende disponibile l'oggetto paypal che è presente nello script caricato dinamicamente
 declare let paypal: any
 
+//
 
 @Component({
   selector: 'app-payment',
@@ -104,7 +105,8 @@ export class PaymentPage implements OnInit{
       const script = document.createElement('script');
       script.type = 'text/javascript';
       script.src = this.payPalScriptUrl;
-
+      document.getElementsByTagName('head')[0].appendChild(script);
+      
       script.onload = () => {
         console.log('PayPal script correctly loaded');
         resolve();
@@ -125,6 +127,7 @@ export class PaymentPage implements OnInit{
 
     paypal.Button.render({
       // Configure environment
+      //TODO environment va decodificato con "production" o "sandbox"
       env: payPalSettings.PPENVIRONMENT,
       client: {
         sandbox: payPalSettings.PPCLIENTIDSANDBOX,
@@ -146,7 +149,7 @@ export class PaymentPage implements OnInit{
         return actions.payment.create({
           transactions: [{
             amount: {
-              total: _this.paymentData.amount,
+              total: _this.paymentData.amount + '',
               currency: _this.paymentData.currency
             }
           }]

@@ -10,7 +10,7 @@ import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianifica
 import { Campo } from 'src/app/models/campo.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { PaymentResult } from 'src/app/models/payment-result.model';
-import { SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
+import { PaymentMode, SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
 
 import { AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
@@ -67,7 +67,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   //Configurazioni di pagamento
   myListPayment: AreaPaymentSetting[];
   mySelectedPayment: AreaPaymentSetting;
-  
+  myPaymentMode: PaymentMode;
 
 
   subPaymentResult: Subscription;
@@ -351,7 +351,13 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.mySelectedPayment = value;
   }
 
-  
+  /**
+   * Cambiato il modo di pagamento
+   * @param valPaymentMode Modo di pagamento
+   */
+  onPaymentModeSelected(valPaymentMode: PaymentMode) {
+    this.myPaymentMode = valPaymentMode;
+  }
 
 
   /**

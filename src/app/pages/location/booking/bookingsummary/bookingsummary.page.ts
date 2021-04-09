@@ -369,11 +369,11 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    */
   onExecPayment() {
 
-    //L'utente ha selezionato  
-    if (this.mySelectedPayment) {
+    //L'utente ha selezionato come pagare
+    if (this.myPaymentMode) {
 
       //Pagamento non dentro all'App
-      if (this.mySelectedPayment.paymentInApp == false) {
+      if (this.myPaymentMode == PaymentMode.pagaBonifico || this.myPaymentMode == PaymentMode.pagaStruttura) {
 
         //Creo il risultato del pagamento
         let paymentResult = new PaymentResult();
@@ -389,16 +389,10 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       else {
         //Qui invece bisogna gestire il pagamento
 
-        //Mi serve:
-        //1) array con le modalità di pagamento SOLO in-app disponibili
-        let myListPaymentInApp = this.myListPayment.filter(elPaymentSetting => {
-          return elPaymentSetting.paymentInApp
-        });
-
         //2) oggetto con i dettagli del checkout
         let myCheckOutObj = new OnlinePaymentCheckoutData()
         myCheckOutObj.amount = this.activePrenotazione.RESIDUO;
-        myCheckOutObj.description = 'Prenotazione campo';
+        myCheckOutObj.description = 'Pagamento Prenotazione';
         myCheckOutObj.currency = 'EUR';
 
         //ora posso mostrare la modale
@@ -406,7 +400,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
           component: PaymentPage,
           componentProps: {
             paymentData: myCheckOutObj,
-            listAreaPaymentSettings: myListPaymentInApp
+            listAreaPaymentSettings: this.myListPayment
           }
         })
         .then(elModal => {

@@ -23,6 +23,8 @@ export class PaypalPage implements OnInit{
   
   paypalAvailable = false; //Script Paypal caricati
 
+  //clientId Sandbox: AaRz5fCbWZDIV1Cc6aAWCiOgZtcvP3ai39078mHUiTk30Clg31gsnS1PxQ4YQOLaQulptnYWTz9ul67T
+
   constructor(
               private navParams: NavParams,
               private modalCtrl: ModalController,

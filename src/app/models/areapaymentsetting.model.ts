@@ -1,6 +1,6 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import { PaymentChannel, PaymentEnvironment, SettorePagamentiAttivita } from './valuelist.model';
+import { PaymentChannel, PaymentEnvironment, PaymentMode, SettorePagamentiAttivita, ValueList } from './valuelist.model';
 
 
 export class AreaPaymentSetting extends IDDocument {
@@ -208,4 +208,70 @@ export class AreaPaymentSetting extends IDDocument {
 
       return inApp;
     }    
+
+
+    /**
+     * Imposta al massimo 3 valori di ritorno dal enum PaymentMode
+     * pagaStruttura se presente una voce onSite
+     * pagaBonifico se presente una voce bonifico
+     * pagaAdesso se presente un pagamento elettronico
+     * 
+     * @param arPaymentSettings Elenco Configurazione pagamenti 
+     */
+    static prepareArPaymentMode(arPaymentSettings: AreaPaymentSetting[]): ValueList[] {
+      let onSite = false;
+      let withBonifico = false;
+      let electronicPay = false;
+      let myElList: ValueList;
+
+      let arReturn: ValueList[] = [];
+
+      if (arPaymentSettings) {
+
+        arPaymentSettings.forEach(element => {
+            switch (element.TIPOPAYMENT) {
+              case PaymentChannel.onSite:
+                if (!onSite) {
+                  myElList = new ValueList(PaymentMode.pagaStruttura, 'Paga in struttura');
+                  myElList.itemIcon = 'cash-outline';
+                  arReturn.push(myElList);
+                }
+                onSite = true;
+              break;
+
+              case PaymentChannel.bonifico:
+                if (!withBonifico) {
+                  myElList = new ValueList(PaymentMode.pagaStruttura, 'Effettua un bonifico');
+                  myElList.itemIcon = 'document-text-outline';
+                  arReturn.push(myElList);
+                }
+                withBonifico = true;
+              break;
+            
+              case PaymentChannel.applePay:
+              case PaymentChannel.googlePay:
+              case PaymentChannel.paypal:
+              case PaymentChannel.stripe:
+                if (!electronicPay) {
+                  myElList = new ValueList(PaymentMode.pagaAdesso, 'Paga adesso');
+                  myElList.itemIcon = 'card-outline';
+                  arReturn.push(myElList);
+                }
+                electronicPay = true;
+
+              break;
+
+              default:
+                break;
+
+            }
+        });
+
+
+
+      }
+
+      return arReturn;
+      
+    }
 }

@@ -209,6 +209,13 @@ export enum PaymentEnvironment {
     production = 20
 }
 
+//Si puo' pagare in struttura, pagare subito, o con un bonifico
+export enum PaymentMode {
+    pagaStruttura = 10,
+    pagaBonifico = 50,
+    pagaAdesso = 200
+}
+
 
 export enum FileType{
     immagini = "file-photo-o",
@@ -243,6 +250,8 @@ export class ValueList {
 
     value: any;
     description: any;
+    selected: boolean;
+    itemIcon: string;
 
     /**
      * 
@@ -252,6 +261,7 @@ export class ValueList {
     constructor(valore: any, descrizione: any) {
         this.value = valore;
         this.description = descrizione;
+        this.selected = false;
     }
 
     /**

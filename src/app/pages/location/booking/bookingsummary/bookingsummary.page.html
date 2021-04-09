@@ -98,8 +98,13 @@
             [selectedPayment]="mySelectedPayment"
             (onPaymentChoosed)="onPaymentSelected($event)"></app-payment-choose>
 
+        <app-payment-mode
+          [arPayment]="myListPayment"
+          (onPaymentModeChoosed)="onPaymentModeSelected($event)"></app-payment-mode>
+          
+
         <ion-item lines="none" id="item-totale">
-          <ion-label slot="start">Totale</ion-label>
+          <ion-label slot="start">Totale</ion-label> 
           <ion-label style="text-align:right;">
           {{activePrenotazione?.TOTALE | currency: "EUR"}}
           </ion-label>

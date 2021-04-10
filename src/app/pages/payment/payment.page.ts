@@ -120,7 +120,8 @@ export class PaymentPage implements OnInit{
   }
 
 
-
+  // Cambiare con la modalita nuova
+  // https://developer.paypal.com/docs/checkout/integrate/
   renderPayPalBtn(payPalSettings: AreaPaymentSetting){
 
     let _this = this;

@@ -22,10 +22,32 @@ export class PaymentModeComponent implements OnInit {
     //Creo una lista con le possibilità
     this.arPaymentModeList = AreaPaymentSetting.prepareArPaymentMode(this.arPayment);
 
-    //Seleziono il primo disponibile
-    if (this.arPaymentModeList.length != 0) {
-      this.arPaymentModeList[0].selected = true;
-      this.selectedPaymentMode = this.arPaymentModeList[0];
+    this.chooseStartPayment();
+
+  }
+
+  /**
+   * Scegli un pagamento da proporre
+   * Se presente il metodo elettronico sceglie quello, altrimenti onSite o in ultimo il Bonifico
+   */
+  chooseStartPayment() {
+    
+    if (this.arPaymentModeList) {
+      if (this.arPaymentModeList.length != 0) {
+        //Metto in ordine decrescente
+        this.arPaymentModeList.sort((a,b) => b.value - a.value);
+
+        //Se non ho un paga Adesso giro nuovamente in ordine crescente
+        if (this.arPaymentModeList[0].value != PaymentMode.pagaAdesso) {
+         
+          this.arPaymentModeList.sort((a,b) => a.value - b.value);
+        }
+        //In prima posizione ho il pagamenti che cercavo
+        this.arPaymentModeList[0].selected = true;
+        //Emetto un evento di modifica e imposto il pagamento selezionato
+        this.onChangePaymentSelection(this.arPaymentModeList[0]);
+        
+      }
     }
   }
 

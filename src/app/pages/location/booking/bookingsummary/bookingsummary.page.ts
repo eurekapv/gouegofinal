@@ -369,67 +369,76 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    */
   onExecPayment() {
 
-    //L'utente ha selezionato come pagare
-    if (this.myPaymentMode) {
+    let arModes:PaymentMode[]=[PaymentMode.pagaAdesso, PaymentMode.pagaBonifico, PaymentMode.pagaStruttura];
 
-      //Pagamento non dentro all'App
-      if (this.myPaymentMode == PaymentMode.pagaBonifico || this.myPaymentMode == PaymentMode.pagaStruttura) {
+    if (this.activePrenotazione.TOTALE != 0) {
 
-        //Creo il risultato del pagamento
-        let paymentResult = new PaymentResult();
-        paymentResult.paymentRequestInApp = false;
-        
-        this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
-        this.activePrenotazione.INCASSATO = 0;
-
-        //Passo subito al Success
-        this.onPaymentSuccess(paymentResult);
-
+      //L'utente ha selezionato come pagare
+      if (arModes.includes(this.myPaymentMode)) {
+  
+        //Pagamento non dentro all'App
+        if (this.myPaymentMode == PaymentMode.pagaBonifico || this.myPaymentMode == PaymentMode.pagaStruttura) {
+  
+          //Creo il risultato del pagamento
+          let paymentResult = new PaymentResult();
+          paymentResult.paymentRequestInApp = false;
+          
+          this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
+          this.activePrenotazione.INCASSATO = 0;
+  
+          //Passo subito al Success
+          this.onPaymentSuccess(paymentResult);
+  
+        }
+        else {
+          //Qui invece bisogna gestire il pagamento
+  
+          //2) oggetto con i dettagli del checkout
+          let myCheckOutObj = new OnlinePaymentCheckoutData()
+          myCheckOutObj.amount = this.activePrenotazione.RESIDUO;
+          myCheckOutObj.description = 'Pagamento Prenotazione';
+          myCheckOutObj.currency = 'EUR';
+  
+          //ora posso mostrare la modale
+          this.modalCtrl.create({
+            component: PaymentPage,
+            componentProps: {
+              paymentData: myCheckOutObj,
+              listAreaPaymentSettings: this.myListPayment
+            }
+          })
+          .then(elModal => {
+            elModal.present();
+  
+            return elModal.onDidDismiss()
+          })
+          .then((returnData) => {
+  
+            //recupero il risultato del pagamento
+            let myPaymentResult: PaymentResult = returnData['data'];
+  
+            //controllo se il pagamento è andato a buon fine, e mi muovo di conseguenzq
+            if (myPaymentResult.paymentExecuted && myPaymentResult.result){
+              this.onPaymentSuccess(myPaymentResult); 
+            }
+            else{
+              this.onPaymentFailed(myPaymentResult);
+            }
+          })
+  
+  
+        }
+  
       }
       else {
-        //Qui invece bisogna gestire il pagamento
-
-        //2) oggetto con i dettagli del checkout
-        let myCheckOutObj = new OnlinePaymentCheckoutData()
-        myCheckOutObj.amount = this.activePrenotazione.RESIDUO;
-        myCheckOutObj.description = 'Pagamento Prenotazione';
-        myCheckOutObj.currency = 'EUR';
-
-        //ora posso mostrare la modale
-        this.modalCtrl.create({
-          component: PaymentPage,
-          componentProps: {
-            paymentData: myCheckOutObj,
-            listAreaPaymentSettings: this.myListPayment
-          }
-        })
-        .then(elModal => {
-          elModal.present();
-
-          return elModal.onDidDismiss()
-        })
-        .then((returnData) => {
-
-          //recupero il risultato del pagamento
-          let myPaymentResult: PaymentResult = returnData['data'];
-
-          //controllo se il pagamento è andato a buon fine, e mi muovo di conseguenzq
-          if (myPaymentResult.paymentExecuted && myPaymentResult.result){
-            this.onPaymentSuccess(myPaymentResult); 
-          }
-          else{
-            this.onPaymentFailed(myPaymentResult);
-          }
-        })
-
-
+        //Pagamento non selezionato
+        this.showMessage('E\' necessario selezionare un pagamento');
       }
-
     }
     else {
-      //Pagamento non selezionato
-      this.showMessage('E\' necessario selezionare un pagamento');
+      this.showMessage('Contattare la struttura. Prenotazioni gratuite concluse');
     }
+
 
 
   }

@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { OnlinePaymentCheckoutData } from 'src/app/models/online-payment-checkout-data.model';
 import { PaymentResult } from 'src/app/models/payment-result.model';
-import { PaymentChannel } from 'src/app/models/valuelist.model';
+import { PaymentChannel, PaymentEnvironment } from 'src/app/models/valuelist.model';
 
 //questo mi rende disponibile l'oggetto paypal che è presente nello script caricato dinamicamente
 declare let paypal: any
@@ -128,13 +128,13 @@ export class PaymentPage implements OnInit{
     paypal.Button.render({
       // Configure environment
       //TODO environment va decodificato con "production" o "sandbox"
-      env: payPalSettings.PPENVIRONMENT,
+      env: (payPalSettings.PPENVIRONMENT == PaymentEnvironment.production? 'production':'sandbox'),
       client: {
         sandbox: payPalSettings.PPCLIENTIDSANDBOX,
         production: payPalSettings.PPCLIENTIDPRODUCTION
       },
       // Customize button (optional)
-      locale: 'it',
+      locale: 'it_IT',
       style: {
         size: 'small',
         color: 'gold',

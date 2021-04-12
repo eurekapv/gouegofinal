@@ -9,7 +9,6 @@ import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose
 
 
 import { BookingsummaryPage } from './bookingsummary.page';
-import { HomePageModule } from 'src/app/pages/home/home.module';
 import { PaypalPageModule } from '../../../payment/payment.module';
 import { PaymentPage } from '../../../payment/payment.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';

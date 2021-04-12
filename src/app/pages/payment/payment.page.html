@@ -11,9 +11,47 @@
 </ion-header>
 
 <ion-content>
-  
-  <div id="customBtnPay">
-    
+
+
+
+
+  <div class="cart-items">
+    <ion-card mode="ios">
+      <ion-card-content>
+        <div class="item-img">
+          <img src="../../../assets/img/secure_payment.jpg" alt="securepayment"/>
+        </div>
+
+        <div class="item-info">
+          <p>Scegliere il servizio sottostante</p>
+          <p>per finalizzare il pagamento</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
   </div>
+
+  <div class="cart-total">
+    <ion-item lines="none">
+      <ion-label>Importo</ion-label>
+      <ion-label slot="end" class="ion-text-right">{{paymentData.amount | currency: paymentData.currency}}</ion-label>
+    </ion-item>
+  </div>
+
+  <div class="cart-items">
+    <ion-card mode="ios">
+
+      <!-- INIZIO PULSANTE PAYPAL -->
+      <ion-card-content>
+
+        <div  id="customBtnPaypal">
+    
+        </div>
+      </ion-card-content>
+
+    </ion-card>
+  </div>
+
+
+
  
 </ion-content>

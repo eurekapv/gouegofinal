@@ -26,7 +26,6 @@ export class PaymentPage implements OnInit{
   payPalScriptUrl = 'https://www.paypalobjects.com/api/checkout.js'
   constructor(private modalController: ModalController) {
     
-   
   }
 
 
@@ -42,6 +41,11 @@ export class PaymentPage implements OnInit{
     this.filterdAreaPaymentSettings = this.listAreaPaymentSettings.filter(elPaymentSetting => {
       return elPaymentSetting.paymentInApp;
     })
+  }
+
+
+  containPayment(typePay: PaymentChannel) {
+
   }
 
   initPaymentMethods(){
@@ -137,9 +141,11 @@ export class PaymentPage implements OnInit{
       // Customize button (optional)
       locale: 'it_IT',
       style: {
-        size: 'small',
+        size: 'responsive',
         color: 'gold',
         shape: 'pill',
+        label: 'pay',
+        fundingicons: true
       },
 
       // Enable Pay Now checkout flow (optional)
@@ -174,7 +180,7 @@ export class PaymentPage implements OnInit{
       }
 
   
-    }, '#customBtnPay');
+    }, '#customBtnPaypal');
   }
 
 

@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { OnlinePaymentCheckoutData } from 'src/app/models/online-payment-checkout-data.model';
 import { PaymentResult } from 'src/app/models/payment-result.model';
-import { PaymentChannel, PaymentEnvironment } from 'src/app/models/valuelist.model';
+import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/valuelist.model';
 
 //questo mi rende disponibile l'oggetto paypal che è presente nello script caricato dinamicamente
 declare let paypal: any
@@ -26,7 +26,10 @@ export class PaymentPage implements OnInit{
   //Viene tornato dall chiusura della modale
   docResult: PaymentResult = new PaymentResult();
   
-  payPalScriptUrl = 'https://www.paypalobjects.com/api/checkout.js';
+  urlPayPalScriptCheckOut = 'https://www.paypalobjects.com/api/checkout.js';
+  urlPayPalScriptSmart = 'https://www.paypal.com/sdk/js?client-id=';
+  urlPaypal = '';
+  paypalVersion = 'checkout'; //checkout o smart
 
   //Proprietà per la visualizzazione delle porzioni di pagamento
   showPaypal = false;
@@ -39,7 +42,8 @@ export class PaymentPage implements OnInit{
 
 
   constructor(private modalController: ModalController) {
-    
+    //Uso la nuova modalità SmartButton di Paypal
+    this.paypalVersion = 'smart';
   }
 
 
@@ -74,15 +78,37 @@ export class PaymentPage implements OnInit{
               //Pagamento Paypal
               this.showPaypal = true;
 
+              //Determino URL SCRIPT da caricare
+              if (this.paypalVersion == 'checkout') {
+                this.urlPaypal = this.urlPayPalScriptCheckOut;
+              }
+              else if (this.paypalVersion == ' smart') {
+
+                //Nella modalità SMART alla fine dell'URL c'e' il ClientID da  utilizzare
+                switch (elSettingPayment.PPENVIRONMENT) {
+                  case PaymentEnvironment.production:
+                    this.urlPaypal = this.urlPayPalScriptSmart + elSettingPayment.PPCLIENTIDPRODUCTION;
+                    break;
+                    case PaymentEnvironment.test:
+                      this.urlPaypal = this.urlPayPalScriptSmart + elSettingPayment.PPCLIENTIDSANDBOX;
+                      break;                
+                  default:
+                    break;
+                }
+
+                this.urlPaypal += '&currency=EUR';
+                  
+              }
+
               //Lo script Paypal è già presente nell'header
-              if (this.scriptOnHead(this.payPalScriptUrl)) {
-                //Renderizzo il bottone
-                this.renderPayPalBtn(elSettingPayment);
+              if (this.scriptOnHead(this.urlPaypal)) {
+                  //Renderizzo il bottone
+                  this.renderPayPalBtn(elSettingPayment);
               }
               else {
                 //Lo Script devo prima caricarlo e poi renderizzarli
                 //gestione paypal
-                this.loadPayPalScript()
+                this.loadDinamicScript(this.urlPaypal)
                 .then(()=> {
                   this.renderPayPalBtn(elSettingPayment);
                 });
@@ -134,7 +160,7 @@ export class PaymentPage implements OnInit{
       docResultPayment = new PaymentResult();
       //Segno che il pagamento non è avvenuto
       docResultPayment.paymentExecuted = false;
-      docResultPayment.message = 'Pagamento annulato';
+      docResultPayment.message = 'Pagamento annullato';
     }
 
     this.modalController.dismiss(docResultPayment);
@@ -142,7 +168,8 @@ export class PaymentPage implements OnInit{
   }
 
   /**
-   * Richiesta di annullare il pagamento
+   * Metodo da richiamare quando si vuole annullare il pagamento
+   * e chiudere la modale
    */
   onCancelPayment() {
     let resultPayment = new PaymentResult();
@@ -153,22 +180,72 @@ export class PaymentPage implements OnInit{
     this.onCloseModal(resultPayment);
   }
 
-  onSuccessPayment(type:PaymentChannel, idTransaction:string) {
+
+  /**
+   * Metodo da richiamare quando si vuole concludere il pagamento 
+   * positivamente
+   * @param channel Canale utilizzato (Paypal, Stripe etc)
+   * @param idTransaction Transazione
+   */
+  onSuccessPayment(channel:PaymentChannel, idTransaction:string) {
+    let resultPayment = new PaymentResult();
+
+    resultPayment.tipoPagamento = channel;
+    resultPayment.idPagamento = idTransaction;
+    resultPayment.paymentExecuted = true;
+    resultPayment.message = 'Transazione completata con successo';
+
+    //Chiudo la modale inviando il documento
+    this.onCloseModal(resultPayment);
+  }
+
+  /**
+   * Metodo da richiamare dentro agli eventi Paypal
+   * per segnalare il buon fine del pagamento
+   * 
+   */
+  OnSuccessPaypal(details) {
+    //Pagamento avvenuto con successo su Paypal
+    let idTransaction: string;
+    let namePayer: string;
+    let status: PaypalStatus; 
+
+    if (details) {
+      switch (this.paypalVersion) {
+        case 'smart':
+            namePayer = details.payer.name.given_name;
+            idTransaction = details.id;
+            status = details.status;
+          break;
+
+        case 'checkout':
+          namePayer = details.payer.name.given_name;
+          idTransaction = details.id;
+          status = details.status;
+        break;
+      
+        default:
+          break;
+      }
+
+      //Per ora invio solo idTransaction non so se mi serve anche altro
+      this.onSuccessPayment(PaymentChannel.paypal, idTransaction);
+    }
 
   }
 
 
   
   //carico dinamicamente lo script nella pagina
-  loadPayPalScript(){
+  loadDinamicScript(urlScript: string){
     return new Promise<void>((resolve, reject) => {
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = this.payPalScriptUrl;
+      script.src = urlScript;
       document.getElementsByTagName('head')[0].appendChild(script);
       
       script.onload = () => {
-        console.log('PayPal script correctly loaded');
+        console.log('Script correctly loaded');
         resolve();
       }
 
@@ -185,61 +262,83 @@ export class PaymentPage implements OnInit{
   renderPayPalBtn(payPalSettings: AreaPaymentSetting){
 
     let _this = this;
-
-    paypal.Button.render({
-      // Configure environment
-      //TODO environment va decodificato con "production" o "sandbox"
-      env: (payPalSettings.PPENVIRONMENT == PaymentEnvironment.production? 'production':'sandbox'),
-      client: {
-        sandbox: payPalSettings.PPCLIENTIDSANDBOX,
-        production: payPalSettings.PPCLIENTIDPRODUCTION
-      },
-      // Customize button (optional)
-      locale: 'it_IT',
-      style: {
-        size: 'responsive',
-        color: 'gold',
-        shape: 'pill',
-        label: 'pay',
-        fundingicons: true
-      },
-
-      // Enable Pay Now checkout flow (optional)
-      commit: true,
-
-      // Set up a payment
-      payment: function(data, actions) {
-        return actions.payment.create({
-          transactions: [{
-            amount: {
-              total: _this.paymentData.amount + '',
-              currency: _this.paymentData.currency
-            },
-            description: _this.paymentData.description
-          }],
-          note_to_payer: 'Contatta la struttura per ogni problematica sul pagamento.'
-        });
-      },
-      // Execute the payment
-      onAuthorize: function(data, actions) {
-        return actions.payment.execute()
-          .then(function() {
-            //######## Handler pagamento effettuato con successo ###########
-
-            console.log('Pagamento confermato!');
-
-            console.log('Data: ');
-            console.log(data);
-            console.log('Actions: ');
-            console.log(actions);
-            
-          })
-      
-        
-      }
-
+    if (this.paypalVersion == 'checkout') {
+      paypal.Button.render({
+        // Configure environment
+        //TODO environment va decodificato con "production" o "sandbox"
+        env: (payPalSettings.PPENVIRONMENT == PaymentEnvironment.production? 'production':'sandbox'),
+        client: {
+          sandbox: payPalSettings.PPCLIENTIDSANDBOX,
+          production: payPalSettings.PPCLIENTIDPRODUCTION
+        },
+        // Customize button (optional)
+        locale: 'it_IT',
+        style: {
+          size: 'responsive',
+          color: 'gold',
+          shape: 'pill',
+          label: 'pay',
+          fundingicons: true
+        },
   
-    }, '#customBtnPaypal');
+        // Enable Pay Now checkout flow (optional)
+        commit: true,
+  
+        // Set up a payment
+        payment: function(data, actions) {
+          return actions.payment.create({
+            transactions: [{
+              amount: {
+                total: _this.paymentData.amount + '',
+                currency: _this.paymentData.currency
+              },
+              description: _this.paymentData.description
+            }],
+            note_to_payer: 'Contatta la struttura per ogni problematica sul pagamento.'
+          });
+        },
+        // Execute the payment
+        onAuthorize: function(data, actions) {
+          return actions.payment.execute()
+            .then(function(details) {
+              //######## Handler pagamento effettuato con successo ###########
+  
+              console.log('Pagamento confermato!');
+              //Chiamo la funzione Paypal di Conferma
+              _this.OnSuccessPaypal(details);
+
+              
+            })
+        
+          
+        }
+  
+    
+      }, '#customBtnPaypal');
+    }
+    else if (this.paypalVersion == 'smart') {
+      paypal.Buttons({
+          createOrder: function (data,action) {
+            //Funzione con i dati della transazione
+            return action.order.create({
+              purchase_units: [{
+                amount: {
+                  value: _this.paymentData.amount + '',
+                  description: _this.paymentData.description
+                }
+              }]
+            });
+          },
+          onApprove: function(data, actions) {
+            return actions.order.capture()
+                   .then(function (details) {
+                      //Transazione avvenuta con successo
+                      //Chiamo la funzione Paypal di Conferma
+                      _this.OnSuccessPaypal(details);
+                   });
+          }
+      }).render('#customBtnPaypal')
+    }
   }
 
 

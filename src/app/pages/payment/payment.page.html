@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="primary">
-      <ion-button (click)="closeModal()" >
+      <ion-button (click)="onCancelPayment()" >
         <ion-icon slot="icon-only" ios="close" md="close" ></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -12,32 +12,45 @@
 
 <ion-content>
 
+  <ion-button 
+      color="danger" 
+      expand="block" 
+      class="full-buttons" 
+      (click)="onCancelPayment()">
+      Aspetta, voglio modificare
+  </ion-button>
 
 
-
-  <div class="cart-items">
+  <div class="cart-items" >
     <ion-card mode="ios">
       <ion-card-content>
         <div class="item-img">
           <img src="../../../assets/img/secure_payment.jpg" alt="securepayment"/>
         </div>
-
-        <div class="item-info">
+        <!-- CI SONO MODALITA DI PAGAMENTO-->
+        <div class="item-info" *ngIf="!noPayment">
           <p>Scegliere il servizio sottostante</p>
           <p>per finalizzare il pagamento</p>
         </div>
+
+        <!-- NON CI SONO MODALITA DI PAGAMENTO-->
+        <div class="item-info" *ngIf="noPayment">
+          <p>Spiacenti, a causa di un errore non</p>
+          <p>&egrave possibile finalizzare il pagamento</p>
+        </div>
+
       </ion-card-content>
     </ion-card>
   </div>
 
   <div class="cart-total">
     <ion-item lines="none">
-      <ion-label>Importo</ion-label>
+      <ion-label>{{paymentData.description}}</ion-label>
       <ion-label slot="end" class="ion-text-right">{{paymentData.amount | currency: paymentData.currency}}</ion-label>
     </ion-item>
   </div>
 
-  <div class="cart-items">
+  <div class="cart-items" *ngIf = "showPaypal">
     <ion-card mode="ios">
 
       <!-- INIZIO PULSANTE PAYPAL -->

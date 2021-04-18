@@ -18,12 +18,26 @@ declare let paypal: any
 export class PaymentPage implements OnInit{
 
   @Input() paymentData: OnlinePaymentCheckoutData
-
   @Input() listAreaPaymentSettings: AreaPaymentSetting[]
 
   filterdAreaPaymentSettings: AreaPaymentSetting[];
   
-  payPalScriptUrl = 'https://www.paypalobjects.com/api/checkout.js'
+  //Documento con il risultato delle operazioni di pagamento
+  //Viene tornato dall chiusura della modale
+  docResult: PaymentResult = new PaymentResult();
+  
+  payPalScriptUrl = 'https://www.paypalobjects.com/api/checkout.js';
+
+  //Proprietà per la visualizzazione delle porzioni di pagamento
+  showPaypal = false;
+  showStripe = false;
+  showApplePay = false;
+  showGPay = false;
+
+  //Nessuna modalità di pagamento è stata trovata
+  noPayment = false;
+
+
   constructor(private modalController: ModalController) {
     
   }
@@ -33,72 +47,114 @@ export class PaymentPage implements OnInit{
     console.log(this.paymentData);
     console.log(this.listAreaPaymentSettings);
 
-      this.setFilteredAreaPaymentSettings();
       this.initPaymentMethods();
-  }
-
-  setFilteredAreaPaymentSettings(){
-    this.filterdAreaPaymentSettings = this.listAreaPaymentSettings.filter(elPaymentSetting => {
-      return elPaymentSetting.paymentInApp;
-    })
-  }
-
-
-  containPayment(typePay: PaymentChannel) {
 
   }
 
+  /**
+   * Inizializzo i metodi di pagamento che riesco a gestire
+   */
   initPaymentMethods(){
-
-
 
     //devo scorrere tutti i pagamenti possibili e gestirli
 
-    if(this.filterdAreaPaymentSettings != undefined && this.filterdAreaPaymentSettings.length > 0){
-      this.filterdAreaPaymentSettings.forEach(elSettingPayment => {
-        switch (elSettingPayment.TIPOPAYMENT){
-          case PaymentChannel.paypal:
+    if (this.listAreaPaymentSettings && this.listAreaPaymentSettings.length != 0) {
 
-            //gestione paypal
-            this.loadPayPalScript()
-            .then(()=> {
-              this.renderPayPalBtn(elSettingPayment);
-            })
+      for (let index = 0; index < this.listAreaPaymentSettings.length; index++) {
 
-          break;
+        const elSettingPayment = this.listAreaPaymentSettings[index];
 
-          case PaymentChannel.stripe:
-            //
-          break;
+        if (elSettingPayment.paymentInApp) {
 
-          case PaymentChannel.applePay:
-            //
-          break;
+          switch (elSettingPayment.TIPOPAYMENT){
+            case PaymentChannel.paypal:
+              //Flag noPayment spento
+              this.noPayment = false;
+
+              //Pagamento Paypal
+              this.showPaypal = true;
+
+              //Lo script Paypal è già presente nell'header
+              if (this.scriptOnHead(this.payPalScriptUrl)) {
+                //Renderizzo il bottone
+                this.renderPayPalBtn(elSettingPayment);
+              }
+              else {
+                //Lo Script devo prima caricarlo e poi renderizzarli
+                //gestione paypal
+                this.loadPayPalScript()
+                .then(()=> {
+                  this.renderPayPalBtn(elSettingPayment);
+                });
+
+              }
+  
+            break;
+  
+            case PaymentChannel.stripe:
+              //Flag noPayment spento
+              this.noPayment = false;
+
+              //Pagamento Stripe
+              this.showStripe = true;
+
+            break;
+  
+            case PaymentChannel.applePay:
+
+              //Flag noPayment spento
+              this.noPayment = false;
+
+              //Pagamento Apple Pay
+              this.showApplePay = true;
+
+            break;
+            default:
+              break;
+  
+          }
         }
-      })
+      }
+
+    }
+    else {
+
+      //Non ci sono pagamenti elettronici attivabili
+      this.noPayment = true;
+
     }
 
-    else{
-      //non c'è nessun pagamento possibile, chiudo
-      this.closeModal();
-    }
   }
 
 
-   /**
-   * Chiude la modale annullando il pagamento
-   */
-  closeModal():void {
+  //Evento per la chiusura della modale
+  onCloseModal(docResultPayment: PaymentResult) {
+    //Non ho il pagamento, chiudo con un fallimento
+    if (!docResultPayment) {
+      docResultPayment = new PaymentResult();
+      //Segno che il pagamento non è avvenuto
+      docResultPayment.paymentExecuted = false;
+      docResultPayment.message = 'Pagamento annulato';
+    }
 
+    this.modalController.dismiss(docResultPayment);
+
+  }
+
+  /**
+   * Richiesta di annullare il pagamento
+   */
+  onCancelPayment() {
     let resultPayment = new PaymentResult();
     
-    resultPayment.tipoPagamento = PaymentChannel.paypal;
     resultPayment.paymentExecuted = false;
-    resultPayment.paymentRequestInApp = true;
-    resultPayment.result = false;
     resultPayment.message = 'Pagamento annullato';
+    //Chiudo la modale inviando il documento
+    this.onCloseModal(resultPayment);
+  }
 
-    this.modalController.dismiss(resultPayment);
+  onSuccessPayment(type:PaymentChannel, idTransaction:string) {
+
   }
 
 
@@ -158,23 +214,26 @@ export class PaymentPage implements OnInit{
             amount: {
               total: _this.paymentData.amount + '',
               currency: _this.paymentData.currency
-            }
-          }]
+            },
+            description: _this.paymentData.description
+          }],
+          note_to_payer: 'Contatta la struttura per ogni problematica sul pagamento.'
         });
       },
       // Execute the payment
       onAuthorize: function(data, actions) {
         return actions.payment.execute()
-        .then(function() {
-          //######## Handler pagamento effettuato con successo ###########
+          .then(function() {
+            //######## Handler pagamento effettuato con successo ###########
 
-          console.log('Pagamento confermato!');
+            console.log('Pagamento confermato!');
 
-          console.log('Data: ');
-          console.log(data);
-          console.log('Actions: ');
-          console.log(actions);
-        })
+            console.log('Data: ');
+            console.log(data);
+            console.log('Actions: ');
+            console.log(actions);
+            
+          })
       
         
       }
@@ -184,6 +243,25 @@ export class PaymentPage implements OnInit{
   }
 
 
+  /**
+   * Verifica se un file è già presente nell'header come script caricato
+   * 
+   * @param source File da controllare
+   */
+  scriptOnHead(source: string) {
+    let scripts = document.getElementsByTagName("script");
+    let onHead = false;
+
+    for (let i = 0; i < scripts.length; i++) {
+
+      if (scripts[i].getAttribute('src') == source) {
+        onHead = true;
+        break;
+      }
+
+    }
+    return onHead;
+  }
 
 
 

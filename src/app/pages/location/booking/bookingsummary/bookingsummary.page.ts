@@ -371,6 +371,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
     let arModes:PaymentMode[]=[PaymentMode.pagaAdesso, PaymentMode.pagaBonifico, PaymentMode.pagaStruttura];
 
+    //Presente un totale da pagare
     if (this.activePrenotazione.TOTALE != 0) {
 
       //L'utente ha selezionato come pagare

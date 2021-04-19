@@ -490,12 +490,13 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
       }
       else {
+
         this.activePrenotazione.RESIDUO = 0;
         this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
         this.activePrenotazione.IDTRANSACTION = resultPayment.idElectronicTransaction;
         this.activePrenotazione.CHANNELPAYMENT = resultPayment.channelPayment;
-      }
 
+      }
 
 
       //Pagamento avvenuto correttamente
@@ -530,7 +531,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                   else {
                     //Imposto anche la pianificazione
                     this.docPianificazione = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
-  
                   }
   
                   

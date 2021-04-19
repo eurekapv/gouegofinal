@@ -1,6 +1,7 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { PrenotazionePianificazione } from './prenotazionepianificazione.model';
+import { PaymentChannel } from './valuelist.model';
 
 export class Prenotazione extends IDDocument {
     DATA: Date; 
@@ -17,6 +18,7 @@ export class Prenotazione extends IDDocument {
     MSGINVALID: string;
     PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
     IDTRANSACTION: string;
+    CHANNELPAYMENT: PaymentChannel;
 
     ISVALID: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
                      //si puo' procedere al pagamento finale
@@ -167,7 +169,7 @@ export class Prenotazione extends IDDocument {
                         'IDTIPOPAGAMENTO',
                         'MSGINVALID',
                         'IDTRANSACTION'];
-        let arNumber = [];
+        let arNumber = ['CHANNELPAYMENT'];
         let arNumberDecimal = ['IMPORTO','INCASSATO','RESIDUO','IMPOSTA','TOTALE'];
         let arBoolean = ['ISVALID'];
         let arDate = ['DATA'];

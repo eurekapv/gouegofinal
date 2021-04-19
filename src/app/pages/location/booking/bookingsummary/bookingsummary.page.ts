@@ -9,14 +9,13 @@ import { Utente } from 'src/app/models/utente.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { Campo } from 'src/app/models/campo.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { PaymentResult } from 'src/app/models/payment-result.model';
+import { PaymentProcess } from 'src/app/models/payment-process.model';
 import { PaymentMode, SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
 
 import { AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { Area } from 'src/app/models/area.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
-import { OnlinePaymentCheckoutData } from 'src/app/models/online-payment-checkout-data.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 const { Browser } = Plugins;
 
@@ -55,7 +54,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   idPrenotazione = '';
   idLocation = '';
   
-
   //Viene effettuato il controllo tra Id Prenotazione e Id del bookId
   checkBookId = true; 
 
@@ -363,9 +361,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   /**
    * Richiesta di esecuzione del pagamento di qualsiasi tipologia
    * 1) Se onSite conclude subito dicendo che va bene
-   * 2) Per altre tipologie esiste la versione Mobile e la versione Web
-   * Versione Mobile utilizza il servizio e l'Observable
-   * Versione Web viene aperta una modale per pagare
+   * 2) Per altre tipologie viene aperta la pagina del pagamento
+   *
    */
   onExecPayment() {
 
@@ -380,31 +377,34 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
         //Pagamento non dentro all'App
         if (this.myPaymentMode == PaymentMode.pagaBonifico || this.myPaymentMode == PaymentMode.pagaStruttura) {
   
-          //Creo il risultato del pagamento
-          let paymentResult = new PaymentResult();
-          paymentResult.paymentRequestInApp = false;
+          //Creo il risultato del pagamento, passando la modalità
+          let docPaymentResult = new PaymentProcess(this.myPaymentMode);
+          // Essendo una modalita che non prevede interazioni app
+          // viene impostato automaticamento il channelPayment 
+          // e il processResult = TRUE
           
-          this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
-          this.activePrenotazione.INCASSATO = 0;
-  
           //Passo subito al Success
-          this.onPaymentSuccess(paymentResult);
+          this.onPaymentSuccess(docPaymentResult);
   
         }
         else {
+          
           //Qui invece bisogna gestire il pagamento
   
-          //2) oggetto con i dettagli del checkout
-          let myCheckOutObj = new OnlinePaymentCheckoutData()
-          myCheckOutObj.amount = this.activePrenotazione.RESIDUO;
-          myCheckOutObj.description = 'Pagamento Prenotazione';
-          myCheckOutObj.currency = 'EUR';
+          //Preparo un oggetto per processare il pagamento
+          let myCheckoutPayment = new PaymentProcess(this.myPaymentMode);
+          
+          myCheckoutPayment.amount = this.activePrenotazione.RESIDUO;
+          myCheckoutPayment.description = 'Pagamento Prenotazione';
+          myCheckoutPayment.currency = 'EUR';
   
-          //ora posso mostrare la modale
+          //il channelPayment viene impostato nel componente
+          //esterno che si preoccupa del pagamento
+          //Passo alla modale in paymentData = myCheckoutPayment
           this.modalCtrl.create({
             component: PaymentPage,
             componentProps: {
-              paymentData: myCheckOutObj,
+              paymentData: myCheckoutPayment,
               listAreaPaymentSettings: this.myListPayment
             }
           })
@@ -416,14 +416,34 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
           .then((returnData) => {
   
             //recupero il risultato del pagamento
-            let myPaymentResult: PaymentResult = returnData['data'];
+            let myPaymentResult: PaymentProcess = returnData['data'];
+
+            if (myPaymentResult) {
+
+              //Il Risultato del processo di pagamento è TRUE, posso proseguire
+              if (myPaymentResult.processResult) {
+                
+                //Pagamento avvenuto correttamente
+                this.onPaymentSuccess(myPaymentResult); 
   
-            //controllo se il pagamento è andato a buon fine, e mi muovo di conseguenzq
-            if (myPaymentResult.paymentExecuted && myPaymentResult.result){
-              this.onPaymentSuccess(myPaymentResult); 
+              }
+              else {
+  
+                //Pagamento Fallito
+                this.onPaymentFailed(myPaymentResult);
+  
+              }
             }
-            else{
+            else {
+              
+              //Stranamente non mi ha tornato nulla, quindi il pagamento è fallito
+              myPaymentResult = new PaymentProcess(this.myPaymentMode);
+              myPaymentResult.processResult = false;
+              myPaymentResult.messageResult = 'Pagamento fallito';
+
+              //Pagamento Fallito
               this.onPaymentFailed(myPaymentResult);
+
             }
           })
   
@@ -446,157 +466,88 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
 
 
-  private payDesktop() {
-    // let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
-    // switch (this.selectedPayment.channel) {
-    //   case PaymentChannel.paypal:
-    //     //Apro la modale del pagamento Paypal
-    //     this.modalCtrl.create({
-    //       component: PaypalPage,
-    //       componentProps: {
-    //         paymentConfig: this.selectedPayment,
-    //         amount: this.activePrenotazione.TOTALE,
-    //         currency: 'EUR',
-    //         description: descrizioneAcquisto
-    //       }
-    //     })
-    //       .then(modal => {
-
-    //         //mostro la modale di pagamento
-    //         modal.present();
-
-    //         //quando la modale si chiude 
-    //         modal.onDidDismiss()
-    //         .then((data) => {
-
-    //           let response : PaymentResult;
-    //           response = data['data'];
-              
-
-    //           if (response.paymentExecuted&&response.result){
-    //             //E' andato tutto bene
-    //             this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
-    //             this.activePrenotazione.RESIDUO = 0;
-    //             this.activePrenotazione.IDTRANSACTION = response.idPagamento;
-    //             this.onPaymentSuccess(response);
-    //           }
-    //           else{
-    //             //il pagamento non è riuscito
-    //             this.onPaymentFailed(response);
-    //           }
-    //         })
-    //       });
-
-    //     break;
-
-    //   default:
-    //     break;
-    // }
-  }
-
-  private payMobile() {
-    // let descrizioneAcquisto = 'Saldo prenotazione Noleggio Struttura';
-
-    // //Qui devo eseguire il pagamento
-    // this.loadingController.create({
-    //   message: 'Pagamento in corso...',
-    //   spinner: 'circular',
-    //   backdropDismiss: true
-    // }).
-    //   then(elLoading => {
-
-    //     //Presento il loading
-    //     elLoading.present();
-
-    //     //Faccio la richiesta al servizio di pagamento
-    //     this.startService.execPayment(this.selectedPayment, this.activePrenotazione.TOTALE, 'EUR', descrizioneAcquisto)
-    //       .then(risposta => {
-
-    //         //quando arriva la risposta
-    //         elLoading.dismiss();
-
-    //         //Pagamento eseguito correttamente
-    //         if (risposta && risposta.paymentExecuted && risposta.result) {
-    //           // è andato tutto bene
-    //           this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
-    //           this.activePrenotazione.RESIDUO = 0;
-    //           this.activePrenotazione.IDTRANSACTION = risposta.idPagamento;
-    //           this.showMessage(risposta.message);
-    //           this.onPaymentSuccess(risposta);
-    //         }
-    //         else {
-
-    //           //Il pagamento non è andato a buon fine
-    //           this.showMessage(risposta.message);
-
-    //           //Esecuzione fallita
-    //           this.onPaymentFailed(risposta);
-    //         }
-
-
-    //       })
-    //       .catch((risposta: PaymentResult) => {
-    //         //qualcosa è andato storto
-    //         elLoading.dismiss();
-
-    //         //Esecuzione fallita
-    //         this.onPaymentFailed(risposta);
-
-    //       });
-    //   });
-  }
 
   /**
    * Pagamento andato a buon fine
    * @param resultPayment Risultato del pagamento
    */
-  onPaymentSuccess(resultPayment?: PaymentResult) {
-    //Pagamento avvenuto correttamente
-    //Posso salvare la prenotazione e poi scappare
-        //Visualizzo il loading controller
-        this.loadingController.create({
-          message: 'Salvataggio Prenotazione',
-          spinner: 'circular'
-        })
-        .then(elLoading => {
-          //Creo il loading
-          elLoading.present();
+  onPaymentSuccess(resultPayment?: PaymentProcess) {
 
-          //Effettuo il salvataggio
-          this.startService
-              .requestSavePrenotazione()
-              .then(docPrenotazione => {
-                //Salvataggio avvenuto correttamente
-                //Chiudo il loading
-                elLoading.dismiss();
+    //Pagamento corretto
+    if (resultPayment && resultPayment.processResult)  {
 
-                //Ecco il documento ricevuto
-                this.activePrenotazione = docPrenotazione;
+      //Nessuna transazione sembra avvenuta
+      if (resultPayment.idElectronicTransaction.length == 0) {
+
+        this.activePrenotazione.IDTRANSACTION = '';
+        this.activePrenotazione.CHANNELPAYMENT = resultPayment.channelPayment;
+
+        //Imposto nella prenotazione che il residuo è il totale
+        this.activePrenotazione.RESIDUO = this.activePrenotazione.TOTALE;
+        //e che non ho incassato nulla
+        this.activePrenotazione.INCASSATO = 0;
 
 
-
-                  //Se non è valida visualizzo un messsaggio
-                if (!docPrenotazione.ISVALID) {
-
-                  this.showMessage(docPrenotazione.MSGINVALID);
-
-                }
-                else {
-                  //Imposto anche la pianificazione
-                  this.docPianificazione = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
-
-                }
-
-                
-                //Eseguo operazioni successive al salvataggio
-                this.onAfterSavePrenotazione();
+      }
+      else {
+        this.activePrenotazione.RESIDUO = 0;
+        this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
+        this.activePrenotazione.IDTRANSACTION = resultPayment.idElectronicTransaction;
+        this.activePrenotazione.CHANNELPAYMENT = resultPayment.channelPayment;
+      }
 
 
-              }, errPrenotazione => {
-                elLoading.dismiss();
-                this.showMessage(errPrenotazione.MSGVALID);
-              });
-        });
+
+      //Pagamento avvenuto correttamente
+      //Posso salvare la prenotazione e poi scappare
+          //Visualizzo il loading controller
+          this.loadingController.create({
+            message: 'Salvataggio Prenotazione',
+            spinner: 'circular'
+          })
+          .then(elLoading => {
+            //Creo il loading
+            elLoading.present();
+  
+            //Effettuo il salvataggio
+            this.startService
+                .requestSavePrenotazione()
+                .then(docPrenotazione => {
+                  //Salvataggio avvenuto correttamente
+                  //Chiudo il loading
+                  elLoading.dismiss();
+  
+                  //Ecco il documento ricevuto
+                  this.activePrenotazione = docPrenotazione;
+  
+  
+                    //Se non è valida visualizzo un messsaggio
+                  if (!docPrenotazione.ISVALID) {
+  
+                    this.showMessage(docPrenotazione.MSGINVALID);
+  
+                  }
+                  else {
+                    //Imposto anche la pianificazione
+                    this.docPianificazione = this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0];
+  
+                  }
+  
+                  
+                  //Eseguo operazioni successive al salvataggio
+                  this.onAfterSavePrenotazione();
+  
+  
+                }, errPrenotazione => {
+                  elLoading.dismiss();
+                  this.showMessage(errPrenotazione.MSGVALID);
+                });
+          });
+
+
+    }
+
+
     
     
 
@@ -606,13 +557,13 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
    * Si sono verificati errori nel pagamento
    * @param resultPayment Risultato Pagamento Fallito
    */
-  onPaymentFailed(resultPayment?: PaymentResult) {
+  onPaymentFailed(resultPayment?: PaymentProcess) {
     let message = 'Si sono verificati errori nel pagamento';
     let title = 'Pagamento Fallito';
 
     if (resultPayment) {
-      if (resultPayment.message) {
-        message = resultPayment.message;
+      if (resultPayment.messageResult) {
+        message = resultPayment.messageResult;
       }
     }
 

@@ -1,14 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
-import { OnlinePaymentCheckoutData } from 'src/app/models/online-payment-checkout-data.model';
-import { PaymentResult } from 'src/app/models/payment-result.model';
+import { PaymentProcess } from 'src/app/models/payment-process.model';
 import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/valuelist.model';
 
 //questo mi rende disponibile l'oggetto paypal che è presente nello script caricato dinamicamente
 declare let paypal: any
 
-//
 
 @Component({
   selector: 'app-payment',
@@ -17,14 +15,14 @@ declare let paypal: any
 })
 export class PaymentPage implements OnInit{
 
-  @Input() paymentData: OnlinePaymentCheckoutData
+  @Input() paymentData: PaymentProcess;
   @Input() listAreaPaymentSettings: AreaPaymentSetting[]
 
   filterdAreaPaymentSettings: AreaPaymentSetting[];
   
   //Documento con il risultato delle operazioni di pagamento
   //Viene tornato dall chiusura della modale
-  docResult: PaymentResult = new PaymentResult();
+  docResult: PaymentProcess;
   
   urlPayPalScriptCheckOut = 'https://www.paypalobjects.com/api/checkout.js';
   urlPayPalScriptSmart = 'https://www.paypal.com/sdk/js?client-id=';
@@ -39,11 +37,13 @@ export class PaymentPage implements OnInit{
 
   //Nessuna modalità di pagamento è stata trovata
   noPayment = false;
+  showProgressBar = true;
 
 
   constructor(private modalController: ModalController) {
     //Uso la nuova modalità SmartButton di Paypal
     this.paypalVersion = 'smart';
+    console.log(this.paypalVersion);
   }
 
 
@@ -61,6 +61,7 @@ export class PaymentPage implements OnInit{
   initPaymentMethods(){
 
     //devo scorrere tutti i pagamenti possibili e gestirli
+    this.noPayment = true;
 
     if (this.listAreaPaymentSettings && this.listAreaPaymentSettings.length != 0) {
 
@@ -82,7 +83,7 @@ export class PaymentPage implements OnInit{
               if (this.paypalVersion == 'checkout') {
                 this.urlPaypal = this.urlPayPalScriptCheckOut;
               }
-              else if (this.paypalVersion == ' smart') {
+              else if (this.paypalVersion == 'smart') {
 
                 //Nella modalità SMART alla fine dell'URL c'e' il ClientID da  utilizzare
                 switch (elSettingPayment.PPENVIRONMENT) {
@@ -153,31 +154,16 @@ export class PaymentPage implements OnInit{
   }
 
 
-  //Evento per la chiusura della modale
-  onCloseModal(docResultPayment: PaymentResult) {
-    //Non ho il pagamento, chiudo con un fallimento
-    if (!docResultPayment) {
-      docResultPayment = new PaymentResult();
-      //Segno che il pagamento non è avvenuto
-      docResultPayment.paymentExecuted = false;
-      docResultPayment.message = 'Pagamento annullato';
-    }
-
-    this.modalController.dismiss(docResultPayment);
-
-  }
-
   /**
    * Metodo da richiamare quando si vuole annullare il pagamento
    * e chiudere la modale
    */
   onCancelPayment() {
-    let resultPayment = new PaymentResult();
-    
-    resultPayment.paymentExecuted = false;
-    resultPayment.message = 'Pagamento annullato';
+    //Segno il fallimento del processo di pagamento
+    this.paymentData.processResult = false;
+    this.paymentData.messageResult = 'Pagamento annullato';
     //Chiudo la modale inviando il documento
-    this.onCloseModal(resultPayment);
+    this.modalController.dismiss(this.paymentData);
   }
 
 
@@ -188,15 +174,17 @@ export class PaymentPage implements OnInit{
    * @param idTransaction Transazione
    */
   onSuccessPayment(channel:PaymentChannel, idTransaction:string) {
-    let resultPayment = new PaymentResult();
-
-    resultPayment.tipoPagamento = channel;
-    resultPayment.idPagamento = idTransaction;
-    resultPayment.paymentExecuted = true;
-    resultPayment.message = 'Transazione completata con successo';
+    //Imposto il canale del pagamento utilizzato    
+    this.paymentData.channelPayment = channel;
+    //Segno il valore idTransaction
+    this.paymentData.idElectronicTransaction = idTransaction;
+    //Pagamento completato
+    this.paymentData.processResult = true;
+    this.paymentData.messageResult = 'Transazione completata con successo';
 
     //Chiudo la modale inviando il documento
-    this.onCloseModal(resultPayment);
+    this.modalController.dismiss(this.paymentData);
+    
   }
 
   /**
@@ -263,6 +251,8 @@ export class PaymentPage implements OnInit{
 
     let _this = this;
     if (this.paypalVersion == 'checkout') {
+      this.showProgressBar = false;
+      
       paypal.Button.render({
         // Configure environment
         //TODO environment va decodificato con "production" o "sandbox"
@@ -317,6 +307,9 @@ export class PaymentPage implements OnInit{
       }, '#customBtnPaypal');
     }
     else if (this.paypalVersion == 'smart') {
+      
+      this.showProgressBar = false;
+
       paypal.Buttons({
           createOrder: function (data,action) {
             //Funzione con i dati della transazione

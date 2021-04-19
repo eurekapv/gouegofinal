@@ -455,6 +455,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
         //Pagamento non selezionato
         this.showMessage('E\' necessario selezionare un pagamento');
       }
+      
     }
     else {
       this.showMessage('Contattare la struttura. Prenotazioni gratuite concluse');

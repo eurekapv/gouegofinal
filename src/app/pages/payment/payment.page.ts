@@ -16,13 +16,8 @@ declare let paypal: any
 export class PaymentPage implements OnInit{
 
   @Input() paymentData: PaymentProcess;
-  @Input() listAreaPaymentSettings: AreaPaymentSetting[]
+  @Input() listAreaPaymentSettings: AreaPaymentSetting[];
 
-  filterdAreaPaymentSettings: AreaPaymentSetting[];
-  
-  //Documento con il risultato delle operazioni di pagamento
-  //Viene tornato dall chiusura della modale
-  docResult: PaymentProcess;
   
   urlPayPalScriptCheckOut = 'https://www.paypalobjects.com/api/checkout.js';
   urlPayPalScriptSmart = 'https://www.paypal.com/sdk/js?client-id=';
@@ -43,13 +38,10 @@ export class PaymentPage implements OnInit{
   constructor(private modalController: ModalController) {
     //Uso la nuova modalità SmartButton di Paypal
     this.paypalVersion = 'smart';
-    console.log(this.paypalVersion);
   }
 
 
   ngOnInit(): void {
-    console.log(this.paymentData);
-    console.log(this.listAreaPaymentSettings);
 
       this.initPaymentMethods();
 

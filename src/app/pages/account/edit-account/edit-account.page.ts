@@ -9,8 +9,7 @@ import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
 import { TipoVerificaAccount } from 'src/app/models/valuelist.model'
 import { Gruppo } from 'src/app/models/gruppo.model';
-import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+
 
 
 @Component({

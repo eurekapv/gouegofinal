@@ -45,7 +45,7 @@ export class PhotoService {
       quality: 100
     });
 
-    //Salvo sul file systema
+    //Salvo sul file system
     const savedImageFile = await this.savePicture(capturedPhoto, typePhoto);
 
     //Inserisco nell'array

@@ -19,6 +19,8 @@ import { PaymentChannel, PaymentMode } from "./valuelist.model";
 
     constructor(myModePayment: PaymentMode) {
 
+        this.idElectronicTransaction = '';
+        
         //Impostare la modalita di pagamento
         this.modePayment = myModePayment;
 

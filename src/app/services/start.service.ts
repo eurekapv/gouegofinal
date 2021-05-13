@@ -207,7 +207,7 @@ export class StartService {
 
         //Qui posso cambiare strategia per puntare localmente
         //this._localConnection = false;
-        this._localConnection = true;
+        this._localConnection = false;
 
         if (this._localConnection) {
           //Modalità di Test metto un AppId di test

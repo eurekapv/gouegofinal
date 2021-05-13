@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { PaymentProcess } from 'src/app/models/payment-process.model';
 import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/valuelist.model';
@@ -35,7 +35,10 @@ export class PaymentPage implements OnInit{
   showProgressBar = true;
 
 
-  constructor(private modalController: ModalController) {
+  constructor(
+    private modalController: ModalController,
+    private toastController: ToastController
+    ) {
     //Uso la nuova modalità SmartButton di Paypal
     this.paypalVersion = 'smart';
   }
@@ -104,7 +107,12 @@ export class PaymentPage implements OnInit{
                 this.loadDinamicScript(this.urlPaypal)
                 .then(()=> {
                   this.renderPayPalBtn(elSettingPayment);
-                });
+                })
+                .catch(() => {
+                  //Non sono riuscito a caricare lo script di pagamento, probabilmente le credenziali di paypal sono state impostate male lato server
+                  this.showMessage("Errore nelle impostazioni di PayPal; contatta la struttura")
+                  this.onCancelPayment()
+                })
 
               }
   
@@ -348,6 +356,17 @@ export class PaymentPage implements OnInit{
   }
 
 
+  showMessage(message: string) {
 
+    //Creo un messaggio
+    this.toastController.create({
+      message: message,
+      duration: 3000
+    })
+    .then(tstMsg => {
+      tstMsg.present();
+    });
+
+  }
 }
 

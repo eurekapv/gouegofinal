@@ -1,6 +1,6 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import { StatoPrenotazione } from './valuelist.model';
+import { PaymentChannel, StatoPrenotazione } from './valuelist.model';
 import { RequestForeign } from '../library/models/requestParams.model';
 
 export class PrenotazionePianificazione extends IDDocument {
@@ -25,6 +25,7 @@ export class PrenotazionePianificazione extends IDDocument {
     GUIDSERIE: string;
     PROGRESSIVO: string;
     IDTRANSACTION: string;
+    CHANNELPAYMENT: PaymentChannel;
 
     _INCASSOCUSTODE: number;
 
@@ -64,7 +65,7 @@ export class PrenotazionePianificazione extends IDDocument {
                         'GUIDSERIE',
                         'PROGRESSIVO',
                         'IDTRANSACTION'];
-        let arNumber = ['ANNO','NUMPARTECIPANTI'];
+        let arNumber = ['ANNO','NUMPARTECIPANTI','CHANNELPAYMENT'];
         let arNumberDecimal = ['DURATAORE',
                                'IMPONIBILE',
                                'INCASSATO',

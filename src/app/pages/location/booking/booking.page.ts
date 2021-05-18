@@ -564,6 +564,7 @@ export class BookingPage implements OnInit,  OnDestroy {
 
       //Prima di aprire la pagina di login
       //impostare nel servizio Start forceIdArea = 
+      console.log('Forzo l\'Area');
       this.startService.setIdAreaForcedForLogin();
       
       //Ora preparo e creo la pagina di Login

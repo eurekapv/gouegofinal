@@ -939,6 +939,7 @@ userLogin(username: string,
 
   //Chiamo il servizio Utente passando username, password, la configurazione e
   //l'eventuale area da Impostare come attiva dopo il login
+  
   return this.utenteService
             .login( username, 
                     password,

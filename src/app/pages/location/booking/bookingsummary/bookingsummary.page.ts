@@ -97,6 +97,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     this.disclaimer=false;
     
     let result = true;
+    let errMessage = '';
      
     //#region MODALE
     /* VERSIONE MODALE*/
@@ -108,10 +109,12 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
           
         if (!this.selectedLocation) {
           result = false;
+          errMessage = 'Location null';
         }
       }
       else {
         result = false;
+        errMessage = 'idLocation Empty';
       }
 
       if (result) {
@@ -147,6 +150,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
       //Si sono verificati errori
       if (!result) {
+        errMessage = 'ngOnInit Failed ' + errMessage;
+        console.error (errMessage);
         this.onBookIdWrong();
       }
 
@@ -192,12 +197,24 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                 //Spegno il controllo
                 this.checkBookId = false;
                 //Id Book è diverso da quello in arrivo dalla prenotazione
-                if ((this.idPrenotazione != this.activePrenotazione.ID) || this.activePrenotazione == null || this.docPianificazione == null) {
+                if (this.activePrenotazione == null) {
+                  console.error('activePrenotazione null');
                   this.onBookIdWrong();
+                }
+                else if (this.idPrenotazione != this.activePrenotazione.ID) {
+
+                  console.error('idPrenotazione <> activePrenotazione.ID');
+                  console.error(`idPrenotazione: ${this.idPrenotazione} - activePrenotazione ${this.activePrenotazione.ID}`);
+                  this.onBookIdWrong();
+
+                } else if (this.docPianificazione == null) {
+
+                  console.error('docPianificazione null');
+                  this.onBookIdWrong();
+                  
                 }
               }
               
-
     });
   }
 
@@ -522,7 +539,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                   //Ecco il documento ricevuto
                   this.activePrenotazione = docPrenotazione;
   
-  
                     //Se non è valida visualizzo un messsaggio
                   if (!docPrenotazione.ISVALID) {
   
@@ -539,10 +555,13 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                   this.onAfterSavePrenotazione();
   
   
-                }, errPrenotazione => {
-                  elLoading.dismiss();
-                  this.showMessage(errPrenotazione.MSGVALID);
-                });
+                })
+                .catch(errMessage => {
+                      //Chiudo il loader
+                      elLoading.dismiss();
+                      this.showMessage(errMessage);
+                  });  
+                
           });
 
 

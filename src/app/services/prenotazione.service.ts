@@ -285,15 +285,21 @@ export class PrenotazioneService {
                     resolve(receivedPrenotazione);
                   }
                   else {
-                    reject(receivedPrenotazione);
+                    let errMessage = '';
+                    if (receivedPrenotazione.MSGINVALID && receivedPrenotazione.MSGINVALID.length != 0) {
+                      errMessage = receivedPrenotazione.MSGINVALID;
+                    }
+                    else {
+                      errMessage = 'Salvataggio Fallito';
+                    }
+
+                    reject(errMessage);
                   }
 
                 }, error => {
-
-                  let receivedPrenotazione = new Prenotazione();
-                  receivedPrenotazione.ISVALID = false;
-                  receivedPrenotazione.MSGINVALID = error;
-                  reject(receivedPrenotazione);
+                  console.log(error);
+                  let errMessage = 'Errore di connessione';
+                  reject(errMessage);
                   
                 });
 

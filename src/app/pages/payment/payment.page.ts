@@ -98,15 +98,23 @@ export class PaymentPage implements OnInit{
 
               //Lo script Paypal è già presente nell'header
               if (this.scriptOnHead(this.urlPaypal)) {
-                  //Renderizzo il bottone
-                  this.renderPayPalBtn(elSettingPayment);
+
+                  setTimeout(()=>{
+                    //Renderizzo il bottone
+                    this.renderPayPalBtn(elSettingPayment);
+                  },500);
               }
               else {
                 //Lo Script devo prima caricarlo e poi renderizzarli
                 //gestione paypal
                 this.loadDinamicScript(this.urlPaypal)
                 .then(()=> {
-                  this.renderPayPalBtn(elSettingPayment);
+
+                  setTimeout(()=>{
+                    //Renderizzo il bottone
+                    this.renderPayPalBtn(elSettingPayment);
+                  },500);
+                  
                 })
                 .catch(() => {
                   //Non sono riuscito a caricare lo script di pagamento, probabilmente le credenziali di paypal sono state impostate male lato server

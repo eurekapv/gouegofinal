@@ -1,4 +1,5 @@
 {
+  "linuxAndroidStudioPath":"/opt/android-studio/bin/studio.sh",
   "appId": "com.gouego.openbeach",
   "appName": "Open Beach",
   "bundledWebRuntime": false,

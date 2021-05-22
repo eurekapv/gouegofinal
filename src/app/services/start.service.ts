@@ -206,7 +206,7 @@ export class StartService {
     if (this.isOnWeb) {
 
         //Qui posso cambiare strategia per puntare localmente
-        this._localConnection = false;
+        this._localConnection = true;
         //this._localConnection = false;
 
         if (this._localConnection) {
@@ -219,7 +219,7 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          myUrl = 'openbeach.gouego.com';
+          myUrl = 'demo.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso
@@ -939,6 +939,7 @@ userLogin(username: string,
 
   //Chiamo il servizio Utente passando username, password, la configurazione e
   //l'eventuale area da Impostare come attiva dopo il login
+  
   return this.utenteService
             .login( username, 
                     password,

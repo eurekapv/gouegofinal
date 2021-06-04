@@ -24,8 +24,8 @@ export class PrenotazionePianificazione extends IDDocument {
     TOTALE: number;
     GUIDSERIE: string;
     PROGRESSIVO: string;
-    IDTRANSACTION: string;
-    CHANNELPAYMENT: PaymentChannel;
+    // IDTRANSACTION: string;
+    // CHANNELPAYMENT: PaymentChannel;
 
     _INCASSOCUSTODE: number;
 
@@ -63,9 +63,8 @@ export class PrenotazionePianificazione extends IDDocument {
                         'IDSPORT',
                         'IDCAMPO',
                         'GUIDSERIE',
-                        'PROGRESSIVO',
-                        'IDTRANSACTION'];
-        let arNumber = ['ANNO','NUMPARTECIPANTI','CHANNELPAYMENT'];
+                        'PROGRESSIVO'];
+        let arNumber = ['ANNO','NUMPARTECIPANTI'];
         let arNumberDecimal = ['DURATAORE',
                                'IMPONIBILE',
                                'INCASSATO',

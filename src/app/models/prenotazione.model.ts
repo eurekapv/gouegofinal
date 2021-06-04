@@ -18,6 +18,7 @@ export class Prenotazione extends IDDocument {
     MSGINVALID: string;
     PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
     IDTRANSACTION: string;
+    IDORDER: string;
     CHANNELPAYMENT: PaymentChannel;
 
     ISVALID: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
@@ -36,6 +37,7 @@ export class Prenotazione extends IDDocument {
             this.ISVALID = false;
             this.MSGINVALID = '';
             this.IDTRANSACTION = '';
+            this.IDORDER = '';
         }
 
 

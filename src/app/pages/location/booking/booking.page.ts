@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController } from '@ionic/angular';
+import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController, AlertController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -18,6 +18,7 @@ import { Sport } from 'src/app/models/sport.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { VerifyPage } from '../../auth/verify/verify.page';
+import { StatoSlot } from 'src/app/models/valuelist.model';
 
 
 
@@ -79,7 +80,8 @@ export class BookingPage implements OnInit,  OnDestroy {
               private loadingController: LoadingController,
               private toastCtrl: ToastController,
               private modalCtrl: ModalController,
-              private actionSheetController: ActionSheetController) { 
+              private actionSheetController: ActionSheetController,
+              private alertController: AlertController) { 
 
 
     //Creo un documento di Pianificazione
@@ -530,11 +532,42 @@ export class BookingPage implements OnInit,  OnDestroy {
   myClickSlot(slotClicked: SlotTime) {
     
     if (slotClicked) {
-      //Cambio il Planning attuale visualizzato
-      this.actualPlanning = this.actualSlotDay.changeSelectionSlotTime(slotClicked);
+      if (slotClicked.STATO == StatoSlot.contattare) {
+        //Mostro un alert per telefonare alla struttura
+        this.showAlertContattaStruttura();
+      }
+      else {
+        //Cambio il Planning attuale visualizzato
+        this.actualPlanning = this.actualSlotDay.changeSelectionSlotTime(slotClicked);
+      }
       
     }
     
+  }
+
+  /**
+   * Mostra un alert per contattare la struttura
+   */
+  showAlertContattaStruttura() {
+    let myButton = [];
+
+    if (this.startService.isDesktop) {
+      myButton = ['OK'];
+    }
+    else {
+      myButton = ['OK', 'Chiama'];
+    }
+
+    //TODO: Effettuare la chiamata se su Mobile
+    this.alertController.create({
+      header: 'Contattare la struttura',
+      subHeader: 'per richiedere informazioni',
+      message: 'Per la prenotazione dello slot è necessario contattare la struttura telefonicamente',
+      buttons: ['Ok','Chiama']
+    })
+    .then(elAlert => {
+      elAlert.present();
+    });
   }
 
 

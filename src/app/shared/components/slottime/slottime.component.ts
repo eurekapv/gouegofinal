@@ -33,6 +33,9 @@ export class SlottimeComponent implements OnInit {
       else if (this.mySlot.STATO == StatoSlot.chiuso) {
         myClass = "slot-read-only";
       }
+      else if (this.mySlot.STATO == StatoSlot.contattare) {
+        myClass = "slot-free-contact";
+      }      
       else {
         // Button utilizzabile
         if (this.mySlot.selected) {
@@ -71,6 +74,9 @@ export class SlottimeComponent implements OnInit {
           case StatoSlot.occupato:
             caption = 'occupato'
             break;
+            case StatoSlot.contattare:
+              caption = 'contattare';
+              break;            
           case StatoSlot.chiuso:
             caption = ''
             break;
@@ -85,10 +91,75 @@ export class SlottimeComponent implements OnInit {
   }
 
   /**
+   * 
+   * @returns Nome Icona da visualizzare
+   */
+  getIconButton() {
+    let nameIcon = '';
+
+    if (!this.readOnly) {
+      if (this.mySlot.selected) {
+        nameIcon = 'checkmark';
+      }
+      else {
+        switch (this.mySlot.STATO) {
+          case StatoSlot.occupato:
+            nameIcon = 'thumbs-up';
+            break;
+            case StatoSlot.contattare:
+              nameIcon = 'call';
+              break;            
+          case StatoSlot.chiuso:
+            nameIcon = ''
+            break;
+        
+          default:
+            nameIcon = '';
+            break;
+        }
+      }
+    }
+
+    return nameIcon;
+  }  
+
+  showIconButton() {
+    let showIcon = false;
+
+    if (!this.readOnly) {
+
+      if (this.mySlot.selected) {
+        showIcon = true;
+      }
+      else {
+        switch (this.mySlot.STATO) {
+          case StatoSlot.occupato:
+            showIcon = true;
+            break;
+            case StatoSlot.contattare:
+              showIcon = true;
+              break;            
+          case StatoSlot.chiuso:
+            showIcon = false;
+            break;
+        
+          default:
+            showIcon = false;
+            break;
+        }
+      }
+    }
+
+    return showIcon;
+  }    
+
+  /**
    * Emetto un evento di scelta slot
    */
   chooseSlot() {
+
     this.clickSlot.emit(this.mySlot);
+    
   }
 
 }

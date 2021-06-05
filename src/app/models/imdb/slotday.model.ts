@@ -221,7 +221,7 @@ export class SlotDay {
                             //Ho trovato l'inizio e non ho ancora finito
 
                             //Qua in mezzo c'e' qualcosa di chiuso o occupato e quindi mi devo fermare
-                            if (element.STATO == StatoSlot.chiuso || element.STATO == StatoSlot.occupato) {
+                            if (element.STATO == StatoSlot.chiuso || element.STATO == StatoSlot.occupato || element.STATO == StatoSlot.contattare) {
                                 lastIndex = index;
                                 break;
                             }

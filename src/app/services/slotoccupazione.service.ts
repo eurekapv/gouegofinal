@@ -117,6 +117,9 @@ export class SlotoccupazioneService {
   private syncResult(resultDataServer: any, templateSlot: SlotDay) {
     //Converto il risultato in un oggetto reale
     let srvResult = new DateSlotLock();
+    let nowMoment: any;
+    let isSlotOccupato: boolean;
+
     srvResult.setJSONProperty(resultDataServer);
 
 
@@ -134,29 +137,53 @@ export class SlotoccupazioneService {
             elSlotTime.STATO = StatoSlot.chiuso;
           }
           else {
+
             //Giornata Aperta
             //Lo Slot ha già una impostazione da Template
             //Nel caso da template sia CHIUSO non lo cambio
 
             if (elSlotTime.STATO !== StatoSlot.chiuso) {
 
-              //ad Adesso applico un gap di Ore
-              let adesso = moment().add(this.gapHour, 'hours');
-               
-              //Se l'inizio dello Slot è superiore ad adesso
-              if (moment(elSlotTime.START).isAfter(adesso))  {
+              //Ora Attuale
+              nowMoment = moment();
 
-                let inSlot = this.slotInServerSlotLock(elSlotTime, srvResult);
-  
-              
-                if (inSlot) {
+              //Lo Slot è nel passato - lo imposto a chiuso
+              if (moment(elSlotTime.START).isSameOrBefore(nowMoment)) {
+                  
+                //Lo Slot non è disponibile
+                elSlotTime.STATO = StatoSlot.chiuso;
+              }
+              else {
+                //Slot è nel futuro
+                
+                //Controllo se lo Slot è occupato
+                isSlotOccupato = this.slotInServerSlotLock(elSlotTime, srvResult);
+
+                if (isSlotOccupato) {
                   //E' tra gli slot occupati
                   elSlotTime.STATO = StatoSlot.occupato;
                 }
-              }
-              else {
-                //Lo Slot non è disponibile
-                elSlotTime.STATO = StatoSlot.chiuso;
+                else {
+                  //Sembra libero lo SLOT ma controlliamo se c'e' un GAP di Preavviso
+                  if (this.gapHour != 0) {
+
+                    let disponibileDa = nowMoment.add(this.gapHour, 'hours');
+
+                    //Essendo dopo il preavviso lo segno come libero
+                    if (moment(elSlotTime.START).isAfter(disponibileDa)) {
+                      elSlotTime.STATO = StatoSlot.libero;
+                    }
+                    else {
+                      //Contattare in sede per la disponibilità
+                      elSlotTime.STATO = StatoSlot.contattare;
+                    }
+
+                  }
+                  else {
+                    //Non ci sono Gap di preavviso
+                    elSlotTime.STATO = StatoSlot.libero;
+                  }
+                }
               }
 
             }
@@ -171,6 +198,68 @@ export class SlotoccupazioneService {
 
   }
  
+    /**
+   * 
+   * @param resultDataServer Result in arrivo dal server
+   * @param templateSlot Template Slot in arrivo dalla videata
+   */
+     private syncResultOriginale(resultDataServer: any, templateSlot: SlotDay) {
+      //Converto il risultato in un oggetto reale
+      let srvResult = new DateSlotLock();
+      srvResult.setJSONProperty(resultDataServer);
+  
+  
+      /**Informazioni occupazioni ricevute */
+      if (srvResult.RESULT) {
+        templateSlot._TEMPLATELOCK = false; //Sblocco il template in quanto son arrivati i risultati
+        templateSlot.APERTOCHIUSO = srvResult.APERTOCHIUSO;
+  
+  
+          /** Ciclo sugli Slot Orari */
+          templateSlot.SLOTTIMES.forEach(elSlotTime => {
+            //TUTTO CHIUSO
+            if (!templateSlot.APERTOCHIUSO) {
+              //Giornata Chiusa
+              elSlotTime.STATO = StatoSlot.chiuso;
+            }
+            else {
+              //Giornata Aperta
+              //Lo Slot ha già una impostazione da Template
+              //Nel caso da template sia CHIUSO non lo cambio
+  
+              if (elSlotTime.STATO !== StatoSlot.chiuso) {
+  
+                //ad Adesso applico un gap di Ore
+                //GAP ORE E' un preavviso
+                let adesso = moment().add(this.gapHour, 'hours');
+                 
+                //Se l'inizio dello Slot è superiore ad adesso
+                if (moment(elSlotTime.START).isAfter(adesso))  {
+  
+                  let inSlot = this.slotInServerSlotLock(elSlotTime, srvResult);
+    
+                
+                  if (inSlot) {
+                    //E' tra gli slot occupati
+                    elSlotTime.STATO = StatoSlot.occupato;
+                  }
+                }
+                else {
+                  //Lo Slot non è disponibile
+                  elSlotTime.STATO = StatoSlot.chiuso;
+                }
+  
+              }
+            }
+          });
+  
+        
+      }
+  
+      //Emetto l'evento di cambio
+      this._docOccupazione.next(templateSlot);
+  
+    }
 
   /**
    * Controlla se lo Slot è dentro a quelli Lock arrivati dal server

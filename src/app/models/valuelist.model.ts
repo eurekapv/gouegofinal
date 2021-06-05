@@ -105,7 +105,8 @@ export enum StrutturaCampo {
 export enum StatoSlot {
     libero = 0,
     occupato = 10,
-    chiuso = 20
+    chiuso = 20,
+    contattare = 21
 }
 
 export enum TipoPrivateImage {

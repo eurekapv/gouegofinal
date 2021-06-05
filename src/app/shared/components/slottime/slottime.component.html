@@ -35,6 +35,7 @@
             [ngClass] = "getClassButton()"
             [disabled]="getDisableButton()"
             (click)="chooseSlot()">
+            <ion-icon [name]="getIconButton()" slot="start" *ngIf="showIconButton()"></ion-icon>
             {{ getCaptionButton() }}
         </ion-button>
       </ion-col>

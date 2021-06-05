@@ -53,6 +53,10 @@ ion-card {
     //var(--ion-color-success-tint);
 }
 
+.slot-free-contact {
+    --background: var(--ion-color-success-tint);
+}
+
 .slot-selected {
         //Background of the button
         --background: var(--ion-color-secondary);
@@ -60,6 +64,5 @@ ion-card {
 
 .slot-read-only {
     --background: lightgray;
-    
 }
 

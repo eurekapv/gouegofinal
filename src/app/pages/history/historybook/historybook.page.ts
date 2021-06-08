@@ -340,7 +340,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
       this.loadingController.dismiss();
       this.showMessage(resp.message);
 
-      if(resp.result == true){
+      if(resp.result){
         //è andato tutto bene
         this.navCtr.pop()
       }

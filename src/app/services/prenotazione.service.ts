@@ -337,7 +337,9 @@ export class PrenotazioneService {
           console.log(data);
           response.setFromResponse(data)
           //aggiorno le prenotazioni
-          this.request(config);
+          if(response.result){
+            this.request(config);
+          }
 
           //fine
           resolve(response)

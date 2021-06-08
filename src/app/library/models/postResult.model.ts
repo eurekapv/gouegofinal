@@ -14,6 +14,16 @@ export class PostResponse {
     }
 
 
+    setFromResponse(response){
+        if(response){
+            this.result = response['result'];
+            this.message = response['message'];
+            this.code = response['code'];
+
+        }
+    }
+
+
 
     getDocument(): any {
         let doc: any;

@@ -206,8 +206,8 @@ export class StartService {
     if (this.isOnWeb) {
 
         //Qui posso cambiare strategia per puntare localmente
-        this._localConnection = true;
-        //this._localConnection = false;
+        // this._localConnection = true;
+        this._localConnection = false;
 
         if (this._localConnection) {
           //Modalità di Test metto un AppId di test
@@ -219,7 +219,7 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          //myUrl = 'openbeach.gouego.com';
+          myUrl = 'demo.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso
@@ -1153,6 +1153,13 @@ getSelectedCampoPrenotazione() {
 requestPrenotazioneById(idPrenotazione: string, numLivelli: number) {
   const actualStartConfig = this._startConfig.getValue();
   return this.prenotazioniService.requestById(actualStartConfig, idPrenotazione, numLivelli);
+}
+
+
+requestDeletePianificazione(idPianificazione){
+  const actualStartConfig = this._startConfig.getValue();
+  return this.prenotazioniService.requestDelete(idPianificazione, actualStartConfig);
+
 }
 
 //#endregion

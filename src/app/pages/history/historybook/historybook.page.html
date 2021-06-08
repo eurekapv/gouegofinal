@@ -19,7 +19,7 @@
   <ion-slides [options]="sliderOpts">
     <ion-slide *ngFor="let docPianificazione of myPrenotazione.PRENOTAZIONEPIANIFICAZIONE; index as i">
       <div style="width: 100%;" >
-        <div class="ion-text-center div-qr">
+        <div class="ion-text-center div-qr" mode="md">
             <h6>ID: {{docPianificazione.PROGRESSIVO}}</h6>
             <qrcode [qrdata]="docPianificazione.ID"></qrcode>
             <p>
@@ -29,7 +29,7 @@
         </div>
     
         <div class="ion-text-center div-btns">
-          <ion-button layout="icon-top" fill="clear" size="large" (click)="onClickTrash()">
+          <ion-button layout="icon-top" fill="clear" size="large" (click)="onClickTrash(docPianificazione.ID)">
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>
           <ion-button *ngIf="docPianificazione && docPianificazione['_EMAIL_Location']" fill="clear" size="large" href="{{'mailto:'+docPianificazione['_EMAIL_Location']+'?subject=Prenotazione numero '+docPianificazione.PROGRESSIVO}}">

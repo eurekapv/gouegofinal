@@ -90,6 +90,12 @@ export class OccupazioniService {
               }
             })
 
+              //gli elementi sono ordinati, ma devon controllare che ne siano arrivati davvero il numero giusto (INDE FA CAGARE!!!)
+              if(top && listElements.length > top){
+                //devo tagliare 
+                listElements.splice(top)
+              }
+
               //Riemetto Observable
               this._listOccupazioni.next(listElements);
 

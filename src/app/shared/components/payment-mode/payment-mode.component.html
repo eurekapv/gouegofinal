@@ -5,6 +5,11 @@
 
 <ion-item button *ngIf="arPaymentModeList.length" lines="full" [detail]="true" (click)="onOpenChoose()">
   <ion-icon slot="start" [name]="itemIcon"></ion-icon>
-  <ion-label *ngIf="selectedPaymentMode">{{selectedPaymentMode?.description}}</ion-label>
+  <ion-label *ngIf="selectedPaymentMode">
+    <h6>{{selectedPaymentMode?.description}}</h6>
+    <p *ngIf="arPaymentModeList.length > 1">
+        Clicca per altri metodi di pagamento
+    </p>
+  </ion-label>
   <ion-label *ngIf="!selectedPaymentMode">Scegli metodo di pagamento</ion-label>
 </ion-item>

@@ -322,23 +322,43 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
 
 
-  onClickTrash(){
-    //per ora no faccio nulla, faccio solo uscire la msgbox
-    this.alertController.create({
-      header: 'Cancellazione',
-      message: 'Contattaci direttamente per cancellare questa prenotazione',
-      backdropDismiss: true,
-      buttons: [
-        {
-          text: 'Ok',
-          handler: ()=>{this.alertController.dismiss()}
-        }
-      ]
+  onClickTrash(idPianificazione: string){
+
+    this.loadingController.create({
+      message: 'Cancellazione...',
+      spinner: 'circular',
+      backdropDismiss: true
+    })
+    .then(loading => {
+      return loading.present();
+    })
+    .then(() => {
+      //faccio richiesta cancellazione 
+      return this.startService.requestDeletePianificazione(idPianificazione)
+    })
+    .then(resp => {
+      this.loadingController.dismiss();
+      this.showMessage(resp.message);
+    })
+
+
+
+
+    // this.alertController.create({
+    //   header: 'Cancellazione',
+    //   message: 'Contattaci direttamente per cancellare questa prenotazione',
+    //   backdropDismiss: true,
+    //   buttons: [
+    //     {
+    //       text: 'Ok',
+    //       handler: ()=>{this.alertController.dismiss()}
+    //     }
+    //   ]
       
-    })
-    .then(elAlert => {
-      elAlert.present();
-    })
+    // })
+    // .then(elAlert => {
+    //   elAlert.present();
+    // })
   }
 
 }

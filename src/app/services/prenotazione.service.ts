@@ -335,21 +335,16 @@ export class PrenotazioneService {
           //creo l'oggetto con la risposta
           let response = new PostResponse();
           console.log(data);
-          response.setFromResponse(data)
-          //aggiorno le prenotazioni
-          if(response.result){
-            this.request(config);
-          }
+          response.setFromResponse(data);
+          resolve(response);
 
-          //fine
-          resolve(response)
         },
         err => {
           //creo comunque un postResponse fittizio
           let response = new PostResponse();
           response.result = false
           response.message = "Connessione non riuscita";
-          resolve(response)
+          reject(response);
         })
         
 

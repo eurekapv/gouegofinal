@@ -322,6 +322,10 @@ export class HistorybookPage implements OnInit, OnDestroy {
 
 
 
+  /**
+   * Richiesta cancellazione prenotazione al server
+   * @param idPianificazione Prenotazione Pianificazione
+   */
   onClickTrash(idPianificazione: string){
 
     this.loadingController.create({

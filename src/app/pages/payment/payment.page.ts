@@ -185,7 +185,7 @@ export class PaymentPage implements OnInit{
     //Imposto il canale del pagamento utilizzato    
     this.paymentData.channelPayment = channel;
     //Segno il valore idTransaction
-    this.paymentData.idElectronicTransaction = idTransaction;
+    this.paymentData.idElectronicResult = idTransaction;
     //Pagamento completato
     this.paymentData.processResult = true;
     this.paymentData.messageResult = 'Transazione completata con successo';
@@ -218,7 +218,6 @@ export class PaymentPage implements OnInit{
           break;
 
         case 'checkout':
-          
           namePayer = details.payer.name.given_name;
           idTransaction = details.id;
           status = details.status;

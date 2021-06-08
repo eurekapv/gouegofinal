@@ -14,12 +14,12 @@ import { PaymentChannel, PaymentMode } from "./valuelist.model";
     //Risultato del processo di pagamento
     processResult: boolean; //TRUE quanto il processo del pagamento è concluso
     messageResult: string;
-    idElectronicTransaction : string; //Identificativo della transazione
+    idElectronicResult : string; //Identificativo della transazione
 
 
     constructor(myModePayment: PaymentMode) {
 
-        this.idElectronicTransaction = '';
+        this.idElectronicResult = '';
         
         //Impostare la modalita di pagamento
         this.modePayment = myModePayment;

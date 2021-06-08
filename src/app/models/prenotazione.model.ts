@@ -170,7 +170,8 @@ export class Prenotazione extends IDDocument {
                         'MOBILENUMBER',
                         'IDTIPOPAGAMENTO',
                         'MSGINVALID',
-                        'IDTRANSACTION'];
+                        'IDTRANSACTION',
+                        'IDORDER'];
         let arNumber = ['CHANNELPAYMENT'];
         let arNumberDecimal = ['IMPORTO','INCASSATO','RESIDUO','IMPOSTA','TOTALE'];
         let arBoolean = ['ISVALID'];

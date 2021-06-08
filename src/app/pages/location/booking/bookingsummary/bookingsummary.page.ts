@@ -495,9 +495,11 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     if (resultPayment && resultPayment.processResult)  {
 
       //Nessuna transazione sembra avvenuta
-      if (resultPayment.idElectronicTransaction.length == 0) {
+      if (resultPayment.idElectronicResult.length == 0) {
 
         this.activePrenotazione.IDTRANSACTION = '';
+        this.activePrenotazione.IDORDER = '';
+
         this.activePrenotazione.CHANNELPAYMENT = resultPayment.channelPayment;
 
         //Imposto nella prenotazione che il residuo è il totale
@@ -511,7 +513,12 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
         this.activePrenotazione.RESIDUO = 0;
         this.activePrenotazione.INCASSATO = this.activePrenotazione.TOTALE;
-        this.activePrenotazione.IDTRANSACTION = resultPayment.idElectronicTransaction;
+        
+        //Non riesco ad ottenere idTransaction e quindi non lo mando
+        this.activePrenotazione.IDTRANSACTION = '';
+        
+        //Dovrebbe essere idOrder
+        this.activePrenotazione.IDORDER = resultPayment.idElectronicResult;
         this.activePrenotazione.CHANNELPAYMENT = resultPayment.channelPayment;
 
       }

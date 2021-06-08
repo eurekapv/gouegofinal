@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController, AlertController } from '@ionic/angular';
+import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController, AlertController} from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -550,20 +550,51 @@ export class BookingPage implements OnInit,  OnDestroy {
    */
   showAlertContattaStruttura() {
     let myButton = [];
+    let myMessage = ''
 
-    if (this.startService.isDesktop) {
-      myButton = ['OK'];
-    }
-    else {
-      myButton = ['OK', 'Chiama'];
+    myMessage = 'Per la prenotazione dello slot è necessario contattare la struttura telefonicamente';
+    myButton = [
+      {
+        text: 'OK',
+        role: 'cancel'
+      }
+    ];
+
+
+     if (this.selectedLocation.TELEFONO && this.selectedLocation.TELEFONO.length > 0) {
+
+      myMessage = myMessage + ' al ' + this.selectedLocation.TELEFONO;
+
+      if (!this.startService.isDesktop) {
+
+        myButton = [
+          {
+            text: 'OK',
+            role: 'cancel'
+          },
+          {
+            text: 'Chiama',
+            handler: () => {
+              const number = this.selectedLocation.TELEFONO;
+              const link: HTMLAnchorElement = document.createElement('a');
+              link.setAttribute('href', `tel:${number}`);
+              link.click();
+  
+            }
+          }
+        ];
+
+      }
+
+
+      
     }
 
-    //TODO: Effettuare la chiamata se su Mobile
     this.alertController.create({
       header: 'Contattare la struttura',
       subHeader: 'per richiedere informazioni',
-      message: 'Per la prenotazione dello slot è necessario contattare la struttura telefonicamente',
-      buttons: ['Ok','Chiama']
+      message: myMessage,
+      buttons: myButton
     })
     .then(elAlert => {
       elAlert.present();

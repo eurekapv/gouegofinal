@@ -321,8 +321,28 @@ export class HistorybookPage implements OnInit, OnDestroy {
   }
 
 
-
   onClickTrash(idPianificazione: string){
+    this.alertController.create({
+      header:"Sei sicuro?",
+      message:"Continuando, cancellerai questa prenotazione",
+      buttons: [
+        {
+          text: 'Conferma',
+          handler: () => {this.deletePianificazione(idPianificazione)}
+        },
+        {
+          text: 'Annulla',
+          role: 'canel'
+        }
+      ]
+
+    })
+    .then(alert => {
+      alert.present();
+    })
+  }
+
+  deletePianificazione(idPianificazione: string){
 
     this.loadingController.create({
       message: 'Cancellazione...',

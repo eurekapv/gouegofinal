@@ -340,6 +340,11 @@ export class HistorybookPage implements OnInit, OnDestroy {
       this.loadingController.dismiss();
       this.showMessage(resp.message);
     })
+    .catch(resp => {
+      this.loadingController.dismiss();
+      this.showMessage(resp.message);
+    })
+    
 
 
 

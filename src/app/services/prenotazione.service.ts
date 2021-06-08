@@ -316,20 +316,21 @@ export class PrenotazioneService {
     requestDelete(idPianificazione: string, config: StartConfiguration): Promise<PostResponse>{
 
       return new Promise<PostResponse>((resolve, reject) => {
-        const method: string = 'MOBBOOKINGDELETE'
+        const method: string = 'MOBBOOKINGDELETE';
         const doObject = 'PRENOTAZIONE';
         const myUrl = config.urlBase + '/' + doObject;
 
         //headers
         let myHeaders = config.getHttpHeaders();
-        myHeaders.append('X-Http-Method-Override', method)
+        myHeaders = myHeaders.append('X-HTTP-Method-Override', method);
 
 
         //params
         let myParams = new HttpParams().set('idPianificazione', idPianificazione);
       
         //abbiamo tutto, faccio la richiesta
-        this.apiService.httpGet(myUrl, myHeaders, myParams)
+        this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
         .subscribe(data => {
           //creo l'oggetto con la risposta
           let response = new PostResponse();

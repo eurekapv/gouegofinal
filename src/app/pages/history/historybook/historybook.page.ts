@@ -326,7 +326,29 @@ export class HistorybookPage implements OnInit, OnDestroy {
    * Richiesta cancellazione prenotazione al server
    * @param idPianificazione Prenotazione Pianificazione
    */
-  onClickTrash(idPianificazione: string){
+  onClickTrash(idPianificazione: string) {
+    this.alertController.create({
+      header:"Sei sicuro?",
+      message:"Continuando, cancellerai questa prenotazione",
+      buttons: [
+        {
+          text: 'Conferma',
+          handler: () => {this.deletePianificazione(idPianificazione)}
+        },
+        {
+          text: 'Annulla',
+          role: 'cancel'
+        }
+      ]
+
+    })
+    .then(alert => {
+      alert.present();
+    })
+  }
+
+
+  deletePianificazione(idPianificazione: string){
 
     this.loadingController.create({
       message: 'Cancellazione...',

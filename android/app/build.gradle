@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion compileSdkVersion
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.gouego"
         minSdkVersion rootProject.ext.minSdkVersion

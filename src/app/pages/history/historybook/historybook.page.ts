@@ -370,9 +370,10 @@ export class HistorybookPage implements OnInit, OnDestroy {
       this.showMessage(resp.message);
 
       //Se è andato tutto bene
-      if(resp.result){
+      if(resp.result) {
+        
         //è andato tutto bene
-        this.navCtr.pop();
+        this.navCtr.navigateBack('/historylist');
       }
 
     })

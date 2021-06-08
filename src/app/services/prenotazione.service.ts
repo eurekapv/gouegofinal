@@ -334,7 +334,6 @@ export class PrenotazioneService {
         .subscribe(data => {
           //creo l'oggetto con la risposta
           let response = new PostResponse();
-          console.log(data);
           response.setFromResponse(data);
           resolve(response);
 

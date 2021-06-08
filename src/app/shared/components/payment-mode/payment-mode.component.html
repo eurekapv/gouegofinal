@@ -3,13 +3,8 @@
   <ion-label>Pagamento non supportato</ion-label>
 </ion-item>
 
-<ion-item 
-        button
-        *ngIf="arPaymentModeList.length" 
-        lines="none" 
-        [detail]="true"
-        (click)="onOpenChoose()">
-    <ion-icon slot="start" [name]="itemIcon"></ion-icon>
-    <ion-label *ngIf="selectedPaymentMode">{{selectedPaymentMode?.description}}</ion-label>
-    <ion-label *ngIf="!selectedPaymentMode">Scegli metodo di pagamento</ion-label>
+<ion-item button *ngIf="arPaymentModeList.length" lines="full" [detail]="true" (click)="onOpenChoose()">
+  <ion-icon slot="start" [name]="itemIcon"></ion-icon>
+  <ion-label *ngIf="selectedPaymentMode">{{selectedPaymentMode?.description}}</ion-label>
+  <ion-label *ngIf="!selectedPaymentMode">Scegli metodo di pagamento</ion-label>
 </ion-item>

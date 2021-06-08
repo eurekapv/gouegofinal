@@ -357,12 +357,16 @@ export class HistorybookPage implements OnInit, OnDestroy {
       return this.startService.requestDeletePianificazione(idPianificazione)
     })
     .then(resp => {
+      //Chiudo il Loading Controller
       this.loadingController.dismiss();
+      
+      //Visualizzo il messaggio
       this.showMessage(resp.message);
 
+      //Se è andato tutto bene
       if(resp.result){
         //è andato tutto bene
-        this.navCtr.pop()
+        this.navCtr.pop();
       }
 
     })

@@ -1,6 +1,26 @@
+# Nomi Bundle appId
+### Il file capacitor.config.json sembra venga letto solo prima della operazione di npx cap add android/ios.
+### E' comunque meglio modificare il file alla voce appId, sempre prima di ogni operazione a seconda della società e del dispositivo su cui avviene.
+Società OpenBeach
+android:    com.gouego
+ios:        com.gouego.openbeach
+
+# Modifica Version Code e Version Name
+Android
+Menu File -> Project Structure -> Modules
+Module App -> Default Config
+
+Last Release Pubblicata
+Openbeach: 4 -> 1.3
+
+IOS
+Openbeach 10 -> 1.3
+
+
+
 # Preparare progetto Android
 >Controllare nella cartella resources i file icon.png e splash.png
-    npm install cordova-res
+    npm install -g cordova-res
 Se le immagine sono modificate, rieseguire
 
 Cancellare dalle cartelle android o ios i file e rieseguire 

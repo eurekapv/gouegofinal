@@ -321,7 +321,12 @@ export class HistorybookPage implements OnInit, OnDestroy {
   }
 
 
-  onClickTrash(idPianificazione: string){
+
+  /**
+   * Richiesta cancellazione prenotazione al server
+   * @param idPianificazione Prenotazione Pianificazione
+   */
+  onClickTrash(idPianificazione: string) {
     this.alertController.create({
       header:"Sei sicuro?",
       message:"Continuando, cancellerai questa prenotazione",
@@ -332,7 +337,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
         },
         {
           text: 'Annulla',
-          role: 'canel'
+          role: 'cancel'
         }
       ]
 
@@ -341,6 +346,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
       alert.present();
     })
   }
+
 
   deletePianificazione(idPianificazione: string){
 
@@ -364,9 +370,10 @@ export class HistorybookPage implements OnInit, OnDestroy {
       this.showMessage(resp.message);
 
       //Se è andato tutto bene
-      if(resp.result){
+      if(resp.result) {
+        
         //è andato tutto bene
-        this.navCtr.pop();
+        this.navCtr.navigateBack('/historylist');
       }
 
     })

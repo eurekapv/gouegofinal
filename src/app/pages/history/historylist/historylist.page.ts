@@ -59,6 +59,20 @@ export class HistorylistPage implements OnInit {
     this.sottoscrizioneIscrizioni()
 
 
+    // //Richiesta utente attuale
+    // this.subDocUtente = this.startService.utente
+    //                       .subscribe  (elDocUtente => {
+    //                           this.docUtente = elDocUtente;
+    //                           //Utente arrivato
+    //                           if (this.docUtente) {
+    //                             this.requestPrenotazioni();
+    //                           }
+
+    //                       });
+
+  }
+
+  ionViewDidEnter() {
     //Richiesta utente attuale
     this.subDocUtente = this.startService.utente
                           .subscribe  (elDocUtente => {
@@ -69,7 +83,6 @@ export class HistorylistPage implements OnInit {
                               }
 
                           });
-
   }
 
 

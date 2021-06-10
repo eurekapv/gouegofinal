@@ -104,7 +104,7 @@ export class SlottimeComponent implements OnInit {
       else {
         switch (this.mySlot.STATO) {
           case StatoSlot.occupato:
-            nameIcon = 'thumbs-up';
+            nameIcon = 'thumbs-down';
             break;
             case StatoSlot.contattare:
               nameIcon = 'call';

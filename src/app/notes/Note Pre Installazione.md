@@ -16,6 +16,11 @@ Openbeach: 4 -> 1.3
 IOS
 Openbeach 10 -> 1.3
 
+## Problemi con le Icone
+Segui questa guida e ricostruisci le icone dentro a Android Studio
+https://enappd.com/blog/icon-splash-in-ionic-react-capacitor-apps/114/
+
+
 
 
 # Preparare progetto Android

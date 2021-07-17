@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -13,6 +13,7 @@ import { CalendarPage } from '../detailcourse/calendar/calendar.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
+import { Area } from 'src/app/models/area.model';
 
 
 enum PageState{
@@ -26,7 +27,7 @@ enum PageState{
   templateUrl: './listcourses.page.html',
   styleUrls: ['./listcourses.page.scss'],
 })
-export class ListcoursesPage implements OnInit {
+export class ListcoursesPage implements OnInit, OnDestroy {
 
 
   PageState : typeof PageState = PageState;
@@ -47,6 +48,11 @@ export class ListcoursesPage implements OnInit {
   statoPagina = PageState.TUTTI;
 
   showTabs = true;
+
+  //Gestione Abilitazione Iscrizioni
+  listenSelectedArea:Subscription;
+  selectedArea: Area;
+  enableIscrizioni:boolean = false;
 
   
 
@@ -77,6 +83,30 @@ export class ListcoursesPage implements OnInit {
     this.filtroCorsi.DATAFINE = new Date();
     this.filtroCorsi.addFilterCondition(OperatorCondition.maggiore,'DATAFINE');
 
+    //Ascolto le modifiche dell'area selezionata
+    this.onListenSelectedArea();
+  }
+
+
+  /**
+   * In ascolto dell'area selezionata, per capire se solo abilitate le iscrizioni
+   */
+  onListenSelectedArea() {
+    this.listenSelectedArea = this.startService.areaSelected
+      .subscribe(elArea => {
+
+        this.selectedArea = elArea;
+
+        //Controllo se nell'area sono abilitate le iscrizioni
+        if (this.selectedArea.APPISCRIZIONI == true) {
+          this.enableIscrizioni = true;
+        }
+        else {
+          this.enableIscrizioni = false;
+        }
+    }, error => {
+      this.enableIscrizioni = false;
+    })
   }
 
   ngOnInit() {
@@ -101,6 +131,13 @@ export class ListcoursesPage implements OnInit {
       }
 
     })
+  }
+
+  ngOnDestroy() {
+    
+    if (this.listenSelectedArea) {
+      this.listenSelectedArea.unsubscribe();
+    }    
   }
 
   // ionViewDidEnter(){

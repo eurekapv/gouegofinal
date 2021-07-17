@@ -14,9 +14,15 @@
 </ion-header>
 
 <ion-content>
-  <ion-card class="title">
-    <ion-item color="light" button="false" lines="none">
+  <ion-card [class]="getClassHeader()">
+
+    <ion-item 
+        [color]="getColorHeader()" 
+        button="false" 
+        lines="none">
+
       <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
+
       <ion-label>
         <h1 class="ion-text-wrap">
           {{ myCorso.DENOMINAZIONE }}
@@ -26,14 +32,23 @@
         </h3>
       </ion-label>
     </ion-item>
-  
+
     <ion-card-content 
-    *ngFor="let programma of myCorso.CORSOPROGRAMMA"
-    class="ion-padding-horizontal" 
-    style="display: flex;">
-      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-      <span [innerHTML]="programma.TESTOHTML"></span> 
+      class="ion-padding-horizontal" 
+      style="display: flex;"
+      *ngIf = "myCorso?.existProgrammaCorso()">
+      <ion-label class="ion-text-wrap">
+        <!-- <ion-icon 
+          slot = "start"
+          name="information-circle-outline" 
+          color="primary">
+        </ion-icon> -->
+        <span [innerHTML]="myCorso.getFullProgrammaHTML()"></span> 
+      </ion-label>
+      
     </ion-card-content>
+  
+
     
   </ion-card>
 
@@ -208,14 +223,22 @@
 <!-- END LOCATION -->
 </ion-content>
 
-<ion-footer *ngIf="myCorso.tempoCorso() !== 'stop' && userLogged">
+<ion-footer>
   
-    <!-- <ion-button 
-        color="primary" 
+    <ion-button 
+        color="success" 
         fill="solid" 
         expand="block"
+        *ngIf = "showIscrizioniButton()"
         (click)="onClickIscrizione()">
-      Iscriviti
-    </ion-button> -->
+      Iscriviti adesso
+    </ion-button>
+
+    <ion-text 
+      color="danger"
+      class="ion-text-center"
+      *ngIf = "!showIscrizioniButton()">
+      <h6>Contatta la struttura per iscriverti al corso</h6>
+    </ion-text>
   
 </ion-footer>

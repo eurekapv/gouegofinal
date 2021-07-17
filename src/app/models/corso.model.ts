@@ -37,6 +37,7 @@ export class Corso extends IDDocument {
     CORSOPROGRAMMA: CorsoProgramma[];
     PIANIFICAZIONECORSO: PianificazioneCorso[];
     MODFRUIZIONE: ModalitaFruizione;
+    STATODINAMICO: StatoCorso;
     
     
 
@@ -80,6 +81,7 @@ export class Corso extends IDDocument {
                     'NUMPARTECIPANTI',
                     'MAXPARTECIPANTI',
                     'STATO',
+                    'STATODINAMICO',
                     'TARGETSESSO',
                     'DURATA'
                    ];
@@ -317,6 +319,20 @@ export class Corso extends IDDocument {
       return value;
     }
 
+
+    /**
+     * Ritorna TRUE se Oggi è possibile iscriversi al corso
+     */
+    flagIscrizioniAperte(): boolean {
+      let flag: boolean = false;
+
+      if (this.STATODINAMICO == StatoCorso.iscrizioniAperte) {
+        flag = true;
+      }
+
+      return flag;
+    }
+
     /**
      * Ritorna una icona a seconda del tipo Corso
      */
@@ -339,6 +355,55 @@ export class Corso extends IDDocument {
 
       return nameIcon;
       
+    }
+
+
+    
+    /**
+     * Controlla se esiste un programma del corso
+     * @returns TRUE se esiste testo come programma del corso
+     */
+    existProgrammaCorso(): boolean {
+      let exist:boolean = false;
+      if (this.CORSOPROGRAMMA) {
+        if (this.CORSOPROGRAMMA.length != 0) {
+          for (let index = 0; index < this.CORSOPROGRAMMA.length; index++) {
+            const element = this.CORSOPROGRAMMA[index];
+            if (element.TESTOHTML && element.TESTOHTML.length != 0) {
+              exist = true;
+              break;
+            }
+            
+          }
+        }
+      }
+
+      return exist;
+    }
+
+    /**
+     * Anche se ci sono piu record li combina con un <BR>
+     * @returns Testo HTML Programma corso completo
+     */
+    getFullProgrammaHTML(): string {
+      
+      let txtReturn = '';
+      if (this.CORSOPROGRAMMA) {
+        if (this.CORSOPROGRAMMA.length != 0) {
+          for (let index = 0; index < this.CORSOPROGRAMMA.length; index++) {
+            const element = this.CORSOPROGRAMMA[index];
+            if (element.TESTOHTML && element.TESTOHTML.length != 0) {
+              if (txtReturn.length != 0) {
+                txtReturn += '<BR>';
+              }
+              txtReturn += element.TESTOHTML;
+            }
+            
+          }
+        }
+      }
+
+      return txtReturn;
     }
 
 }

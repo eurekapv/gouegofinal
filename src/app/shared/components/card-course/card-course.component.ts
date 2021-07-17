@@ -15,13 +15,56 @@ export class CardCourseComponent implements OnInit {
   constructor(private startService: StartService) { }
 
   @Input() myCorso = new Corso();
+  //Se impostato a TRUE significa che nell'area sono abilitate le iscrizioni con l'app
+  //e quindi controllare se è possibile iscriversi con le date ed
+  //enfatizzare la scheda con un colore speciale
+  @Input() useIscrizioniColor = false;
+
   @Output() clickDetail = new EventEmitter<Corso>();
+  
   iconColor = 'primary';
 
   
 
   ngOnInit() {
     
+  }
+
+  /**
+   * Indica se mostrare il pulsante delle Iscrizioni
+   */
+   showIscrizioniButton():boolean {
+    let show = false;
+    if (this.myCorso) {
+      if (this.useIscrizioniColor && this.myCorso.flagIscrizioniAperte()) {
+        show = true;
+      }
+    }
+
+    return show;
+  }  
+
+  /**
+  * Vorrebbe Iscriversi
+   */
+  //TODO: Implementare l'iscrizione
+  onClickIscrizione() {
+
+  }
+
+  /**
+   * Torna l'eventuale classe speciale da applicare
+   */
+  getClassHeader(): string {
+    let myClass = '';
+    if (this.myCorso) {
+
+      if (this.useIscrizioniColor && this.myCorso.flagIscrizioniAperte()) {
+        myClass = 'special';
+      }
+    }
+    
+    return myClass;
   }
 
   getLabelTargetSesso() {

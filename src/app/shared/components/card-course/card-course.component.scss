@@ -12,9 +12,14 @@
 ion-card {
     
     --background: var(--ion-color-light-alpha);
-    ion-card-header{
+
+    ion-card-header {
         --background: var(--ion-color-light-tint);
     }    
+
+    ion-card-header.special {
+        --background: var(--ion-color-success-tint);
+    } 
 
     ion-card-content {
         ion-grid {

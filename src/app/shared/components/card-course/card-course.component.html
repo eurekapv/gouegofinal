@@ -1,6 +1,9 @@
-<ion-card  class="ion-no-margin ion-margin-horizontal" button (click)="goToDetail()">
+<ion-card  
+  class="ion-no-margin ion-margin-horizontal" 
+  button (click)="goToDetail()">
+
   <!-- SPORT E NOME CORSO-->
-  <ion-card-header >
+  <ion-card-header [ngClass]="getClassHeader()">
     <ion-grid class="ion-no-padding">
       <ion-row class="ion-no-padding ion-align-items-center">
         <ion-col size="2" class="ion-no-padding">
@@ -110,10 +113,24 @@
       </ion-col>
     </ion-row>
   </ion-footer>
-
-
-
 </ion-card>
+
+<ion-row *ngIf = "showIscrizioniButton()">
+  <ion-col
+    size="12" 
+    size-sm="12">
+
+      <ion-button 
+        color="success" 
+        fill="solid" 
+        expand="block"
+        *ngIf = "showIscrizioniButton()"
+        (click)="onClickIscrizione()">
+          Iscriviti adesso
+      </ion-button>
+
+  </ion-col>
+</ion-row>
 
         
 

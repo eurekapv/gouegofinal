@@ -61,11 +61,15 @@
                   >
           <!-- <app-card-course 
               [myCorso]="corso" 
+              [useIscrizioniColor]="enableIscrizioni"
               (clickCalendar)="onClickCardCalendar($event)"
-              (clickDetail)="onClickCardDetail($event)"></app-card-course> -->
+              (clickDetail)="onClickCardDetail($event)">
+            </app-card-course> -->
               <app-card-course 
-              [myCorso]="corso" 
-              (clickDetail)="onClickCardDetail($event)"></app-card-course>
+                [myCorso]="corso" 
+                [useIscrizioniColor]="enableIscrizioni"
+                (clickDetail)="onClickCardDetail($event)">
+              </app-card-course>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -96,11 +100,15 @@
                   >
           <!-- <app-card-course 
               [myCorso]="corso" 
+              [useIscrizioniColor]="enableIscrizioni"
               (clickCalendar)="onClickCardCalendar($event)"
-              (clickDetail)="onClickCardDetail($event)"></app-card-course> -->
+              (clickDetail)="onClickCardDetail($event)">
+            </app-card-course> -->
               <app-card-course 
-              [myCorso]="corso" 
-              (clickDetail)="onClickCardDetail($event)"></app-card-course>
+                  [myCorso]="corso" 
+                  [useIscrizioniColor]="enableIscrizioni"
+                  (clickDetail)="onClickCardDetail($event)">
+              </app-card-course>
         </ion-col>
       </ion-row>
     </ion-grid>

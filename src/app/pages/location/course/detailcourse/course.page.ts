@@ -8,6 +8,7 @@ import { Location } from 'src/app/models/location.model';
 import { CalendarPage } from './calendar/calendar.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams, RequestDecode } from 'src/app/library/models/requestParams.model';
+import { Area } from 'src/app/models/area.model';
 
 @Component({
   selector: 'app-course',
@@ -24,6 +25,13 @@ export class CoursePage implements OnInit, OnDestroy {
   userLogged = false;
   subUserLogged: Subscription;
   isDesktop: boolean;
+
+  //Gestione Abilitazione Iscrizioni
+  listenSelectedArea:Subscription;
+  selectedArea: Area;
+  enableIscrizioni:boolean = false;  
+
+
   constructor(
     private startService: StartService,
     private actRouter: ActivatedRoute,
@@ -32,63 +40,91 @@ export class CoursePage implements OnInit, OnDestroy {
     private docStructureService : DocstructureService,
     private loadingController : LoadingController,
     private toastController : ToastController
-  ) {}
+  ) {
+    
+    //Ascolto cambiamenti dell'Area per l'abilitazione delle iscrizioni
+    this.onListenSelectedArea();
+
+  }
+
+
+  
+/**
+ * In ascolto dell'area selezionata, per capire se solo abilitate le iscrizioni
+ */
+  onListenSelectedArea() {
+   this.listenSelectedArea = this.startService.areaSelected
+    .subscribe(elArea => {
+
+      this.selectedArea = elArea;
+
+      //Controllo se nell'area sono abilitate le iscrizioni
+      if (this.selectedArea.APPISCRIZIONI == true) {
+        this.enableIscrizioni = true;
+      }
+      else {
+        this.enableIscrizioni = false;
+      }
+  }, error => {
+    this.enableIscrizioni = false;
+  })
+}
               
-              ngOnInit() {
-                this.isDesktop = this.startService.isDesktop;
-                let idCorso = '';
-                this.actRouter.paramMap.subscribe(param => {
-                  if (param.has('courseId')) {
-                    
-                    //ID Corso
-                    idCorso = param.get('courseId')
-
-                    //creo il loading
-
-                    this.loadingController.create({
-                      spinner: "circular",
-                      message: 'Caricamento',
-                      backdropDismiss: true
-                    })
-                    .then(elLoading => {
-                      elLoading.present();
-                      
-                      //faccio la richiesta
-                      this.startService.newRequestCorsoById(idCorso)
-                      .then((corso:Corso) => {
-
-                        if (corso) {
-
-                          //se ho trovato un corso, lo prendo
-                          this.myCorso = corso;
-
-                          
+  ngOnInit() {
+    this.isDesktop = this.startService.isDesktop;
+    let idCorso = '';
+    this.actRouter.paramMap.subscribe(param => {
+      if (param.has('courseId')) {
         
-                          //ora richiedo la location
-                          this.requestLocationById(this.myCorso.IDLOCATION);
-                        }
-                        else{
-                          elLoading.dismiss();
-                          this.showMessage('Non ho trovato nessun corso');
-                        }
-                      })
-                      .catch(error => {
-                        elLoading.dismiss();
-                        this.showMessage('Errore di connessione');
-                        console.log(error);
-                      })
-                    })      
+        //ID Corso
+        idCorso = param.get('courseId')
+
+        //creo il loading
+
+        this.loadingController.create({
+          spinner: "circular",
+          message: 'Caricamento',
+          backdropDismiss: true
+        })
+        .then(elLoading => {
+          elLoading.present();
+          
+          //faccio la richiesta
+          this.startService.newRequestCorsoById(idCorso)
+          .then((corso:Corso) => {
+
+            if (corso) {
+
+              //se ho trovato un corso, lo prendo
+              this.myCorso = corso;
+
               
-                    //Controllo se l'utente è loggato
-                    this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
-                      this.userLogged = element;
-                    });     
-                  }
-                  else {
-                    this.navCtrl.navigateRoot(['/']);
-                  }
-                })              
-              }
+
+              //ora richiedo la location
+              this.requestLocationById(this.myCorso.IDLOCATION);
+            }
+            else{
+              elLoading.dismiss();
+              this.showMessage('Non ho trovato nessun corso');
+            }
+          })
+          .catch(error => {
+            elLoading.dismiss();
+            this.showMessage('Errore di connessione');
+            console.log(error);
+          })
+        })      
+  
+        //Controllo se l'utente è loggato
+        this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
+          this.userLogged = element;
+        });     
+      }
+      else {
+        this.navCtrl.navigateRoot(['/']);
+      }
+    })              
+  }
 
   ngOnDestroy() {
     if (this.subMyCorso) {
@@ -97,6 +133,10 @@ export class CoursePage implements OnInit, OnDestroy {
 
     if (this.subUserLogged) {
       this.subUserLogged.unsubscribe();
+    }
+
+    if (this.listenSelectedArea) {
+      this.listenSelectedArea.unsubscribe();
     }
   }
 
@@ -143,6 +183,7 @@ export class CoursePage implements OnInit, OnDestroy {
   /**
    * Vorrebbe Iscriversi
    */
+  //TODO: Implementare l'iscrizione
   onClickIscrizione() {
 
   }
@@ -154,6 +195,52 @@ export class CoursePage implements OnInit, OnDestroy {
   getIcon(corso:Corso)
   {
     return this.startService.getSportIcon(corso.IDSPORT);
+  }
+
+
+  /**
+ * Torna l'eventuale classe speciale da applicare
+ */
+  getClassHeader(): string {
+    let myClass = 'title';
+    if (this.myCorso) {
+
+      if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+        myClass = 'special';
+      }
+    }
+    
+    return myClass;
+  }
+
+  /**
+   * Colore dipendente dall'iscrizione
+   * @returns Colore da applicare all'item che forma la testata
+   */
+  getColorHeader(): string {
+    let myClass = 'light';
+    if (this.myCorso) {
+
+      if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+        myClass = 'success';
+      }
+    }
+    
+    return myClass;
+  }  
+
+  /**
+   * Indica se mostrare il pulsante delle Iscrizioni
+   */
+  showIscrizioniButton():boolean {
+    let show = false;
+    if (this.myCorso) {
+      if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+        show = true;
+      }
+    }
+
+    return show;
   }
 
   showMessage(messaggio:string){

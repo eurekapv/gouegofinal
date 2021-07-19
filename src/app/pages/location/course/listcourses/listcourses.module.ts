@@ -11,6 +11,12 @@ import { FilterPage } from './filter/filter.page';
 import { FilterPageModule } from './filter/filter.module';
 
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { BookcoursePageModule } from '../bookcourse/bookcourse.module';
+import { BookcoursePage } from '../bookcourse/bookcourse.page';
+import { NewLoginPageModule } from 'src/app/pages/auth/new-login/new-login.module';
+import { VerifyPageModule } from 'src/app/pages/auth/verify/verify.module';
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
+import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
 
 
 
@@ -21,14 +27,15 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
     FormsModule,
     IonicModule,
     ListcoursesPageRoutingModule,
-
+    BookcoursePageModule,
     FilterPageModule,
-    SharedComponentsModule
-    
+    SharedComponentsModule,
+    NewLoginPageModule,
+    VerifyPageModule
   ],
   declarations: [ListcoursesPage],
   entryComponents: [FilterPage],
-  exports: []
+  exports: [NewLoginPage, VerifyPage]
   
 })
 export class ListcoursesPageModule {}

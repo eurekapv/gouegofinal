@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { map, take } from 'rxjs/operators';
+import { HttpParams } from '@angular/common/http';
 
 import { Corso } from '../models/corso.model';
 import { ApicallService } from './apicall.service';
@@ -10,7 +10,7 @@ import { FilterCorsi } from '../models/filtercorsi.model';
 import { Sport } from '../models/sport.model';
 import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
-import { Utente } from '../models/utente.model';
+
 import { RequestDecode, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 

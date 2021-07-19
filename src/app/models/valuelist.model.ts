@@ -195,6 +195,13 @@ export enum StatoPagamento {
   
 }
 
+export enum TipoRigoIncasso {
+    incassato = 10,
+    scadenza = 20,
+    abbuono = 30,
+    perdita = 40
+}
+
 //Canali dove effettuare il pagamento, compreso onSite in contanti
 export enum PaymentChannel {
     onSite = 10,

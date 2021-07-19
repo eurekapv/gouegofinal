@@ -58,6 +58,8 @@ import { Gruppo } from '../models/gruppo.model';
 import { CorsoallegatoService } from './corsoallegato.service';
 
 import { CorsoAllegato } from '../models/corsoallegato.model';
+import { IscrizionecorsoService } from './iscrizionecorso.service';
+import { IscrizioneCorso } from '../models/iscrizionecorso.model';
 
 
 
@@ -168,7 +170,8 @@ export class StartService {
     private posizioneService: PosizioneService,
     private dataChiusuraService: DataChiusuraService,
     private urlLocation: PlatformLocation,
-    private corsoAllegatoService: CorsoallegatoService
+    private corsoAllegatoService: CorsoallegatoService,
+    private iscrizioneCorsoService: IscrizionecorsoService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -823,6 +826,32 @@ get selectedCorso() {
 }
 
 
+//#endregion
+
+
+//#region ISCRIZIONE CORSO
+
+/**
+* Contatta il server per conoscere se sono ancora 
+* disponibili posti per l'iscrizione a un corso
+* 
+* Ritorna un oggetto di tipo =>  PostResponse
+* Result = TRUE (Posti diponibili) / FALSE (Posti Esauriti)
+*  
+ * @param idCorso 
+ * @returns Promise (Resolve)
+ */
+getPostiDisponibiliCorso(idCorso: string):Promise<PostResponse> {
+  return this.iscrizioneCorsoService.getPostiDisponibiliCorso(idCorso);
+}
+
+/**
+ * Chiama il server per il salvataggio di una nuova iscrizione
+ * @param docIscrizione Documento Iscrizione da creare
+ */
+requestSaveIscrizione(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
+  return this.iscrizioneCorsoService.requestSaveIscrizione(docIscrizione);
+}
 //#endregion
 
 //#region UTENTE

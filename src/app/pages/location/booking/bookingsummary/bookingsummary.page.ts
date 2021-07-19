@@ -10,13 +10,14 @@ import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianifica
 import { Campo } from 'src/app/models/campo.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { PaymentProcess } from 'src/app/models/payment-process.model';
-import { PaymentMode, SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
+import { PageType, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
 
 import { AlertController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { Area } from 'src/app/models/area.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
+import { AreaLink } from 'src/app/models/arealink.model';
 const { Browser } = Plugins;
 
 @Component({
@@ -648,6 +649,28 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
     Browser.open({url:url})
   }
 
+
+  /**
+ * Recupera il link per le condizioni di vendita Prenotazioni e apre il browser
+ */
+  onClickCondizioniVendita(): void {
+    let link: AreaLink;
+
+
+    if (this.docArea) {
+
+      link = this.docArea.findAreaLinkByPageType(PageType.condizioniVenditaPrenotazioni);
+  
+      if (link && link.REFERURL) {
+
+        //Apro il link
+        this.openLink(link.REFERURL);
+
+      }
+    }
+
+    
+  }
 
   
 }

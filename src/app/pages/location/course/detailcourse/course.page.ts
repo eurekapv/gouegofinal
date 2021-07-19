@@ -7,8 +7,11 @@ import { NavController, ModalController, LoadingController, ToastController } fr
 import { Location } from 'src/app/models/location.model';
 import { CalendarPage } from './calendar/calendar.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { RequestParams, RequestDecode } from 'src/app/library/models/requestParams.model';
 import { Area } from 'src/app/models/area.model';
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
+import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
+import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
+import { BookcoursePage } from '../bookcourse/bookcourse.page';
 
 @Component({
   selector: 'app-course',
@@ -25,6 +28,9 @@ export class CoursePage implements OnInit, OnDestroy {
   userLogged = false;
   subUserLogged: Subscription;
   isDesktop: boolean;
+  docUser: Utente;
+  subUser: Subscription;
+  
 
   //Gestione Abilitazione Iscrizioni
   listenSelectedArea:Subscription;
@@ -44,6 +50,9 @@ export class CoursePage implements OnInit, OnDestroy {
     
     //Ascolto cambiamenti dell'Area per l'abilitazione delle iscrizioni
     this.onListenSelectedArea();
+
+    //Ascolto cambiamento Utente
+    this.onListenSelectedUser();
 
   }
 
@@ -69,9 +78,29 @@ export class CoursePage implements OnInit, OnDestroy {
     this.enableIscrizioni = false;
   })
 }
+
+/**
+ * Controllo cambio Utente
+ */
+onListenSelectedUser() {
+    //Controllo se l'utente è loggato
+    this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
+      this.userLogged = element;
+    });  
+
+
+    //Recupero il documento utente
+    this.subUser = this.startService.utente.subscribe(elUser => {
+      this.docUser = elUser;
+    })
+}
               
   ngOnInit() {
+    //SEMBRA NON FUNZIONARE CORRETTAMENTE
     this.isDesktop = this.startService.isDesktop;
+    //IMPOSTO DESKTOP FALSE
+    this.isDesktop = false;
+
     let idCorso = '';
     this.actRouter.paramMap.subscribe(param => {
       if (param.has('courseId')) {
@@ -115,15 +144,12 @@ export class CoursePage implements OnInit, OnDestroy {
           })
         })      
   
-        //Controllo se l'utente è loggato
-        this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
-          this.userLogged = element;
-        });     
+   
       }
       else {
         this.navCtrl.navigateRoot(['/']);
       }
-    })              
+    })             
   }
 
   ngOnDestroy() {
@@ -181,15 +207,75 @@ export class CoursePage implements OnInit, OnDestroy {
 
 
   /**
-   * Vorrebbe Iscriversi
-   */
-  //TODO: Implementare l'iscrizione
+  * Evento Click sul pulsante di Iscrizione
+  */
   onClickIscrizione() {
+
+    if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+      
+      //Non solo loggato, devo loggarmi
+      if (!this.userLogged) {
+  
+        //Prima di aprire la pagina di login
+        //impostare nel servizio Start forceIdArea = 
+        this.startService.setIdAreaForcedForLogin();
+        
+        //Ora preparo e creo la pagina di Login
+        this.mdlController.create({
+          component:NewLoginPage
+        })
+          .then(modal=>{
+            modal.present();
+          });
+  
+      }
+      else {
+  
+        let paramsVerifica : ParamsVerifica;
+        if (this.docUser) {
+          
+          //Recupero i parametri di verifica
+          paramsVerifica = this.docUser.getParamsVerifica(this.startService.actualStartConfig.gruppo)
+    
+          if (paramsVerifica){
+            //se ci sono parametri, significa che devo chiamare la pagina di verifica
+            this.mdlController.create({
+              component: VerifyPage,
+              componentProps:{
+                params: paramsVerifica
+              } 
+            })
+            .then(elModal => {
+              elModal.present();
+            })
+          }
+          else{
+    
+            //Posso procedere con la pagina di prenotazione
+            this.mdlController.create({
+              component: BookcoursePage,
+              componentProps: {
+                params: this.myCorso
+              }
+            })
+            .then(elModal => {
+              elModal.present();
+            })
+    
+          }
+  
+        }
+  
+        
+      }
+      
+    }
 
   }
 
   /**
-   * chiama il servizio passandogli l'id dell'oggetto corso, e restituisce la stringa dell'icona
+   * Chiama il servizio passandogli l'id dell'oggetto corso, 
+   * e restituisce la stringa dell'icona
    * @param corso l'oggetto corso per cui si richiede l'icona
    */
   getIcon(corso:Corso)
@@ -198,7 +284,7 @@ export class CoursePage implements OnInit, OnDestroy {
   }
 
 
-  /**
+ /**
  * Torna l'eventuale classe speciale da applicare
  */
   getClassHeader(): string {
@@ -243,6 +329,10 @@ export class CoursePage implements OnInit, OnDestroy {
     return show;
   }
 
+  /**
+   * Mostra un messaggio a video
+   * @param messaggio Messaggio
+   */
   showMessage(messaggio:string){
     this.toastController.create({
       message: messaggio,

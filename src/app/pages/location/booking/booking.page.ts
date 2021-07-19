@@ -16,7 +16,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { BookingsummaryPage } from './bookingsummary/bookingsummary.page';
 import { Sport } from 'src/app/models/sport.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
-import { Gruppo } from 'src/app/models/gruppo.model';
 import { VerifyPage } from '../../auth/verify/verify.page';
 import { StatoSlot } from 'src/app/models/valuelist.model';
 

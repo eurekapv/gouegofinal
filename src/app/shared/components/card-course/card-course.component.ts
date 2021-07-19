@@ -19,8 +19,8 @@ export class CardCourseComponent implements OnInit {
   //e quindi controllare se è possibile iscriversi con le date ed
   //enfatizzare la scheda con un colore speciale
   @Input() useIscrizioniColor = false;
-
   @Output() clickDetail = new EventEmitter<Corso>();
+  @Output() clickIscrizione = new EventEmitter<Corso>();
   
   iconColor = 'primary';
 
@@ -45,11 +45,11 @@ export class CardCourseComponent implements OnInit {
   }  
 
   /**
-  * Vorrebbe Iscriversi
+  * Emetto un evento per il pulsante di Iscrizione
    */
-  //TODO: Implementare l'iscrizione
   onClickIscrizione() {
-
+    //Emetto l'evento per segnalare la richiesta di Iscrizione
+    this.clickIscrizione.emit(this.myCorso);
   }
 
   /**

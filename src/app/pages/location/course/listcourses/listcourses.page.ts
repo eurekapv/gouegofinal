@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { Corso } from '../../../../models/corso.model';
 import { StartService } from '../../../../services/start.service';
-import { Utente } from 'src/app/models/utente.model';
+import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi } from 'src/app/models/valuelist.model';
 
 import { ModalController, NavController, LoadingController, ToastController, Gesture, GestureController } from '@ionic/angular';
@@ -14,6 +14,9 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 import { Area } from 'src/app/models/area.model';
+import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
+import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
+import { BookcoursePage } from '../bookcourse/bookcourse.page';
 
 
 enum PageState{
@@ -43,7 +46,8 @@ export class ListcoursesPage implements OnInit, OnDestroy {
 
   preferList: SegmentCorsi; 
 
-  userLogged= false
+  userLogged= false;
+  listenUserLogged: Subscription;
 
   statoPagina = PageState.TUTTI;
 
@@ -53,10 +57,6 @@ export class ListcoursesPage implements OnInit, OnDestroy {
   listenSelectedArea:Subscription;
   selectedArea: Area;
   enableIscrizioni:boolean = false;
-
-  
-
-  
   
 
   constructor(private router: ActivatedRoute, 
@@ -70,14 +70,11 @@ export class ListcoursesPage implements OnInit, OnDestroy {
               ) { 
     
 
-    //Richiedo lo User
-    this.listenDocUser = this.startService.utente.subscribe(element => {
-      this.docUser = element;
-    });
-
     //Mostro tutti i corsi
     this.preferList = SegmentCorsi.tutti;
 
+    //Ascolto le modifiche Utente
+    this.onListenUser();
     
     //inserisco nel filtro la condizione di "corsi non ancora finiti"
     this.filtroCorsi.DATAFINE = new Date();
@@ -109,10 +106,24 @@ export class ListcoursesPage implements OnInit, OnDestroy {
     })
   }
 
+  /**
+   * In ascolto al cambiamento utente
+   */
+  onListenUser() {
+
+    //Richiedo lo User
+    this.listenDocUser = this.startService.utente.subscribe(element => {
+      this.docUser = element;
+    });
+
+    this.listenUserLogged = this.startService.utenteLogged.subscribe(flagLogged => {
+      this.userLogged = flagLogged;
+    })
+
+  }
+
   ngOnInit() {
 
-    //valorizzare userLogged
-    this.userLogged = this.startService.actualUtenteLogged;
     
     // Leggo idLocation 
     this.router.paramMap.subscribe( param => {
@@ -137,7 +148,11 @@ export class ListcoursesPage implements OnInit, OnDestroy {
     
     if (this.listenSelectedArea) {
       this.listenSelectedArea.unsubscribe();
-    }    
+    }  
+    
+    if (this.listenUserLogged) {
+      this.listenUserLogged.unsubscribe();
+    }
   }
 
   // ionViewDidEnter(){
@@ -204,6 +219,10 @@ export class ListcoursesPage implements OnInit, OnDestroy {
 
       })
       .catch(error => {
+        
+        //Chiudo il loading
+        loading.dismiss();
+
         this.showMessage('Errore di connessione');
         console.log(error);
       })
@@ -311,6 +330,12 @@ export class ListcoursesPage implements OnInit, OnDestroy {
     });
 
   }
+
+
+  /**
+   * Visualizza un messaggio
+   * @param message Messaggio
+   */
   showMessage(message: string) {
 
     //Creo un messaggio
@@ -330,12 +355,90 @@ export class ListcoursesPage implements OnInit, OnDestroy {
   }
 
 
-  //Modificato
-  onClickCardDetail(corso: Corso) {
-    this.navController.navigateForward(['/','detailcourse',corso.ID]);
+  /**
+   * Passa alla pagina Dettaglio del corso
+   * @param myCorso Corso Richiesto
+   */
+  onClickCardDetail(myCorso: Corso) {
 
-    //this.testingDecodeAll(corso);
+    this.navController.navigateForward(['/','detailcourse',myCorso.ID]);
+    
   }
+
+  /**
+  * Evento Click sul pulsante di Iscrizione
+  */
+  onClickIscrizione(selectedCorso: Corso) {
+
+    if(selectedCorso) {
+
+      //Posso proseguire verso l'iscrizione
+      if (this.enableIscrizioni && selectedCorso.flagIscrizioniAperte()) {
+
+        //Verifico di essere loggato, ed eventualmente di avere tutte le informazioni
+        //di verifica richieste
+
+        //Non solo loggato, devo loggarmi
+        if (!this.userLogged) {
+    
+          //Prima di aprire la pagina di login
+          //impostare nel servizio Start forceIdArea = 
+          this.startService.setIdAreaForcedForLogin();
+          
+          //Ora preparo e creo la pagina di Login
+          this.mdlController.create({
+            component:NewLoginPage
+          })
+            .then(modal=>{
+              modal.present();
+            });
+    
+        }
+        else {
+    
+          let paramsVerifica : ParamsVerifica;
+          if (this.docUser) {
+            
+            //Recupero i parametri di verifica
+            paramsVerifica = this.docUser.getParamsVerifica(this.startService.actualStartConfig.gruppo)
+      
+            if (paramsVerifica){
+              //se ci sono parametri, significa che devo chiamare la pagina di verifica
+              this.mdlController.create({
+                component: VerifyPage,
+                componentProps:{
+                  params: paramsVerifica
+                } 
+              })
+              .then(elModal => {
+                elModal.present();
+              })
+            }
+            else {
+      
+              //Posso procedere con la pagina di prenotazione
+              this.mdlController.create({
+                component: BookcoursePage,
+                componentProps: {
+                  params: selectedCorso
+                }
+              })
+              .then(elModal => {
+                elModal.present();
+              })
+      
+            }
+    
+          }
+    
+          
+        }
+
+      }
+    }
+
+  }
+
 
 
   onScroll(event:any){

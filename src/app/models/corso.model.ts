@@ -38,6 +38,7 @@ export class Corso extends IDDocument {
     PIANIFICAZIONECORSO: PianificazioneCorso[];
     MODFRUIZIONE: ModalitaFruizione;
     STATODINAMICO: StatoCorso;
+    PREZZOLORDO: number;
     
     
 
@@ -85,7 +86,7 @@ export class Corso extends IDDocument {
                     'TARGETSESSO',
                     'DURATA'
                    ];
-    let arDecimal = ['ORELEZIONE'];
+    let arDecimal = ['ORELEZIONE','PREZZOLORDO'];
     let arBoolean = [];
     let arDate = ['DATAINIZIO','DATAFINE','ISCRIZIONEDAL','ISCRIZIONEAL'];
     let arDateTime =[];
@@ -149,6 +150,7 @@ export class Corso extends IDDocument {
      */
     setCollection(data: any) {
       this.CORSOPROGRAMMA = [];
+      this.PIANIFICAZIONECORSO = [];
 
       if (data.CORSOPROGRAMMA) {
         this.setCollectionCorsoProgramma(data.CORSOPROGRAMMA);
@@ -294,6 +296,19 @@ export class Corso extends IDDocument {
             Settimana.selectDayArray(index, this._SETTIMANA);
         }
       });
+    }
+
+    /**
+     * Partendo dall'Array _SETTIMANA crea un array solo per le Giornate selezionate
+     */
+    getArrayGiorniCorso(): Settimana[] {
+      let onlyDays:Settimana[] = [];
+
+      onlyDays = this._SETTIMANA.filter(element => {
+        return element.selected == true
+      });
+
+      return onlyDays;
     }
 
     /**

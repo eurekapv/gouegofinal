@@ -59,17 +59,14 @@
                   sizeXl = "4"
                   offsetXl = "0"
                   >
-          <!-- <app-card-course 
-              [myCorso]="corso" 
-              [useIscrizioniColor]="enableIscrizioni"
-              (clickCalendar)="onClickCardCalendar($event)"
-              (clickDetail)="onClickCardDetail($event)">
-            </app-card-course> -->
+
               <app-card-course 
                 [myCorso]="corso" 
                 [useIscrizioniColor]="enableIscrizioni"
-                (clickDetail)="onClickCardDetail($event)">
+                (clickDetail)="onClickCardDetail($event)"
+                (clickIscrizione)="onClickIscrizione($event)">
               </app-card-course>
+
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -98,16 +95,12 @@
                   sizeXl = "4"
                   offsetXl = "0"
                   >
-          <!-- <app-card-course 
-              [myCorso]="corso" 
-              [useIscrizioniColor]="enableIscrizioni"
-              (clickCalendar)="onClickCardCalendar($event)"
-              (clickDetail)="onClickCardDetail($event)">
-            </app-card-course> -->
+
               <app-card-course 
                   [myCorso]="corso" 
                   [useIscrizioniColor]="enableIscrizioni"
-                  (clickDetail)="onClickCardDetail($event)">
+                  (clickDetail)="onClickCardDetail($event)"
+                  (clickIscrizione)="onClickIscrizione($event)">
               </app-card-course>
         </ion-col>
       </ion-row>

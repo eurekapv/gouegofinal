@@ -25,6 +25,7 @@ import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prez
 import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
 import { HideHeaderDirective } from '../directives/hide-header.directive';
 import { PaymentModeComponent } from './payment-mode/payment-mode.component';
+import { SettimanaBlockComponent } from './settimana-block/settimana-block.component';
 
 /**
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
@@ -62,7 +63,8 @@ import { PaymentModeComponent } from './payment-mode/payment-mode.component';
         UploadComponent,
         AlertInputPrezzoComponent,
         CampiScrollComponent,
-        HideHeaderDirective
+        HideHeaderDirective,
+        SettimanaBlockComponent
         
     ],
     exports: [
@@ -86,7 +88,8 @@ import { PaymentModeComponent } from './payment-mode/payment-mode.component';
         AlertInputPrezzoComponent,
         UploadComponent,
         CampiScrollComponent,
-        HideHeaderDirective
+        HideHeaderDirective,
+        SettimanaBlockComponent
     ]
 })
 export class SharedComponentsModule {}

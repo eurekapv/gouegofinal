@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Carica un documento</ion-title>
+    <ion-title>Carica</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()">
         <ion-icon name="close-outline"></ion-icon>
@@ -13,39 +13,88 @@
   <div class="icon-container">
     <ion-icon name="cloud-upload-outline"></ion-icon>  
   </div>
+  
   <ion-list>
-    <ion-item button (click)="showPicker()">
-      <ion-icon slot="start" name="document-outline"></ion-icon>
-        <ion-label *ngIf="!selectedDocType" class="myPlaceholder">Cosa vuoi caricare ?</ion-label>
-        <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
-    </ion-item>
 
-    <!-- SE  SIAMO SU DESKTOP -->
-    <ion-item  *ngIf="isDesktop" button (click)="onDesktopUpload()">
-        <input accept=".pdf, image/*" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
-        <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-        <ion-label *ngIf="!loadedDesktopFile" class="myPlaceholder">Fai clic e scegli il file</ion-label>
-        <p>{{loadedDesktopFile? loadedDesktopFile.name: null}}</p>
-    </ion-item>
+    <!-- SE SONO SU MOBILE -->
+    <ion-item-group *ngIf="!isDesktop">
+      <ion-item-divider color="light">
+        <ion-label>
+          <h2>Carica da</h2>
+        </ion-label>
+        </ion-item-divider>
 
-    <!-- SE  SIAMO SU MOBILE -->
-    <ion-item *ngIf="!isDesktop" button (click)="onMobileUpload()">
-      <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-      <ion-label *ngIf="!loadedMobileFile" class="myPlaceholder">Scegli il file</ion-label>
-      {{loadedMobileFile? loadedMobileFile.name : null}}
-    </ion-item>
+        <ion-radio-group [(ngModel)]="sorgenteFile">
+
+          <ion-item>
+            <ion-icon slot="start" name="document-text-outline"></ion-icon>
+            <ion-label>Cartella Documenti</ion-label>
+            <ion-radio slot="end" value="file"></ion-radio>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon slot="start" name="camera-outline"></ion-icon>
+            <ion-label>Photo Gallery</ion-label>
+            <ion-radio slot="end" value="photo"></ion-radio>
+          </ion-item>
+
+        </ion-radio-group>
+    </ion-item-group>
+
+    <ion-item-group class="ion-margin-vertical">
+      <ion-item-divider color="light">
+        <ion-label>
+          <h2>Cosa stai caricando</h2>
+        </ion-label>
+        </ion-item-divider> 
+
+        <ion-item button (click)="showPicker()">
+          <ion-icon slot="start" name="document-outline"></ion-icon>
+            <ion-label 
+              *ngIf="!selectedDocType" 
+              class="myPlaceholder">Scegli una tipologia</ion-label>
+            <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+          <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
+        </ion-item>
+
+    </ion-item-group>
 
 
-    <ion-item>
-      <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-      <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
-    </ion-item>
+    <ion-item-group class="ion-margin-vertical">
+      <ion-item-divider color="light">
+        <ion-label>
+          <h2>Scegli il documento</h2>
+        </ion-label>
+        </ion-item-divider> 
+
+        <!-- SE  SIAMO SU DESKTOP -->
+        <ion-item  *ngIf="isDesktop" button (click)="onDesktopSearch()">
+            <input accept=".pdf, image/*" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
+            <ion-icon slot="start" name="folder-open-outline"></ion-icon>
+            <ion-label *ngIf="!loadedDesktopFile" class="myPlaceholder">Fai clic e scegli il file</ion-label>
+            <p>{{fileNameShow}}</p>
+        </ion-item>
+    
+        <!-- SE  SIAMO SU MOBILE -->
+        <ion-item *ngIf="!isDesktop" button (click)="onMobileSearch()">
+          <ion-icon slot="start" name="folder-open-outline"></ion-icon>
+          <ion-label *ngIf="!fileLoaded" class="myPlaceholder">Scegli il file</ion-label>
+          {{fileNameShow}}
+        </ion-item>
+
+
+    </ion-item-group>    
+
 
   </ion-list>
 </ion-content>
 
 <ion-footer>
-  <ion-button  expand = "block" (click)="onSubmit()">
+  <ion-button  expand = "block" (click)="onClickCarica()">
     <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
       Carica
   </ion-button>

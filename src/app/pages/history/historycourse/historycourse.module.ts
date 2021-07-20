@@ -12,6 +12,7 @@ import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calenda
 import { CalendarPageModule } from 'src/app/pages/location/course/detailcourse/calendar/calendar.module';
 import { AllegatilistPageModule } from 'src/app/pages/history/historycourse/allegatilist/allegatilist.module';
 import { AllegatilistPage } from './allegatilist/allegatilist.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 
 
@@ -27,6 +28,7 @@ import { AllegatilistPage } from './allegatilist/allegatilist.page';
     CalendarPageModule,
     AllegatilistPageModule,
     FormsModule,
+    SharedComponentsModule
   ],
   entryComponents:[CalendarPage, AllegatilistPage],
   declarations: [HistorycoursePage]

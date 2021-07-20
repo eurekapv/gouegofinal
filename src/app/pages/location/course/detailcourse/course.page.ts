@@ -12,6 +12,8 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
 import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
+import { TipoCorso } from 'src/app/models/valuelist.model';
+import { AllegatilistPage } from 'src/app/pages/history/historycourse/allegatilist/allegatilist.page';
 
 @Component({
   selector: 'app-course',
@@ -205,6 +207,21 @@ onListenSelectedUser() {
 
   }
 
+  /**
+   * Click sul pulsante Allegati
+   */
+  onClickAllegati(){
+    this.mdlController.create({
+      component: AllegatilistPage,
+      componentProps:{
+        'myCorso' : this.myCorso
+      }
+    })
+    .then(elModal => {
+      elModal.present()
+    })
+  }
+
 
   /**
   * Evento Click sul pulsante di Iscrizione
@@ -282,6 +299,20 @@ onListenSelectedUser() {
   {
     return this.startService.getSportIcon(corso.IDSPORT);
   }
+
+  /**
+   * Indica se mostrare o no il Bollino Prova
+   * @returns TRUE/FALSE
+   */
+   showFabProva():boolean {
+    let show:boolean = false; 
+    if (this.myCorso && this.myCorso.TIPO == TipoCorso.prova) {
+      show = true;
+    }
+
+    return show;
+
+  }  
 
 
  /**

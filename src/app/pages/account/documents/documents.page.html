@@ -29,7 +29,9 @@
   <!-- DOCUMENTI PRESENTI  -->
   <div *ngIf="listDocumenti.length > 0">
     <ion-list>
-      <ion-item *ngFor="let documento of listDocumenti" button (click)="onClickElement(documento)">
+      <ion-item 
+              *ngFor="let documento of listDocumenti"
+              (click)="onClickElement(documento)">
         <ion-icon slot="start" class="icon-left" color ="" name="document-text-outline"></ion-icon>
         <ion-label>
           <h3>{{documento['_DENOMINAZIONE_TipoDocumentazione']}}</h3>

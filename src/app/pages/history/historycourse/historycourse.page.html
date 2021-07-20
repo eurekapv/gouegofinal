@@ -10,41 +10,55 @@
 
 
   <ion-card class="title">
-    <ion-item color="light" button="false" lines="none">
-      <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
-      <ion-label *ngIf="myCorso">
-        <h1 class="ion-text-wrap">
-          {{ myCorso.DENOMINAZIONE }}
-        </h1>
-        <h3 class="ion-text-wrap">
-          {{ myCorso['_DENOMINAZIONE_Sport'] }}
-        </h3>
-      </ion-label>
+    <ion-item 
+        color="light" 
+        button="false" 
+        lines="none">
+
+          <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
+
+          <ion-label *ngIf="myCorso">
+            <h1 class="ion-text-wrap">
+              {{ myCorso.DENOMINAZIONE }}
+            </h1>
+            <h3 class="ion-text-wrap">
+              {{ myCorso['_DENOMINAZIONE_Sport'] }}
+            </h3>
+          </ion-label>
+
       <ion-label *ngIf="!myCorso">Corso</ion-label>
+
     </ion-item>
 
-  <div *ngIf="myCorso && myCorso.CORSOPROGRAMMA">
     <ion-card-content 
-      *ngFor="let programma of myCorso.CORSOPROGRAMMA"
-      class="ion-padding-horizontal" 
-      style="display: flex;">
-        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-        <span [innerHTML]="programma.TESTOHTML"></span> 
+            class="ion-padding-horizontal" 
+            style="display: flex" *ngIf="myCorso?.existProgrammaCorso()">
+
+      <ion-label class="ion-text-wrap">
+        <span [innerHTML]="myCorso.getFullProgrammaHTML()"></span>
+      </ion-label>
+
     </ion-card-content>
-  </div>
 
 </ion-card>
 
 <ion-grid class="links">
   <ion-row>
+
     <ion-col>
       <ion-button expand="block" fill="solid" color="light" (click)="onClickCalendar()">
         <ion-icon name="calendar" slot="start"></ion-icon>
         Calendario
       </ion-button>
     </ion-col>
+
     <ion-col>
-      <ion-button expand="block" fill="solid" color="light" (click)="onClickAllegati()">
+      <ion-button 
+            expand="block" 
+            fill="solid" 
+            color="light" 
+            (click)="onClickAllegati()">
+            
         <ion-icon slot="start" name="document-attach-outline"></ion-icon>
         Allegati
       </ion-button>
@@ -96,23 +110,10 @@
 
     
         <!-- GIORNATA SETTIMANA -->
-          <table style="width: 100%;">
-            <tr>
-              <td class="ion-text-center" *ngFor="let giorno of myCorso._SETTIMANA">
-                <ion-button 
-                    [color]="giorno.selected? 'primary':'secondary'" 
-                    size="small" 
-                    [fill]="giorno.selected ?'solid':'outline'">
-                    <span *ngIf="isDesktop">
-                      {{giorno.label | uppercase}}
-                    </span>
-                    <span *ngIf="!isDesktop">
-                      {{giorno.xsLabel | uppercase}}
-                    </span>
-                </ion-button>
-              </td>
-            </tr>
-          </table>
+        <app-settimana-block 
+          [listDays]="myCorso._SETTIMANA">
+        </app-settimana-block>
+
 
         <ion-item button="false" lines="none">
           <ion-label>

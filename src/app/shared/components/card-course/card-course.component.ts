@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Corso } from '../../../models/corso.model'
-import { ValueList, TargetSesso, Sesso } from 'src/app/models/valuelist.model';
+import { ValueList, TargetSesso, Sesso, TipoCorso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service'
 import { Sport } from 'src/app/models/sport.model';
 
@@ -65,6 +65,21 @@ export class CardCourseComponent implements OnInit {
     }
     
     return myClass;
+  }
+
+
+  /**
+   * Indica se mostrare o no il Bollino Prova
+   * @returns TRUE/FALSE
+   */
+  showFabProva():boolean {
+    let show:boolean = false; 
+    if (this.myCorso && this.myCorso.TIPO == TipoCorso.prova) {
+      show = true;
+    }
+
+    return show;
+
   }
 
   getLabelTargetSesso() {

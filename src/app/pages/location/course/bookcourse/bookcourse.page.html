@@ -11,26 +11,21 @@
 </ion-header>
 
 <ion-content>
-  <div style="background-color:#EFF1F8" >
+  <div style="background-color:#EFF1F8">
     <ion-grid class="griglia-principale">
 
       <!-- CONTROLLO PER POSTI DISPONIBILI -->
       <ion-row>
         <ion-col>
-          <ion-button 
-              [color]="flagPostiDisponibili ? 'success':'danger'"
-              expand="block" 
-              class="full-buttons"
-              (click)="onClickButtonHeader()">
-              <ion-icon 
-                  slot="end" 
-                  [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
-              </ion-icon>
-              
+          <ion-button [color]="flagPostiDisponibili ? 'success':'danger'" expand="block" class="full-buttons"
+            (click)="onClickButtonHeader()">
+            <ion-icon slot="end" [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
+            </ion-icon>
 
-              <h6 class="ion-text-wrap">{{txtPostiDisponibili}}</h6>
+
+            <h6 class="ion-text-wrap">{{txtPostiDisponibili}}</h6>
           </ion-button>
-        
+
         </ion-col>
       </ion-row>
 
@@ -44,74 +39,71 @@
               <ion-card-subtitle>Iscrizione al corso</ion-card-subtitle>
               <ion-card-title>{{ myCorso.DENOMINAZIONE }}</ion-card-title>
 
-              <ion-item 
-                  button="false" 
-                  lines="none"
-                  class="ion-no-padding">
-                    <i class="icon-sport" slot="start">
-                        <span [innerHTML]="getIcon(myCorso)"></span>
-                    </i>
-          
-                    <ion-label>
-                      <h6 class="ion-text-wrap">
-                        {{ myCorso['_DENOMINAZIONE_Sport'] }}
-                      </h6>
+              <ion-item button="false" lines="none" class="ion-no-padding">
+                <i class="icon-sport" slot="start">
+                  <span [innerHTML]="getIcon(myCorso)"></span>
+                </i>
+
+                <ion-label>
+                  <h6 class="ion-text-wrap">
+                    {{ myCorso['_DENOMINAZIONE_Sport'] }}
+                  </h6>
                 </ion-label>
               </ion-item>
 
-            </ion-card-header>            
+            </ion-card-header>
 
 
-        
+
             <ion-card-content class="ion-no-padding">
 
-              <ion-item lines = "none">
+              <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
-                  
-                    <ion-text>Il corso inizia&nbsp;</ion-text>
-                    <ion-text style="font-weight: bold;">{{myCorso.DATAINIZIO | date: 'EEEE' | titlecase }}&nbsp;</ion-text>
-                    <ion-text style="font-weight: bold;">{{myCorso.DATAINIZIO | date: 'dd/MM/yyyy' }}</ion-text>
-                    <ion-text>&nbsp;alle ore&nbsp;</ion-text>
-                    <ion-text style="font-weight: bold;">{{myCorso.ORAINIZIO | date:'HH:mm'}}</ion-text>
-                    <ion-text>&nbsp;e si conclude&nbsp;</ion-text>
-                    <ion-text style="font-weight: bold;">{{myCorso.DATAFINE | date: 'EEEE' | titlecase }}&nbsp;</ion-text>
-                    <ion-text style="font-weight: bold;">{{myCorso.DATAFINE | date: 'dd/MM/yyyy' }}</ion-text>
-                    <ion-text *ngIf="myCorso.NUMEROLEZIONI">
-                      &nbsp;per un totale di&nbsp;{{myCorso.NUMEROLEZIONI}}&nbsp;{{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}} della durata di&nbsp;{{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
-                    </ion-text>
-                  
+
+                  <ion-text>Il corso inizia&nbsp;</ion-text>
+                  <ion-text style="font-weight: bold;">{{myCorso.DATAINIZIO | date: 'EEEE' | titlecase }}&nbsp;
+                  </ion-text>
+                  <ion-text style="font-weight: bold;">{{myCorso.DATAINIZIO | date: 'dd/MM/yyyy' }}</ion-text>
+                  <ion-text>&nbsp;alle ore&nbsp;</ion-text>
+                  <ion-text style="font-weight: bold;">{{myCorso.ORAINIZIO | date:'HH:mm'}}</ion-text>
+                  <ion-text>&nbsp;e si conclude&nbsp;</ion-text>
+                  <ion-text style="font-weight: bold;">{{myCorso.DATAFINE | date: 'EEEE' | titlecase }}&nbsp;</ion-text>
+                  <ion-text style="font-weight: bold;">{{myCorso.DATAFINE | date: 'dd/MM/yyyy' }}</ion-text>
+                  <ion-text *ngIf="myCorso.NUMEROLEZIONI">
+                    &nbsp;per un totale di&nbsp;{{myCorso.NUMEROLEZIONI}}&nbsp;{{myCorso.NUMEROLEZIONI > 1 ?'Incontri
+                    ':'Incontro '}} della durata di&nbsp;{{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
+                  </ion-text>
+
                 </ion-label>
               </ion-item>
 
-              <ion-item 
-                  lines="none" 
-                  *ngIf="onlyDaysCorso?.length == 1">
-                  <ion-label class="ion-text-wrap">
-                    <ion-text>Il corso è pianificato 1 volta a settimana al &nbsp;</ion-text>
-                    <ion-text color="danger">{{onlyDaysCorso[0].label |titlecase}}</ion-text>
-                  </ion-label>
+              <ion-item lines="none" *ngIf="onlyDaysCorso?.length == 1">
+                <ion-label class="ion-text-wrap">
+                  <ion-text>Il corso è pianificato 1 volta a settimana al &nbsp;</ion-text>
+                  <ion-text color="danger">{{onlyDaysCorso[0].label |titlecase}}</ion-text>
+                </ion-label>
 
               </ion-item>
 
-              <ion-item 
-                  lines="none" 
-                  *ngIf="onlyDaysCorso?.length > 1">
-                  <ion-label class="ion-text-wrap">
-                    <ion-text>Il corso è pianificato {{onlyDaysCorso?.length}} volte a settimana</ion-text>
-                    <p *ngFor="let giorno of onlyDaysCorso">
-                      <ion-text color="danger">{{giorno.label |titlecase}}</ion-text>
-                    </p>
-                  </ion-label>
+              <ion-item lines="none" *ngIf="onlyDaysCorso?.length > 1">
+                <ion-label class="ion-text-wrap">
+                  <ion-text>Il corso è pianificato {{onlyDaysCorso?.length}} volte a settimana</ion-text>
+                  <p *ngFor="let giorno of onlyDaysCorso">
+                    <ion-text color="danger">{{giorno.label |titlecase}}</ion-text>
+                  </p>
+                </ion-label>
 
-              </ion-item>              
+              </ion-item>
 
-              <ion-item lines = "none">
+              <ion-item lines="none">
                 <ion-label class="ion-text-wrap">
                   <ion-text>
-                    Si consiglia di controllare il calendario dettagliato per conoscere i giorni e gli orari precisi del corso.
-                  </ion-text></ion-label>
+                    Si consiglia di controllare il calendario dettagliato per conoscere i giorni e gli orari precisi del
+                    corso.
+                  </ion-text>
+                </ion-label>
               </ion-item>
-              
+
 
 
 
@@ -120,11 +112,11 @@
           </ion-card>
         </ion-col>
       </ion-row>
-     
 
+
+      <!-- CARD A CHI E' RIVOLTO IL CORSO -->
       <ion-row>
         <ion-col>
-          <!-- CARD ADATTO A -->
           <ion-card>
             <ion-card-header>
               <ion-card-subtitle>Rivolto a</ion-card-subtitle>
@@ -132,28 +124,21 @@
             <ion-card-content>
 
               <ion-item>
-                <ion-icon 
-                    name="stats-chart-outline"
-                    slot="start" 
-                    [color]="iconColor"></ion-icon>
-              <ion-label>{{myCorso['_DENOMINAZIONE_Livello']?myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}</ion-label>
+                <ion-icon name="stats-chart-outline" slot="start" [color]="iconColor"></ion-icon>
+                <ion-label>{{myCorso['_DENOMINAZIONE_Livello']?myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}
+                </ion-label>
               </ion-item>
-            
+
               <ion-item lines="none">
-                <ion-icon 
-                    name="bookmark-outline" 
-                    slot="start" 
-                    [color]="iconColor"></ion-icon>
-                <ion-label>{{myCorso['_DESCTOOLTIP_CategoriaEta']?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
+                <ion-icon name="bookmark-outline" slot="start" [color]="iconColor"></ion-icon>
+                <ion-label>{{myCorso['_DESCTOOLTIP_CategoriaEta']?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le
+                  età'}}</ion-label>
               </ion-item>
-            
+
               <ion-item lines="none" *ngIf="myCorso.TARGETSESSO">
-                <ion-icon 
-                  name="transgender-outline" 
-                  slot="start" 
-                  [color]="iconColor"></ion-icon>
+                <ion-icon name="transgender-outline" slot="start" [color]="iconColor"></ion-icon>
                 <ion-label>{{myCorso.TARGETSESSO | targetSesso}}</ion-label>
-              </ion-item>              
+              </ion-item>
             </ion-card-content>
           </ion-card>
 
@@ -165,36 +150,27 @@
             <ion-card-content>
               <!-- COMUNE -->
               <ion-item *ngIf="myLocation?.COMUNE">
-                <ion-icon 
-                    name="home-outline" 
-                    slot="start" 
-                    [color]="iconColor"></ion-icon>
+                <ion-icon name="home-outline" slot="start" [color]="iconColor"></ion-icon>
                 <ion-label>{{myLocation?.COMUNE}}</ion-label>
               </ion-item>
-          
+
               <!-- INDIRIZZO -->
               <ion-item *ngIf="myLocation?.INDIRIZZO">
-                <ion-icon 
-                  name="navigate-outline" 
-                  slot="start" 
-                  [color]="iconColor">
+                <ion-icon name="navigate-outline" slot="start" [color]="iconColor">
                 </ion-icon>
-          
+
                 <ion-label>
                   {{myLocation?.INDIRIZZO}}
                 </ion-label>
-          
+
               </ion-item>
-          
+
               <ion-item *ngIf="myLocation?.TELEFONO">
-                <ion-icon 
-                  name="call-outline" 
-                  slot="start" 
-                  [color]="iconColor"></ion-icon>
+                <ion-icon name="call-outline" slot="start" [color]="iconColor"></ion-icon>
                 <ion-label>{{myLocation?.TELEFONO}}</ion-label>
-              </ion-item>              
-            </ion-card-content>           
-            </ion-card>              
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
       </ion-row>
 
@@ -212,45 +188,44 @@
   <ion-grid>
     <!-- ISCRIZIONE ABILITATA -->
     <ion-list *ngIf="flagPostiDisponibili">
-      <ion-item button (click)="disclaimer=!disclaimer; " lines="full" >
-        <ion-checkbox 
-              [(ngModel)]="disclaimer" 
-              slot="start"
-              (click)="$event.stopPropagation();">
+      <ion-item button (click)="disclaimer=!disclaimer; " lines="full">
+        <ion-checkbox [(ngModel)]="disclaimer" slot="start" (click)="$event.stopPropagation();">
         </ion-checkbox>
         <ion-label class="ion-text-wrap">
           <p>Lette e approvate le
-          <a (click)="$event.stopPropagation(); onClickCondizioniVendita();">condizioni di vendita</a>
-        </p>
+            <a (click)="$event.stopPropagation(); onClickCondizioniVendita();">condizioni di vendita</a>
+          </p>
         </ion-label>
       </ion-item>
 
-      <!-- Componente scelta Pagamento -->  
-        <app-payment-mode
+      <!-- Componente scelta Pagamento -->
+      <app-payment-mode 
+          *ngIf="myCorso?.isAPagamento()" 
           [arPayment]="myListPayment"
-          (onPaymentModeChoosed)="onPaymentModeSelected($event)"></app-payment-mode>
-          
+          (onPaymentModeChoosed)="onPaymentModeSelected($event)">
+      </app-payment-mode>
 
-        <ion-item 
-            lines="none" 
-            id="item-totale">
-          <ion-label slot="start">Totale</ion-label> 
-          <ion-label style="text-align:right;">
+      <!-- Se non a pagamento mostro Iscrizione Gratuita -->
+      <ion-item class="ion-text-center" *ngIf="!myCorso?.isAPagamento()">
+        <ion-chip class="wide" color="danger">Iscrizione Gratuita</ion-chip>
+      </ion-item>
 
-            {{myCorso?.PREZZOLORDO | currency: "EUR"}}
+      <ion-item lines="none" id="item-totale">
+        <ion-label slot="start">Totale</ion-label>
+        <ion-label style="text-align:right;">
 
-          </ion-label>
-        </ion-item>
+          {{myCorso?.PREZZOLORDO | currency: "EUR"}}
+
+        </ion-label>
+      </ion-item>
 
     </ion-list>
 
     <!-- POSTI NON DISPONIBILI: Mostro solo il prezzo-->
     <ion-list *ngIf="!flagPostiDisponibili">
-  
-      <ion-item 
-          lines="none" 
-          id="item-totale">
-        <ion-label slot="start">Prezzo</ion-label> 
+
+      <ion-item lines="none" id="item-totale">
+        <ion-label slot="start">Prezzo</ion-label>
         <ion-label style="text-align:right;">
 
           {{myCorso?.PREZZOLORDO | currency: "EUR"}}
@@ -264,7 +239,7 @@
         </ion-label>
       </ion-item>
 
-  </ion-list>    
+    </ion-list>
 
     <ion-row *ngIf="flagPostiDisponibili">
       <ion-col>
@@ -272,8 +247,8 @@
             color="tertiary" 
             expand="block" 
             class="full-buttons" 
-            [disabled]="!enableButtonIscrizione()" 
-            (click)="onConfirm()">
+            [disabled]="!enableButtonIscrizione()"
+          (click)="onConfirm()">
           Conferma Iscrizione
         </ion-button>
       </ion-col>
@@ -281,9 +256,7 @@
 
 
 
-    
+
 
   </ion-grid>
 </ion-footer>
-
-

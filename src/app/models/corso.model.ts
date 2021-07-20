@@ -359,7 +359,7 @@ export class Corso extends IDDocument {
           nameIcon = 'ribbon';
           break;
         
-        case TipoCorso.provaGratuita: 
+        case TipoCorso.prova: 
           nameIcon = 'trail-sign';
           break;
       
@@ -370,6 +370,20 @@ export class Corso extends IDDocument {
 
       return nameIcon;
       
+    }
+
+    /**
+     * Controllando il valore del PREZZOLORDO indica se il Corso è Gratuito o a Pagamento
+     */
+    isAPagamento(): boolean {
+      let flagPagamento: boolean;
+      flagPagamento = false;
+      if (this.PREZZOLORDO && this.PREZZOLORDO != 0) {
+        flagPagamento = true;
+      }
+
+
+      return flagPagamento;
     }
 
 

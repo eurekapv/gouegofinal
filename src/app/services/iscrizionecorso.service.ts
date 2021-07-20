@@ -3,15 +3,15 @@ import { PostResponse } from '../library/models/postResult.model';
 import { PostParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { IscrizioneCorso } from '../models/iscrizionecorso.model';
-import { ApicallService } from './apicall.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class IscrizionecorsoService {
 
-  constructor(private docStructureService: DocstructureService,
-              private apiService: ApicallService) { }
+  constructor(private docStructureService: DocstructureService
+              ) { }
 
 
   
@@ -75,15 +75,12 @@ export class IscrizionecorsoService {
     return new Promise<PostResponse>((resolve, reject) => {
       let myPostParams : PostParams = new PostParams();
       let myReturn: PostResponse;
-      
+
 
 
       if (docIscrizione) {
         myPostParams.key = 'docIscrizione';
         myPostParams.value = docIscrizione;
-        myPostParams.exportOnlyDocModified = true;
-        myPostParams.exportOnlyPropertyModified = true;
-
 
         this.docStructureService.requestForFunction(docIscrizione,'mobBookingSave',docIscrizione,myPostParams)
                         .then((risposta: PostResponse) => {

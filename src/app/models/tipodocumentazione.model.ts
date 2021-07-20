@@ -41,3 +41,8 @@ export enum ClasseDocumento {
     documentazione = 1000
 
 }
+
+export enum SorgenteFile {
+    filesystem = 'file',
+    photoGallery = 'photo'
+}

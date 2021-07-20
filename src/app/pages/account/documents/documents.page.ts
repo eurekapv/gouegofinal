@@ -135,6 +135,7 @@ export class DocumentsPage implements OnInit {
    * Viene aperto in modale il componente, indicando se siamo su desktop o no, e la lista dei tipi documenti accettati
    */
   onAddDocument(){
+    
     this.modalController.create({
       component: UploadComponent,
       componentProps: {
@@ -256,24 +257,27 @@ export class DocumentsPage implements OnInit {
         spinner: 'circular',
         backdropDismiss: true
       }).then(elLoading => {
-        elLoading.present();
+
+          elLoading.present();
   
         //ora faccio la get del file
         this.startService.requestDocumento(elemento.FILENAMEESTENSIONE)
         .then(blob => {
           //E' andato tutto bene, ho il blob
           elLoading.dismiss();
-          // console.log(blob);
+          
           if(blob){
+            //Effettuo l'apertura del file ricevuto
             this.fileService.open(blob)
-
           }
           else{
-            return (new Error())
+
+            this.showMessage('File non visualizzabile');
           }
         })
         .catch(error => {
-          
+
+          elLoading.dismiss();
           //qualcosa non ha funzionato
           console.log(error);
           this.showMessage('Impossibile scaricare il file');

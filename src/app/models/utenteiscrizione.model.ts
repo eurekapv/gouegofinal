@@ -102,7 +102,7 @@ export class UtenteIscrizione extends IDDocument {
             nameIcon = 'ribbon';
             break;
           
-          case TipoCorso.provaGratuita: 
+          case TipoCorso.prova: 
             nameIcon = 'trail-sign';
             break;
         

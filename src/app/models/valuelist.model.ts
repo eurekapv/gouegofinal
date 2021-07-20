@@ -28,7 +28,7 @@ export enum TipoCampo {
 
 export enum TipoCorso {
     corso = 10,
-    provaGratuita = 20
+    prova = 20
 }
 
 export enum StatoCorso {

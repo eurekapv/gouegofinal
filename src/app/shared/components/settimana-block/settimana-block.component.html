@@ -1,0 +1,18 @@
+<table 
+  class="ion-margin-vertical"
+  style="width: 100%">
+  <tr>
+    <td class="ion-text-center" *ngFor="let giorno of listDays">
+      <ion-button
+        (onClick)="onClickDay(giorno)"
+        [color]="getColorDay(giorno)"
+        size="small"
+        [fill]="getFillDay(giorno)">
+        <span>
+          {{ getLabelDay(giorno) }}
+        </span>
+
+      </ion-button>
+    </td>
+  </tr>
+</table>

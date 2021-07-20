@@ -8,7 +8,7 @@ import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { Corso } from 'src/app/models/corso.model';
 import { Location } from 'src/app/models/location.model';
 import { PaymentProcess } from 'src/app/models/payment-process.model';
-import { PageType, PaymentMode, SettorePagamentiAttivita, TipoRigoIncasso } from 'src/app/models/valuelist.model';
+import { PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoRigoIncasso } from 'src/app/models/valuelist.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { StartService } from 'src/app/services/start.service';
 import { Plugins } from '@capacitor/core';
@@ -189,7 +189,7 @@ ngOnInit() {
  * @param idCorso idCorso richiesto
  */
 requestPostiDisponibili(idCorso: string) {
-  console.log('Chiedo al server');
+  
 
   this.startService.getPostiDisponibiliCorso(idCorso)
       .then((elResponse:PostResponse) => {
@@ -306,7 +306,17 @@ requestLocationById(idLocation: string): Promise<void>{
   enableButtonIscrizione(): boolean {
     let flagEnable: boolean;
     if (this.disclaimer && this.flagPostiDisponibili) {
-      if (this.mySelectedPayment) {
+
+      //Corso a pagamento (Deve scegliere il pagamento)
+      if (this.myCorso.isAPagamento()) {
+
+        if (this.mySelectedPayment) {
+          flagEnable = true;
+        }
+
+      }
+      else {
+        //Non deve pagare niente
         flagEnable = true;
       }
     }
@@ -343,7 +353,7 @@ requestLocationById(idLocation: string): Promise<void>{
 
       }
 
-      console.log(this.myListPayment);
+      
     }
 
   }   
@@ -385,7 +395,7 @@ requestLocationById(idLocation: string): Promise<void>{
     let arModes:PaymentMode[]=[PaymentMode.pagaAdesso, PaymentMode.pagaBonifico, PaymentMode.pagaStruttura];
 
     //Presente un totale da pagare
-    if (this.myCorso.PREZZOLORDO != 0) {
+    if (this.myCorso.isAPagamento()) {
 
       //L'utente ha selezionato come pagare
       if (arModes.includes(this.myPaymentMode)) {
@@ -473,6 +483,18 @@ requestLocationById(idLocation: string): Promise<void>{
       }
       
     }
+    else {
+      //E' un corso gratuito ?
+
+      //Creo il risultato del pagamento, passando la modalità
+      let docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
+      // Essendo una modalita che non prevede interazioni app
+      // viene impostato automaticamento il channelPayment 
+      // e il processResult = TRUE
+      
+      //Passo subito al Success
+      this.onPaymentSuccess(docPaymentResult);
+    }
 
 
   } 
@@ -493,18 +515,38 @@ requestLocationById(idLocation: string): Promise<void>{
     //Preparo i dati della Rata di Pagamento
     myDocRata = new IscrizioneIncasso();
     
-    //Pagamento corretto
+    //Step del pagamento Effettuato (Potrebbe avere effettivamente pagato, oppure non pagato e rimandato in struttura)
     if (resultPayment && resultPayment.processResult)  {
 
-      //Nessuna transazione sembra avvenuta
+      //Se non è avvenuta nessuna transazione Elettronica 
+      //vuol dire che ha scelto di pagare successivamente
       if (resultPayment.idElectronicResult.length == 0) {
-        myDocRata.IDTRANSACTION = '';
-        myDocRata.IDORDER = '';
-        myDocRata.MODALITA = resultPayment.channelPayment;
-        myDocRata.TIPORIGO = TipoRigoIncasso.scadenza;
-        myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
-        myDocRata.DATASCADENZA = this.myCorso.DATAINIZIO;
-        myDocRata.IMPORTO = this.myCorso.PREZZOLORDO;
+
+        //Se il corso è a pagamento, dovrà effettivamente pagare
+        if (this.myCorso.isAPagamento()) {
+
+          //E' a pagamento, in qualche modo dovrà pagare
+          //Creo una scadenza
+          myDocRata.IDTRANSACTION = '';
+          myDocRata.IDORDER = '';
+          myDocRata.MODALITA = resultPayment.channelPayment;
+          myDocRata.TIPORIGO = TipoRigoIncasso.scadenza;
+          myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
+          myDocRata.DATASCADENZA = this.myCorso.DATAINIZIO;
+          myDocRata.IMPORTO = this.myCorso.PREZZOLORDO;
+
+        }
+        else {
+
+          //E' un corso gratuito, non c'e' nulla da pagare
+          myDocRata.IDTRANSACTION = '';
+          myDocRata.IDORDER = '';
+          myDocRata.MODALITA = PaymentChannel.onSite;
+          myDocRata.TIPORIGO = TipoRigoIncasso.incassato;
+          myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
+          myDocRata.DATASCADENZA = myDocIscrizione.DATAISCRIZIONE;
+          myDocRata.IMPORTO = 0;
+        }
       }
       else {
 
@@ -520,7 +562,7 @@ requestLocationById(idLocation: string): Promise<void>{
       }
 
       //Aggiungo le informaioni del pagamento
-      myDocIscrizione.ISCRIZIONIINCASSI.push(myDocRata);
+      myDocIscrizione.ISCRIZIONEINCASSO.push(myDocRata);
 
 
       //Contatto il server per salvare il tutto
@@ -606,6 +648,8 @@ requestLocationById(idLocation: string): Promise<void>{
   //#region PREPARAZIONE DOCUMENTO ISCRIZIONE
   prepareDocIscrizione(): IscrizioneCorso {
     let myDoc = new IscrizioneCorso();
+
+    
 
     if (this.myCorso && this.docUser) {
 

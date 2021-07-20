@@ -1,10 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
+import { SorgenteFile, TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import { Chooser, ChooserResult } from '@ionic-native/chooser/ngx';
 import { ToastController, PickerController, ModalController } from '@ionic/angular';
-import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
+import { PickerColumnOption } from '@ionic/core';
 import { InvioDocumentazione } from 'src/app/models/documentazione.model';
+import {Plugins, CameraResultType, CameraPhoto, CameraSource } from '@capacitor/core';
 
+const {Camera } = Plugins;
 
 @Component({
   selector: 'app-upload',
@@ -19,9 +21,18 @@ export class UploadComponent implements OnInit {
   //file caricati (sono tipi diversi a seconda se caricati da mobile o desktop)
   loadedMobileFile : ChooserResult;
   loadedDesktopFile : File;
+  loadedMobilePhoto: CameraPhoto;
+
+  //File caricato
+  fileLoaded: boolean = false;
+  //Nome File da mostrare
+  fileNameShow: string = '';
 
   //Tipo di documento che si desidera caricare
   selectedDocType: TipoDocumentazione;
+
+  //Sorgente da cui caricare il file
+  sorgenteFile: SorgenteFile = SorgenteFile.photoGallery;
 
   //Descrizione opzionale del documento
   docDescription = '';
@@ -33,27 +44,112 @@ export class UploadComponent implements OnInit {
     private toastController : ToastController,
     private pickerController : PickerController,
     private modalController : ModalController
+    
   ) { }
 
   ngOnInit() {
 
   }
 
-  
+  //#region EVENTI DI SEARCHI FILE
 
-  onMobileUpload(){
+  /**
+   * Evento Click per la scelta di un file in versione Mobile
+   */
+  onMobileSearch(){
 
-    //caricamento da mobile
-    this.chooser.getFile()
-    .then(file => {
-      this.loadedMobileFile = file;
-    })
-    .catch((error: any) => {
-      this.showMessage('Errore nell\'apertura del file');
-      console.error(error)
-    });
+    //Sorgente FileSystem uso il Chooser
+    if (this.sorgenteFile == SorgenteFile.filesystem) {
+
+      //Caricamento con il metodo File
+      this.chooser.getFile()
+      .then(file => {
+
+        //Questo è il file caricato
+        this.loadedMobileFile = file;
+        this.fileLoaded = true;
+        this.fileNameShow = this.loadedMobileFile.name;
+
+      })
+      .catch((error: any) => {
+
+        this.loadedMobileFile = null;
+        this.fileLoaded = false;
+        this.fileNameShow = '';
+        this.showMessage('Errore apertura filesystem');
+
+        console.error(error)
+      });
+
+    }
+    else if (this.sorgenteFile == SorgenteFile.photoGallery) {
+
+      //Utilizzo la Gallery/Fotocamera
+      //Devo aprire la fotocamera sulla gallery
+      Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Prompt,
+        quality: 100
+      })
+      .then((data:CameraPhoto) => {
+
+         //Questo è il file caricato
+        this.loadedMobilePhoto = data;
+        this.fileLoaded = true;
+        this.fileNameShow = 'Immagine ' + this.loadedMobilePhoto.format;
+      })
+      .catch(error => {
+          //Questo è il file caricato
+          this.loadedMobilePhoto = null;
+          this.fileLoaded = false;
+          this.fileNameShow = '';
+          this.showMessage('Errore apertura Photo Gallery');
+      })
+    }
   }
 
+  /**
+   * Evento Click dell'Item riferito alla ricerca File Desktop
+   */
+  onDesktopSearch(){
+
+    let myInput = document.getElementById('myInput');
+
+    myInput.click();
+    
+  }
+
+
+  /**
+   * Evento generato dal TAG INPUT al cambio di File
+   * @param event 
+   */
+  onChangedDesktopFile(event : any) {
+    let myFile : File;
+
+    if (event.target.files && event.target.files.length != 0) {
+      myFile = event.target.files[0];
+
+      this.loadedDesktopFile=myFile;
+      this.fileLoaded = true;
+      this.fileNameShow = this.loadedDesktopFile.name;
+    }
+    else {
+      this.loadedDesktopFile=null;
+      this.fileLoaded = false;
+      this.fileNameShow = '';
+    }
+    
+  } 
+  
+  //#endregion
+
+  //#region VISUALIZZAZIONE MESSAGGI / PICKER
+
+  /**
+   * Mostra un Message Toast
+   * @param message Messaggio
+   */
   showMessage(message : string){
     this.toastController.create({
       message: message,
@@ -64,6 +160,9 @@ export class UploadComponent implements OnInit {
     })
   }
 
+  /**
+   * Mostra il Picker per la scelta della tipologia documento
+   */
   showPicker(){
     
     let pickerOptions : PickerColumnOption[]=[];
@@ -105,60 +204,31 @@ export class UploadComponent implements OnInit {
     })
   }
 
-  onChangedDesktopFile(event : any){
-    let file : File = event.target.files[0];
-    
-    this.loadedDesktopFile=file;
-  }
+  //#endregion
 
-  onDesktopUpload(){
 
-    let myInput = document.getElementById('myInput');
-
-    myInput.click();
-
-    
-  }
   
 
-  onSubmitMobile(){
+  /**
+   * Converte un Blob in un dataUrl string
+   * @param blob Blob da convertire
+   * @returns 
+   */
+  convertBlobToDataUrl(blob: Blob):Promise<string> {
 
-    if (this.selectedDocType && this.loadedMobileFile){
-      this.submit(this.loadedMobileFile.dataURI);
-    }
-    else if (!this.loadedMobileFile){
-      this.showMessage('Scegli un file da caricare');
-    }
-    else{
-      this.showMessage('Seleziona il tipo di documento da caricare');
-    }
-  }
+   return new Promise<string>((resolve, reject) => {
 
-
-
-  convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
-    const reader = new FileReader;
-    reader.onerror = reject;
-    reader.onload = () => {
-        resolve(reader.result);
-    };
-    reader.readAsDataURL(blob);
-  });
-
-  onSubmitDesktop(){
-
-    //Abbiamo tutto, prendo l'array buffer del file, lo converto in B64, e dismetto
-    if (this.selectedDocType && this.loadedDesktopFile){
+      const reader = new FileReader;
+      reader.onerror = reject;
+      reader.onload = () => {
+          resolve(reader.result.toString());
+      };
+      reader.readAsDataURL(blob);
+    });
 
 
-      let base64 = '';
-      this.convertBlobToBase64(this.loadedDesktopFile).then(strBase64 => {
-        base64 = strBase64 as string;
-        
-        this.submit(base64);
-      });
-
-      //@ts-ignore 
+    //ALTRO ESEMPIO CHE FORSE USAVO PRIMA  
+    //@ts-ignore 
       // this.loadedDesktopFile.arrayBuffer().then(blob => {
       //   console.log(blob);
 
@@ -176,49 +246,106 @@ export class UploadComponent implements OnInit {
         
 
         
-      // })
+      // })    
+  }  
+
+
+  //#region EVENTI DI INVIO
+  
+  /**
+   * Evento Click di Interfaccia per il caricamento
+   */
+  onClickCarica(){
+
+    //File non caricato
+    if (!this.fileLoaded) {
+      this.showMessage('Prima scegli il documento');
     }
-    else if (!this.loadedDesktopFile){
-      this.showMessage('Scegli un file da caricare');
+    else if (!this.selectedDocType) {
+        //Tipologia non selezionata
+        this.showMessage('Scegli una tipologia di documento');
     }
-    else{
-      this.showMessage('Seleziona il tipo di documento da caricare');
+    else {
+      //Possiamo procedere al caricamento
+      this.SendFileDocumentToParent()
     }
+        
   }
- 
+
+  /**
+   * Crea e ritorna il DataUrl da inviare al server
+   */
+  prepareDataUrl():Promise<string> {
+    let myDataUrl: string;
+
+    return new Promise<string>((resolve, reject) => {
+
+      //File Desktop
+      if (this.loadedDesktopFile) {
+
+        //Effettuo la conversione 
+        this.convertBlobToDataUrl(this.loadedDesktopFile)
+              .then(strDataUrl => {
+  
+                myDataUrl = strDataUrl as string;
+                resolve(myDataUrl);
+
+              })
+              .catch(error => {
+                reject(error);
+              });
+      }
+      else if (this.loadedMobilePhoto) {
+        myDataUrl = this.loadedMobilePhoto.dataUrl;
+
+        if (myDataUrl.length != 0) {
+          resolve(myDataUrl);
+        }
+        else {
+          reject('No base 64 founded');
+        }
+      }
+      else if (this.loadedMobileFile) {
+
+        resolve(this.loadedMobileFile.dataURI);
+
+      }
+    })
 
 
- 
-  onSubmit(){
-    if(this.isDesktop){
-      this.onSubmitDesktop();
-    }
-    else{
-      this.onSubmitMobile();
-    }
+  }
 
+  /**
+   * Prepara un documento InvioDocumentazione e 
+   * lo ritorna alla pagina chiamante
+   */
+  SendFileDocumentToParent() {
     
+    this.prepareDataUrl()
+        .then(dataUrl => {
+          
+          //abbiamo tutto, posso creare l'oggetto da ritornare, e chiudere
+          let myDocument = new InvioDocumentazione;
+          myDocument.FILE = dataUrl;
+          myDocument.IDTIPODOCUMENTAZIONE = this.selectedDocType.ID;
+          myDocument.DESCRIZIONE = this.docDescription;
+
+          this.modalController.dismiss(myDocument);
+
+        })
+        .catch(error => {
+          this.showMessage('Si sono verificati errori');
+        } )
+
+
+
   }
 
-  // convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
-  //   const reader = new FileReader;
-  //   reader.onerror = reject;
-  //   reader.onload = () => {
-  //       resolve(reader.result);
-  //   };
-  //   reader.readAsDataURL(blob);
-  // });
 
-  submit(base64){
-    //abbiamo tutto, posso creare l'oggetto da ritornare, e chiudere
-    let myDocument = new InvioDocumentazione;
-    myDocument.FILE = base64;
-    myDocument.IDTIPODOCUMENTAZIONE = this.selectedDocType.ID;
-    myDocument.DESCRIZIONE = this.docDescription;
 
-    this.modalController.dismiss(myDocument);
-  }
-
+  /**
+   * Chiusura modale senza parametri
+   */
   close(){
     this.modalController.dismiss();
   }

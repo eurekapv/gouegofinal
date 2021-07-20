@@ -36,13 +36,13 @@ export class IscrizioneCorso extends IDDocument {
     INCASSATO:             number;
 
 
-    ISCRIZIONIINCASSI:     IscrizioneIncasso[];
+    ISCRIZIONEINCASSO:     IscrizioneIncasso[];
 
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
 
-        this.ISCRIZIONIINCASSI = [];
+        this.ISCRIZIONEINCASSO = [];
   
     } 
       
@@ -95,7 +95,7 @@ export class IscrizioneCorso extends IDDocument {
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
     
-        objDescriptor.addCollection('ISCRIZIONIINCASSI','IscrizioneIncasso','IDISCRIZIONECORSO');
+        objDescriptor.addCollection('ISCRIZIONEINCASSO','IscrizioneIncasso','IDISCRIZIONECORSO');
         
     
     
@@ -132,7 +132,7 @@ export class IscrizioneCorso extends IDDocument {
      * @param data JSON Ricevuto
      */
      setCollection(data: any) {
-        this.ISCRIZIONIINCASSI = [];
+        this.ISCRIZIONEINCASSO = [];
   
         if (data.ISCRIZIONIINCASSI) {
           this.setCollectionIscrizioniIncassi(data.ISCRIZIONIINCASSI);
@@ -148,7 +148,7 @@ export class IscrizioneCorso extends IDDocument {
      */
     setCollectionIscrizioniIncassi(arIncassi: any[]) {
 
-        this.ISCRIZIONIINCASSI = [];
+        this.ISCRIZIONEINCASSO = [];
   
         if (arIncassi) {
 
@@ -162,7 +162,7 @@ export class IscrizioneCorso extends IDDocument {
   
               newIscrizioneIncasso = new IscrizioneIncasso();
               newIscrizioneIncasso.setJSONProperty(element);
-              this.ISCRIZIONIINCASSI.push(newIscrizioneIncasso);
+              this.ISCRIZIONEINCASSO.push(newIscrizioneIncasso);
   
             }
             else {
@@ -182,7 +182,7 @@ export class IscrizioneCorso extends IDDocument {
      getIncassoByID(idIscrizioneIncasso: string): IscrizioneIncasso {
 
         //Ricerco l'elemento richiesto
-        let existIscrizioneIncasso = this.ISCRIZIONIINCASSI.find(elIscrizioneIncasso => {
+        let existIscrizioneIncasso = this.ISCRIZIONEINCASSO.find(elIscrizioneIncasso => {
           return elIscrizioneIncasso.ID == idIscrizioneIncasso
         });
 

@@ -16,6 +16,7 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 import { NewLoginPageModule } from 'src/app/pages/auth/new-login/new-login.module'
 import { BookcoursePageModule } from '../bookcourse/bookcourse.module';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
   imports: [
@@ -27,7 +28,9 @@ import { BookcoursePage } from '../bookcourse/bookcourse.page';
     CalendarPageModule,
     NewLoginPageModule,
     VerifyPageModule,
-    BookcoursePageModule
+    BookcoursePageModule,
+    SharedComponentsModule
+    
   ],
   declarations: [CoursePage],
   entryComponents: [CalendarPage, NewLoginPage, VerifyPage, BookcoursePage]

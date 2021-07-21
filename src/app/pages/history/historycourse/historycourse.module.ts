@@ -13,6 +13,7 @@ import { CalendarPageModule } from 'src/app/pages/location/course/detailcourse/c
 import { AllegatilistPageModule } from 'src/app/pages/history/historycourse/allegatilist/allegatilist.module';
 import { AllegatilistPage } from './allegatilist/allegatilist.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { QRCodeModule } from 'angularx-qrcode';
 
 
 
@@ -28,7 +29,8 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
     CalendarPageModule,
     AllegatilistPageModule,
     FormsModule,
-    SharedComponentsModule
+    SharedComponentsModule,
+    QRCodeModule
   ],
   entryComponents:[CalendarPage, AllegatilistPage],
   declarations: [HistorycoursePage]

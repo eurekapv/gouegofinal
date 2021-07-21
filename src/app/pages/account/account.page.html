@@ -8,18 +8,58 @@
 </ion-header>
 
 <ion-content>
-  <div style="height: 1vh"></div>
-  <ion-item lines="none" color="light">
-    <ion-avatar slot="start" class="Avatar" (click)="onClickAvatar()">
-      <img [src]="sourceAvatar">
-    </ion-avatar>
-    <ion-label class="ion-text-wrap">
-      <h1>{{ docUtente?.NOMINATIVO }}</h1>
-      <p>{{ docUtente.EMAIL }}</p>
-    </ion-label>
-  </ion-item>
+  <div class="top">
+
+    
+    <!-- PORZIONE AVATAR E NOMINATIVO -->
+    <ion-grid>
+      <ion-row class="picture">
+        <ion-col class="ion-text-center">
+          <ion-button
+            size="large"
+            color="danger"
+            (click)="onClickAvatar()"
+            *ngIf="!avatarExist()">
+
+            <ion-icon name="camera"></ion-icon>
+
+          </ion-button>
+
+          <ion-button
+            size="large"
+            color="light"
+            (click)="onClickAvatar()"
+            *ngIf="avatarExist()">
+
+            <ion-avatar slot="start" class="Avatar" (click)="onClickAvatar()">
+              <img [src]="sourceAvatar">
+            </ion-avatar>
+
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+
+      <!-- NOMINATIVO -->
+      <ion-row class="name">
+        <ion-col>
+
+          <ion-label 
+            color="primary"
+            class="ion-text-wrap ion-text-center">
+            <h1>{{ docUtente?.NOMINATIVO }}</h1>
+            <p>{{ docUtente.EMAIL }}</p>
+          </ion-label>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </div>
+
+
   
-  <ion-list>
+  <ion-list class="ion-margin-vertical">
 
     <ion-item button="true" routerLink="edit-account" routerDirection="forward">
       <ion-icon 
@@ -42,8 +82,8 @@
         name="stats-chart"
         color="primary"></ion-icon>
       <ion-label>
-        <h2>Livelli Sportivi</h2>
-        <p>Visualizza i tuoi livelli sportivi</p>
+        <h2>Livelli Attività</h2>
+        <p>Visualizza i tuoi livelli</p>
       </ion-label>
     </ion-item>
 
@@ -53,7 +93,7 @@
         name="copy"
         color="primary"></ion-icon>
       <ion-label>
-        <h2>I tuoi documenti</h2>
+        <h2>Documenti</h2>
         <p>Visualizza e scarica i tuoi documenti</p>
       </ion-label>
     </ion-item>
@@ -66,8 +106,8 @@
         name="logo-euro"
         color="primary"></ion-icon>
       <ion-label>
-        <h2>Le tue ricevute</h2>
-        <p>Visualizza e scarica le ricevute dei tuoi acquisti</p>
+        <h2>Ricevute Acquisti</h2>
+        <p>Scarica le ricevute dei tuoi acquisti</p>
       </ion-label>
     </ion-item>
 

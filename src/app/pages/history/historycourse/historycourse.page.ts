@@ -37,6 +37,9 @@ export class HistorycoursePage implements OnInit {
 
   isDesktop: boolean;
 
+  //La Label contenente il programma po' essere ristretta o allargata
+  expandProgramma: boolean = false;
+
   constructor(private activatedRoute: ActivatedRoute,
               private startService: StartService,
               private loadingController: LoadingController,
@@ -216,6 +219,15 @@ export class HistorycoursePage implements OnInit {
     return this.startService.getSportIcon(myIdSport);
   }
 
+  getClassLabelProgramma(): string {
+    let myClass = '';
+    if (this.expandProgramma) {
+      myClass = 'ion-text-wrap';
+    }
+
+    return myClass;
+  }
+
   /**
    * Ritorna alla pagina della lista
    */
@@ -224,7 +236,9 @@ export class HistorycoursePage implements OnInit {
     this.navCtr.navigateBack(['/','historylist']);
   }
 
-  /* ****** CALENDAR ******** */
+  /**
+   * Apertura del Calendario Corso in Modale
+   */
   onClickCalendar() {
     /* Apro in modale il calendario */
     this.modalController
@@ -240,10 +254,6 @@ export class HistorycoursePage implements OnInit {
 
   }
 
-  debug(){
-
-  }
-
   onClickAllegati(){
     this.modalController.create({
       component: AllegatilistPage,
@@ -254,6 +264,14 @@ export class HistorycoursePage implements OnInit {
     .then(elModal => {
       elModal.present()
     })
+  }
+
+
+  /**
+   * Click sull'item contenente il Programma di corso
+   */
+  onClickExpandCorsoProgramma() {
+    this.expandProgramma = !this.expandProgramma;
   }
 
   /**

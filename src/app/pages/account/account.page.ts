@@ -79,6 +79,16 @@ export class AccountPage implements OnInit, OnDestroy {
     return src;
   }
 
+  avatarExist(): boolean {
+    let exist = false;
+    if (this.myPhoto) {
+      if(this.myPhoto.base64){
+        exist = true;
+      }
+    }
+    return exist;
+  }
+
 
   /**
    * Effettuato il click sull'avatar

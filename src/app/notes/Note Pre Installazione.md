@@ -11,10 +11,11 @@ Menu File -> Project Structure -> Modules
 Module App -> Default Config
 
 Last Release Pubblicata
-Openbeach: 4 -> 1.3
+Android
+Openbeach: 3 -> 1.2
 
 IOS
-Openbeach 10 -> 1.3
+Openbeach 11 -> 1.3
 
 ## Problemi con le Icone
 Segui questa guida e ricostruisci le icone dentro a Android Studio

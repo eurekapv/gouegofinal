@@ -5,7 +5,7 @@ import { Corso } from 'src/app/models/corso.model';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Utente } from 'src/app/models/utente.model';
-import { TimeTrainerCourse } from 'src/app/models/valuelist.model';
+import { Language, TimeTrainerCourse } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 
@@ -23,7 +23,8 @@ export enum ViewTrainerCourse {
   styleUrls: ['./agenda-trainer.page.scss'],
 })
 export class AgendaTrainerPage implements OnInit,OnDestroy {
-
+  lingua=Language.italiano;  
+  
   utente: Utente = new Utente();
   //Pianificazini
   myListPianificazioni: PianificazioneCorso[] = [];
@@ -48,6 +49,8 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
   selectedTimeState:TimeTrainerCourse = TimeTrainerCourse.attivi;
 
   myLoadingForCorsi: HTMLIonLoadingElement;
+
+  today = new Date();
 
 
   constructor(
@@ -160,9 +163,22 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
 
   }
 
-  onClickCorso(elem: PianificazioneCorso){
+  /**
+   * Click su un elemento di Pianificazione
+   * @param elem Elemento selezionato
+   */
+  onClickPianificazione(elem: PianificazioneCorso){
     this.navController.navigateForward('/agenda-trainer/' + elem.ID);
     // this.navController.navigateForward('/agenda-trainer/' + elem.ID+'-'+elem.IDCORSO);
+
+  }
+
+  /**
+   * Click su un Corso 
+   * @param elCorso 
+   * 
+   */
+  onClickCorso(elCorso: Corso) {
 
   }
 
@@ -187,6 +203,15 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
 
   getItemParamsFromPianificazione(pianificazioneElem: PianificazioneCorso){
     return ItemCalendario.getParamsPianificazioneCorso(pianificazioneElem);
+  }
+
+  /**
+   * 
+   * @param idSport idSport
+   * @returns Ritorna l'icona sport da usare
+   */
+  getIconSport (idSport:string){
+    return this.startService.getSportIcon(idSport);
   }
 
   

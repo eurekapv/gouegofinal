@@ -8,9 +8,7 @@ import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
 import { StartService } from 'src/app/services/start.service';
 
 import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
-import { type } from 'os';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { UtenteprenotazioneService } from 'src/app/services/utenteprenotazione.service';
 
 
 @Component({

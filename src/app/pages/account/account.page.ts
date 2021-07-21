@@ -79,12 +79,19 @@ export class AccountPage implements OnInit, OnDestroy {
     return src;
   }
 
+
   avatarExist(): boolean {
     let exist = false;
+    
     if (this.myPhoto) {
-      if(this.myPhoto.base64){
+
+      if(this.myPhoto.base64 && this.myPhoto.base64.length != 0) {
         exist = true;
       }
+      else if (this.myPhoto.webviewPath && this.myPhoto.webviewPath.length != 0) {
+        exist = true;
+      }
+
     }
     return exist;
   }

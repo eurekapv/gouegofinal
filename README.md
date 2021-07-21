@@ -60,8 +60,25 @@
 ```
 
 
+### 21/07/2021
+#### MAC Compilation Error
+Error: ./src/global.scss
+Module build failed (from ./node_modules/mini-css-extract-plugin/dist/loader.js):
+ModuleBuildError: Module build failed (from ./node_modules/postcss-loader/dist/cjs.js):
+TypeError: aSourceMapConsumer.originalPositionFor is not a function
 
+Ho cancellato la cartella node_modules, ed ho reinstallato la cli
+    sudo npm install -g @angular/cli
 
+Eliminato il file package.json.lock e reinstallato i node_modules in legacy mode
+    sudo npm install --legacy-peer-deps
+
+Per evitare errori futuri ho modificato il file package.json
+In devDependencies modificare la versione di "jasmine-core" 3.6.0 in ~3.8.0 e "karma-jasmine-html-reporter" da 1.5.0 a ~1.7.0.
+
+    sudo npm update
+
+L'errore sembra dvouto al cambio npm da versione 6 a 7
 
 ### 02/09/2020
 #### Barcode Scanner

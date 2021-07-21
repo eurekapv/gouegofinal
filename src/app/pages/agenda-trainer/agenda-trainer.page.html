@@ -76,7 +76,7 @@
           <app-item-calendario 
             *ngFor="let pianificazione of myListPianificazioni" 
             [params]="getItemParamsFromPianificazione(pianificazione)"
-            (click)="onClickCorso(pianificazione)">
+            (click)="onClickPianificazione(pianificazione)">
           </app-item-calendario>
         
 
@@ -134,6 +134,39 @@
     <!-- CORSI TROVATI -->
     <div class="ion-no-padding" *ngIf="myListCorsi && myListCorsi.length != 0">
         
+      <!-- LISTA CORSI -->
+      <ion-list *ngIf="myListCorsi!.length !== 0">
+        <ion-item button 
+              *ngFor="let corso of myListCorsi" 
+              (click)="onClickCorso(corso)" >
+
+        <!-- ICONA CORSO -->
+        <ion-icon 
+            name="school" 
+            class="icon-school"
+            slot="start"
+            [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
+        </ion-icon>
+
+        <ion-label class="ion-text-wrap">
+          <p>{{corso.DATAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}
+            <br/>
+            {{corso.DATAFINE | date : 'EEEE dd/MM/yyyy' | titlecase}}
+          </p>
+          <h1>{{corso['_DENOMINAZIONE_Sport']}} in {{corso['_DENOMINAZIONE_Location']}}</h1>
+          <h3>{{corso.GIORNIPREVISTI| giorniPrevisti: lingua|titlecase}} </h3>
+
+        </ion-label>   
+        
+        <!-- ORA INIZIO -->
+        <ion-chip 
+            [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
+          {{corso.ORAINIZIO | date: 'HH:mm'}}
+          <ion-icon name="time-outline"></ion-icon>
+        </ion-chip>
+        </ion-item>         
+      </ion-list>        
+
     </div>
   
 

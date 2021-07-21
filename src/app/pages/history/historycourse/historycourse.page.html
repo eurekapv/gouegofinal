@@ -16,9 +16,9 @@
   <div style="width: 100%;" >
 
     <!-- PORZIONE INFO QRCODE-->
-    <div class="ion-text-center div-qr" mode="md">
+    <div class="ion-text-center div-qr" mode="md" *ngIf="myIscrizione.CODICEALFA">
       <h6>ID: {{myIscrizione.CODICEALFA}}</h6>
-      <qrcode [qrdata]="myIscrizione.CODICEALFA"></qrcode>
+      <qrcode [qrdata]="myIscrizione.CODICEALFA" [allowEmptyString]="true"></qrcode>
       <p>
         <ion-icon name="information-circle-outline" color="primary"></ion-icon>
         Presenta il Qr-code o l'ID iscrizione all'ingresso

@@ -33,6 +33,8 @@ export class PaymentModeComponent implements OnInit {
   chooseStartPayment() {
     
     if (this.arPaymentModeList) {
+      console.log(this.arPaymentModeList);
+      
       if (this.arPaymentModeList.length != 0) {
         //Metto in ordine decrescente
         this.arPaymentModeList.sort((a,b) => b.value - a.value);

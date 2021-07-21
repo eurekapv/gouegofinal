@@ -14,21 +14,27 @@
 
   </ion-toolbar>
 
-  <ion-toolbar mode="md" *ngIf="showTabs && userLogged">
+  <ion-toolbar 
+        mode="md" 
+        *ngIf="showTabs && userLogged">
+
     <!-- BOTTONI SEGMENTATI -->
     <ion-segment 
       (ionChange)="onChangeSegmentCorsi($event)"
-      color="medium"
+      color="primary"
       [(ngModel)]="statoPagina"
-      id="crs:button"
-    >
+      id="crs:button">
+      
+    <ion-segment-button [value]="PageState.MIEI">
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <ion-label>Mio Livello</ion-label>
+    </ion-segment-button>
+
       <ion-segment-button [value]="PageState.TUTTI">
+        <ion-icon name="school-outline"></ion-icon>
           <ion-label>Tutti</ion-label>
       </ion-segment-button>
       
-      <ion-segment-button [value]="PageState.MIEI">
-        <ion-label>Mio Livello</ion-label>
-      </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 

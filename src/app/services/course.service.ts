@@ -11,8 +11,10 @@ import { Sport } from '../models/sport.model';
 import { Livello } from '../models/livello.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 
-import { RequestDecode, RequestParams } from '../library/models/requestParams.model';
+import { PostParams, RequestDecode, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
+import { TimeTrainerCourse } from '../models/valuelist.model';
+import { DynamicClass } from '../library/models/structure.model';
 
 
 
@@ -29,7 +31,9 @@ export class CourseService {
   private _decodeListEta: CategoriaEta[];
   private _selectedCorso = new BehaviorSubject<Corso>(new Corso());
 
+  private _listCorsiTrainer = new BehaviorSubject<Corso[]>([]);
 
+  
   constructor(
     private docStructureService: DocstructureService,
     private apiService: ApicallService
@@ -42,6 +46,13 @@ export class CourseService {
   get listCorsi() {
     return this._listCorsi.asObservable();
   }
+
+  /**
+   * Sono i corsi che il trainer richiede nella pagina Trainer
+   */
+  get listCorsiTrainer() {
+    return this._listCorsiTrainer.asObservable();
+  }  
 
   get selectedCorso() {
     return this._selectedCorso.asObservable();
@@ -87,9 +98,6 @@ export class CourseService {
    * @param config Parametri di configurazione
    * @param docUser Documento Utente loggato. Se presente i corsi vengono proposti solo quelli validi all'utente
    */
-
-
-
   requestById (config: StartConfiguration, idCorso: string, numLivelli?:string) {
     return new Promise<Corso>((resolve, reject)=>{
 
@@ -186,6 +194,83 @@ export class CourseService {
       })
   })
 }
+
+/**
+ * Effettua la chiamata al server per ottenere i corsi riferiti al trainer
+ * Risultato nell'Observable listCorsiTrainer
+ * 
+ * @param idTrainer Trainer
+ * @param timeState Corsi richiesti
+ */
+ requestTimeTrainerCourse(idTrainer: string, timeState: TimeTrainerCourse):void {
+  let myPostParams : PostParams;
+  let arPostParams: PostParams[] = [];
+  let method: string = 'getCorsitrainer';
+  let docCall: Corso = new Corso();
+
+  if (idTrainer && idTrainer.length != 0) {
+
+    if ([-1,0,1].includes(timeState)) {
+      
+      //Procedo con la chiamata
+      myPostParams = new PostParams();
+      myPostParams.key = 'idTrainer';
+      myPostParams.value = idTrainer;
+      arPostParams.push(myPostParams);
+
+      myPostParams = new PostParams();
+      myPostParams.key = 'stateTime';
+      myPostParams.value = timeState;
+      arPostParams.push(myPostParams);
+
+      this.docStructureService.requestForFunction(docCall,method,'',arPostParams)
+                              .then((collData:any[]) => {
+
+                                let listElement: Corso[] = [];
+                                console.log(collData);
+                                if (collData && Array.isArray(collData)) {
+                                  if (collData.length != 0) {
+
+                                    //Creo la lista
+                                    collData.forEach(elData => {
+                                      let newElement: Corso = new Corso;
+                                      newElement.setJSONProperty(elData);
+                                      listElement.push(newElement);
+
+                                      //Ogni volta riemetto la lista
+                                      this._listCorsiTrainer.next(listElement);
+                                    })
+
+                                    //Adesso voglio anche decodificare i dati contenuti
+                                    this.docStructureService.decodeCollection(listElement)
+                                                            .then(() => {
+                                                              //Riemetto la lista aggiornata
+                                                              this._listCorsiTrainer.next(listElement);
+                                                            })
+                                                            .catch(error => {
+                                                              //Anche in errore riemetto la lista
+                                                              this._listCorsiTrainer.next(listElement);
+
+                                                            })
+
+                                  }
+                                  else {
+
+                                    this._listCorsiTrainer.next([]);
+
+                                  }
+                                }
+                                else {
+                                  //Nessun dato
+                                  this._listCorsiTrainer.next([]);
+                                }
+                              })
+
+
+    }
+  }
+  
+ }
 
 
   /**

@@ -36,7 +36,7 @@ import { Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
-import { TipoPrivateImage } from 'src/app/models/valuelist.model'
+import { TimeTrainerCourse, TipoPrivateImage } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { OccupazioniService } from './occupazioni.service';
 
@@ -209,8 +209,8 @@ export class StartService {
     if (this.isOnWeb) {
 
         //Qui posso cambiare strategia per puntare localmente
-        //this._localConnection = true;
-        this._localConnection = false;
+        this._localConnection = true;
+        //this._localConnection = false;
 
         if (this._localConnection) {
           //Modalità di Test metto un AppId di test
@@ -742,6 +742,13 @@ get listCorsi() {
 }
 
 /**
+ * Elenco Corsi richiesti da un trainer
+ */
+ get listCorsiTrainer() {
+  return this.corsoService.listCorsiTrainer;
+}
+
+/**
  * Ritorno il filtro corsi impostato nel servizio
  */
 get filterCorsi() {
@@ -773,6 +780,17 @@ requestCorsoById(idCorso: string){
 newRequestCorsoById(idcorso: string){
   return this.corsoService.newRequestById(idcorso);
 }
+
+/**
+ * Effettua la chiamata al server per ottenere i corsi riferiti al trainer
+ * Risultato nell'Observable listCorsiTrainer
+ * 
+ * @param idTrainer Trainer
+ * @param timeState Corsi richiesti
+ */
+ requestTimeTrainerCourse(idTrainer: string, timeState: TimeTrainerCourse):void {
+   this.corsoService.requestTimeTrainerCourse(idTrainer, timeState);
+ }
 
 //#region coursescheduler
 

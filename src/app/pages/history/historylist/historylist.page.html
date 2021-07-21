@@ -17,16 +17,29 @@
     </ion-buttons>
 
   </ion-toolbar>
+
   <ion-toolbar *ngIf="showTabs" mode="md">
-    <ion-segment [(ngModel)]="selectedView" value="prenotazioni" (ionChange)="onChangeSegment($event)" >
-      <ion-segment-button class="ion-no-padding" value="prenotazioni" layout="icon-start">
-        <ion-icon name="calendar"></ion-icon>
-        Prenotazioni
+
+    <ion-segment 
+          
+          [(ngModel)]="selectedView" 
+          value="prenotazioni"
+          (ionChange)="onChangeSegment($event)" >
+
+      <ion-segment-button  
+                value="prenotazioni">
+
+        <ion-icon name="calendar-outline"></ion-icon>
+        <ion-label>Prenotazioni</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="corsi" layout="icon-start">
-        <ion-icon name="school"></ion-icon>
-        corsi
+
+      <ion-segment-button 
+            value="corsi">
+        <ion-icon name="school-outline"></ion-icon>
+        <ion-label>Corsi</ion-label>
+        
       </ion-segment-button>
+
     </ion-segment>
   </ion-toolbar>
 </ion-header>
@@ -38,6 +51,7 @@
   </ion-refresher>
 
 
+
   <!-- PARTE CORSI -->
   <div class="contentExpand" *ngIf="selectedView=='corsi'">
 
@@ -46,43 +60,39 @@
         <ion-label>Nessuna Iscrizione Corso</ion-label>
         <ion-label>trovata</ion-label>
       </div>
+
       <!-- LISTA CORSI -->
         <ion-list *ngIf="listUtenteCorsi!.length !== 0">
-          <ion-item button *ngFor="let corso of listUtenteCorsi" (click)="onClickCorso(corso)" >
-            <ion-buttons slot="start">
-              <ion-grid class="ion-no-padding">
-                <ion-row class="ion-no-padding">
-                  <ion-col class="ion-no-padding ion-text-center">
-                    <ion-icon 
-                      name="school" 
-                      class="icon-school" 
-                      [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
-                    </ion-icon>
+          <ion-item button 
+                *ngFor="let corso of listUtenteCorsi" 
+                (click)="onClickCorso(corso)" >
 
-                  </ion-col>
-                </ion-row>
-                <ion-row class="ion-no-padding">
-                  <ion-col class="ion-no-padding ion-text-center">
-                    <p class="icon-text ion-no-margin article" *ngIf="corso.DATAINIZIO">{{corso.DATAFINE < today ? 'Fino al':'Dal'}}</p>
-                    <p class="icon-text">{{corso.DATAFINE < today ? (corso.DATAINIZIO | date: 'dd/LL/yy'): (corso.DATAFINE|date: 'dd/LL/yy')}}</p>
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
-            </ion-buttons>
-            <ion-label>
-              <h1>{{corso.DENOMINAZIONECORSO}}</h1>
-              <h2>{{corso.DENOMINAZIONESPORT}}</h2>
-              <p>{{corso.GIORNIPREVISTI|giorniPrevisti: lingua|titlecase}} </p>
-              <h3>{{corso.COMUNELOCATION|titlecase}}, {{corso.INDIRIZZOLOCATION|titlecase}}</h3> <!--Quando abbiamo la decodifica inseriamo anche questo-->
-            </ion-label>
-            <ion-chip 
-                [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'" 
-                *ngIf="corso.ORAINIZIO"
-            >
-              {{corso.ORAINIZIO|date: 'HH:mm'}}
-            </ion-chip>
-          </ion-item>
-        </ion-list>
+          <!-- ICONA CORSO -->
+          <ion-icon 
+              name="school" 
+              class="icon-school"
+              slot="start"
+              [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
+          </ion-icon>
+
+          <ion-label class="ion-text-wrap">
+            <p>{{corso.DATAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}
+              <br/>
+              {{corso.DATAFINE | date : 'EEEE dd/MM/yyyy' | titlecase}}
+            </p>
+            <h1>{{corso.DENOMINAZIONESPORT}} in {{corso.DENOMINAZIONELOCATION}}</h1>
+            <h3>{{corso.GIORNIPREVISTI|giorniPrevisti: lingua|titlecase}} </h3>
+
+          </ion-label>   
+          
+          <!-- ORA INIZIO -->
+          <ion-chip 
+              [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
+            {{corso.ORAINIZIO | date: 'HH:mm'}}
+            <ion-icon name="time-outline"></ion-icon>
+          </ion-chip>
+          </ion-item>         
+        </ion-list>     
   </div>
 
 

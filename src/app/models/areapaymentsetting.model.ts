@@ -241,7 +241,7 @@ export class AreaPaymentSetting extends IDDocument {
 
               case PaymentChannel.bonifico:
                 if (!withBonifico) {
-                  myElList = new ValueList(PaymentMode.pagaStruttura, 'Effettua un bonifico');
+                  myElList = new ValueList(PaymentMode.pagaBonifico, 'Effettua un bonifico');
                   myElList.itemIcon = 'document-text-outline';
                   arReturn.push(myElList);
                 }

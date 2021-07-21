@@ -1,7 +1,7 @@
-ion-segment-button>ion-icon
-{
-    margin:5px;
-}
+// ion-segment-button>ion-icon
+// {
+//     margin:5px;
+// }
 
 h1
 {
@@ -23,8 +23,13 @@ h3
 
 .icon-school
 {
-    min-width: 40px;
-    min-height: 40px;
+    // min-width: 40px;
+    // min-height: 40px;
+    font-size: 40px;
+}
+
+.icon-prenotazioni {
+    font-size: 40px;
 }
 
 
@@ -45,7 +50,5 @@ h3
     height: 100%;
 }
 
-.icon-prenotazioni{
-    font-size: 40px;
-}
+
 

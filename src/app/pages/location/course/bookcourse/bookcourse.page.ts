@@ -345,7 +345,7 @@ requestLocationById(idLocation: string): Promise<void>{
       if (this.myListPayment && this.myListPayment.length != 0) {
 
         this.mySelectedPayment = this.myListPayment[0];
-
+        console.log(this.myListPayment);
       }
       else {
 
@@ -372,6 +372,7 @@ requestLocationById(idLocation: string): Promise<void>{
    */
    onPaymentModeSelected(valPaymentMode: PaymentMode) {
     this.myPaymentMode = valPaymentMode;
+    console.log(this.myPaymentMode);
   }  
 
 
@@ -531,7 +532,7 @@ requestLocationById(idLocation: string): Promise<void>{
           myDocRata.IDORDER = '';
           myDocRata.MODALITA = resultPayment.channelPayment;
           myDocRata.TIPORIGO = TipoRigoIncasso.scadenza;
-          myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
+          //Data operazione non viene valorizzata ma solo DataScadenza
           myDocRata.DATASCADENZA = this.myCorso.DATAINIZIO;
           myDocRata.IMPORTO = this.myCorso.PREZZOLORDO;
 
@@ -544,7 +545,7 @@ requestLocationById(idLocation: string): Promise<void>{
           myDocRata.MODALITA = PaymentChannel.onSite;
           myDocRata.TIPORIGO = TipoRigoIncasso.incassato;
           myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
-          myDocRata.DATASCADENZA = myDocIscrizione.DATAISCRIZIONE;
+          //Non c'e' nessuna scadenza
           myDocRata.IMPORTO = 0;
         }
       }
@@ -556,7 +557,7 @@ requestLocationById(idLocation: string): Promise<void>{
         myDocRata.MODALITA = resultPayment.channelPayment;
         myDocRata.TIPORIGO = TipoRigoIncasso.incassato;
         myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
-        myDocRata.DATASCADENZA = myDocIscrizione.DATAISCRIZIONE;        
+        //Non c'e' nessuna scadenza      
         myDocRata.IMPORTO = this.myCorso.PREZZOLORDO;
 
       }
@@ -564,6 +565,7 @@ requestLocationById(idLocation: string): Promise<void>{
       //Aggiungo le informaioni del pagamento
       myDocIscrizione.ISCRIZIONEINCASSO.push(myDocRata);
 
+      console.log(myDocRata);
 
       //Contatto il server per salvare il tutto
       this.loadingController.create({

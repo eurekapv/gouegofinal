@@ -118,6 +118,11 @@ export class ListcoursesPage implements OnInit, OnDestroy {
 
     this.listenUserLogged = this.startService.utenteLogged.subscribe(flagLogged => {
       this.userLogged = flagLogged;
+
+      /** Utente Loggato mi sposto su Mio Livello */
+      if (this.userLogged == true) {
+        this.statoPagina = PageState.MIEI;
+      }
     })
 
   }

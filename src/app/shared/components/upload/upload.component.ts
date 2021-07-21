@@ -76,7 +76,7 @@ export class UploadComponent implements OnInit {
         this.loadedMobileFile = null;
         this.fileLoaded = false;
         this.fileNameShow = '';
-        this.showMessage('Errore apertura filesystem');
+        
 
         console.error(error)
       });

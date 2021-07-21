@@ -5,17 +5,29 @@
     </ion-buttons>
     <ion-title>I tuoi corsi</ion-title>
   </ion-toolbar>
-    <ion-item lines="none" color="" >
-      <ion-icon slot="start" name="calendar" color="primary"></ion-icon>
-      <ion-datetime 
-        displayFormat="DDDD - DD/MM/YYYY" 
-        [dayNames]="settimana" 
-        [(ngModel)]="selectedIsoDate" 
-        (ngModelChange)="onChangeFilter()"
-      >
-    </ion-datetime>
-    <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
-    </ion-item>
+
+  <ion-toolbar mode="md">
+
+    <ion-segment 
+          
+          [(ngModel)]="selectedView" 
+          (ionChange)="onChangeSegment($event)" >
+
+      <ion-segment-button  
+                [value]="PageView.pianificazioni">
+        <ion-icon name="today-outline"></ion-icon>
+        <ion-label>Giornata</ion-label>
+      </ion-segment-button>
+
+      <ion-segment-button 
+      [value]="PageView.corsi">
+        <ion-icon name="school-outline"></ion-icon>
+        <ion-label>Corsi</ion-label>
+      </ion-segment-button>
+
+    </ion-segment>
+  </ion-toolbar>
+
 </ion-header>
 
 <ion-content scrollEvents (ionScroll)="onScroll($event)">
@@ -24,19 +36,113 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="myListPianificazioni && myListPianificazioni.length > 0" class="ion-no-padding">
-    <ion-list class="ion-padding-vertical">
-      <app-item-calendario 
-        *ngFor="let pianificazione of myListPianificazioni" 
-        [params]="getItemParamsFromPianificazione(pianificazione)"
-        (click)="onClickCorso(pianificazione)"
-      >
-      </app-item-calendario>
+  <!-- PORZIONE DATE PIANIFICATE -->
+  <div class="contentExpand" *ngIf="selectedView==PageView.pianificazioni">
+
+    <!-- PORZIONE FILTRI -->
+    <ion-list>
+      <ion-item-group >
+        <ion-item-divider 
+              class="ion-padding-vertical"
+              color="light">
+          <ion-label>
+            <h2>Corsi pianificati il</h2>
+          </ion-label>
+        </ion-item-divider>
+
+        <ion-item lines="none" color="" >
+          <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
+          <ion-datetime 
+            displayFormat="DDDD - DD/MM/YYYY" 
+            [dayNames]="settimana" 
+            [(ngModel)]="selectedIsoDate" 
+            (ngModelChange)="onChangeFilter()"
+          >
+        </ion-datetime>
+        <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
+        </ion-item>
+
+        
+      </ion-item-group>          
     </ion-list>
+
+    <!-- PIANIFICAZIONI PRESENTI -->
+    <div 
+          *ngIf="myListPianificazioni && myListPianificazioni.length != 0" 
+          class="ion-no-padding">
+      <ion-list           
+          class="ion-padding-vertical">
+
+          <app-item-calendario 
+            *ngFor="let pianificazione of myListPianificazioni" 
+            [params]="getItemParamsFromPianificazione(pianificazione)"
+            (click)="onClickCorso(pianificazione)">
+          </app-item-calendario>
+        
+
+      </ion-list>
+    </div>
+  
+    <!-- NESSUNA PIANIFICAZIONE  -->
+    <div class="nofind-cnt" *ngIf="!myListPianificazioni || myListPianificazioni.length == 0">
+      <ion-label>Nessun corso pianificato</ion-label>
+    </div>
   </div>
 
-  <!-- NESSUN ELEMENTO -->
-  <div class="nofind-cnt" *ngIf="!myListPianificazioni || myListPianificazioni.length == 0">
-    <ion-label>Nessun corso pianificato per oggi</ion-label>
-  </div>
+  <!-- PORZIONI ELENCO CORSI -->
+  <div class="contentExpand" *ngIf="selectedView==PageView.corsi">
+    <!-- AREA FILTRO RICERCA -->
+    <ion-list>
+      <ion-item-group >
+        <ion-item-divider 
+              class="ion-padding-vertical"
+              color="light">
+          <ion-label>
+            <h2>Corsi che risultano</h2>
+          </ion-label>
+        </ion-item-divider>
+
+        <ion-item lines="none" color="" >
+          <ion-icon slot="start" name="hourglass-outline" color="primary"></ion-icon>
+          <ion-select 
+              mode="ios" 
+              (ionChange)="onChangeTimeState($event)"
+              [(ngModel)]="selectedTimeState"
+              interface="action-sheet">
+
+              <ion-select-option [value]="TimeStateCourse.attivi">
+                In Esecuzione
+              </ion-select-option>
+
+              <ion-select-option [value]="TimeStateCourse.passati">
+                Conclusi
+              </ion-select-option>  
+
+              <ion-select-option [value]="TimeStateCourse.futuri">
+                Da iniziare
+              </ion-select-option> 
+
+          </ion-select>
+        
+        <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
+        </ion-item>
+
+        
+      </ion-item-group>  
+    </ion-list>
+
+    <!-- CORSI TROVATI -->
+    <div class="ion-no-padding" *ngIf="myListCorsi && myListCorsi.length != 0">
+        
+    </div>
+  
+
+    <!-- NESSUN CORSO TROVATO  -->
+    <div class="nofind-cnt" *ngIf="!myListCorsi || myListCorsi.length == 0">
+      <ion-label>Nessun corso trovato</ion-label>
+    </div>
+  </div>    
+
+  
+  
 </ion-content>

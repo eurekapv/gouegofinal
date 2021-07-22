@@ -12,7 +12,6 @@ import { AreaLink } from 'src/app/models/arealink.model';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
-import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
 const { Browser } = Plugins;
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';

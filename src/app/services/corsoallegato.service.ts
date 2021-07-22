@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { promise } from 'protractor';
-import { resolve } from 'url';
 import { RequestDecode, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { CorsoAllegato } from '../models/corsoallegato.model';

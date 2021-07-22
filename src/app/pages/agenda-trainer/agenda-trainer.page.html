@@ -21,8 +21,8 @@
 
       <ion-segment-button 
       [value]="PageView.corsi">
-        <ion-icon name="school-outline"></ion-icon>
-        <ion-label>Corsi</ion-label>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <ion-label>Valutazioni</ion-label>
       </ion-segment-button>
 
     </ion-segment>
@@ -121,7 +121,7 @@
   
     <!-- NESSUNA PIANIFICAZIONE  -->
     <div class="nofind-cnt" *ngIf="!myListPianificazioni || myListPianificazioni.length == 0">
-      <ion-label>Nessun corso pianificato</ion-label>
+      <ion-label>Nessun corso trovato</ion-label>
     </div>
   </div>
 
@@ -145,7 +145,7 @@
               lines="none" 
               color="" >
           <ion-label class="ion-text-wrap">
-            <h6>Elenco dei corsi svolti, in esecuzioni o che ti sono stati assegnati da eseguire prossimamente come trainer o assistente. 
+            <h6>Elenco dei corsi svolti, in esecuzione o da eseguire prossimamente come trainer o assistente. 
               Al termine del corso potrai dare una valutazione finale dei partecipanti, assegnando eventualmente un nuovo livello raggiunto</h6>
           </ion-label>
           <ion-icon slot="start" name="information-circle-outline"></ion-icon>

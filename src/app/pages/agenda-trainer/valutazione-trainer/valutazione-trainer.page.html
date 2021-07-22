@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" fill="clear" >
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Valutazione</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+</ion-content>
+
+<ion-footer *ngIf ="canUpdate">
+  <ion-button 
+    color="tertiary" 
+    expand="block" 
+    (click)="onConfirm()">
+Conferma Prenotazione
+</ion-button>
+</ion-footer>

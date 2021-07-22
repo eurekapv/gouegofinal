@@ -12,6 +12,7 @@ const routes: Routes = [
     path: ':pianificazioneCorsoId',
     loadChildren: () => import('./agenda-trainer-detail/agenda-trainer-detail.module').then( m => m.AgendaTrainerDetailPageModule)
   }
+
 ];
 
 @NgModule({

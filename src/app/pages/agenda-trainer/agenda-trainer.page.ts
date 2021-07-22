@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { Corso } from 'src/app/models/corso.model';
+import { CorsoValutazione } from 'src/app/models/corsovalutazione.model';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Utente } from 'src/app/models/utente.model';
 import { Language, RangeSearch, TimeTrainerCourse } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
+import { ValutazioneTrainerPage } from './valutazione-trainer/valutazione-trainer.page';
 
 
 export enum ViewTrainerCourse {
@@ -71,7 +73,9 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
     private startService: StartService,
     private navController: NavController,
     private loadingController: LoadingController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private alertController: AlertController,
+    private modalController: ModalController
   ) { 
 
     //Ascolto i cambiamenti per la Lista Corsi
@@ -230,26 +234,102 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
   }
 
   /**
-   * Click su un Corso 
+   * Quando viene scelto un corso, si vuole accedere alla Scheda di Valutazione
+   * E' necessario chiedere informazioni al server
    * @param elCorso 
    * 
    */
   onClickCorso(elCorso: Corso) {
 
+    if (elCorso) {
+
+      this.loadingController.create({
+        message: 'Caricamento...',
+        spinner: 'circular',
+        backdropDismiss: true      
+      })
+      .then(elLoading => {
+  
+        elLoading.present();
+
+        //Effettuo la richiesta al server
+        this.startService.requestSchedaValutazioneCorso(elCorso.ID)
+                        .then((docScheda: CorsoValutazione) => {
+
+                          elLoading.dismiss();
+                          //Devo aprire la videata in modale passando la scheda
+                          this.openModaleSchedaValutazione(docScheda, elCorso);
+
+                        })
+                        .catch(error => {
+
+                          elLoading.dismiss();
+
+                          //Mostro un messaggio
+                          this.showMessage(error,'alert');
+                        })
+      })
+
+
+    }
+
+  }
+
+  /**
+   * Apre in modale la videata ValutazioneTrainer 
+   * passando la scheda da mostrare
+   * @param docScheda Scheda di Valutazione
+   * @param docCorso Corso di riferimento
+   */
+  openModaleSchedaValutazione(docScheda: CorsoValutazione, docCorso: Corso) {
+    if (docScheda) {
+      this.modalController.create({
+        component: ValutazioneTrainerPage,
+        componentProps: {
+          params: {
+            docCorsoValutazione: docScheda,
+            docCorso: docCorso
+          }
+        }
+      })
+      .then(elModal => {
+
+        elModal.present();
+      })
+    }
   }
 
 
   /**
    * Visualizza un messaggio
    */
-  showMessage(messaggio: string){
-    this.toastController.create({
-      message: messaggio,
-      duration: 3000
-    })
-    .then(elToast => {
-      elToast.present();
-    })
+  showMessage(messaggio: string, type?:'toast'|'alert'){
+
+    if (type == 'alert') {
+
+      let alertOptions = {
+        message: messaggio,
+        buttons: ['OK']
+      }
+
+
+      this.alertController.create(alertOptions)
+            .then(elAlert => {
+                    elAlert.present();
+            });
+
+    }
+    else {
+
+      this.toastController.create({
+        message: messaggio,
+        duration: 3000
+      })
+      .then(elToast => {
+        elToast.present();
+      })
+
+    }
   }
 
 
@@ -280,7 +360,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
    * Nella pagina Corsi è stato premuto Item-Divider-Group
    * per cambiare il collassamento dei dati
    */
-   onChangeCollapseFilterCorsi() {
+  onChangeCollapseFilterCorsi() {
     if (this.collapsedFilterCorsi) {
       this.collapsedFilterCorsi = false;
     }
@@ -299,6 +379,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
 
     //Recupero nuovamente gli Impegni
     this.requestImpegni();
+
   }
 
 

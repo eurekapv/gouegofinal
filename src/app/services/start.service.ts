@@ -60,6 +60,8 @@ import { CorsoallegatoService } from './corsoallegato.service';
 import { CorsoAllegato } from '../models/corsoallegato.model';
 import { IscrizionecorsoService } from './iscrizionecorso.service';
 import { IscrizioneCorso } from '../models/iscrizionecorso.model';
+import { CorsoValutazioneService } from './corso-valutazione.service';
+import { CorsoValutazione } from '../models/corsovalutazione.model';
 
 
 
@@ -171,7 +173,8 @@ export class StartService {
     private dataChiusuraService: DataChiusuraService,
     private urlLocation: PlatformLocation,
     private corsoAllegatoService: CorsoallegatoService,
-    private iscrizioneCorsoService: IscrizionecorsoService
+    private iscrizioneCorsoService: IscrizionecorsoService,
+    private corsoValutazioneService: CorsoValutazioneService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -869,6 +872,21 @@ getPostiDisponibiliCorso(idCorso: string):Promise<PostResponse> {
  */
 requestSaveIscrizione(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
   return this.iscrizioneCorsoService.requestSaveIscrizione(docIscrizione);
+}
+//#endregion
+
+
+//#region CORSO VALUTAZIONE
+
+/**
+ * Chiede al server una Scheda di Valutazione finale Corso
+ * 
+ * @param idCorso idCorso richiesto
+ * @returns resolve con la Scheda di Valutazione
+ * @return  reject Messaggio Errore
+ */
+requestSchedaValutazioneCorso(idCorso: string):Promise<CorsoValutazione> {
+  return this.corsoValutazioneService.requestSchedaValutazioneCorso(idCorso);
 }
 //#endregion
 

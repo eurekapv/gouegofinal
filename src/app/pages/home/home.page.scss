@@ -85,6 +85,10 @@ ion-item{
     h2{
         font-weight: 800;
     }
+    &.title-agenda-impegni {
+        --background:#9fd18b;
+        --color: #000000;
+    }
 }
 
 ion-item ion-button{
@@ -94,6 +98,8 @@ ion-item ion-button{
 ion-card-title{
     font-size: 25px;
 }
+
+
 
 
 

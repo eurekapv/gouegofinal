@@ -36,9 +36,18 @@ div.custom-element{
     ion-col.col-center.past{
         border-left-color: var(--ion-color-danger);
     }
-    ion-col.col-center.future{
+
+    ion-col.col-center.undef{
         border-left-color: var(--ion-color-primary);
     }
+
+    ion-col.col-center.future{
+        border-left-color: var(--ion-color-warning);
+    }
+
+    ion-col.col-center.today{
+        border-left-color: var(--ion-color-success);
+    }    
 
 
     ion-col.col-right{

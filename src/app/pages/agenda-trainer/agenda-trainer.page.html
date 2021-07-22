@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>I tuoi corsi</ion-title>
+    <ion-title>Agenda Impegni</ion-title>
   </ion-toolbar>
 
   <ion-toolbar mode="md">
@@ -14,9 +14,9 @@
           (ionChange)="onChangeSegment($event)" >
 
       <ion-segment-button  
-                [value]="PageView.pianificazioni">
+                [value]="PageView.impegni">
         <ion-icon name="today-outline"></ion-icon>
-        <ion-label>Giornata</ion-label>
+        <ion-label>Impegni</ion-label>
       </ion-segment-button>
 
       <ion-segment-button 
@@ -37,18 +37,51 @@
   </ion-refresher>
 
   <!-- PORZIONE DATE PIANIFICATE -->
-  <div class="contentExpand" *ngIf="selectedView==PageView.pianificazioni">
+  <div class="contentExpand" *ngIf="selectedView==PageView.impegni">
 
     <!-- PORZIONE FILTRI -->
     <ion-list>
       <ion-item-group >
         <ion-item-divider 
               class="ion-padding-vertical"
-              color="light">
+              color="light"
+              (click)="onChangeCollapseFilterPianificazioni()">
+
+          <ion-icon slot="start" [name]="collapsedFilterPianificazioni ? 'chevron-down-outline':'chevron-up-outline'"></ion-icon>
           <ion-label>
-            <h2>Corsi pianificati il</h2>
+            <h2>{{getLabelFilterImpegni()}}</h2>
           </ion-label>
         </ion-item-divider>
+
+        <ion-item 
+              *ngIf = "!collapsedFilterPianificazioni"
+              lines="none" 
+              color="" >
+          <ion-label class="ion-text-wrap">
+            <h6>E' possibile ottenere l'elenco degli impegni giornalieri, settimanali o mensili</h6>
+          </ion-label>
+          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+        </ion-item>
+
+        <ion-item 
+            *ngIf = "!collapsedFilterPianificazioni"
+            lines="none" 
+            color="">
+          <ion-icon slot="start" name="search-circle-outline"></ion-icon>
+          <ion-label>Ricerca Impegni</ion-label>
+
+          <ion-select
+                mode="ios" 
+                (ionChange)="onChangePageRangeSearch($event)"
+                [(ngModel)]="rangeSearchPianificazioni"
+                interface = "action-sheet" 
+                okText="Conferma" 
+                cancelText="Annulla">
+            <ion-select-option [value]="PageRangeSearch.giorno">Giornalieri</ion-select-option>
+            <ion-select-option [value]="PageRangeSearch.settimana">Settimanali</ion-select-option>
+            <ion-select-option [value]="PageRangeSearch.mese">Mensili</ion-select-option>
+          </ion-select>
+        </ion-item>
 
         <ion-item lines="none" color="" >
           <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
@@ -56,7 +89,7 @@
             displayFormat="DDDD - DD/MM/YYYY" 
             [dayNames]="settimana" 
             [(ngModel)]="selectedIsoDate" 
-            (ngModelChange)="onChangeFilter()"
+            (ngModelChange)="onChangeFilterDateImpegni()"
           >
         </ion-datetime>
         <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
@@ -73,10 +106,13 @@
       <ion-list           
           class="ion-padding-vertical">
 
+          <!-- VENGONO MOSTRATI GLI ELEMENTI DEL CALENDARIO CORSO -->
+          <!-- LA DATA VIENE MOSTRATA SOLO SE LA VISIONE E' DIVERSA DA GIORNO -->
           <app-item-calendario 
             *ngFor="let pianificazione of myListPianificazioni" 
             [params]="getItemParamsFromPianificazione(pianificazione)"
-            (click)="onClickPianificazione(pianificazione)">
+            [showDate]="rangeSearchPianificazioni != PageRangeSearch.giorno"
+            (click)="onClickImpegno(pianificazione)">
           </app-item-calendario>
         
 
@@ -96,11 +132,24 @@
       <ion-item-group >
         <ion-item-divider 
               class="ion-padding-vertical"
-              color="light">
+              color="light"
+              (click)="onChangeCollapseFilterCorsi()">
+              <ion-icon slot="start" [name]="collapsedFilterCorsi ? 'chevron-down-outline':'chevron-up-outline'"></ion-icon>              
           <ion-label>
             <h2>Corsi che risultano</h2>
           </ion-label>
         </ion-item-divider>
+
+        <ion-item 
+              *ngIf = "!collapsedFilterCorsi"
+              lines="none" 
+              color="" >
+          <ion-label class="ion-text-wrap">
+            <h6>Elenco dei corsi svolti, in esecuzioni o che ti sono stati assegnati da eseguire prossimamente come trainer o assistente. 
+              Al termine del corso potrai dare una valutazione finale dei partecipanti, assegnando eventualmente un nuovo livello raggiunto</h6>
+          </ion-label>
+          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+        </ion-item>        
 
         <ion-item lines="none" color="" >
           <ion-icon slot="start" name="hourglass-outline" color="primary"></ion-icon>
@@ -110,16 +159,16 @@
               [(ngModel)]="selectedTimeState"
               interface="action-sheet">
 
-              <ion-select-option [value]="TimeStateCourse.attivi">
-                In Esecuzione
-              </ion-select-option>
-
               <ion-select-option [value]="TimeStateCourse.passati">
                 Conclusi
               </ion-select-option>  
 
+              <ion-select-option [value]="TimeStateCourse.attivi">
+                In Esecuzione
+              </ion-select-option>
+
               <ion-select-option [value]="TimeStateCourse.futuri">
-                Da iniziare
+                Futuri
               </ion-select-option> 
 
           </ion-select>
@@ -145,7 +194,7 @@
             name="school" 
             class="icon-school"
             slot="start"
-            [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
+            [color]="getColorIconCorso(corso)">
         </ion-icon>
 
         <ion-label class="ion-text-wrap">
@@ -153,8 +202,8 @@
             <br/>
             {{corso.DATAFINE | date : 'EEEE dd/MM/yyyy' | titlecase}}
           </p>
-          <h1>{{corso['_DENOMINAZIONE_Sport']}} in {{corso['_DENOMINAZIONE_Location']}}</h1>
-          <h3>{{corso.GIORNIPREVISTI| giorniPrevisti: lingua|titlecase}} </h3>
+          <h4>{{corso['_DENOMINAZIONE_Sport']}} in {{corso['_DENOMINAZIONE_Location']}}</h4>
+          <h6>{{corso.GIORNIPREVISTI| giorniPrevisti: lingua|titlecase}} </h6>
 
         </ion-label>   
         

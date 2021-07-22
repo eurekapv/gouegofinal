@@ -414,6 +414,41 @@ static calcolaPasqua(anno: number): Date {
 }
 
 
+/**
+ * Con la data passata calcola una data di inizio/fine della settimana 
+ * o del mese in cui myDate è contenuta
+ * @param myDate Data da utilizzare
+ * @param based Il calcolo è effettuata per la settimana o il mese
+ * @param where Si vuole la data di inizio o fine
+ */
+static getStartEndDate(myDate: Date, based:'week'|'month', where:'start'|'end'): Date {
+    let resultDate: Date;
+
+    if (myDate) {
+        if (where == 'start') {
+
+            resultDate = moment(myDate).startOf(based).toDate();
+        }
+        else if (where == 'end') {
+            resultDate = moment(myDate).endOf(based).toDate();
+        }
+    }
+
+    return resultDate;
+}
+
+
+/**
+ * Crea una Data senza l'orario
+ * @param myDateTime 
+ */
+static getOnlyDate(myDateTime: Date): Date {
+    let dateResult:Date;
+
+    dateResult = new Date(moment(myDateTime).format('YYYY-MM-DD'));
+
+    return dateResult;
+}
 
 
 

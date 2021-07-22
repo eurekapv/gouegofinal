@@ -1,20 +1,24 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { Corso } from 'src/app/models/corso.model';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Utente } from 'src/app/models/utente.model';
-import { Language, TimeTrainerCourse } from 'src/app/models/valuelist.model';
+import { Language, RangeSearch, TimeTrainerCourse } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 
 export enum ViewTrainerCourse {
-  pianificazioni = 'pianificazioni',
+  impegni = 'impegni',
   corsi = 'corsi'
 }
 
-
+export interface IRangeDate {
+  startDate: Date,
+  endDate: Date
+}
 
 
 @Component({
@@ -26,10 +30,20 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
   lingua=Language.italiano;  
   
   utente: Utente = new Utente();
-  //Pianificazini
+
+  //Impegni
   myListPianificazioni: PianificazioneCorso[] = [];
   selectedDate: Date = new Date();
   selectedIsoDate: string = this.selectedDate.toISOString();
+
+  //Criteri ricerca delle pianificazioni
+  rangeSearchPianificazioni: RangeSearch = RangeSearch.giorno;
+  PageRangeSearch: typeof RangeSearch = RangeSearch;
+
+  //Il Gruppo con i Filtri degli impegni puo' essere collassato o aperto
+  collapsedFilterPianificazioni: boolean = true;
+  //Il Gruppo con i Filtri degli impegni puo' essere collassato o aperto
+  collapsedFilterCorsi: boolean = true;
 
   //Elenco Corsi
   myListCorsi: Corso[] = [];
@@ -42,7 +56,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
 
   //Viste della pagina
   PageView : typeof ViewTrainerCourse = ViewTrainerCourse;
-  selectedView: ViewTrainerCourse = ViewTrainerCourse.pianificazioni;
+  selectedView: ViewTrainerCourse = ViewTrainerCourse.impegni;
 
   //Stati di un corso con la data odierna
   TimeStateCourse: typeof TimeTrainerCourse = TimeTrainerCourse;
@@ -89,9 +103,45 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
 
 
   /**
+   * Calcola le Date Inizio e Fine per effettuare la richiesta Impegni
+   * @returns IRangeDate con inizio e fine
+   */
+  private prepareDateForSearchImpegni(): IRangeDate {
+    let dataInizio: Date;
+    let dataFine: Date;
+    let range: IRangeDate;
+
+    if (this.rangeSearchPianificazioni == RangeSearch.giorno) {
+      dataInizio = this.selectedDate;
+      dataFine = this.selectedDate;
+    }
+    else if (this.rangeSearchPianificazioni == RangeSearch.settimana) {
+      //Imposto da Domenica a Domenica
+      dataInizio = MyDateTime.getStartEndDate(this.selectedDate,'week','start');
+      dataFine = MyDateTime.getStartEndDate(this.selectedDate,'week','end');
+    }
+    else if (this.rangeSearchPianificazioni == RangeSearch.mese) {
+      //Dal 1 a fine Mese
+      dataInizio = MyDateTime.getStartEndDate(this.selectedDate,'month','start');
+      dataFine = MyDateTime.getStartEndDate(this.selectedDate,'month','end');
+    }
+
+    //Preparo il range e lo ritorno
+    range = {
+      startDate: dataInizio,
+      endDate: dataFine
+    }
+    
+    return range;
+
+  }
+
+  /**
    * Richiedo al server le date pianificate dei corsi
    */
   private requestImpegni(event?: any) {
+
+    let rangeDate: IRangeDate;
 
     //creo il loading
     this.loadingController.create({
@@ -102,9 +152,15 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
     .then(elLoading => {
 
       elLoading.present();
+
+      //Preparo le date da utilizzare per la ricerca
+      rangeDate = this.prepareDateForSearchImpegni();
+
+      //Chiudo il collapsed
+      this.collapsedFilterPianificazioni = true;
       
       //qui stò richiedendo gli impegni che riguardano l'utente in quanto "collaboratore"
-      this.startService.requestImpegniTrainer(this.utente.ID, this.selectedDate)
+      this.startService.requestImpegniTrainer(this.utente.ID, rangeDate.startDate, rangeDate.endDate)
         .then(result => {
 
           this.myListPianificazioni = result;
@@ -164,11 +220,11 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
   }
 
   /**
-   * Click su un elemento di Pianificazione
-   * @param elem Elemento selezionato
+   * Click su un elemento della Lista Impegni
+   * @param elImpegno Elemento selezionato
    */
-  onClickPianificazione(elem: PianificazioneCorso){
-    this.navController.navigateForward('/agenda-trainer/' + elem.ID);
+   onClickImpegno(elImpegno: PianificazioneCorso){
+    this.navController.navigateForward('/agenda-trainer/' + elImpegno.ID);
     // this.navController.navigateForward('/agenda-trainer/' + elem.ID+'-'+elem.IDCORSO);
 
   }
@@ -196,10 +252,57 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
     })
   }
 
-  onChangeFilter(){    
+
+  /**
+   * Nella pagina Impegni è stato modificata il filtro Data 
+   * per la ricerca
+   */
+  onChangeFilterDateImpegni(){    
     this.selectedDate = (new Date(this.selectedIsoDate)); 
     this.requestImpegni();
   }
+
+  /**
+   * Nella pagina Impegni è stato premuto Item-Divider-Group
+   * per cambiare il collassamento dei dati
+   */
+  onChangeCollapseFilterPianificazioni() {
+    if (this.collapsedFilterPianificazioni) {
+      this.collapsedFilterPianificazioni = false;
+    }
+    else {
+      this.collapsedFilterPianificazioni = true;
+    }
+  }
+
+
+  /**
+   * Nella pagina Corsi è stato premuto Item-Divider-Group
+   * per cambiare il collassamento dei dati
+   */
+   onChangeCollapseFilterCorsi() {
+    if (this.collapsedFilterCorsi) {
+      this.collapsedFilterCorsi = false;
+    }
+    else {
+      this.collapsedFilterCorsi = true;
+    }
+  }
+
+  /**
+   * Pagina Impegni, è stato modificato il PageRangeSearch 
+   * per recuperare gli impegni con un range giornaliero, settimanale, mensile
+   * @param event 
+   */
+  onChangePageRangeSearch(event: any) {
+    //Devo effettuare nuovamente la ricerca degli impegni
+
+    //Recupero nuovamente gli Impegni
+    this.requestImpegni();
+  }
+
+
+
 
   getItemParamsFromPianificazione(pianificazioneElem: PianificazioneCorso){
     return ItemCalendario.getParamsPianificazioneCorso(pianificazioneElem);
@@ -212,6 +315,60 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
    */
   getIconSport (idSport:string){
     return this.startService.getSportIcon(idSport);
+  }
+
+  /**
+   * Ritorna il colore da applicare alla riga della Lista Corsi
+   * @param elCorso 
+   */
+  getColorIconCorso(elCorso: Corso):string {
+    let color = 'primary';
+
+    let today: Date = new Date(MyDateTime.formatDateISO(new Date));
+    
+    if (elCorso) {
+      if (elCorso.DATAFINE < today) {
+        //Già concluso
+        color='danger';
+      }
+      else if (elCorso.DATAINIZIO > today) {
+        //Futuri
+        color = 'warning'
+      }
+      else {
+        //Attuali
+        color = 'success';
+      }
+    }
+
+    return color;
+  }
+
+
+  /**
+   * Etichetta da mostrare nella Barra di ricerca
+   * Pagina Impegni
+   * Il valore dipende dalla variabile rangeSearchPianificazioni
+   */
+  getLabelFilterImpegni(): string {
+    let label: string;
+
+    switch (this.rangeSearchPianificazioni) {
+      case RangeSearch.giorno:
+        label = 'Impegni giornalieri';
+        break;
+      case RangeSearch.settimana:
+        label = 'Impegni settimanali';
+        break;
+      case RangeSearch.mese:
+        label = 'Impegni mensili';
+        break;
+    
+      default:
+        break;
+    }
+
+    return label;
   }
 
   
@@ -236,7 +393,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
    */
   doRefresh(event: any) {
 
-    if (this.selectedView == this.PageView.pianificazioni) {
+    if (this.selectedView == this.PageView.impegni) {
 
       this.requestImpegni(event);
 
@@ -261,7 +418,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
            //Scelta Corsi
            this.requestTimeCorsi();
            break;
-         case ViewTrainerCourse.pianificazioni:
+         case ViewTrainerCourse.impegni:
            //Scelta Pianificazioni
            this.requestImpegni();
            break;

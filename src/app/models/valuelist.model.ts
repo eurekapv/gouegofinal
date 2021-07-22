@@ -433,6 +433,12 @@ export enum TimeTrainerCourse {
   
   }
 
+export enum RangeSearch {
+    giorno = 10,
+    settimana = 20,
+    mese = 30
+}  
+
 
 
 

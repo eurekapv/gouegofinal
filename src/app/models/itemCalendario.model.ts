@@ -1,5 +1,4 @@
 import { MyDateTime } from '../library/models/mydatetime.model';
-import { Livello } from './livello.model';
 import { OccupazioneCampi } from './occupazionecampi.model';
 import { PianificazioneCorso } from './pianificazionecorso.model';
 import { SettoreAttivita } from './valuelist.model';

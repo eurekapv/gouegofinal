@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { stringify } from 'querystring';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 
@@ -10,8 +11,8 @@ import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 })
 export class ItemCalendarioComponent implements OnInit {
 
-  @Input() params : ItemCalendario = new ItemCalendario()
-
+  @Input() params : ItemCalendario = new ItemCalendario();
+  @Input() showDate: boolean = false;
   @Output() click: EventEmitter<any> = new EventEmitter<any>()
 
   TipoBadge: typeof TipoBadge = TipoBadge
@@ -65,6 +66,36 @@ export class ItemCalendarioComponent implements OnInit {
 
     return myCssClass;
   }
+
+    /**
+   * Ritorna il colore da applicare alla riga verticale che separa 
+   * la colonna Sinistra dalla destra
+   * @param elItem 
+   */
+  getClassColorColumn(elItem: ItemCalendario):string {
+      let color = 'undef';
+      let dataitem: Date;
+
+      let today: Date = new Date(MyDateTime.formatDateISO(new Date));
+
+      if (elItem && elItem.oraInizio) {
+
+          dataitem = MyDateTime.getOnlyDate(elItem.oraInizio);
+
+        if (dataitem < today) {
+          //Passata
+          color='past';
+        }
+        else if (dataitem > today) {
+          color = 'future'
+        }
+        else {
+          color = 'today';
+        }
+      }
+  
+      return color;
+    }
 
 
 }

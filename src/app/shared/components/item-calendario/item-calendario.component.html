@@ -7,14 +7,18 @@
             <h4>{{params.oraFine | date: 'HH.mm'}}</h4>
           </ion-label>
         </ion-col>
-        <ion-col class="ion-no-padding col-center" [ngClass]="params.isPast? 'past' : 'future'">
-          <ion-label >
-            <h2>{{params.riga1Text}}</h2>
-            <h3>{{params.riga2Text}}</h3>
-            <h3>{{params.riga3Text}}</h3>
+        <ion-col 
+            class="ion-no-padding col-center" 
+            [ngClass]="getClassColorColumn(params)">
+          <ion-label>
+            <p>{{params.oraInizio | date: 'EEE dd/MM/yyyy'}}</p>
+            <h2 *ngIf="params.riga1Text">{{params.riga1Text}}</h2>
+            <h3 *ngIf="params.riga2Text">{{params.riga2Text}}</h3>
+            <h3 *ngIf="params.riga3Text">{{params.riga3Text}}</h3>
           </ion-label>
         </ion-col>
-        <ion-col class="ion-no-padding col-right">
+        <ion-col 
+              class="ion-no-padding col-right">
           <ion-badge 
             *ngIf="tipoBadge != TipoBadge.noBadge"
             [color]="params.badgeColor"

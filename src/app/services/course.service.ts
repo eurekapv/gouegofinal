@@ -224,41 +224,53 @@ export class CourseService {
       arPostParams.push(myPostParams);
 
       this.docStructureService.requestForFunction(docCall,method,'',arPostParams)
-                              .then((collData:any[]) => {
+                              .then((collData:Object) => {
 
                                 let listElement: Corso[] = [];
+                                let collDataCorso: any[];
+
                                 console.log(collData);
-                                if (collData && Array.isArray(collData)) {
-                                  if (collData.length != 0) {
+                                if (collData) {
 
-                                    //Creo la lista
-                                    collData.forEach(elData => {
-                                      let newElement: Corso = new Corso;
-                                      newElement.setJSONProperty(elData);
-                                      listElement.push(newElement);
+                                  if (collData.hasOwnProperty('CORSO')) {
+                                    collDataCorso = collData['CORSO'];
 
-                                      //Ogni volta riemetto la lista
-                                      this._listCorsiTrainer.next(listElement);
-                                    })
-
-                                    //Adesso voglio anche decodificare i dati contenuti
-                                    this.docStructureService.decodeCollection(listElement)
-                                                            .then(() => {
-                                                              //Riemetto la lista aggiornata
-                                                              this._listCorsiTrainer.next(listElement);
-                                                            })
-                                                            .catch(error => {
-                                                              //Anche in errore riemetto la lista
-                                                              this._listCorsiTrainer.next(listElement);
-
-                                                            })
-
+                                    if (collDataCorso.length != 0) {
+  
+                                      //Creo la lista
+                                      collDataCorso.forEach(elData => {
+                                        let newElement: Corso = new Corso;
+                                        newElement.setJSONProperty(elData);
+                                        listElement.push(newElement);
+  
+                                        //Ogni volta riemetto la lista
+                                        this._listCorsiTrainer.next(listElement);
+                                      })
+  
+                                      //Adesso voglio anche decodificare i dati contenuti
+                                      this.docStructureService.decodeCollection(listElement)
+                                                              .then(() => {
+                                                                //Riemetto la lista aggiornata
+                                                                this._listCorsiTrainer.next(listElement);
+                                                              })
+                                                              .catch(error => {
+                                                                //Anche in errore riemetto la lista
+                                                                this._listCorsiTrainer.next(listElement);
+  
+                                                              })
+  
+                                    }
+                                    else {
+                                      //Nessun dato
+                                      this._listCorsiTrainer.next([]);
+  
+                                    }
                                   }
                                   else {
-
-                                    this._listCorsiTrainer.next([]);
-
+                                      //Nessun dato
+                                      this._listCorsiTrainer.next([]);                                    
                                   }
+
                                 }
                                 else {
                                   //Nessun dato

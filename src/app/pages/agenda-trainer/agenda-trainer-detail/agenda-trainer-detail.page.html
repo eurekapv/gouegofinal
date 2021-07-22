@@ -28,9 +28,10 @@
       <ion-icon slot="start" name="school-outline" color="primary">
       </ion-icon>
       <ion-label class="ion-text-wrap">
+        <h2>{{selectedPianificazione.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
+        <h2>{{selectedPianificazione.DATAORAINIZIO | date: 'H.mm'}} - {{selectedPianificazione.DATAORAFINE | date: 'H.mm'}}</h2>
         <h1>{{selectedPianificazione['_DENOMINAZIONE_Corso']}}</h1>
         <p>{{(selectedPianificazione['_DENOMINAZIONE_Location'] | titlecase) + ' - ' + (selectedPianificazione['_DENOMINAZIONE_Campo'] | titlecase)}}</p>
-        <h2>{{selectedPianificazione.DATAORAINIZIO | date: 'H.mm'}} - {{selectedPianificazione.DATAORAFINE | date: 'H.mm'}}</h2>
       </ion-label>
     </ion-item>
 

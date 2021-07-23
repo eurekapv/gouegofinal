@@ -33,8 +33,6 @@ requestSchedaValutazioneCorso(idCorso: string):Promise<CorsoValutazione> {
         this.docStructureService.requestForFunction(docToCall,method,'',myPostParams)
                                 .then((risposta: PostResponse) => {
 
-                                  console.log(risposta);
-                                  
                                   //Non si puo' richiedere la scheda
                                   if (!risposta.result) {
 

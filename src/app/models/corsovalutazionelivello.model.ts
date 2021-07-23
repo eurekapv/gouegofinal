@@ -5,6 +5,7 @@ export class CorsoValutazioneLivello extends IDDocument {
     IDCORSOVALUTAZIONE:     string;
     IDCORSO:                string;
     IDUTENTE:               string;
+    NOMINATIVO:             string;
     IDSPORT:                string;
     IDLIVELLOENTRATA:       string;
     IDLIVELLOFINALE:        string;
@@ -19,6 +20,7 @@ export class CorsoValutazioneLivello extends IDDocument {
             'IDCORSO',
             'IDCORSOVALUTAZIONE',
             'IDUTENTE',
+            'NOMINATIVO',
             'IDSPORT',
             'IDLIVELLOENTRATA',
             'IDLIVELLOFINALE'

@@ -6,6 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Livello } from '../models/livello.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
+import { DocstructureService } from '../library/services/docstructure.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class LivelloService {
   private _listLivelli = new BehaviorSubject<Livello[]>([]);
   private _loaded: boolean; //Sport sono stati richiesti al server e sono caricati in memoria
 
-  constructor(private apiService: ApicallService) { 
+  constructor(private apiService: ApicallService,
+              private docService: DocstructureService) { 
     this._loaded = false;
   }
 
@@ -92,5 +94,41 @@ export class LivelloService {
       });
     
       
+  }
+
+  /**
+   * Richiede al server l'elenco dei Livelli per lo Sport
+   * @param idSport Sport da utilizzare
+   * @returns Promise Array Livelli Ordinati 
+   * 
+   */
+  requestLivelliForSport(idSport: string):Promise<Livello[]> {
+    let collLivelli: Livello[] = [];
+
+    return new Promise<Livello[]>((resolve) => {
+
+      if (idSport && idSport.length != 0) {
+
+        //Devo effettuare la chiamata al server
+        let filterLivello: Livello = new Livello(true);
+        filterLivello.IDSPORT = idSport;
+        
+        //Effettuo la richiesta
+        this.docService.requestNew(filterLivello)
+                       .then((collData:Livello[]) => {
+                         collLivelli = collData;
+                         resolve(collLivelli);
+                       })
+                       .catch(error => {
+
+                        resolve(collLivelli);
+                        
+                       })
+
+      }
+      else {
+        resolve(collLivelli);
+      }
+    })
   }
 }

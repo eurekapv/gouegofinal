@@ -5,7 +5,7 @@ import { CorsoValutazioneLivello } from "./corsovalutazionelivello.model";
 export class CorsoValutazione extends IDDocument {
     IDCORSO:                string;
     FLAGBOZZA:              boolean;
-    DATAVALUTAZIONE:        Date;
+    DATAORAVALUTAZIONE:        Date;
     TESTOVALUTAZIONE:       string;
     VOTAZIONEFINALE:        number;
     IDUTENTE:               string;
@@ -26,8 +26,8 @@ export class CorsoValutazione extends IDDocument {
         ];
         let arNumber = ['VOTAZIONEFINALE'];
         let arBoolean = ['FLAGBOZZA'];
-        let arDate = ['DATAVALUTAZIONE'];
-        let arDateTime =[''];
+        let arDate = [];
+        let arDateTime =['DATAORAVALUTAZIONE'];
         let arTime = [];
 
         objDescriptor.className = 'CorsoValutazione';
@@ -52,7 +52,7 @@ export class CorsoValutazione extends IDDocument {
     constructor(onlyInstance?: boolean){
         super(onlyInstance);
 
-        this.DATAVALUTAZIONE = new Date();
+        this.DATAORAVALUTAZIONE = new Date();
         this.TESTOVALUTAZIONE = '';
         this.CORSOVALUTAZIONELIVELLO = [];
     }

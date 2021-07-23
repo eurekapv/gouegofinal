@@ -22,7 +22,6 @@ export class AllegatilistPage implements OnInit {
   constructor(
     private loadingController: LoadingController,
     private modalController: ModalController,
-    private docStructureService: DocstructureService,
     private toastController: ToastController,
     private startService: StartService,
     private fileService: FileService

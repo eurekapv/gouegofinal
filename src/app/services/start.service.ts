@@ -62,6 +62,7 @@ import { IscrizionecorsoService } from './iscrizionecorso.service';
 import { IscrizioneCorso } from '../models/iscrizionecorso.model';
 import { CorsoValutazioneService } from './corso-valutazione.service';
 import { CorsoValutazione } from '../models/corsovalutazione.model';
+import { Livello } from '../models/livello.model';
 
 
 
@@ -709,6 +710,15 @@ requestLivelli() {
 
   return this.livelloService
     .request(actualStartConfig);
+}
+
+
+/**
+ * Richiede al server l'elenco dei Livelli per lo sport
+ * @param idSport Sport da analizzare
+ */
+requestLivelliForSport(idSport: string):Promise<Livello[]> {
+  return this.livelloService.requestLivelliForSport(idSport);
 }
 
 //#endregion

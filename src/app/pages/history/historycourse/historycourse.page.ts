@@ -262,7 +262,7 @@ export class HistorycoursePage implements OnInit {
       }
     })
     .then(elModal => {
-      elModal.present()
+      elModal.present();
     })
   }
 

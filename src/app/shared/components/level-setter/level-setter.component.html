@@ -1,0 +1,51 @@
+<ion-list *ngIf="myValutazione" class="ion-no-margin">
+
+  <ion-item-group color="light">
+
+    <ion-item 
+      lines="none"
+      
+      color="light" 
+      (click)="onChangeCollapse()">
+
+      <ion-icon 
+          slot="start" 
+          [color]="flagComplete ? 'success':'warning'" 
+          [name]="flagComplete ? 'checkmark-done-circle-outline':'alert-circle-outline'"></ion-icon>
+          
+
+      <ion-label>
+        <h2>{{myValutazione.NOMINATIVO}}</h2>
+        <p>
+          <ion-text color="medium" style="font-style: italic;">Attuale:&nbsp;{{getLabelLevel(myValutazione.IDLIVELLOENTRATA)}}</ion-text>
+        </p>
+        <p>
+          <ion-text color="medium" style="font-style: italic;">Conseguito:&nbsp;</ion-text>
+          <ion-text color="medium" style="font-style: italic;font-weight: bold;">{{getLabelLevel(myValutazione.IDLIVELLOFINALE)}}</ion-text>
+        </p>
+      </ion-label>
+
+      <ion-icon 
+          *ngIf="!readOnly"
+          slot="end" 
+          [name]="collapsed ? 'chevron-down-outline':'chevron-up-outline'">
+      </ion-icon>
+      
+    </ion-item>
+  </ion-item-group>
+
+  <ion-radio-group 
+    (ionChange)="onChangeRadioGroup()"
+    [(ngModel)]="myValutazione.IDLIVELLOFINALE" *ngIf="!collapsed">
+
+    <ion-item *ngFor="let level of listLivelli">
+      <ion-label>{{level.DENOMINAZIONE}}</ion-label>
+      <ion-radio 
+          [disabled]="readOnly"
+          [value]="level.ID" 
+          slot="start" 
+          color="success"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+
+</ion-list>

@@ -5,6 +5,7 @@ import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoValutazione } from 'src/app/models/corsovalutazione.model';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
+import { Livello } from 'src/app/models/livello.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Utente } from 'src/app/models/utente.model';
 import { Language, RangeSearch, TimeTrainerCourse } from 'src/app/models/valuelist.model';
@@ -256,9 +257,22 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
         this.startService.requestSchedaValutazioneCorso(elCorso.ID)
                         .then((docScheda: CorsoValutazione) => {
 
-                          elLoading.dismiss();
-                          //Devo aprire la videata in modale passando la scheda
-                          this.openModaleSchedaValutazione(docScheda, elCorso);
+
+                          //Chiedo al server i livelli per lo sport
+                          this.startService.requestLivelliForSport(elCorso.IDSPORT)
+                                           .then((collLivelli:Livello[]) => {
+
+                                             //Chiudo il loading
+                                             elLoading.dismiss();
+
+                                             //Devo aprire la videata in modale passando 
+                                             //a) Scheda di Valutazione
+                                             //b) Corso di riferimento
+                                             //c) Livelli Sportivi
+                                             this.openModaleSchedaValutazione(docScheda, elCorso, collLivelli);
+
+                                           })
+
 
                         })
                         .catch(error => {
@@ -281,15 +295,19 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
    * @param docScheda Scheda di Valutazione
    * @param docCorso Corso di riferimento
    */
-  openModaleSchedaValutazione(docScheda: CorsoValutazione, docCorso: Corso) {
-    if (docScheda) {
+  openModaleSchedaValutazione(docScheda: CorsoValutazione, 
+                              docCorso: Corso,
+                              collLivelli:Livello[]) {
+    
+    //Scheda di Valutazione e Corso presente
+    if (docScheda && docCorso) {
+
       this.modalController.create({
         component: ValutazioneTrainerPage,
         componentProps: {
-          params: {
-            docCorsoValutazione: docScheda,
-            docCorso: docCorso
-          }
+          'docCorsoValutazione': docScheda,
+          'docCorso': docCorso,
+          'collLivelli': collLivelli
         }
       })
       .then(elModal => {

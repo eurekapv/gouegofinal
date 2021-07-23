@@ -229,7 +229,7 @@ export class CourseService {
                                 let listElement: Corso[] = [];
                                 let collDataCorso: any[];
 
-                                console.log(collData);
+                                
                                 if (collData) {
 
                                   if (collData.hasOwnProperty('CORSO')) {

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button  defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>Scheda Personale</ion-title>
+    <ion-title>Profilo</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -19,7 +19,7 @@
             size="large"
             color="danger"
             (click)="onClickAvatar()"
-            *ngIf="!avatarExist()">
+            *ngIf="!pictureExist">
 
             <ion-icon name="camera"></ion-icon>
 
@@ -29,10 +29,10 @@
             size="large"
             color="light"
             (click)="onClickAvatar()"
-            *ngIf="avatarExist()">
+            *ngIf="pictureExist">
 
             <ion-avatar slot="start" class="Avatar" (click)="onClickAvatar()">
-              <img [src]="sourceAvatar">
+              <img [src]="imgSrcProfilePic">
             </ion-avatar>
 
           </ion-button>
@@ -51,13 +51,6 @@
             <p>{{ docUtente.EMAIL }}</p>
           </ion-label>
 
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-label>
-            {{ sourceAvatar }}
-          </ion-label>
         </ion-col>
       </ion-row>
     </ion-grid>

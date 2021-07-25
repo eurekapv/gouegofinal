@@ -8,6 +8,7 @@ import {Plugins, CameraResultType, CameraPhoto, CameraSource } from '@capacitor/
 
 const {Camera } = Plugins;
 
+
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
@@ -51,7 +52,7 @@ export class UploadComponent implements OnInit {
 
   }
 
-  //#region EVENTI DI SEARCHI FILE
+  //#region EVENTI DI SEARCH FILE
 
   /**
    * Evento Click per la scelta di un file in versione Mobile

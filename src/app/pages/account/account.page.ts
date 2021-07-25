@@ -20,7 +20,11 @@ export class AccountPage implements OnInit, OnDestroy {
   docConfig: StartConfiguration;
   docConfigListen: Subscription;
 
-  myPhoto: Photo;
+  
+
+  //Source da applicare come foto profilo
+  imgSrcProfilePic: string = '';
+  pictureExist: boolean = false;
 
   constructor(private startSrv: StartService,
               private alertCtrl: AlertController,
@@ -28,6 +32,7 @@ export class AccountPage implements OnInit, OnDestroy {
               private mdlController: ModalController,
               private photoService: PhotoService
               ) { 
+
     this.docUtenteListen = this.startSrv.utente.subscribe(element => {
       this.docUtente = element;
     });
@@ -36,18 +41,15 @@ export class AccountPage implements OnInit, OnDestroy {
     this.docConfigListen = this.startSrv.startConfig.subscribe(elConfig => {
       this.docConfig = elConfig;
     });
+
+    //Richiedo la foto dell'utente
+    this.syncPictureUtente();
+
+
   }
 
   ngOnInit() {
 
-    //Chiedo di caricare le immagini
-    let photoLoaded = this.photoService.loadSaved();
-
-    photoLoaded.then(() => {
-      //Richiedo l'immagine account
-      this.myPhoto = this.photoService.myAccountPhoto;
-      
-    })
   }
 
   ngOnDestroy() {
@@ -60,53 +62,43 @@ export class AccountPage implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Ritorna il src da applicare all'avatar
-   */
-  get sourceAvatar() {
 
-    let src = 'assets/img/avatar.svg';
+  
+/**
+ * Richiede la foto dell'utente e imposta la proprietà
+ *  imgSrcProfilePic
+ */
+syncPictureUtente() {
 
-    if (this.myPhoto) {
-      if(this.myPhoto.base64){
-        src = this.myPhoto.base64;
-      }
-      else{
-        src=this.myPhoto.webviewPath;
-      }
-    }
+    this.startSrv.loadPictureUtente()
+                .then(dataUrl => {
+                  if (dataUrl && dataUrl.length != 0) {
+                    this.imgSrcProfilePic = dataUrl;
+                    this.pictureExist = true;
+                  }
+                  else {
+                    this.imgSrcProfilePic = '';
+                    this.pictureExist = false;
+                  }
+                })
+}
 
-    return src;
-  }
 
 
-  avatarExist(): boolean {
-    let exist = false;
-    
-    if (this.myPhoto) {
 
-      if(this.myPhoto.base64 && this.myPhoto.base64.length != 0) {
-        exist = true;
-      }
-      else if (this.myPhoto.webviewPath && this.myPhoto.webviewPath.length != 0) {
-        exist = true;
-      }
 
-    }
-    return exist;
-  }
 
 
   /**
    * Effettuato il click sull'avatar
    */
   onClickAvatar() {
-    this.photoService.addNewToGallery(PhotoType.account).then(() => {
-      this.photoService.loadSaved().then(()=>{
-        //Richiedo l'immagine account
-        this.myPhoto = this.photoService.myAccountPhoto;
-      })
-    });
+    //Cattura e salva l'immagine
+    this.startSrv.takePictureUtente()
+                .then(() => {
+                  //Recupero l'immagine e la imposto nella pagina
+                  this.syncPictureUtente();
+                })
   }
 
 

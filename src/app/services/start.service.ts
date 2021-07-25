@@ -63,6 +63,7 @@ import { IscrizioneCorso } from '../models/iscrizionecorso.model';
 import { CorsoValutazioneService } from './corso-valutazione.service';
 import { CorsoValutazione } from '../models/corsovalutazione.model';
 import { Livello } from '../models/livello.model';
+import { PhotoService, PhotoType } from './photo.service';
 
 
 
@@ -175,7 +176,8 @@ export class StartService {
     private urlLocation: PlatformLocation,
     private corsoAllegatoService: CorsoallegatoService,
     private iscrizioneCorsoService: IscrizionecorsoService,
-    private corsoValutazioneService: CorsoValutazioneService
+    private corsoValutazioneService: CorsoValutazioneService,
+    private photoService: PhotoService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -898,6 +900,16 @@ requestSaveIscrizione(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
 requestSchedaValutazioneCorso(idCorso: string):Promise<CorsoValutazione> {
   return this.corsoValutazioneService.requestSchedaValutazioneCorso(idCorso);
 }
+
+/**
+ * Richiede al server il salvataggio della scheda di valutazione
+ * @param docScheda Scheda in salvataggio
+ */
+requestForSaveSchedaValutazioneCorso(docScheda: CorsoValutazione):Promise<PostResponse> {
+  
+  return this.corsoValutazioneService.requestForSave(docScheda);
+
+}
 //#endregion
 
 //#region UTENTE
@@ -1041,18 +1053,6 @@ onChangeAreaFavListener() {
 
 
 /**
- * Richiede al server i dati Utente
- * @param idUtente IDUtente
- */
-// requestUtente(idUtente: string) {
-//   const actualStartConfig = this._startConfig.getValue();
-
-//   return this.utenteService
-//       .request(actualStartConfig, idUtente);
-            
-// }
-
-/**
  * Richiedere al server l'operazione di Update Utente
  * @param docUtenteUpdate Documento Utente con le modifiche da inviare
  */
@@ -1074,6 +1074,75 @@ requestChangePassword(oldPsw:string, newPsw:string) {
 
   return this.utenteService.requestChangePassword(actualStartConfig, oldPsw, newPsw);
 }
+
+
+/**
+ * Apre la fotocamera per la foto utente
+ */
+takePictureUtente():Promise<string> {
+
+  let photoType: PhotoType = PhotoType.account;
+  let idPhoto: string = '';
+
+  return new Promise<string>((resolve, reject) => {
+    
+    if (this.utenteLogged) {
+  
+      //Identificativo della foto
+      idPhoto = this.actualUtente.ID;
+  
+      //Apro la fotocamera per il caricamento
+      this.photoService.takePicure(photoType, idPhoto)
+                      .then(dataUrl => {
+                        resolve(dataUrl);
+                      })
+                      .catch(error => {
+                        reject(error);
+                      })
+
+    }
+    else {
+      reject('No user logged');
+    }
+  })
+
+}
+
+/**
+ * 
+ * @returns DataURL con la foto profilo
+ */
+loadPictureUtente():Promise<string> {
+  let photoType: PhotoType = PhotoType.account;
+  let idPhoto: string = '';
+
+  return new Promise<string>((resolve) => {
+
+    if (this.utenteLogged) {
+  
+      //Identificativo della foto
+      idPhoto = this.actualUtente.ID;
+  
+      console.log('Carico qui ');
+      //Apro la fotocamera per il caricamento
+      this.photoService.storageLoad(photoType, idPhoto)
+                      .then(dataUrl => {
+                        resolve(dataUrl);
+                      })
+                      .catch(error => {
+                        resolve('');
+                      })
+
+    }
+    else {
+      resolve('');
+    }
+  })
+}
+
+
+
+
 
 //#endregion
 
@@ -1502,6 +1571,8 @@ isFestivita(data: Date, idArea: string, idLocation: string, idCampo: string) {
   requestListAllegatiByIdCorso(idCorso: string): Promise<CorsoAllegato[]>{
     return this.corsoAllegatoService.requestByIdCorso(idCorso);
   }
+
+//#endregion
 
 
 }

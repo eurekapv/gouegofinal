@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ActionSheetController, ModalController } from '@ionic/angular';
+import { ActionSheetController, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoValutazione } from 'src/app/models/corsovalutazione.model';
 import { CorsoValutazioneLivello } from 'src/app/models/corsovalutazionelivello.model';
 import { Livello } from 'src/app/models/livello.model';
 import { TipoCorso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
+import {ActionSheetButton} from "@ionic/core";
 
 @Component({
   selector: 'app-valutazione-trainer',
@@ -18,8 +18,6 @@ export class ValutazioneTrainerPage implements OnInit {
 
   @Input() set docCorsoValutazione(value: CorsoValutazione) {
 
-        let starIndex = 0;
-
         this.myCorsoValutazione = value;
         this.canUpdate = false;
         
@@ -30,7 +28,7 @@ export class ValutazioneTrainerPage implements OnInit {
             this.canUpdate = true;
           }
           if (value.VOTAZIONEFINALE != undefined) {
-            starIndex = value.VOTAZIONEFINALE;
+            this.starIndex = value.VOTAZIONEFINALE;
           }
 
           if (value.CORSOVALUTAZIONELIVELLO) {
@@ -52,7 +50,7 @@ export class ValutazioneTrainerPage implements OnInit {
         }
 
         //Imposto l'array per la valutazione
-        this.setStars(starIndex);
+        this.setStars(this.starIndex, true);
   }
 
   @Input() set docCorso(value:Corso) {
@@ -95,6 +93,8 @@ export class ValutazioneTrainerPage implements OnInit {
 
   //Stelle Valutazione
   collStars: boolean[] = [];
+  starIndex = 0;
+
 
   //Numero massime di star
   maxNumberStars: number = 5;
@@ -102,9 +102,12 @@ export class ValutazioneTrainerPage implements OnInit {
 
   constructor(private modalCtrl: ModalController,
               private startService:StartService,
-              private actSheetController: ActionSheetController) {
+              private actSheetController: ActionSheetController,
+              private toastController: ToastController,
+              private alertController: AlertController) {
 
-                this.setStars(0);
+                //Imposto 0 Stelle forzando
+                this.setStars(0, true);
                }
 
   ngOnInit() {
@@ -124,38 +127,44 @@ export class ValutazioneTrainerPage implements OnInit {
 
     this.showListIscritti = value;
     this.showAlertNoIscritti = !value;
-    console.log('List =>' + this.showListIscritti);
-    console.log('Alert =>' + this.showAlertNoIscritti);
   }
 
   /**
    * Imposta l'array per la valutazione del corso
    * @param chooseValue Valore 
+   * @param force L'impostazione viene effettuata anche se la scheda è bloccata
    */
-  setStars(chooseValue: number) {
-    //Valore Massimo Valutazione 
-    if (this.collStars.length == 0) {
-      //Devo creare l'array
-      for (let index = 0; index < this.maxNumberStars; index++) {
-        if (index + 1 <= chooseValue) {
-          this.collStars.push(true);
+  setStars(chooseValue: number, force:boolean = false ) {
+    if (this.canUpdate || force) {
+
+      //Valore Massimo Valutazione 
+      if (this.collStars.length == 0) {
+        //Devo creare l'array
+        for (let index = 0; index < this.maxNumberStars; index++) {
+          if (index + 1 <= chooseValue) {
+            this.collStars.push(true);
+          }
+          else {
+            this.collStars.push(false);
+          }
+          
         }
-        else {
-          this.collStars.push(false);
-        }
-        
       }
-    }
-    else {
-      for (let index = 0; index < this.collStars.length; index++) {
-        if (index + 1 <= chooseValue) {
-            this.collStars[index]=true;
+      else {
+        for (let index = 0; index < this.collStars.length; index++) {
+          if (index + 1 <= chooseValue) {
+              this.collStars[index]=true;
+          }
+          else {
+              this.collStars[index]=false;
+          }
+          
         }
-        else {
-            this.collStars[index]=false;
-        }
-        
       }
+  
+      //Valore delle stelle 
+      this.starIndex = chooseValue;
+
     }
 
     
@@ -249,6 +258,92 @@ export class ValutazioneTrainerPage implements OnInit {
    */
   onConfirm() {
 
+    let buttonsArray: ActionSheetButton[]=[];
+    let singleButton: ActionSheetButton;
+
+    //Posso aggiornare 
+    if (this.canUpdate) {
+
+      //Bottone Bozza
+      singleButton = {
+        text: 'Per modificarla in seguito', 
+        icon: 'save-outline',
+        handler: () => {
+          this.confirmSavingAs(true);
+        }
+      }
+      buttonsArray.push(singleButton);
+
+      //Bottone Definitivo
+      singleButton = {
+        text: 'In modo definitivo', 
+        icon: 'document-lock-outline',
+        handler: () => {
+          this.confirmSavingAs(false);
+        }
+      }
+      buttonsArray.push(singleButton);
+
+      //Pulsante Annulla
+      singleButton = {
+        text:'Annulla',
+        icon:'arrow-undo-sharp',
+        role: 'cancel'
+      }
+      buttonsArray.push(singleButton);      
+
+      this.actSheetController.create({
+        header: 'Come stai salvando la Scheda di Valutazione',
+        buttons: buttonsArray
+      })
+      .then(elAction => {
+        elAction.present();
+      });
+
+    }
+    else {
+      //Chiudo la videata normalmente
+      this.modalCtrl.dismiss();
+    }
+
+
+  }
+
+  /**
+   * 
+   * @param flagBozza Salva il modalità Bozza o definitiva
+   */
+  confirmSavingAs(flagBozza:boolean) {
+    //Handler di conferma salvataggio
+
+    if (flagBozza) {
+      this.myCorsoValutazione.FLAGBOZZA = true;
+    }
+    else {
+      this.myCorsoValutazione.FLAGBOZZA = false;
+    }
+
+    this.myCorsoValutazione.IDUTENTE = this.startService.actualUtente.ID;
+    this.myCorsoValutazione.NOMINATIVO = this.startService.actualUtente.NOMINATIVO;
+    this.myCorsoValutazione.VOTAZIONEFINALE = this.starIndex;
+
+    this.startService.requestForSaveSchedaValutazioneCorso(this.myCorsoValutazione)
+                     .then(risposta => {
+
+                       if (risposta.result) {
+
+                          this.showMessage('Scheda salvata correttamente','toast');
+
+                          this.modalCtrl.dismiss();
+                       }
+                       else {
+                          //Mostro un messaggio di errore
+                          this.showMessage(risposta.message);
+                       }
+                     })
+                     .catch(error => {
+                          this.showMessage(error);
+                     })
   }
 
   /**
@@ -281,6 +376,38 @@ export class ValutazioneTrainerPage implements OnInit {
     return show;
 
   }   
+
+  /**
+   * Visualizza un messaggio
+   */
+  showMessage(messaggio: string, type?:'toast'|'alert') {
+
+    if (type == 'alert') {
+
+      let alertOptions = {
+        message: messaggio,
+        buttons: ['OK']
+      }
+
+
+      this.alertController.create(alertOptions)
+            .then(elAlert => {
+                    elAlert.present();
+            });
+
+    }
+    else {
+
+      this.toastController.create({
+        message: messaggio,
+        duration: 3000
+      })
+      .then(elToast => {
+        elToast.present();
+      })
+
+    }
+  }  
 
 
   /**

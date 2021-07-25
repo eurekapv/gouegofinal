@@ -17,9 +17,14 @@
       <!-- CONTROLLO PER POSTI DISPONIBILI -->
       <ion-row>
         <ion-col>
-          <ion-button [color]="flagPostiDisponibili ? 'success':'danger'" expand="block" class="full-buttons"
+          <ion-button 
+              [color]="flagPostiDisponibili ? 'success':'danger'" 
+              expand="block" 
+              class="full-buttons"
             (click)="onClickButtonHeader()">
-            <ion-icon slot="end" [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
+            <ion-icon 
+                slot="end" 
+                [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
             </ion-icon>
 
 

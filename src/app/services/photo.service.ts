@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Plugins, CameraResultType, Capacitor, FilesystemDirectory, CameraPhoto, CameraSource } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
+import { resolve } from 'node:dns';
+import { SorgenteFile } from '../models/tipodocumentazione.model';
+import { StartService } from './start.service';
 
 const {Camera, Filesystem, Storage} = Plugins;
 
@@ -11,7 +14,7 @@ export class PhotoService {
 
   public photos: Photo[] = [];
   private PHOTO_STORAGE: string = 'photos';
-  private platform: Platform;
+  
 
   //Cerca nell'array la foto dell'account
   get myAccountPhoto(): Photo {
@@ -26,49 +29,126 @@ export class PhotoService {
     return myPhoto;
   }
 
-  constructor(platform: Platform) {
-    this.platform = platform;
-
-    if (this.platform.is('hybrid')) {
-      //hibrida
-    }
-    else {
-      //Desktop
-    }
+  constructor(private platform: Platform) {
+                
    }
 
-  public async addNewToGallery(typePhoto: PhotoType) {
-    //Take a photo
-    const capturedPhoto = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
-      source: CameraSource.Prompt,
-      quality: 100
-    });
 
-    //Salvo sul file system
-    const savedImageFile = await this.savePicture(capturedPhoto, typePhoto);
 
-    //Inserisco nell'array
-    this.photos.unshift(savedImageFile);
+   /**
+    * 
+    * @param typePhoto Tipo della foto
+    * @param idPhoto Nel caso di foto profilo è IDUtente
+    * @return DataUrl memorizzato
+    */
+   public takePicure(typePhoto: PhotoType, idPhoto: string):Promise<string>{
 
-    //Scrivo nello storage l'array delle Photos
-    Storage.set({
-      key: this.PHOTO_STORAGE,
-      value: this.platform.is('hybrid')
-      ? JSON.stringify(this.photos)
-      : JSON.stringify(this.photos.map(p => {
-              // Don't save the base64 representation of the photo data, 
-              // since it's already saved on the Filesystem
-              const photoCopy = { ...p };
-              delete photoCopy.base64;
+    return new Promise<string>((resolve, reject) => {
+      
+      Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Prompt,
+        quality: 100
+      })
+      .then((data:CameraPhoto) => {
+  
+        let myImageDataUrl:string  = data.dataUrl;
+  
+        //Salvo nello Storage
+        this.storageSave(myImageDataUrl, typePhoto, idPhoto)
+                .then(() => {
+                  //Salvataggio corretto, ritorno il dataUrl
+                  resolve(myImageDataUrl);
+                })
+                .catch(error => {
+                  reject(error);
+                })
+      })
+    })
     
-              return photoCopy;
-              }))
-    });
+
+   }
+
+   /**
+    * Salvataggio di un DataURL nello storage
+    * @param typePhoto Tipo della foto
+    * @param idPhoto Identificativo
+    */
+   storageSave(dataUrlPhoto: string, typePhoto:PhotoType, idPhoto:string):Promise<void> {
+    let keyStorage = this.PHOTO_STORAGE + '_' + typePhoto + '_' + idPhoto;
+    return new Promise<void>((resolve, reject) => {
+      
+      console.log('Salvo qui ');
+      Storage.set({
+        key: keyStorage,
+        value: dataUrlPhoto
+      })
+      .then(() => {
+        resolve();
+      })
+      .catch(error => {
+        reject(error);
+      })
+    })
+   }
+
+   /**
+    * Recupero di un DATAURL dallo storage
+    * @param typePhoto Tipo della foto
+    * @param idPhoto Identificativo
+    * @returns 
+    */
+   storageLoad(typePhoto:PhotoType, idPhoto:string):Promise<string> {
+    let keyStorage = this.PHOTO_STORAGE + '_' + typePhoto + '_' + idPhoto;
+    
+    return new Promise<string>((resolve, reject) => {
+      Storage.get({
+        key: keyStorage
+      })
+      .then(data => {
+
+        resolve(data.value);
+
+      })
+      .catch(error => {
+        reject(error);
+      })
+
+    })
+   }
+
+  // public async addNewToGallery(typePhoto: PhotoType) {
+  //   //Take a photo
+  //   const capturedPhoto = await Camera.getPhoto({
+  //     resultType: CameraResultType.DataUrl,
+  //     source: CameraSource.Prompt,
+  //     quality: 100
+  //   });
+
+  //   //Salvo sul file system
+  //   const savedImageFile = await this.savePicture(capturedPhoto, typePhoto);
+
+  //   //Inserisco nell'array
+  //   this.photos.unshift(savedImageFile);
+
+  //   //Scrivo nello storage l'array delle Photos
+  //   Storage.set({
+  //     key: this.PHOTO_STORAGE,
+  //     value: this.platform.is('hybrid')
+  //     ? JSON.stringify(this.photos)
+  //     : JSON.stringify(this.photos.map(p => {
+  //             // Don't save the base64 representation of the photo data, 
+  //             // since it's already saved on the Filesystem
+  //             const photoCopy = { ...p };
+  //             delete photoCopy.base64;
+    
+  //             return photoCopy;
+  //             }))
+  //   });
 
 
     
-  }
+  // }
 
   //Salvataggio immagini
   /**
@@ -80,87 +160,87 @@ export class PhotoService {
    * @param cameraPhoto 
    * @param typePhoto 
    */
-  private async savePicture(cameraPhoto: CameraPhoto, typePhoto:PhotoType): Promise<Photo> {
-    // Convert photo to base64 format, required by Filesystem API to save
-    const base64Data = await this.readAsBase64(cameraPhoto);
+  // private async savePicture(cameraPhoto: CameraPhoto, typePhoto:PhotoType): Promise<Photo> {
+  //   // Convert photo to base64 format, required by Filesystem API to save
+  //   const base64Data = await this.readAsBase64(cameraPhoto);
 
-    // Write the file to the data directory
-    const fileName = new Date().getTime() + '.jpeg';
-    const savedFile = await Filesystem.writeFile({
-      path: fileName,
-      data: base64Data,
-      directory: FilesystemDirectory.Data
-    });
+  //   // Write the file to the data directory
+  //   const fileName = new Date().getTime() + '.jpeg';
+  //   const savedFile = await Filesystem.writeFile({
+  //     path: fileName,
+  //     data: base64Data,
+  //     directory: FilesystemDirectory.Data
+  //   });
 
-    if (this.platform.is('hybrid')) {
-      // Display the new image by rewriting the 'file://' path to HTTP
-      // Details: https://ionicframework.com/docs/building/webview#file-protocol
-      return {
-        type: typePhoto,
-        filepath: savedFile.uri,
-        webviewPath: Capacitor.convertFileSrc(savedFile.uri),
-      };
-    }
-    else {
-      // Use webPath to display the new image instead of base64 since it's
-      // already loaded into memory
-      return {
-        type: typePhoto,
-        filepath: fileName,
-        webviewPath: cameraPhoto.webPath
-      };
-    }
-  }
+  //   if (this.platform.is('hybrid')) {
+  //     // Display the new image by rewriting the 'file://' path to HTTP
+  //     // Details: https://ionicframework.com/docs/building/webview#file-protocol
+  //     return {
+  //       type: typePhoto,
+  //       filepath: savedFile.uri,
+  //       webviewPath: Capacitor.convertFileSrc(savedFile.uri),
+  //     };
+  //   }
+  //   else {
+  //     // Use webPath to display the new image instead of base64 since it's
+  //     // already loaded into memory
+  //     return {
+  //       type: typePhoto,
+  //       filepath: fileName,
+  //       webviewPath: cameraPhoto.webPath
+  //     };
+  //   }
+  // }
 
 
-  private async readAsBase64(cameraPhoto: CameraPhoto) {
-    //hybrid detect Cordova, Capacitor
-    if (this.platform.is('hybrid')) {
-      const file = await Filesystem.readFile({
-        path: cameraPhoto.path
-      });
+  // private async readAsBase64(cameraPhoto: CameraPhoto) {
+  //   //hybrid detect Cordova, Capacitor
+  //   if (this.platform.is('hybrid')) {
+  //     const file = await Filesystem.readFile({
+  //       path: cameraPhoto.path
+  //     });
 
-      return file.data;
-    }
-    else {
-      // Recupero la foto come Blob e la converto in Base64
-      const response = await fetch(cameraPhoto.webPath!);
-      const blob = await response.blob();
+  //     return file.data;
+  //   }
+  //   else {
+  //     // Recupero la foto come Blob e la converto in Base64
+  //     const response = await fetch(cameraPhoto.webPath!);
+  //     const blob = await response.blob();
     
-      return await this.convertBlobToBase64(blob) as string;  
-    }
+  //     return await this.convertBlobToBase64(blob) as string;  
+  //   }
 
-  }
+  // }
   
-  convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
-    const reader = new FileReader;
-    reader.onerror = reject;
-    reader.onload = () => {
-        resolve(reader.result);
-    };
-    reader.readAsDataURL(blob);
-  });
+  // convertBlobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
+  //   const reader = new FileReader;
+  //   reader.onerror = reject;
+  //   reader.onload = () => {
+  //       resolve(reader.result);
+  //   };
+  //   reader.readAsDataURL(blob);
+  // });
 
 
-  //Carica il file dal filesystem
-  public async loadSaved() {
-    // Retrieve cached photo array data
-    const photos = await Storage.get({ key: this.PHOTO_STORAGE });
-    this.photos = JSON.parse(photos.value) || [];
-    if (!this.platform.is('hybrid')) {
-    // Display the photo by reading into base64 format
-    for (let photo of this.photos) {
-    // Read each saved photo's data from the Filesystem
-        const readFile = await Filesystem.readFile({
-                      path: photo.filepath,
-                      directory: FilesystemDirectory.Data
-        });
+  // //Carica il file dal filesystem
+  // public async loadSaved() {
+  //   // Retrieve cached photo array data
+  //   const photos = await Storage.get({ key: this.PHOTO_STORAGE });
+  //   this.photos = JSON.parse(photos.value) || [];
+  //   if (!this.platform.is('hybrid')) {
+  //   // Display the photo by reading into base64 format
+  //   for (let photo of this.photos) {
+  //   // Read each saved photo's data from the Filesystem
+  //       const readFile = await Filesystem.readFile({
+  //                     path: photo.filepath,
+  //                     directory: FilesystemDirectory.Data
+  //       });
 
-        // For Web platform only: Save the photo into the base64 field
-        photo.base64 = `data:image/jpeg;base64,${readFile.data}`;
-      }
-    }
-  }
+  //       // For Web platform only: Save the photo into the base64 field
+  //       photo.base64 = `data:image/jpeg;base64,${readFile.data}`;
+  //     }
+  //   }
+  // }
   
 }
 

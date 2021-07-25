@@ -60,4 +60,36 @@ requestSchedaValutazioneCorso(idCorso: string):Promise<CorsoValutazione> {
     })
   }
 
+
+  /**
+   * Richiede al server il salvataggio della scheda
+   * @param docScheda Scheda in salvataggio
+   */
+requestForSave(docScheda: CorsoValutazione):Promise<PostResponse> {
+
+  let myPostParams : PostParams = new PostParams();
+  let method = 'mobSaveValutazione';
+  let docToCall: CorsoValutazione = new CorsoValutazione();
+
+  return new Promise<PostResponse>((resolve, reject) => {
+    if (docScheda) {
+      myPostParams.key = 'docScheda';
+      myPostParams.value = docScheda;
+
+      this.docStructureService.requestForFunction(docToCall, method,'',myPostParams)
+                              .then((risposta:PostResponse) => {
+                                if (!risposta.result) {
+                                  reject(risposta.message);
+                                }
+                                else {
+                                  resolve(risposta);
+                                }
+                              })
+    }
+    else {
+      reject('Nessuna scheda da memorizzare');
+    }
+  })
+}
+
 }

@@ -5,7 +5,7 @@ import { AlertController, NavController, ModalController } from '@ionic/angular'
 import { Utente } from 'src/app/models/utente.model';
 import { EditLoginPage } from './edit-login/edit-login.page';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { PhotoService, PhotoType, Photo } from 'src/app/services/photo.service';
+import { PhotoService } from 'src/app/services/photo.service';
 
 @Component({
   selector: 'app-account',
@@ -19,6 +19,7 @@ export class AccountPage implements OnInit, OnDestroy {
 
   docConfig: StartConfiguration;
   docConfigListen: Subscription;
+  listenUserPicture: Subscription;
 
   
 
@@ -29,8 +30,8 @@ export class AccountPage implements OnInit, OnDestroy {
   constructor(private startSrv: StartService,
               private alertCtrl: AlertController,
               private navCtrl: NavController,
-              private mdlController: ModalController,
-              private photoService: PhotoService
+              private mdlController: ModalController
+              
               ) { 
 
     this.docUtenteListen = this.startSrv.utente.subscribe(element => {
@@ -42,8 +43,11 @@ export class AccountPage implements OnInit, OnDestroy {
       this.docConfig = elConfig;
     });
 
+    //Ascolto le modifiche della foto profilo
+    this.onListenUserPicture();
+
     //Richiedo la foto dell'utente
-    this.syncPictureUtente();
+    this.requestPictureUtente();
 
 
   }
@@ -60,27 +64,41 @@ export class AccountPage implements OnInit, OnDestroy {
     if (this.docConfigListen) {
       this.docConfigListen.unsubscribe();
     }
+
+    if (this.listenUserPicture) {
+      this.listenUserPicture.unsubscribe();
+    }
   }
 
+  /**
+   * Ascolta i cambiamenti della foto profilo
+   */
+  onListenUserPicture() {
+    this.listenUserPicture = this.startSrv.userPicture.subscribe(dataUrl => {
+      if (dataUrl && dataUrl.length != 0) {
+
+
+        this.imgSrcProfilePic = dataUrl;
+        this.pictureExist = true;
+      }
+      else {
+
+        this.imgSrcProfilePic = '';
+        this.pictureExist = false;        
+      }
+    })
+  }
 
   
 /**
- * Richiede la foto dell'utente e imposta la proprietà
- *  imgSrcProfilePic
+ * Richiede la foto dell'utente 
+ *  
  */
-syncPictureUtente() {
+requestPictureUtente() {
 
-    this.startSrv.loadPictureUtente()
-                .then(dataUrl => {
-                  if (dataUrl && dataUrl.length != 0) {
-                    this.imgSrcProfilePic = dataUrl;
-                    this.pictureExist = true;
-                  }
-                  else {
-                    this.imgSrcProfilePic = '';
-                    this.pictureExist = false;
-                  }
-                })
+    //Non mi interessa controllare cosa ricevo perchè ho la subscribe
+    this.startSrv.loadPictureUtente();
+
 }
 
 
@@ -94,11 +112,7 @@ syncPictureUtente() {
    */
   onClickAvatar() {
     //Cattura e salva l'immagine
-    this.startSrv.takePictureUtente()
-                .then(() => {
-                  //Recupero l'immagine e la imposto nella pagina
-                  this.syncPictureUtente();
-                })
+    this.startSrv.takePictureUtente();
   }
 
 

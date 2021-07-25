@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 
@@ -215,8 +215,8 @@ export class StartService {
     if (this.isOnWeb) {
 
         //Qui posso cambiare strategia per puntare localmente
-        this._localConnection = true;
-        //this._localConnection = false;
+        //this._localConnection = true;
+        this._localConnection = false;
 
         if (this._localConnection) {
           //Modalità di Test metto un AppId di test
@@ -228,7 +228,7 @@ export class StartService {
           myUrl = this.urlLocation.hostname;
   
           //Simulazione URL
-          //myUrl = 'demo.gouego.com';
+          myUrl = 'demo.gouego.com';
   
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso
@@ -1077,6 +1077,12 @@ requestChangePassword(oldPsw:string, newPsw:string) {
 
 
 /**
+ * Foto utente presente nel servizio utente
+ */
+get userPicture():Observable<string> {
+  return this.utenteService.userPicture;
+}
+/**
  * Apre la fotocamera per la foto utente
  */
 takePictureUtente():Promise<string> {
@@ -1089,16 +1095,26 @@ takePictureUtente():Promise<string> {
     if (this.utenteLogged) {
   
       //Identificativo della foto
-      idPhoto = this.actualUtente.ID;
-  
-      //Apro la fotocamera per il caricamento
-      this.photoService.takePicure(photoType, idPhoto)
-                      .then(dataUrl => {
-                        resolve(dataUrl);
-                      })
-                      .catch(error => {
-                        reject(error);
-                      })
+      this.utente.subscribe(elutente => {
+
+        idPhoto = elutente.ID;
+    
+        //Apro la fotocamera per il caricamento
+        this.photoService.takePicure(photoType, idPhoto)
+                        .then(dataUrl => {
+
+                          //Foto memorizzata, la imposto nel servizio utente
+                          this.utenteService.setUserPicture(dataUrl);
+                          //Risolvo la Promise
+                          resolve(dataUrl);
+
+                        })
+                        .catch(error => {
+                          reject(error);
+                        })
+      }, error => {
+        reject(error);
+      })
 
     }
     else {
@@ -1107,6 +1123,8 @@ takePictureUtente():Promise<string> {
   })
 
 }
+
+
 
 /**
  * 
@@ -1120,18 +1138,26 @@ loadPictureUtente():Promise<string> {
 
     if (this.utenteLogged) {
   
-      //Identificativo della foto
-      idPhoto = this.actualUtente.ID;
-  
-      console.log('Carico qui ');
-      //Apro la fotocamera per il caricamento
-      this.photoService.storageLoad(photoType, idPhoto)
-                      .then(dataUrl => {
-                        resolve(dataUrl);
-                      })
-                      .catch(error => {
-                        resolve('');
-                      })
+      this.utente.subscribe(elutente => {
+        //Identificativo della foto
+        idPhoto = elutente.ID;
+    
+
+        //Apro la fotocamera per il caricamento
+        this.photoService.storageLoad(photoType, idPhoto)
+                        .then(dataUrl => {
+
+                          //Foto memorizzata, la imposto nel servizio utente
+                          this.utenteService.setUserPicture(dataUrl);
+
+                          resolve(dataUrl);
+                        })
+                        .catch(error => {
+                          resolve('');
+                        })
+      }, error => {
+        resolve('');
+      })
 
     }
     else {

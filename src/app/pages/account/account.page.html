@@ -14,10 +14,11 @@
     <!-- PORZIONE AVATAR E NOMINATIVO -->
     <ion-grid>
       <ion-row class="picture">
-        <ion-col class="ion-text-center">
+        <ion-col>
           <ion-button
             size="large"
             color="danger"
+            class="only-camera"
             (click)="onClickAvatar()"
             *ngIf="!pictureExist">
 
@@ -25,17 +26,12 @@
 
           </ion-button>
 
-          <ion-button
-            size="large"
-            color="light"
-            (click)="onClickAvatar()"
-            *ngIf="pictureExist">
-
-            <ion-avatar slot="start" class="Avatar" (click)="onClickAvatar()">
+            <ion-avatar 
+                *ngIf="pictureExist"
+                (click)="onClickAvatar()">
               <img [src]="imgSrcProfilePic">
             </ion-avatar>
 
-          </ion-button>
         </ion-col>
       </ion-row>
 

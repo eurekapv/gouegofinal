@@ -13,6 +13,18 @@
 
            ion-button {
                --border-radius: 50%;
+               height: 80px;
+               width: 80px;
+           }
+
+           >ion-col {
+                display: flex;
+                justify-content: center;
+
+                ion-avatar {
+                    height: 80px;
+                    width: 80px;
+                }
            }
         }
     }

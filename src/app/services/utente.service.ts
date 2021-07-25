@@ -26,7 +26,7 @@ export class UtenteService {
   private _utente = new BehaviorSubject<Utente>(new Utente);
   private _utenteLoggato = new BehaviorSubject<boolean>(false);
   private _idAreaFAV = new BehaviorSubject<string>(''); //Avvisa di cambiare l'Area Operativa
-
+  private _userPicture = new BehaviorSubject<string>('');
 
   get utente() {
     return this._utente.asObservable();
@@ -42,6 +42,18 @@ export class UtenteService {
 
   get actualUtente() {
     return this._utente.getValue();
+  }
+
+  get userPicture():Observable<string> {
+    return this._userPicture.asObservable();
+  }
+
+  /**
+   * Imposta la UserPicture
+   * @param value DataUrl image
+   */
+  setUserPicture(dataUrl: string) {
+    this._userPicture.next(dataUrl);
   }
 
   /**
@@ -108,7 +120,7 @@ export class UtenteService {
                                 docUtente.setJSONProperty(docInResponse);
                                 docUtente.WEBLOGIN = username;
                                 docUtente.setOriginal();
-                                // console.log(docUtente);
+                                
   
                                 //Imposto come tag authCode il codice di autorizzazione utente ricevuto
                                 docUtente.setTagValue('authCode',response.code);
@@ -499,7 +511,6 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
       }))
       .subscribe((response:AccountOperationResponse) => {
 
-        console.log(response);
 
         if (response.result) {
             resolve(response);
@@ -690,7 +701,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
         return received.recovery;
       }))
       .subscribe((response:AccountOperationResponse) => {
-        console.log(response);
+
         resolve(response);
         }, error => {
             reject(error);
@@ -758,7 +769,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     bodyUtente = docUtente.exportToJSON(paramUteExport);
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
-    console.log(bodyFinal);
+
     //Faccio la chiamata POST
     this.apiService
     .httpPost(myUrl, myHeaders, myParams, bodyFinal )

@@ -12,7 +12,7 @@ Module App -> Default Config
 
 Last Release Pubblicata
 Android
-Openbeach: 3 -> 1.2
+Openbeach: 6 -> 1.4
 
 IOS
 Openbeach 11 -> 1.3

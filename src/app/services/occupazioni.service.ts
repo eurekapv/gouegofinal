@@ -111,6 +111,12 @@ export class OccupazioniService {
       
   }
 
+  /**
+   * Richiede i dati occupazione con filtri
+   * @param filter Filtro di caricamento
+   * @param params Parametri 
+   * @returns 
+   */
   requestByFilter(filter: OccupazioneCampi, params?: RequestParams):Promise<OccupazioneCampi[]>{
     return new Promise((resolve, reject) => {
       let myFilter: IDDocument;

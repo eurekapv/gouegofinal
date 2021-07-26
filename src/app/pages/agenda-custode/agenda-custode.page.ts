@@ -1,43 +1,139 @@
-import { Component, OnInit } from '@angular/core';
-import { LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActionSheetController, AlertController, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { StartService } from 'src/app/services/start.service';
 import { FilterCustodePage } from './filter-custode/filter-custode.page';
 import { SettoreAttivita } from 'src/app/models/valuelist.model';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { Subscription } from 'rxjs';
+import { Location } from 'src/app/models/location.model';
+import { ActionSheetOptions, ActionSheetButton } from '@ionic/core';
 
 @Component({
   selector: 'app-agenda-custode',
   templateUrl: './agenda-custode.page.html',
   styleUrls: ['./agenda-custode.page.scss'],
 })
-export class AgendaCustodePage implements OnInit {
+export class AgendaCustodePage implements OnInit, OnDestroy {
 
   listOccupazioni: OccupazioneCampi[] = [];
   myIsDesktop: boolean;
   filter:OccupazioneCampi;
+  listenAreaSelected: Subscription;
+  
+  settimana = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
+  selectedIsoDate: string;
+
+  labelAllLocations: string;
+  labelLocation: string;
+
+  listLocations: Location[] = [];
 
   constructor(
     private barcodeScanner: BarcodeScanner,
     private loadingController: LoadingController,
     private startService: StartService,
     private toastController: ToastController,
+    private alertController: AlertController,
+    private actionSheeetController: ActionSheetController,
     private modalController: ModalController,
     private navController: NavController,
     
   ) { 
+    //Filtro iniziale
     this.filter = new OccupazioneCampi(true);
     this.filter.IDAREA = this.startService.areaSelectedValue.ID;
     this.filter.DATAINIZIO = new Date();
+    this.selectedIsoDate = this.filter.DATAINIZIO.toISOString();
     this.myIsDesktop = this.startService.isDesktop;
+
+    //Ascolto i cambiamenti dell'area
+    this.onListenAreaChange();
+    
   }
 
   ngOnInit() {
 
-    this.request();
+    this.requestOccupazioni();
   }
 
+  ngOnDestroy() {
+    if (this.listenAreaSelected) {
+      this.listenAreaSelected.unsubscribe();
+    }
+  }
+
+
+  /**
+   * Recupero Area
+   */
+  onListenAreaChange() {
+    //Recupero le informazioni sull'area
+    this.listenAreaSelected = this.startService.areaSelected.subscribe(elArea => {
+
+      if (elArea) {
+        this.labelAllLocations = "Locations di " + elArea.DENOMINAZIONE;
+      }
+      else {
+        this.labelAllLocations = "Tutte le Locations"
+      }
+
+      //Preparo la lista location
+      this.requestListLocation(elArea.ID);
+    })
+  }
+
+
+  /**
+   * Imposta la label per Item Location
+   */
+  setLabelLocation() {
+    let myLocation: Location;
+
+    if (this.filter && this.filter.IDLOCATION && this.filter.IDLOCATION.length != 0) {
+
+      myLocation = this.listLocations.find(elLocation => {
+        return elLocation.ID == this.filter.IDLOCATION;
+      });
+    }
+
+    if (myLocation) {
+      this.labelLocation = myLocation.DENOMINAZIONE;
+    }
+    else {
+      this.labelLocation = this.labelAllLocations;
+    }
+  }
+
+  /**
+   * Evento per la scelta di una nuova location
+   * @param idLocation Nuova Location selezionata
+   */
+  onChangeLocation(idLocation:string) {
+
+    if (this.filter)  {
+      this.filter.IDLOCATION = idLocation;
+      this.setLabelLocation();
+      this.requestOccupazioni();
+    }
+  }
+
+  /**
+   * Recupero elenco locations
+   * @param idArea idArea riferimento
+   */
+  requestListLocation(idArea: string) {
+
+    this.startService.newRequestLocation(idArea)
+                    .then(collLocation => {
+                      //Location recuperate
+                      this.listLocations = collLocation;
+                      //Preparo la labelLocation
+                      this.setLabelLocation();
+                    });
+
+  }
 
 
 
@@ -45,7 +141,7 @@ export class AgendaCustodePage implements OnInit {
    * Richiedo nuovamente le occupazioni campi sulla base del filtro
    * @param event evento che ha scatenato la richiesta (usato per dismettere il refresher se presente)
    */
-  request(event?){
+  requestOccupazioni(event?){
     this.loadingController.create({
       message: 'Caricamento...',
       spinner: 'circular'
@@ -76,13 +172,40 @@ export class AgendaCustodePage implements OnInit {
       
     })
   }
+ 
+
+  /**
+ * Nella pagina Impegni è stato modificata il filtro Data 
+ * per la ricerca
+ */
+    onChangeFilterDateImpegni(){    
+
+    this.filter.DATAINIZIO = (new Date(this.selectedIsoDate)); 
+    this.requestOccupazioni();
+  }
 
 
-
-    /**
+/**
    * Visualizza un messaggio
    */
-  showMessage(messaggio: string){
+ showMessage(messaggio: string, type?:'toast'|'alert'){
+
+  if (type == 'alert') {
+
+    let alertOptions = {
+      message: messaggio,
+      buttons: ['OK']
+    }
+
+
+    this.alertController.create(alertOptions)
+          .then(elAlert => {
+                  elAlert.present();
+          });
+
+  }
+  else {
+
     this.toastController.create({
       message: messaggio,
       duration: 3000
@@ -90,7 +213,9 @@ export class AgendaCustodePage implements OnInit {
     .then(elToast => {
       elToast.present();
     })
+
   }
+}
 
 
   onClickOccupazione(elOccupazione: OccupazioneCampi){
@@ -121,7 +246,9 @@ export class AgendaCustodePage implements OnInit {
       let newFilter: OccupazioneCampi = params.data;
       if(newFilter){
         this.filter = newFilter;
-        this.request();
+        this.selectedIsoDate = this.filter.DATAINIZIO.toISOString();
+        this.requestOccupazioni();
+        this.setLabelLocation();
       }
       else{
         console.log('Non ci sono dati');
@@ -262,6 +389,74 @@ export class AgendaCustodePage implements OnInit {
       })
     }
 
+  }
+
+
+  //#region ACTION SHEET CAMBIO LOCATION 
+  
+  /**
+   * Crea un Action Sheet con l'elenco delle location
+   */
+  onChooseLocation(){
+    let params: ActionSheetOptions;
+
+    params = this.getActionSheetLocationParams();
+
+    this.actionSheeetController.create(params)
+                              .then(elActionSheet => {
+                                elActionSheet.present();
+                              });
+  }
+
+
+  /**
+   * 
+   * @returns Parametri per ActionSheet
+   */
+  getActionSheetLocationParams(): ActionSheetOptions {
+
+    let arButtons: ActionSheetButton[] = [];
+    
+    //bottone "tutte le locations"
+    let button: ActionSheetButton = {
+      text: this.labelAllLocations,
+      handler: () => {
+        this.onChangeLocation(null);
+      }
+    }
+    
+    arButtons.push(button);
+
+
+    //bottoni locations
+    this.listLocations.forEach(elLocation => {
+      let buttonLoc: ActionSheetButton = {
+        text: elLocation.DENOMINAZIONE,
+        handler: () => {
+          this.onChangeLocation(elLocation.ID);
+        }        
+      }
+
+      arButtons.push(buttonLoc);
+    })
+
+    //bottone "annulla"
+    let buttonCancel: ActionSheetButton = {
+      text: 'Annulla',
+      role: 'cancel',
+      icon: 'close'
+    };
+    arButtons.push(buttonCancel);
+
+    let params: ActionSheetOptions = {
+      header: 'Scegli la location',
+      buttons: arButtons,
+    };
+
+
+    
+
+    return params;
   }
 
   

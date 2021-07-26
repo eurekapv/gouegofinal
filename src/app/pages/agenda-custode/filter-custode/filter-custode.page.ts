@@ -39,6 +39,7 @@ export class FilterCustodePage implements OnInit {
   }
   
   ngOnInit() {
+    
     this.selectedIsoDate = this.filter.DATAINIZIO.toISOString();
 
     //recupero le locations

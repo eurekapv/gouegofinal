@@ -15,32 +15,63 @@
 
 <ion-content scrollEvents>
 
-  <ion-refresher slot="fixed" (ionRefresh)="request($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="requestOccupazioni($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+
+  <ion-list
+    class="ion-no-padding">
+    <!-- DEFINIZIONE LOCATION -->
+    <ion-item
+      (click)="onChooseLocation()"
+      detail="true">
+      <ion-icon slot="start" name="location-outline"></ion-icon>
+      <ion-label>
+        <h5>{{labelLocation}}</h5></ion-label>
+    </ion-item>
+  
+  
+    <!-- DATA OCCUPAZIONE -->
+    <ion-item >
+      <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
+      <ion-datetime 
+        displayFormat="DDDD - DD/MM/YYYY" 
+        [dayNames]="settimana" 
+        [(ngModel)]="selectedIsoDate" 
+        (ngModelChange)="onChangeFilterDateImpegni()">
+    </ion-datetime>
+    <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
+    </ion-item>  
+  </ion-list>
+
 
   <div *ngIf="listOccupazioni && listOccupazioni.length > 0" class="ion-no-padding">
     <ion-list class="ion-padding-vertical">
       <app-item-calendario 
         *ngFor="let occupazione of listOccupazioni" 
         [params]="getItemCalendario(occupazione)"
-        (click)="onClickOccupazione(occupazione)"
-        
-      >
+        (click)="onClickOccupazione(occupazione)">
       </app-item-calendario>
     </ion-list>
   </div>
 
+
   <!-- NESSUN ELEMENTO -->
   <div class="nofind-cnt" *ngIf="!listOccupazioni || listOccupazioni.length <= 0">
-    <ion-label>Nessuna occupanzione prevista</ion-label>
+    <ion-label>Nessuna occupazione prevista</ion-label>
   </div>
 </ion-content>
 
 
+
 <ion-footer>
-  <ion-button color="primary" expand="block" [disabled]="myIsDesktop" (click)="scanQr()"> 
+  <ion-button 
+        color="primary" 
+        expand="block" 
+        [disabled]="myIsDesktop" 
+        (click)="scanQr()"> 
+        
     <ion-icon slot="start" name="qr-code-outline"  ></ion-icon>
-    Qr-Code
+    Qr-Code Prenotazione
   </ion-button>
 </ion-footer>

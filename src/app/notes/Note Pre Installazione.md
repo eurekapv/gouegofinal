@@ -15,7 +15,7 @@ Android
 Openbeach: 6 -> 1.4
 
 IOS
-Openbeach 11 -> 1.3
+Openbeach 12 -> 1.4
 
 ## Problemi con le Icone
 Segui questa guida e ricostruisci le icone dentro a Android Studio
@@ -41,6 +41,10 @@ Cancellare dalle cartelle android o ios i file e rieseguire
 #### Apertura progetti Android / Xcode
     npx cap open android
     npx cap open ios
+
+In caso di problemi EACCESS dalla cartella gouego digitare
+    sudo chown -R Lavoro ios
+cosi da attribuire poteri a tutta la cartella
 
 >Se la compilazione Xcode indica 'File debug unable to open' dare i permessi alla cartella Pods/TargetSupportFile
 

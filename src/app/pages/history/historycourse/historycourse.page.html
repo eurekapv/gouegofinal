@@ -159,7 +159,7 @@
     <ion-icon name="thumbs-up-outline"></ion-icon>
   </ion-button>
   <ion-button *ngIf="iscrizioneConfermata()" color="primary" fill="outline" expand="block" slot="icon-end">
-    Iscrizione in prova il {{ myIscrizione.DATAISCRIZIONE|date }}
+    Iscrizione provvisoria il {{ myIscrizione.DATAISCRIZIONE|date }}
     <ion-icon name="help-outline"></ion-icon>
   </ion-button> -->
 
@@ -181,7 +181,7 @@
         Iscrizione il {{myIscrizione.DATAISCRIZIONE|date:'dd/MM/yy' }}
       </ion-label>
       <ion-badge slot="end" color="light">
-        In prova
+        Provvisoria
         <ion-icon name="help"></ion-icon>
       </ion-badge>
     </ion-item>

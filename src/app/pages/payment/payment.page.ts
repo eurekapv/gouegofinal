@@ -304,7 +304,7 @@ export class PaymentPage implements OnInit{
             .then(function(details) {
               //######## Handler pagamento effettuato con successo ###########
   
-              console.log('Pagamento confermato!');
+              
               //Chiamo la funzione Paypal di Conferma
               _this.OnSuccessPaypal(details);
 

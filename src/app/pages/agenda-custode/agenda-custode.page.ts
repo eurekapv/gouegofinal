@@ -264,8 +264,7 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
       
       .then(data => {
         let myId = data.text;
-        console.log('dati: ');
-        console.log(data);
+
         this.goToReservationDetail(myId);
       })
 
@@ -277,74 +276,6 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
     }
   }
 
-  // startScan = async () => {
-  //   const { BarcodeScanner } = Plugins;
-  
-  //   BarcodeScanner.hideBackground(); // make background of WebView transparent
-  
-  //   const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
-  
-  //   // if the result has content
-  //   if (result.hasContent) {
-  //     console.log(result.content); // log the raw scanned content
-  //   }
-  // };
-
-  // newScanQr(){
-  //   console.log('ci provo');
-  //   if(!this.startService.isDesktop){
-  //     console.log('sono su mobile');
-  //     const {BarcodeScanner} = Plugins;
-  //     console.log(BarcodeScanner);
-  //     BarcodeScanner.hideBackground();
-  //     BarcodeScanner.startScan()
-  //     .then(result => {
-  //       console.log('scannerizzato');
-  //       if(result && result.hasContent){
-  //         console.log('risultato:');
-  //         console.log(result.content);
-  //       }
-  //     })
-  //   }
-  // }
-
-  // scanQr(){
-  //   console.log('ci provo');
-
-  //   //TODO Da testare se funziona; in alternativa, barcode scanner dovrebbe funzionare
-  //   if(!this.startService.isDesktop){
-  //     console.log('non sono su desktop');
-  //     this.qrScanner.prepare()
-  //     .then((status: QRScannerStatus) => {
-  //       console.log('preparato');
-  //       if(status.authorized){
-  //       console.log('autorizzato');
-
-  //         let qrSubscription = this.qrScanner.scan()
-  //         .subscribe((text: string) => {
-  //           console.log('scannerizzato');
-
-  //           console.log(text);
-  //           this.qrScanner.hide;
-  //           qrSubscription.unsubscribe();
-  //           this.goToReservationDetail(text);
-  
-  //         });
-  //       }
-  //       else{
-  //         throw new Error('Permessi fotocamera non concessi');
-  //       }
-  //     })
-  //     .catch(error => {
-  //       this.showMessage('Errore nella scansione del Qr-Code');
-  //       console.log(error);
-  //     })
-    
-  //   }
-  //   else{
-  //     console.warn('Attenzione, Scanner Qr non disponibile su desktop');
-  //   }
-  // }
 
   /**
    * Naviga alla pagina di dettaglio dell'occupazione specificata (SOLO PER PRENOTAZIONI)

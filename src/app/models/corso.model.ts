@@ -1,9 +1,10 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni, ModalitaFruizione } from '../models/valuelist.model';
+import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni, ModalitaFruizione, TempoCorso } from '../models/valuelist.model';
 import { Settimana } from './settimana.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CorsoProgramma } from './corsoprogramma.model';
 import { PianificazioneCorso } from './pianificazionecorso.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
 
 export class Corso extends IDDocument {
 
@@ -312,23 +313,28 @@ export class Corso extends IDDocument {
     }
 
     /**
-     * Serve per capire sulla card cosa scrivere e quale data mettere
-     * next -> Inizia il DATAINIZIO
-     * during -> Termina il DATAFINE
-     * stop -> Concluso il DATAFINE
+     * Serve per capire la situazione temporale del corso rispetto ad oggi
+     * FUTURO -> Inizia il DATAINIZIO
+     * IN_CORSO -> Termina il DATAFINE
+     * PASSATO -> Concluso il DATAFINE
      */
-    tempoCorso() {
+    tempoCorso():TempoCorso {
       let adesso = new Date();
-      let value = "";
+      let value:TempoCorso = TempoCorso.PASSATO;
+      let dataOraInizioCorso: Date;
+      let dataOraFineCorso: Date;
 
-      if (this.DATAINIZIO > adesso) {
-        value = "next";
+      dataOraInizioCorso = MyDateTime.mergeDateAndTime(this.DATAINIZIO, this.ORAINIZIO);
+      dataOraFineCorso = MyDateTime.mergeDateAndTime(this.DATAFINE, this.ORAINIZIO);
+
+      if (dataOraInizioCorso > adesso) {
+        value = TempoCorso.FUTURO;
       }
-      else if (this.DATAFINE > adesso) {
-        value = "during";
+      else if (dataOraFineCorso > adesso) {
+        value = TempoCorso.IN_CORSO;
       }
       else {
-        value = "stop";
+        value = TempoCorso.PASSATO;
       }
 
       return value;

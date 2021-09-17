@@ -161,65 +161,63 @@ export class CourseschedulerService {
       }
   
       this.docStructureService.requestForFunction(document, methodName, JSON.stringify(params))
-      .then(response => {
+            .then(response => {
 
-        let requestDecode = false;
+                    let requestDecode = false;
 
-        //Svuotiamo la lista attuale
-        this.emptyListImpegniTrainer();
-        if (response.PIANIFICAZIONECORSO) {
-          if (Array.isArray(response.PIANIFICAZIONECORSO)) {
+                    //Svuotiamo la lista attuale
+                    this.emptyListImpegniTrainer();
 
-            /* Ciclo sull'Array ricevuto */
-            for (let index = 0; index < response.PIANIFICAZIONECORSO.length; index++) {
-              requestDecode = true;
-              const element = response.PIANIFICAZIONECORSO[index];
-              let docPianificazioneCorso = new PianificazioneCorso();
-              docPianificazioneCorso.setJSONProperty(element);
+                    if (response.PIANIFICAZIONECORSO) {
 
-              
-              //qui reupero anche il documento livello e me lo salvo nel repository
-              const addToRepository = false;
+                      if (Array.isArray(response.PIANIFICAZIONECORSO)) {
 
-              //Chiedo altri dati
-              this.docStructureService.getRelDoc(docPianificazioneCorso, ['IDCORSO', 'IDLIVELLOENTRATA'],1,docPianificazioneCorso);
-                            
-              this.addImpegnotrainer(docPianificazioneCorso);
-              
-            }
+                        /* Ciclo sull'Array ricevuto */
+                        for (let index = 0; index < response.PIANIFICAZIONECORSO.length; index++) {
 
-            if (requestDecode) {
-              //Recupero la lista Impegni
-              let listPianificazioni:PianificazioneCorso[] = this._listImpegniTrainer.getValue();
+                          requestDecode = true;
+                          const element = response.PIANIFICAZIONECORSO[index];
+                          let docPianificazioneCorso = new PianificazioneCorso();
+                          docPianificazioneCorso.setJSONProperty(element);
 
-              //Chiamo la decodifica collection della lista
-              this.docStructureService.decodeCollection(listPianificazioni)
-                .then(() => {
-                  //Riemetto Observable
-                  this._listImpegniTrainer.next(listPianificazioni);
-                  //Riemetto la resolve
-                  resolve(this._listImpegniTrainer.getValue());
-                })
-                .catch(error => {
-                  console.log(error);
-                  reject(error);
-                });
+                          this.addImpegnotrainer(docPianificazioneCorso);
+                                        
+                        }
 
-            }
-            else {
-              //Risolvere con la lista attuale (che sarà vuota)
-              resolve(this._listImpegniTrainer.getValue());
-            }
-          }
-          else {
-              //Risolvere con la lista attuale (che sarà vuota)
-              resolve(this._listImpegniTrainer.getValue());
-          }
-        }
-        else {
-          //Risolvere con la lista attuale (che sarà vuota)
-          resolve(this._listImpegniTrainer.getValue());
-        }
+
+                        if (requestDecode) {
+                          //Recupero la lista Impegni
+                          let listPianificazioni:PianificazioneCorso[] = this._listImpegniTrainer.getValue();
+                          
+
+                          //Chiamo la decodifica collection della lista
+                          this.docStructureService.decodeCollection(listPianificazioni)
+                            .then(() => {
+                              //Riemetto Observable
+                              this._listImpegniTrainer.next(listPianificazioni);
+                              //Riemetto la resolve
+                              resolve(this._listImpegniTrainer.getValue());
+                            })
+                            .catch(error => {
+                              console.log(error);
+                              reject(error);
+                            });
+
+                        }
+                        else {
+                          //Risolvere con la lista attuale (che sarà vuota)
+                          resolve(this._listImpegniTrainer.getValue());
+                        }
+                      }
+                      else {
+                          //Risolvere con la lista attuale (che sarà vuota)
+                          resolve(this._listImpegniTrainer.getValue());
+                      }
+                    }
+                    else {
+                      //Risolvere con la lista attuale (che sarà vuota)
+                      resolve(this._listImpegniTrainer.getValue());
+                    }
 
       })
       .catch(error => {
@@ -228,6 +226,80 @@ export class CourseschedulerService {
       })
     })
   }
+
+
+
+  //#region NON UTILIZZATE QUESTE DUE PROCEDURE
+
+  /**
+   * Tutte gli elementi della Lista vengono analizzati e recuperati informazioni aggiuntive
+   * @param listPianificazioni Lista Pianificazione
+   * @returns 
+   */
+  requestOtherRelDocs(listPianificazioni: PianificazioneCorso[]):Promise<PianificazioneCorso[]> {
+
+    let executePromise:Promise<any>[] = [];
+    let pthis = this;
+
+    return new Promise<PianificazioneCorso[]>((resolve) => {
+      
+      if (listPianificazioni && listPianificazioni.length != 0) {
+  
+        for (let index = 0; index < listPianificazioni.length; index++) {
+  
+          const elPianificazione = listPianificazioni[index];
+  
+          executePromise.push(pthis.requestOtherSingleDoc(elPianificazione));
+  
+        }
+  
+        Promise.all(executePromise)
+                .then(() => {
+                  resolve(listPianificazioni)
+                });
+      }
+      else {
+        resolve(listPianificazioni);
+      }
+    })
+
+  }
+
+  /**
+   * Scarica 3 documenti correlati per il documento di pianificazione
+   * @param docPianificazioneCorso Documento Pianificazione
+   * @returns 
+   */
+  requestOtherSingleDoc(docPianificazioneCorso: PianificazioneCorso): Promise<PianificazioneCorso> {
+    let executePromise:Promise<any>[] = [];
+    let pthis = this;
+
+    return new Promise<PianificazioneCorso>((resolve) => {
+      if (docPianificazioneCorso)   {
+
+        executePromise.push(pthis.docStructureService.getRelDoc(docPianificazioneCorso, ['IDCORSO', 'IDLIVELLOENTRATA'],1,docPianificazioneCorso));        
+        executePromise.push(pthis.docStructureService.getRelDoc(docPianificazioneCorso, ['IDCORSO'],1,docPianificazioneCorso));
+        executePromise.push(pthis.docStructureService.getRelDoc(docPianificazioneCorso, ['IDCORSO','IDSPORT'],1,docPianificazioneCorso));
+
+        Promise.all(executePromise)
+                .then(() => {
+                  
+                  resolve(docPianificazioneCorso);
+                })
+                .catch(error => {
+                  console.log(error);
+                  
+                  resolve(docPianificazioneCorso);
+                })
+      }
+      else {
+        resolve(docPianificazioneCorso);
+      }
+    });
+
+  }
+
+  //#endregion
 
 
 

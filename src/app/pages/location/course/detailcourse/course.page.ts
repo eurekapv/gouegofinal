@@ -12,7 +12,7 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
 import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
-import { TipoCorso } from 'src/app/models/valuelist.model';
+import { TempoCorso, TipoCorso } from 'src/app/models/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/history/historycourse/allegatilist/allegatilist.page';
 
 @Component({
@@ -38,6 +38,7 @@ export class CoursePage implements OnInit, OnDestroy {
   listenSelectedArea:Subscription;
   selectedArea: Area;
   enableIscrizioni:boolean = false;  
+  tempoCorso: typeof TempoCorso = TempoCorso;
 
 
   constructor(

@@ -843,7 +843,7 @@ export class DocstructureService {
                     childLevel = 2,
                     docRepository?: IDDocument,
                     indexSeq = -1):Promise<any> {
-    return new Promise((resolve, reject)=>{  
+    return new Promise<any>((resolve, reject)=>{  
 
       let nameField = '';
       
@@ -858,6 +858,129 @@ export class DocstructureService {
           }
         }
 
+        
+        if (seqField && seqField.length !== 0) {
+          
+          nameField = seqField[indexSeq];
+
+          //Con il nome del campo, ottengo la definizione del campo
+          objFieldType = docStart.getTypeReflectorByFieldName(nameField);
+            
+          //Il campo esiste e contiene qualcosa
+          if (objFieldType && docStart.propertyIsEmpty(nameField)==false) {
+
+            //E' un campo in foreing Key
+            if (objFieldType.isForeignKey) {
+              
+              //Impostare il documento di filtro
+              let filter:any = new DynamicClass(objFieldType.relFieldDoc, true);
+              let idDocFilter:IDDocument = filter;
+
+              idDocFilter.setPrimaryKey(docStart[nameField]);
+
+              //creo i filtri per il child level
+              let params : RequestParams = new RequestParams();
+              if (seqField.length == indexSeq + 1) {
+                params.child_level = childLevel;
+              }
+              else {
+                params.child_level = 1;
+              }
+
+              this.requestNew(idDocFilter, params)
+                  .then(arElement => {
+
+                    if (arElement && arElement.length !== 0) {
+                      let element = arElement[0];
+
+                      
+                      //Ho ancora relazioni da decodificare
+                      if (indexSeq + 1 < seqField.length) {
+                        //Incremento l'indice sequenza
+                        indexSeq++;
+                        //Eseguo un nuovo relDoc
+                        this.getRelDoc(element, seqField, childLevel, docRepository, indexSeq)
+                            .then(elResolve => {
+                              resolve(elResolve);
+                            })
+                            .catch(error => {
+                              reject(error);
+                            })
+
+                      }
+                      else {
+
+                        //Il giro è finito
+
+                        //Elemento presente e vuole che venga aggiunto al documento chiamante come relDoc nel Repository
+                        if (element && docRepository) {
+                          
+                          //Aggiungo al repository
+                          docRepository.addToRepositoryRelDoc(element, seqField);
+                        }
+
+
+                        resolve(element);
+                      }
+                    }
+                    else {
+                      console.log('Document rel not found');
+                      resolve(null);
+                    }
+
+                  })
+                  .catch(error => {
+                    reject(error);
+                  })
+  
+            }
+            else {
+              console.log('Foreign Key not found');
+              resolve(null);
+            }
+          }
+          else {
+            console.log('Foreign Key not found');
+            resolve(null);
+          }
+          
+  
+        }
+        else {
+          reject('Sequence Field Link empty');
+        }
+      }
+      else {
+        reject('Document null or undefined');
+      }
+
+    });
+
+  }
+
+public getRelDocOriginale( docStart: IDDocument, 
+                    seqField: string[], 
+                    childLevel = 2,
+                    docRepository?: IDDocument,
+                    indexSeq = -1):Promise<any> {
+    return new Promise<any>((resolve, reject)=>{  
+
+      let nameField = '';
+      
+      let objFieldType: TypeReflector;
+
+      if (docStart) {
+        if (seqField && seqField.length !== 0) {
+
+          if (indexSeq == -1) {
+            //Inizio il giro impostando posizione 0
+            indexSeq = 0;
+          }
+        }
+
+        console.log(docStart);
+        console.log(seqField);
+        
         if (seqField && seqField.length !== 0) {
           
           nameField = seqField[indexSeq];
@@ -940,17 +1063,16 @@ export class DocstructureService {
   
         }
         else {
-          reject('Sequence Field Link empty');
+          return reject('Sequence Field Link empty');
         }
       }
       else {
-        reject('Document null or undefined');
+        return reject('Document null or undefined');
       }
 
     });
 
-  }
-
+  }  
 
 
   /**
@@ -962,9 +1084,9 @@ export class DocstructureService {
    */
   public getRelDocCollection( collection: IDDocument[],
                               seqField: string[]
-                              ) {
+                              ):Promise<void> {
 
-    return new Promise<void>((resolve, reject)=>{
+    return new Promise<void>((resolve)=>{
 
       let executePromise:Promise<any>[] = [];
 
@@ -981,15 +1103,60 @@ export class DocstructureService {
               resolve();
             })
             .catch(error => {
-              reject(error);
+              resolve();
             });
         }
+        else {
+          resolve();
+        }
+      }
+      else {
+        resolve();
       }
 
 
     });
             
  }
+
+ /**
+  * Per ogni documento presente, vengono chieste le N seqField presenti
+  * Esempio tutti i documenti devono recuperare
+  * ['IDCORSO']
+  * ['IDCORSO','IDLIVELLOENTRATA']
+  * Per ogni documento ne recupero altri 2
+  * @param collection Collection di Documenti della stessa tipologia
+  * @param seqField Array che contiene un Array di stringhe per la sequenza
+  */
+ public getRelMultiDocCollection( collection: IDDocument[],
+                                  seqField: string[][]
+                                  ):Promise<void> {
+
+    let pthis = this;
+
+    return new Promise<void>((resolve)=>{
+      let executePromise:Promise<any>[] = [];
+
+      if (collection && seqField && seqField.length != 0) {
+
+        for (let index = 0; index < seqField.length; index++) {
+          const elSeq = seqField[index];
+          executePromise.push(pthis.getRelDocCollection(collection, elSeq));
+        }
+
+        Promise.all(executePromise)
+              .then(() => {
+                resolve();
+              })
+              .catch(error => {
+                resolve();
+              })
+      }
+      else {
+        resolve();
+      }
+    })                                    
+  }
 
   // ****************************************************************
   // ***************  REQUEST PER I METODI STATICI    ***************

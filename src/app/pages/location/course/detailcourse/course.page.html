@@ -79,14 +79,14 @@
 
       <ion-item button="false" lines="none">
         <ion-label color="primary">
-          <p *ngIf="myCorso.tempoCorso()=='next'">
+          <p *ngIf="myCorso.tempoCorso()==tempoCorso.FUTURO">
             da {{myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy'}} a
             {{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy'}}
           </p>
-          <p *ngIf="myCorso.tempoCorso()=='during'">
+          <p *ngIf="myCorso.tempoCorso()==tempoCorso.IN_CORSO">
             Termina {{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy'}}
           </p>
-          <p *ngIf="myCorso.tempoCorso()=='stop'">
+          <p *ngIf="myCorso.tempoCorso()==tempoCorso.PASSATO">
             Concluso {{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy'}}
           </p>
         </ion-label>

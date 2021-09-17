@@ -52,7 +52,7 @@ export class ShoppingService {
       this.docStructureService
       .requestNew(filter, requestParams)
       .then((listProdotti: Articolo[]) => {
-        console.log(listProdotti);
+        
         resolve(listProdotti);
       })
       .catch(error => {

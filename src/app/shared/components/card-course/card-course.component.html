@@ -123,9 +123,9 @@
       <ion-col 
           size="12" 
           size-sm="12">
-          <p class="footer" *ngIf="myCorso.tempoCorso()=='next'">Inizia il {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
-          <p class="footer" *ngIf="myCorso.tempoCorso()=='during'">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
-          <p class="footer" *ngIf="myCorso.tempoCorso()=='stop'">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="myCorso.tempoCorso()==tempoCorso.FUTURO">Inizia il {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="myCorso.tempoCorso()==tempoCorso.IN_CORSO">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="myCorso.tempoCorso()==tempoCorso.PASSATO">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
       </ion-col>
     </ion-row>
 

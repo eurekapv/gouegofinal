@@ -4,6 +4,7 @@ import { RequestForeign } from '../library/models/requestParams.model';
 import { CorsoPresenze } from './corsopresenze.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { TypePeriod } from '../library/models/mydatetime.model';
+import { TempoCorso } from './valuelist.model';
 
 
 export class PianificazioneCorso extends IDDocument {
@@ -160,6 +161,35 @@ static getReqForeignKeys(): RequestForeign[] {
     return (new Date() > this.DATAORAFINE );
   }
 
+    /**
+     * Serve per capire la situazione temporale del corso rispetto ad oggi
+     * FUTURO -> Inizia il DATAINIZIO
+     * IN_CORSO -> Termina il DATAFINE
+     * PASSATO -> Concluso il DATAFINE
+     * 
+     */
+     tempoCorso():TempoCorso {
+      let adesso = new Date();
+      let value:TempoCorso = TempoCorso.PASSATO;
+      let dataOraInizioCorso: Date;
+      let dataOraFineCorso: Date;
+
+      dataOraInizioCorso = this.DATAORAINIZIO;
+      dataOraFineCorso = this.DATAORAFINE;
+
+      if (dataOraInizioCorso > adesso) {
+        value = TempoCorso.FUTURO;
+      }
+      else if (dataOraFineCorso > adesso) {
+        value = TempoCorso.IN_CORSO;
+      }
+      else {
+        value = TempoCorso.PASSATO;
+      }
+
+      return value;
+    }  
+
   /**
    * Ritorna un valore che indica se la pianificazioneCorso è aggiornabile nelle presenze.
    * @param gapOre Numero Positivo che indica quante ore di tempo di hanno dalla fine del corso per aggiornare le presenze 
@@ -227,4 +257,18 @@ static getReqForeignKeys(): RequestForeign[] {
   }
 
 
+  /**
+   * 
+   * @returns Minuti della lezione
+   */
+  getMinutiLezione(): number {
+    let minuti = 0;
+
+    if (this.ORELEZIONE) {
+      minuti = this.ORELEZIONE * 60;
+    }
+
+    return minuti;
+
+  }
 }

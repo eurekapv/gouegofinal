@@ -76,9 +76,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
       this.myPrenotazione = elOccupazione.getDocInRepository(elOccupazione.IDREF);
       this.myPianificazione = this.myPrenotazione.getPianificazione(this.myOccupazione.ID);
       this.myPianificazione._INCASSOCUSTODE = this.myPianificazione.RESIDUO;
-      console.log(this.myOccupazione);
-      console.log(this.myPrenotazione);
-      console.log(this.myPianificazione);
+
 
       
       
@@ -119,7 +117,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   onSubmit(){
     if(this.canEditData()){
       //TODO inviare il docpianificazione a gouego
-      console.log(this.myPianificazione);
+      
       this.navController.pop();
 
     }

@@ -308,8 +308,6 @@ export class CalendarscrollComponent implements OnInit {
     let oggi = new Date();
 
 
-    // message = `Nuovo (M-A): ${meseOneBasedNew} - ${annoNew} / Attuali (M-A): ${activeM} - ${activeA}`;
-    // console.log(message);
 
     // Cambiato il mese o l'anno
     if ((meseOneBasedNew - 1) !== activeM || annoNew !== activeA) {

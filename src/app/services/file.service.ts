@@ -34,11 +34,11 @@ export class FileService {
   openMobile(blob: Blob){
     let fileName='Documento';         
     let filePath= this.file.cacheDirectory;      
-    console.log('percorso: '+filePath);  
+    
 
         this.file.writeFile(filePath, fileName, blob, { replace:true }).then((fileEntry) => {
 
-          console.log("File created!");          
+                   
           this.fileOpener.open(fileEntry.toURL(), blob.type)
             .then(() => console.log('File is opened'))
             .catch(err => console.error('Error openening file: ' + err));

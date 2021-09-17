@@ -249,7 +249,7 @@ export class ValutazioneTrainerPage implements OnInit {
    */
   onChangeLivello(event:any) {
     //Non ho bisogno di aggiornare nulla credo
-    console.log(this.myCorsoValutazione);
+    
   }
 
 

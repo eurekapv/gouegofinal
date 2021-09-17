@@ -85,7 +85,7 @@ export class DocumentsPage implements OnInit {
 
           //Recupero la lista dei documenti
           this.listDocumenti = objUtente['DOCUMENTAZIONI'];
-          // console.log(this.listDocumenti);
+          
         })
         .catch(error => {
 

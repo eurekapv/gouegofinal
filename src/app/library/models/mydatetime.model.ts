@@ -192,6 +192,31 @@ static changeDateInTime(nuovaData: Date, applyDataOra: Date) {
 }
 
 /**
+ * Crea una nuova Data Ora con la parte data e la parte ora
+ * @param dateSource Parte Data
+ * @param timeSource Parte Orario
+ */
+ static mergeDateAndTime(dateSource: Date, timeSource: Date) {
+    let strDataOra = '';
+    let newReturn: Date;
+
+    if (dateSource && timeSource) {
+        strDataOra = MyDateTime.formatDateISO(dateSource);
+
+        let ore = (timeSource.getHours() > 9) ? (timeSource.getHours() + '') : ('0' + timeSource.getHours());
+        let minuti = (timeSource.getMinutes() > 9) ? (timeSource.getMinutes() + '') : ('0' + timeSource.getMinutes());
+        let secondi = (timeSource.getSeconds() > 9) ? (timeSource.getSeconds() + '') : ('0' + timeSource.getSeconds());
+
+        strDataOra = `${strDataOra}T${ore}:${minuti}:${secondi}`;
+
+        
+        newReturn = moment(strDataOra).toDate();
+    }
+
+    return newReturn;
+}
+
+/**
  * Controlla se il Range Check cade dentro a min max DateTime
  * Usato per capire le occupazioni
  * @param startCheck Range da controllare (Start Date)

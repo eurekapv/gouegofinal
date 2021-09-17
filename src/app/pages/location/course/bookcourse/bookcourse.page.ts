@@ -345,7 +345,7 @@ requestLocationById(idLocation: string): Promise<void>{
       if (this.myListPayment && this.myListPayment.length != 0) {
 
         this.mySelectedPayment = this.myListPayment[0];
-        console.log(this.myListPayment);
+        
       }
       else {
 
@@ -372,7 +372,7 @@ requestLocationById(idLocation: string): Promise<void>{
    */
    onPaymentModeSelected(valPaymentMode: PaymentMode) {
     this.myPaymentMode = valPaymentMode;
-    console.log(this.myPaymentMode);
+    
   }  
 
 
@@ -564,8 +564,6 @@ requestLocationById(idLocation: string): Promise<void>{
 
       //Aggiungo le informaioni del pagamento
       myDocIscrizione.ISCRIZIONEINCASSO.push(myDocRata);
-
-      console.log(myDocRata);
 
       //Contatto il server per salvare il tutto
       this.loadingController.create({

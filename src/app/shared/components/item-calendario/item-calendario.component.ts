@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { stringify } from 'querystring';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
-import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
+
 
 @Component({
   selector: 'app-item-calendario',
@@ -16,6 +15,7 @@ export class ItemCalendarioComponent implements OnInit {
   @Output() click: EventEmitter<any> = new EventEmitter<any>()
 
   TipoBadge: typeof TipoBadge = TipoBadge
+
 
 
   constructor() { }

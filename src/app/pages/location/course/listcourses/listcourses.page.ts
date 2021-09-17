@@ -160,36 +160,6 @@ export class ListcoursesPage implements OnInit, OnDestroy {
     }
   }
 
-  // ionViewDidEnter(){
-  //   const gesture: Gesture = this.gestureCtrl.create({
-  //     el: document.getElementById('content'),
-  //     threshold: 15,
-  //     gestureName: 'my-gesture',
-  //     direction: 'x',
-  //     maxAngle: 90,
-  //     onMove: ev => this.onSwipe(ev),
-  //   }, true);
-
-  //   gesture.enable(true);
-  // }
-
-  // onSwipe(detail){
-
-  //   console.log(detail);
-
-  //   //scroll verso sinistra
-  //   if (detail.deltaY > -50 && detail.deltaY < 50){
-
-  //     if (this.statoPagina == PageState.TUTTI && (detail.velocityX < 0) ){
-  //       this.statoPagina = PageState.MIEI;
-  //     }
-  
-  //     //scroll verso destra
-  //     else if (this.statoPagina == PageState.MIEI && (detail.velocityX > 0)){
-  //       this.statoPagina = PageState.TUTTI;
-  //     }
-  //   }
-  // }
 
   /**
    * Richiesta dei corsi

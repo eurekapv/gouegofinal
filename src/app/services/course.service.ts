@@ -242,9 +242,6 @@ export class CourseService {
                                         let newElement: Corso = new Corso;
                                         newElement.setJSONProperty(elData);
                                         listElement.push(newElement);
-  
-                                        //Ogni volta riemetto la lista
-                                        this._listCorsiTrainer.next(listElement);
                                       })
   
                                       //Adesso voglio anche decodificare i dati contenuti
@@ -263,7 +260,6 @@ export class CourseService {
                                     else {
                                       //Nessun dato
                                       this._listCorsiTrainer.next([]);
-  
                                     }
                                   }
                                   else {

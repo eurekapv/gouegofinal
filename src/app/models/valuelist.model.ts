@@ -271,6 +271,14 @@ export enum ModalitaFruizione{
     inRemoto = 20
 }
 
+/**
+ * Indica se il corso è previsto nel futuro, in corso o già concluso
+ */
+export enum TempoCorso {
+    FUTURO   = 'futuro',
+    IN_CORSO = 'incorso',
+    PASSATO = 'passato'
+}
 
 
 

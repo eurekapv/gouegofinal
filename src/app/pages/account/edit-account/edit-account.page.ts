@@ -189,8 +189,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
       if(!this.docGruppo.needMobileVerify){
         this.utente.MOBILENUMBER = this.form.value.mobile;
       }
-      console.log('mando');
-      console.log(this.utente);
+
 
       //USO IL LOADING CONTROLLER 
       this.loadingController

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Corso } from '../../../models/corso.model'
-import { ValueList, TargetSesso, Sesso, TipoCorso } from 'src/app/models/valuelist.model';
+import { ValueList, TargetSesso, Sesso, TipoCorso, TempoCorso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service'
 import { Sport } from 'src/app/models/sport.model';
 
@@ -23,7 +23,7 @@ export class CardCourseComponent implements OnInit {
   @Output() clickIscrizione = new EventEmitter<Corso>();
   
   iconColor = 'primary';
-
+  tempoCorso: typeof TempoCorso = TempoCorso;
   
 
   ngOnInit() {

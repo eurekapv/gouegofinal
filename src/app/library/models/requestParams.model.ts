@@ -116,7 +116,13 @@ export class PostParams {
 }
 
 
-//Classe con parametri da impostare nelle Request di tipo Get
+ /**
+ *  Classe con parametri da impostare nelle Request di tipo Get
+ *  @field child_level?: number; //Profondita Richiesta
+ *  @field top?: number; //Numero massimo di elementi ritornati
+ *  @field orderBy?: string; //Ordinamento asc || desc
+ *  @field decode:RequestDecode; //Oggetto per la richiesta di decodifica automatica dei dati ricevuti
+ */
   export class RequestParams {
 
     child_level?: number; //Profondita Richiesta

@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AlertController, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { ActionSheetController, AlertController, LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
+import { RequestDecode, RequestParams } from 'src/app/library/models/requestParams.model';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoValutazione } from 'src/app/models/corsovalutazione.model';
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { Livello } from 'src/app/models/livello.model';
+import { LogApp } from 'src/app/models/log.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Utente } from 'src/app/models/utente.model';
 import { Language, RangeSearch, TimeTrainerCourse } from 'src/app/models/valuelist.model';
@@ -76,7 +79,9 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private docStructureService: DocstructureService,
+    private actionController: ActionSheetController
   ) { 
 
     //Ascolto i cambiamenti per la Lista Corsi
@@ -165,16 +170,41 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
       this.collapsedFilterPianificazioni = true;
       
       //qui stò richiedendo gli impegni che riguardano l'utente in quanto "collaboratore"
-      this.startService.requestImpegniTrainer(this.utente.ID, rangeDate.startDate, rangeDate.endDate)
-        .then(result => {
-
-          this.myListPianificazioni = result;
+      this.startService
+        .requestImpegniTrainer(this.utente.ID, rangeDate.startDate, rangeDate.endDate)
+        .then(listReceived => {
           
-          elLoading.dismiss();
 
-          if (event && event.target) {
-            event.target.complete();
-          }
+          let seqField = [
+                          ['IDCORSO','IDLIVELLOENTRATA'], 
+                          ['IDCORSO','IDSPORT'], 
+                          ['IDCORSO']
+                          ];
+  
+          //Recupero le informazioni di Corso
+          this.docStructureService.getRelMultiDocCollection(listReceived, seqField)
+              .then(() => {
+
+                this.myListPianificazioni = listReceived;
+                
+                
+                elLoading.dismiss();
+      
+                if (event && event.target) {
+                  event.target.complete();
+                }
+              })
+              .catch(() => {
+
+                this.myListPianificazioni = listReceived;
+                
+                elLoading.dismiss();
+      
+                if (event && event.target) {
+                  event.target.complete();
+                }   
+
+              })
 
         })
         .catch(error => {
@@ -186,6 +216,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
           elLoading.dismiss();
           console.log(error);
           this.showMessage('Errore di connessione');
+
         });
         
     })
@@ -229,20 +260,125 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
    * @param elImpegno Elemento selezionato
    */
    onClickImpegno(elImpegno: PianificazioneCorso){
-    this.navController.navigateForward('/agenda-trainer/' + elImpegno.ID);
-    // this.navController.navigateForward('/agenda-trainer/' + elem.ID+'-'+elem.IDCORSO);
+    let docCorso: Corso;
+    let showScelta = false;
+    let adesso = new Date();
+    let dataOraFine: Date; 
 
+    console.log('qui');
+
+    if (elImpegno) {
+      //Vediamo se trovo il documento Corso all'interno
+      docCorso = elImpegno.getDocInRepository(['IDCORSO']) as Corso;
+      if (docCorso) {
+        dataOraFine = MyDateTime.mergeDateAndTime(docCorso.DATAFINE, docCorso.ORAINIZIO);
+
+        if (adesso >= dataOraFine) {
+          //Chiedo cosa vuole fare
+          showScelta = true;
+        }
+      }
+    }
+
+    if (showScelta) {
+      this.askPresenzeValutazioni(elImpegno);
+    }
+    else {
+      this.showSchedaPresenze(elImpegno.ID);
+    }
+    
   }
 
   /**
-   * Quando viene scelto un corso, si vuole accedere alla Scheda di Valutazione
-   * E' necessario chiedere informazioni al server
-   * @param elCorso 
+   * Visualizza la scheda relativa all'IdImpegno
+   * per 
+   * @param idImpegno idImpegno da aprire
+   */
+  showSchedaPresenze(idImpegno: string): void {
+
+    if (idImpegno && idImpegno.length != 0) {
+
+      this.navController.navigateForward('/agenda-trainer/' + idImpegno);
+
+    }
+  }
+
+  /**
+   * Recupera dal parametro passato il documento Corso
+   * utile all'apertura della scheda Valutazioni
    * 
+   * E' possibile passare un documento Corso o anche uno Pianificazione
+   * 
+   * @param elItem Elemento da cui recuperare
+   */
+  private _forValutazioneRequestCorso(elItem: Corso | PianificazioneCorso):Promise<Corso> {
+    let docCorso: Corso;
+    let reqParam: RequestParams;
+    let reqDecode: RequestDecode;
+
+    return new Promise<Corso>((resolve) => {
+      
+      if (elItem) {
+        if (elItem instanceof Corso) {
+          
+          resolve(elItem);
+
+        }
+        else if (elItem instanceof PianificazioneCorso) {
+
+          docCorso = new Corso(true);
+          docCorso.ID = elItem.IDCORSO;
+
+          reqDecode = new RequestDecode();
+          reqDecode.active = true;
+
+          reqParam = new RequestParams();
+          reqParam.decode = reqDecode;
+          
+          //Devo recuperare l'elemento Corso
+          this.docStructureService.requestNew(docCorso, reqParam)
+                                  .then(listCorsi => {
+                                    if (listCorsi && listCorsi.length != 0) {
+
+                                      resolve(listCorsi[0]);
+                                    }
+                                    else {
+                                      resolve(null);
+                                    }
+                                  })
+                                  .catch(error => {
+                                    LogApp.consoleLog(error);
+                                    resolve(null);
+                                  });
+
+        }
+        else {
+          resolve(null);
+        }
+      }
+      else {
+        resolve(null);
+      }
+
+    })
+  }
+
+  /**
+   * Evento di Interfaccia al Click del corso
+   * @param elCorso Corso di riferimento
    */
   onClickCorso(elCorso: Corso) {
+    //Passo alla visualizzazione della Scheda Valutazione
+    this.showSchedaValutazioni(elCorso);
+  }
 
-    if (elCorso) {
+  /**
+   * Riceve un documento in Ingresso e cerca sempre di ricavare il documento
+   * Corso utile all'apertura della form Valutazioni  
+   * @param elItem Corso o Pianificazione
+   */
+  showSchedaValutazioni(elItem: Corso | PianificazioneCorso) {
+    if (elItem) {
 
       this.loadingController.create({
         message: 'Caricamento...',
@@ -250,41 +386,86 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
         backdropDismiss: true      
       })
       .then(elLoading => {
-  
+
+        //Mostro il loading
         elLoading.present();
 
-        //Effettuo la richiesta al server
-        this.startService.requestSchedaValutazioneCorso(elCorso.ID)
-                        .then((docScheda: CorsoValutazione) => {
+        //Richiedo il documento Corso
+        this._forValutazioneRequestCorso(elItem)
+            .then(elCorso => {
 
+              //Qualcosa è andato storto
+              if (!elCorso) {
 
-                          //Chiedo al server i livelli per lo sport
-                          this.startService.requestLivelliForSport(elCorso.IDSPORT)
-                                           .then((collLivelli:Livello[]) => {
+                //Chiudo il loading
+                elLoading.dismiss();
+                this.showMessage('Informazioni corso non trovate');
+              }
+              else {
+                //Posso procedere con la richiesta al server della scheda di valutazione, 
+                //e relativa visualizzazione
+                //Passo il corso e il loading da chiudere
+                this._requestAndOpenValutazione(elCorso, elLoading);
+              }
+            })
 
-                                             //Chiudo il loading
-                                             elLoading.dismiss();
-
-                                             //Devo aprire la videata in modale passando 
-                                             //a) Scheda di Valutazione
-                                             //b) Corso di riferimento
-                                             //c) Livelli Sportivi
-                                             this.openModaleSchedaValutazione(docScheda, elCorso, collLivelli);
-
-                                           })
-
-
-                        })
-                        .catch(error => {
-
-                          elLoading.dismiss();
-
-                          //Mostro un messaggio
-                          this.showMessage(error,'alert');
-                        })
       })
+    }
+  }
 
 
+  /**
+   * Quando viene scelto un corso, si vuole accedere alla Scheda di Valutazione
+   * E' necessario chiedere informazioni al server
+   * @param elCorso 
+   * 
+   */
+  private _requestAndOpenValutazione(elCorso: Corso, elLoading:HTMLIonLoadingElement) {
+
+    //Se presente il corso proseguo
+    if (elCorso) {
+
+      //Effettuo la richiesta al server
+      this.startService.requestSchedaValutazioneCorso(elCorso.ID)
+                      .then((docScheda: CorsoValutazione) => {
+
+
+                        //Chiedo al server i livelli per lo sport
+                        this.startService.requestLivelliForSport(elCorso.IDSPORT)
+                                         .then((collLivelli:Livello[]) => {
+
+                                           //Chiudo il loading
+                                           elLoading.dismiss();
+
+                                           //Devo aprire la videata in modale passando 
+                                           //a) Scheda di Valutazione
+                                           //b) Corso di riferimento
+                                           //c) Livelli Sportivi
+                                           this._openModaleSchedaValutazione(docScheda, elCorso, collLivelli);
+
+                                         })
+                                         .catch(error => {
+                                           //Non ho recuperato i Livelli
+                                           elLoading.dismiss();
+                                           LogApp.consoleLog(error);
+                                           this.showMessage('Recupero Livelli fallito');
+                                         })
+
+
+                      })
+                      .catch(error => {
+                        //Chiudo il loading
+                        elLoading.dismiss();
+
+                        //Mostro un messaggio
+                        this.showMessage(error,'alert');
+                      })
+
+
+    }
+    else {
+      //Chiudo il loading
+      elLoading.dismiss();
     }
 
   }
@@ -295,7 +476,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
    * @param docScheda Scheda di Valutazione
    * @param docCorso Corso di riferimento
    */
-  openModaleSchedaValutazione(docScheda: CorsoValutazione, 
+  private _openModaleSchedaValutazione(docScheda: CorsoValutazione, 
                               docCorso: Corso,
                               collLivelli:Livello[]) {
     
@@ -546,11 +727,12 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
     this.subListenCorsi = this.startService.listCorsiTrainer
                                   .subscribe(listElement => {
                                           this.myListCorsi = listElement;
-
+                                          
                                           if (this.myLoadingForCorsi) {
                                             this.myLoadingForCorsi.dismiss();
                                           }
                                   }, error => {
+
                                     this.myListCorsi = [];
                                     if (this.myLoadingForCorsi) {
                                       this.myLoadingForCorsi.dismiss();
@@ -558,6 +740,47 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
                                   });
   }
 
+  /**
+   * Apre un Action Sheet per chiedere cosa l'utente vuole fare
+   * Usato nella lista Impegni per farlo andare anche alle Valutazioni
+   */
+  askPresenzeValutazioni(elImpegno: PianificazioneCorso):void {
+    let pthis = this;
+    
+
+    if (elImpegno) {
+        
+      this.actionController.create({
+        header: 'Cosa vuoi fare',
+        buttons:[{
+          icon:'bar-chart-outline',
+          text: 'Valutazioni',
+          handler: () => {
+            //Devo aprire le valutazioni
+            pthis.showSchedaValutazioni(elImpegno);
+          }
+          }, 
+          {
+            icon:'people-circle-outline',
+            text: 'Presenze',
+            handler: () => {
+              //Devo aprire le presenze
+              pthis.showSchedaPresenze(elImpegno.ID);
+            }
+          },
+        {
+          icon: 'arrow-undo-outline',
+          text: 'Annulla',
+          role: 'cancel'
+        }]
+      })
+      .then(elAction => {
+        elAction.present();
+      });
+
+
+    }
+  }
 
 }
 

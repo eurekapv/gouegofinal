@@ -1,0 +1,161 @@
+<div class="custom-element" *ngIf="typeList == 'corsi'">
+  <ion-grid  class="ion-no-padding">
+    <ion-row class="ion-align-items-center">
+      <!-- COLONNA SINISTRA -->
+      <ion-col 
+          class="ion-no-padding col-left" 
+          size="3">
+
+        <ion-label class="center-label">
+
+          <h5>
+            <span>{{myCorso.DATAINIZIO | date: 'EEE' | lowercase}}&nbsp;</span>
+            {{myCorso.DATAINIZIO | date: 'd MMM yy' | titlecase}}
+          </h5>
+          
+
+          <ion-chip 
+              [color]="colorItem()">
+              <ion-label><h4>{{myCorso.ORAINIZIO | date: 'HH:mm'}}</h4></ion-label>
+              <ion-icon 
+                  name="time-outline">
+              </ion-icon>
+          </ion-chip>          
+          <h5 *ngIf="myCorso.NUMEROLEZIONI != 1">
+            <span>{{myCorso.DATAFINE | date: 'EEE' | lowercase}}&nbsp;</span>
+            {{myCorso.DATAFINE | date: 'd MMM yy' | titlecase}}
+          </h5>
+
+        </ion-label> 
+
+      </ion-col>
+
+      <!-- COLONNA CENTRALE -->
+      <ion-col 
+          class="ion-no-padding col-center"
+          size="5" 
+          [ngClass]="getClassColorColumn()">
+
+          <ion-label>
+            <p class="text-truncate">
+              <ion-chip 
+                  *ngIf = "valueTipoCorso == tipoCorso.prova"
+                  color="warning">
+                  <span>PROVA</span>
+              </ion-chip> 
+
+              <span><strong>{{labelSiglaCalendario}}</strong></span>
+            </p>
+
+            <h4 class="ion-text-wrap">{{labelDenominazioneCorso}}</h4>
+            <p *ngIf="labelSport.length != 0">{{labelSport}}</p>
+          </ion-label>
+      </ion-col>
+
+
+      <!-- COLONNA DESTRA -->
+      <ion-col 
+          class="ion-no-padding col-right"
+          size="4">
+
+          <ion-label>
+              <ion-chip
+                 *ngIf="labelLivello.length != 0" 
+                  [color]="colorItem()">
+                    <ion-label>
+                      <h4><strong>{{labelLivello}}</strong></h4>
+                    </ion-label>
+              </ion-chip>          
+        
+            <h5 *ngIf="labelLocation.length != 0">{{labelLocation}}</h5>
+
+          </ion-label>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>  
+</div>
+
+<div class="custom-element" *ngIf="typeList == 'pianificazioni'">
+
+  <ion-grid  class="ion-no-padding">
+    <ion-row class="ion-align-items-center">
+      <!-- COLONNA SINISTRA -->
+      <ion-col 
+          class="ion-no-padding col-left" 
+          size="3">
+
+        <ion-label class="center-label">
+
+          <h5>
+            <span>{{myPianificazione.DATAORAINIZIO | date: 'EEE' | lowercase}}&nbsp;</span>
+            {{myPianificazione.DATAORAINIZIO | date: 'd MMM yy' | titlecase}}
+          </h5>
+          
+
+          <ion-chip 
+              [color]="colorItem()">
+              <ion-label><h4>{{myPianificazione.DATAORAINIZIO | date: 'HH:mm'}}</h4></ion-label>
+              <ion-icon 
+                  name="time-outline">
+              </ion-icon>
+          </ion-chip>          
+          <h5 *ngIf="myPianificazione.getMinutiLezione() != 0">
+            {{myPianificazione.getMinutiLezione()}}
+            <span>&nbsp;minuti</span>
+          </h5>
+
+        </ion-label> 
+
+      </ion-col>
+
+      <!-- COLONNA CENTRALE -->
+      <ion-col 
+          class="ion-no-padding col-center"
+          size="5" 
+          [ngClass]="getClassColorColumn()">
+
+          <ion-label>
+            <p class="text-truncate">
+              <ion-chip 
+                  *ngIf = "valueTipoCorso == tipoCorso.prova"
+                  color="warning">
+                  <span>PROVA</span>
+              </ion-chip> 
+
+              <span><strong>{{labelSiglaCalendario}}</strong></span>
+            </p>
+
+            <h4 class="ion-text-wrap">{{labelDenominazioneCorso}}</h4>
+            <p *ngIf="labelSport.length != 0">{{labelSport}}</p>
+          </ion-label>
+      </ion-col>
+
+
+      <!-- COLONNA DESTRA -->
+      <ion-col 
+          class="ion-no-padding col-right"
+          size="4">
+
+          <ion-label>
+              <ion-chip
+                 *ngIf="labelLivello.length != 0" 
+                  [color]="colorItem()">
+                    <ion-label>
+                      <h4><strong>{{labelLivello}}</strong></h4>
+                    </ion-label>
+              </ion-chip>          
+        
+            <h5 
+              class="text-truncate" 
+              *ngIf="labelLocation.length != 0"><strong>{{labelLocation}}</strong></h5>
+            <p
+              class="text-truncate" 
+              *ngIf="labelCampo.length != 0"><strong>{{labelCampo}}</strong></p>
+          </ion-label>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+</div>

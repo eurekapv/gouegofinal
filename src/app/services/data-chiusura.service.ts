@@ -60,8 +60,6 @@ export class DataChiusuraService {
         this.listChiusure.next(this._listChiusure);
   
         //risolvo la lista
-        // console.log('LISTA CHIUSURE');
-        // console.log(this._listChiusure);
         resolve(this._listChiusure);
       })
     })

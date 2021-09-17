@@ -378,28 +378,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   //#endregion
 
-  //#region TRAINER
-  // updateTrainer(){
-  //   if (this.docUtente.isTrainer){
-  //     this.showTrainer = true;
 
-  //     //creo il filtro e recupero tutti i corsi dell'istruttore loggato
-  //     let filterCorso : Corso = new Corso;
-
-
-  //   }
-  //   else{
-  //     this.showTrainer = false;
-  //   }
-  // }
-
-  //#endregion
 
   ngOnInit() {
-    //prova localizzazione
-    // Geolocation.getCurrentPosition().then(posizione => {
-    //   console.log (posizione);
-    // })
+
   }
 
   ngOnDestroy() {

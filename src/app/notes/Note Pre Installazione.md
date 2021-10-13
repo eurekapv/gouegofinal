@@ -42,9 +42,42 @@ Cancellare dalle cartelle android o ios i file e rieseguire
     npx cap open android
     npx cap open ios
 
+
+Versione APPLE
+Alla prima volta usare 
+sudo npm install @capacitor/ios
+sudo npx cap add ios
+Questi comandi creeranno le cartelle
+
+Poi eseguire ionic cap sync (Compila non in production e copia)
+
+Arriveranno i problemi seguenti sicuramente e risolverli
+Da adesso in poi usare sempre il comando 
+
+sudo npx cap update ios
+
+Perchè gli altri danno sempre il problema del pod Install
+
+Troveremo anche un problema di permessi su una cartella Libreria\Preferenze\...capacitor
+anche in questo caso nasvigare con il Finder e assegnare i permessi
+
+Se tutto ha finito possiamo aprire il progetto
+npx cap open ios
+
+
 In caso di problemi EACCESS dalla cartella gouego digitare
     sudo chown -R Lavoro ios
 cosi da attribuire poteri a tutta la cartella
+
+In caso di problemi 
+You cannot run CocoaPods as root.
+dare i permessi come sopra e poi
+    cd\ios
+    cd\App
+    pod install
+
+    Verrà usato il file Podfile
+
 
 >Se la compilazione Xcode indica 'File debug unable to open' dare i permessi alla cartella Pods/TargetSupportFile
 

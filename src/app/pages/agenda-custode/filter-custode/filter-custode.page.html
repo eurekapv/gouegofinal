@@ -4,36 +4,46 @@
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="dismiss()">
         <ion-icon name="close"></ion-icon>
-      </ion-button>      
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
   <ion-list lines="full">
     <ion-item-divider color="light">
       <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
       <ion-label>Quando: </ion-label>
     </ion-item-divider>
-    <ion-datetime displayFormat="DDDD - DD/MM/YYYY" [(ngModel)]="selectedIsoDate" required [dayNames]="dayNames">
+    <ion-datetime
+      displayFormat="DDDD - DD/MM/YYYY"
+      [(ngModel)]="selectedIsoDate"
+      required
+      [dayNames]="dayNames"
+      max="2099-12-31"
+      cancelText = "Annulla"
+      doneText="Conferma"
+    >
       <ion-label position="floating">Data</ion-label>
       <ion-input [(ngModel)]="selectedIsoDate"></ion-input>
     </ion-datetime>
+
     <ion-item-divider color="light">
       <ion-icon slot="start" name="location-outline" color="primary"></ion-icon>
       <ion-label>Dove: </ion-label>
     </ion-item-divider>
     <ion-item button (click)="presentActionSheet()">
-      <ion-label >{{labelSelectedLocation}}</ion-label>
+      <ion-label>{{labelSelectedLocation}}</ion-label>
     </ion-item>
-
   </ion-list>
-
 </ion-content>
 
-
-
 <ion-footer>
-  <ion-button color="primary" expand="block" (click)="submit()" [disabled]="!canSubmit">Conferma</ion-button>
+  <ion-button
+    color="primary"
+    expand="block"
+    (click)="submit()"
+    [disabled]="!canSubmit"
+    >Conferma</ion-button
+  >
 </ion-footer>

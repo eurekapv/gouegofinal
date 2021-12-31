@@ -268,9 +268,13 @@
             </ion-item-divider>
             <ion-item>
               <ion-label position="floating">Data</ion-label>
-              <ion-datetime formControlName="nascita" 
+              <ion-datetime 
+                            formControlName="nascita" 
                             displayFormat="DD-MM-YYYY"
-                            [max]="today"></ion-datetime>
+                            cancelText = "Annulla"
+                            doneText="Conferma"
+                            [max]="today">
+              </ion-datetime>
             </ion-item>
             <ion-item>
               <ion-label position="floating">Comune</ion-label>

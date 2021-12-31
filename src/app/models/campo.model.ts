@@ -14,6 +14,7 @@ export class Campo extends IDDocument {
   TIPOLOGIA: TipoCampo;
   DIMENSIONI: string;
   STRUTTURA: StrutturaCampo;
+  STRUTTURAATTUALE: StrutturaCampo;
   CAMPOSPORT: CampoSport[]; 
   UTILIZZABILE: boolean; //Segnato come utilizzabile
   DURATAOREMINIMA: number; //Se presente è la durata minima di prenotazione

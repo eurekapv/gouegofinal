@@ -17,16 +17,16 @@ import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 
-import { RequestDecode, RequestParams } from 'src/app/library/models/requestParams.model';
+import { RequestParams } from 'src/app/library/models/requestParams.model';
 
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 
 import { Plugins } from '@capacitor/core';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
-import { LogApp } from 'src/app/models/log.model';
-import { AllegatilistPage } from '../history/historycourse/allegatilist/allegatilist.page';
+
+
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
-import { Button } from 'protractor';
+
 
 const { Geolocation } = Plugins;
 
@@ -82,9 +82,11 @@ export class HomePage implements OnInit, OnDestroy {
 
   listOccupazioni: any[]= []; //array di array di occupazioni, divise per locations
 
-
   //Mostra o nasconde Area Agenda
   showAgenda = false;
+
+  //Bottone che avvisa della possibilità di iscriversi ai corsi
+  advertisingCorsiButton: ButtonCard; 
 
   get showTrainer(): boolean {
     return (this.userLogged && (this.docUtente.isAssistenteTrainer || this.docUtente.isTrainer))
@@ -92,6 +94,14 @@ export class HomePage implements OnInit, OnDestroy {
 
   get showCustode(): boolean {
     return (this.userLogged && this.docUtente.isCustode)
+  }
+
+  /**
+   * Flag per mostrare il banner 
+   * di iscrizione ai corsi
+   */
+  get showAdvertisingIscrizioni(): boolean {
+    return true;
   }
 
 
@@ -235,6 +245,9 @@ export class HomePage implements OnInit, OnDestroy {
       // this.updateAgenda();
       // this.richiediAgendaOccupazione();
 
+      //Imposta il bottone che compare sotto alle location 
+      //per avvisare di iscriversi ai corsi
+      this.setAdvertisingButtonCorsi();
 
     });
 
@@ -796,6 +809,25 @@ export class HomePage implements OnInit, OnDestroy {
     else{
       this.showMessage('Puoi visualizzare solo il dettaglio delle prenotazioni');
     }
+  }
+
+
+  /**
+   * Crea un bottone per informare gli utenti di iscriversi ai corsi
+   */
+  setAdvertisingButtonCorsi():void {
+    this.advertisingCorsiButton = new ButtonCard();    
+    this.advertisingCorsiButton.title = 'Impara con noi';
+    this.advertisingCorsiButton.subtitle = 'Iscriviti ai nostri corsi o prove';
+    this.advertisingCorsiButton.nameicon = 'fish-outline';
+    this.advertisingCorsiButton.sloticon = 'end';
+    this.advertisingCorsiButton.color = 'danger';
+
+  }
+
+  //Click sulla card di Iscrizione Corsi
+  onClickAdvertisingCorsi(): void {
+
   }
 
     /**

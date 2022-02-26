@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NewsEvento } from 'src/app/models/newsevento.model';
 
-import { Plugins } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { ModalController } from '@ionic/angular';
-const { Browser } = Plugins;
+
 
 
 @Component({

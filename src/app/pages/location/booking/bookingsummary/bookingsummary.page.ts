@@ -13,12 +13,11 @@ import { PaymentProcess } from 'src/app/models/payment-process.model';
 import { PageType, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
 
 import { AlertController } from '@ionic/angular';
-import { Plugins } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { Area } from 'src/app/models/area.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { AreaLink } from 'src/app/models/arealink.model';
-const { Browser } = Plugins;
 
 @Component({
   selector: 'app-bookingsummary',

@@ -5,7 +5,7 @@ import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
-import { Plugins } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType, RequestPincodeUse } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
@@ -16,7 +16,6 @@ import { CryptoService } from 'src/app/library/services/crypto.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
 import { PswRecoveryPage } from '../psw-recovery/psw-recovery.page';
 import { PostResponse } from 'src/app/library/models/postResult.model';
-const { Browser } = Plugins;
 
 
 @Component({

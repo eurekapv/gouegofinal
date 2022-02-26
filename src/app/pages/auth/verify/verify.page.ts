@@ -4,7 +4,7 @@ import { ModalController, LoadingController, ToastController, NavController, Ale
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { StartService } from 'src/app/services/start.service';
 import { Utente, ParamsVerifica } from 'src/app/models/utente.model';
-import { Plugins } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType, RequestPincodeUse, ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
@@ -12,7 +12,6 @@ import { AreaLink } from 'src/app/models/arealink.model';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
-const { Browser } = Plugins;
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 

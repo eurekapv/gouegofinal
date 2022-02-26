@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { GeolocationPosition, Plugins } from '@capacitor/core';
+import { Geolocation, Position } from '@capacitor/geolocation';
 import { Area } from '../models/area.model';
-const { Geolocation } = Plugins;
+
 
 
 @Injectable({
@@ -15,7 +14,7 @@ export class PosizioneService {
   /**
    * La funzione restituisce una promise con la posizione attuale
    */
-  getCurrentPosition(): Promise<GeolocationPosition>{
+  getCurrentPosition(): Promise<Position>{
     return Geolocation.getCurrentPosition();
     
   }
@@ -44,27 +43,27 @@ export class PosizioneService {
           //se sono almeno due
           //recupero la posizione attuale
           this.getCurrentPosition()
-          .then(currentPosition => {
-            
-              //se effettivamento ho la posizione, posso ciclare sull'array
-              for (let index = 1; index < listAree.length; index++){
-                if(listAree[index].distanceFrom(currentPosition)){
-                  //se è possibile calcolare la distanza per quest'area (sono presenti lat e long)
-                  if(listAree[index].distanceFrom(currentPosition) < nearestArea.distanceFrom(currentPosition)){
-                    //se l'area corrente è più vicina di quella memorizzata, la salvo
-                    nearestArea = listAree[index];
-                  }
-                }
-              }
+                .then(currentPosition => {
+                  
+                    //se effettivamento ho la posizione, posso ciclare sull'array
+                    for (let index = 1; index < listAree.length; index++){
+                      if(listAree[index].distanceFrom(currentPosition)){
+                        //se è possibile calcolare la distanza per quest'area (sono presenti lat e long)
+                        if(listAree[index].distanceFrom(currentPosition) < nearestArea.distanceFrom(currentPosition)){
+                          //se l'area corrente è più vicina di quella memorizzata, la salvo
+                          nearestArea = listAree[index];
+                        }
+                      }
+                    }
 
-            //ho finito, posso risolvere
-            resolve(nearestArea)
-          })
-          .catch(error => {
-            
-              //errore, non ho recuperato la posizione
-              reject(error);
-            })
+                  //ho finito, posso risolvere
+                  resolve(nearestArea)
+                })
+              .catch(error => {
+                
+                  //errore, non ho recuperato la posizione
+                  reject(error);
+                });
         }
         
     

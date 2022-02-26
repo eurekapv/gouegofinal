@@ -11,7 +11,7 @@ import { PaymentProcess } from 'src/app/models/payment-process.model';
 import { PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoRigoIncasso } from 'src/app/models/valuelist.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { StartService } from 'src/app/services/start.service';
-import { Plugins } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { AreaLink } from 'src/app/models/arealink.model';
 import { Settimana } from 'src/app/models/settimana.model';
 import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
@@ -19,7 +19,7 @@ import { Utente } from 'src/app/models/utente.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { IscrizioneCorso } from 'src/app/models/iscrizionecorso.model';
 import { IscrizioneIncasso } from 'src/app/models/iscrizioneincasso.model';
-const { Browser } = Plugins;
+
 
 @Component({
   selector: 'app-bookcourse',

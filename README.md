@@ -45,10 +45,10 @@ Il primo comando compila in Build e il secondo copia la www nei pacchetti
     <!--For Geolocation API-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-feature android:name="android.hardware.location.gps" />
     <!-- CAMERA API -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.location.gps" />
 ```
 ## File Info.plist
 ```xml

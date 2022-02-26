@@ -9,8 +9,7 @@ import { NavController, ToastController, LoadingController, AlertController} fro
 //per lo share mobile con immagini
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 //per lo share via browser
-import { Plugins } from '@capacitor/core';
-const { Share } = Plugins;
+import { Share } from '@capacitor/share';
 
 import { DocstructureService } from 'src/app/library/services/docstructure.service'
 

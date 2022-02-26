@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Plugins, CameraResultType, CameraPhoto, CameraSource } from '@capacitor/core';
+import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
+import { Storage } from '@capacitor/storage';
 
-
-const {Camera, Filesystem, Storage} = Plugins;
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +11,6 @@ export class PhotoService {
   private PHOTO_STORAGE: string = 'photos';
   
   constructor() { }
-
-
 
    /**
     * 
@@ -30,7 +27,7 @@ export class PhotoService {
         source: CameraSource.Prompt,
         quality: 100
       })
-      .then((data:CameraPhoto) => {
+      .then((data:Photo) => {
   
         let myImageDataUrl:string  = data.dataUrl;
   

@@ -4,9 +4,8 @@ import { Chooser, ChooserResult } from '@ionic-native/chooser/ngx';
 import { ToastController, PickerController, ModalController } from '@ionic/angular';
 import { PickerColumnOption } from '@ionic/core';
 import { InvioDocumentazione } from 'src/app/models/documentazione.model';
-import {Plugins, CameraResultType, CameraPhoto, CameraSource } from '@capacitor/core';
+import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
 
-const {Camera } = Plugins;
 
 
 @Component({
@@ -22,7 +21,7 @@ export class UploadComponent implements OnInit {
   //file caricati (sono tipi diversi a seconda se caricati da mobile o desktop)
   loadedMobileFile : ChooserResult;
   loadedDesktopFile : File;
-  loadedMobilePhoto: CameraPhoto;
+  loadedMobilePhoto: Photo;
 
   //File caricato
   fileLoaded: boolean = false;
@@ -92,7 +91,7 @@ export class UploadComponent implements OnInit {
         source: CameraSource.Prompt,
         quality: 100
       })
-      .then((data:CameraPhoto) => {
+      .then((data:Photo) => {
 
          //Questo è il file caricato
         this.loadedMobilePhoto = data;

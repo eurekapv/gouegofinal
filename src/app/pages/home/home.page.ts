@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ɵConsole } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { Location } from 'src/app/models/location.model';
 
 import { ActionSheetController, NavController, ModalController, ToastController } from '@ionic/angular';
 import { Impegno } from 'src/app/models/impegno.model';
-import { SettoreAttivita, Ruolo, Mansione } from '../../models/valuelist.model';
+import { SettoreAttivita, Ruolo } from '../../models/valuelist.model';
 
 import { Utente } from 'src/app/models/utente.model';
 import { ButtonCard, ButtonHomeParams } from 'src/app/models/buttoncard.model';
@@ -20,15 +20,11 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
-
-import { Plugins } from '@capacitor/core';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
-
-
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 
 
-const { Geolocation } = Plugins;
+
 
 
 @Component({

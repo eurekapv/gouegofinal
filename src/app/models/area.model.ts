@@ -4,7 +4,7 @@ import { TipoArea, PageType, SettorePagamentiAttivita } from '../models/valuelis
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { AreaLink } from './arealink.model';
 import { AreaPaymentSetting } from './areapaymentsetting.model';
-import { GeolocationPosition } from '@capacitor/core';
+import { Position } from '@capacitor/geolocation';
 
 
 export class Area extends IDDocument {
@@ -195,24 +195,35 @@ export class Area extends IDDocument {
     }
 
 
-    distanceFrom(position: GeolocationPosition) {
-      if (this.LATITUDINE && this.LONGITUDINE){
-        let lat = position.coords.latitude
-        let lon = position.coords.longitude
-        var radlat1 = Math.PI * this.LATITUDINE/180
-        var radlat2 = Math.PI * lat/180
-        var theta = this.LONGITUDINE-lon
-        var radtheta = Math.PI * theta/180
-        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    /**
+     * Ritorna la distanza tra Lat/Lon dell'area e la posizione passata
+     * @param position Posizione rilevata
+     * @returns Numero di Metri di distanza tra 2 punti
+     */
+    distanceFrom(position: Position): number {
+      let dist: number = 0;
+
+      if (this.LATITUDINE && this.LONGITUDINE) {
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
+        var radlat1 = Math.PI * this.LATITUDINE/180;
+        var radlat2 = Math.PI * lat/180;
+        var theta = this.LONGITUDINE-lon;
+        var radtheta = Math.PI * theta/180;
+        dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+
         if (dist > 1) {
             dist = 1;
         }
-        dist = Math.acos(dist)
-        dist = dist * 180/Math.PI
-        dist = dist * 60 * 1.1515
-        dist = dist * 1.609344
-        return dist
+
+        dist = Math.acos(dist);
+        dist = dist * 180/Math.PI;
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;
+
       }
+      
+      return dist;
   }
 
 

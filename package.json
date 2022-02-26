@@ -53,6 +53,7 @@
     "moment": "^2.27.0",
     "native": "^0.2.0",
     "native-run": "^0.3.0",
+    "ngx-pinch-zoom-13": "^2.5.6",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "run": "^1.4.0",
     "rxjs": "^6.6.0",

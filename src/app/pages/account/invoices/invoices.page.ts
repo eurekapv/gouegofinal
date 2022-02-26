@@ -128,20 +128,22 @@ export class InvoicesPage implements OnInit {
 
           // è andato tutto bene, converto il base64 in blob
           this.startService.base64toBlob(response.code)
-          .then(blob => {
+                .then(blob => {
 
-            //ora che ho il blob, lo posso aprire
-            if(this.startService.isDesktop){
+                  //ora che ho il blob, lo posso aprire
+                  if(this.startService.isDesktop){
 
-              //apertura per desktop
-              this.openDesktop(blob);
-            }
-            else{
+                    //apertura per desktop
+                    this.openDesktop(blob);
+                    
+                  }
+                  else{
 
-              //apertura per mobile
-              this.openMobile(blob);
-            }
-          })
+                    //apertura per mobile
+                    this.openMobile(blob);
+
+                  }
+                })
           
         }
 
@@ -161,6 +163,10 @@ export class InvoicesPage implements OnInit {
     })
   }
 
+  /**
+   * Scaricamento di un file Blob nella modalità Desktop
+   * @param blob 
+   */
   openDesktop(blob: Blob){
 
 
@@ -177,6 +183,10 @@ export class InvoicesPage implements OnInit {
 
   }
 
+  /**
+   * Apertura del Blob in versione Mobile
+   * @param blob 
+   */
   openMobile(blob: Blob){
     let fileName='Documento';         
     let filePath= this.file.cacheDirectory;      
@@ -196,6 +206,10 @@ export class InvoicesPage implements OnInit {
           });
   }
 
+  /**
+   * Visualizzo un messaggio toast
+   * @param messaggio Messaggio da visualizzare
+   */
   showMessage(messaggio: string){
     this.toastController.create({
       message: messaggio,

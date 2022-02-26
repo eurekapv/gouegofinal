@@ -1558,8 +1558,10 @@ requestDocumento(urlDocumento: string){
    * @param b64Data stringa B64 SENZA tipo di file
    * @param contentType stringa tipo file (default: application/pdf)
    */
-  base64toBlob(b64Data, contentType='application/pdf'){
+  base64toBlob(b64Data, contentType='application/pdf') {
+
     return this.invoicesService.base64toBlob(b64Data, contentType);
+    
   }
 
 

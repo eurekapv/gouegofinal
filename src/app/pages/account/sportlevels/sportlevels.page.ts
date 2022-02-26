@@ -2,7 +2,6 @@ import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { Utente } from 'src/app/models/utente.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { Sport } from 'src/app/models/sport.model';
 import { TipoPrivateImage, PageType } from 'src/app/models/valuelist.model';
@@ -25,7 +24,7 @@ export class SportlevelsPage implements OnInit {
   showLogoGruppo: boolean;
 
   constructor(private startService: StartService,
-              private socialSharing: SocialSharing)  {
+              )  {
 
                 this.showLogoGruppo = false;
 
@@ -62,50 +61,6 @@ export class SportlevelsPage implements OnInit {
       
   }
 
-
-
-  
-
-
-  /**
-   * FUNZIONE DEPRECATA NON SUPPORTATA E NON COMPLETA
-   * HTML TO IMAGE E' STATO ELIMINATO
-   * @param sportLevelPrimaryKey Chiave Primaria del record di SportLevel
-   */
-  onShare(sportLevelPrimaryKey: string)
-  {
-    let method = 'SVG';
-    let options = { width:350, height:600 };
-    let messaggio = '';
-
-    if (!this.startService.isDesktop || this.startService.isDesktop){
-
-      
-
-      //recupero il livello
-      let docLivello:UtenteLivello;
-      docLivello = this.utente.UTENTILIVELLI.find(elem=>{
-        return elem.ID==sportLevelPrimaryKey;
-      });
-
-      if (docLivello) {
-
-
-
-        //compongo il messaggio
-        messaggio = this.utente.NOME + ' ha ottenuto il livello ' + docLivello.DESCRLIVELLO +  ' a ' + docLivello.DESCRSPORT + '! Complimenti!!';
-          
-        //recupero l'immagine della card
-        let DOMCard=document.getElementById(sportLevelPrimaryKey);
-        
-
-
-
-
-      }
-      
-    }    
-  }
 
   doRefresh(event: any){
     event.target.complete();

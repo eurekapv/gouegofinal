@@ -66,6 +66,16 @@ Il primo comando compila in Build e il secondo copia la www nei pacchetti
 	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini o barcode</string>
 ```
 
+### 25/02/2022
+#### Aggiornamento
+Aggiornamento progetto a 
+- Angular 13
+- Ionic 6
+- Capacitor 3
+
+Plugin Eliminati 
+- @ionic-native/social-sharing/ngx'
+- cordova-plugin-x-socialsharing
 
 ### 21/07/2021
 #### MAC Compilation Error

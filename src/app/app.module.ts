@@ -19,7 +19,6 @@ import { QRCodeModule } from 'angularx-qrcode';
 import localeIt from '@angular/common/locales/it';
 
 
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { CryptoService } from './library/services/crypto.service';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
@@ -43,7 +42,6 @@ registerLocaleData(localeIt,'it');
         SplashScreen,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
         { provide: LOCALE_ID, useValue: 'it' },
-        SocialSharing,
         CryptoService,
         File,
         FileOpener

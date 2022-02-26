@@ -6,8 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, ToastController, LoadingController, AlertController} from '@ionic/angular';
 
-//per lo share mobile con immagini
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 //per lo share via browser
 import { Share } from '@capacitor/share';
 
@@ -53,7 +51,6 @@ export class HistorybookPage implements OnInit, OnDestroy {
               private navCtr: NavController,
               private startService: StartService,
               private toastCtr: ToastController,
-              private socialSharing: SocialSharing,
               private docStructureService: DocstructureService,
               private loadingController: LoadingController,
               private docstructrureService: DocstructureService,
@@ -262,27 +259,38 @@ export class HistorybookPage implements OnInit, OnDestroy {
     return this.startService.getSportIcon(idSport);
   }
 
+  /**
+   * Effettuo lo Sharing della Prenotazione
+   * @param docPianificazione 
+   */
   onShare(docPianificazione:PrenotazionePianificazione){
-    let url:string;
+
+    let webUrlArea:string = ''; //Link di riferimento dell'area
+    let webUrlLogo: string; //Link con il Logo dell'Area
     let messaggio:string;
-    let logo: string;
     let oggetto: string;
     
     
 
     if (this.myPrenotazione && docPianificazione){
 
+      //Cerco URL della mia Area
       for (const iterator of this.myArea.AREALINKS) {
-        if (iterator.TIPOURL==PageType.home){
-          url=iterator.REFERURL;
+        if (iterator.TIPOURL==PageType.home) {
+          webUrlArea=iterator.REFERURL;
           break;
         }      
       }
-      if(!url){
-        url='';
+
+      if(!webUrlArea){
+        webUrlArea = '';
       }
-      logo=this.startConfig.getUrlLogo();
-      messaggio=this.myPrenotazione.NOMINATIVO+' ha prenotato il '+docPianificazione.DATAORAINIZIO.toLocaleDateString()+' alle '+docPianificazione.DATAORAINIZIO.toLocaleTimeString();
+
+      //Chiedo il logo per l'area
+      webUrlLogo=this.startConfig.getUrlLogo();
+
+      //Compongo il messaggio
+      messaggio=this.myPrenotazione.NOMINATIVO + '  ha prenotato il ' + docPianificazione.DATAORAINIZIO.toLocaleDateString()+' alle '+docPianificazione.DATAORAINIZIO.toLocaleTimeString();
       
       if (this.startConfig.companyName){
         messaggio += ' presso '+this.startConfig.companyName;
@@ -300,17 +308,22 @@ export class HistorybookPage implements OnInit, OnDestroy {
         messaggio += ', Attività: '+docPianificazione['_DENOMINAZIONE_Sport']+')';
       }
   
+      //Compongo l'oggetto
+      oggetto='Prenotazione ' + docPianificazione.PROGRESSIVO;
   
-      oggetto='Prenotazione '+docPianificazione.PROGRESSIVO;
-  
-      if(this.startService.isDesktop){
-        //share via mail su desktop
-        window.open('mailto:?subject='+oggetto+'&body='+messaggio);
-      }
-      else{
-        //share su mobile
-        this.socialSharing.share(messaggio,'',logo,url);
-      }
+      //Se posso condividere
+      Share.canShare()
+          .then(result => {
+            if (result.value) {
+              //Effettuo la condivisione
+              Share.share({
+                title: oggetto,
+                text: messaggio,
+                url: webUrlArea
+              });
+              
+            }
+          });
     }
 
     else{

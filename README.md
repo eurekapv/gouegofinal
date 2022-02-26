@@ -1,3 +1,10 @@
+# Per la preparazione dei pacchetti Mobile
+ionic build --prod
+npx cap sync
+Il primo comando compila in Build e il secondo copia la www nei pacchetti
+(Non usare altri comandi che fanno la build in test e non in prod)
+
+
 # Gouego Application 
 
 ## Capacitor Cordova Plugin

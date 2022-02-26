@@ -19,36 +19,25 @@ import { AllegatilistPage } from '../history/historycourse/allegatilist/allegati
 
 
 @NgModule({
-  imports: [
-
-    CommonModule,
-    IonicModule,
-    HomePageRoutingModule,
-    
-    NewsdetailPageModule,
-    NewLoginPageModule,
-    PswRecoveryPageModule,
-    SharedComponentsModule,
-    AllegatilistPageModule
-    
-    // RouterModule.forChild([
-    //   {
-    //     path: '',
-    //     component: HomePage
-    //   }
-    // ]),
-
-  ],
-  declarations: [
-    HomePage,   
-  ],
-  exports: [
-  ],
-  entryComponents: [
-    NewLoginPage,
-    PswRecoveryPage,
-    NewsdetailPage,
-    AllegatilistPage
-  ]
+    imports: [
+        CommonModule,
+        IonicModule,
+        HomePageRoutingModule,
+        NewsdetailPageModule,
+        NewLoginPageModule,
+        PswRecoveryPageModule,
+        SharedComponentsModule,
+        AllegatilistPageModule
+        // RouterModule.forChild([
+        //   {
+        //     path: '',
+        //     component: HomePage
+        //   }
+        // ]),
+    ],
+    declarations: [
+        HomePage,
+    ],
+    exports: []
 })
 export class HomePageModule {}

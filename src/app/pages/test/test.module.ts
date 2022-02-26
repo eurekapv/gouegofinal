@@ -12,14 +12,13 @@ import { TestPageRoutingModule } from './test-routing.module';
 import { TestPage } from './test.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    TestPageRoutingModule,
-    VerifyPageModule
-  ],
-  declarations: [TestPage],
-  entryComponents: [VerifyPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        TestPageRoutingModule,
+        VerifyPageModule
+    ],
+    declarations: [TestPage]
 })
 export class TestPageModule {}

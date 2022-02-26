@@ -14,16 +14,15 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SharedComponentsModule,
-    AgendaCustodePageRoutingModule,
-    FilterCustodePageModule,
-  ],
-  declarations: [AgendaCustodePage],
-  entryComponents: [FilterCustodePage],
-  providers: [BarcodeScanner]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SharedComponentsModule,
+        AgendaCustodePageRoutingModule,
+        FilterCustodePageModule,
+    ],
+    declarations: [AgendaCustodePage],
+    providers: [BarcodeScanner]
 })
 export class AgendaCustodePageModule {}

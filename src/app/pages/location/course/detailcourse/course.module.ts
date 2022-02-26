@@ -19,20 +19,18 @@ import { BookcoursePage } from '../bookcourse/bookcourse.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    CoursePageRoutingModule,
-    FormsModule,
-    PipesModule,
-    CalendarPageModule,
-    NewLoginPageModule,
-    VerifyPageModule,
-    BookcoursePageModule,
-    SharedComponentsModule
-    
-  ],
-  declarations: [CoursePage],
-  entryComponents: [CalendarPage, NewLoginPage, VerifyPage, BookcoursePage]
+    imports: [
+        CommonModule,
+        IonicModule,
+        CoursePageRoutingModule,
+        FormsModule,
+        PipesModule,
+        CalendarPageModule,
+        NewLoginPageModule,
+        VerifyPageModule,
+        BookcoursePageModule,
+        SharedComponentsModule
+    ],
+    declarations: [CoursePage]
 })
 export class CoursePageModule {}

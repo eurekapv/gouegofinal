@@ -20,19 +20,17 @@ import { QRCodeModule } from 'angularx-qrcode';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    HistorycoursePageRoutingModule,
-    
-    PipesModule,
-    CalendarPageModule,
-    AllegatilistPageModule,
-    FormsModule,
-    SharedComponentsModule,
-    QRCodeModule
-  ],
-  entryComponents:[CalendarPage, AllegatilistPage],
-  declarations: [HistorycoursePage]
+    imports: [
+        CommonModule,
+        IonicModule,
+        HistorycoursePageRoutingModule,
+        PipesModule,
+        CalendarPageModule,
+        AllegatilistPageModule,
+        FormsModule,
+        SharedComponentsModule,
+        QRCodeModule
+    ],
+    declarations: [HistorycoursePage]
 })
 export class HistorycoursePageModule {}

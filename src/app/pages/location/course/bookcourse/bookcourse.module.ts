@@ -13,16 +13,15 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
 import { PaymentChooseComponent } from 'src/app/shared/components/payment-choose/payment-choose.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    BookcoursePageRoutingModule,
-    PipesModule,
-    SharedComponentsModule
-  ],
-  declarations: [BookcoursePage],
-  entryComponents:[PaymentChooseComponent, PaymentPage],
-  exports:[BookcoursePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        BookcoursePageRoutingModule,
+        PipesModule,
+        SharedComponentsModule
+    ],
+    declarations: [BookcoursePage],
+    exports: [BookcoursePage]
 })
 export class BookcoursePageModule {}

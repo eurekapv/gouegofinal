@@ -29,30 +29,26 @@ import { File } from '@ionic-native/file/ngx';
 registerLocaleData(localeIt,'it');
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
-  imports: [BrowserModule, 
-            FormsModule,
-            HttpClientModule,
-            IonicModule.forRoot(), 
-            IonicStorageModule.forRoot(),
-            AppRoutingModule,
-            QRCodeModule,
-              
-            ],
-  providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: LOCALE_ID, useValue: 'it' },
-    SocialSharing,
-    CryptoService,
-    File,
-    FileOpener
-    
-
-  ],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent],
+    imports: [BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        IonicModule.forRoot(),
+        IonicStorageModule.forRoot(),
+        AppRoutingModule,
+        QRCodeModule,
+    ],
+    providers: [
+        StatusBar,
+        SplashScreen,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        { provide: LOCALE_ID, useValue: 'it' },
+        SocialSharing,
+        CryptoService,
+        File,
+        FileOpener
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}
 

@@ -16,17 +16,15 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    BookingsummaryPageRoutingModule,
-    
-    PaypalPageModule,
-    SharedComponentsModule
-  ],
-  declarations: [BookingsummaryPage],
-  entryComponents:[PaymentChooseComponent, PaymentPage],
-  exports:[BookingsummaryPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        BookingsummaryPageRoutingModule,
+        PaypalPageModule,
+        SharedComponentsModule
+    ],
+    declarations: [BookingsummaryPage],
+    exports: [BookingsummaryPage]
 })
 export class BookingsummaryPageModule {}

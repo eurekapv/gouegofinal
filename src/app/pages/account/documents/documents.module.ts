@@ -18,16 +18,14 @@ import { DocumentsPage } from './documents.page';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    DocumentsPageRoutingModule,
-    
-    SharedComponentsModule
-  ],
-  declarations: [DocumentsPage],
-  providers: [Chooser],
-  entryComponents: [UploadComponent]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        DocumentsPageRoutingModule,
+        SharedComponentsModule
+    ],
+    declarations: [DocumentsPage],
+    providers: [Chooser]
 })
 export class DocumentsPageModule {}

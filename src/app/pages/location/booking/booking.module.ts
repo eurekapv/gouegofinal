@@ -17,16 +17,15 @@ import { NewLoginPage } from '../../auth/new-login/new-login.page'
 import { NewLoginPageModule } from '../../auth/new-login/new-login.module'
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    BookingPageRoutingModule,
-    BookingsummaryPageModule,
-    VerifyPageModule,
-    SharedComponentsModule, 
-    NewLoginPageModule   
-  ],
-  declarations: [BookingPage],
-  entryComponents: [BookingsummaryPage, VerifyPage, NewLoginPage]
+    imports: [
+        CommonModule,
+        IonicModule,
+        BookingPageRoutingModule,
+        BookingsummaryPageModule,
+        VerifyPageModule,
+        SharedComponentsModule,
+        NewLoginPageModule
+    ],
+    declarations: [BookingPage]
 })
 export class BookingPageModule {}

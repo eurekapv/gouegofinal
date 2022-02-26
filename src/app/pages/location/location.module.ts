@@ -19,24 +19,18 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    IonicModule,
-    LocationPageRoutingModule,
-
-    PipesModule,
-    GalleryPageModule,
-    CampiNewPageModule,
-    FormsModule,
-    SharedComponentsModule
-    
-  ],
-  declarations: [
-    LocationPage
+    imports: [
+        CommonModule,
+        IonicModule,
+        LocationPageRoutingModule,
+        PipesModule,
+        GalleryPageModule,
+        CampiNewPageModule,
+        FormsModule,
+        SharedComponentsModule
     ],
-
-  entryComponents: [GalleryPage, CampiNewPage]
-  
-  
+    declarations: [
+        LocationPage
+    ]
 })
 export class LocationPageModule {}

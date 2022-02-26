@@ -22,20 +22,18 @@ import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ListcoursesPageRoutingModule,
-    BookcoursePageModule,
-    FilterPageModule,
-    SharedComponentsModule,
-    NewLoginPageModule,
-    VerifyPageModule
-  ],
-  declarations: [ListcoursesPage],
-  entryComponents: [FilterPage],
-  exports: [NewLoginPage, VerifyPage]
-  
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ListcoursesPageRoutingModule,
+        BookcoursePageModule,
+        FilterPageModule,
+        SharedComponentsModule,
+        NewLoginPageModule,
+        VerifyPageModule
+    ],
+    declarations: [ListcoursesPage],
+    exports: [NewLoginPage, VerifyPage]
 })
 export class ListcoursesPageModule {}

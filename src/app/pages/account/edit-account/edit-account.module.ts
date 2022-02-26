@@ -8,16 +8,14 @@ import { EditAccountPageRoutingModule } from './edit-account-routing.module';
 import { EditAccountPage } from './edit-account.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    EditAccountPageRoutingModule,
-    
-    ReactiveFormsModule,
-    VerifyPageModule
-  ],
-  declarations: [EditAccountPage],
-  entryComponents: [VerifyPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        EditAccountPageRoutingModule,
+        ReactiveFormsModule,
+        VerifyPageModule
+    ],
+    declarations: [EditAccountPage]
 })
 export class EditAccountPageModule {}

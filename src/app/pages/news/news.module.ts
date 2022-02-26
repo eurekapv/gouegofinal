@@ -14,18 +14,14 @@ import { NewsdetailPageModule } from '../newsdetail/newsdetail.module';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    NewsPageRoutingModule,
-    
-    NewsdetailPageModule,
-    SharedComponentsModule
-  ],
-  declarations: [NewsPage],
-  entryComponents:[NewsdetailPage]
-
-  
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        NewsPageRoutingModule,
+        NewsdetailPageModule,
+        SharedComponentsModule
+    ],
+    declarations: [NewsPage]
 })
 export class NewsPageModule {}

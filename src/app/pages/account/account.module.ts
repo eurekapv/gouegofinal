@@ -11,18 +11,14 @@ import { EditLoginPage } from './edit-login/edit-login.page';
 import {EditLoginPageModule} from './edit-login/edit-login.module'
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    AccountPageRoutingModule,
-
-    ReactiveFormsModule,
-    EditLoginPageModule
-   
-  ],
-  declarations: [AccountPage],
-  entryComponents: [EditLoginPage]
-  
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        AccountPageRoutingModule,
+        ReactiveFormsModule,
+        EditLoginPageModule
+    ],
+    declarations: [AccountPage]
 })
 export class AccountPageModule {}

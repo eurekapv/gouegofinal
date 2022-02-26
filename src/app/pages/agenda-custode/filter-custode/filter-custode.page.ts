@@ -17,7 +17,7 @@ export class FilterCustodePage implements OnInit {
   selectedIsoDate: string;
   selectedLocation: Location = undefined;
 
-  dayNames: string[];
+
   today: Date;
   listLocations: Location[] = [];
 
@@ -31,11 +31,6 @@ export class FilterCustodePage implements OnInit {
     private startService: StartService
   ) { 
     this.today = new Date();
-
-    this.dayNames = [];
-    ValueList.getArray(Giorni).forEach(elGiorno => {
-      this.dayNames.push(elGiorno.description);
-    });
   }
   
   ngOnInit() {

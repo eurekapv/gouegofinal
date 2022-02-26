@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 import { LocationImage } from 'src/app/models/locaton-image.model';
-import { StartAuthorization } from 'src/app/models/start-configuration.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({

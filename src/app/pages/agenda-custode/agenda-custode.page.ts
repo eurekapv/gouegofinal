@@ -22,7 +22,7 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
   filter:OccupazioneCampi;
   listenAreaSelected: Subscription;
   
-  settimana = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
+
   selectedIsoDate: string;
 
   labelAllLocations: string;

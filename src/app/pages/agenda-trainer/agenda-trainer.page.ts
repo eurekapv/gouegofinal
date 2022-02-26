@@ -57,9 +57,6 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
 
   showFilter: boolean = true;
 
-  //FIXME: C'e' gia un enum con i giorni della settimana
-  settimana = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato']
-
   //Viste della pagina
   PageView : typeof ViewTrainerCourse = ViewTrainerCourse;
   selectedView: ViewTrainerCourse = ViewTrainerCourse.impegni;

@@ -1,0 +1,22 @@
+[
+	{
+		"pkg": "@capacitor/browser",
+		"classpath": "com.capacitorjs.plugins.browser.BrowserPlugin"
+	},
+	{
+		"pkg": "@capacitor/camera",
+		"classpath": "com.capacitorjs.plugins.camera.CameraPlugin"
+	},
+	{
+		"pkg": "@capacitor/geolocation",
+		"classpath": "com.capacitorjs.plugins.geolocation.GeolocationPlugin"
+	},
+	{
+		"pkg": "@capacitor/share",
+		"classpath": "com.capacitorjs.plugins.share.SharePlugin"
+	},
+	{
+		"pkg": "@capacitor/storage",
+		"classpath": "com.capacitorjs.plugins.storage.StoragePlugin"
+	}
+]

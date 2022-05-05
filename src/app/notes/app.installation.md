@@ -114,7 +114,7 @@ Aggiunto plugin per Social Sharing
 > npm install cordova-plugin-x-socialsharing
 > npm install @ionic-native/social-sharing
 > npm install jetifier
-> npx jetifier
+> npx jetify
 
 
 aggiunto SocialSharing all'array "providers" nell'app.module.ts

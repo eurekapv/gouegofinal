@@ -6,9 +6,9 @@ const config: CapacitorConfig = {
     "bundledWebRuntime": false,
     "webDir": "www",
     "backgroundColor": "#ffffffff",
-    "android": {
-        "path": "/opt/android-studio/bin/studio.sh"
-    },
+    // "android": {
+    //     "path": "/opt/android-studio/bin/studio.sh"
+    // },
     "ios": {
       "cordovaLinkerFlags": [
         "-ObjC"

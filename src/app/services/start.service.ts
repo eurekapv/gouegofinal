@@ -233,8 +233,8 @@ export class StartService {
           //Sto aprendo in localhost ma voglio far puntare al server
           //ancora una volta metto un appId fisso
           if (myUrl == 'localhost') {
-
-            // myAppId = '00F15A91-5d395-445C-B7F4-5BA594E55D2F'; //Demo AppId
+            
+            myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; //Demo AppId
             //myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
             // myAppId = 'FD291600-D873-49CF-A90C-525926CA2CDC'; //Key Element
 
@@ -255,12 +255,16 @@ export class StartService {
     }
     else {
 
+      console.log('Capacitor Step');
       //Non è mai in localconnection
       this._localConnection = false;
 
+
       //VALORIZZARE L'APP ID PER CAPACITOR
       //TODO: VALORIZZARE APPID PER INSTALLAZIONE CAPACITOR
-      myAppId = 'CCBA34A5-24F5-4C22-8485-D891823E3434';
+      //myAppId = 'CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach
+      myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; //Demo AppId
+      
       
 
       //Sono su capacitor o cordova
@@ -377,7 +381,9 @@ export class StartService {
       //Url da chiamare
       let myUrl = actualStartConfig.urlBase + '/' + doObject;
   
-      
+      console.log(myUrl);
+      console.log(JSON.stringify(myHeaders));
+
       // Effettuo la chiamata per l'autorizzazione
       this.apiService
         .httpGet(myUrl, myHeaders, myParams)

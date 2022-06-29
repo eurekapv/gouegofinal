@@ -44,6 +44,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
           
           //Recupero l'utente
           this.utente = data;
+
           if (this.utente.MOBILENUMBER == null)  {
             this.utente.MOBILENUMBER = '';
           }
@@ -63,7 +64,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
     this.docGruppo = this.startService.actualStartConfig.gruppo;
     
-    //this.createForm();
   }
 
   ngOnDestroy() {
@@ -72,9 +72,14 @@ export class EditAccountPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Creazione del form nella pagina
+   */
   createForm()
   {
     let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
+    const patternMobileNum = '^[0-9]*$';
+
     this.form=new FormGroup({
       nome:new FormControl(this.utente.NOME, {
         updateOn:'change',
@@ -85,10 +90,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
         validators: [Validators.required]
       }),
       sesso:new FormControl(this.utente.SESSO, {
-        updateOn:'change',
-        validators: []
-      }),
-      nascita:new FormControl((this.utente.NATOIL ? this.utente.NATOIL.toISOString(): this.utente.NATOIL), {
         updateOn:'change',
         validators: []
       }),
@@ -135,10 +136,11 @@ export class EditAccountPage implements OnInit, OnDestroy {
     })
 
     if(!this.docGruppo.needMobileVerify){
-      //devo creare il campo mail
+
+      //devo creare il campo mobile
       let mobile = new FormControl(this.utente.MOBILENUMBER, {
         updateOn: 'change',
-        validators: [Validators.pattern('^[0-9]*$')]
+        validators: []
       })
 
       this.form.addControl('mobile', mobile)
@@ -154,8 +156,12 @@ export class EditAccountPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Conferma della Form
+   */
   onSubmit()
   {
+    
     if (this.form.valid)
     {
 
@@ -168,14 +174,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
       this.utente.COMUNE=this.form.value.comResidenza;
       this.utente.CAP=this.form.value.capResidenza;
       this.utente.PROVINCIA=this.form.value.provResidenza;
-      this.utente.ISOSTATO=this.form.value.statoResidenza;
-
-      
-      if (this.form.value.nascita) {
-        this.utente.NATOIL = new Date(this.form.value.nascita);
-      }
-
-      
+      this.utente.ISOSTATO=this.form.value.statoResidenza;    
 
       this.utente.NATOA=this.form.value.comNascita;
       this.utente.NATOCAP=this.form.value.capNascita;
@@ -219,8 +218,17 @@ export class EditAccountPage implements OnInit, OnDestroy {
                   });
             });
     }
+    else {
+      //Devo mostrare qualche errore
+      this.startService.presentToastMessage('Alcune informazioni sono errate');
+    }
   }
 
+
+
+  /**
+   * Cambiamento del Codice Fiscale
+   */
   onCfChange(){
 
     //se il cf cambia, quando l'utente esce dalla casella, provo a validarlo e riempire gli altri campi

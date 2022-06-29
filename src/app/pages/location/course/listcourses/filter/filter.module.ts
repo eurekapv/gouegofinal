@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { FilterPageRoutingModule } from './filter-routing.module';
 
 import { FilterPage } from './filter.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    FilterPageRoutingModule
+    FilterPageRoutingModule,
+    SharedComponentsModule
   ],
   declarations: [FilterPage],
   exports: [FilterPage]

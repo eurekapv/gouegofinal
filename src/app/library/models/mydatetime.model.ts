@@ -66,6 +66,8 @@ static stringToDateObject(strInput: string): Date {
  let strComplete = '';
  let dataReturn: Date;
  let arElement: string[];
+ let containTZ: boolean = false;
+
 
  arElement = [];
  
@@ -81,15 +83,49 @@ static stringToDateObject(strInput: string): Date {
 
     if (arElement[1].length !== 0) {
         strTime = arElement[1];
-    }   
+    }
+    else {
+        strTime = '00:00:00';
+    }  
     
     if (arElement[2].length !== 0) {
         timeZone = arElement[2];
+        containTZ = true;
     }
-        
+    
+    //La Data Ora non ha il TIMEZONE incluso (allora fingo che la data sia del TimeZone dell'utente)
+    if (containTZ == false) {
+        //Creo una Date temporanea con il TZ del browser
+        let myTempDate = new Date(strInput);
+        //Calcolo l'offset con UTC
+        let offset = myTempDate.getTimezoneOffset(); 
+
+        if (offset == 0) {
+            //Siamo in una zona UTC
+            timeZone = 'Z';
+        }
+        else {
+            //Con l'offset cerco di ricavare il timezone 01:00 02:00 etc dove mi trovo 
+            timeZone = (Math.abs(offset/60) + '').padStart(2,'0') + ':' + '00'
+            //Attacco + o - a seconda
+            timeZone = (offset < 0 ? '+' : '-') + timeZone;
+
+        }
+
+        //Data completa
+        strComplete = `${strDate}T${strTime}` + timeZone;        
+        //Questa è la data di ritorno
+        dataReturn = moment(strComplete).toDate();
+    }
+    else {
+        //La data ora in input ha già tutto
+        dataReturn = moment(strInput).toDate();
+    }
+
+    //VECCHIA VERSIONE
     //Non aggiungere il TimeZone perchè non da errori ma l'uso della proprietà data da problemi
-    strComplete = `${strDate}T${strTime}`;
-    dataReturn = moment(strComplete).toDate();
+    //strComplete = `${strDate}T${strTime}`;
+    //dataReturn = moment(strComplete).toDate();
 
 
     return dataReturn;
@@ -490,3 +526,15 @@ export enum TypePeriod {
     seconds	        ='s',
     milliseconds	='ms'
 }
+
+
+export enum ModesCalendar {
+    date = 'date',
+    dateTime = 'date-time',
+    month = 'month',
+    monthYear = 'month-year',
+    yearMonth = 'year-month',
+    year = 'year',
+    time = 'time',
+    timeDate = 'time-date',
+  }

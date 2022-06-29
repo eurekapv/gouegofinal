@@ -17,9 +17,11 @@ export class InvoicesPage implements OnInit {
 
   actualUtente: Utente = new Utente();
 
-  listRicevute: MasterDocumento[] = [];
+  listRicevute: MasterDocumento[] = [];  
 
-  selectedYear = new Date().toISOString();
+  //Data con l'anno selezionato
+  yearSelected = new Date();
+
 
   constructor(
     private loadingController: LoadingController,
@@ -61,48 +63,51 @@ export class InvoicesPage implements OnInit {
    * @param event Evento opzionale da completare dopo aver eseguito l'aggiornamento (usato per il refresher)
    */
   requestRicevute(event?: any){
-    
-    //prima di tutto calcolo l'anno
-    let myDate = new Date(this.selectedYear);
-    let anno = myDate.getFullYear();
+    let anno:number;
 
-        
+    if (this.yearSelected) {
 
-    if(event){
-      //La funzione è stata chiamata dal refresher
-      this.startService.requestInvoices(this.actualUtente, anno)
-      .then((listRicevute) => {
-
-        this.listRicevute = listRicevute;
-        event.target.complete();
-      })
-      .catch(error => {
-        console.log(error);
-        this.showMessage('Errore di connessione');
-        event.target.complete();
-      })
-    }
-
-    else{
-
-      //la funzione non è stata chiamata dal refresher
-      this.loadingController.create()
-      .then(elLoading => {
-
-        elLoading.present();
+      anno = this.yearSelected.getFullYear();
+      
+      if(event){
+        //La funzione è stata chiamata dal refresher
         this.startService.requestInvoices(this.actualUtente, anno)
         .then((listRicevute) => {
+      
           this.listRicevute = listRicevute;
-          elLoading.dismiss();
+          event.target.complete();
         })
         .catch(error => {
           console.log(error);
           this.showMessage('Errore di connessione');
-          elLoading.dismiss();
+          event.target.complete();
         })
-      })
       
+      }
+      else{
+      
+        //la funzione non è stata chiamata dal refresher
+        this.loadingController.create()
+        .then(elLoading => {
+      
+          elLoading.present();
+          this.startService.requestInvoices(this.actualUtente, anno)
+          .then((listRicevute) => {
+            this.listRicevute = listRicevute;
+            elLoading.dismiss();
+          })
+          .catch(error => {
+            console.log(error);
+            this.showMessage('Errore di connessione');
+            elLoading.dismiss();
+          })
+        })
+        
+      }
+
     }
+    
+
 
    
   }

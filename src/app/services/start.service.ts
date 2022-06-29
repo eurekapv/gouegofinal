@@ -64,7 +64,8 @@ import { CorsoValutazioneService } from './corso-valutazione.service';
 import { CorsoValutazione } from '../models/corsovalutazione.model';
 import { Livello } from '../models/livello.model';
 import { PhotoService, PhotoType } from './photo.service';
-
+import { SmartInterfaceService } from './smart-interface.service';
+import { AlertButton, SpinnerTypes } from "@ionic/core";
 
 
 @Injectable({
@@ -177,7 +178,8 @@ export class StartService {
     private corsoAllegatoService: CorsoallegatoService,
     private iscrizioneCorsoService: IscrizionecorsoService,
     private corsoValutazioneService: CorsoValutazioneService,
-    private photoService: PhotoService
+    private photoService: PhotoService,
+    private srvSmartInterface: SmartInterfaceService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -215,8 +217,8 @@ export class StartService {
     if (this.isOnWeb) {
 
         //Qui posso cambiare strategia per puntare localmente
-        //this._localConnection = true;
-        this._localConnection = false;
+        this._localConnection = true;
+        //this._localConnection = false;
 
         if (this._localConnection) {
           //Modalità di Test metto un AppId di test
@@ -1607,6 +1609,107 @@ isFestivita(data: Date, idArea: string, idLocation: string, idCampo: string) {
   }
 
 //#endregion
+
+  //#region SMART INTERFACE PROMISE
+
+  //Le funzioni showMessage, showLoading, showToastingMessage ritornano
+  //la Promise di creazione che bisogna intercettare e presentare
+
+  //Le funzioni presentMessage, presentToastingMessage
+  //non ritornano nulla e il processo di creazione e presentazione è completato nella funzione
+
+
+  /**
+   * Crea un semplice messaggio con l'uso dell'AlertController
+   * La presentazione del messaggio è a carico del chiamante
+   * @param myMessage Messaggio
+   * @param myTitle Titolo
+   * @param myButtons Eventuali Button
+   * @returns Promise<Alert>
+   */
+   showAlertMessage(myMessage: string, myTitle?: string, myButtons?: (AlertButton | string)[]): Promise<HTMLIonAlertElement> {
+    return this.srvSmartInterface.showMessage(myMessage, myTitle, myButtons);
+  }
+
+
+
+  /**
+ * Crea un semplice loading con l'uso del LoadingController
+ * La presentazione del Loader e relativo Dismiss è a carico del chiamante
+ * @param myMessage Messaggio
+ * @param mySpinner Tipo Spinner (defualt = bubbles)
+ * @returns Promise<LoadingController>
+ */
+  showLoadingMessage(myMessage: string, mySpinner?: SpinnerTypes, backdropDismiss = false): Promise<HTMLIonLoadingElement> {
+    return this.srvSmartInterface.showLoading(myMessage, mySpinner, backdropDismiss);
+  }
+
+  /**
+  * Crea un Toast contenente un messaggio con l'uso del ToastController
+  * La presentazione del Toast è a carico del chiamante
+  *
+  * @param myMessage Messaggio da mostrare
+  * @param myTitle Titolo
+  * @param position
+  * @param duration
+  * @returns
+  */
+  showToastMessage(myMessage: string,
+    myTitle?: string,
+    myPosition?: 'top' | 'bottom' | 'middle',
+    myDuration: number = 2000): Promise<HTMLIonToastElement> {
+
+    return this.srvSmartInterface.showToastingMessage(myMessage, myTitle, myPosition, myDuration);
+  }
+
+
+
+  //#endregion
+
+  //#region SMART INTERFACE PRESENT
+  //I seguenti metodi non tornano una Promise ma presentano subito l'elemento
+
+  /**
+   * Crea e presenta un semplice messaggio con l'uso dell'AlertController
+   *
+   * @param myMessage Messaggio
+   * @param myTitle Titolo
+   * @param myButtons Eventuali Button
+   * @returns void
+   */
+  presentAlertMessage(myMessage: string, myTitle?: string, myButtons?: (AlertButton | string)[]) {
+    this.srvSmartInterface
+      .showMessage(myMessage, myTitle, myButtons)
+      .then(elMessage => {
+        elMessage.present();
+      })
+  }
+
+  /**
+   * Crea e presenta un Toast contenente un messaggio con l'uso del ToastController
+   *
+   *
+   * @param myMessage Messaggio da mostrare
+   * @param myTitle Titolo
+   * @param position
+   * @param duration
+   * @returns
+   */
+  presentToastMessage(myMessage: string,
+    myTitle?: string,
+    myPosition?: 'top' | 'bottom' | 'middle',
+    myDuration: number = 2000): void {
+
+    this.srvSmartInterface
+      .showToastingMessage(myMessage, myTitle, myPosition, myDuration)
+      .then(elToast => {
+        elToast.present();
+      })
+  }
+
+
+  //#endregion
+
 
 
 }

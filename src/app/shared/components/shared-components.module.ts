@@ -28,6 +28,7 @@ import { PaymentModeComponent } from './payment-mode/payment-mode.component';
 import { SettimanaBlockComponent } from './settimana-block/settimana-block.component';
 import { LevelSetterComponent } from './level-setter/level-setter.component';
 import { ItemAgendaTrainerComponent } from './item-agenda-trainer/item-agenda-trainer.component';
+import { DtinputComponent } from './dtinput/dtinput.component';
 
 /**
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
@@ -68,7 +69,8 @@ import { ItemAgendaTrainerComponent } from './item-agenda-trainer/item-agenda-tr
         HideHeaderDirective,
         SettimanaBlockComponent,
         LevelSetterComponent,
-        ItemAgendaTrainerComponent
+        ItemAgendaTrainerComponent,
+        DtinputComponent
         
     ],
     exports: [
@@ -95,7 +97,8 @@ import { ItemAgendaTrainerComponent } from './item-agenda-trainer/item-agenda-tr
         HideHeaderDirective,
         SettimanaBlockComponent,
         LevelSetterComponent,
-        ItemAgendaTrainerComponent
+        ItemAgendaTrainerComponent,
+        DtinputComponent
     ]
 })
 export class SharedComponentsModule {}

@@ -3,13 +3,6 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
-    <ion-buttons slot="primary">
-      <ion-button fill="clear" 
-          (click)="onSubmit()" 
-          [disabled]="!form.valid">
-        <ion-icon name="checkmark"></ion-icon>
-      </ion-button>
-    </ion-buttons>
     <ion-title>Qualcosa su di te</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -18,24 +11,32 @@
 <ion-content>
   <form [formGroup]="form">
     <ion-list>
+
+      <!-- DATI ANAGRAFICI -->
       <ion-item-group>
-        <ion-item-divider color="light">
+
+        <ion-item-divider 
+                sticky="true"
+                color="light">
           <ion-icon 
             name="person-outline" 
-            slot="start"
+            slot="end"
             color="primary"></ion-icon>
           <ion-label>Come ti chiami ?</ion-label>
         </ion-item-divider>
+
         <ion-item>
-          <ion-label position="floating">Nome</ion-label>
+          <ion-label slot="start" position="fixed">Nome</ion-label>
           <ion-input formControlName="nome"></ion-input>
         </ion-item>
+
         <ion-item>
-          <ion-label position="floating">Cognome</ion-label>
+          <ion-label slot="start" position="fixed">Cognome</ion-label>
           <ion-input formControlName="cognome"></ion-input>
         </ion-item>
+
         <ion-item>
-          <ion-label position="floating">Sesso</ion-label>
+          <ion-label slot="start" position="fixed">Sesso</ion-label>
           <ion-select formControlName="sesso" interface="popover">
             <ion-select-option 
               *ngFor="let sesso of listSesso"
@@ -44,141 +45,103 @@
             </ion-select-option>
           </ion-select>
         </ion-item>
+
         <ion-item>
-          <ion-label position="floating">Codice fiscale</ion-label>
+          <ion-label slot="start" position="fixed">Cod. fis.</ion-label>
           <ion-input (ionBlur)="onCfChange()" formControlName="cf"></ion-input>
         </ion-item >
       </ion-item-group>
 
+      <!-- DATI INDIRIZZO -->
       <ion-item-group>
-        <ion-item-divider color="light">
+        <ion-item-divider 
+              sticky="true"
+              color="light">
           <ion-icon 
             name="home-outline" 
-            slot="start"
+            slot="end"
             color="primary"></ion-icon>
           <ion-label>Dove vivi ?</ion-label>
         </ion-item-divider>
+
         <ion-item>
-          <ion-label position="floating">Indirizzo</ion-label>
+          <ion-label slot="start" position="fixed">Indirizzo</ion-label>
           <ion-input formControlName="indResidenza"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Comune</ion-label>
+          <ion-label slot="start" position="fixed">Comune</ion-label>
           <ion-input formControlName="comResidenza"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Cap</ion-label>
+          <ion-label slot="start" position="fixed">Cap</ion-label>
           <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Provincia</ion-label>
+          <ion-label slot="start" position="fixed">Provincia</ion-label>
           <ion-input formControlName="provResidenza"></ion-input>          
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Stato</ion-label>
+          <ion-label slot="start" position="fixed">Stato</ion-label>
           <ion-input formControlName="statoResidenza"></ion-input>
-        </ion-item>
-
-        <!-- VERSIONE A COLONNE NON FUNZIONANTE -->
-        <!-- <ion-item>
-          <ion-row>
-            <ion-col size="4" class="ion-no-padding" >
-              <ion-label position="floating">Cap</ion-label>
-              <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
-            </ion-col>
-            <ion-col size="4" class="ion-no-padding"  >
-              <ion-label position="floating">Provincia</ion-label>
-              <ion-input formControlName="provResidenza"></ion-input>
-            </ion-col>
-            <ion-col size="4" class="ion-no-padding">
-              <ion-label position="floating">Stato</ion-label>
-              <ion-input formControlName="statoResidenza"></ion-input>
-            </ion-col>
-          </ion-row>
-        </ion-item> -->
-
-
-        
+        </ion-item>        
       </ion-item-group>
+
+      <!-- DATI NASCITA -->
       <ion-item-group>
-        <ion-item-divider color="light">
+        <ion-item-divider 
+          sticky="true"
+          color="light">
           <ion-icon 
             name="logo-reddit" 
-            slot="start"
+            slot="end"
             color="primary"></ion-icon>
           <ion-label>Quando sei nato ?</ion-label>
         </ion-item-divider>
 
-        <ion-item>
-          <ion-label position="floating">Data</ion-label>
-          <ion-datetime formControlName="nascita" 
-                        displayFormat="DD-MM-YYYY"
-                        cancelText = "Annulla"
-                        doneText="Conferma"
-                        [max]="today"></ion-datetime>
-        </ion-item>
+        <app-dtinput
+              label="Nato il"
+              [(actualDate)]="this.utente.NATOIL">
+        </app-dtinput>
+
 
         <ion-item>
-          <ion-label position="floating">Comune</ion-label>
+          <ion-label slot="start" position="fixed">Comune</ion-label>
           <ion-input formControlName="comNascita"></ion-input>
         </ion-item>
 
         <!-- CAP NON VISUALIZZATA -->
         <ion-item *ngIf="showCapNascita">
-          <ion-label position="floating">Cap</ion-label>
+          <ion-label slot="start" position="fixed">Cap</ion-label>
            <ion-input formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>  
         </ion-item>
 
         <ion-item>
-          <ion-col size="4" class="ion-no-padding">
-            <ion-label position="floating">Provincia</ion-label>
+          
+            <ion-label slot="start" position="fixed">Provincia</ion-label>
             <ion-input formControlName="provNascita"></ion-input>
-          </ion-col>
+          
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Stato</ion-label>
+          <ion-label slot="start" position="fixed">Stato</ion-label>
           <ion-input formControlName="statoNascita"></ion-input>
         </ion-item> 
-
-
-
-        <!-- VERSIONE SU UNA RIGA CHE NON FUNZIONA -->
-        <!-- <ion-item>
-          <ion-list>
-          <ion-row>
-            <ion-col size="4" class="ion-no-padding">
-              <ion-label position="floating">Cap</ion-label>
-              <ion-input formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>              
-            </ion-col>
-
-            <ion-col size="4" class="ion-no-padding">
-              <ion-label position="floating">Provincia</ion-label>
-              <ion-input formControlName="provNascita"></ion-input>
-            </ion-col>
-
-            <ion-col size="4" class="ion-no-padding">
-              <ion-label position="floating">Stato</ion-label>
-              <ion-input formControlName="statoNascita"></ion-input>
-            </ion-col>
-          </ion-row>
-        </ion-list>
-        </ion-item> -->
-
 
       </ion-item-group>
 
 
       <!-- CELLULARE ED EMAIL -->
       <ion-item-group>
-        <ion-item-divider color="light">
+        <ion-item-divider 
+            sticky="true"
+            color="light">
           <ion-icon 
             name="call-outline" 
-            slot="start"
+            slot="end"
             color="primary"></ion-icon>
           <ion-label>Cellulare e Email</ion-label>
         </ion-item-divider>
@@ -197,30 +160,28 @@
 
         <!-- VERIFICA CELLULARE NON NECESSARIA -->
         <ion-item *ngIf="!docGruppo.needMobileVerify">
-          <ion-label position="floating">Cellulare</ion-label>
+          <ion-label slot="start" position="fixed">Cellulare</ion-label>
           <ion-input formControlName="mobile"></ion-input>
         </ion-item>
 
         <!-- VERIFICA MAIL NON NECESSARIA -->
         <ion-item *ngIf="!docGruppo.needEmailVerify">
-          <ion-label position="floating">E-Mail</ion-label>
+          <ion-label slot="start" position="fixed">E-Mail</ion-label>
           <ion-input formControlName="email"></ion-input>
         </ion-item>
 
 
       </ion-item-group>
-
-
-
     </ion-list>
   </form>
+
 </ion-content>
 <ion-footer>
   <ion-button 
       color="tertiary" 
       expand="block" 
       (click)="onSubmit()" 
-      [disabled]="!form.valid">
+     >
     Conferma
   </ion-button>
 </ion-footer>

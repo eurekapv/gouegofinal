@@ -1,44 +1,56 @@
 <ion-header class="ion-no-border">
+
   <ion-toolbar color="primary">
+  
+    <ion-title>Ricerca corsi</ion-title>
     
-    <ion-title>Filtri</ion-title>
-    
-    <ion-buttons slot="end">
+    <ion-buttons slot="start">
       <ion-button (click)="closeFilter()">
-        <ion-icon name="close"></ion-icon>
+        <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list-header>
-    <ion-label>
-      Ricerca corsi per
+  <ion-item lines="none">
+    <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+    <ion-label class="ion-text-wrap">
+      Imposta nelle caselle sottostanti le caratteristiche corsi desiderate e quindi premi il pulsante Cerca Corsi 
     </ion-label>
-  </ion-list-header>
+  </ion-item>
 
   <!-- TARGET SESSO-->
-  <ion-item>
-    <ion-label position="floating">Target</ion-label>
-    <ion-select [compareWith]="compareWithSelect" 
-                [(ngModel)]="myFilter.TARGETSESSO"
-                interface="popover"
-                placeHolder="tutti">
-      <ion-select-option 
-        *ngFor="let itemTarget of listTargetSesso"
-        [value]="itemTarget.value">
-        {{itemTarget.description}}
-      </ion-select-option>
+  <ion-item lines="full">
+
+    <ion-label
+        slot="start" 
+        position="fixed">Target
+    </ion-label>
+
+    <ion-select 
+        [compareWith]="compareWithSelect" 
+        [(ngModel)]="myFilter.TARGETSESSO"
+        [interface]="typeSelectInterface"
+        placeHolder="tutti">
+          <ion-select-option 
+            *ngFor="let itemTarget of listTargetSesso"
+            [value]="itemTarget.value">
+            {{itemTarget.description}}
+          </ion-select-option>
     </ion-select>
+
   </ion-item>  
 
   <!-- CATEGORIA ETA -->
   <ion-item>
-    <ion-label position="floating">Età</ion-label>
+    <ion-label 
+        slot="start" 
+        position="fixed">Età</ion-label>
     <ion-select [compareWith]="compareWithSelect" 
                 [(ngModel)]="myFilter.IDCATEGORIEETA"
-                interface="popover"
+                [interface]="typeSelectInterface"
                 placeHolder="tutte">
       <ion-select-option 
         *ngFor="let catEta of listCatEta"
@@ -51,10 +63,13 @@
 
     <!-- SPORT --> 
     <ion-item>
-      <ion-label position="floating">Attività</ion-label>
+      <ion-label 
+          slot="start" 
+          position="fixed">Attività</ion-label>
+
       <ion-select [compareWith]="compareWithSelect" 
                   [(ngModel)]="myFilter.IDSPORT"
-                  interface="popover"
+                  [interface]="typeSelectInterface"
                   placeHolder="tutte">
         <ion-select-option 
             *ngFor="let itemSport of listSport"
@@ -66,10 +81,12 @@
 
     <!-- TIPOLOGIA --> 
     <ion-item>
-      <ion-label position="floating">Tipologia</ion-label>
+      <ion-label 
+            slot="start" 
+            position="fixed">Tipologia</ion-label>
       <ion-select [compareWith]="compareWithSelect" 
                   [(ngModel)]="myFilter.TIPO"
-                  interface="popover"
+                  [interface]="typeSelectInterface"
                   placeHolder="tutti">
         <ion-select-option 
             *ngFor="let itemTipo of listTipoCorso"
@@ -80,36 +97,34 @@
     </ion-item>
 
     <!-- DATA CORSO --> 
-    <ion-item>
-      <ion-label position="floating">Disponibili da</ion-label>
-      <ion-datetime 
-          max="2099-12-31"
-          cancelText = "Annulla"
-          doneText="Conferma"
-          displayFormat="DD/MM/YYYY" 
-          [(ngModel)]="dataFine"
-          placeHolder="oggi">
-      </ion-datetime>
+    <app-dtinput
+      [(actualDate)]="dataFine"
+      calendarMode="date"
+      label="dal"
+      title="Dalla data">
+    </app-dtinput>
+
+    <ion-item
+          detail="false"
+          button="true"
+          (click)="emptyFilter()"
+          class="ion-text-end"
+          lines="none">
+      <ion-label 
+        class="ion-text-wrap">
+        reimposta i filtri
+      </ion-label>
+      <ion-icon slot="end" name="trash-outline"></ion-icon>
     </ion-item>
 
-
-    <ion-button 
-      color="danger" 
-      fill="outline" 
-      expand="block"
-      size="small"
-      class="ion-margin-top ion-margin-horizontal"
-      (click)="emptyFilter()">
-      Svuota Filtri
-    </ion-button>  
 </ion-content>
 
 <ion-footer>
       <ion-button 
-          color="primary" 
+          color="secondary" 
           fill="solid" 
           expand="block"
           (click)="applyFilter()">
-        Applica
+        Cerca Corsi
       </ion-button>  
 </ion-footer>

@@ -11,6 +11,7 @@ import { InvoicesPage } from './invoices.page';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 
 
@@ -20,7 +21,8 @@ import { PipesModule } from 'src/app/shared/pipes/pipes.module';
     FormsModule,
     IonicModule,
     InvoicesPageRoutingModule,
-    PipesModule
+    PipesModule,
+    SharedComponentsModule
   ],
   declarations: [InvoicesPage],
   providers: [File, FileOpener],

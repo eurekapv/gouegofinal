@@ -3,32 +3,44 @@ import { ActionSheetController, AlertController, LoadingController, ModalControl
 import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { StartService } from 'src/app/services/start.service';
-import { FilterCustodePage } from './filter-custode/filter-custode.page';
 import { SettoreAttivita } from 'src/app/models/valuelist.model';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Subscription } from 'rxjs';
 import { Location } from 'src/app/models/location.model';
 import { ActionSheetOptions, ActionSheetButton } from '@ionic/core';
+import { Area } from 'src/app/models/area.model';
 
 @Component({
   selector: 'app-agenda-custode',
   templateUrl: './agenda-custode.page.html',
   styleUrls: ['./agenda-custode.page.scss'],
 })
-export class AgendaCustodePage implements OnInit, OnDestroy {
+export class AgendaCustodePage implements OnDestroy {
 
   listOccupazioni: OccupazioneCampi[] = [];
   myIsDesktop: boolean;
-  filter:OccupazioneCampi;
-  listenAreaSelected: Subscription;
-  
+  lastFilter:OccupazioneCampi;
 
-  selectedIsoDate: string;
+  listenListAree: Subscription;
 
-  labelAllLocations: string;
+  //Elenco delle Aree
+  listAree: Area[] = [];
+  //Elenco delle Location legate all'area
+  listLocations: Location[] = [];
+  //Area Selected
+  areaSelected: Area;
+  //Eventuale Location Selected (NULL = Tutte)
+  locationSelected: Location; 
+  //Etichetta mostrata
   labelLocation: string;
 
-  listLocations: Location[] = [];
+  //Data selezionata
+  selectedDate: Date = new Date();
+    
+  labelAllLocations: string;
+
+  showCanvasNoData: boolean = false;
+
 
   constructor(
     private barcodeScanner: BarcodeScanner,
@@ -37,100 +49,119 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private alertController: AlertController,
     private actionSheeetController: ActionSheetController,
-    private modalController: ModalController,
     private navController: NavController,
     
   ) { 
-    //Filtro iniziale
-    this.filter = new OccupazioneCampi(true);
-    this.filter.IDAREA = this.startService.areaSelectedValue.ID;
-    this.filter.DATAINIZIO = new Date();
-    this.selectedIsoDate = this.filter.DATAINIZIO.toISOString();
+
     this.myIsDesktop = this.startService.isDesktop;
 
-    //Ascolto i cambiamenti dell'area
-    this.onListenAreaChange();
+    //Recupero l'elenco delle Aree
+    this.onListenListAree();
+    
+    //Recupero l'area selezionata esterna
+    this.requestInitialArea();
+
     
   }
 
-  ngOnInit() {
 
-    this.requestOccupazioni();
-  }
 
   ngOnDestroy() {
-    if (this.listenAreaSelected) {
-      this.listenAreaSelected.unsubscribe();
-    }
+
+
+    //Tolgo la sottoscrizione all'elenco delle aree
+    if (this.listenListAree) {
+      this.listenListAree.unsubscribe();
+    }    
   }
 
-
   /**
-   * Recupero Area
+   * Recupero l'elenco delle Aree disponibili
    */
-  onListenAreaChange() {
-    //Recupero le informazioni sull'area
-    this.listenAreaSelected = this.startService.areaSelected.subscribe(elArea => {
+  onListenListAree() {
 
-      if (elArea) {
-        this.labelAllLocations = "Locations di " + elArea.DENOMINAZIONE;
-      }
-      else {
-        this.labelAllLocations = "Tutte le Locations"
-      }
+    //Chiedo la lista delle Aree presenti
+    this.listenListAree = this.startService.listAree.subscribe(myListAree => {
+        //Attribuisco la lista delle aree
+        this.listAree = myListAree
+    });
 
-      //Preparo la lista location
-      this.requestListLocation(elArea.ID);
-    })
   }
 
-
   /**
-   * Imposta la label per Item Location
+   * Selezione di una nuova Area Operativa
    */
-  setLabelLocation() {
-    let myLocation: Location;
+  onChangeAreaSelected(ev?: any) {
 
-    if (this.filter && this.filter.IDLOCATION && this.filter.IDLOCATION.length != 0) {
-
-      myLocation = this.listLocations.find(elLocation => {
-        return elLocation.ID == this.filter.IDLOCATION;
-      });
+    if (ev && ev.detail && ev.detail.value) {
+      this.areaSelected = ev.detail.value;
     }
 
-    if (myLocation) {
-      this.labelLocation = myLocation.DENOMINAZIONE;
+
+    console.log(this.areaSelected);
+
+    //Riazzero la location
+    this.onChangeLocationSelected(null);
+
+
+    //Devo richiedere la Lista delle Location
+    this.prepareLocationList(this.areaSelected.ID);
+
+
+  }
+
+  /**
+   * Cambia la Location selezionata
+   * Se viene passato null si intende Tutte le locations
+   * E' stato introdotto il parametro delay per ritardare la ricehista delle 
+   * occupazioni alla chiusura dell'ActionSheet (provocava un brutto effetto UX)
+   * @param myLocation NULL oppure docLocation 
+   * @param delayMs ritardo in millisecondi prima di richiedere le occupazioni
+   */
+  onChangeLocationSelected(myLocation?:Location, delayMs:number = 0) {
+
+    this.locationSelected = myLocation;
+
+    if (this.locationSelected) {
+      this.labelLocation = this.locationSelected.DENOMINAZIONE
     }
     else {
-      this.labelLocation = this.labelAllLocations;
+      this.labelLocation = 'Tutte le locations';
     }
-  }
 
-  /**
-   * Evento per la scelta di una nuova location
-   * @param idLocation Nuova Location selezionata
-   */
-  onChangeLocation(idLocation:string) {
-
-    if (this.filter)  {
-      this.filter.IDLOCATION = idLocation;
-      this.setLabelLocation();
+    if (delayMs > 0) {
+      setTimeout(() => this.requestOccupazioni(), delayMs);
+    }
+    else {
+      //Richiedo subito le occupazioni
       this.requestOccupazioni();
     }
+
   }
 
+
   /**
-   * Recupero elenco locations
+   * Recupero l'area iniziale
+   */
+  requestInitialArea() {
+
+    //Prelevo l'area iniziale
+    this.areaSelected = this.startService.areaSelectedValue;
+    this.onChangeAreaSelected();
+
+  }
+
+  
+  /**
+   * Prepara l'elenco delle Location da mostrare nell'action sheet
    * @param idArea idArea riferimento
    */
-  requestListLocation(idArea: string) {
+  prepareLocationList(idArea: string) {
 
     this.startService.newRequestLocation(idArea)
                     .then(collLocation => {
                       //Location recuperate
                       this.listLocations = collLocation;
-                      //Preparo la labelLocation
-                      this.setLabelLocation();
                     });
 
   }
@@ -141,48 +172,76 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
    * Richiedo nuovamente le occupazioni campi sulla base del filtro
    * @param event evento che ha scatenato la richiesta (usato per dismettere il refresher se presente)
    */
-  requestOccupazioni(event?){
-    this.loadingController.create({
-      message: 'Caricamento...',
-      spinner: 'circular'
-    })
-    .then((elLoading) => {
-      if (!event){
-        elLoading.present();
-      }
-
-      return this.startService.requestOccupazioniByFilter(this.filter);
-    })
-    .then(listOccupazioni => {
-      this.listOccupazioni = listOccupazioni;
-      this.loadingController.dismiss();
-      if(event){
-        event.target.complete();
-      }
-    } )
-
-    .catch(error => {
-      this.loadingController.dismiss();
-      if(event){
-        event.target.complete();
-      }
-      console.log(error);
-      this.showMessage('Errore di connessione');
+  requestOccupazioni(event?) {
+    let myFilter = new OccupazioneCampi(true);
+    
+    if (this.areaSelected) {
 
       
-    })
+      //Imposto i parametri di filtro
+      myFilter.IDAREA = this.areaSelected.ID;
+
+      if (this.locationSelected) {
+        myFilter.IDLOCATION = this.locationSelected.ID;
+      }
+      
+      myFilter.DATAINIZIO = this.selectedDate;
+
+      //Creo un Loading controller
+      this.loadingController.create({
+        message: 'Caricamento...',
+        spinner: 'circular'
+      })
+      .then((elLoading) => {
+
+        if (!event){
+          elLoading.present();
+        }
+
+        //Richiedo le Occupazioni con il filtro
+        return this.startService.requestOccupazioniByFilter(myFilter);
+      })
+      .then(myListOccupazioni => {
+        
+        //Ecco le occupazioni trovate
+        this.listOccupazioni = myListOccupazioni;
+
+        if (this.listOccupazioni.length == 0) {
+
+          this.showCanvasNoData = true;
+
+        }
+        else {
+
+          this.showCanvasNoData = false;
+
+        }
+
+        this.loadingController.dismiss();
+
+        if(event){
+          event.target.complete();
+        }
+      } )
+      .catch(error => {
+
+        this.loadingController.dismiss();
+
+        if(event){
+          event.target.complete();
+        }
+
+        this.startService.presentToastMessage('Errore di connessione');
+
+        console.log(error);
+        
+      })
+    }
+    
+
   }
  
 
-  /**
- * Nella pagina Impegni è stato modificata il filtro Data 
- * per la ricerca
- */
-    onChangeFilterDateImpegni(){    
-
-    this.filter.DATAINIZIO = (new Date(this.selectedIsoDate)); 
-    this.requestOccupazioni();
-  }
 
 
 /**
@@ -226,36 +285,7 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
     return ItemCalendario.getParamsOccupazioneCampo(elOccupazione);
   }
 
-  showFilter(){
-    this.modalController.create({
 
-      component:FilterCustodePage,
-      componentProps: {
-        filter: this.filter
-      }
-
-    })
-    .then(elModal => {
-      //modale creata
-      elModal.present();
-      return elModal.onDidDismiss();
-    })
-    .then(params => {
-      //modale dismessa
-
-      let newFilter: OccupazioneCampi = params.data;
-      if(newFilter){
-        this.filter = newFilter;
-        this.selectedIsoDate = this.filter.DATAINIZIO.toISOString();
-        this.requestOccupazioni();
-        this.setLabelLocation();
-      }
-      else{
-        console.log('Non ci sono dati');
-      }
-
-    })
-  }
 
   scanQr(){
     if(!this.startService.isDesktop){
@@ -348,23 +378,25 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
 
     let arButtons: ActionSheetButton[] = [];
     
-    //bottone "tutte le locations"
-    let button: ActionSheetButton = {
-      text: this.labelAllLocations,
+    //Bottone per tutte le locations
+    let allLocationsButton: ActionSheetButton = {
+      text: 'Tutte le locations',
       handler: () => {
-        this.onChangeLocation(null);
+        //Imposto la location a NULL
+        this.onChangeLocationSelected(null, 500);
       }
     }
     
-    arButtons.push(button);
+    //Aggiungo all'Array
+    arButtons.push(allLocationsButton);
 
 
-    //bottoni locations
+    //Creo gli altri Bottonie con le Locations
     this.listLocations.forEach(elLocation => {
       let buttonLoc: ActionSheetButton = {
         text: elLocation.DENOMINAZIONE,
         handler: () => {
-          this.onChangeLocation(elLocation.ID);
+          this.onChangeLocationSelected(elLocation, 500);
         }        
       }
 
@@ -380,7 +412,6 @@ export class AgendaCustodePage implements OnInit, OnDestroy {
     arButtons.push(buttonCancel);
 
     let params: ActionSheetOptions = {
-      header: 'Scegli la location',
       buttons: arButtons,
     };
 

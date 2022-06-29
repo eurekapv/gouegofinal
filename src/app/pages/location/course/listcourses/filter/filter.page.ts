@@ -25,7 +25,8 @@ export class FilterPage implements OnInit, OnDestroy {
   listTargetSesso: ValueList[] = [];
   listTipoCorso: ValueList[] = [];
 
-  dataFine: Date = new Date;
+  dataFine: Date = new Date();
+  typeSelectInterface = 'action-sheet'; 
 
   constructor(private startService: StartService,
               private mdlController: ModalController) { 
@@ -44,6 +45,12 @@ export class FilterPage implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    if (this.startService.isOnWeb) {
+      this.typeSelectInterface = 'popover'
+    }
+    else {
+      this.typeSelectInterface = 'action-sheet'
+    }
   }
 
   ngOnDestroy() {
@@ -86,6 +93,7 @@ export class FilterPage implements OnInit, OnDestroy {
    * Svuota tutti i filtri, tranne la location
    */
   emptyFilter() {
+    this.dataFine = new Date();
     this.myFilter.TARGETSESSO = null;
     this.myFilter.TIPO = null;
     this.myFilter.IDSPORT = null;

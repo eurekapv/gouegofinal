@@ -115,7 +115,6 @@ export class UtenteService {
 
                                 let docInResponse = response.document
                                 
-  
                                 let docUtente = new Utente();
                                 docUtente.setJSONProperty(docInResponse);
                                 docUtente.WEBLOGIN = username;

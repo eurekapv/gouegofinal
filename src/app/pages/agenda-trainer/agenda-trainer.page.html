@@ -39,73 +39,29 @@
   <!-- PORZIONE IMPEGNI -->
   <div class="contentExpand" *ngIf="selectedView==PageView.impegni">
 
-    <!-- PORZIONE FILTRI -->
-    <ion-list class="ion-no-padding">
-      <ion-item-group >
-        <ion-item-divider 
-              class="ion-padding-horizontal"
-              color="light"
-              (click)="onChangeCollapseFilterPianificazioni()">
+    <ion-segment 
+        mode="ios"
+        (ngModelChange)="requestImpegni()"
+        [(ngModel)]="impegniSelectedMode" 
+        scrollable="true">
+      <ion-segment-button [value]="mode" *ngFor="let mode of impegniModes">
+        <ion-label>{{mode.title}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
 
-          
-          <ion-icon slot="start" name="filter-circle-outline"></ion-icon>
-          <ion-icon slot="end" [name]="collapsedFilterPianificazioni ? 'arrow-down-circle-outline':'arrow-up-circle-outline'"></ion-icon>
-          
-          <ion-label>
-            <h2>{{getLabelFilterImpegni()}}</h2>
-          </ion-label>
-        </ion-item-divider>
-
-        <ion-item 
-              *ngIf = "!collapsedFilterPianificazioni"
-              lines="none" 
-              color="" >
-          <ion-label class="ion-text-wrap">
-            <h6>E' possibile ottenere l'elenco degli impegni giornalieri, settimanali o mensili</h6>
-          </ion-label>
-          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-        </ion-item>
-
-        <ion-item
-            class="mb-8"
-            *ngIf = "!collapsedFilterPianificazioni"
-            lines="none" 
-            color="warning"
-            detail="true">
-          <ion-icon slot="start" name="search-circle-outline"></ion-icon>
-          <ion-label>Ricerca Impegni</ion-label>
-
-          <ion-select
-                mode="ios" 
-                (ionChange)="onChangePageRangeSearch($event)"
-                [(ngModel)]="rangeSearchPianificazioni"
-                interface = "action-sheet" 
-                okText="Conferma" 
-                cancelText="Annulla">
-            <ion-select-option [value]="PageRangeSearch.giorno">Giornalieri</ion-select-option>
-            <ion-select-option [value]="PageRangeSearch.settimana">Settimanali</ion-select-option>
-            <ion-select-option [value]="PageRangeSearch.mese">Mensili</ion-select-option>
-          </ion-select>
-
-        </ion-item>
-
-        <ion-item lines="none" color="warning" >
-          <ion-icon slot="start" name="calendar-outline" color="primary"></ion-icon>
-          <ion-datetime 
-            displayFormat="DDDD - DD/MM/YYYY" 
-            cancelText="Annulla"
-            doneText = "Conferma"
-            [(ngModel)]="selectedIsoDate" 
-            max="2099-12-31"
-            (ngModelChange)="onChangeFilterDateImpegni()"
-          >
-        </ion-datetime>
-        <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
-        </ion-item>
-
-        
-      </ion-item-group>          
-    </ion-list>
+    <app-dtinput
+      [title]="titleModalImpegniDate"
+      [label]="labelModalImpegniDate"
+      itemColor="light"
+      itemLines="full"
+      iconName="calendar-outline"
+      iconColor="primary"
+      maskFormat="dddd dd/MM/yyyy"
+      [calendarMode]="calendarModeImpegniDate"
+      [(actualDate)]="selectedDate"
+      (actualDateChange)="requestImpegni()"
+    >
+    </app-dtinput>    
 
     <!-- PIANIFICAZIONI PRESENTI -->
     <div 
@@ -131,59 +87,16 @@
 
   <!-- PORZIONI VALUTAZIONI -->
   <div class="contentExpand" *ngIf="selectedView==PageView.corsi">
-    <!-- AREA FILTRO RICERCA -->
-    <ion-list class="ion-no-padding">
-      <ion-item-group >
-        <ion-item-divider 
-              class="ion-padding-horizontal"
-              color="light"
-              (click)="onChangeCollapseFilterCorsi()">
-              <ion-icon slot="start" name="filter-circle-outline"></ion-icon>
-              <ion-icon slot="end" [name]="collapsedFilterCorsi ? 'arrow-down-circle-outline':'arrow-up-circle-outline'"></ion-icon>              
-          <ion-label>
-            <h2>Corsi che risultano</h2>
-          </ion-label>
-        </ion-item-divider>
 
-        <ion-item 
-              *ngIf = "!collapsedFilterCorsi"
-              lines="none" 
-              color="" >
-          <ion-label class="ion-text-wrap">
-            <h6>Elenco dei corsi svolti, in esecuzione o da eseguire prossimamente come trainer o assistente. 
-              Al termine del corso potrai dare una valutazione finale dei partecipanti, assegnando eventualmente un nuovo livello raggiunto</h6>
-          </ion-label>
-          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-        </ion-item>        
-
-        <ion-item lines="none" color="warning" >
-          <ion-icon slot="start" name="hourglass-outline" color="primary"></ion-icon>
-          <ion-select 
-              mode="ios" 
-              (ionChange)="onChangeTimeState($event)"
-              [(ngModel)]="selectedTimeState"
-              interface="action-sheet">
-
-              <ion-select-option [value]="TimeStateCourse.passati">
-                Conclusi
-              </ion-select-option>  
-
-              <ion-select-option [value]="TimeStateCourse.attivi">
-                In Esecuzione
-              </ion-select-option>
-
-              <ion-select-option [value]="TimeStateCourse.futuri">
-                Futuri
-              </ion-select-option> 
-
-          </ion-select>
-        
-        <ion-icon name="chevron-down-outline" color="primary" slot="end"></ion-icon>
-        </ion-item>
-
-        
-      </ion-item-group>  
-    </ion-list>
+    <ion-segment 
+      mode="ios"
+      (ngModelChange)="requestTimeCorsi()"
+      [(ngModel)]="valutazioniSelectedMode" 
+      scrollable="true">
+      <ion-segment-button [value]="mode" *ngFor="let mode of valutazioniModes">
+        <ion-label>{{mode.title}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
 
     <!-- CORSI TROVATI -->
     <div class="ion-no-padding" *ngIf="myListCorsi && myListCorsi.length != 0">

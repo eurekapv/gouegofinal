@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, LoadingController, NavController, NavParams, PickerController, ToastController } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
+import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { DocstructureService } from 'src/app/library/services/docstructure.service';
+
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
-import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
+
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { StartService } from 'src/app/services/start.service';

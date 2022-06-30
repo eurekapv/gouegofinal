@@ -78,7 +78,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
   createForm()
   {
     let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
-    const patternMobileNum = '^[0-9]*$';
+    
 
     this.form=new FormGroup({
       nome:new FormControl(this.utente.NOME, {
@@ -137,7 +137,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
     if(!this.docGruppo.needMobileVerify){
 
-      //devo creare il campo mobile
+      //devo creare il campo mobile solo per mostrarlo
       let mobile = new FormControl(this.utente.MOBILENUMBER, {
         updateOn: 'change',
         validators: []

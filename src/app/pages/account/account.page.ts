@@ -107,11 +107,6 @@ requestPictureUtente() {
 }
 
 
-
-
-
-
-
   /**
    * Effettuato il click sull'avatar
    */
@@ -189,5 +184,18 @@ openChangePassword() {
       });
     })
 }
+
+
+  //Apre il link relativo a AlchimistiLab
+  openAlchimistiLink() {
+    let myLink: string;
+    
+    myLink = environment.externalUrl.alchimistilab;
+    
+    if (myLink && myLink.length != 0) {
+      this.startSrv.openLink(myLink);
+    }
+
+  }
 
 }

@@ -5,7 +5,6 @@ import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
-import { Browser } from '@capacitor/browser';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType, RequestPincodeUse } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
@@ -16,6 +15,9 @@ import { CryptoService } from 'src/app/library/services/crypto.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
 import { PswRecoveryPage } from '../psw-recovery/psw-recovery.page';
 import { PostResponse } from 'src/app/library/models/postResult.model';
+import { LogApp } from 'src/app/models/log.model';
+import { SupportFunc } from 'src/app/library/models/support-func.model';
+
 
 
 @Component({
@@ -50,13 +52,19 @@ export class NewLoginPage implements OnInit {
   //Registrazione possibile in app
   registrationInApp: boolean = false; 
 
+  //Codici di verifica
+  codeVerificationMail: string = '';
+  codeVerificationSms: string = '';
+
+  //Lunghezza del codice di verifica
+  codeLength: number = 5;
+
 
   //varibili formGroup (per usare i reactive forms)
-  formRegister: FormGroup;
-  formVerifyTel: FormGroup;
-  formVerifyMail: FormGroup;
+  formRegister: FormGroup; 
   formLogin: FormGroup;
   formContact: FormGroup;
+  
 
   //Dati
   startConfig:StartConfiguration;
@@ -65,7 +73,7 @@ export class NewLoginPage implements OnInit {
   docArea: Area;
 
   //Utente
-  docUtente= new Utente;
+  docUtente= new Utente();
 
   //Restituisce true se l'app sta girando su Desktop
   isDesktop:boolean;
@@ -77,26 +85,12 @@ export class NewLoginPage implements OnInit {
   telVerificato: string = ''; //Numero telefono Verificato
   colorButton = 'tertiary'; //Colore dei bottoni di login
 
-  //#region questi servono per accedere ai corrispettivi elementi in HTML
-  @ViewChild('c1') c1;
-  @ViewChild('c2') c2;
-  @ViewChild('c3') c3;
-  @ViewChild('c4') c4;
-  @ViewChild('c5') c5;
-  @ViewChild('c6') c6;
-  @ViewChild('c7') c7;
-  @ViewChild('c8') c8;
-  @ViewChild('c9') c9;
-  @ViewChild('c10') c10;
-
-  //#endregion
 
 
   constructor(
     private modalCtrl:ModalController,
     private startService:StartService,
     private loadingCtrl:LoadingController,
-    private toastCtrl:ToastController,
     private alertCtrl: AlertController,
     private cryptoService: CryptoService
   ) {
@@ -104,14 +98,14 @@ export class NewLoginPage implements OnInit {
     
     //Stato Pagina registrazione
     this.indexStepRegistration = 0;
+    
 
     //Posizionato sulla pagina di login
     this.actualStatePage = PageState.LOGIN;
 
     //Segment Option puo' essere solo Login/Registration
     this.actualStateSegment = PageState.LOGIN;
-
-    
+   
 
 
     //Richiedo lo startConfig
@@ -144,7 +138,6 @@ export class NewLoginPage implements OnInit {
   ngOnInit() {
     this.createLoginForm();
     this.createRegisterForm();
-    this.createVerifyForm();
     this.createContactForm();
     this.isDesktop=this.startService.isDesktop
   }
@@ -163,6 +156,49 @@ export class NewLoginPage implements OnInit {
     }
 
     return strTitle;
+  }
+
+  /**
+   * Ritorna TRUE se siamo nel segmento del Login
+   */
+  get isSegmentLogin(): boolean {
+    let isLogin = false;
+
+    isLogin = (this.actualStateSegment == PageState.LOGIN);
+
+    return isLogin;
+  }
+
+  /**
+   * Etichetta mostrata nella pagina di registrazione
+   * sotto agli input
+   */
+  get labelFooterRegistrazione(): string {
+    let myLabel: string = '';
+
+    if (this.docGruppo) {
+      switch (this.docGruppo.APPTIPOVERIFICA) {
+        case TipoVerificaAccount.noverifica:
+            myLabel = 'al termine della registrazione utilizzare l\'indirizzo email per accedere al proprio account';
+          break;
+
+        case TipoVerificaAccount.verificaemail:
+          myLabel = 'sarà inviata una email contenente un codice di convalida da inserire per poter accedere al proprio account';
+        break;
+
+        case TipoVerificaAccount.verificaemailsms:
+          myLabel = 'sarà inviata una email ed un SMS contenente i codici di convalida da inserire per poter accedere al proprio account';
+        break;        
+
+        case TipoVerificaAccount.verificasms:
+          myLabel = 'sarà inviato un SMS contenente il codice di convalida da inserire per poter accedere al proprio account';
+        break;                
+      
+        default:
+          break;
+      }
+    }
+    return myLabel;
   }
 
   /**
@@ -269,6 +305,7 @@ export class NewLoginPage implements OnInit {
    * Pulsante Avanti o Acced presente nel footer
    */
   onClickFooterAvanti() {
+    console.log('Vediamo che fare');
     switch(this.actualStatePage) {
       case PageState.LOGIN:
           //Siamo sul Login e quindi gestisco la fase di login
@@ -328,7 +365,7 @@ export class NewLoginPage implements OnInit {
 
                 // E' Arrivata una risposta NEGATIVA
                 if (!dataResult.result) {
-                  this.showMessage(dataResult.message);
+                  this.startService.presentAlertMessage(dataResult.message);
                 }
                 else {
                   //LOGIN ACCETTATO
@@ -344,12 +381,14 @@ export class NewLoginPage implements OnInit {
                 }
             })
             .catch(error => {
+              let myMsg = '';
+              myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(error);
               
-              //login non andato a buon fine
-              element.dismiss();
-              console.log(error);
-              this.showMessage(error);
-
+                //Chiudo il Loading Controller
+                element.dismiss();
+                //Visualizzo il messaggio
+                this.startService.presentAlertMessage(myMsg);
+                LogApp.consoleLog(error);
             })
         })
     }
@@ -533,29 +572,28 @@ export class NewLoginPage implements OnInit {
           message = 'Ops..qualcosa è andato storto';
           break;
       }
+      
+    }
 
-      if (prosegui) {
-        //Serve la pagina di verifica
-        //Allora devo chiamare il server per inviare i codici
-        if (needPageVerify) {
+    if (prosegui) {
+      //Serve la pagina di verifica
+      //Allora devo chiamare il server per inviare i codici
+      if (needPageVerify) {
 
-          //Chiamo il server, e se tutto va a buon fine andro alla verifica
-          this.sendServerRichiestaCodici();
-          
-        }
-        else {
-          //Devo andare alla pagina successiva alla verifica
-          const skipPageVerifica = true;
-          this.nextStepRegistration(skipPageVerifica);
-        }
+        //Chiamo il server, e se tutto va a buon fine andro alla verifica
+        this.sendServerRichiestaCodici();
+        
       }
       else {
-
-        //Visualizzo il messaggio
-        this.showMessage(message);
-
+        //Devo andare alla pagina successiva alla verifica
+        const skipPageVerifica = true;
+        this.nextStepRegistration(skipPageVerifica);
       }
+    }
+    else {
 
+      //Visualizzo il messaggio
+      this.startService.presentAlertMessage(message);
 
 
     }
@@ -612,15 +650,19 @@ export class NewLoginPage implements OnInit {
 
                 //Se ho un messaggio da visualizzare lo mostro
                 if (customMessage && customMessage.length!== 0) {
-                  this.showMessage(customMessage);
+                    //Visualizzo il messaggio
+                    this.startService.presentToastMessage(customMessage);
                 }
 
               })
               .catch(err => {
-                  //Chiudo il Loading Controller
-                  element.dismiss();
-                  //Visualizzo il messaggio
-                  this.showMessage(err);
+                let myMsg = '';
+                myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(err);
+                //Chiudo il Loading Controller
+                element.dismiss();
+                //Visualizzo il messaggio
+                this.startService.presentAlertMessage(myMsg);
+                LogApp.consoleLog(err);
               })
 
       
@@ -633,6 +675,40 @@ export class NewLoginPage implements OnInit {
 
 
   //#region GESTIONE PAGINA VERIFICA
+
+  /**
+   * Controlla se è necessaria una verifica
+   * In caso venga valorizzato tipo ritorna se necessaria quel tipo di verifica
+   * @param tipo Tipo di verifica
+   */
+  canVerify(tipo?: TipoVerificaAccount):boolean {
+    let result: boolean;
+
+    if (this.docGruppo) {
+      //Mi ha passato una tipologia
+      if(tipo) {
+
+        switch (tipo) {
+          case TipoVerificaAccount.verificaemail:
+              //Devo effttuare una verifica email ?
+              result = [TipoVerificaAccount.verificaemail, TipoVerificaAccount.verificaemailsms].includes(this.docGruppo.APPTIPOVERIFICA)
+            break;
+
+            case TipoVerificaAccount.verificasms:
+              //Devo effttuare una verifica SMS ?
+              result = [TipoVerificaAccount.verificasms, TipoVerificaAccount.verificaemailsms].includes(this.docGruppo.APPTIPOVERIFICA)
+            break;        
+          default:
+            break;
+        }
+      }
+      else {
+        result = [TipoVerificaAccount.verificaemail, TipoVerificaAccount.verificaemailsms, TipoVerificaAccount.verificasms].includes(this.docGruppo.APPTIPOVERIFICA)
+      }
+    }
+
+    return result;
+  }
 
   /**
    * evento scatenato quando l'utente tappa su "reinvia codice"
@@ -766,7 +842,7 @@ export class NewLoginPage implements OnInit {
 
     //Nel caso mostro un messaggio di errore
     if (!enable) {
-      this.showMessage(altMessage);
+      this.startService.presentAlertMessage(altMessage);
     }
   }
 
@@ -822,13 +898,14 @@ export class NewLoginPage implements OnInit {
             }
           })
           .catch(err => {
-            //Qui qualcosa è andato storto
-
-            //Chiudo il Loading
+            let myMsg = '';
+            myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(err);
+            //Chiudo il Loading Controller
             elLoading.dismiss();
+            //Visualizzo il messaggio
+            this.startService.presentAlertMessage(myMsg);
+            LogApp.consoleLog(err);
 
-            //Mostro il messaggio
-            this.showMessage(err);
           });
       });
     }
@@ -851,7 +928,7 @@ export class NewLoginPage implements OnInit {
     
     if (!this.formRegister.valid)
     {
-      return;
+      this.startService.presentAlertMessage('Controlla i dati inseriti per procedere');
     }
     else {
 
@@ -874,7 +951,8 @@ export class NewLoginPage implements OnInit {
             elLoading.dismiss();
 
             if (!elCodFisc.checkValidate) {
-              this.showMessage(elCodFisc.msgValidate);
+              //Codice fiscale non accettato
+              this.startService.presentAlertMessage(elCodFisc.msgValidate);
             }
             else {
 
@@ -887,8 +965,7 @@ export class NewLoginPage implements OnInit {
           .catch(objError => {
 
             elLoading.dismiss();
-            this.showMessage(objError.msgValidate);
-
+            this.startService.presentAlertMessage(objError.msgValidate);
           });
 
       });
@@ -991,11 +1068,15 @@ export class NewLoginPage implements OnInit {
   
                 })
                 .catch(error => {
-                      //Chiudo il Loading
-                      elLoading.dismiss();
-  
-                      //Mostro il messaggio
-                      this.showMessage(error);
+
+                  let myMsg = '';
+                  myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(error);
+                  //Chiudo il Loading Controller
+                  elLoading.dismiss();
+                  //Visualizzo il messaggio
+                  this.startService.presentAlertMessage(myMsg);
+                  LogApp.consoleLog(error);
+
                 });
   
               
@@ -1003,7 +1084,8 @@ export class NewLoginPage implements OnInit {
 
       }
       else {
-        this.showMessage('Dati non corretti');
+        this.startService.presentToastMessage('Dati non corretti');
+        
       }
       
 
@@ -1026,7 +1108,9 @@ export class NewLoginPage implements OnInit {
 
           // E' Arrivata una risposta NEGATIVA
           if (!dataResult.result) {
-            this.showMessage(dataResult.message);
+
+            this.startService.presentAlertMessage(dataResult.message);
+
           }
           else {
             //LOGIN ACCETTATO
@@ -1042,58 +1126,6 @@ export class NewLoginPage implements OnInit {
   }
 
 
-
-
-
-  /**
-   * procedura che sposta il focus sulla casella di input successiva
-   * @param evento parametri $event dell'eveno "ion-input", necessari a identificare
-   * in quale casella c'è stato l'input
-   */
-  changeFocus(evento)
-  {
-    let id=evento['target']['id'];
-        switch (id) {
-        case '1':
-          this.c2.setFocus();
-          break;
-        case '2':
-          this.c3.setFocus();
-          break;
-        case '3':
-          this.c4.setFocus();
-          break;
-        case '4':
-          this.c5.setFocus();
-          break;
-        case '6':
-          this.c7.setFocus();
-          break;
-        case '7':
-          this.c8.setFocus();
-          break;
-        case '8':
-          this.c9.setFocus();
-          break;
-        case '9': 
-          this.c10.setFocus();
-          break;
-      
-        default:
-          break;
-      }
-    
-  }
-
-
-
-
-  
-
-
-  /**
-   * evento scatenato quando l'utente clicca su "verifica in seguito"
-   */
 
   /**
    * evento scatenato quando l'utente clicca su inizia
@@ -1127,7 +1159,7 @@ export class NewLoginPage implements OnInit {
    * nello StepRegistrazione
    */
   createContactForm(){
-    let pattTelefono = '^[+]*[0-9]*';
+    let pattTelefono = '^[+]*[0-9]{7,}';
     //Spiegazione pattern 
     //Per altre spiegazioni guardare qui https://regexr.com/3c53v
 
@@ -1135,6 +1167,7 @@ export class NewLoginPage implements OnInit {
     // [+] Qualsiasi elemento contenuto nelle quadre (quindi il +)
     // * la regola precedente è opzionale
     // [0-9] Qualsiasi elemento delle quadre
+    // {7,} i valori [0,9] almeno per 7 caratteri o piu
     // * la regola precedente è opzionale
 
 
@@ -1188,6 +1221,7 @@ export class NewLoginPage implements OnInit {
         validators: []
       })      
     }, [this.pswValidator]);
+
   }
 
 
@@ -1208,61 +1242,6 @@ export class NewLoginPage implements OnInit {
 
 
 
-
-
-  /**
-   * Funzione per la creazione del FORM relativo alla Verifica Pincode Email e SMS
-   */
-  createVerifyForm(){
-    this.formVerifyMail=new FormGroup({
-      c1: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c2: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c3: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c4: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c5: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      })
-    });
-
-    this.formVerifyTel=new FormGroup({
-      c6: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c7: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c8: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c9: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c10: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      })
-    });
-
-  }
-
-
   /**
    * 
    * @param tipo Tipo del codice richiesto
@@ -1271,18 +1250,10 @@ export class NewLoginPage implements OnInit {
     let strReturn: string = '';
 
     if (tipo == TipoVerificaAccount.verificaemail) {
-      strReturn = this.formVerifyMail.value.c1 + 
-                  this.formVerifyMail.value.c2 + 
-                  this.formVerifyMail.value.c3 + 
-                  this.formVerifyMail.value.c4 + 
-                  this.formVerifyMail.value.c5;
+      strReturn = this.codeVerificationMail
     }
     else if (tipo == TipoVerificaAccount.verificasms) {
-      strReturn = this.formVerifyTel.value.c6 + 
-                  this.formVerifyTel.value.c7 + 
-                  this.formVerifyTel.value.c8 + 
-                  this.formVerifyTel.value.c9 + 
-                  this.formVerifyTel.value.c10;
+      strReturn = this.codeVerificationSms
     }
 
     return strReturn;
@@ -1301,15 +1272,37 @@ export class NewLoginPage implements OnInit {
       if (this.docGruppo.APPTIPOVERIFICA !== TipoVerificaAccount.noverifica) {
 
         switch (this.docGruppo.APPTIPOVERIFICA) {
+
           case TipoVerificaAccount.verificaemail:
-              enable = this.formVerifyMail.valid;
+              if (this.codeVerificationMail && this.codeVerificationMail.length == this.codeLength) {
+                enable = true;
+              }
+              else {
+                enable = false;
+              }
             break;
           case TipoVerificaAccount.verificasms:
-              enable = this.formVerifyTel.valid;
+            if (this.codeVerificationSms && this.codeVerificationSms.length == this.codeLength) {
+              enable = true;
+            }
+            else {
+              enable = false;
+            }
             break;
 
           case TipoVerificaAccount.verificaemailsms:
-            enable = this.formVerifyTel.valid && this.formVerifyMail.valid;
+
+            if (this.codeVerificationMail && this.codeVerificationMail.length == this.codeLength && 
+                this.codeVerificationSms && this.codeVerificationSms.length == this.codeLength) {
+
+                enable = true;
+
+            }
+            else {
+
+              enable = false;
+            }  
+
             break;
         
           default:
@@ -1325,8 +1318,6 @@ export class NewLoginPage implements OnInit {
   }
 
 
-
-
 //#endregion
 
 
@@ -1340,7 +1331,7 @@ export class NewLoginPage implements OnInit {
     let ready: boolean = false;
 
     if (this.docArea) {
-
+      
       link = this.docArea.findAreaLinkByPageType(PageType.policyPrivacy);
   
       if (link && link.REFERURL) {
@@ -1361,34 +1352,13 @@ export class NewLoginPage implements OnInit {
       link = this.docArea.findAreaLinkByPageType(PageType.policyPrivacy);
   
       if (link && link.REFERURL) {
-        this.openLink(link.REFERURL);
+        this.startService.openLink(link.REFERURL);
       }
-    }
-
-    
+    }    
   }
-
-  //Apre un link in un'altra pagina
-  openLink(url:string)
-  {
-    Browser.open({url:url});
-  }
-
+  
   //#endregion
 
-    /**
-   * Procedura che visualizza un toast con il messaggio passato
-   * @param myMessage Il messaggio da visualizzare
-   */
-  async showMessage(myMessage: string) {
-    const toast = await this.toastCtrl
-      .create({
-        message: myMessage,
-        duration: 3000
-      });
-
-      toast.present();
-  }
 
 }
 

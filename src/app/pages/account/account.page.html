@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button  defaultHref="/"></ion-back-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ion-title>Profilo</ion-title>
   </ion-toolbar>
@@ -10,27 +10,20 @@
 <ion-content>
   <div class="top">
 
-    
+
     <!-- PORZIONE AVATAR E NOMINATIVO -->
     <ion-grid>
       <ion-row class="picture">
         <ion-col>
-          <ion-button
-            size="large"
-            color="danger"
-            class="only-camera"
-            (click)="onClickAvatar()"
-            *ngIf="!pictureExist">
+          <ion-button size="large" color="danger" class="only-camera" (click)="onClickAvatar()" *ngIf="!pictureExist">
 
             <ion-icon name="camera"></ion-icon>
 
           </ion-button>
 
-            <ion-avatar 
-                *ngIf="pictureExist"
-                (click)="onClickAvatar()">
-              <img [src]="imgSrcProfilePic">
-            </ion-avatar>
+          <ion-avatar *ngIf="pictureExist" (click)="onClickAvatar()">
+            <img [src]="imgSrcProfilePic">
+          </ion-avatar>
 
         </ion-col>
       </ion-row>
@@ -40,9 +33,7 @@
       <ion-row class="name">
         <ion-col>
 
-          <ion-label 
-            color="primary"
-            class="ion-text-wrap ion-text-center">
+          <ion-label color="primary" class="ion-text-wrap ion-text-center">
             <h1>{{ docUtente?.NOMINATIVO }}</h1>
             <p>{{ docUtente.EMAIL }}</p>
           </ion-label>
@@ -54,29 +45,23 @@
   </div>
 
 
-  
+
   <ion-list class="ion-margin-vertical">
 
     <ion-item button="true" routerLink="edit-account" routerDirection="forward">
-      <ion-icon 
-        slot="start" 
-        name="person-circle"
-        color="primary"></ion-icon>
+      <ion-icon slot="start" name="person-circle" color="primary"></ion-icon>
       <ion-label>
         <h2>Qualcosa su di te</h2>
         <p>Data e luogo di nascita, residenza, ecc..</p>
       </ion-label>
     </ion-item>
 
-    
+
 
 
 
     <ion-item button="true" routerLink="sportlevels" routerDirection="forward">
-      <ion-icon 
-        slot="start" 
-        name="stats-chart"
-        color="primary"></ion-icon>
+      <ion-icon slot="start" name="stats-chart" color="primary"></ion-icon>
       <ion-label>
         <h2>Livelli Attività</h2>
         <p>Visualizza i tuoi livelli</p>
@@ -84,23 +69,17 @@
     </ion-item>
 
     <ion-item button="true" routerLink="documents" routerDirection="forward">
-      <ion-icon 
-        slot="start" 
-        name="copy"
-        color="primary"></ion-icon>
+      <ion-icon slot="start" name="copy" color="primary"></ion-icon>
       <ion-label>
         <h2>Documenti</h2>
         <p>Visualizza e scarica i tuoi documenti</p>
       </ion-label>
     </ion-item>
 
-    
+
 
     <ion-item button="true" routerLink="invoices" routerDirection="forward">
-      <ion-icon 
-        slot="start" 
-        name="logo-euro"
-        color="primary"></ion-icon>
+      <ion-icon slot="start" name="logo-euro" color="primary"></ion-icon>
       <ion-label>
         <h2>Ricevute Acquisti</h2>
         <p>Scarica le ricevute dei tuoi acquisti</p>
@@ -118,11 +97,8 @@
       </ion-label>
     </ion-item> -->
 
-    <ion-item button="true" (click)="openChangePassword()">  
-      <ion-icon 
-        slot="start" 
-        name="key"
-        color="primary"></ion-icon>
+    <ion-item button="true" (click)="openChangePassword()">
+      <ion-icon slot="start" name="key" color="primary"></ion-icon>
       <ion-label>
         <h2>Security Access</h2>
         <p>Cambia Password di accesso</p>
@@ -130,23 +106,19 @@
     </ion-item>
 
     <ion-item button="true" (click)="requestLogout()">
-      <ion-icon 
-        slot="start" 
-        name="log-out"
-        color="primary"></ion-icon>
+      <ion-icon slot="start" name="log-out" color="primary"></ion-icon>
       <ion-label>
         <h2>Esci</h2>
         <p>Esegui il logout</p>
       </ion-label>
     </ion-item>
 
+    <ion-item detail="false" button="true" (click)="openAlchimistiLink()" class="ion-text-end" lines="none">
+      <ion-label class="ion-text-wrap">
+        <i>{{codeVersion}} appVersion by AlchimistiLab</i>
+      </ion-label>
+    </ion-item>
+
+
   </ion-list>
 </ion-content>
-<ion-footer>
-  <ion-list class="ion-no-padding">
-    <ion-item 
-        lines="none">
-      <ion-note slot="start" color="medium">Version: {{codeVersion}} by AlchimistiLab</ion-note>
-    </ion-item>
-  </ion-list>
-</ion-footer>

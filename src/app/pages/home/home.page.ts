@@ -22,6 +22,7 @@ import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
+import { LogApp } from 'src/app/models/log.model';
 
 
 
@@ -209,8 +210,6 @@ export class HomePage implements OnInit, OnDestroy {
 
         //Aggiorno l'agenda
         this.updateAgenda();
-
-        // this.richiediAgendaOccupazione();
 
 
       });
@@ -652,19 +651,6 @@ export class HomePage implements OnInit, OnDestroy {
           if (this.docUtente.isTrainer || this.docUtente.isAssistenteTrainer) {
             richiediMieiCorsi = true;
           }
-          // else if (this.docUtente.RUOLO == Ruolo.collaboratore ) {
-          //   switch(this.docUtente.MANSIONE) {
-          //     case Mansione.assistenteTrainer:
-          //       richiediMieiCorsi = true;
-          //       break;
-          //     case Mansione.trainer:
-          //       richiediMieiCorsi = true;
-          //       break;
-          //     case Mansione.custode:
-          //       richiediOccupazioni = true;
-          //       break;
-          //   }
-          // }
         }
       }
 
@@ -672,7 +658,7 @@ export class HomePage implements OnInit, OnDestroy {
         this.richiediAgendaTrainer();
       }
       else if (richiediOccupazioni) {
-        // this.richiediAgendaOccupazione();
+        this.richiediAgendaOccupazione();
       }
       else {
 
@@ -693,21 +679,26 @@ export class HomePage implements OnInit, OnDestroy {
    */
   private richiediAgendaOccupazione() {
 
-    if(this.listLocation && this.listLocation.length > 0){
+    if(this.listLocation && this.listLocation.length > 0) {
       let idArea = this.selectedArea.ID;
-      // this.showAgenda = true;
+      LogApp.consoleLog('richiedo agenda occupazione');
 
-      this.listLocation.forEach(elLocation => {
+      if (idArea && idArea.length != 0) {
 
-        this.startService.requestOccupazioni(idArea, elLocation.ID, 4, undefined, new Date())
-          .then(listOccupazioni => {
-            elLocation._LISTOCCUPAZIONI = listOccupazioni;
-          })
-          .catch(error => {
-            console.log(error);
-    
-          });
-      })
+        this.listLocation.forEach(elLocation => {
+  
+          this.startService.requestOccupazioni(idArea, elLocation.ID, 4, undefined, new Date())
+            .then(listOccupazioni => {
+              elLocation._LISTOCCUPAZIONI = listOccupazioni;
+            })
+            .catch(error => {
+              console.log(error);
+      
+            });
+        })
+
+      }
+
 
     }
 

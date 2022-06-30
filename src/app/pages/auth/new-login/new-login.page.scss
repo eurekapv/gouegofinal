@@ -74,6 +74,121 @@ span.link{
     cursor: pointer;
 }
 
+ion-item-divider {
+    --padding-top: 5px;
+    --padding-bottom: 5px;
+    --padding-end: 10px;
+}
+
+/* pagina di verifica */
+div.step-0{
+    .lbl-info{
+        display: flex;
+        p{
+            margin:auto;
+            width: 70%;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+    }  
+    ion-item.check{
+        ion-label{
+            font-size: 12px;
+        }
+    } 
+
+    .psw-container{
+        display: flex;
+        width: 100%;
+        ion-icon{
+            margin: auto;
+            cursor: pointer;
+        }
+    }
+
+    ion-item.item-country{
+        ion-input{
+            pointer-events: none;
+        }
+        app-icon{
+            margin: auto;
+        }
+    }
+}
+
+div.step-verifica{
+    ion-grid{
+        padding: 15px;
+
+        ion-row.submit{
+            ion-col{
+                padding-top: 40px;
+            }
+        }
+       
+    }
+
+    ion-input{
+        text-align: center;
+        --padding-start: 5px;
+        --padding-end: 5px;
+        --padding-top: 10px;
+        --padding-bottom: 10px;
+        font-size: 25px;
+        
+    }
+
+    
+
+    
+}
+
+.prefix-selector{
+    width: 100%;
+    margin: 0px;
+}
+
+div.step-2{
+    padding: 15px;
+
+    h2,p{
+        color: #454F63;
+    }
+
+    h2{
+        margin-top: 30px;
+        font-size: 28px;
+    }
+
+    div.top-spacer{
+        height: 30vh;
+        width: 100%;
+        border-radius: 15px;
+        
+        overflow: hidden;
+        img{
+            min-height: 100%;
+            min-width: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .code-input{
+        text-align: center;
+        padding: 0px;
+        font-weight: 600;
+        font-size: 50px;
+        color: var(--ion-color-dark);
+    }
+
+    ion-button {
+        margin-top: 50px;
+    }
+
+
+    
+}
 
 
 

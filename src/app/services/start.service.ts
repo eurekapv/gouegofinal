@@ -66,7 +66,7 @@ import { Livello } from '../models/livello.model';
 import { PhotoService, PhotoType } from './photo.service';
 import { SmartInterfaceService } from './smart-interface.service';
 import { AlertButton, SpinnerTypes } from "@ionic/core";
-
+import { Browser } from '@capacitor/browser';
 
 @Injectable({
   providedIn: 'root'
@@ -1609,6 +1609,17 @@ isFestivita(data: Date, idArea: string, idLocation: string, idCampo: string) {
   }
 
 //#endregion
+
+  /**
+   * Apre una pagina con il link passato
+   * @param url Url a cui indirizzarsi
+   */
+  openLink(url:string): void
+  {
+    if (url && url.length != 0) {
+      Browser.open({url:url});
+    }
+  }
 
   //#region SMART INTERFACE PROMISE
 

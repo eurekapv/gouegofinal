@@ -47,7 +47,7 @@
         </ion-item>
 
         <ion-item>
-          <ion-label slot="start" position="fixed">Cod. fis.</ion-label>
+          <ion-label slot="start" position="fixed">Cod. fiscale</ion-label>
           <ion-input (ionBlur)="onCfChange()" formControlName="cf"></ion-input>
         </ion-item >
       </ion-item-group>
@@ -103,6 +103,7 @@
         </ion-item-divider>
 
         <app-dtinput
+              title="Data di nascita"
               label="Nato il"
               [(actualDate)]="this.utente.NATOIL">
         </app-dtinput>

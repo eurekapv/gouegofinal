@@ -18,7 +18,7 @@ export class CalendarscrollComponent implements OnInit {
   @Output() onChangeActiveDay = new EventEmitter<Date>();
   @ViewChild('sliderDays')sliderDays: IonSlides;
 
-  listDay: number[] = [];
+  listDay: CalendarScrollItem[] = [];
   listMesi: ValueList[] = []; //Elenco dei mesi da visualizzare nel Picker
 
   sliderOpts = {
@@ -93,37 +93,82 @@ export class CalendarscrollComponent implements OnInit {
 
   /* Ricava tutti i giorni del mese presente in activeDay */
   setListDay() {
-    let endDay = 30;
-    let endWrapper = moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).add(1, 'M');
-    endWrapper.subtract(1,'day');
-    endDay = endWrapper.date();
+    let totMonthDays: number = 30; //Numero di giorni del mese
+    //Aggiungo 1 mese alla data del 1/X/Y cosi da andare al 1/X+1/YYYY
+    let dtFineMese = moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).add(1, 'M');
+    //Vado alla fine Mese
+    dtFineMese.subtract(1,'day');
+
+    //Numero di giorni del mese
+    totMonthDays = dtFineMese.date();
 
     this.listDay = [];
-    endDay += 1; //Incremento EndDay per usare la condizione <
-    for (let index = 1; index < endDay; index++) {
-      this.listDay.push(index);
+    totMonthDays += 1; //Incremento EndDay per usare la condizione <
+
+    //Aggiungo pulsante per andare indietro
+    this.listDay.push({type:'prev'});
+
+    for (let index = 1; index < totMonthDays; index++) {
+
+      let myDt = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), index);
+      //Aggiungo all'array delle giornate
+      this.listDay.push({type:'day', 
+                         dateValue: myDt, 
+                         numValue: index});
     }
+
+    //Aggiungo pulsante per andare avanti
+    this.listDay.push({type:'next'});
   }
 
   // Ritorna il colore del Button
-  getFillButton(day) {
+  getFillButton(objDay: CalendarScrollItem) {
     let fill = 'outline';
-    if (this.activeDay.getDate() == day) {
-      fill = 'solid';
+
+    if (objDay) {
+
+      if (this.activeDay.getDate() == objDay.numValue) {
+        fill = 'solid';
+      }
+
     }
 
     return fill;
   }
 
   //Bottone del giorno premuto
-  onClickButton(day) {
-    let anno = this.activeDay.getFullYear();
-    let mese = this.activeDay.getMonth();
-    let giorno = day;
-    this.activeDay = new Date(anno, mese, giorno);
+  onClickButton(objDay: CalendarScrollItem) {
+    let nextDate: Date;
 
-    //Lancio evento di cambio giorno
-    this.onChangeActiveDay.emit(this.activeDay);
+    if (objDay) {
+
+      if (objDay.type == 'day') {
+        //Cambio il giorno attivo
+        this.activeDay = objDay.dateValue
+    
+        //Lancio evento di cambio giorno
+        this.onChangeActiveDay.emit(this.activeDay);
+      }
+      else {
+        //Cambiamento al mese successivo o prossimo
+        switch (objDay.type) {
+
+          case 'next':
+            //Vado al giorno 1 del mese successivo
+            nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).add(1, 'M')).toDate();
+            this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
+            break;
+
+          case 'prev':
+            //Vado al giorno ultimo del mese precedente
+            nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).subtract(1, 'days')).toDate();
+            this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
+            break;
+        }
+
+        
+      }
+    }
   }
 
 
@@ -211,11 +256,11 @@ export class CalendarscrollComponent implements OnInit {
       text: 'Conferma',
       handler: (data: any) => {
         //Recupero Mese e Anno
-        let m = data.mese.value;
-        let a = data.anno.value;
+        let selMonth = data.mese.value;
+        let selYear = data.anno.value;
 
         //Imposto la nuova Data attiva
-        _this.setNewActiveDateFromPicker(m, a);
+        _this.setNewActiveDateFromPicker(selYear, selMonth );
         
       }
       },
@@ -300,11 +345,10 @@ export class CalendarscrollComponent implements OnInit {
    * @param meseOneBasedNew Numero del Mese (da 1 a 12)
    * @param annoNew Anno scelto
    */
-  setNewActiveDateFromPicker(meseOneBasedNew: number, annoNew: number ) {
+  setNewActiveDateFromPicker(annoNew: number, meseOneBasedNew: number,  dayNew:number = 0 ) {
     let activeM = this.activeDay.getMonth();
     let activeA = this.activeDay.getFullYear();
     let activeG = this.activeDay.getDate();
-    let message = '';
     let oggi = new Date();
 
 
@@ -331,6 +375,10 @@ export class CalendarscrollComponent implements OnInit {
 
       }
 
+      //Siccome mi ha passato anche il giorno mi posiziono
+      if (dayNew != 0) {
+        activeG = dayNew;
+      }
 
 
       //Cambio il Giorno attivo
@@ -360,4 +408,11 @@ export class CalendarscrollComponent implements OnInit {
     return newDate.toDate().getDate();
   }
 
+}
+
+//Rappresenta un Item presente in listDay
+export type CalendarScrollItem = {
+  type: 'prev' | 'next' | 'day'
+  numValue?: number,
+  dateValue?: Date
 }

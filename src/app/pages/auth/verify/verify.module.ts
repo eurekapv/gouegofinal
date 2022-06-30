@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { VerifyPageRoutingModule } from './verify-routing.module';
 
 import { VerifyPage } from './verify.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { VerifyPage } from './verify.page';
     FormsModule,
     IonicModule,
     VerifyPageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedComponentsModule
   ],
   declarations: [VerifyPage],
   exports: [VerifyPage]

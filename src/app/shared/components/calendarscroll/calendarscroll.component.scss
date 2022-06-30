@@ -16,6 +16,13 @@ ion-button {
     height: 50px;
     min-width: 50px;
     min-height: 50px;
+    font-size: 16px;
+
+    &.btn-day .button-inner { 
+        flex-flow: column; 
+    }
+   
+    
 }
 
 ion-slides {

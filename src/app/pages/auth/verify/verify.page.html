@@ -1,26 +1,24 @@
 <ion-header>
   <ion-toolbar color="primary">
-      <ion-buttons 
-              slot="start" 
-              *ngIf="actualStatePage==pageState.VERIFY">
+    <ion-buttons slot="start" *ngIf="actualStatePage==pageState.VERIFY">
 
-          <ion-button fill="clear" (click)="backStepRegistration()">
-              <ion-icon name="arrow-back"></ion-icon>
-          </ion-button>
+      <ion-button fill="clear" (click)="backStepRegistration()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
 
-      </ion-buttons>
+    </ion-buttons>
 
-      <ion-title *ngIf="actualStatePage!=pageState.REGISTRATION">Verifica informazioni</ion-title>
-      <ion-title *ngIf="actualStatePage==pageState.REGISTRATION">Aggiorna i tuoi dati</ion-title>
-
-      
+    <ion-title *ngIf="actualStatePage!=pageState.REGISTRATION">Verifica informazioni</ion-title>
+    <ion-title *ngIf="actualStatePage==pageState.REGISTRATION">Aggiorna i tuoi dati</ion-title>
 
 
-      <ion-buttons slot="end">
-          <ion-button fill="clear" (click)="closeModal()">
-              <ion-icon name="close" ></ion-icon>
-          </ion-button>
-      </ion-buttons>
+
+
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="closeModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -29,162 +27,164 @@
 
 <!-- CONTENT PAGES -->
 <ion-content class="ion-padding">
-  <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
+  <!-- <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
       <img [src]="startConfig.getUrlLogo()">
-  </div>
+  </div> -->
 
 
   <!-- PARTE CONTATTI -->
   <div *ngIf="actualStatePage==pageState.CONTACT" class="ion-padding-horizontal">
 
-      <form [formGroup]="formContact">
+    <form [formGroup]="formContact">
 
 
-          <ion-list>
-              <ion-item *ngIf="this.emailVerifyNeeded">
-                  <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
-                  <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
-              </ion-item>
-              <ion-item *ngIf="this.smsVerifyNeeded">
-                  <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
-                  <ion-input type="tel" inputmode="tel" placeholder="+39 Cellulare" formControlName="telephone" ></ion-input>
-              </ion-item>
+      <ion-list>
+        <ion-item *ngIf="this.emailVerifyNeeded">
+          <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
+          <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="this.smsVerifyNeeded">
+          <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
+          <ion-input type="tel" inputmode="tel" placeholder="+39 Cellulare" formControlName="telephone"></ion-input>
+        </ion-item>
 
-          </ion-list>
+      </ion-list>
 
-          <ion-button 
-                  fill="outline" 
-                  size="small" 
-                  expand="block"
-                  *ngIf="isPolicyLink()"
-                  (click)="openPolicyLink()">
-              condizioni di trattamento dei dati
-          </ion-button>
-            
-
-          <div  class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&!this.smsVerifyNeeded">
-          <p>
-              <ion-text color="primary">
-                  <ion-icon name="information-circle-outline"></ion-icon>
-              </ion-text>
-              Indica una email valida dove sarà possibile inviarti le ricevute di prenotazioni, attestati dei corsi 
-              ed altri documenti fiscali.                        
-          </p>
-
-          <h6>
-              Per effettuare la verifica ti inviamo una email contenente un pincode da inserire nei passaggi succesivi di registrazione
-          </h6>
-
-          <p>
-              <ion-text color="primary">
-                  <h6><i>(in seguito potrai abilitare l'email anche per la ricezione di altro materiale informativo)</i></h6>
-              </ion-text>
-          </p>
-      </div>         
-      
-      
-      <div  class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&this.smsVerifyNeeded">
-          <p>
-              <ion-text color="primary">
-                  <ion-icon name="information-circle-outline"></ion-icon>
-              </ion-text>
-              Indica una email valida dove sarà possibile inviarti i documenti fiscali ed un numero di cellulare 
-              per contattarti in caso di problemi.
-
-          </p>
-
-          <p>
-              <ion-text color="primary">
-                  <h6><i>Per effettuare la verifica ti inviamo 2 pincode (email/SMS)  da inserire nei passaggi succesivi di registrazione</i></h6>
-              </ion-text>
-          </p>
-      </div>                  
-
-      <div  class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded&&!this.emailVerifyNeeded">
-          <p>
-              <ion-text color="primary">
-                  <ion-icon name="information-circle-outline"></ion-icon>
-              </ion-text>
-              Indica un numero di cellulare dove contattarti in caso di problematiche legate alle prenotazioni della struttura.
-
-          </p>
-              <p>
-              Per effettuare la verifica ti inviamo un SMS con un pincode da inserire nei passaggi succesivi di registrazione
-              </p>
-          <p>
-              <ion-text color="primary">
-                  <h6><i>(non sarai mai contattato per promozioni o marketing)</i></h6>
-              </ion-text>
-          </p>
-      </div>                  
+      <ion-button fill="outline" size="small" expand="block" *ngIf="isPolicyLink()" (click)="openPolicyLink()">
+        condizioni di trattamento dei dati
+      </ion-button>
 
 
-              
+      <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&!this.smsVerifyNeeded">
+        <p>
+          <ion-text color="primary">
+            <ion-icon name="information-circle-outline"></ion-icon>
+          </ion-text>
+          Indica una email valida dove sarà possibile inviarti le ricevute di prenotazioni, attestati dei corsi
+          ed altri documenti fiscali.
+        </p>
 
-      </form>
+        <h6>
+          Per effettuare la verifica ti inviamo una email contenente un pincode da inserire nei passaggi succesivi di
+          registrazione
+        </h6>
+
+        <p>
+          <ion-text color="primary">
+            <h6><i>(in seguito potrai abilitare l'email anche per la ricezione di altro materiale informativo)</i></h6>
+          </ion-text>
+        </p>
+      </div>
+
+
+      <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&this.smsVerifyNeeded">
+        <p>
+          <ion-text color="primary">
+            <ion-icon name="information-circle-outline"></ion-icon>
+          </ion-text>
+          Indica una email valida dove sarà possibile inviarti i documenti fiscali ed un numero di cellulare
+          per contattarti in caso di problemi.
+
+        </p>
+
+        <p>
+          <ion-text color="primary">
+            <h6><i>Per effettuare la verifica ti inviamo 2 pincode (email/SMS) da inserire nei passaggi succesivi di
+                registrazione</i></h6>
+          </ion-text>
+        </p>
+      </div>
+
+      <div class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded&&!this.emailVerifyNeeded">
+        <p>
+          <ion-text color="primary">
+            <ion-icon name="information-circle-outline"></ion-icon>
+          </ion-text>
+          Indica un numero di cellulare dove contattarti in caso di problematiche legate alle prenotazioni della
+          struttura.
+
+        </p>
+        <p>
+          Per effettuare la verifica ti inviamo un SMS con un pincode da inserire nei passaggi succesivi di
+          registrazione
+        </p>
+        <p>
+          <ion-text color="primary">
+            <h6><i>(non sarai mai contattato per promozioni o marketing)</i></h6>
+          </ion-text>
+        </p>
+      </div>
+
+
+
+
+    </form>
 
   </div>
 
 
 
   <!-- PARTE VERIFICA CONTATTI -->
-  <div  *ngIf="actualStatePage==pageState.VERIFY">
-      <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded">
+  <div *ngIf="actualStatePage==pageState.VERIFY">
+    <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded">
 
 
-          <ion-item lines="none">
-              <ion-button 
-                  slot="start" 
-                  fill="clear" 
-                  color="danger"
-                  (click)="onClickReinviaCodice(tipoVerifica.verificaemail)">
-                  <ion-icon name="refresh-outline"></ion-icon>
-              </ion-button>
+      <ion-item lines="none">
+        <ion-button slot="start" fill="clear" color="danger" (click)="onClickReinviaCodice(tipoVerifica.verificaemail)">
+          <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
 
-              <ion-label color="default">Inserisci il pincode ricevuto tramite email</ion-label>
-          </ion-item>
+        <ion-label color="default">Inserisci il pincode ricevuto tramite email</ion-label>
+      </ion-item>
 
-          <form [formGroup]="formVerifyMail">
-              <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
-                  <ion-segment>
-                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
-                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
-                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
-                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
-                      <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
-                  </ion-segment>
-              </div>
-          </form>
+      <form [formGroup]="formVerifyMail">
+        <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
+          <ion-segment>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)" id="1"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)" id="2"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)" id="3"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)" id="4"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)" id="5"></ion-input>
+          </ion-segment>
+        </div>
+      </form>
 
-      </div>
+    </div>
 
-      <div class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded">
+    <div class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded">
 
-          <ion-item lines="none">
-              <ion-button 
-                  slot="start" 
-                  fill="clear" 
-                  color="danger"
-                  (click)="onClickReinviaCodice(tipoVerifica.verificasms)">
-                  <ion-icon name="refresh-outline"></ion-icon>
-              </ion-button>
-              <ion-label color="default" >
-                  Inserisci il pincode ricevuto tramite SMS</ion-label>
-          </ion-item>            
+      <ion-item lines="none">
+        <ion-button slot="start" fill="clear" color="danger" (click)="onClickReinviaCodice(tipoVerifica.verificasms)">
+          <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+        <ion-label color="default">
+          Inserisci il pincode ricevuto tramite SMS</ion-label>
+      </ion-item>
 
-          <form [formGroup]="formVerifyTel">
-                  <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
-                      <ion-segment>
-                          <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c6" #c6 (ionInput)="changeFocus($event)"id="6"></ion-input>
-                          <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c7" #c7 (ionInput)="changeFocus($event)"id="7"></ion-input>
-                          <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c8" #c8 (ionInput)="changeFocus($event)"id="8"></ion-input>
-                          <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c9" #c9 (ionInput)="changeFocus($event)"id="9"></ion-input>
-                          <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c10" #c10 (ionInput)="changeFocus($event)"id="10"></ion-input>
-                      </ion-segment>
-                  </div>
-          </form>
+      <form [formGroup]="formVerifyTel">
+        <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
+          <ion-segment>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c6" #c6 (ionInput)="changeFocus($event)" id="6"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c7" #c7 (ionInput)="changeFocus($event)" id="7"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c8" #c8 (ionInput)="changeFocus($event)" id="8"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c9" #c9 (ionInput)="changeFocus($event)" id="9"></ion-input>
+            <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center"
+              minlength="1" maxlength="1" formControlName="c10" #c10 (ionInput)="changeFocus($event)" id="10">
+            </ion-input>
+          </ion-segment>
+        </div>
+      </form>
 
-      </div>
+    </div>
 
   </div>
 
@@ -193,126 +193,106 @@
   <div *ngIf="actualStatePage==pageState.REGISTRATION">
 
     <form [formGroup]="formRegister">
-        <ion-list>
-          <ion-item-group>
-            <ion-item-divider color="light">
-              <ion-icon 
-                name="person-outline" 
-                slot="start"
-                color="primary"></ion-icon>
-              <ion-label>Come ti chiami ?</ion-label>
-            </ion-item-divider>
-            <ion-item>
-              <ion-label position="floating">Nome</ion-label>
-              <ion-input formControlName="nome"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Cognome</ion-label>
-              <ion-input formControlName="cognome"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Sesso</ion-label>
-              <ion-select formControlName="sesso" interface="popover">
-                <ion-select-option 
-                  *ngFor="let sesso of listSesso"
-                  [value]="sesso.value">
-                  {{ sesso.description }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Codice fiscale</ion-label>
-              <ion-input formControlName="cf" (ionBlur)="onCfChange()"></ion-input>
-            </ion-item >
-          </ion-item-group>
-    
-          <ion-item-group>
-            <ion-item-divider color="light">
-              <ion-icon 
-                name="home-outline" 
-                slot="start"
-                color="primary"></ion-icon>
-              <ion-label>Dove vivi ?</ion-label>
-            </ion-item-divider>
+      <ion-list>
 
-            <ion-item>
-              <ion-label position="floating">Indirizzo</ion-label>
-              <ion-input formControlName="indResidenza"></ion-input>
-            </ion-item>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap ion-text-center">
+            <i>per poter proseguire ti chiediamo di completare le informazioni mancanti</i>
+          </ion-label>
+        </ion-item>
 
-            <ion-item>
-              <ion-label position="floating">Comune</ion-label>
-              <ion-input formControlName="comResidenza"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Cap</ion-label>
-              <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
-            </ion-item>
-              <ion-item>
-              <ion-label position="floating">Provincia</ion-label>
-              <ion-input formControlName="provResidenza"></ion-input>
-            </ion-item>
-            <ion-item>
-                    <ion-label position="floating">Stato</ion-label>
-                    <ion-input formControlName="statoResidenza"></ion-input>
-            </ion-item>
-            
-          </ion-item-group>
-          <ion-item-group>
-            <ion-item-divider color="light">
-              <ion-icon 
-                name="logo-reddit" 
-                slot="start"
-                color="primary"></ion-icon>
-              <ion-label>Quando sei nato ?</ion-label>
-            </ion-item-divider>
-            <ion-item>
-              <ion-label position="floating">Data</ion-label>
-              <ion-datetime 
-                            formControlName="nascita" 
-                            displayFormat="DD-MM-YYYY"
-                            cancelText = "Annulla"
-                            doneText="Conferma"
-                            [max]="today">
-              </ion-datetime>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Comune</ion-label>
-              <ion-input formControlName="comNascita"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="showInputCapNascita">
-              <ion-label position="floating">Cap</ion-label>
-              <ion-input formControlName="capNascita"></ion-input>
-            </ion-item>
-            <ion-item> 
-              <ion-label position="floating">Provincia</ion-label>
-              <ion-input formControlName="provNascita"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Stato</ion-label>
-              <ion-input formControlName="statoNascita"></ion-input>
-            </ion-item>
-          </ion-item-group>
-        </ion-list>
-      </form>
+        <!-- DATI ANAGRAFICI -->
+        <ion-item-group>
+          <ion-item-divider sticky="true" color="light">
 
-      <div  class="ion-no-padding div-message">
-          <p>
-          <ion-text color="primary">
-              <ion-icon name="information-circle-outline"></ion-icon>
-          </ion-text>
-              Dobbiamo richiederti alcune informazioni personali per l'eventuale
-          </p>
-          <p>
-              emissione di documenti fiscali
-          </p>
+            <ion-icon name="person-outline" slot="end" color="primary"></ion-icon>
+            <ion-label>Come ti chiami ?</ion-label>
+          </ion-item-divider>
 
-          <p>
-              <ion-text color="primary">
-                  <h6><i>(ad esempio in caso di iscrizioni a corsi o prenotazioni della struttura)</i></h6>
-              </ion-text>
-          </p>
-      </div>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Nome</ion-label>
+            <ion-input formControlName="nome"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label slot="start" position="fixed">Cognome</ion-label>
+            <ion-input formControlName="cognome"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Sesso</ion-label>
+            <ion-select formControlName="sesso" interface="popover">
+              <ion-select-option *ngFor="let sesso of listSesso" [value]="sesso.value">
+                {{ sesso.description }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Cod. fiscale</ion-label>
+            <ion-input formControlName="cf" (ionBlur)="onCfChange()"></ion-input>
+          </ion-item>
+        </ion-item-group>
+
+        <!-- DATI INDIRIZZO -->
+        <ion-item-group>
+          <ion-item-divider sticky="true" color="light">
+            <ion-icon name="home-outline" slot="end" color="primary"></ion-icon>
+            <ion-label>Dove vivi ?</ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label slot="start" position="fixed">Indirizzo</ion-label>
+            <ion-input formControlName="indResidenza"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label slot="start" position="fixed">Comune</ion-label>
+            <ion-input formControlName="comResidenza"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Cap</ion-label>
+            <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Provincia</ion-label>
+            <ion-input formControlName="provResidenza"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Stato</ion-label>
+            <ion-input formControlName="statoResidenza"></ion-input>
+          </ion-item>
+        </ion-item-group>
+
+        <!-- DATI NASCITA -->
+        <ion-item-group>
+          <ion-item-divider sticky="true" color="light">
+            <ion-icon name="logo-reddit" slot="end" color="primary"></ion-icon>
+            <ion-label>Quando sei nato ?</ion-label>
+          </ion-item-divider>
+
+          <app-dtinput title="Data di nascita" label="Nato il" [(actualDate)]="this.docUtente.NATOIL">
+          </app-dtinput>
+
+
+          <ion-item>
+            <ion-label slot="start" position="fixed">Comune</ion-label>
+            <ion-input formControlName="comNascita"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="showInputCapNascita">
+            <ion-label slot="start" position="fixed">Cap</ion-label>
+            <ion-input formControlName="capNascita"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Provincia</ion-label>
+            <ion-input formControlName="provNascita"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label slot="start" position="fixed">Stato</ion-label>
+            <ion-input formControlName="statoNascita"></ion-input>
+          </ion-item>
+        </ion-item-group>
+      </ion-list>
+    </form>
+
   </div>
 
 
@@ -322,44 +302,29 @@
 <ion-footer>
 
   <div id="footer-contact" *ngIf="actualStatePage==pageState.CONTACT">
-      <ion-button 
-              color="primary"
-              class="btn-confirm" 
-              expand="block"
-      [disabled]="!this.formContact.valid"
+    <ion-button color="primary" class="btn-confirm" expand="block" [disabled]="!this.formContact.valid"
       (click)="onClickFooterAvanti()">Avanti</ion-button>
   </div>
 
   <div id="footer-verify" *ngIf="actualStatePage==pageState.VERIFY">
 
-      <ion-button 
-          class="btn-confirm"
-          color="primary"
-          expand="block"
-          (click)="onClickFooterAvanti()"
-          [disabled]="!isEnableAvantiOnVerify()">
-          Verifica
-      </ion-button>
+    <ion-button class="btn-confirm" color="primary" expand="block" (click)="onClickFooterAvanti()"
+      [disabled]="!isEnableAvantiOnVerify()">
+      Verifica
+    </ion-button>
 
-      
+
   </div>
 
-  <div id="footer-registration" *ngIf="actualStatePage==pageState.REGISTRATION">
-      
+  <div 
+    id="footer-registration" 
+    *ngIf="actualStatePage==pageState.REGISTRATION">
 
-          <ion-button 
-              class="btn-confirm" 
-              color="primary" 
-              expand="block" 
-              (click)="onClickFooterAvanti()" 
-              [disabled]="!formRegister.valid">
-              Aggiorna
-          </ion-button>
-      
+    <ion-button class="btn-confirm" color="primary" expand="block" (click)="onClickFooterAvanti()">
+      Aggiorna
+    </ion-button>
+
   </div>
 
 
 </ion-footer>
-
-
-

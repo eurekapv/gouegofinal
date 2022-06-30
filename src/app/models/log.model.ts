@@ -1,3 +1,5 @@
+import { environment } from "src/environments/environment";
+
 export class LogApp {
 
     /**
@@ -7,7 +9,18 @@ export class LogApp {
     static consoleLog(data: any) {
         let showDebug = false;
 
+        switch (environment.options.debugMode) {
+            case 'full':
+            case 'minimal':
+                showDebug = true;
+                break;
+        
+            default:
+                break;
+        }
+
         if (showDebug) {
+
             console.log(data);
         }
     }

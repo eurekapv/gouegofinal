@@ -145,13 +145,14 @@ export class SportService {
                       }))
                 .subscribe(resultData => {
 
-                      resultData.forEach(element => {
+                      resultData?.forEach(element => {
         
                         let newSport = new Sport();
                         newSport.setJSONProperty(element);
                         this.add2ListLocationSport(newSport);
                         
                       });
+
                       resolve(this._listLocationSport);
                 }, error=>{
                   reject(error);

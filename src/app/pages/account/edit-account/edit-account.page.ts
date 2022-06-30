@@ -254,7 +254,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
           this.form.get('comNascita').setValue(this.utente.NATOA);
           this.form.get('provNascita').setValue(this.utente.NATOPROV);
-          this.form.get('nascita').setValue(this.utente.NATOIL.toISOString());
           this.form.get('sesso').setValue(this.utente.SESSO);
           this.form.get('statoNascita').setValue(this.utente.NATOISOSTATO);
           this.form.get('capNascita').setValue(this.utente.NATOCAP);

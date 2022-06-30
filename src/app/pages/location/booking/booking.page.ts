@@ -18,6 +18,7 @@ import { Sport } from 'src/app/models/sport.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
 import { VerifyPage } from '../../auth/verify/verify.page';
 import { StatoSlot } from 'src/app/models/valuelist.model';
+import { LogApp } from 'src/app/models/log.model';
 
 
 
@@ -86,8 +87,9 @@ export class BookingPage implements OnInit,  OnDestroy {
     //Creo un documento di Pianificazione
     this.actualPlanning = new PrenotazionePianificazione;
     
-    this.myDebug('Constructor Booking Page');
-    this.myDebug(this.actualPlanning);
+    LogApp.consoleLog('Constructor Booking Page');
+    LogApp.consoleLog(this.actualPlanning)
+    
     //Ricavo la piattaforma di esecuzione
     //in HTML sul content viene usata una direttiva per una animazione diversa della toolbar in Ios
     this.isOnAppleSystem = this.startService.isOnAppleSystem;
@@ -98,17 +100,6 @@ export class BookingPage implements OnInit,  OnDestroy {
 //https://github.com/ionic-team/ionic-framework/issues/17728
 //https://github.com/ionic-team/ionic-framework/pull/17224
 
-
-  /**
-   * 
-   * @param element Element 
-   */
-  myDebug(element) {
-    let actDebug = false;
-    if (actDebug) {
-      console.log(element);
-    }
-  }
   
   /**
    * Crea l'array con i soli Campi dove è possibile effettuare l'attività selezionata
@@ -151,7 +142,7 @@ export class BookingPage implements OnInit,  OnDestroy {
 
     }).then(loading=>{
 
-        this.myDebug('Presentazione Loading');
+        LogApp.consoleLog('Presentazione Loading');
 
         loading.present()
         this.ricevuti = false;
@@ -161,28 +152,28 @@ export class BookingPage implements OnInit,  OnDestroy {
         //Controllo dei parametri del router
       this.router.paramMap.subscribe(param => {
         
-        this.myDebug('Controllo Routing locationId');
+        LogApp.consoleLog('Controllo Routing locationId');
         
         if (param.has('locationId')) {
           
-          this.myDebug('locationId trovata');
+          LogApp.consoleLog('locationId trovata');
 
           //Location sulla barra
           this.idLocation = param.get('locationId');
           
           if (this.idLocation) {
 
-            this.myDebug('locationId: ' + this.idLocation);
+            LogApp.consoleLog('locationId: ' + this.idLocation);
             
             //Chiedo al server gli Sport praticati nella location
-            this.myDebug('Richiesta al server Sport Praticati nella location ');
+            LogApp.consoleLog('Richiesta al server Sport Praticati nella location ');
             this.startService.requestLocationSport(this.idLocation);
             
             //Mi sottoscrivo alla ricezione degli Sport
             this.sottoscrizioneListaSport();
           
             // Chiedo al server Location, Campi e CampiSport (3 Livelli)
-            this.myDebug('Richiesta al server Location, Campi e CampiSport ');
+            LogApp.consoleLog('Richiesta al server Location, Campi e CampiSport ');
 
             this.startService.requestLocationByID(this.idLocation, 3)
               .then(()=>{
@@ -209,9 +200,9 @@ export class BookingPage implements OnInit,  OnDestroy {
             
             // Mi metto in ascolto di variazioni di Slot attuale
             this.subActualSlotDay = this.startService.docOccupazione.subscribe(elActualDay => {
-              this.myDebug('Variazione Slot Day');
+              LogApp.consoleLog('Variazione Slot Day');
               this.actualSlotDay = elActualDay;
-              this.myDebug(elActualDay);
+              LogApp.consoleLog(elActualDay);
             });
             
             //Ascolto documento di Prenotazione
@@ -277,7 +268,7 @@ export class BookingPage implements OnInit,  OnDestroy {
   */
   private sottoscrizioneLocationCampi() {
 
-    this.myDebug('Sottoscrizione Location, Campi e CampiSport ');
+    LogApp.consoleLog('Sottoscrizione Location, Campi e CampiSport ');
     this.subSelectedLocation = this.startService.activeLocation
       .subscribe(dataLocation => {
 
@@ -287,7 +278,7 @@ export class BookingPage implements OnInit,  OnDestroy {
         /* Se ho la location */
         if (this.selectedLocation && !this.selectedLocation.do_inserted && this.selectedLocation.CAMPO.length !== 0) {
 
-          this.myDebug('Ricezione Location, Campi e CampiSport ');
+          LogApp.consoleLog('Ricezione Location, Campi e CampiSport ');
 
           //RECUPERO IL TEMPLATE WEEK SLOT TIME
           this.getTemplateWeek(this.selectedLocation);
@@ -298,12 +289,12 @@ export class BookingPage implements OnInit,  OnDestroy {
         }
         else {
           if (this.selectedLocation && this.selectedLocation.CAMPO) {
-            this.myDebug('Location');
-            this.myDebug(this.selectedLocation);
-            this.myDebug(this.selectedLocation.CAMPO);
+            LogApp.consoleLog('Location');
+            LogApp.consoleLog(this.selectedLocation);
+            LogApp.consoleLog(this.selectedLocation.CAMPO);
           }
           else {
-            this.myDebug('Non ho la location oppure i campi ')
+            LogApp.consoleLog('Non ho la location oppure i campi ')
           }
         }
 
@@ -378,7 +369,7 @@ export class BookingPage implements OnInit,  OnDestroy {
 
       if (this.selectedCampo) {
 
-        this.myDebug('Richiesto Refresh success, getOccupazioni');
+        LogApp.consoleLog('Richiesto Refresh success, getOccupazioni');
         this.bookable = (this.selectedCampo?true:false);
 
         //Richiesta delle nuove occupazioni e impostazione nuova Pianificazione
@@ -386,11 +377,11 @@ export class BookingPage implements OnInit,  OnDestroy {
         
       }
       else {
-        this.myDebug('Richiesto Refresh failed NO SELECTED CAMPO');
+        LogApp.consoleLog('Richiesto Refresh failed NO SELECTED CAMPO');
       }
     }
     else {
-      this.myDebug('Richiesto Refresh failed NO SELECTED SPORT');
+      LogApp.consoleLog('Richiesto Refresh failed NO SELECTED SPORT');
     }
 
 
@@ -484,7 +475,7 @@ export class BookingPage implements OnInit,  OnDestroy {
     this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
     
       
-    this.myDebug('Richiesta Slot Occupazioni');
+    LogApp.consoleLog('Richiesta Slot Occupazioni');
     
     //Step b) Chiamo il servizio
     this.startService.requestSlotOccupazioni(this.actualSlotDay, 

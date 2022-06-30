@@ -14,6 +14,7 @@ import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
+import { LogApp } from 'src/app/models/log.model';
 
 
 @Component({
@@ -127,7 +128,7 @@ export class VerifyPage implements OnInit {
     this.params = this.navParams.get('params');
     if (this.params==null||this.params==undefined){
       //se non ho i parametri, esco
-      this.showMessage("Errore");
+      this.startService.presentAlertMessage("Errore");
       this.closeModal();
     }
      
@@ -146,7 +147,7 @@ export class VerifyPage implements OnInit {
      this.createArrayStepRegistration(this.docGruppo);
      this.createRegisterForm();
      this.createVerifyForm();
-     this.createContactForm();
+     
      this.isDesktop=this.startService.isDesktop
    }
  
@@ -362,7 +363,7 @@ export class VerifyPage implements OnInit {
                   this.docRichiestaCodici.REQUESTSMSCODE = false;
                   this.docRichiestaCodici.REQUESTEMAILCODE = false;
                   
-                  this.showMessage(customSuccessMessage);
+                  this.startService.presentAlertMessage(customSuccessMessage);
                   //Mi sposto alla pagina successiva (di verifica)
                   if (onSuccessChangePage) {
 
@@ -376,15 +377,15 @@ export class VerifyPage implements OnInit {
                 else{
                   //se il server ha risposto, ma non è riuscito ad inviare
                   
-                  this.showMessage(customErrorMessage);
+                  this.startService.presentAlertMessage(customErrorMessage);
                 }
                })
                .catch(err => {
                    //Chiudo il Loading Controller
                    element.dismiss();
                    //Visualizzo il messaggio
-                   console.log(err);
-                   this.showMessage("Errore di connessione");
+                   LogApp.consoleLog(err);
+                   this.startService.presentAlertMessage("Errore di connessione");
                })
 
      });
@@ -524,7 +525,7 @@ export class VerifyPage implements OnInit {
  
      //Nel caso mostro un messaggio di errore
      if (altMessage.length!=0) {
-       this.showMessage(altMessage);
+       this.startService.presentAlertMessage(altMessage);
      }
    }
  
@@ -573,7 +574,7 @@ export class VerifyPage implements OnInit {
                }
                
               
-                this.showMessage("Verifica completata con successo");
+                this.startService.presentAlertMessage("Verifica completata con successo");
                 //Posso spostarmi alla pagina successiva
                 this.nextStepRegistration();
  
@@ -581,7 +582,7 @@ export class VerifyPage implements OnInit {
              else {
  
                //Il server ha risposto, ma la verifica non è andata a buon fine (presumo codice errato)
-               this.showMessage(response.message);
+               this.startService.presentAlertMessage(response.message);
              }
            })
            .catch(err => {
@@ -591,12 +592,12 @@ export class VerifyPage implements OnInit {
              elLoading.dismiss();
  
              //Mostro il messaggio
-             this.showMessage("Errore di connessione");
+             this.startService.presentAlertMessage("Errore di connessione");
            });
        });
      }
      else{
-       this.showMessage('Errore, richiedere un nuovo codice');
+       this.startService.presentAlertMessage('Errore, richiedere un nuovo codice');
      }
    }
  
@@ -617,16 +618,17 @@ export class VerifyPage implements OnInit {
    {
      this.execAggiornaDati();
    }
+
+
+
    /**
     * Invia al server i dati di registrazione
     */
-   
-
    execAggiornaDati() {
 
 
     //recupero tutti i dati dal form
-    if (this.formRegister.valid)
+    if (this.formRegister.valid && this.docUtente.NATOIL)
     {
       
       this.docUtente.NOMINATIVO='';
@@ -641,10 +643,6 @@ export class VerifyPage implements OnInit {
       this.docUtente.PROVINCIA=this.formRegister.value.provResidenza;
       this.docUtente.ISOSTATO=this.formRegister.value.statoResidenza;
 
-      
-      if (this.formRegister.value.nascita) {
-        this.docUtente.NATOIL = new Date(this.formRegister.value.nascita);
-      }
 
       this.docUtente.NATOA=this.formRegister.value.comNascita;
       this.docUtente.NATOCAP=this.formRegister.value.capNascita;
@@ -670,17 +668,20 @@ export class VerifyPage implements OnInit {
 
                       //visto che siamo nel then, l'operazione è sicuramente andata a buon fine
                       elLoading.dismiss();
-                        this.showMessage('Info Aggiornate');
+                        this.startService.presentAlertMessage('Info Aggiornate');
                         this.closeModal();
 
                   })
                   .catch(error => {
                     elLoading.dismiss();
-                    this.showMessage(error);
-                    console.log(error);
+                    this.startService.presentAlertMessage(error);                    
+                    LogApp.consoleLog(error);
                   });
            });
 
+    }
+    else {
+      this.startService.presentAlertMessage('Controllare alcuni dati mancanti o inesatti');
     }
   }
  
@@ -700,7 +701,7 @@ export class VerifyPage implements OnInit {
            // E' Arrivata una risposta NEGATIVA
            if (!dataResult.result) {
  
-             this.showMessage(dataResult.message);
+             this.startService.presentAlertMessage(dataResult.message);
            }
            else {
              //LOGIN ACCETTATO
@@ -762,40 +763,9 @@ export class VerifyPage implements OnInit {
  
  //#region CREAZIONI FORM
  
- 
    /**
-    * Funzione di creazione della Form Contatti, usata come prima pagina 
-    * nello StepRegistrazione
+    * Form con i dati account di registrazione
     */
-   createContactForm(){
-     let pattTelefono = '^[+]*[0-9]*';
-     //Spiegazione pattern 
-     //Per altre spiegazioni guardare qui https://regexr.com/3c53v
- 
-     // ^ Il match parte dall'inizio della stringa
-     // [+] Qualsiasi elemento contenuto nelle quadre (quindi il +)
-     // * la regola precedente è opzionale
-     // [0-9] Qualsiasi elemento delle quadre
-     // * la regola precedente è opzionale
- 
- 
-     //form dei contatti (mail e telefono)
-     this.formContact=new FormGroup({
-       email: new FormControl(null, {
-         updateOn: 'change',
-         validators: [this.emailVerifyNeeded? Validators.required : Validators.nullValidator, Validators.email]
-       }),
-       telephone: new FormControl(null, {
-         updateOn: 'change',
-         validators: [this.smsVerifyNeeded? Validators.required : Validators.nullValidator, Validators.pattern(pattTelefono)]
-       })
-     });
- 
-   }
- 
- 
- 
- 
    createRegisterForm(){
      let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
      //form di registrazione
@@ -809,10 +779,6 @@ export class VerifyPage implements OnInit {
         validators: [Validators.required]
       }),
       sesso:new FormControl(this.docUtente.SESSO, {
-        updateOn:'change',
-        validators: [Validators.required]
-      }),
-      nascita:new FormControl((this.docUtente.NATOIL ? this.docUtente.NATOIL.toISOString(): this.docUtente.NATOIL), {
         updateOn:'change',
         validators: [Validators.required]
       }),
@@ -862,6 +828,9 @@ export class VerifyPage implements OnInit {
    }
   
 
+   /**
+    *E' stato modificato il codice fiscale
+    */
    onCfChange(){
 
     //se il cf cambia, quando l'utente esce dalla casella, provo a validarlo e riempire gli altri campi
@@ -887,7 +856,6 @@ export class VerifyPage implements OnInit {
 
           this.formRegister.get('comNascita').setValue(this.docUtente.NATOA);
           this.formRegister.get('provNascita').setValue(this.docUtente.NATOPROV);
-          this.formRegister.get('nascita').setValue(this.docUtente.NATOIL.toISOString());
           this.formRegister.get('sesso').setValue(this.docUtente.SESSO);
           this.formRegister.get('statoNascita').setValue(this.docUtente.NATOISOSTATO);
           this.formRegister.get('capNascita').setValue(this.docUtente.NATOCAP);
@@ -900,7 +868,7 @@ export class VerifyPage implements OnInit {
 
           //qui in teoria il cf non ha passato neppure il check base, segno il campo come non valido
           this.formRegister.controls['cf'].setErrors({'incorrect':true});
-          console.log(err);
+          LogApp.consoleLog(err);
         })
       }
     }
@@ -1076,35 +1044,16 @@ export class VerifyPage implements OnInit {
        link = this.docArea.findAreaLinkByPageType(PageType.policyPrivacy);
    
        if (link && link.REFERURL) {
-         this.openLink(link.REFERURL);
+          this.startService.openLink(link.REFERURL);
        }
      }
  
      
    }
  
-   //Apre un link in un'altra pagina
-   openLink(url:string)
-   {
-     Browser.open({url:url});
-   }
  
    //#endregion
- 
-     /**
-    * Procedura che visualizza un toast con il messaggio passato
-    * @param myMessage Il messaggio da visualizzare
-    */
-   async showMessage(myMessage: string) {
-     const toast = await this.toastCtrl
-       .create({
-         message: myMessage,
-         duration: 3000
-       });
- 
-       toast.present();
-   }
- 
+  
  }
  
  

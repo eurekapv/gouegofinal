@@ -74,6 +74,25 @@ span.link{
     cursor: pointer;
 }
 
+ion-item-divider {
+    --padding-top: 5px;
+    --padding-bottom: 5px;
+    --padding-end: 10px;
+}
+
+ion-content {
+    &::part(scroll) {
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+}
+
+form {
+    padding-bottom: 30px;
+}
+
 
 
 

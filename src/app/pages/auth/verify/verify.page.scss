@@ -93,7 +93,29 @@ form {
     padding-bottom: 30px;
 }
 
+div.step-verifica{
+    ion-grid{
+        padding: 15px;
 
+        ion-row.submit{
+            ion-col{
+                padding-top: 40px;
+            }
+        }
+       
+    }
+
+    ion-input{
+        text-align: center;
+        --padding-start: 5px;
+        --padding-end: 5px;
+        --padding-top: 10px;
+        --padding-bottom: 10px;
+        font-size: 25px;
+        
+    }
+
+}
 
 
 

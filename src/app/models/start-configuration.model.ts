@@ -1,6 +1,7 @@
 import { Gruppo } from './gruppo.model';
 import { TipoPrivateImage } from './valuelist.model';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { ConnectionMode, environment } from 'src/environments/environment';
 
 export class StartConfiguration {
     private _ready: boolean; //Indica se la connessione con il server è avvenuta
@@ -65,27 +66,40 @@ export class StartConfiguration {
      * @param prefixDomain Prefisso del dominio es (openbeach,demo, localhost)
      * @param testingMode 
      */
-    setUrlLocation(testingMode = false) {
-        if (testingMode == true) {
-            //Modalità di test
+    setUrlLocation() {
+        //Connessione Locale
+        if (environment.connection.mode == ConnectionMode.local) {
 
-            //Modalità in locale
-            //Protocollo per forza http
-            this._urlProtocol = 'http';
-            this._urlDomain = 'localhost/gouegoapi';
-            
-            this._urlFileServer = 'localhost/gouego';
-
+            this._urlProtocol = environment.connection.urlLocation.local.urlProtocol;
+            this._urlDomain = environment.connection.urlLocation.local.urlDomain;            
+            this._urlFileServer = environment.connection.urlLocation.local.urlFileServer;
         }
         else {
-            //Non sono in test perchè voglio collegarmi al server, ma da dentro ionic serve
-            this._urlProtocol = 'https';
-            //Modalità Server
-            this._urlDomain = 'api.gouego.com';            
-            this._urlFileServer = 'app.gouego.com/admin';
+            this._urlProtocol = environment.connection.urlLocation.production.urlProtocol;
+            this._urlDomain = environment.connection.urlLocation.production.urlDomain;            
+            this._urlFileServer = environment.connection.urlLocation.production.urlFileServer;
+        }
+        //Vecchia modalità senza environment
+        // if (testingMode == true) {
+        //     //Modalità di test
+
+        //     //Modalità in locale
+        //     //Protocollo per forza http
+        //     this._urlProtocol = 'http';
+        //     this._urlDomain = 'localhost/gouegoapi';
+            
+        //     this._urlFileServer = 'localhost/gouego';
+
+        // }
+        // else {
+        //     //Non sono in test perchè voglio collegarmi al server, ma da dentro ionic serve
+        //     this._urlProtocol = 'https';
+        //     //Modalità Server
+        //     this._urlDomain = 'api.gouego.com';            
+        //     this._urlFileServer = 'app.gouego.com/admin';
             
 
-        }
+        // }
     }
 
     // Utilizzato al termine di una chiamata di 

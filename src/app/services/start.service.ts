@@ -67,6 +67,7 @@ import { PhotoService, PhotoType } from './photo.service';
 import { SmartInterfaceService } from './smart-interface.service';
 import { AlertButton, SpinnerTypes } from "@ionic/core";
 import { Browser } from '@capacitor/browser';
+import { ConnectionMode, environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -210,15 +211,68 @@ export class StartService {
     let arUrl = [];
     let prefixDomain = '';
 
+
     //Recupero lo StartConfig, cosi da modificarlo al termine
     let myConfig = this._startConfig.getValue();
+    let activeId = '';
 
     //Modalità Web
     if (this.isOnWeb) {
 
+      this._localConnection = (environment.connection.mode == ConnectionMode.local);
+
+      //Connessione al server locale
+      if (this._localConnection) {
+        //Recupero l'activeId
+        activeId = environment.connection.activeId;
+        //Recupero il relativo AppId
+        myAppId = environment.connection.appId[activeId];
+      }
+      else {
+        //Recupero URL del browser
+        myUrl = this.urlLocation.hostname;
+
+        if (myUrl == 'localhost') {
+          //Sono in debug mode ma voglio puntare fuori
+          //Recupero l'activeId
+          activeId = environment.connection.activeId;
+          //Recupero il relativo AppId
+          myAppId = environment.connection.appId[activeId];
+        }
+        else {
+          //Prendo URL e lo separo
+          arUrl = myUrl.split('.');
+  
+          if (arUrl.length != 0) {
+            //Prendo il prefisso e sulla base di questo ricavo l'AppID
+            prefixDomain = arUrl[0];
+          }        
+        }
+
+
+      }
+    }
+    else {
+
+      //Non è mai in localconnection
+      this._localConnection = false;
+      //Recupero l'activeId
+      activeId = environment.connection.activeId;
+      //Recupero il relativo AppId
+      myAppId = environment.connection.appId[activeId];
+
+      //Sono su capacitor o cordova
+      prefixDomain = '';
+
+    }
+
+    /* VECCHIA VERSIONE SENZA ENVIRONMENT
+    //Modalità Web
+    if (this.isOnWeb) {
+
         //Qui posso cambiare strategia per puntare localmente
-        this._localConnection = true;
-        //this._localConnection = false;
+        //this._localConnection = true;
+        this._localConnection = false;
 
         if (this._localConnection) {
           //Modalità di Test metto un AppId di test
@@ -272,9 +326,10 @@ export class StartService {
       //Sono su capacitor o cordova
       prefixDomain = '';
     }
+    */
 
-    //Imposto URL di chiamata
-    myConfig.setUrlLocation(this._localConnection);
+    //Imposto gli Url utilizzati nelle chiamate
+    myConfig.setUrlLocation();
 
     //Reimposto Observable
     this._startConfig.next(myConfig);

@@ -4,7 +4,6 @@ import { ModalController, LoadingController, ToastController, NavController, Ale
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { StartService } from 'src/app/services/start.service';
 import { Utente, ParamsVerifica } from 'src/app/models/utente.model';
-import { Browser } from '@capacitor/browser';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType, RequestPincodeUse, ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
@@ -27,11 +26,11 @@ export class VerifyPage implements OnInit {
     //se mostrare l'input cap nascita
     showInputCapNascita = false
     //l'oggetto ricevuto come parametro all'apertura della videata in modale
-    params : ParamsVerifica = new ParamsVerifica
+    params : ParamsVerifica = new ParamsVerifica;
 
    //per utilizzare l'enum nell'html
    pageState: typeof PageState=PageState;
-   tipoVerifica: typeof TipoVerificaAccount = TipoVerificaAccount;
+   enumTipoVerifica: typeof TipoVerificaAccount = TipoVerificaAccount;
  
    //variabile che indica lo stato della pagina
    //Se posizionato su  Register, Verifiy o Welcome
@@ -66,23 +65,98 @@ export class VerifyPage implements OnInit {
    //Verifiche
    emailVerifyNeeded: boolean;
    smsVerifyNeeded: boolean;
+
+  //Codici di verifica
+  codeVerificationMail: string = '';
+  codeVerificationSms: string = '';
+
+  //Lunghezza del codice di verifica
+  codeLength: number = 5;
    
    //lista delle decodifiche del sesso
    listSesso : ValueList[]=[];
    //
    today: string;
+
+
+    /**
+    * Messaggio visualizzato in fase di registrazione verifica
+      nella parte Header
+    */
+    get labelHeaderRegistrazione():string {
+        let valueReturn = '';
+    
+        if (this.emailVerifyNeeded && this.smsVerifyNeeded) {
+          valueReturn = 'Indica una email valida ed un numero mobile per effettuare la verifica'
+        }
+        else if (this.emailVerifyNeeded) {
+          valueReturn = 'Indica una email valida per effettuare la verifica'
+        }
+        else if (this.smsVerifyNeeded) {
+          valueReturn = 'Indica un numero mobile a cui inviare un SMS per effettuare la verifica'
+        }
+    
+        return valueReturn;
+       }   
+   
+   /**
+    * Messaggio visualizzato in fase di registrazione verifica
+      nella parte Footer
+    */
+   get labelFooterRegistrazione():string {
+    let valueReturn = '';
+
+    if (this.emailVerifyNeeded && this.smsVerifyNeeded) {
+      valueReturn = 'sarà inviata una email ed un SMS contenente un codice di convalida da inserire per poter accedere al proprio account'
+    }
+    else if (this.emailVerifyNeeded) {
+      valueReturn = 'sarà inviata una email contenente un codice di convalida da inserire per poter accedere al proprio account'
+    }
+    else if (this.smsVerifyNeeded) {
+      valueReturn = 'sarà inviata un SMS contenente un codice di convalida da inserire per poter accedere al proprio account'
+    }
+
+    return valueReturn;
+   }
+
+   /**
+    * A seconda della pagina dove ci si trova ho una label diversa
+    */
+   get labelButtonFooter(): string {
+    let label = '';
+
+    switch (this.actualStatePage) {
+
+      case PageState.CONTACT:
+        label = 'Avanti';
+        break;
+
+      case PageState.VERIFY:
+        label = 'Verifica';
+        break;
+
+      case PageState.REGISTRATION:
+        label = 'Aggiorna';
+        break;
+    
+      default:
+        break;
+    }
+
+    return label;
+   }
  
    //#region questi servono per accedere ai corrispettivi elementi in HTML
-   @ViewChild('c1') c1;
-   @ViewChild('c2') c2;
-   @ViewChild('c3') c3;
-   @ViewChild('c4') c4;
-   @ViewChild('c5') c5;
-   @ViewChild('c6') c6;
-   @ViewChild('c7') c7;
-   @ViewChild('c8') c8;
-   @ViewChild('c9') c9;
-   @ViewChild('c10') c10;
+  //  @ViewChild('c1') c1;
+  //  @ViewChild('c2') c2;
+  //  @ViewChild('c3') c3;
+  //  @ViewChild('c4') c4;
+  //  @ViewChild('c5') c5;
+  //  @ViewChild('c6') c6;
+  //  @ViewChild('c7') c7;
+  //  @ViewChild('c8') c8;
+  //  @ViewChild('c9') c9;
+  //  @ViewChild('c10') c10;
    
    //#endregion
  
@@ -99,7 +173,8 @@ export class VerifyPage implements OnInit {
     
     //per il momento, imposto che non devo verificare niente
     this.emailVerifyNeeded = false;
-    this.smsVerifyNeeded = false 
+    this.smsVerifyNeeded = false;
+    
 
      //Stato Pagina registrazione
      this.indexStepRegistration = 0;
@@ -109,23 +184,23 @@ export class VerifyPage implements OnInit {
     
  
      //Richiedo lo startConfig
-      this.startConfig = startService.actualStartConfig
+      this.startConfig = startService.actualStartConfig;
+
       if (this.startConfig && this.startConfig.gruppo) {
-
-
         //Memorizzo il Gruppo con le sue Opzioni
         this.docGruppo = this.startConfig.gruppo;
       }
 
      //Prelevo l'area selezionata 
      this.docArea = this.startService.areaSelectedValue;
+     LogApp.consoleLog('Area di riferimento: ' + this.docArea.ID);
 
      //recupero l'utente
      this.docUtente=this.startService.actualUtente;
 
     //recupero il parametro
-    
     this.params = this.navParams.get('params');
+
     if (this.params==null||this.params==undefined){
       //se non ho i parametri, esco
       this.startService.presentAlertMessage("Errore");
@@ -144,8 +219,9 @@ export class VerifyPage implements OnInit {
   }
  
    ngOnInit() {
-     this.createArrayStepRegistration(this.docGruppo);
+     this.createArrayStepRegistration();
      this.createRegisterForm();
+     this.createContactForm();
      this.createVerifyForm();
      
      this.isDesktop=this.startService.isDesktop
@@ -156,37 +232,36 @@ export class VerifyPage implements OnInit {
  
    /**
     * Crea un array con i passaggi disponibili in registrazione
-    * a seconda delle richieste del gruppo
-    * Se il gruppo non vuole verifiche, si passa subito ai dati
+    * 
+    * Se non si vogliono verifiche, si passa subito ai dati
     */
-    createArrayStepRegistration(docGruppo: Gruppo) {
+    createArrayStepRegistration() {
      this.stepRegistration = [];
-     
-      
+    
       switch (this.params.tipoVerifica){
         
         //se mi passano "verificaemail", devo verificare solo la mail
         case TipoVerificaAccount.verificaemail:
-        this.emailVerifyNeeded=true;
-        this.smsVerifyNeeded=false;
+          this.emailVerifyNeeded=true;
+          this.smsVerifyNeeded=false;
         break;
         
         //se mi passano "verificasms", devo verificare solo l'sms
         case TipoVerificaAccount.verificasms:
-        this.emailVerifyNeeded=false;
-        this.smsVerifyNeeded=true;
+          this.emailVerifyNeeded=false;
+          this.smsVerifyNeeded=true;
         break;
         
         //se mi passano verificaemailsms, devo verificare entrambi
         case TipoVerificaAccount.verificaemailsms:
-        this.emailVerifyNeeded=true;
-        this.smsVerifyNeeded=true;
+          this.emailVerifyNeeded=true;
+          this.smsVerifyNeeded=true;
         break;
         
         //in tutti gli altri casi, non devo verificare niente
         default:
-        this.smsVerifyNeeded=false;
-        this.emailVerifyNeeded=false;
+          this.smsVerifyNeeded=false;
+          this.emailVerifyNeeded=false;
         break;
       }
 
@@ -283,11 +358,56 @@ export class VerifyPage implements OnInit {
    */
  
    /**
+    * Validazione della Form Contatti
+    */
+   validationFormContact(): boolean {
+    let validation: boolean = true;
+    let myEmail = '';
+    let myMobile = '';
+    let arMessage = [];
+    let myMessage = '';
+
+    myEmail = this.formContact.value.email;
+    myMobile = this.formContact.value.telephone;
+
+    //Email da verificare 
+    if (this.emailVerifyNeeded) {
+      if (!myEmail || myEmail.length == 0) {
+        validation = false;
+        arMessage.push('Indicare una email valida');
+      }
+    }
+
+    //SMS da verificare 
+    if (this.smsVerifyNeeded) {
+      if (!myMobile || myMobile.length == 0) {
+        validation = false;
+        arMessage.push('Indicare una numero mobile valido');
+      }
+    }    
+
+    if (!validation) {
+      //Mostro un messaggio a video
+      myMessage = 'Per proseguire è necessario: '
+      arMessage.forEach(element => {
+        myMessage += '\n';
+        myMessage += element;
+      });
+
+      this.startService.presentAlertMessage(myMessage);
+    }
+
+    return validation;
+   }
+   /**
     * Click di Avanti sulla pagina con i contatti
     */
    onClickAvantiContact() {
 
-      if (this.formContact.valid){
+    //Effettuo la validazione della Form
+    let validation = this.validationFormContact();  
+
+    if (validation) {
         
         //azzero il documento di richiesta
         this.docRichiestaCodici = new AccountRequestCode();
@@ -313,11 +433,6 @@ export class VerifyPage implements OnInit {
         //ora posso fare la richiesta al server
         this.sendServerRichiestaCodici(true);
 
-      }
-
-      //se il form non è valido, non faccio niente
-      else {
-        return;
       }
     }
 
@@ -464,22 +579,27 @@ export class VerifyPage implements OnInit {
      }
  
    }
+
+
+  
  
    
    /**
-   * evento scatenato quando l'utente clicca sul pulsante conferma della videata di verifica
-   * dei recapiti
+   * evento scatenato quando l'utente clicca sul pulsante conferma 
+   * della videata di verifica
+   * 
    */
    onClickAvantiVerifica()
    {
      //Devo inviare al server i dati inseriti dall'utente
      let altMessage = '';
      let docVerify: AccountVerifyCode;
+     let validation = false;
  
-     if (!this.isEnableAvantiOnVerify()) {
-       altMessage = 'Controllare i dati inseriti';
-     }
-     else {
+     //Valido gli inserimenti
+     validation = this.validationFormVerify();
+
+     if (validation) {
        //I codici sono stati richiesti e dovrei avere l'IDREFER
        if (this.docRichiestaCodici && this.docRichiestaCodici.IDREFER) {
          
@@ -604,10 +724,6 @@ export class VerifyPage implements OnInit {
  
    //#endregion
  
- 
- 
-
-
    
  
    /**
@@ -727,36 +843,36 @@ export class VerifyPage implements OnInit {
     */
    changeFocus(evento)
    {
-     let id=evento['target']['id'];
-         switch (id) {
-         case '1':
-           this.c2.setFocus();
-           break;
-         case '2':
-           this.c3.setFocus();
-           break;
-         case '3':
-           this.c4.setFocus();
-           break;
-         case '4':
-           this.c5.setFocus();
-           break;
-         case '6':
-           this.c7.setFocus();
-           break;
-         case '7':
-           this.c8.setFocus();
-           break;
-         case '8':
-           this.c9.setFocus();
-           break;
-         case '9': 
-           this.c10.setFocus();
-           break;
+    //  let id=evento['target']['id'];
+    //      switch (id) {
+    //      case '1':
+    //        this.c2.setFocus();
+    //        break;
+    //      case '2':
+    //        this.c3.setFocus();
+    //        break;
+    //      case '3':
+    //        this.c4.setFocus();
+    //        break;
+    //      case '4':
+    //        this.c5.setFocus();
+    //        break;
+    //      case '6':
+    //        this.c7.setFocus();
+    //        break;
+    //      case '7':
+    //        this.c8.setFocus();
+    //        break;
+    //      case '8':
+    //        this.c9.setFocus();
+    //        break;
+    //      case '9': 
+    //        this.c10.setFocus();
+    //        break;
        
-         default:
-           break;
-       }
+    //      default:
+    //        break;
+    //    }
      
    }
     
@@ -873,57 +989,91 @@ export class VerifyPage implements OnInit {
       }
     }
   }
+
+   /**
+   * Funzione di creazione della Form Contatti, usata come prima pagina 
+   * nello StepRegistrazione
+   */
+  createContactForm(){
+      let pattTelefono = '^[+]*[0-9]{7,}';
+      //Spiegazione pattern 
+      //Per altre spiegazioni guardare qui https://regexr.com/3c53v
+  
+      // ^ Il match parte dall'inizio della stringa
+      // [+] Qualsiasi elemento contenuto nelle quadre (quindi il +)
+      // * la regola precedente è opzionale
+      // [0-9] Qualsiasi elemento delle quadre
+      // {7,} i valori [0,9] almeno per 7 caratteri o piu
+      // * la regola precedente è opzionale
+  
+  
+      //form dei contatti (mail e telefono)
+      this.formContact=new FormGroup({
+        email: new FormControl(null, {
+          updateOn: 'change',
+          validators: [Validators.email]
+        }),
+        telephone: new FormControl(null, {
+          updateOn: 'change',
+          validators: [Validators.pattern(pattTelefono)]
+        })
+      });
+  
+    }
   
  
    /**
     * Funzione per la creazione del FORM relativo alla Verifica Pincode Email e SMS
     */
    createVerifyForm(){
-     this.formVerifyMail=new FormGroup({
-       c1: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c2: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c3: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c4: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c5: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       })
-     });
+
+    //Verifica Mail
+    //  this.formVerifyMail=new FormGroup({
+    //    c1: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c2: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c3: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c4: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c5: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    })
+    //  });
  
-     this.formVerifyTel=new FormGroup({
-       c6: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c7: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c8: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c9: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       }),
-       c10: new FormControl(null, {
-         updateOn: 'change',
-         validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-       })
-     });
+    //  //Verifica Telefono
+    //  this.formVerifyTel=new FormGroup({
+    //    c6: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c7: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c8: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c9: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    }),
+    //    c10: new FormControl(null, {
+    //      updateOn: 'change',
+    //      validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+    //    })
+    //  });
  
    }
 
@@ -932,17 +1082,20 @@ export class VerifyPage implements OnInit {
     * formVerifyMail e formVerifyTel
     */
    clearInputPinCode() {
-     for (let index = 1; index <= 5; index++) {
-       
-       this.formVerifyMail.get('c' + index).setValue("");
-    
-     }
+      this.codeVerificationMail = '';
+      this.codeVerificationSms = '';
 
-     for (let index = 6; index <= 10; index++) {
+    //  for (let index = 1; index <= 5; index++) {
        
-      this.formVerifyTel.get('c' + index).setValue("");
+    //    this.formVerifyMail.get('c' + index).setValue("");
+    
+    //  }
+
+    //  for (let index = 6; index <= 10; index++) {
+       
+    //   this.formVerifyTel.get('c' + index).setValue("");
    
-    }
+    // }
    }
  
  
@@ -953,20 +1106,12 @@ export class VerifyPage implements OnInit {
    getInputVerifyCode(tipo: TipoVerificaAccount): string {
      let strReturn: string = '';
  
-     if (tipo == TipoVerificaAccount.verificaemail) {
-       strReturn = this.formVerifyMail.value.c1 + 
-                   this.formVerifyMail.value.c2 + 
-                   this.formVerifyMail.value.c3 + 
-                   this.formVerifyMail.value.c4 + 
-                   this.formVerifyMail.value.c5;
-     }
-     else if (tipo == TipoVerificaAccount.verificasms) {
-       strReturn = this.formVerifyTel.value.c6 + 
-                   this.formVerifyTel.value.c7 + 
-                   this.formVerifyTel.value.c8 + 
-                   this.formVerifyTel.value.c9 + 
-                   this.formVerifyTel.value.c10;
-     }
+      if (tipo == TipoVerificaAccount.verificaemail) {
+        strReturn = this.codeVerificationMail
+      }
+      else if (tipo == TipoVerificaAccount.verificasms) {
+        strReturn = this.codeVerificationSms
+      }
  
      return strReturn;
    }
@@ -977,34 +1122,68 @@ export class VerifyPage implements OnInit {
     * 1) Quanti sono i pincode da inserire 
     * 2) Quali ha inserito
     */
-   isEnableAvantiOnVerify():boolean {
-     let enable = true;
+   validationFormVerify() :boolean {
+
+     let validation = true;
+     let arMessage = [];
+     let myMessage = '';     
  
-     if (this.docGruppo) {
-       if (this.docGruppo.APPTIPOVERIFICA !== TipoVerificaAccount.noverifica) {
- 
-         switch (this.params.tipoVerifica) {
-           case TipoVerificaAccount.verificaemail:
-               enable = this.formVerifyMail.valid;
-             break;
-           case TipoVerificaAccount.verificasms:
-               enable = this.formVerifyTel.valid;
-             break;
- 
-           case TipoVerificaAccount.verificaemailsms:
-             enable = this.formVerifyTel.valid && this.formVerifyMail.valid;
-             break;
-         
-           default:
-             break;
-         }
- 
-       }
+     switch (this.params.tipoVerifica) {
+
+       case TipoVerificaAccount.verificaemail:
+
+        if (this.codeVerificationMail && this.codeVerificationMail.length == this.codeLength) {
+          validation = true;
+        }
+        else {
+          validation = false;
+          arMessage.push('Inserire il codice ricevuto in email');
+        }
+
+        break;
+       case TipoVerificaAccount.verificasms:
+
+        if (this.codeVerificationSms && this.codeVerificationSms.length == this.codeLength) {
+          validation = true;
+        }
+        else {
+          validation = false;
+          arMessage.push('Inserire il codice ricevuto in SMS');
+        }
+         break;
+
+       case TipoVerificaAccount.verificaemailsms:
+            validation = true;
+
+            if (!this.codeVerificationMail || this.codeVerificationMail.length != this.codeLength) {
+              validation = false;
+              arMessage.push('Inserire il codice ricevuto in email');
+            }
+            
+            if (!this.codeVerificationSms || this.codeVerificationSms.length != this.codeLength) {
+              validation = false;
+              arMessage.push('Inserire il codice ricevuto in SMS');
+            }           
+         break;
+     
+       default:
+            validation = true;
+         break;
      }
-     else {
-       enable = false;
-     }
-     return enable;
+
+     if (!validation) {
+      //Mostro un messaggio a video
+      myMessage = 'Per proseguire è necessario: '
+      arMessage.forEach(element => {
+        myMessage += '\n';
+        myMessage += element;
+      });
+
+      this.startService.presentAlertMessage(myMessage);
+    }     
+     
+     
+     return validation;
    }
  
  

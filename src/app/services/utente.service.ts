@@ -797,7 +797,8 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
    * @param docVerifyCode Dati da verificare
    */
   validationVerifyCodici(config: StartConfiguration,
-    docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
+                         docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
+                          
         const metodo = 'validationVerifyCodici';
 
         let myHeaders = config.getHttpHeaders();

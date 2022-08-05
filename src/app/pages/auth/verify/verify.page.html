@@ -27,110 +27,117 @@
 
 <!-- CONTENT PAGES -->
 <ion-content class="ion-padding">
-  <!-- <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-      <img [src]="startConfig.getUrlLogo()">
-  </div> -->
 
 
   <!-- PARTE CONTATTI -->
   <div *ngIf="actualStatePage==pageState.CONTACT" class="ion-padding-horizontal">
-
     <form [formGroup]="formContact">
-
-
       <ion-list>
-        <ion-item *ngIf="this.emailVerifyNeeded">
-          <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
-          <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
-        </ion-item>
-        <ion-item *ngIf="this.smsVerifyNeeded">
-          <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
-          <ion-input type="tel" inputmode="tel" placeholder="+39 Cellulare" formControlName="telephone"></ion-input>
-        </ion-item>
+
+          <ion-item lines="none">
+
+              <ion-label 
+                  class="ion-text-wrap ion-text-center">
+                  <i>{{labelHeaderRegistrazione}}</i>
+              </ion-label>
+          </ion-item>
+
+          <ion-item *ngIf="this.emailVerifyNeeded">
+              <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
+              <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="this.smsVerifyNeeded">
+              <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
+              <ion-input type="tel" inputmode="tel" placeholder="+39 Cellulare" formControlName="telephone">
+              </ion-input>
+          </ion-item>
+
+          <ion-item *ngIf="isPolicyLink()" detail="true" button="true" (click)="openPolicyLink()"
+              class="ion-text-end" lines="none">
+              <ion-label class="ion-text-wrap">
+                  condizioni di registrazione
+              </ion-label>
+          </ion-item>
+
+          <!-- AVVISO SU COSA SUCCEDE -->
+          <ion-item lines="none">
+              <ion-label class="ion-text-wrap ion-text-center">
+                  <i>{{labelFooterRegistrazione}}</i>
+              </ion-label>
+          </ion-item>
+
 
       </ion-list>
 
-      <ion-button fill="outline" size="small" expand="block" *ngIf="isPolicyLink()" (click)="openPolicyLink()">
-        condizioni di trattamento dei dati
-      </ion-button>
-
-
-      <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&!this.smsVerifyNeeded">
-        <p>
-          <ion-text color="primary">
-            <ion-icon name="information-circle-outline"></ion-icon>
-          </ion-text>
-          Indica una email valida dove sarà possibile inviarti le ricevute di prenotazioni, attestati dei corsi
-          ed altri documenti fiscali.
-        </p>
-
-        <h6>
-          Per effettuare la verifica ti inviamo una email contenente un pincode da inserire nei passaggi succesivi di
-          registrazione
-        </h6>
-
-        <p>
-          <ion-text color="primary">
-            <h6><i>(in seguito potrai abilitare l'email anche per la ricezione di altro materiale informativo)</i></h6>
-          </ion-text>
-        </p>
-      </div>
-
-
-      <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded&&this.smsVerifyNeeded">
-        <p>
-          <ion-text color="primary">
-            <ion-icon name="information-circle-outline"></ion-icon>
-          </ion-text>
-          Indica una email valida dove sarà possibile inviarti i documenti fiscali ed un numero di cellulare
-          per contattarti in caso di problemi.
-
-        </p>
-
-        <p>
-          <ion-text color="primary">
-            <h6><i>Per effettuare la verifica ti inviamo 2 pincode (email/SMS) da inserire nei passaggi succesivi di
-                registrazione</i></h6>
-          </ion-text>
-        </p>
-      </div>
-
-      <div class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded&&!this.emailVerifyNeeded">
-        <p>
-          <ion-text color="primary">
-            <ion-icon name="information-circle-outline"></ion-icon>
-          </ion-text>
-          Indica un numero di cellulare dove contattarti in caso di problematiche legate alle prenotazioni della
-          struttura.
-
-        </p>
-        <p>
-          Per effettuare la verifica ti inviamo un SMS con un pincode da inserire nei passaggi succesivi di
-          registrazione
-        </p>
-        <p>
-          <ion-text color="primary">
-            <h6><i>(non sarai mai contattato per promozioni o marketing)</i></h6>
-          </ion-text>
-        </p>
-      </div>
-
-
-
-
-    </form>
+  </form>
 
   </div>
 
 
 
   <!-- PARTE VERIFICA CONTATTI -->
-  <div *ngIf="actualStatePage==pageState.VERIFY">
-    <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded">
+  <div *ngIf="actualStatePage==pageState.VERIFY" class="step-verifica">
+
+        <!-- IMMAGINE DI TESTATA PER LA VERIFICA CODICI -->
+        <ion-grid>
+          <ion-row class="row-img">
+              <ion-col sizeXs="8" offsetXs="2">
+                  <img class="height-viewport" src="assets/img/otpverif.png" alt="" />
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+
+      <!-- VERIFICA EMAIL -->
+      <ion-list *ngIf="this.emailVerifyNeeded">
+          <ion-item lines="none">
+              <ion-label class="ion-text-wrap ion-text-center">
+                  <i>abbiamo inviato una mail a {{formContact.value.email}}</i>
+              </ion-label>
+          </ion-item>
+
+          <ion-item>
+              <ion-input [(ngModel)]="codeVerificationMail" placeholder="inserisci codice mail"
+                  [maxlength]="codeLength" [minlength]="codeLength" class="code-input" type="tel" inputmode="numeric">
+              </ion-input>
+          </ion-item>
+
+          <ion-item detail="true" button="true" (click)="onClickReinviaCodice(enumTipoVerifica.verificaemail)"
+              class="ion-text-end" lines="none">
+              <ion-label class="ion-text-wrap">
+                  <i>reinvia mail</i>
+              </ion-label>
+          </ion-item>
+      </ion-list>
+
+      <!-- VERIFICA SMS -->
+      <ion-list *ngIf="this.smsVerifyNeeded">
+          <ion-item lines="none">
+              <ion-label class="ion-text-wrap ion-text-center">
+                  <i>abbiamo inviato un SMS a {{formContact.value.telephone}}</i>
+              </ion-label>
+          </ion-item>
+
+          <ion-item>
+              <ion-input [(ngModel)]="codeVerificationSms" placeholder="inserisci codice sms" [maxlength]="codeLength"
+                  [minlength]="codeLength" class="code-input" type="tel" inputmode="numeric"></ion-input>
+          </ion-item>
+
+          <ion-item detail="true" button="true" (click)="onClickReinviaCodice(enumTipoVerifica.verificasms)"
+              class="ion-text-end" lines="none">
+              <ion-label class="ion-text-wrap">
+                  <i>reinvia sms</i>
+              </ion-label>
+          </ion-item>
+
+      </ion-list>
+
+
+    <!-- <div class="ion-no-padding div-message" *ngIf="this.emailVerifyNeeded">
 
 
       <ion-item lines="none">
-        <ion-button slot="start" fill="clear" color="danger" (click)="onClickReinviaCodice(tipoVerifica.verificaemail)">
+        <ion-button slot="start" fill="clear" color="danger" (click)="onClickReinviaCodice(enumTipoVerifica.verificaemail)">
           <ion-icon name="refresh-outline"></ion-icon>
         </ion-button>
 
@@ -159,7 +166,7 @@
     <div class="ion-no-padding div-message" *ngIf="this.smsVerifyNeeded">
 
       <ion-item lines="none">
-        <ion-button slot="start" fill="clear" color="danger" (click)="onClickReinviaCodice(tipoVerifica.verificasms)">
+        <ion-button slot="start" fill="clear" color="danger" (click)="onClickReinviaCodice(enumTipoVerifica.verificasms)">
           <ion-icon name="refresh-outline"></ion-icon>
         </ion-button>
         <ion-label color="default">
@@ -184,7 +191,7 @@
         </div>
       </form>
 
-    </div>
+    </div> -->
 
   </div>
 
@@ -300,31 +307,13 @@
 
 <!-- FOOTER PAGES-->
 <ion-footer>
-
-  <div id="footer-contact" *ngIf="actualStatePage==pageState.CONTACT">
-    <ion-button color="primary" class="btn-confirm" expand="block" [disabled]="!this.formContact.valid"
-      (click)="onClickFooterAvanti()">Avanti</ion-button>
-  </div>
-
-  <div id="footer-verify" *ngIf="actualStatePage==pageState.VERIFY">
-
-    <ion-button class="btn-confirm" color="primary" expand="block" (click)="onClickFooterAvanti()"
-      [disabled]="!isEnableAvantiOnVerify()">
-      Verifica
+  <div>
+    <ion-button 
+        color="primary" 
+        class="btn-confirm" 
+        expand="block" 
+      (click)="onClickFooterAvanti()">
+      {{labelButtonFooter}}
     </ion-button>
-
-
   </div>
-
-  <div 
-    id="footer-registration" 
-    *ngIf="actualStatePage==pageState.REGISTRATION">
-
-    <ion-button class="btn-confirm" color="primary" expand="block" (click)="onClickFooterAvanti()">
-      Aggiorna
-    </ion-button>
-
-  </div>
-
-
 </ion-footer>

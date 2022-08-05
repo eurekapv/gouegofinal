@@ -1,6 +1,10 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+export enum ConnectionMode {
+  local = 'local',
+  external = 'external'
+} 
 
 export const environment = {
   production: false,
@@ -11,8 +15,42 @@ export const environment = {
   },
   externalUrl: {
     alchimistilab: 'https://www.alchimistilab.it'
+  },
+  connection: {
+    mode: ConnectionMode.local,
+    activeId: 'demo',
+    appId: {
+      openbeach: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
+      demo: '00F15A91-5395-445C-B7F4-5BA594E55D2F'
+    },
+    urlId: {
+      openbeach: 'openbeach.gouego.com',
+      demo: 'demo.gouego.com',
+    },
+    urlLocation: {
+      local: {
+        urlProtocol: 'http',
+        urlDomain: 'localhost/gouegoapi',
+        urlFileServer: 'localhost/gouego'
+      },
+      production: {
+        urlProtocol: 'https',
+        urlDomain: 'api.gouego.com',
+        urlFileServer: 'app.gouego.com/admin'
+      }
+    }
   }
 };
+
+/*
+Il nodo connection determina se ci si collega al server locale o esterno
+In caso di 
+  a) Connection Local
+  b) Connection External ma con un url localhost (test con connessione esterna)
+  c) No Web Mode (Capacitor)
+  Verrà presa la chiave activeId per determinare la connessione dati da realizzare
+
+*/
 
 /*
  * For easier debugging in development mode, you can import the following file

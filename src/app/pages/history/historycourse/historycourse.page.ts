@@ -13,6 +13,7 @@ import { CalendarPage } from 'src/app/pages/location/course/detailcourse/calenda
 import { AllegatilistPage } from './allegatilist/allegatilist.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-historycourse',
@@ -185,7 +186,7 @@ export class HistorycoursePage implements OnInit {
 
       })
       .catch(error => {
-        console.log(error);
+        LogApp.consoleLog(error,'error');
       });
     });
 
@@ -201,7 +202,7 @@ export class HistorycoursePage implements OnInit {
         this.myLocation = docLocation;
       })
       .catch(error => {
-        console.log(error);
+        LogApp.consoleLog(error,'error');
       });
   }
 

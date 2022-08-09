@@ -13,6 +13,7 @@ import { PostResponse } from 'src/app/library/models/postResult.model';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FileService } from 'src/app/services/file.service';
+import { LogApp } from 'src/app/models/log.model';
 
 
 
@@ -98,7 +99,8 @@ export class DocumentsPage implements OnInit {
             event.target.complete();
           }
 
-          console.log(error);
+          LogApp.consoleLog(error,'error');
+
           this.showMessage('Errore di connessione')
           //Azzero la lista documenti
           this.listDocumenti = [];
@@ -238,7 +240,7 @@ export class DocumentsPage implements OnInit {
           elLoading.dismiss();
 
           //errore di comunicazione col server
-          console.log (error);
+          LogApp.consoleLog(error, 'error');
           this.showMessage('Errore di connnessione');
         });
       })
@@ -279,7 +281,7 @@ export class DocumentsPage implements OnInit {
 
           elLoading.dismiss();
           //qualcosa non ha funzionato
-          console.log(error);
+          LogApp.consoleLog(error,'error');
           this.showMessage('Impossibile scaricare il file');
         })
   

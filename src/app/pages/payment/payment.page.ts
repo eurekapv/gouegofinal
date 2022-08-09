@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+import { LogApp } from 'src/app/models/log.model';
 import { PaymentProcess } from 'src/app/models/payment-process.model';
 import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/valuelist.model';
 
@@ -214,7 +215,7 @@ export class PaymentPage implements OnInit{
             namePayer = details.payer.name.given_name;
             idTransaction = details.id;
             status = details.status;
-            console.log(details);
+            LogApp.consoleLog(details);
           break;
 
         case 'checkout':
@@ -244,12 +245,12 @@ export class PaymentPage implements OnInit{
       document.getElementsByTagName('head')[0].appendChild(script);
       
       script.onload = () => {
-        console.log('Script correctly loaded');
+        LogApp.consoleLog('Script correctly loaded','warn');
         resolve();
       }
 
       script.onerror =(err) => {
-        console.log(err);
+        LogApp.consoleLog(err,'error');
         reject();
       }
     })

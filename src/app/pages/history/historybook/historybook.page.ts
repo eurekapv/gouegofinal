@@ -16,6 +16,7 @@ import { Area } from 'src/app/models/area.model';
 import { PageType } from 'src/app/models/valuelist.model'
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+import { LogApp } from 'src/app/models/log.model';
 
 
 @Component({
@@ -165,16 +166,16 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                                                         //Dismetto il loading
                                                                         this.loadingController.dismiss();
                                                                         this.showMessage('Errore nel caricamento Area');
-                                                                        console.log(err);                                                                    
+                                                                        LogApp.consoleLog(err,'error');                                                                
                                                                   });
 
                                       })
-                                      .catch(err => {
+                                      .catch(error => {
                                         //Dismetto il loading
                                         this.loadingController.dismiss();
 
                                         this.showMessage('Errore nel caricamento Elenco');
-                                        console.log(err);
+                                        LogApp.consoleLog(error,'error');
                                       });
             }
             else {
@@ -191,11 +192,11 @@ export class HistorybookPage implements OnInit, OnDestroy {
                                               //Qui è arrivato tutto esattamente
                                               this.loadingController.dismiss();
                                           })
-                                          .catch(err => {
+                                          .catch(error => {
                                                 //Dismetto il loading
                                                 this.loadingController.dismiss();
                                                 this.showMessage('Errore nel caricamento Area');
-                                                console.log(err);                                                                    
+                                                LogApp.consoleLog(error,'error');                                                                 
                                           });
 
             }
@@ -204,7 +205,7 @@ export class HistorybookPage implements OnInit, OnDestroy {
         }).catch(error=>{
           this.loadingController.dismiss();
           this.showMessage('Errore nel caricamento Prenotazione');
-          console.log(error);
+          LogApp.consoleLog(error,'error');
         })
       
       }

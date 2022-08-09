@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Language } from 'src/app/models/valuelist.model';
 import { Settimana } from 'src/app/models/settimana.model';
+import { LogApp } from 'src/app/models/log.model';
 
 @Pipe({
   name: 'giorniPrevisti'
@@ -53,7 +54,7 @@ export class GiorniPrevistiPipe implements PipeTransform {
             valueReturn += strDay;
 
         } catch (error) {
-          console.log('Error Parse');
+          LogApp.consoleLog(error,'error');
         }
         
       

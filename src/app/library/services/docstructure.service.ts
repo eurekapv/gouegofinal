@@ -924,7 +924,7 @@ export class DocstructureService {
                       }
                     }
                     else {
-                      console.log('Document rel not found');
+                      LogApp.consoleLog('Document rel not found');
                       resolve(null);
                     }
 
@@ -935,12 +935,12 @@ export class DocstructureService {
   
             }
             else {
-              console.log('Foreign Key not found');
+              LogApp.consoleLog('Foreign Key not found');
               resolve(null);
             }
           }
           else {
-            console.log('Foreign Key not found');
+            LogApp.consoleLog('Foreign Key not found');
             resolve(null);
           }
           
@@ -977,9 +977,6 @@ public getRelDocOriginale( docStart: IDDocument,
             indexSeq = 0;
           }
         }
-
-        console.log(docStart);
-        console.log(seqField);
         
         if (seqField && seqField.length !== 0) {
           
@@ -1040,7 +1037,7 @@ public getRelDocOriginale( docStart: IDDocument,
                       }
                     }
                     else {
-                      console.log('Document rel not found');
+                      LogApp.consoleLog('Document rel not found');
                       return resolve(null);
                     }
 
@@ -1051,12 +1048,12 @@ public getRelDocOriginale( docStart: IDDocument,
   
             }
             else {
-              console.log('Foreign Key not found');
+              LogApp.consoleLog('Foreign Key not found');
               return resolve(null);
             }
           }
           else {
-            console.log('Foreign Key not found');
+            LogApp.consoleLog('Foreign Key not found');
             return resolve(null);
           }
           

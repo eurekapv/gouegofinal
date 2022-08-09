@@ -9,6 +9,7 @@ import { StartService } from 'src/app/services/start.service';
 
 import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { LogApp } from 'src/app/models/log.model';
 
 
 @Component({
@@ -113,8 +114,7 @@ export class HistorylistPage implements OnInit {
               .catch(error=>{
                  //Dismetto il loading 
                 loading.dismiss();
-
-                console.log(error);
+                LogApp.consoleLog(error,'error');
                 this.showMessage('Errore nel caricamento');
               });
 
@@ -144,12 +144,12 @@ export class HistorylistPage implements OnInit {
             this.docstructureService.requestNew(filterUtenteIscrizioni)
                   .then(list=>{
                         this.listUtenteCorsi=list;
-                        console.log(this.listUtenteCorsi)
                         loading.dismiss();
                   })
                   .catch(error=>{
                         loading.dismiss();
-                        console.log(error);
+                        
+                        LogApp.consoleLog(error,'error');
                         this.showMessage('Errore nel caricamento');
                   });
 
@@ -247,7 +247,8 @@ export class HistorylistPage implements OnInit {
                       //Sparisce il pullToRefresh Image
                       event.target.complete();
 
-                      console.log(error);
+                      
+                      LogApp.consoleLog(error,'error');
                       this.showMessage('Errore nel caricamento');
               });
         break;
@@ -268,7 +269,8 @@ export class HistorylistPage implements OnInit {
 
                       //Sparisce il pullToRefresh Image
                       event.target.complete();
-                      console.log(error);
+                      
+                      LogApp.consoleLog(error,'error');
                       this.showMessage('Errore nel caricamento');
               });
     

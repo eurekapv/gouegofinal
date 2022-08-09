@@ -4,6 +4,7 @@ import { AlertController, LoadingController, NavController, ToastController } fr
 import * as moment from 'moment';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
+import { LogApp } from 'src/app/models/log.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { StatoIscrizione, TipoSocieta } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
@@ -146,7 +147,7 @@ export class AgendaTrainerDetailPage implements OnInit {
           else{
   
             //errore dal server
-            console.log(response);
+            LogApp.consoleLog(response);
             this.showMessage(response.message);
   
           }
@@ -155,7 +156,7 @@ export class AgendaTrainerDetailPage implements OnInit {
         .catch((error) => {
   
           elLoading.dismiss();
-          console.log(error)
+          LogApp.consoleLog(error,'error');
           this.showMessage('Errore di connessione');
         })
       })

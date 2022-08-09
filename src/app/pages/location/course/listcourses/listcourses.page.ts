@@ -17,6 +17,7 @@ import { Area } from 'src/app/models/area.model';
 import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
 import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
+import { LogApp } from 'src/app/models/log.model';
 
 
 enum PageState{
@@ -199,7 +200,8 @@ export class ListcoursesPage implements OnInit, OnDestroy {
         loading.dismiss();
 
         this.showMessage('Errore di connessione');
-        console.log(error);
+        
+        LogApp.consoleLog(error,'error');
       })
     })
           

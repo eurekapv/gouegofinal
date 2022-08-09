@@ -602,7 +602,8 @@ export class HomePage implements OnInit, OnDestroy {
           })
           .catch(error => {
             this.myListImpegni = [];
-            console.log(error);
+            
+            LogApp.consoleLog(error,'error');
           });
       }
       else {
@@ -692,7 +693,8 @@ export class HomePage implements OnInit, OnDestroy {
               elLocation._LISTOCCUPAZIONI = listOccupazioni;
             })
             .catch(error => {
-              console.log(error);
+              
+              LogApp.consoleLog(error,'error');
       
             });
         })
@@ -713,7 +715,8 @@ export class HomePage implements OnInit, OnDestroy {
 
       })
       .catch(error => {
-        console.log(error);
+        
+        LogApp.consoleLog(error,'error');
       });
   }
 

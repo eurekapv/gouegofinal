@@ -5,6 +5,7 @@ import { StartService } from 'src/app/services/start.service';
 import { UtenteLivello } from 'src/app/models/utentelivello.model';
 import { Sport } from 'src/app/models/sport.model';
 import { TipoPrivateImage, PageType } from 'src/app/models/valuelist.model';
+import { LogApp } from 'src/app/models/log.model';
 
 
 
@@ -49,7 +50,7 @@ export class SportlevelsPage implements OnInit {
                   })
                   .catch(error => {
                     this.showLogoGruppo = false;
-                    console.log('Logo Gruppo failed: ' + error);
+                    LogApp.consoleLog('Logo Gruppo failed: ' + error,'error');
                   });
 
   }

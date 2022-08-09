@@ -9,6 +9,7 @@ import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { VerifyPage } from 'src/app/pages/auth/verify/verify.page'
 import { TipoVerificaAccount } from 'src/app/models/valuelist.model'
 import { Gruppo } from 'src/app/models/gruppo.model';
+import { LogApp } from 'src/app/models/log.model';
 
 
 
@@ -214,7 +215,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
                   }, error => {
                     elLoading.dismiss();
                     this.showMessage('Errore  di connessione');
-                    console.log(error);
+                    LogApp.consoleLog(error,'error');
                   });
             });
     }
@@ -266,7 +267,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
           //qui in teoria il cf non ha passato neppure il check base, segno il campo come non valido
           this.form.controls['cf'].setErrors({'incorrect':true});
-          console.log(err);
+          LogApp.consoleLog(err,'error');
         })
       }
     }

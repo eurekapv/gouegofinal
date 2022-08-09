@@ -5,6 +5,7 @@ import { RequestDecode, RequestParams } from 'src/app/library/models/requestPara
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoAllegato } from 'src/app/models/corsoallegato.model';
+import { LogApp } from 'src/app/models/log.model';
 import { FileService } from 'src/app/services/file.service';
 import { StartService } from 'src/app/services/start.service';
 
@@ -110,9 +111,8 @@ export class AllegatilistPage implements OnInit {
         return this.startService.requestDocumento(elemento.FILENAMEESTENSIONE);
       })
       .then(elBlob => {
-        this.loadingController.dismiss();
-
-        console.log(elBlob);
+        this.loadingController.dismiss();        
+        LogApp.consoleLog(elBlob);
         if(elBlob){
           this.fileService.open(elBlob);
         }
@@ -121,7 +121,7 @@ export class AllegatilistPage implements OnInit {
         }
       })
       .catch(error => {
-        console.log(error);
+        LogApp.consoleLog(error,'error');
         this.showMessage('Impossibile scaricare il file');
       })
     }

@@ -330,7 +330,7 @@ export class AgendaTrainerPage implements OnInit,OnDestroy {
           }
 
           elLoading.dismiss();
-          console.log(error);
+          LogApp.consoleLog(error,'error');
           this.startService.presentToastMessage('Errore di connessione');
 
         });

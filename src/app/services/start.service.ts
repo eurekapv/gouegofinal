@@ -216,6 +216,9 @@ export class StartService {
     let myConfig = this._startConfig.getValue();
     let activeId = '';
 
+    //Unico console log da mantenere
+    console.log(`App Version ${environment.version} deployed ${environment.releaseDate}`);
+
     //Modalità Web
     if (this.isOnWeb) {
 
@@ -380,7 +383,8 @@ export class StartService {
             this.settingStartStepThree(appIdReceived);
           })
           .catch(error => {
-            console.log(error);
+            
+            LogApp.consoleLog(error,'error');
 
             //Vado allo Step 3 in errore passando stringa vuota
             this.settingStartStepThree('');
@@ -438,8 +442,8 @@ export class StartService {
       //Url da chiamare
       let myUrl = actualStartConfig.urlBase + '/' + doObject;
   
-      console.log(myUrl);
-      console.log(JSON.stringify(myHeaders));
+      LogApp.consoleLog(myUrl);
+      LogApp.consoleLog(JSON.stringify(myHeaders));
 
       // Effettuo la chiamata per l'autorizzazione
       this.apiService
@@ -456,10 +460,11 @@ export class StartService {
 
           }
           else {
-            console.log('Authorization failed');
+            LogApp.consoleLog('Authorization failed','error');
           }
         },error => {
-          console.log('Comunication Error');
+          LogApp.consoleLog('Comunication Error','error');
+          LogApp.consoleLog(error,'error');
         });
         
   
@@ -511,19 +516,19 @@ export class StartService {
     this.sportService
       .request(elStartConfig, false)
       .catch(error => {
-        console.log(error);
+        LogApp.consoleLog(error,'error');
       });
 
     this.livelloService
       .request(elStartConfig)
       .catch(error => {
-        console.log(error);
+        LogApp.consoleLog(error,'error');
       });
 
     this.categoriaEtaService
         .request(elStartConfig)
         .catch(error => {
-          console.log(error);
+          LogApp.consoleLog(error,'error');
         });
 
     // 2 - TENTO L'ACCESSO AUTOMATICO

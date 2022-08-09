@@ -14,6 +14,7 @@ import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
 import { TempoCorso, TipoCorso } from 'src/app/models/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/history/historycourse/allegatilist/allegatilist.page';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-course',
@@ -143,7 +144,8 @@ onListenSelectedUser() {
           .catch(error => {
             elLoading.dismiss();
             this.showMessage('Errore di connessione');
-            console.log(error);
+            
+            LogApp.consoleLog(error,'error');
           })
         })      
   

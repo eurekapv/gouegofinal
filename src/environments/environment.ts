@@ -9,6 +9,7 @@ export enum ConnectionMode {
 export const environment = {
   production: false,
   version: "1.6",
+  releaseDate: '2022-08-09',
   options: {
     debugMode: 'minimal' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)

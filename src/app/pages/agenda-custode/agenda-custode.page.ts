@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { Location } from 'src/app/models/location.model';
 import { ActionSheetOptions, ActionSheetButton } from '@ionic/core';
 import { Area } from 'src/app/models/area.model';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-agenda-custode',
@@ -97,8 +98,7 @@ export class AgendaCustodePage implements OnDestroy {
       this.areaSelected = ev.detail.value;
     }
 
-
-    console.log(this.areaSelected);
+    LogApp.consoleLog(this.areaSelected);
 
     //Riazzero la location
     this.onChangeLocationSelected(null);
@@ -233,7 +233,7 @@ export class AgendaCustodePage implements OnDestroy {
 
         this.startService.presentToastMessage('Errore di connessione');
 
-        console.log(error);
+        LogApp.consoleLog(error,'error');
         
       })
     }
@@ -299,7 +299,7 @@ export class AgendaCustodePage implements OnDestroy {
       })
 
       .catch(error => {
-        console.log(error);
+        LogApp.consoleLog(error,'error');
         this.showMessage('Errore nella lettura del codice')
 
       })
@@ -345,8 +345,8 @@ export class AgendaCustodePage implements OnDestroy {
         }
       })
       .catch(error => {
-        this.showMessage('Errore di connessione');
-        console.log(error);
+        this.showMessage('Errore di connessione');        
+        LogApp.consoleLog(error,'error');
       })
     }
 

@@ -7,6 +7,7 @@ import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Utente } from 'src/app/models/utente.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-invoices',
@@ -78,7 +79,7 @@ export class InvoicesPage implements OnInit {
           event.target.complete();
         })
         .catch(error => {
-          console.log(error);
+          LogApp.consoleLog(error,'error');
           this.showMessage('Errore di connessione');
           event.target.complete();
         })
@@ -97,7 +98,7 @@ export class InvoicesPage implements OnInit {
             elLoading.dismiss();
           })
           .catch(error => {
-            console.log(error);
+            LogApp.consoleLog(error,'error');
             this.showMessage('Errore di connessione');
             elLoading.dismiss();
           })
@@ -162,7 +163,7 @@ export class InvoicesPage implements OnInit {
 
         //errore di connessione
         elLoading.dismiss();
-        console.log(error);
+        LogApp.consoleLog(error,'error');
         this.showMessage('Errore di connessione');
       })
     })
@@ -201,12 +202,12 @@ export class InvoicesPage implements OnInit {
 
                   
           this.fileOpener.open(fileEntry.toURL(), blob.type)
-            .then(() => console.log('File is opened'))
-            .catch(err => console.error('Error openening file: ' + err));
+            .then(() => LogApp.consoleLog('File is opened'))
+            .catch(err => LogApp.consoleLog('Error openening file: ' + err,'error'));
         })
           .catch((err) => {
-            console.error("Error creating file: ");
-            console.log(err);
+            LogApp.consoleLog("Error creating file: ",'error');
+            LogApp.consoleLog(err,'error');
             throw err;  
           });
   }

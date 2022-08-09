@@ -5,6 +5,7 @@ import { StartService } from 'src/app/services/start.service';
 import { Area } from 'src/app/models/area.model';
 import { NavController, LoadingController, ToastController, ModalController } from '@ionic/angular';
 import { NewsdetailPage } from 'src/app/pages/newsdetail/newsdetail.page'
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-news',
@@ -52,7 +53,8 @@ export class NewsPage implements OnInit, OnDestroy {
         this.listNews = data;
         loading.dismiss();
       }).catch(error => {
-        console.log(error);
+        
+        LogApp.consoleLog(error,'error');
         loading.dismiss();
         this.showMessage("Errore nel caricamento");
       });
@@ -77,7 +79,8 @@ export class NewsPage implements OnInit, OnDestroy {
       this.listNews = data;
       evento.target.complete();
     }).catch(error => {
-      console.log(error);
+      
+      LogApp.consoleLog(error,'error');
       evento.target.complete();
       this.showMessage("Errore nel caricamento");
     });

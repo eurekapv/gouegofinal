@@ -305,7 +305,7 @@ export class NewLoginPage implements OnInit {
    * Pulsante Avanti o Acced presente nel footer
    */
   onClickFooterAvanti() {
-    console.log('Vediamo che fare');
+    
     switch(this.actualStatePage) {
       case PageState.LOGIN:
           //Siamo sul Login e quindi gestisco la fase di login

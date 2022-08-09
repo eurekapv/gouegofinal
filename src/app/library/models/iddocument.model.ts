@@ -1,3 +1,4 @@
+import { LogApp } from 'src/app/models/log.model';
 import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
 
@@ -118,8 +119,10 @@ import { MyDateTime } from './mydatetime.model';
               try {            
                 retValue = this[propName];
               } catch (error) {
+
                 retValue = ''  ;
-                console.log(error);
+                LogApp.consoleLog(error,'error');
+                
               }
             }
             else if (type == 'name') {

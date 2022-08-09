@@ -6,6 +6,7 @@ import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Subscription } from 'rxjs';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams, RequestDecode } from 'src/app/library/models/requestParams.model';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-calendar',
@@ -69,7 +70,8 @@ export class CalendarPage implements OnInit {
         //dismetto il loading e mostro l'errore
         elLoading.dismiss();
         this.showMessage('Errore di connessione');
-        console.log(error);
+        
+        LogApp.consoleLog(error,'error');
         
       })
     })

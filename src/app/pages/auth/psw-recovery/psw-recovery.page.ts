@@ -8,6 +8,7 @@ import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 
 import { RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
 import { CryptoService } from 'src/app/library/services/crypto.service';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-psw-recovery',
@@ -412,13 +413,13 @@ export class PswRecoveryPage implements OnInit {
                             //l'utente non esista
                             this.showMessage(risposta.message);
                             this.docRichiestaCodici.IDREFER = "";
-                            console.log(risposta.message);
+                            LogApp.consoleLog(risposta.message);
                           }
                 })
                 .catch(error => {
                     //Se la richiesta non è andata a buon fine, dismetto il loading, lo stampo in console e scrivo all'utente "errore di connessione"
                     elLoading.dismiss();
-                    console.log(error);
+                    LogApp.consoleLog(error,'error');
                     this.showMessage("Errore di connessione");
                     this.docRichiestaCodici.IDREFER = "";
                 });
@@ -480,8 +481,7 @@ export class PswRecoveryPage implements OnInit {
 
                 //Nessun utente è stato trovato
                 this.idUtente = '';
-
-                console.log(error);
+                LogApp.consoleLog(error,'error');
                 this.showMessage('Errore di connessione');
             });
       });
@@ -525,7 +525,7 @@ export class PswRecoveryPage implements OnInit {
                     //la richiesta non è andata in errore, ma la modifica non è riuscita... stampo un errore generico
                     this.showMessage(risposta.message);
 
-                    console.log(risposta.message);
+                    LogApp.consoleLog(risposta.message);
                   }
               })
               .catch(error => {
@@ -533,8 +533,7 @@ export class PswRecoveryPage implements OnInit {
 
                     //Chiudo il loading
                     elLoading.dismiss();
-
-                    console.log (error);
+                    LogApp.consoleLog(error,'error');
                     this.showMessage('Errore di connessione');
               });
       });

@@ -1,19 +1,23 @@
-import { ConnectionMode } from "./environment";
+export enum ConnectionMode {
+  local = 'local',
+  external = 'external'
+}
 
 
 export const environment = {
   production: true,
   appSignature: '2316854354984354687654684698',
   version: "1.6",
+  releaseDate: '2022-08-09',
   options: {
-    debugMode: 'minimal' as DebugMode, //off, minimal, full
+    debugMode: 'off' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
   },  
   externalUrl: {
     alchimistilab: 'https://www.alchimistilab.it'
   },
   connection: {
-    mode: ConnectionMode.local,
+    mode: ConnectionMode.external,
     activeId: 'demo',
     appId: {
       openbeach: 'CCBA34A5-24F5-4C22-8485-D891823E3434',

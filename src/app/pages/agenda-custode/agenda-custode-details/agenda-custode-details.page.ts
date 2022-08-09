@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { LogApp } from 'src/app/models/log.model';
 
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 
@@ -84,7 +85,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
     .catch(error => {
       this.loadingController.dismiss();
-      console.log(error)
+      LogApp.consoleLog(error,'error');
       this.navController.pop();
 
     })

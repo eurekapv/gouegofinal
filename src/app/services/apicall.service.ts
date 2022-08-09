@@ -142,8 +142,9 @@ export class ApicallService {
       console.error(
         `Errore Backend Codice ${error.status}, ` +
         `Body: ${error.error}`);
-      console.error(error.message);
-      console.log(JSON.stringify(error));
+
+        LogApp.consoleLog(error.message,'error');
+        LogApp.consoleLog(JSON.stringify(error),'error');
     }
     // return an observable with a user-facing error message
     return throwError(

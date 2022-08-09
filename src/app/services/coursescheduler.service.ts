@@ -199,7 +199,7 @@ export class CourseschedulerService {
                               resolve(this._listImpegniTrainer.getValue());
                             })
                             .catch(error => {
-                              console.log(error);
+                              LogApp.consoleLog(error,'error');
                               reject(error);
                             });
 
@@ -221,7 +221,8 @@ export class CourseschedulerService {
 
       })
       .catch(error => {
-        console.log(error);
+        
+        LogApp.consoleLog(error,'error');
         reject(error);
       })
     })
@@ -287,8 +288,8 @@ export class CourseschedulerService {
                   resolve(docPianificazioneCorso);
                 })
                 .catch(error => {
-                  console.log(error);
                   
+                  LogApp.consoleLog(error,'error');
                   resolve(docPianificazioneCorso);
                 })
       }

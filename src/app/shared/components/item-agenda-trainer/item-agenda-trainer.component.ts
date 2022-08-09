@@ -183,9 +183,6 @@ export class ItemAgendaTrainerComponent implements OnInit {
       fieldName = '_DENOMINAZIONE_Sport'
       this.labelSport = this.nullValue(this.myCorso[fieldName]);
 
-      // rigaLog = `Corso: [${this.labelDenominazioneCorso}] Sigla: [${this.labelSiglaCalendario}] Location: [${this.labelLocation}] Livello: [${this.labelLivello}] Sport: [${this.labelSport}]`;
-      // console.log(rigaLog);
-
 
     }
     else if (this.myPianificazione) {
@@ -213,9 +210,7 @@ export class ItemAgendaTrainerComponent implements OnInit {
       fieldName = '_DENOMINAZIONE_Campo';
       this.labelCampo = this.nullValue(this.myPianificazione[fieldName]);
 
-      // rigaLog = `Corso: [${this.labelDenominazioneCorso}] Sigla: [${this.labelSiglaCalendario}] Location: [${this.labelLocation}] Campo: [${this.labelCampo}] Livello: [${this.labelLivello}] Sport: [${this.labelSport}]`;
-      // console.log(rigaLog);
-      
+     
 
     }
 

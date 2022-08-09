@@ -298,7 +298,8 @@ export class PrenotazioneService {
                   }
 
                 }, error => {
-                  console.log(error);
+                  
+                  LogApp.consoleLog(error,'error');
                   let errMessage = 'Errore di connessione';
                   reject(errMessage);
                   

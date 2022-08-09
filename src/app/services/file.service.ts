@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { Platform } from '@ionic/angular';
+import { LogApp } from '../models/log.model';
 
 
 @Injectable({
@@ -40,12 +41,13 @@ export class FileService {
 
                    
           this.fileOpener.open(fileEntry.toURL(), blob.type)
-            .then(() => console.log('File is opened'))
-            .catch(err => console.error('Error openening file: ' + err));
+            .then(() => LogApp.consoleLog('File is opened'))
+            .catch(err => LogApp.consoleLog('Error openening file: ' + err,'error'));
         })
           .catch((err) => {
-            console.error("Error creating file: ");
-            console.log(err);
+            LogApp.consoleLog("Error creating file: ",'error');
+            LogApp.consoleLog(err,'error');
+            
             throw err;  
           });
   }
@@ -65,7 +67,7 @@ export class FileService {
       }
     }
     else{
-      console.log('Blob inesistente');
+      LogApp.consoleLog('Blob inesistente','error');
       throw new Error();
     }
   }

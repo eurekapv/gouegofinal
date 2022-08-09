@@ -4,6 +4,7 @@ import { RequestDecode, RequestParams } from '../library/models/requestParams.mo
 import { DocstructureService } from '../library/services/docstructure.service';
 import { ArticoloCarrello } from '../models/articolo-carrello.model';
 import { Articolo } from '../models/articolo.model';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +57,8 @@ export class ShoppingService {
         resolve(listProdotti);
       })
       .catch(error => {
-        console.log(error);
+        
+        LogApp.consoleLog(error,'error');
         reject('Impossibile connettersi');
       })
 

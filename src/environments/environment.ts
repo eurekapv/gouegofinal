@@ -11,7 +11,7 @@ export const environment = {
   version: "1.6",
   releaseDate: '2022-08-09',
   options: {
-    debugMode: 'minimal' as DebugMode, //off, minimal, full
+    debugMode: 'full' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
   },
   externalUrl: {
@@ -19,6 +19,7 @@ export const environment = {
   },
   connection: {
     mode: ConnectionMode.local,
+    comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
     activeId: 'demo',
     appId: {
       openbeach: 'CCBA34A5-24F5-4C22-8485-D891823E3434',

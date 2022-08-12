@@ -12,7 +12,7 @@ export class Sport extends IDDocument {
     PARTECIPANTI:   number;
     ICONA:          string; // Formato Icon-Sport non Ionic Icon
     LIVELLO:        Livello[]; //Livelli dello sport
-
+    DATACANC:       Date;
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
@@ -30,7 +30,7 @@ export class Sport extends IDDocument {
                     ];
     let arNumber = ['TIPOLOGIA','PARTECIPANTI'];
     let arBoolean = [];
-    let arDate = [];
+    let arDate = ['DATACANC'];
     let arDateTime =[];
     let arTime = [];
     let arCollection = ['LIVELLO'];

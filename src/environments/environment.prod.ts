@@ -18,6 +18,7 @@ export const environment = {
   },
   connection: {
     mode: ConnectionMode.external,
+    comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
     activeId: 'demo',
     appId: {
       openbeach: 'CCBA34A5-24F5-4C22-8485-D891823E3434',

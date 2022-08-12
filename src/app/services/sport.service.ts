@@ -70,13 +70,14 @@ export class SportService {
     
             //Arrivati dal server
             this._loaded = true;
+
             if (resultData) {
 
               for (let index = 0; index < resultData.length; index++) {
                 const element = resultData[index];
                 let newSport = new Sport();
                 newSport.setJSONProperty(element);
-                this.add2ListSport(newSport);                
+                this.add2ListSport(newSport);               
               }
               resolve(this._listSport);
 

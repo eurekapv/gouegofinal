@@ -1,8 +1,18 @@
 # Per la preparazione dei pacchetti Mobile
+```console
 ionic build --prod
 npx cap sync
+```
 Il primo comando compila in Build e il secondo copia la www nei pacchetti
 (Non usare altri comandi che fanno la build in test e non in prod)
+
+# Per la preparazione del pacchetto Web
+```console
+ionic build --prod --aot --outputHashing=all
+```
+Il comando compila e copia nella cartella www rinominando tutti i file per eliminare il problema della cache
+
+
 
 
 # Gouego Application 

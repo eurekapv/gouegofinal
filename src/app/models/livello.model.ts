@@ -7,6 +7,7 @@ export class Livello extends IDDocument {
     PROGRESSIONE: number;
     ETAMINIMA: number;
     ETAMASSIMA: number;
+    DATACANC: Date;
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
@@ -27,7 +28,7 @@ export class Livello extends IDDocument {
                     ];
     let arNumber = ['PROGRESSIONE','ETAMINIMA','ETAMASSIMA'];
     let arBoolean = [];
-    let arDate = [];
+    let arDate = ['DATACANC'];
     let arDateTime =[];
     let arTime = [];
     let arCollection = [];

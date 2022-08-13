@@ -20,13 +20,26 @@ export const environment = {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
     activeId: 'demo',
-    appId: {
-      openbeach: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
-      demo: '00F15A91-5395-445C-B7F4-5BA594E55D2F'
-    },
-    urlId: {
-      openbeach: 'openbeach.gouego.com',
-      demo: 'demo.gouego.com'
+    customer: {
+      openbeach: {
+        appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
+        urlId: 'openbeach.gouego.com',
+        ios: 'com.gouego',
+        android: 'com.gouego'
+      },
+      demo: {
+        appId: '00F15A91-5395-445C-B7F4-5BA594E55D2F',
+        urlId: 'demo.gouego.com',
+        ios: '',
+        android: ''
+      },
+      beachforfun: {
+        appId: 'E9682AA1-9E85-4D20-8A86-1A7FDBABF9A8',
+        urlId: 'b4fnovara.gouego.com',
+        ios: 'com.b4fnovara',
+        android: 'com.b4fnovara'
+      }
+
     },
     urlLocation: {
       local: {

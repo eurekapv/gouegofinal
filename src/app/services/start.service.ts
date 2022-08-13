@@ -229,7 +229,7 @@ export class StartService {
         //Recupero l'activeId
         activeId = environment.connection.activeId;
         //Recupero il relativo AppId
-        myAppId = environment.connection.appId[activeId];
+        myAppId = environment.connection.customer[activeId].appId;
       }
       else {
         //Recupero URL del browser
@@ -240,7 +240,7 @@ export class StartService {
           //Recupero l'activeId
           activeId = environment.connection.activeId;
           //Recupero il relativo AppId
-          myAppId = environment.connection.appId[activeId];
+          myAppId = environment.connection.customer[activeId].appId;
         }
         else {
           //Prendo URL e lo separo
@@ -256,13 +256,14 @@ export class StartService {
       }
     }
     else {
-
+      //MODALITA CAPACITOR
+      
       //Non è mai in localconnection
       this._localConnection = false;
       //Recupero l'activeId
       activeId = environment.connection.activeId;
       //Recupero il relativo AppId
-      myAppId = environment.connection.appId[activeId];
+      myAppId = environment.connection.customer[activeId].appId;
 
       //Sono su capacitor o cordova
       prefixDomain = '';

@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkapp=self.webpackChunkapp||[]).push([[3951],{3951:(h,n,s)=>{s.d(n,{A:()=>e});const e=(0,s(7423).fo)("Browser",{web:()=>s.e(6874).then(s.bind(s,6874)).then(t=>new t.BrowserWeb)})}}]);

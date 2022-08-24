@@ -7,6 +7,7 @@ export class InvioDocumentazione extends IDDocument{
     IDTIPODOCUMENTAZIONE : string;
     FILE : string;
     DESCRIZIONE : string;
+    
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
@@ -21,6 +22,7 @@ export class InvioDocumentazione extends IDDocument{
                         'FILE',
                         'DESCRIZIONE',
                         'TOKENUTENTE'];
+                               
         
     
         objDescriptor.className = 'InvioDocumentazione';
@@ -28,6 +30,8 @@ export class InvioDocumentazione extends IDDocument{
         objDescriptor.describeField = 'DESCRIZIONE'
     
         objDescriptor.addMultiple(arString, TypeDefinition.char);
+        
+        
             
         return objDescriptor;
     }

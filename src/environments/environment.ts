@@ -18,9 +18,9 @@ export const environment = {
     alchimistilab: 'https://www.alchimistilab.it'
   },
   connection: {
-    mode: ConnectionMode.external,
+    mode: ConnectionMode.local,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'beachforfun',
+    activeId: 'localbeachforfun',
     customer: {
       openbeach: {
         appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
@@ -32,6 +32,10 @@ export const environment = {
       },
       beachforfun: {
         appId: 'E9682AA1-9E85-4D20-8A86-1A7FDBABF9A8',
+        urlId: 'b4fnovara.gouego.com',
+      },
+      localbeachforfun: {
+        appId: '5842FD55-5FCF-4907-A55A-69BE55CD3E07',
         urlId: 'b4fnovara.gouego.com',
       }
 

@@ -213,18 +213,21 @@
           <ion-item-divider sticky="true" color="light">
 
             <ion-icon name="person-outline" slot="end" color="primary"></ion-icon>
-            <ion-label>Come ti chiami ?</ion-label>
+            <ion-label>Qualche tua info</ion-label>
           </ion-item-divider>
 
           <ion-item>
-            <ion-label slot="start" position="fixed">Nome</ion-label>
-            <ion-input formControlName="nome"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Nome</ion-label> -->
+            <ion-icon slot="start" name="id-card-outline" color="primary"></ion-icon>
+            <ion-input type="text" placeholder="nome"  formControlName="nome"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label slot="start" position="fixed">Cognome</ion-label>
-            <ion-input formControlName="cognome"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Cognome</ion-label> -->
+            <ion-icon slot="start" name="id-card-outline" color="primary"></ion-icon>
+            <ion-input type="text" placeholder="cognome" formControlName="cognome"></ion-input>
           </ion-item>
+
           <ion-item>
             <ion-label slot="start" position="fixed">Sesso</ion-label>
             <ion-select formControlName="sesso" interface="popover">
@@ -233,9 +236,11 @@
               </ion-select-option>
             </ion-select>
           </ion-item>
+
           <ion-item>
-            <ion-label slot="start" position="fixed">Cod. fiscale</ion-label>
-            <ion-input formControlName="cf" (ionBlur)="onCfChange()"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Cod. fiscale</ion-label> -->
+            <ion-icon slot="start" name="card-outline" color="primary"></ion-icon>
+            <ion-input type="text" placeholder="codice fiscale" formControlName="cf" (ionBlur)="onCfChange()"></ion-input>
           </ion-item>
         </ion-item-group>
 
@@ -247,25 +252,25 @@
           </ion-item-divider>
 
           <ion-item>
-            <ion-label slot="start" position="fixed">Indirizzo</ion-label>
-            <ion-input formControlName="indResidenza"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Indirizzo</ion-label> -->
+            <ion-input placeholder="indirizzo" type="text" formControlName="indResidenza"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label slot="start" position="fixed">Comune</ion-label>
-            <ion-input formControlName="comResidenza"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Comune</ion-label> -->
+            <ion-input placeholder="comune" type="text" formControlName="comResidenza"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label slot="start" position="fixed">Cap</ion-label>
-            <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Cap</ion-label> -->
+            <ion-input placeholder="c.a.p." type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label slot="start" position="fixed">Provincia</ion-label>
-            <ion-input formControlName="provResidenza"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Provincia</ion-label> -->
+            <ion-input placeholder="provincia" type="text" formControlName="provResidenza"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label slot="start" position="fixed">Stato</ion-label>
-            <ion-input formControlName="statoResidenza"></ion-input>
+            <!-- <ion-label slot="start" position="fixed">Stato</ion-label> -->
+            <ion-input placeholder="stato" type="text" formControlName="statoResidenza"></ion-input>
           </ion-item>
         </ion-item-group>
 

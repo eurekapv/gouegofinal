@@ -222,26 +222,62 @@
                     </ion-item>
                 </ion-item-group>
 
-                <!-- NOMINATIVO -->
                 <ion-item-group>
                     <ion-item-divider sticky="true" color="light">
                         <ion-icon name="person-outline" slot="end" color="primary"></ion-icon>
                         <ion-label>Qualche tua info</ion-label>
                     </ion-item-divider>
-
-                    <ion-item>
-                        <ion-label slot="start" position="fixed">Nome</ion-label>
-                        <ion-input type="text" formControlName="name"></ion-input>
+                    
+                    
+                    <!-- ALERT FOR NOME -->
+                    <ion-item 
+                            class="alert-validation"
+                            *ngIf="formRegister.controls['name'].invalid && (formRegister.controls['name'].dirty || formRegister.controls['name'].touched)">
+                        <ion-label *ngIf="formRegister.controls['name'].errors.required">
+                            <ion-text color="primary">inserire il nome</ion-text>
+                        </ion-label>
                     </ion-item>
 
+                    <!-- INPUT NOME -->
                     <ion-item>
-                        <ion-label slot="start" position="fixed">Cognome</ion-label>
-                        <ion-input type="text" formControlName="surname"></ion-input>
+                        <!-- <ion-label slot="start" position="fixed">Nome</ion-label> -->
+                        <ion-icon slot="start" name="id-card-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="nome" formControlName="name"></ion-input>
                     </ion-item>
 
+
+
+                    <!-- ALERT FOR COGNOME -->
+                    <ion-item 
+                            class="alert-validation"
+                            *ngIf="formRegister.controls['surname'].invalid && (formRegister.controls['surname'].dirty || formRegister.controls['surname'].touched)">
+                        <ion-label *ngIf="formRegister.controls['surname'].errors.required">
+                            <ion-text color="primary">inserire il cognome</ion-text>
+                        </ion-label>
+                    </ion-item>
+
+                    <!-- COGNOME -->
                     <ion-item>
-                        <ion-label slot="start" position="fixed">Cod. Fiscale</ion-label>
-                        <ion-input type="text" formControlName="codFisc"></ion-input>
+                        <!-- <ion-label slot="start" position="fixed">Cognome</ion-label> -->
+                        <ion-icon slot="start" name="id-card-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="cognome" formControlName="surname"></ion-input>
+                    </ion-item>
+
+
+                    <!-- ALERT FOR CODICE FISCALE -->
+                    <ion-item 
+                            class="alert-validation"
+                            *ngIf="formRegister.controls['codFisc'].invalid && (formRegister.controls['codFisc'].dirty || formRegister.controls['codFisc'].touched)">
+                        <ion-label *ngIf="formRegister.controls['codFisc'].errors">
+                            <ion-text color="primary">inserire il codice di 16 caratteri</ion-text>
+                        </ion-label>
+                    </ion-item>
+
+                    <!-- CODICE FISCALE -->
+                    <ion-item>
+                        <!-- <ion-label slot="start" position="fixed">Codice Fiscale</ion-label> -->
+                        <ion-icon slot="start" name="card-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="codice fiscale" formControlName="codFisc"></ion-input>
                     </ion-item>
 
                     <ion-item lines="none" *ngIf="isPolicyLink()">

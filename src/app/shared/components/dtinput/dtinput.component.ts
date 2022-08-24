@@ -113,7 +113,16 @@ export class DtinputComponent implements OnInit {
    */
   @Input() set readonly(value: boolean) {
     this._readonly = value;
-  }  
+  } 
+  
+  
+  /**
+   * Imposta la data massima selezionabile
+   * Data formattata come stringa ISO
+   */
+  @Input() set isoMaxDate(value: string) {
+    this._isoMaxDate = value;
+  }
 
 
   _itemColor = ''; //Eventuale colore applicato all'Item
@@ -127,6 +136,7 @@ export class DtinputComponent implements OnInit {
   _title: string = '';
   _maskFormat: string;
   _actualDate: Date; 
+  _isoMaxDate: string = '2099-12-31T23:59:59';
   
   
   _presentation: '';

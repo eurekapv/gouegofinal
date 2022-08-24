@@ -144,6 +144,14 @@ div.step-verifica{
     
 }
 
+.alert-validation {
+    --background: antiquewhite;
+    text-align: center;
+    ion-text {
+        font-weight: 700;
+    }
+}
+
 .prefix-selector{
     width: 100%;
     margin: 0px;

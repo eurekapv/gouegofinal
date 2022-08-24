@@ -915,8 +915,6 @@ export class NewLoginPage implements OnInit {
 
   //#endregion
 
-
-
   /**
    * evento scatenato quando l'utente clicca "registrati" 
    * sulla pagina di inserimento dati
@@ -928,6 +926,7 @@ export class NewLoginPage implements OnInit {
     
     if (!this.formRegister.valid)
     {
+
       this.startService.presentAlertMessage('Controlla i dati inseriti per procedere');
     }
     else {
@@ -1006,6 +1005,11 @@ export class NewLoginPage implements OnInit {
       if (splitPwd) {
         //Metto la prima parte della password dentro al docRichiesta
         this.docRichiestaCodici.TOKEN = splitPwd[0];
+
+        //Metto Area se non fosse presente
+        if (!this.docRichiestaCodici.IDAREA || this.docRichiestaCodici.IDAREA.length == 0) {
+          this.docRichiestaCodici.IDAREA = this.docArea.ID;
+        }
 
         if (useCrypter) {
           //La seconda parte dentro a SHAPASSWORD

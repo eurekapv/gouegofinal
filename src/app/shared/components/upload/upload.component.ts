@@ -37,6 +37,12 @@ export class UploadComponent implements OnInit {
   //Descrizione opzionale del documento
   docDescription = '';
 
+  modeScadenza: 'conscad' | 'senzascad' = 'senzascad';
+
+
+  //Scadenza opzionale del documento
+  docScadenza: Date = new Date();
+
  
 
   constructor(
@@ -318,6 +324,7 @@ export class UploadComponent implements OnInit {
   /**
    * Prepara un documento InvioDocumentazione e 
    * lo ritorna alla pagina chiamante
+   * Dentro alla descrizione inserisco la data di scadenza con il simbolo #data#
    */
   SendFileDocumentToParent() {
     
@@ -329,6 +336,14 @@ export class UploadComponent implements OnInit {
           myDocument.FILE = dataUrl;
           myDocument.IDTIPODOCUMENTAZIONE = this.selectedDocType.ID;
           myDocument.DESCRIZIONE = this.docDescription;
+
+          if (this.modeScadenza == 'conscad') {
+            if (this.docScadenza) {
+              //Per compatibilità con il passato devo inserire 
+              //la data di scadenza nella descrizione e non posso crare un nuovo campo
+              myDocument.DESCRIZIONE = myDocument.DESCRIZIONE + `#${this.docScadenza.toISOString()}#`;
+            }
+          }
 
           this.modalController.dismiss(myDocument);
 

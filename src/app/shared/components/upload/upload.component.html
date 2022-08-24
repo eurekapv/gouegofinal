@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Carica</ion-title>
+    <ion-title>Carica documento</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()">
         <ion-icon name="close-outline"></ion-icon>
@@ -10,9 +10,9 @@
 </ion-header>
 
 <ion-content>
-  <div class="icon-container">
+  <!-- <div class="icon-container">
     <ion-icon name="cloud-upload-outline"></ion-icon>  
-  </div>
+  </div> -->
   
   <ion-list>
 
@@ -41,28 +41,6 @@
         </ion-radio-group>
     </ion-item-group>
 
-    <ion-item-group class="ion-margin-vertical">
-      <ion-item-divider color="light">
-        <ion-label>
-          <h2>Cosa stai caricando</h2>
-        </ion-label>
-        </ion-item-divider> 
-
-        <ion-item button (click)="showPicker()">
-          <ion-icon slot="start" name="document-outline"></ion-icon>
-            <ion-label 
-              *ngIf="!selectedDocType" 
-              class="myPlaceholder">Scegli una tipologia</ion-label>
-            <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
-        </ion-item>
-
-        <ion-item>
-          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-          <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
-        </ion-item>
-
-    </ion-item-group>
-
 
     <ion-item-group class="ion-margin-vertical">
       <ion-item-divider color="light">
@@ -87,7 +65,60 @@
         </ion-item>
 
 
-    </ion-item-group>    
+    </ion-item-group> 
+
+
+    <ion-item-group class="ion-margin-vertical">
+      <ion-item-divider color="light">
+        <ion-label>
+          <h2>Cosa stai caricando</h2>
+        </ion-label>
+        </ion-item-divider> 
+
+        <ion-item button (click)="showPicker()">
+          <ion-icon slot="start" name="document-outline"></ion-icon>
+            <ion-label 
+              *ngIf="!selectedDocType" 
+              class="myPlaceholder">Scegli una tipologia</ion-label>
+            <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+          <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
+        </ion-item>
+
+        <ion-list>
+          <ion-radio-group [(ngModel)] = "modeScadenza">       
+            <ion-item>
+              <ion-label>documento senza scadenza</ion-label>
+              <ion-radio slot="start" value="senzascad"></ion-radio>
+            </ion-item>
+        
+            <ion-item>
+              <ion-label>documento con scadenza</ion-label>
+              <ion-radio slot="start" value="conscad"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>        
+
+        <app-dtinput
+        *ngIf="modeScadenza == 'conscad'"
+          title="Data Scadenza Documento"
+          itemLines="full"
+          itemDetail="true"
+          iconName="calendar-outline"
+          iconColor="primary"
+          maskFormat="dddd dd/MM/yyyy"
+          calendarMode="date"
+          [(actualDate)]="docScadenza"
+          >
+          </app-dtinput>        
+
+    </ion-item-group>
+
+
+   
 
 
   </ion-list>

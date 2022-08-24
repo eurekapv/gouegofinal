@@ -44,6 +44,7 @@
           cancelText="Annulla"
           clearText="Elimina"
           doneText="Conferma"
+          [max]="_isoMaxDate"
           (ionChange)="dateChanged(mydatetime.value)">
 
         </ion-datetime>

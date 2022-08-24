@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 
 
 @Injectable({
@@ -61,7 +61,7 @@ export class PhotoService {
       }
 
       
-      Storage.set({
+      Preferences.set({
         key: keyStorage,
         value: JSON.stringify(myPhoto)
       })
@@ -86,7 +86,7 @@ export class PhotoService {
 
 
     return new Promise<string>((resolve, reject) => {
-      Storage.get({
+      Preferences.get({
         key: keyStorage
       })
       .then(data => {

@@ -24,6 +24,11 @@ const config: CapacitorConfig = {
         "splashImmersive": true
       }
     },
+    "server": {
+      "allowNavigation": [
+        "gouego.com"
+      ]
+    },
     "cordova": {
       "preferences": {
         "ScrollEnabled": "false",

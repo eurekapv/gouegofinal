@@ -501,6 +501,7 @@ export class DocstructureService {
       let orderBy: string = '';
       let nElem = 0;
       let requestAndDecode = false;
+      let useDecodeCache = true;
       let foreignFields: RequestForeign[];
       
       if (!filterDocument) {
@@ -535,6 +536,10 @@ export class DocstructureService {
             }
 
             if (params.decode) {
+              //Controllo se devo usare la cache
+              useDecodeCache = params.decode.useCache;
+
+              //Devo decodificare
               if (params.decode.active) {
                 requestAndDecode = true;
 
@@ -604,7 +609,8 @@ export class DocstructureService {
                 }
                 else if (listElement.length !== 0) {
 
-                  this.decodeCollection(listElement, foreignFields)
+                  //Decodifico la collection
+                  this.decodeCollection(listElement, foreignFields, useDecodeCache)
                       .then(() => {
                         resolve(listElement);
                       })
@@ -630,8 +636,16 @@ export class DocstructureService {
   }
 
 
-  
-  public decodeCollection(collection: IDDocument[], foreignFields?:RequestForeign[]) {
+  /**
+   * Decodifica una collection di documenti
+   * @param collection 
+   * @param foreignFields 
+   * @param useCache 
+   * @returns 
+   */
+  public decodeCollection(collection: IDDocument[], 
+                          foreignFields?:RequestForeign[],
+                          useCache:boolean = true) {
     
     //Devo decodificare l'intera collection di dati
     //Versione 1: foreignField non presente
@@ -658,7 +672,7 @@ export class DocstructureService {
             for (let iField = 0; iField < foreignFields.length; iField++) {
               const elForeign = foreignFields[iField];
 
-              let exPromise = this.decode(doc,elForeign.nameField,true,elForeign.describeFields);
+              let exPromise = this.decode(doc, elForeign.nameField, useCache, elForeign.describeFields);
               //Aggiunta all'Array
               executePromise.push(exPromise);
             }
@@ -674,7 +688,7 @@ export class DocstructureService {
             const doc = collection[index];
 
             //Creo la Promise di decodifica
-            let exPromise = this.decodeAll(doc);
+            let exPromise = this.decodeAll(doc, useCache);
             
             //Aggiunta all'Array
             executePromise.push(exPromise);

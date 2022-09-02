@@ -29,6 +29,7 @@ import { SettimanaBlockComponent } from './settimana-block/settimana-block.compo
 import { LevelSetterComponent } from './level-setter/level-setter.component';
 import { ItemAgendaTrainerComponent } from './item-agenda-trainer/item-agenda-trainer.component';
 import { DtinputComponent } from './dtinput/dtinput.component';
+import { QrCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.component';
 
 /**
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
@@ -70,7 +71,8 @@ import { DtinputComponent } from './dtinput/dtinput.component';
         SettimanaBlockComponent,
         LevelSetterComponent,
         ItemAgendaTrainerComponent,
-        DtinputComponent
+        DtinputComponent,
+        QrCodeScannerComponent
         
     ],
     exports: [
@@ -98,7 +100,8 @@ import { DtinputComponent } from './dtinput/dtinput.component';
         SettimanaBlockComponent,
         LevelSetterComponent,
         ItemAgendaTrainerComponent,
-        DtinputComponent
+        DtinputComponent,
+        QrCodeScannerComponent
     ]
 })
 export class SharedComponentsModule {}

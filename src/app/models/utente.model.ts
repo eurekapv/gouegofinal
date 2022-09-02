@@ -292,7 +292,7 @@ export class Utente extends IDDocument {
             isValid = true;
         }
 
-        return true;
+        return isValid;
     }
 
 

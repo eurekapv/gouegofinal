@@ -123,7 +123,7 @@
               name="stats-chart-outline"
               slot="end" 
               color="primary"></ion-icon>
-        <ion-label class="ion-text-wrap">{{myCorso._DESCRLIVELLOENTRATA?myCorso._DESCRLIVELLOENTRATA:'Tutti i Livelli'}}</ion-label>
+        <ion-label class="ion-text-wrap">{{myCorso['_DENOMINAZIONE_Livello'] ? myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}</ion-label>
         </ion-item>
 
         <ion-item>
@@ -131,7 +131,7 @@
               name="bookmark-outline" 
               slot="end" 
               color="primary"></ion-icon>
-          <ion-label class="ion-text-wrap">{{myCorso._DESCRCATEGORIEETA?myCorso._DESCRCATEGORIEETA:'Per tutte le età'}}</ion-label>
+          <ion-label class="ion-text-wrap">{{myCorso['_DESCTOOLTIP_CategoriaEta'] ? myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
         </ion-item>
 
         <ion-item lines="none">

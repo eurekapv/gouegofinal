@@ -140,6 +140,7 @@ export class PostParams {
    */
   export class RequestDecode {
     active?: boolean;   //TRUE: si richiede la decodifica alla ricezione degli elementi
+    useCache: boolean;
     foreignFields?: RequestForeign[]; 
     //Se non passato vengono decodificati tutti i campi di foreign key con le describeRowFiels,
     //altrimenti è possibile specificare le foreignKey da decodificare
@@ -147,6 +148,7 @@ export class PostParams {
     constructor() {
         this.active = false;
         this.foreignFields = [];
+        this.useCache = true;
     }
 
     /**

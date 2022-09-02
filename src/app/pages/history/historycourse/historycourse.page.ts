@@ -14,6 +14,7 @@ import { AllegatilistPage } from './allegatilist/allegatilist.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { LogApp } from 'src/app/models/log.model';
+import { RequestParams } from 'src/app/library/models/requestParams.model';
 
 @Component({
   selector: 'app-historycourse',
@@ -166,6 +167,48 @@ export class HistorycoursePage implements OnInit {
    */
   requestCorso(docIscrizione: UtenteIscrizione): Promise<Corso> {
     return new Promise<Corso>((resolve, reject) => {
+
+      //Richiesta di decodifica
+      let params = new RequestParams();
+      params.decode.active = true;
+      params.decode.useCache = false;
+
+      let filterCorso = new Corso(true);
+      filterCorso.ID = docIscrizione.IDCORSO;
+
+      //Chiedo 
+      this.docstructrureService.requestNew(filterCorso, params)
+        .then(collectionElement => {
+          let docCorso: Corso;
+
+          if (collectionElement.length != 0) {
+            docCorso = collectionElement[0];
+          }
+
+          if (docCorso) {
+            //Scarico la collection CORSO PROGRAMMA
+            this.docstructrureService.loadCollection(docCorso, 'CORSOPROGRAMMA')
+                    .then(() => {
+                      resolve( docCorso );
+                    })
+                    .catch(error => {
+                      reject(error);
+                      LogApp.consoleLog(error,'error');
+                    });
+          }
+          else {
+            reject('Corso non trovato');
+          }          
+        })
+
+    });
+
+  }
+
+  OldrequestCorso(docIscrizione: UtenteIscrizione): Promise<Corso> {
+    return new Promise<Corso>((resolve, reject) => {
+
+    
     this.docstructrureService.getRelDoc(docIscrizione, ['IDCORSO'],1)
       .then(docCorso => {
       
@@ -190,7 +233,7 @@ export class HistorycoursePage implements OnInit {
       });
     });
 
-  }
+  }  
 
   /**
    * Richiede un documento correlato della Location ed imposto this.myLocation

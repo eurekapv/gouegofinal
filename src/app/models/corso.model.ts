@@ -12,7 +12,6 @@ export class Corso extends IDDocument {
     SIGLACALENDARIO: string;
     TIPO: TipoCorso;
     IDLIVELLOENTRATA: string;
-    _DESCRLIVELLOENTRATA: string;
     IDLIVELLOFINALE: string;
     IDSPORT: string;
     _DESCRSPORT: string;
@@ -32,7 +31,6 @@ export class Corso extends IDDocument {
     ISCRIZIONEAL: Date;
     TARGETSESSO: TargetSesso;
     IDCATEGORIEETA: string;
-    _DESCRCATEGORIEETA: string;
     _SETTIMANA: Settimana[]; //Giorni della Settimana del Corso
     DURATA: number;
     CORSOPROGRAMMA: CorsoProgramma[];
@@ -47,12 +45,8 @@ export class Corso extends IDDocument {
       super(onlyInstance);
 
       if (!onlyInstance) {
-
-        this._DESCRCATEGORIEETA = ''
-        this._DESCRLIVELLOENTRATA = '';
         this._DESCRSPORT = '';
       }
-
 
       this.CORSOPROGRAMMA = [];
       this.PIANIFICAZIONECORSO = [];
@@ -67,16 +61,14 @@ export class Corso extends IDDocument {
     let arString = ['DENOMINAZIONE',
                     'SIGLACALENDARIO',
                     'IDLIVELLOENTRATA',
-                    '_DESCRLIVELLOENTRATA',
                     'IDLIVELLOFINALE',
                     'IDSPORT',
-                    '_DESCRSPORT',
                     'IDAREAOPERATIVA',
                     'IDLOCATION',
                     'IDCAMPO',
                     'GIORNIPREVISTI',
                     'IDCATEGORIEETA',
-                    '_DESCRCATEGORIEETA'
+                    '_DESCRSPORT'
                     ];
     let arNumber = ['TIPO',
                     'NUMEROLEZIONI',
@@ -118,11 +110,7 @@ export class Corso extends IDDocument {
     objDescriptor.setRelation('IDLIVELLOFINALE','Livello');
     objDescriptor.setRelation('IDCATEGORIEETA','CategoriaEta');
     
-    
-
-
-    
-
+  
     return objDescriptor;
 }    
 

@@ -4,12 +4,12 @@ import { ItemCalendario } from 'src/app/models/itemCalendario.model';
 import { OccupazioneCampi } from 'src/app/models/occupazionecampi.model';
 import { StartService } from 'src/app/services/start.service';
 import { SettoreAttivita } from 'src/app/models/valuelist.model';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Subscription } from 'rxjs';
 import { Location } from 'src/app/models/location.model';
 import { ActionSheetOptions, ActionSheetButton } from '@ionic/core';
 import { Area } from 'src/app/models/area.model';
 import { LogApp } from 'src/app/models/log.model';
+import { QrCodeScannerComponent } from 'src/app/shared/components/qr-code-scanner/qr-code-scanner.component';
 
 @Component({
   selector: 'app-agenda-custode',
@@ -44,13 +44,13 @@ export class AgendaCustodePage implements OnDestroy {
 
 
   constructor(
-    private barcodeScanner: BarcodeScanner,
     private loadingController: LoadingController,
     private startService: StartService,
     private toastController: ToastController,
     private alertController: AlertController,
     private actionSheeetController: ActionSheetController,
     private navController: NavController,
+    private mdlController: ModalController
     
   ) { 
 
@@ -287,24 +287,42 @@ export class AgendaCustodePage implements OnDestroy {
 
 
 
-  scanQr(){
-    if(!this.startService.isDesktop){
-      this.barcodeScanner
-      .scan()
-      
-      .then(data => {
-        let myId = data.text;
+  /**
+   * Effettuo la scanzione del QRCode
+   */
+  scanQr() {
 
-        this.goToReservationDetail(myId);
+    //Non sono in versione Desktop
+    if(!this.startService.isDesktop) {
+
+      //Mostro per effettuare la scansione
+      this.mdlController.create({
+        component: QrCodeScannerComponent,
+        swipeToClose: true
       })
+      .then(elModal => {
+        elModal.present();
+  
+        return elModal.onDidDismiss();
+      })
+      .then(objReturn => {
+  
+        //Posso provare a portarlo alla stanza
+        if (objReturn?.data?.qrcodeData?.length != 0 ) {
+  
+          let txtBarcode = objReturn.data.qrcodeData;
 
-      .catch(error => {
-        LogApp.consoleLog(error,'error');
-        this.showMessage('Errore nella lettura del codice')
-
+          if (txtBarcode && txtBarcode.length != 0) {
+            //Provo ad andare alla prenotazione
+            this.goToReservationDetail(txtBarcode);
+          }
+  
+        }
       })
     }
+
   }
+
 
 
   /**

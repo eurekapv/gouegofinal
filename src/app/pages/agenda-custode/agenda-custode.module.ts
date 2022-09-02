@@ -9,7 +9,6 @@ import { AgendaCustodePageRoutingModule } from './agenda-custode-routing.module'
 import { AgendaCustodePage } from './agenda-custode.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 
 @NgModule({
@@ -22,6 +21,6 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
         
     ],
     declarations: [AgendaCustodePage],
-    providers: [BarcodeScanner]
+    providers: []
 })
 export class AgendaCustodePageModule {}

@@ -35,6 +35,7 @@ import { UnitaMisura } from 'src/app/models/unitamisura.model';
 import { Valuta } from 'src/app/models/valuta.model';
 import { DataChiusura } from 'src/app/models/datachiusura.model';
 import { CorsoAllegato } from 'src/app/models/corsoallegato.model';
+import { TipoPagamento } from 'src/app/models/tipopagamento.model';
 
 
 
@@ -87,7 +88,8 @@ export const Structure: any = {
     Valuta,
     UnitaMisura,
     DataChiusura,
-    CorsoAllegato
+    CorsoAllegato,
+    TipoPagamento
 }
 
 export class DynamicClass {

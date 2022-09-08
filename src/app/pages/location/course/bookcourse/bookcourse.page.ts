@@ -8,7 +8,7 @@ import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { Corso } from 'src/app/models/corso.model';
 import { Location } from 'src/app/models/location.model';
 import { PaymentProcess } from 'src/app/models/payment-process.model';
-import { PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoRigoIncasso } from 'src/app/models/valuelist.model';
+import { PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoRigoIncasso, TipoScadenza } from 'src/app/models/valuelist.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { StartService } from 'src/app/services/start.service';
 import { Browser } from '@capacitor/browser';
@@ -19,6 +19,7 @@ import { Utente } from 'src/app/models/utente.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { IscrizioneCorso } from 'src/app/models/iscrizionecorso.model';
 import { IscrizioneIncasso } from 'src/app/models/iscrizioneincasso.model';
+import { TipoPagamento } from 'src/app/models/tipopagamento.model';
 
 
 @Component({
@@ -56,7 +57,7 @@ export class BookcoursePage implements OnInit, OnDestroy {
 
   subPaymentResult: Subscription;
   onlyDaysCorso: Settimana[] = []; //Contiene i soli giorni di corso
-
+  paymentType: TipoPagamento; //Pagamento a scadenza immediata o rateale ???
 
   //Controllo Posti Disponibili
   flagPostiDisponibili = false;
@@ -71,6 +72,9 @@ export class BookcoursePage implements OnInit, OnDestroy {
               private alertCtrl: AlertController,
               private navCtrl: NavController) {
 
+              //Chiedo al server se c'e' qualche possibilità di pagamento rateale
+              this.requestTypePaymentDefault();
+              
               //Ascolto cambiamenti dell'Area per l'abilitazione delle iscrizioni
               this.onListenSelectedArea();
 
@@ -220,6 +224,31 @@ ngOnDestroy() {
 }
 
 
+/**
+ * Richiede al Server il tipo di pagamento di default
+ * Cosi da sapere se è possibile rateizzare il pagamento
+ */
+requestTypePaymentDefault() {
+  let filterPayment: TipoPagamento;
+  filterPayment = new TipoPagamento(true);
+
+  //Intanto imposto il payment Type alla modalità Default
+  this.paymentType = TipoPagamento.getDocStandardImmediato();
+
+  filterPayment.PREDEFINITACORSI = true;
+  //Chiamiamo il server
+  this.docStructureService.requestNew(filterPayment)
+                          .then(collTypePayament => {
+                            //Prendo il primo valore
+                            if (collTypePayament && collTypePayament.length != 0) {
+                              this.paymentType = collTypePayament[0];
+                            }
+                            else {
+                              //Classico a scadenza immediata
+                              this.paymentType = TipoPagamento.getDocStandardImmediato();
+                            }
+                          })
+}
 
 /**
  * Richiedo la location
@@ -298,6 +327,33 @@ requestLocationById(idLocation: string): Promise<void>{
     }
   }
 
+  /**
+   * Click sull'item dell'importo
+   */
+  onClickImporto():void {
+    let myMessage = '';
+
+    if (this.paymentType.isRateale()) {
+
+      myMessage = 'E\' possibile effettuare il pagamento del corso sia in rata unica'
+      myMessage = myMessage + '<br/>'
+      myMessage = myMessage + 'che in modalità rateale '
+      if (this.paymentType.DESCR.length != 0) {
+        myMessage = myMessage + `(${this.paymentType.DESCR})`
+      }
+
+      myMessage = myMessage + '<br/>';
+      myMessage = myMessage + 'Il pagamento rateale è disponibile solo contattando la struttura';
+
+    }
+    else {
+      myMessage = 'E\' possibile effettuare il pagamento del corso unicamente attraverso una rata unica';
+      myMessage = myMessage + '<br/>';
+      myMessage = myMessage + 'Contattare la struttura per concordare, se possibile altre modalità di pagamento'
+    }
+
+    this.startService.presentAlertMessage(myMessage, 'Modalità pagamento');
+  }
 
   /**
    * Ritorna TRUE se il pulsante 

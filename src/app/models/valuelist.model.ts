@@ -224,6 +224,12 @@ export enum PaymentMode {
     pagaAdesso = 200
 }
 
+export enum TipoScadenza {
+    scadenzaImmediata = 10,
+    rateIdentiche = 20,
+    ratePercentuali = 30
+}
+
 //Stati possibili a seguito di una richiesta pagamento Paypal
 /*
 The possible values are:

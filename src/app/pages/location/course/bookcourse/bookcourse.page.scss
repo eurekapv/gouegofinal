@@ -13,7 +13,7 @@ h6
 {
     margin-top: 5px;
     margin-bottom: 4px;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 h4
@@ -47,7 +47,13 @@ ion-button.full-buttons{
 
 #item-totale {
     ion-label {
-        font-size: 20px;
+        &.title {
+            font-size: 18px;
+        }
+        p {
+            font-size: 10px;
+            font-weight: bold;
+        }
     }
 }
 

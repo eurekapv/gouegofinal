@@ -180,7 +180,7 @@ onListenSelectedUser() {
     //faccio la richiesta
     this.docStructureService.requestNew(filterLocation).then(elLocation => {
       this.loadingController.dismiss();
-      if (elLocation && elLocation!=[]){
+      if (elLocation && elLocation.length != 0){
 
         //se ho trovato una location me la salvo
         this.myLocation = elLocation[0];

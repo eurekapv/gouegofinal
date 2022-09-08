@@ -191,6 +191,7 @@
 <ion-footer>
 
   <ion-grid>
+
     <!-- ISCRIZIONE ABILITATA -->
     <ion-list *ngIf="flagPostiDisponibili">
       <ion-item button (click)="disclaimer=!disclaimer; " lines="full">
@@ -210,33 +211,77 @@
           (onPaymentModeChoosed)="onPaymentModeSelected($event)">
       </app-payment-mode>
 
+
+
       <!-- Se non a pagamento mostro Iscrizione Gratuita -->
-      <ion-item class="ion-text-center" *ngIf="!myCorso?.isAPagamento()">
-        <ion-chip class="wide" color="danger">Iscrizione Gratuita</ion-chip>
-      </ion-item>
+      <div *ngIf="myCorso?.isAPagamento() == false">
 
-      <ion-item lines="none" id="item-totale">
-        <ion-label slot="start">Totale</ion-label>
-        <ion-label style="text-align:right;">
+        <ion-item class="ion-text-center">
+          <ion-chip class="wide" color="danger">Iscrizione Gratuita</ion-chip>
+        </ion-item>
 
-          {{myCorso?.PREZZOLORDO | currency: "EUR"}}
+        <ion-item lines="none" id="item-totale">
+          <ion-label slot="start">Nessun costo previsto</ion-label>
+        </ion-item>
 
-        </ion-label>
-      </ion-item>
+      </div>
+      
+      <!-- ISCRIZIONE A PAGAMENTO-->
+      <div *ngIf="myCorso?.isAPagamento() == true">
+
+        <ion-item 
+                lines="none" 
+                detail="true"
+                  (click)="onClickImporto()"
+                  id="item-totale">
+          <ion-label class="title" slot="start">Prezzo</ion-label>
+          <ion-label style="text-align:right;">
+            <h4>
+              {{myCorso?.PREZZOLORDO | currency: "EUR"}}
+            </h4>
+            <p class="ion-text-wrap" *ngIf="paymentType.isRateale()">pagamento rateale disponibile</p>
+          </ion-label>
+        </ion-item>
+
+
+      </div>
+
+
 
     </ion-list>
 
     <!-- POSTI NON DISPONIBILI: Mostro solo il prezzo-->
+
     <ion-list *ngIf="!flagPostiDisponibili">
 
-      <ion-item lines="none" id="item-totale">
-        <ion-label slot="start">Prezzo</ion-label>
-        <ion-label style="text-align:right;">
+      <!-- NON A PAGAMENTO -->
+      <div *ngIf="myCorso?.isAPagamento() == false">
+        <ion-item class="ion-text-center">
+          <ion-chip class="wide" color="danger">Iscrizione Gratuita</ion-chip>
+        </ion-item>
 
-          {{myCorso?.PREZZOLORDO | currency: "EUR"}}
+        <ion-item lines="none" id="item-totale">
+          <ion-label slot="start">Nessun costo previsto</ion-label>
+        </ion-item>
+      </div>
 
-        </ion-label>
-      </ion-item>
+      <!-- A PAGAMENTO -->
+      <div *ngIf="myCorso?.isAPagamento() == true">
+
+        <ion-item lines="none" 
+                  detail="true"
+                  (click)="onClickImporto()"
+                  id="item-totale">
+          <ion-label slot="start">Prezzo</ion-label>
+          <ion-label style="text-align:right;">
+            <h4>
+              {{myCorso?.PREZZOLORDO | currency: "EUR"}}
+            </h4>
+            <p class="ion-text-wrap" *ngIf="paymentType.isRateale()">pagamento rateale disponibile</p>
+          </ion-label>
+        </ion-item>
+
+      </div>
 
       <ion-item lines="none">
         <ion-label class="ion-text-wrap ion-text-center">

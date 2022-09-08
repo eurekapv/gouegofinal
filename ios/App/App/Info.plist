@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Beach For Fun</string>
+	<string>Beach For Fun</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -19,9 +19,21 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini o barcode</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Consenti sempre geolocalizzazione per indicarti le location vicine ?</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Consenti geolocalizzazione per mostrarti la location più vicina ?</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To Record Audio With Video</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini o barcode</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini o barcode</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

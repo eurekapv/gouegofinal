@@ -11,6 +11,7 @@ import { TipoSocieta } from 'src/app/models/valuelist.model';
 export class CentriComponent implements OnInit {
 
   @Input() location: Location = new Location();
+  @Input() center: boolean = false;
   @Output() clickPrenota = new EventEmitter<Location>();
   @Output() clickLocation = new EventEmitter<Location>();
   @Input() myStartConfig: StartConfiguration = new StartConfiguration();

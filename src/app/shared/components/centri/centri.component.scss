@@ -3,6 +3,14 @@ ion-card-header {
 }
 
 ion-card {
+
+    &.center{
+        margin: auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+    }
+
     width: max-content;
     max-width: 300px;
     min-width: 300px;

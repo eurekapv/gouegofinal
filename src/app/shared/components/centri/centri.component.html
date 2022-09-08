@@ -1,4 +1,5 @@
-<ion-card 
+<ion-card
+      [class]="center? 'center' : ''"
       mode="ios" 
       button="true"
       (click)="onClickLocation($event); $event.stopPropagation();">

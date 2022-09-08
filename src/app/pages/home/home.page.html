@@ -238,6 +238,7 @@
         <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
 
           <app-centri 
+              [center]="true"
               (clickPrenota)="onClickPrenota($event)"
               (clickLocation)="onClickLocation($event)"
               [location]="listLocation[0]"

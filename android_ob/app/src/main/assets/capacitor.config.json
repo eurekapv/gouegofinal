@@ -4,7 +4,11 @@
 	"bundledWebRuntime": false,
 	"webDir": "www",
 	"backgroundColor": "#ffffffff",
+	"android": {
+		"path": "android_ob"
+	},
 	"ios": {
+		"path": "ios_ob",
 		"cordovaLinkerFlags": [
 			"-ObjC"
 		]
@@ -21,6 +25,11 @@
 			"SplashMaintainAspectRatio": "true",
 			"splashImmersive": true
 		}
+	},
+	"server": {
+		"allowNavigation": [
+			"gouego.com"
+		]
 	},
 	"cordova": {
 		"preferences": {

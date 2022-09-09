@@ -9,7 +9,10 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "buildprod": "ionic build --prod --aot --outputHashing=all",
+    "toAndroid": "npx cap sync android",
+    "toIos": "npx cap sync ios"
   },
   "private": true,
   "dependencies": {

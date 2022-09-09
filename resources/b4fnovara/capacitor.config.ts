@@ -6,7 +6,11 @@ const config: CapacitorConfig = {
     "bundledWebRuntime": false,
     "webDir": "www",
     "backgroundColor": "#ffffffff",
+    "android": {
+      "path": "android_b4f"
+    },
     "ios": {
+      "path": "ios_b4f",
       "cordovaLinkerFlags": [
         "-ObjC"
       ]

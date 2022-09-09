@@ -11,6 +11,9 @@ npm run toIos
 npm run toAndroid
 ```
 A questo punto aprire i rispettivi ambienti
+ATTENZIONE La permission REQUEST_INSTALL_PACKAGES viene aggiunta tutte le volte: eliminarla da 
+android\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml
+
 
 # Per la preparazione del pacchetto Web
 ```console

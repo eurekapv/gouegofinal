@@ -12,7 +12,9 @@ ionic build --prod --aot --outputHashing=all
 ```
 Il comando compila e copia nella cartella www rinominando tutti i file per eliminare il problema della cache
 
-
+## Menata del REQUEST_INSTALL_PACKAGES
+Viene aggiunta una permission REQUEST_INSTALL_PACKAGES nel manifest che deve essere tolta per la pubblicazione
+si trova in android_ob\capacitor-cordova-android-plugins\src\main\AndroidManifest.xml
 
 
 # Gouego Application 

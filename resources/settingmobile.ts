@@ -4,16 +4,16 @@ export const settingMobile = {
             appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
             urlId: 'openbeach.gouego.com',
             ios: {
-                bundle: 'com.gouego',
+                bundle: 'com.gouego.openbeach',
                 versionCode: '12',
                 versionName: '1.4',
                 lastPublish: null
             },
             android: {
                 bundle: 'com.gouego',
-                versionCode: '6',
-                versionName: '1.4',
-                lastPublish: null
+                versionCode: '7',
+                versionName: '1.6',
+                lastPublish: '2022-09-09'
             }
           },
           demo: {

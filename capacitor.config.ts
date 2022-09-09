@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-    "appId": "com.gouego",
+    "appId": "com.gouego.openbeach",
     "appName": "Open Beach",
     "bundledWebRuntime": false,
     "webDir": "www",

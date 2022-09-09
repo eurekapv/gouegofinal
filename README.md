@@ -1,10 +1,16 @@
 # Per la preparazione dei pacchetti Mobile
+Attenzione: controllare il file capacitor.config.ts ed eventualmente sostituirlo con il file
+corretto presente nella cartella resources\nome società
+Nel file capacitor.config.ts è presente il nome della cartella ios/android da utilizzare
+
+Successivamente procedere con la compilazione e copia usando i comandi script
+
 ```console
-ionic build --prod
-npx cap sync
+npm run buildprod
+npm run toIos
+npm run toAndroid
 ```
-Il primo comando compila in Build e il secondo copia la www nei pacchetti
-(Non usare altri comandi che fanno la build in test e non in prod)
+A questo punto aprire i rispettivi ambienti
 
 # Per la preparazione del pacchetto Web
 ```console
@@ -16,7 +22,8 @@ Oppure utilizzare il comando script
 ```console
 npm run buildprod
 ```
- 
+
+
 
 ## Menata del REQUEST_INSTALL_PACKAGES
 Viene aggiunta una permission REQUEST_INSTALL_PACKAGES nel manifest che deve essere tolta per la pubblicazione

@@ -9,7 +9,7 @@ export enum ConnectionMode {
 export const environment = {
   production: false,
   version: "1.6",
-  releaseDate: '2022-08-09',
+  releaseDate: '2022-09-09',
   options: {
     debugMode: 'full' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
@@ -20,7 +20,7 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'openbeach',
+    activeId: 'beachforfun',
     customer: {
       openbeach: {
         appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',

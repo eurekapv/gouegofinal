@@ -8,7 +8,8 @@ import { AccountPageRoutingModule } from './account-routing.module';
 
 import { AccountPage } from './account.page';
 import { EditLoginPage } from './edit-login/edit-login.page';
-import {EditLoginPageModule} from './edit-login/edit-login.module'
+import {EditLoginPageModule} from './edit-login/edit-login.module';
+
 
 @NgModule({
     imports: [

@@ -185,6 +185,13 @@ openChangePassword() {
     })
 }
 
+/**
+ * Apertura della pagina per la cancellazione dell'Account
+ */
+openDeleteAccount() {
+
+}
+
 
   //Apre il link relativo a AlchimistiLab
   openAlchimistiLink() {

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
-    <ion-title>I tuoi documenti</ion-title>
+    <ion-title>Certificati ed altro</ion-title>
     <ion-buttons slot="end" *ngIf="listaTipiDocumento?.length != 0">
       <ion-button (click)="onAddDocument()">
         <ion-icon name="add"></ion-icon>
@@ -20,8 +20,18 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <div class="info" >
+    <ion-item color="light" lines="none">
+      <ion-label>
+        <p class="ion-text-wrap">
+          <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+          qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato; se devi inviarci un documento utilizza il + in alto a destra.
+      </ion-label>
+    </ion-item>
+  </div>  
+
   <!-- NESSUN DOCUMENTO PRESENTE -->
-  <div *ngIf="listDocumenti.length === 0" class="nofind-cnt">
+  <div *ngIf="listDocumenti.length === 0" class="nofind-cnt reduce-height">
     <ion-label>Nessun documento</ion-label>
     <ion-label>disponibile</ion-label>
   </div>
@@ -36,6 +46,9 @@
         <ion-label>
           <h3>{{documento['_DENOMINAZIONE_TipoDocumentazione']}}</h3>
           <p>Ultima modifica: {{documento.DATAORAMODIFICA | date : 'dd/LL/yyyy' }}</p>
+          <ion-chip 
+              *ngIf="!documento.checkValidita()"
+              color="danger">SCADUTO</ion-chip>
         </ion-label>
         <ion-icon slot="end" color="primary" name="cloud-download-outline"></ion-icon>
       </ion-item>

@@ -236,7 +236,6 @@ export class UtenteService {
    * @param config Dati di configurazione
    * @param docUtenteUpdate Documento Utente con dati modificati
    */
-
   requestUpdate(config: StartConfiguration, docUtenteUpdate: Utente):Promise<Utente>{
 
     return new Promise((resolve, reject)=>{
@@ -310,7 +309,69 @@ export class UtenteService {
   }
 
 
+  /**
+   * Richiede al server la cancellazione di un account
+   * @param actualPassword Password attuale inserita dall'utente
+   * @returns 
+   */
+  requestDeleteProfile(actualPassword: string): Promise<PostResponse> {
 
+                        
+   return new Promise<PostResponse>((resolve, reject) => {
+
+      const metodo = 'deleteUserProfile';
+      let actualUtente = this._utente.getValue();
+      let docUtente: Utente; //Documento da inviare
+      let bodyRequest = '';
+      
+
+      if (actualUtente) {
+
+        //Preparo il documento utente da inviare
+        docUtente = new Utente();
+        docUtente.ID = actualUtente.ID;
+        docUtente.INPUTPASSWORD = actualPassword;
+
+        //Creo il body da inviare
+
+        //Questi sono i parametri per l'esportazione
+        let paramExport = new ParamsExport();
+        paramExport.clearPKProperty = false;
+        paramExport.clearDOProperty = true;
+        paramExport.clearPrivateProperty = true;
+
+        bodyRequest = docUtente.exportToJSON(paramExport);
+
+        bodyRequest = `{"docUtente" : ${bodyRequest}}`;        
+
+        this.docService.requestForFunction(new Account(true), metodo, bodyRequest)
+                       .then(rawResponse => {
+                          let myResponse = new PostResponse();
+                          myResponse = rawResponse.response;
+                          resolve(myResponse);
+                       })
+                       .catch(error => {
+                        LogApp.consoleLog(error, 'error');
+                        reject(error);
+                       })
+
+      }
+      else {
+        reject('Nessun utente loggato');
+      }
+      
+    })
+    
+     
+  }
+
+  /**
+   * Richiesto un cambio password utente
+   * @param config 
+   * @param oldPsw 
+   * @param newPsw 
+   * @returns 
+   */
   requestChangePassword(config: StartConfiguration, oldPsw:string, newPsw:string) {
     let actualUtente = this._utente.getValue();
     let myHeaders = config.getHttpHeaders();
@@ -543,51 +604,51 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
   recoverySendCodici(config: StartConfiguration,
-  docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
-  //Viene effettuata una chiamata al server per ottenere
-  //l'invio di una mail e/o un SMS contenente codici PIN
-  const metodo = 'recoverySendCodici';
+                      docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+      //Viene effettuata una chiamata al server per ottenere
+      //l'invio di una mail e/o un SMS contenente codici PIN
+      const metodo = 'recoverySendCodici';
 
-  let myHeaders = config.getHttpHeaders();
-  myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-  const myParams = new HttpParams();
-  const doObject = 'ACCOUNT';
-  let bodyRequest = '';
+      let myHeaders = config.getHttpHeaders();
+      myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
+      const myParams = new HttpParams();
+      const doObject = 'ACCOUNT';
+      let bodyRequest = '';
 
-  let myUrl = config.urlBase + '/' + doObject;
+      let myUrl = config.urlBase + '/' + doObject;
 
-  return new Promise<AccountOperationResponse>((resolve, reject)=> {
-  if (docRequestCode) {
+      return new Promise<AccountOperationResponse>((resolve, reject)=> {
+      if (docRequestCode) {
 
-  //Creo il body da inviare
+      //Creo il body da inviare
 
-  //Questi sono i parametri per l'esportazione
-  let paramExport = new ParamsExport();
-  paramExport.clearDOProperty = true;
-  paramExport.clearPKProperty = true;
-  paramExport.clearPrivateProperty = true;
+      //Questi sono i parametri per l'esportazione
+      let paramExport = new ParamsExport();
+      paramExport.clearDOProperty = true;
+      paramExport.clearPKProperty = true;
+      paramExport.clearPrivateProperty = true;
 
 
-  bodyRequest = docRequestCode.exportToJSON(paramExport);
+      bodyRequest = docRequestCode.exportToJSON(paramExport);
 
-  bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-  
+      bodyRequest = `{"docRequest" : ${bodyRequest}}`;
+      
 
-  //Faccio la chiamata POST
-  this.apiService
-  .httpPost(myUrl, myHeaders, myParams, bodyRequest )
-  .pipe(map(received => {
-      return received.recovery;
-  }))
-  .subscribe((response:AccountOperationResponse) => {
-    resolve(response);
-  }, error => {
-  reject(error);
-  })
-  }
-  else {
-  reject('Dati mancanti per la richiesta');
-  }
+      //Faccio la chiamata POST
+      this.apiService
+      .httpPost(myUrl, myHeaders, myParams, bodyRequest )
+      .pipe(map(received => {
+          return received.recovery;
+      }))
+      .subscribe((response:AccountOperationResponse) => {
+        resolve(response);
+      }, error => {
+      reject(error);
+      })
+      }
+      else {
+      reject('Dati mancanti per la richiesta');
+      }
 
   });
 

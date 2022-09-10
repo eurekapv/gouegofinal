@@ -1064,7 +1064,7 @@ loadStorageUtente() {
 /**
  * Disconnessione utente richiesta
  */
-userLogoff() {
+userLogoff(): void {
   let myStartConfig = this._startConfig.getValue();
 
   // Avviso del logoff
@@ -1072,6 +1072,7 @@ userLogoff() {
 
   //Tolgo il codice di autorizzazione utente
   myStartConfig.authorizationUserCode = '';
+
   //Riemetto l'Observable
   this._startConfig.next(myStartConfig);
 
@@ -1142,6 +1143,33 @@ requestChangePassword(oldPsw:string, newPsw:string) {
   const actualStartConfig = this._startConfig.getValue();
 
   return this.utenteService.requestChangePassword(actualStartConfig, oldPsw, newPsw);
+}
+
+/**
+ * Richiesta la cancellazione del profilo
+ * @param actualPassword 
+ * @returns 
+ */
+requestDeleteProfile(actualPassword: string):Promise<PostResponse>  {
+
+  return new Promise<PostResponse>((resolve, reject) => {
+    //Chiedo la cancellazione del profilo
+    this.utenteService.requestDeleteProfile(actualPassword)
+                      .then(myResponse => {
+
+                        if (myResponse.result == true) {
+                          //Eseguo il logout dell'utente, cancellando le credenziali salvate
+                          this.userLogoff();
+                        }
+
+                        resolve(myResponse);
+                        
+                      })
+                      .catch(error => {
+                        reject(error);
+                      })
+  })
+                            
 }
 
 

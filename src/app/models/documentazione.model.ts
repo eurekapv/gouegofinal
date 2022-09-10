@@ -1,6 +1,8 @@
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
 import { ClasseDocumento, TipoDocumentazione } from './tipodocumentazione.model';
+import * as moment from "moment";
 
 export class InvioDocumentazione extends IDDocument{
     TOKENUTENTE: string;
@@ -52,6 +54,24 @@ export class Documentazione extends IDDocument{
 
     constructor(onlyInstance = false){
         super(onlyInstance);
+    }
+
+    /**
+     * Torna TRUE se il documento è Valido, FALSE se scaduto
+     */
+    checkValidita(): boolean {
+        let valid = false;
+
+        if (this.VALIDOFINO) {
+            if (moment(this.VALIDOFINO).isAfter()) {
+                valid = true;
+            }
+        }
+        else {
+            valid = true;
+        }
+
+        return valid;
     }
 
     getDescriptor(): Descriptor {

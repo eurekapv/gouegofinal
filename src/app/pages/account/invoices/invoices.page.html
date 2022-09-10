@@ -3,14 +3,24 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
-    <ion-title>Le tue ricevute</ion-title>
+    <ion-title>Ricevute Acquisti</ion-title>
   </ion-toolbar>
 
   
 </ion-header>
 
 <ion-content>
-  
+
+  <div class="info" >
+    <ion-item color="light" lines="none">
+      <ion-label>
+        <p class="ion-text-wrap">
+          <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+          qui trovi l'elenco delle ricevute relative alle iscrizioni corsi ed alle prenotazioni presso il centro.
+      </ion-label>
+    </ion-item>
+  </div>
+
   <app-dtinput
         textAlignmentRight="true"
         [(actualDate)]="yearSelected"
@@ -18,7 +28,7 @@
         calendarMode="year"
         iconColor="primary"
         iconName="calendar-outline" 
-        itemLines="none"
+        itemLines="full"
         label="Periodo"
         title="Seleziona un Anno"
         >
@@ -31,7 +41,7 @@
   </ion-refresher>
 
   <!-- NESSUN DOCUMENTO PRESENTE -->
-  <div *ngIf="listRicevute.length === 0" class="nofind-cnt">
+  <div *ngIf="listRicevute.length === 0" class="nofind-cnt reduce-height">
     <ion-label>Nessuna ricevuta</ion-label>
     <ion-label>disponibile</ion-label>
   </div>

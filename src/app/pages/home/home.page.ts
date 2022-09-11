@@ -444,6 +444,14 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   /**
+   * Visualizzazione dei corsi
+   * @param location Location Selezionata
+   */
+   onClickCorsi(location: Location) {
+    this.navController.navigateForward(['/', 'listcourses', location.ID]);
+  }  
+
+  /**
    * Scheda Location
    * @param location Location selezionata
    */

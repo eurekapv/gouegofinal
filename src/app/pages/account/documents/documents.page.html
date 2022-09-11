@@ -46,9 +46,30 @@
         <ion-label>
           <h3>{{documento['_DENOMINAZIONE_TipoDocumentazione']}}</h3>
           <p>Ultima modifica: {{documento.DATAORAMODIFICA | date : 'dd/LL/yyyy' }}</p>
-          <ion-chip 
-              *ngIf="!documento.checkValidita()"
-              color="danger">SCADUTO</ion-chip>
+
+          <div *ngIf="documento.REQUESTCONTROLLO">
+            <ion-chip
+                color="warning">
+                IN ATTESA DI VERIFICA
+            </ion-chip>
+          </div>
+
+          <div *ngIf="!documento.REQUESTCONTROLLO">
+            <ion-chip 
+                *ngIf="!documento.checkValidita()"
+                color="danger">SCADUTO
+            </ion-chip>
+
+            <ion-chip 
+                *ngIf="documento.checkValidita()"
+                color="success">VALIDO
+            </ion-chip>
+
+          </div>          
+
+
+
+
         </ion-label>
         <ion-icon slot="end" color="primary" name="cloud-download-outline"></ion-icon>
       </ion-item>

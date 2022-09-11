@@ -233,15 +233,19 @@
   <!-- LOCATION -->
   <div id="div-content">
 
+    <!-- ELEMENTO SINGOLO -->
     <ion-grid *ngIf="listLocation.length===1" >
       <ion-row>
         <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
 
           <app-centri 
-              [center]="true"
-              (clickPrenota)="onClickPrenota($event)"
-              (clickLocation)="onClickLocation($event)"
+              [area]="selectedArea"
               [location]="listLocation[0]"
+              [showActionButton]="true"
+              [centerCard]="true"
+              (clickPrenota)="onClickPrenota($event)"
+              (clickCorsi)="onClickCorsi($event)"              
+              (clickLocation)="onClickLocation($event)"
               [myStartConfig]="startConfig">
               
           </app-centri>
@@ -250,21 +254,20 @@
       </ion-row>
     </ion-grid>
   
+    <!-- ELEMENTI MULTIPLI-->
     <div scrollX="true" *ngIf="listLocation.length>1">
         <app-centri 
           *ngFor="let locationItem of listLocation"
-          (clickPrenota)="onClickPrenota($event)"
-          (clickLocation)="onClickLocation($event)"
-          [location]="locationItem"
-          [myStartConfig]="startConfig">
+              [area]="selectedArea"
+              [location]="locationItem"
+              [showActionButton]="true"
+              (clickPrenota)="onClickPrenota($event)"
+              (clickCorsi)="onClickCorsi($event)"
+              (clickLocation)="onClickLocation($event)"
+              [myStartConfig]="startConfig">
           
         </app-centri>    
     </div>
-
-    <!-- BOTTONE PER INFORMARE I CLIENTI DI ISCRIVERSI AI CORSI-->
-    <!-- <div class="ion-padding-vertical" *ngIf="showAdvertisingIscrizioni">
-      <ion-img src="assets\img\banner_corsi.png"></ion-img>
-    </div> -->
 
   </div>
 

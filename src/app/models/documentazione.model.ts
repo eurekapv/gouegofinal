@@ -50,6 +50,7 @@ export class Documentazione extends IDDocument{
     CLIENTUPLOAD : boolean;
     DATAORACARICAMENTO: Date;
     DATAORAMODIFICA: Date;
+    REQUESTCONTROLLO: boolean;
     
 
     constructor(onlyInstance = false){
@@ -82,7 +83,7 @@ export class Documentazione extends IDDocument{
                         'FILENAMEESTENSIONE',
                         'FILETYPE'
                         ];
-        let arBoolean = ['CLIENTUPLOAD'];
+        let arBoolean = ['CLIENTUPLOAD','REQUESTCONTROLLO'];
         let arDate = ['VALIDOFINO'];
         let arDateTime = ['DATAORACARICAMENTO','DATAORAMODIFICA'];
         let arNumber = ['CLASSE'];

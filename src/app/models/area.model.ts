@@ -5,6 +5,7 @@ import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { AreaLink } from './arealink.model';
 import { AreaPaymentSetting } from './areapaymentsetting.model';
 import { Position } from '@capacitor/geolocation';
+import { PositionActionButton } from '../shared/components/centri/centri.component';
 
 
 export class Area extends IDDocument {
@@ -25,6 +26,7 @@ export class Area extends IDDocument {
     APPISCRIZIONI: boolean;
     APPPRENOTAZIONI: boolean;
     APPGAPOREPRESENZE: number; //Indica per quanto tempo (ore) dal termine di una data di corso, il trainer può inserire/aggiornare le presenze
+    APPBUTTONHOME: PositionActionButton; //Dove vuole mostrare i bottoni sulla home
     LATITUDINE: number;
     LONGITUDINE: number;
     constructor(onlyInstance?:boolean) {
@@ -56,7 +58,7 @@ export class Area extends IDDocument {
                       'ISOSTATO',
                       'CONDVENDITACORSI',
                       'CONDVENDPRENOTAZIONI'];
-      let arNumber = ['TIPOAREA','APPGAPOREPRESENZE','LATITUDINE','LONGITUDINE'];
+      let arNumber = ['TIPOAREA','APPGAPOREPRESENZE','LATITUDINE','LONGITUDINE','APPBUTTONHOME'];
       let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI'];
       let arDate = [];
       let arDateTime =[];

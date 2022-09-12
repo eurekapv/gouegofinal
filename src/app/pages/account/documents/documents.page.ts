@@ -152,13 +152,15 @@ export class DocumentsPage implements OnInit {
 
       //#region GESTIONE CHIUSURA MODALE
       elModal.onWillDismiss()
-      .then(data => {
-              //Controlliamo se l'utente ha inserito dati
-            let docUploadDocumentazione : InvioDocumentazione = data['data'];
-            
-            //Passo il controllo per inviare i dati al server
-            this.requestUploadToServer(docUploadDocumentazione);
-      });
+            .then(data => {
+                  //Recuperiamo i dati da inviare
+                  let docUploadDocumentazione : InvioDocumentazione = data['data'];
+
+                  if (docUploadDocumentazione) {
+                    //Passo il controllo per inviare i dati al server
+                    this.requestUploadToServer(docUploadDocumentazione);
+                  }
+            });
 
       //#endregion
     });
@@ -169,10 +171,12 @@ export class DocumentsPage implements OnInit {
    * Invia al server il documento passato nei parametri
    * Se l'invio ha esito positivo, viene eseguito un refresh dati 
    */
-  requestUploadToServer(docUploadDocumentazione : InvioDocumentazione) {
+  requestUploadToServer(docToSend : InvioDocumentazione) {
 
+    let nameFunction = 'uploadDocumentiAllegati';
+    let nameParams = 'docDettagli'; //Parametro richiesto dalla funzione
     //Informazioni da inviare al server presenti
-    if (docUploadDocumentazione){
+    if (docToSend) {
       
       this.loadingController.create({
         message: 'Caricamento',
@@ -183,11 +187,9 @@ export class DocumentsPage implements OnInit {
 
         elLoading.present();
         
-        //creo un utente fittizio da passare alla post
-        let fakeUtente = new Utente();
   
         //Imposto il token utente
-        docUploadDocumentazione.TOKENUTENTE = this.startService.actualUtente.ID;
+        docToSend.TOKENUTENTE = this.startService.actualUtente.ID;
   
         //creo il body json
         //Questi sono i parametri per l'esportazione
@@ -199,50 +201,66 @@ export class DocumentsPage implements OnInit {
         paramExport.onlyDocModified = false;
         
         //Qui Creo il JSON
-        let myJson: string = docUploadDocumentazione.exportToJSON(paramExport);
+        let myJson: string = docToSend.exportToJSON(paramExport, nameParams);
+        
         
         //ora che ho tutto, faccio la post
-        this.docStructureService.requestForFunction(fakeUtente, 'uploadDocumentazione', myJson)
-        .then(rawResponse => {
-          
-          elLoading.dismiss();
+        this.docStructureService.requestForFunction(new Utente(), nameFunction, myJson)
+                    .then(rawResponse => {
+                      
+                      elLoading.dismiss();
 
-          //Risposta ricevuta
-          let myResponse = new PostResponse();
-          myResponse = rawResponse.response;
-          
-          if (myResponse){
-            if (myResponse.result) {
-              //sappiamo che tutto è andato bene
-              this.showMessage('Caricamento completato');
+                      //Risposta ricevuta
+                      let myResponse = new PostResponse();
+                      myResponse = rawResponse.response;
+                      
+                      if (myResponse){
+                        if (myResponse.result) {
+                          //sappiamo che tutto è andato bene
+                          this.startService.presentAlertMessage('Grazie, Il tuo documento è stato ricevuto e verrà controllato quanto prima', 'Caricamento completato');
+                          
+                          //Richiedo ancora la lista dei documenti
+                          this.requestListaDocumenti();
               
-              //Richiedo ancora la lista dei documenti
-              this.requestListaDocumenti();
-  
-            }
-            else{
-              //qualcosa è andato storto sul server
-              if (myResponse.message && myResponse.message.length !== 0) {
-                this.showMessage(myResponse.message);
-              }
-              else {
-                this.showMessage('Errore caricamento');
-              }
-            }
-          }
-          else{
-            //non ho la risposta, c'è stato un errore
-            this.showMessage('Errore di connessione');
-          }
-        })
-        .catch(error => {
-  
-          elLoading.dismiss();
+                        }
+                        else{
+                          //qualcosa è andato storto sul server
+                          if (myResponse.message && myResponse.message.length !== 0) {
 
-          //errore di comunicazione col server
-          LogApp.consoleLog(error, 'error');
-          this.showMessage('Errore di connnessione');
-        });
+                              const myMessage = 'Ops, siamo spiacenti ma si è verificato un errore ' + '<br>' + myResponse.message + '<br>' + 'Ti invitiamo a riprovare o contattare il centro';
+                              this.startService.presentAlertMessage(myMessage, 'Caricamento fallito');
+                              LogApp.consoleLog(myMessage,'error');
+                          }
+                          else {
+                            const myMessage = 'Ops, siamo spiacenti ma si è verificato un errore inaspettato' + '<br>' + 'Ti invitiamo a riprovare o contattare il centro';
+                            this.startService.presentAlertMessage(myMessage, 'Caricamento fallito');
+                            LogApp.consoleLog(myMessage,'error');
+                          }
+                        }
+                      }
+                      else{
+                        //non ho la risposta, c'è stato un errore
+                        const myMessage = 'Ops, siamo spiacenti ma si è verificato un errore inaspettato' + '<br/>' + 'la connessione con il server si è interrotta' + '<br>' + 'Ti invitiamo a riprovare o contattare il centro';
+                        this.startService.presentAlertMessage(myMessage, 'Caricamento fallito');
+                        LogApp.consoleLog(myMessage,'error');
+                      }
+                    })
+                    .catch(error => {
+                      let myMessage = '';
+
+                      elLoading.dismiss();
+
+                      if (typeof error == 'string') {
+                        myMessage = 'Ops, siamo spiacenti ma si è verificato un errore ' + '<br>' + error + '<br>' + 'Ti invitiamo a riprovare o contattare il centro';
+                      }
+                      else {
+                        myMessage = 'Ops, siamo spiacenti ma si è verificato un errore inatteso' + '<br>' + 'Ti invitiamo a riprovare o contattare il centro';
+                      }
+
+                      this.startService.presentAlertMessage(myMessage, 'Caricamento fallito');
+                      LogApp.consoleLog(myMessage,'error');                     
+                      LogApp.consoleLog(error, 'error');
+                    });
       })
     }
   }

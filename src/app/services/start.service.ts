@@ -1157,7 +1157,7 @@ requestDeleteProfile(actualPassword: string):Promise<PostResponse>  {
     this.utenteService.requestDeleteProfile(actualPassword)
                       .then(myResponse => {
 
-                        if (myResponse.result == true) {
+                        if (myResponse.result) {
                           //Eseguo il logout dell'utente, cancellando le credenziali salvate
                           this.userLogoff();
                         }

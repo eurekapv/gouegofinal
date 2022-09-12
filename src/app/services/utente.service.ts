@@ -345,10 +345,18 @@ export class UtenteService {
         bodyRequest = `{"docUtente" : ${bodyRequest}}`;        
 
         this.docService.requestForFunction(new Account(true), metodo, bodyRequest)
-                       .then(rawResponse => {
-                          let myResponse = new PostResponse();
-                          myResponse = rawResponse.response;
-                          resolve(myResponse);
+                       .then((rawResponse: PostResponse) => {
+                          if (rawResponse && rawResponse.result) {
+                            resolve(rawResponse);
+                          }
+                          else {
+                            if (rawResponse && rawResponse.message && rawResponse.message.length != 0) {
+                              reject(rawResponse.message);
+                            }
+                            else {
+                              reject('Spiacenti, operazione fallita');
+                            }
+                          }
                        })
                        .catch(error => {
                         LogApp.consoleLog(error, 'error');

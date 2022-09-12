@@ -1,10 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SorgenteFile, TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import { Chooser, ChooserResult } from '@ionic-native/chooser/ngx';
-import { ToastController, PickerController, ModalController } from '@ionic/angular';
+import { ToastController, PickerController, ModalController, AlertController, AlertButton } from '@ionic/angular';
 import { PickerColumnOption } from '@ionic/core';
 import { InvioDocumentazione } from 'src/app/models/documentazione.model';
 import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
+import { LogApp } from 'src/app/models/log.model';
 
 
 
@@ -28,18 +29,18 @@ export class UploadComponent implements OnInit {
   //Nome File da mostrare
   fileNameShow: string = '';
 
-  //Tipo di documento che si desidera caricare
-  selectedDocType: TipoDocumentazione;
+  //Id Tipo Documento selezionato
+  idDocTypeSelected: string = '';
 
   //Sorgente da cui caricare il file
   sorgenteFile: SorgenteFile = SorgenteFile.photoGallery;
 
   //Descrizione opzionale del documento
   docDescription = '';
+  //Documento con scadenza-senza scadenza
+  flagDocScadenza = false;
 
-  modeScadenza: 'conscad' | 'senzascad' = 'senzascad';
-
-
+  
   //Scadenza opzionale del documento
   docScadenza: Date = new Date();
 
@@ -48,8 +49,8 @@ export class UploadComponent implements OnInit {
   constructor(
     private chooser : Chooser,
     private toastController : ToastController,
-    private pickerController : PickerController,
-    private modalController : ModalController
+    private modalController : ModalController,
+    private alertController: AlertController
     
   ) { }
 
@@ -84,7 +85,7 @@ export class UploadComponent implements OnInit {
         this.fileNameShow = '';
         
 
-        console.error(error)
+        LogApp.consoleLog(error,'error');
       });
 
     }
@@ -109,7 +110,7 @@ export class UploadComponent implements OnInit {
           this.loadedMobilePhoto = null;
           this.fileLoaded = false;
           this.fileNameShow = '';
-          this.showMessage('Errore apertura Photo Gallery');
+          this.showAlertMessage('Errore apertura Photo Gallery');
       })
     }
   }
@@ -147,6 +148,8 @@ export class UploadComponent implements OnInit {
     }
     
   } 
+
+
   
   //#endregion
 
@@ -156,59 +159,35 @@ export class UploadComponent implements OnInit {
    * Mostra un Message Toast
    * @param message Messaggio
    */
-  showMessage(message : string){
-    this.toastController.create({
-      message: message,
-      duration: 3000
-    })
-    .then(elToast => {
-      elToast.present();
-    })
+  showToastMessage(message : string) {
+
+      this.toastController.create({
+        message: message,
+        duration: 3000
+      })
+      .then(elToast => {
+        elToast.present();
+      });
   }
 
   /**
-   * Mostra il Picker per la scelta della tipologia documento
+   * Mostra un messaggio di Alert
+   * @param message 
    */
-  showPicker(){
+  showAlertMessage(message : string, title:string = '') {
     
-    let pickerOptions : PickerColumnOption[]=[];
-
-    this.docTypeList.forEach(docType => {
-      let option : PickerColumnOption = {
-        text: docType.DENOMINAZIONE,
-        value: docType
-      }
-
-      pickerOptions.push(option);
+    this.alertController.create({
+      message: message,
+      header: title,
+      buttons: [{
+        text:'Chiudi',
+        role: 'cancel'
+      }]
+    })
+    .then(elAlert => {
+      elAlert.present();
     });
-
-
-
-    this.pickerController.create({
-      columns : [
-        {
-          name : 'tipo',
-          options : pickerOptions
-
-        }
-      ],
-      buttons: [
-        {
-          text: 'Annulla',
-          role: 'cancel',
-        },
-        {
-          text: 'Conferma',
-          handler: (data)=>{
-            this.selectedDocType= data.tipo.value;
-          }
-        }
-      ]
-    })
-    .then(elPicker => {
-      elPicker.present();
-    })
-  }
+}  
 
   //#endregion
 
@@ -231,28 +210,7 @@ export class UploadComponent implements OnInit {
       };
       reader.readAsDataURL(blob);
     });
-
-
-    //ALTRO ESEMPIO CHE FORSE USAVO PRIMA  
-    //@ts-ignore 
-      // this.loadedDesktopFile.arrayBuffer().then(blob => {
-      //   console.log(blob);
-
-      //   //IMPORTANTE! QUESTO CONVERTE UN ARRAYBUFFER (BLOB) IN BASE64
-
-      //   //TEST 1
-      //   //let base64 = btoa(String.fromCharCode(...new Uint8Array(blob)));
-      //   //FINE TEST 1
-
-      //   //TEST 2
-      //   //const uint8Array = new Uint8Array(blob);
-      //   //const base64 = uint8Array.reduce((acc, i) => acc += String.fromCharCode.apply(null, [i]), '');
-      //   //console.log(base64);
-      //   // FINE TEST 2
-        
-
-        
-      // })    
+   
   }  
 
 
@@ -261,22 +219,55 @@ export class UploadComponent implements OnInit {
   /**
    * Evento Click di Interfaccia per il caricamento
    */
-  onClickCarica(){
+  onClickCarica():void {
 
     //File non caricato
     if (!this.fileLoaded) {
-      this.showMessage('Prima scegli il documento');
+      this.showAlertMessage('per continuare devi scegliere il documento che vuoi inviarci','Scegli il documento');
     }
-    else if (!this.selectedDocType) {
+    else if (!this.idDocTypeSelected || this.idDocTypeSelected.length == 0) {
         //Tipologia non selezionata
-        this.showMessage('Scegli una tipologia di documento');
+        this.showAlertMessage('per continuare seleziona il tipo del documento che stai caricando','Cosa stai caricando ?');
     }
     else {
       //Possiamo procedere al caricamento
-      this.SendFileDocumentToParent()
+      this.askConfirmSend();
     }
         
   }
+
+  /**
+   * Richiesta conferma per l'invio reale
+   */
+  askConfirmSend(): void {
+    let myButtons: AlertButton[];
+    const requestBody: string = `Procedo con l'invio del documento ?`;
+    
+    myButtons = [{
+          text: 'Invia',
+          role: 'confirm',
+          handler: ()=> {
+            this.SendFileDocumentToParent();
+          }
+        },
+        {
+          text: 'Annulla',
+          role: 'cancel'
+        }];
+
+
+        //Preparo e mostro la richiesta
+        this.alertController.create({
+                              header: 'Invio documento',
+                              message: requestBody,
+                              buttons: myButtons
+                            })
+                            .then(elAlert => {
+                              elAlert.present();
+                            })
+  }
+
+
 
   /**
    * Crea e ritorna il DataUrl da inviare al server
@@ -328,28 +319,25 @@ export class UploadComponent implements OnInit {
    */
   SendFileDocumentToParent() {
     
+    //Prepariamo il dataUrl da spedire
     this.prepareDataUrl()
         .then(dataUrl => {
-          
+
           //abbiamo tutto, posso creare l'oggetto da ritornare, e chiudere
           let myDocument = new InvioDocumentazione;
           myDocument.FILE = dataUrl;
-          myDocument.IDTIPODOCUMENTAZIONE = this.selectedDocType.ID;
+          myDocument.IDTIPODOCUMENTAZIONE = this.idDocTypeSelected;
           myDocument.DESCRIZIONE = this.docDescription;
-
-          if (this.modeScadenza == 'conscad') {
-            if (this.docScadenza) {
-              //Per compatibilità con il passato devo inserire 
-              //la data di scadenza nella descrizione e non posso crare un nuovo campo
-              myDocument.DESCRIZIONE = myDocument.DESCRIZIONE + `#${this.docScadenza.toISOString()}#`;
-            }
-          }
+          myDocument.FLAGSCADENZA = this.flagDocScadenza;
+          myDocument.DATASCADENZA = this.docScadenza;
 
           this.modalController.dismiss(myDocument);
 
         })
         .catch(error => {
-          this.showMessage('Si sono verificati errori');
+            const myMessage = 'Ops, qualcosa è andato storto e non siamo riusciti a preparare il file da inviare' + '<br/>' + 'Ti invitiamo a riprovare o contattare la struttura'
+            this.showAlertMessage(myMessage,'Caricamento fallito');
+            LogApp.consoleLog(error,'error');
         } )
 
 

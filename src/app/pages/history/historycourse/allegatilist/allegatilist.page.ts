@@ -72,8 +72,8 @@ export class AllegatilistPage implements OnInit {
       else{
         this.loadingController.dismiss();
       }
-      this.showMessage('Errore di connessione')
-      console.error(error);
+      this.showMessage('Errore di connessione');
+      LogApp.consoleLog(error,'error');
     })
   }
 

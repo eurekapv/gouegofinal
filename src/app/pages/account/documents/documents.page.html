@@ -4,11 +4,6 @@
       <ion-back-button defaultHref="/account"></ion-back-button>
     </ion-buttons>
     <ion-title>Certificati ed altro</ion-title>
-    <ion-buttons slot="end" *ngIf="listaTipiDocumento?.length != 0">
-      <ion-button (click)="onAddDocument()">
-        <ion-icon name="add"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -25,13 +20,23 @@
       <ion-label>
         <p class="ion-text-wrap">
           <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-          qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato; se devi inviarci un documento utilizza il + in alto a destra.
+          <ion-text>qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato</ion-text>
+          <ion-text *ngIf="listaTipiDocumento?.length != 0">, oppure invia un nuovo documento.</ion-text>
       </ion-label>
+      <ion-button 
+              *ngIf="listaTipiDocumento?.length != 0"
+              (click)="onAddDocument()"
+              slot="end"
+              color="danger"
+              size="large">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        Invia
+      </ion-button>
     </ion-item>
   </div>  
 
   <!-- NESSUN DOCUMENTO PRESENTE -->
-  <div *ngIf="listDocumenti.length === 0" class="nofind-cnt reduce-height">
+  <div *ngIf="listDocumenti.length === 0" class="nofind-cnt">
     <ion-label>Nessun documento</ion-label>
     <ion-label>disponibile</ion-label>
   </div>

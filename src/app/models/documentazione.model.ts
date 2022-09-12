@@ -1,7 +1,6 @@
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
-import { MyDateTime } from '../library/models/mydatetime.model';
-import { ClasseDocumento, TipoDocumentazione } from './tipodocumentazione.model';
+import { ClasseDocumento } from './tipodocumentazione.model';
 import * as moment from "moment";
 
 export class InvioDocumentazione extends IDDocument{
@@ -9,6 +8,8 @@ export class InvioDocumentazione extends IDDocument{
     IDTIPODOCUMENTAZIONE : string;
     FILE : string;
     DESCRIZIONE : string;
+    FLAGSCADENZA: boolean;
+    DATASCADENZA: Date;
     
 
     constructor(onlyInstance?:boolean) {
@@ -24,6 +25,9 @@ export class InvioDocumentazione extends IDDocument{
                         'FILE',
                         'DESCRIZIONE',
                         'TOKENUTENTE'];
+        let arBoolean = ['FLAGSCADENZA'];
+        let arDate = ['DATASCADENZA'];
+                       
                                
         
     
@@ -32,6 +36,8 @@ export class InvioDocumentazione extends IDDocument{
         objDescriptor.describeField = 'DESCRIZIONE'
     
         objDescriptor.addMultiple(arString, TypeDefinition.char);
+        objDescriptor.addMultiple(arBoolean, TypeDefinition.boolean);
+        objDescriptor.addMultiple(arDate, TypeDefinition.date);
         
         
             

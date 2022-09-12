@@ -1,11 +1,13 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Carica documento</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="close()">
-        <ion-icon name="close-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-button 
+          (click)="close()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+          Back
+    </ion-button>
+  </ion-buttons>
+  <ion-title>Carica documento</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,11 +15,31 @@
   <!-- <div class="icon-container">
     <ion-icon name="cloud-upload-outline"></ion-icon>  
   </div> -->
+
+  <div class="title-image">
+    <img src="assets/img/image-upload-bro.png"/>
+  </div>  
   
   <ion-list>
 
+    <!-- INFORMAZIONI -->
+    <div class="info" >
+      <ion-item color="light" lines="none">
+        <ion-label>
+          <p class="ion-text-wrap">
+            <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+            invia il tuo documento, scegliendo la tipologia ed impostando una data di scadenza in caso di certificati medici o documenti di identità; alla ricezione del documento la segreteria effettuerà un controllo di validità.
+        </ion-label>
+      </ion-item>
+    </div> 
+
+    <ion-list-header>
+      Documento
+    </ion-list-header>     
+
     <!-- SE SONO SU MOBILE -->
     <ion-item-group *ngIf="!isDesktop">
+  
       <ion-item-divider color="light">
         <ion-label>
           <h2>Carica da</h2>
@@ -42,12 +64,13 @@
     </ion-item-group>
 
 
+
     <ion-item-group class="ion-margin-vertical">
-      <ion-item-divider color="light">
+      <!-- <ion-item-divider color="light">
         <ion-label>
           <h2>Scegli il documento</h2>
         </ion-label>
-        </ion-item-divider> 
+        </ion-item-divider>  -->
 
         <!-- SE  SIAMO SU DESKTOP -->
         <ion-item  *ngIf="isDesktop" button (click)="onDesktopSearch()">
@@ -67,65 +90,80 @@
 
     </ion-item-group> 
 
+    <!-- COSA STA CARICANDO -->
+    <ion-list-header>
+      <ion-label>
+        Cosa stai caricando ?
+      </ion-label>
+    </ion-list-header>
 
-    <ion-item-group class="ion-margin-vertical">
-      <ion-item-divider color="light">
-        <ion-label>
-          <h2>Cosa stai caricando</h2>
-        </ion-label>
-        </ion-item-divider> 
+    <!-- RADIO GROUP CON ELENCO -->
+    <ion-radio-group
+      
+      [(ngModel)]="idDocTypeSelected"
+      >
+      <ion-item *ngFor="let myTypeDoc of docTypeList">
+        <ion-label>{{myTypeDoc.DENOMINAZIONE}}</ion-label>
+        <ion-radio
+            mode="md" 
+            [value]="myTypeDoc.ID" 
+            slot="start" 
+            color="danger"></ion-radio>
+      </ion-item>
 
-        <ion-item button (click)="showPicker()">
-          <ion-icon slot="start" name="document-outline"></ion-icon>
-            <ion-label 
-              *ngIf="!selectedDocType" 
-              class="myPlaceholder">Scegli una tipologia</ion-label>
-            <p>{{selectedDocType? selectedDocType.DENOMINAZIONE : null}}</p>
-        </ion-item>
+    </ion-radio-group>
 
-        <ion-item>
-          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-          <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
-        </ion-item>
+    <!-- DETTAGLI DOCUMENTO (OPZIONALI) DESCRIZIONE E SCADENZA-->
+    <ion-list-header>
+      <ion-label>Dettagli documento</ion-label>
+    </ion-list-header>
 
-        <ion-list>
-          <ion-radio-group [(ngModel)] = "modeScadenza">       
-            <ion-item>
-              <ion-label>documento senza scadenza</ion-label>
-              <ion-radio slot="start" value="senzascad"></ion-radio>
-            </ion-item>
-        
-            <ion-item>
-              <ion-label>documento con scadenza</ion-label>
-              <ion-radio slot="start" value="conscad"></ion-radio>
-            </ion-item>
-          </ion-radio-group>
-        </ion-list>        
-
-        <app-dtinput
-        *ngIf="modeScadenza == 'conscad'"
-          title="Data Scadenza Documento"
-          itemLines="full"
-          itemDetail="true"
-          iconName="calendar-outline"
-          iconColor="primary"
-          maskFormat="dddd dd/MM/yyyy"
-          calendarMode="date"
-          [(actualDate)]="docScadenza"
-          >
-          </app-dtinput>        
-
-    </ion-item-group>
-
-
+    <!-- DESCRIZIONE -->
+    <ion-item>
+      <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+      <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
+    </ion-item>
    
+    <!-- SCADENZA -->
+    <ion-list>
+      <ion-item (click)="flagDocScadenza=!flagDocScadenza">
+          <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
+          <ion-label>documento con scadenza</ion-label>
+        <ion-toggle 
+            color="danger"
+            [(ngModel)]="flagDocScadenza">
+        </ion-toggle>
+      </ion-item>
+    </ion-list>        
+
+    <app-dtinput
+        *ngIf="flagDocScadenza"
+        title="Data Scadenza Documento"
+        itemLines="full"
+        itemDetail="true"
+        iconName="calendar-outline"
+        iconColor="primary"
+        maskFormat="dddd dd/MM/yyyy"
+        calendarMode="date"
+        [(actualDate)]="docScadenza"
+      >
+      </app-dtinput>    
+      
+
+    
+    <div class="spacer"></div>
 
 
   </ion-list>
+
+
+
 </ion-content>
 
 <ion-footer>
-  <ion-button  expand = "block" (click)="onClickCarica()">
+  <ion-button  
+        color="success"
+        expand = "block" (click)="onClickCarica()">
     <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
       Carica
   </ion-button>

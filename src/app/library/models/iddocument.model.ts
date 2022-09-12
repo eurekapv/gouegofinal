@@ -212,6 +212,7 @@ import { MyDateTime } from './mydatetime.model';
     /**
      * Esporta l'oggetto in JSON
      * @param paramExport Oggetto con le caratteristiche esportazione
+     * @param asChildOf Se specificato crea il JSON come oggetto figlio (Specificando ad esempio docUtente verrà ritornato come {"docUtente" : json }'
      * contiene 
      *  clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
      *  clearPKProperty Non esporta la Chiave primaria
@@ -219,7 +220,7 @@ import { MyDateTime } from './mydatetime.model';
      *  onlyModified Esporta solo le proprietà diverse dalle original
      *  numLivelli Numero livelli da esportare
      */
-    exportToJSON(paramExport: ParamsExport) {
+    exportToJSON(paramExport: ParamsExport, asChildOf?: string) {
       let _this = this;
       let arProperty = Object.keys(_this);
       //Chiedo il Descrittore della classe
@@ -390,6 +391,11 @@ import { MyDateTime } from './mydatetime.model';
   
         strJSON = '{' + strJSON + '}';
 
+        if (asChildOf && asChildOf.length != 0) {
+          //Se mi dice che deve essere un oggetto figlio di
+          //Esempio docUtente diventa {"docUtente" : json }
+          strJSON = `{"${asChildOf}": ${strJSON}}`;
+        }
       }
 
       return strJSON;
@@ -1242,7 +1248,7 @@ import { MyDateTime } from './mydatetime.model';
               modified = true;
             }
           } catch (error) {
-              console.error(error);
+              LogApp.consoleLog(error,'error');
           }
         }
       }

@@ -152,7 +152,7 @@ export class DeleteAccountPage implements OnInit {
                                           //Spengo il loading
                                           elLoading.dismiss();
 
-                                          this.startService.presentAlertMessage(error);
+                                          this.startService.presentAlertMessage(error,'Eliminazione fallita');
                                         })
                      });
   }

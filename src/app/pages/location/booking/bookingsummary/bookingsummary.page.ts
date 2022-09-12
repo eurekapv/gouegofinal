@@ -18,6 +18,7 @@ import { Area } from 'src/app/models/area.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { AreaLink } from 'src/app/models/arealink.model';
+import { LogApp } from 'src/app/models/log.model';
 
 @Component({
   selector: 'app-bookingsummary',
@@ -151,7 +152,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       //Si sono verificati errori
       if (!result) {
         errMessage = 'ngOnInit Failed ' + errMessage;
-        console.error (errMessage);
+        LogApp.consoleLog(errMessage,'error');
         this.onBookIdWrong();
       }
 
@@ -198,18 +199,18 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
                 this.checkBookId = false;
                 //Id Book è diverso da quello in arrivo dalla prenotazione
                 if (this.activePrenotazione == null) {
-                  console.error('activePrenotazione null');
+                  LogApp.consoleLog('activePrenotazione null');
                   this.onBookIdWrong();
                 }
                 else if (this.idPrenotazione != this.activePrenotazione.ID) {
 
-                  console.error('idPrenotazione <> activePrenotazione.ID');
-                  console.error(`idPrenotazione: ${this.idPrenotazione} - activePrenotazione ${this.activePrenotazione.ID}`);
+                  LogApp.consoleLog('idPrenotazione <> activePrenotazione.ID','error');
+                  LogApp.consoleLog(`idPrenotazione: ${this.idPrenotazione} - activePrenotazione ${this.activePrenotazione.ID}`,'error');
                   this.onBookIdWrong();
 
                 } else if (this.docPianificazione == null) {
 
-                  console.error('docPianificazione null');
+                  LogApp.consoleLog('docPianificazione null','error');
                   this.onBookIdWrong();
                   
                 }

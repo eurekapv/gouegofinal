@@ -382,12 +382,12 @@ export class NewLoginPage implements OnInit {
             })
             .catch(error => {
               let myMsg = '';
-              myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(error);
+              myMsg =  SupportFunc.htmlParagraph(error);
               
                 //Chiudo il Loading Controller
                 element.dismiss();
                 //Visualizzo il messaggio
-                this.startService.presentAlertMessage(myMsg);
+                this.startService.presentAlertMessage(myMsg, 'Ops...Si è verificato un errore');
                 LogApp.consoleLog(error);
             })
         })
@@ -657,11 +657,11 @@ export class NewLoginPage implements OnInit {
               })
               .catch(err => {
                 let myMsg = '';
-                myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(err);
+                myMsg =  SupportFunc.htmlParagraph(err);
                 //Chiudo il Loading Controller
                 element.dismiss();
                 //Visualizzo il messaggio
-                this.startService.presentAlertMessage(myMsg);
+                this.startService.presentAlertMessage(myMsg, 'Ops...Si è verificato un errore');
                 LogApp.consoleLog(err);
               })
 
@@ -899,11 +899,11 @@ export class NewLoginPage implements OnInit {
           })
           .catch(err => {
             let myMsg = '';
-            myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(err);
+            myMsg =  SupportFunc.htmlParagraph(err);
             //Chiudo il Loading Controller
             elLoading.dismiss();
             //Visualizzo il messaggio
-            this.startService.presentAlertMessage(myMsg);
+            this.startService.presentAlertMessage(myMsg, 'Ops...Si è verificato un errore');
             LogApp.consoleLog(err);
 
           });
@@ -1074,11 +1074,12 @@ export class NewLoginPage implements OnInit {
                 .catch(error => {
 
                   let myMsg = '';
-                  myMsg = SupportFunc.htmlParagraph('Ops...Si è verificato un errore') +  SupportFunc.htmlParagraph(error);
+                  myMsg = SupportFunc.htmlParagraph(error);
                   //Chiudo il Loading Controller
                   elLoading.dismiss();
                   //Visualizzo il messaggio
-                  this.startService.presentAlertMessage(myMsg);
+                  
+                  this.startService.presentAlertMessage(myMsg, 'Ops...Si è verificato un errore');
                   LogApp.consoleLog(error);
 
                 });

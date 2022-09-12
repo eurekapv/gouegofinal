@@ -786,13 +786,15 @@ export class BookingPage implements OnInit,  OnDestroy {
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('Errore di chiamata:', error.error.message);
+      LogApp.consoleLog('Errore di chiamata:' + error.error.message,'error');
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      console.error(
+      LogApp.consoleLog(
         `Errore Backend Codice ${error.status}, ` +
-        `Body: ${error.error}`);
+        `Body: ${error.error}`,
+        'error'
+      );
     }
     // return an observable with a user-facing error message
       return throwError('Si sono verificati errori. Riprovare AHIME.');

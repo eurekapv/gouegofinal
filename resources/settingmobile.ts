@@ -33,9 +33,9 @@ export const settingMobile = {
             },
             android: {
                 bundle: 'com.b4fnovara',
-                versionCode: '1',
-                versionName: '1.0',
-                lastPublish: null
+                versionCode: '5',
+                versionName: '1.7',
+                lastPublish: '2022-09-13'
             }            
           }
     }

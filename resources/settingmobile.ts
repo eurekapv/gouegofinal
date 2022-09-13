@@ -11,9 +11,9 @@ export const settingMobile = {
             },
             android: {
                 bundle: 'com.gouego',
-                versionCode: '7',
-                versionName: '1.6',
-                lastPublish: '2022-09-09'
+                versionCode: '8',
+                versionName: '1.7',
+                lastPublish: '2022-09-13'
             }
           },
           demo: {

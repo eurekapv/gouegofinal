@@ -12,7 +12,9 @@
     "e2e": "ng e2e",
     "buildprod": "ionic build --prod --aot --outputHashing=all",
     "toAndroid": "npx cap sync android",
-    "toIos": "npx cap sync ios"
+    "toIos": "npx cap sync ios",
+    "opAndroid": "npx cap open android",
+    "opIos": "npx cap open ios"
   },
   "private": true,
   "dependencies": {

@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 //Attenzione che appId è diverso per Android -> com.gouego e IOS -> com.gouego.openbeach
 //Credo sia utile solo la prima volta
 const config: CapacitorConfig = {
-    "appId": "com.gouego",
+    "appId": "com.gouego.openbeach",
     "appName": "Open Beach",
     "bundledWebRuntime": false,
     "webDir": "www",

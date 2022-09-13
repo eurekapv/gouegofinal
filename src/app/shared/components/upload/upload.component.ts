@@ -33,7 +33,7 @@ export class UploadComponent implements OnInit {
   idDocTypeSelected: string = '';
 
   //Sorgente da cui caricare il file
-  sorgenteFile: SorgenteFile = SorgenteFile.photoGallery;
+  sorgenteFile: SorgenteFile = SorgenteFile.fromgallery;
 
   //Descrizione opzionale del documento
   docDescription = '';
@@ -89,13 +89,36 @@ export class UploadComponent implements OnInit {
       });
 
     }
-    else if (this.sorgenteFile == SorgenteFile.photoGallery) {
+    else if (this.sorgenteFile == SorgenteFile.fromgallery) {
+
+      //Utilizzo la Gallery
+      Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Photos,
+        quality: 100
+      })
+      .then((data:Photo) => {
+
+         //Questo è il file caricato
+        this.loadedMobilePhoto = data;
+        this.fileLoaded = true;
+        this.fileNameShow = 'Immagine ' + this.loadedMobilePhoto.format;
+      })
+      .catch(error => {
+          //Questo è il file caricato
+          this.loadedMobilePhoto = null;
+          this.fileLoaded = false;
+          this.fileNameShow = '';
+          this.showAlertMessage('Errore apertura Photo Gallery');
+      })
+    }    
+    else if (this.sorgenteFile == SorgenteFile.takephoto) {
 
       //Utilizzo la Gallery/Fotocamera
       //Devo aprire la fotocamera sulla gallery
       Camera.getPhoto({
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Prompt,
+        source: CameraSource.Camera,
         quality: 100
       })
       .then((data:Photo) => {

@@ -1186,6 +1186,7 @@ takePictureUtente():Promise<string> {
 
   let photoType: PhotoType = PhotoType.account;
   let idPhoto: string = '';
+  let myTitle = 'Immagine Profilo';
 
   return new Promise<string>((resolve, reject) => {
     
@@ -1197,7 +1198,7 @@ takePictureUtente():Promise<string> {
         idPhoto = elutente.ID;
     
         //Apro la fotocamera per il caricamento
-        this.photoService.takePicure(photoType, idPhoto)
+        this.photoService.takePicure(photoType, idPhoto, myTitle)
                         .then(dataUrl => {
 
                           //Foto memorizzata, la imposto nel servizio utente

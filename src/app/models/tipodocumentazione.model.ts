@@ -44,5 +44,6 @@ export enum ClasseDocumento {
 
 export enum SorgenteFile {
     filesystem = 'file',
-    photoGallery = 'photo'
+    takephoto = 'takephoto',
+    fromgallery = 'fromgallery'
 }

@@ -27,8 +27,8 @@ export const settingMobile = {
             urlId: 'b4fnovara.gouego.com',
             ios: {
                 bundle: 'com.b4fnovara',
-                versionCode: '3',
-                versionName: '1.7',
+                versionCode: '6',
+                versionName: '1.7.1',
                 lastPublish: null
             },
             android: {

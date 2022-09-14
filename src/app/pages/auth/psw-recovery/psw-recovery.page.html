@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Recupero password</ion-title>
+    <ion-title>Password dimenticata</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()">
         <ion-icon name="close"></ion-icon>
@@ -11,93 +11,242 @@
 
 <!-- CONTENT PAGES -->
 <ion-content>
-  <div [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-    <img [src]="startConfig.getUrlLogo()">
+
+  <!-- PARTE RICHIESTA CODICE QUANDO NON HO INVIATO MAIL-->
+  <div 
+    *ngIf="stato==PageState.richiestaCodice && flagSentMail==false" 
+    class="ion-padding-horizontal ion-text-center">
+
+      <!-- MESSAGGIO INFORMATIVO --> 
+      <ion-list-header>
+        <ion-label>Ti aiutiamo a recuperare il tuo account</ion-label>
+      </ion-list-header>
+      <ion-list>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            <ion-text color="danger">
+              <h4>Stai per recuperare l'acceso al tuo profilo</h4></ion-text>
+            <p style="font-weight: 700;">
+              <i *ngIf="canUseMail && canUseMobile">Indica una email o un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</i>
+              <i *ngIf="canUseMail && !canUseMobile">Indica una email utilizzata nella registrazione account, <br/> e ti invieremo un pincode di recovery password</i>
+              <i *ngIf="!canUseMail && canUseMobile">Indica un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</i>                    
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+
+      <!-- INPUT MAIL -->    
+      <form [formGroup]="formInputMailTel">
+              <ion-item >
+                <ion-icon slot="start" name="at-outline"></ion-icon>
+                <ion-input type="text" [placeholder]="getPlaceHolder()" formControlName="contatto"></ion-input>
+              </ion-item>
+      </form>
+
+      <!-- IMMAGINE -->
+      <ion-grid>
+        <ion-row class="row-img">
+            <ion-col sizeXs="8" offsetXs="2">
+                <img class="height-viewport" src="assets/img/otpverif.png" alt="" />
+            </ion-col>
+        </ion-row>
+      </ion-grid>    
   </div>
 
-  <!-- PARTE RICHIESTA CODICE -->
-  <div *ngIf="stato==PageState.richiestaCodice" 
-        class="ion-padding-horizontal ion-text-center">
+  <!-- PARTE RICHIESTA CODICE QUANDO HO INVIATO MAIL-->
+<div 
+    *ngIf="stato==PageState.richiestaCodice && flagSentMail" 
+    class="ion-padding-horizontal ion-text-center">
 
-    <form [formGroup]="formContact">
-      <ion-item >
-        <ion-icon slot="start" name="at-outline"></ion-icon>
-        <ion-input type="text" [placeholder]="getPlaceHolder()" formControlName="contatto"></ion-input>
-      </ion-item>
+      <!-- MESSAGGIO INFORMATIVO --> 
+      <ion-list-header>
+        <ion-label>Ti abbiamo inviato una mail</ion-label>
+      </ion-list-header>
+      <ion-list>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            <ion-text color="danger">
+              <h4>Controlla nella tua casella email</h4></ion-text>
+            <p style="font-weight: 700;">
+              <i>hai ricevuto una mail contenente un codice di {{codeLength}} cifre da inserire qui sotto<br>(controlla anche nella cartella spam)</i>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      
+    
+      <!-- FORM CON IL CODICE DA VERIFICARE -->
+    <form   
+        class="form-verifica"
+        [formGroup]="formVerify">
+      <ion-list>
+        <ion-item >
+          <ion-icon slot="start" name="keypad-outline"></ion-icon>
+          <ion-input
+            class="code-input" 
+            type="tel" 
+            inputmode="numeric"
+            placeholder="inserisci codice ricevuto" 
+            formControlName="codicemail">
+          </ion-input>
+        </ion-item>
+
+        <ion-item 
+            detail="false" 
+            class="ion-text-end" 
+            lines="none">
+            <ion-button
+              (click)="onClickNoMailReceived()" 
+              color="danger" 
+              size="small"
+              fill="clear" 
+              slot="end">
+                <ion-icon 
+                  slot="start"
+                  name="mail-unread-outline">
+                </ion-icon>
+              non ho ricevuto la mail
+            </ion-button>
+          </ion-item>
+
+      </ion-list>
+
     </form>
-    <ion-button  [disabled]="!this.formContact.valid" color="primary" [ngClass]="this.isDesktop? 'btn-send-code desktop':'btn-send-code'" (click)="onClickInviaCodice()">
-      Invia Codice
-    </ion-button>
 
-    <div  class="ion-no-padding div-message">
-      <p>
-          <span><ion-icon name="information-circle-outline"></ion-icon></span>
-          <span>&nbsp;</span>
-          <span *ngIf="canUseMail && canUseMobile">Indica una email o un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
-          <span *ngIf="canUseMail && !canUseMobile">Indica una email utilizzata nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
-          <span *ngIf="!canUseMail && canUseMobile">Indica un numero cellulare utilizzato nella registrazione account, <br/> e ti invieremo un pincode di recovery password</span>
-      </p>
+    <!-- IMMAGINE -->
+    <ion-grid>
+      <ion-row class="row-img">
+          <ion-col>
+              <img class="small-height-viewport" src="assets/img/otpverif.png" alt="" />
+          </ion-col>
+      </ion-row>
+    </ion-grid>     
 
-      <p>
-          <ion-text color="danger">
-              <span><i>(contatta la struttura se non ricordi queste informazioni)</i></span>
-          </ion-text>
-          
-      </p>
-    </div>
+</div>
 
-    <form [formGroup]="formVerify">
-      <div [ngClass]="this.isDesktop?'form-verifica desktop':'form-verifica'">
-          <ion-segment>
-              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c1" #c1 (ionInput)="changeFocus($event)"id="1"></ion-input>
-              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c2" #c2 (ionInput)="changeFocus($event)"id="2"></ion-input>
-              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c3" #c3 (ionInput)="changeFocus($event)"id="3"></ion-input>
-              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c4" #c4 (ionInput)="changeFocus($event)"id="4"></ion-input>
-              <ion-input clearOnEdit type="tel" inputmode="numeric" class="ion-no-padding ion-align-self-center" minlength="1" maxlength="1" formControlName="c5" #c5 (ionInput)="changeFocus($event)"id="5"></ion-input>
-          </ion-segment>
-      </div>
-    </form>
-
-
-
-
-  </div>
 
   <!-- PARTE CAMBIO PSW -->
-  <div *ngIf="stato==PageState.cambioPsw" class="ion-padding div-psw">
+  <div 
+        *ngIf="stato==PageState.cambioPsw" 
+        class="ion-padding-horizontal ion-text-center">
 
-    <p>
-      <ion-icon color="primary" name="information-circle-outline"></ion-icon>
-      Inserisci la nuova password per l'account 
-    </p>
-    <p>
-        <ion-text color="primary"> {{this.descrUtente}}</ion-text>
-    </p>
+      <!-- MESSAGGIO INFORMATIVO --> 
+      <ion-list-header>
+        <ion-label>Puoi modificare la password</ion-label>
+      </ion-list-header>
+      <ion-list>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            <ion-text color="danger">
+              <h4>Scegli una nuova password di accesso</h4></ion-text>
+            <p style="font-weight: 700;">
+              <i>inserisci la nuova password che vuoi utilizzare per accedere al tuo profilo {{this.descrUtente}}</i>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>       
+
     <form [formGroup]="formPsw">
       <ion-list>
+
         <ion-item>
-          <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
-          <ion-input placeholder="Nuova password" type="password" inputmode="password" formControlName="psw"></ion-input>
+          <ion-icon 
+              slot="start" 
+              name="lock-closed-outline">
+          </ion-icon>
+          <ion-input 
+              placeholder="Nuova password" 
+              type="password" 
+              inputmode="password" 
+              formControlName="psw"
+              id="newPassword1"
+              #newPassword1
+              >
+          </ion-input>
+
+          <ion-button slot="end" fill="clear" (click)="showHideInput('newPassword1',newPassword1)">
+            <ion-icon 
+                [name]="showPassword1 ? 'eye-off-outline':'eye-outline'" 
+                slot="icon-only">
+            </ion-icon>
+          </ion-button>
+
         </ion-item>
+
         <ion-item>
-          <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
-          <ion-input placeholder="Conferma Password" type="password" inputmode="password" formControlName="confirmPsw"></ion-input>
+          <ion-icon 
+              slot="start" 
+              name="lock-closed-outline">
+          </ion-icon>
+
+          <ion-input 
+              placeholder="Conferma Password" 
+              type="password" 
+              inputmode="password" 
+              formControlName="confirmPsw"
+              id="newPassword2"
+              #newPassword2></ion-input>
+
+          <ion-button slot="end" fill="clear" (click)="showHideInput('newPassword2',newPassword2)">
+            <ion-icon 
+                [name]="showPassword2 ? 'eye-off-outline':'eye-outline'" 
+                slot="icon-only">
+            </ion-icon>
+          </ion-button>
+
         </ion-item>
       </ion-list>
     </form>
 
+    <!-- IMMAGINE -->
+    <ion-grid>
+      <ion-row class="row-img">
+          <ion-col class="ion-paddign-horizontal">
+              <img class="small-height-viewport" src="assets/img/inppassword.png" alt="" />
+          </ion-col>
+      </ion-row>
+    </ion-grid> 
+    
+    
   </div>
 </ion-content>
 
 
+<!-- GESTIONE BOTTONI INFERIORI -->
 <ion-footer>
+
   <!-- PARTE RICHIESTA CODICE -->
-  <div *ngIf="stato==PageState.richiestaCodice">
-    <ion-button [disabled]="!this.formVerify.valid" color="primary" expand="block" (click)="onClickVerifica()">Verifica</ion-button>
+
+  <!-- MAIL NON INVIATA -->
+  <div *ngIf="stato==PageState.richiestaCodice && !flagSentMail">
+    <ion-button
+        [size]="footerButtonSize" 
+        [disabled]="!this.formInputMailTel.valid" 
+        color="warning" 
+        expand="block" 
+        (click)="onClickInviaCodice()">Invia Mail di Recupero</ion-button>
+  </div>
+
+  <!-- MAIL INVIATA - INSERIMENTO CODICE DI VERIFICA -->
+  <div *ngIf="stato==PageState.richiestaCodice && flagSentMail">
+    <ion-button 
+        [size]="footerButtonSize" 
+        [disabled]="!this.formVerify.valid" 
+        color="warning" 
+        expand="block" 
+        (click)="onClickVerifica()">
+        Verifica
+      </ion-button>
   </div>
 
   <!-- PARTE CAMBIO PSW -->
   <div *ngIf="stato==PageState.cambioPsw">
-    <ion-button  [disabled]="!this.formPsw.valid" color="primary" expand = "block" (click)="onClickCambia()">Cambia Password</ion-button>
+    <ion-button
+      [size]="footerButtonSize"   
+      [disabled]="!this.formPsw.valid" 
+      color="warning" 
+      expand = "block" 
+      (click)="onClickCambia()">Cambia Password</ion-button>
   </div>
 </ion-footer>

@@ -25,13 +25,31 @@
 
 <!-- CONTENT PAGES -->
 <ion-content>
-    <div *ngIf="isSegmentLogin"
-        [ngClass]="this.isDesktop?'ion-text-center div-logo desktop':'ion-text-center div-logo'">
-        <img [src]="startConfig.getUrlLogo()">
-    </div>
+
+    <ion-list *ngIf="actualStatePage !== pageState.WELCOME && showHeaderText">
+
+        <ion-list-header>
+            <ion-label>Entra nella nostra famiglia</ion-label>
+        </ion-list-header>
+
+        <ion-item lines="none">
+
+            <ion-label class="ion-text-wrap">
+                <ion-text color="danger">
+                    <h4>Entra a far parte della famiglia {{nameGruppoSportivo}}</h4>
+                </ion-text>
+                <p style="font-weight: 700;">
+                    <i>avrai le nostre attività a portata di mano; facile e immediato conoscere i nostri corsi e
+                        prenotare presso la nostra struttura</i>
+                </p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
 
     <!-- STEP ONE: ACCEDI O REGISTRATI -->
     <div class="ion-padding" *ngIf="actualStatePage !== pageState.WELCOME">
+
         <ion-segment [(ngModel)]="actualStateSegment" color="primary" mode="md" (ionChange)="onSegmentChanged($event)">
             <ion-segment-button [value]="pageState.LOGIN">
                 Accedi
@@ -50,29 +68,41 @@
         <form [formGroup]="formLogin">
             <ion-list>
                 <ion-item lines="none">
+                    <!-- <ion-avatar *ngIf="urlImage && urlImage.length != 0">
+                        <img [src]="urlImage">
+                    </ion-avatar> -->
                     <ion-label class="ion-text-wrap ion-text-center">
                         <i>per accedere al proprio account utilizzare indirizzo email e password impostate in fase di
                             registrazone</i>
                     </ion-label>
                 </ion-item>
 
+                <!-- CREDENZIALI: EMAIL -->
                 <ion-item>
                     <ion-icon slot="start" name="at-outline" color="primary"></ion-icon>
                     <ion-input inputmode="email" type="email" placeholder="E-mail" formControlName="username"
                         autocomplete="on"></ion-input>
                 </ion-item>
 
+                <!-- CREDENZIALI PASSWORD -->
                 <ion-item>
                     <ion-icon slot="start" name="key-outline" color="primary"></ion-icon>
                     <ion-input inputmode="text" type="password" placeholder="Password" formControlName="password"
-                        autocomplete="current-password"></ion-input>
+                        autocomplete="current-password" id="currentpassword" #currentpassword></ion-input>
+
+                    <ion-button slot="end" fill="clear" (click)="showHideInput('currentpassword',currentpassword)">
+                        <ion-icon [name]="showCurrentPassword ? 'eye-off-outline':'eye-outline'" slot="icon-only">
+                        </ion-icon>
+                    </ion-button>
                 </ion-item>
 
-                <ion-item detail="true" button="true" (click)="onClickReimpostaPsw()" class="ion-text-end" lines="none">
-                    <ion-label class="ion-text-wrap">
+
+
+                <ion-item detail="false" class="ion-text-end ion-padding-vertical" lines="none">
+                    <ion-button (click)="onClickReimpostaPsw()" color="danger" size="small" fill="clear" slot="end">
+                        <ion-icon slot="start" name="mail-unread-outline"></ion-icon>
                         non ricordo la password
-                    </ion-label>
-                    <!-- <ion-icon slot="end" name="help-buoy-outline"></ion-icon> -->
+                    </ion-button>
                 </ion-item>
             </ion-list>
         </form>
@@ -87,6 +117,9 @@
             <ion-list>
 
                 <ion-item lines="none">
+                    <!-- <ion-avatar *ngIf="urlImage && urlImage.length != 0">
+                        <img [src]="urlImage">
+                    </ion-avatar>                     -->
                     <ion-label class="ion-text-wrap ion-text-center">
                         <i>per iniziare la registrazione è necessario impostare un indirizzo email valido ed un numero
                             cellulare</i>
@@ -104,19 +137,21 @@
                     </ion-input>
                 </ion-item>
 
-                <ion-item *ngIf="isPolicyLink()" detail="true" button="true" (click)="openPolicyLink()"
-                    class="ion-text-end" lines="none">
-                    <ion-label class="ion-text-wrap">
-                        condizioni di registrazione
-                    </ion-label>
-                </ion-item>
 
                 <!-- AVVISO SU COSA SUCCEDE -->
                 <ion-item lines="none">
                     <ion-label class="ion-text-wrap ion-text-center">
-                        <i>{{labelFooterRegistrazione}}</i>
+                        <p><i>{{labelFooterRegistrazione}}</i></p>
                     </ion-label>
                 </ion-item>
+
+                <ion-item *ngIf="isPolicyLink()" detail="false" button="false" class="ion-text-end" lines="none">
+                    <ion-button (click)="openPolicyLink()" color="danger" size="small" fill="clear" slot="end">
+                        <ion-icon slot="start" name="book-outline"></ion-icon>
+                        leggi le condizioni di registrazione
+                    </ion-button>
+                </ion-item>
+
 
 
             </ion-list>
@@ -126,18 +161,8 @@
     </div>
 
 
-
     <!-- PAGINA PER INSERIMENTO DELLA VERIFICA -->
     <div *ngIf="actualStatePage==pageState.VERIFY" class="step-verifica">
-
-        <!-- IMMAGINE DI TESTATA PER LA VERIFICA CODICI -->
-        <ion-grid>
-            <ion-row class="row-img">
-                <ion-col sizeXs="8" offsetXs="2">
-                    <img class="height-viewport" src="assets/img/otpverif.png" alt="" />
-                </ion-col>
-            </ion-row>
-        </ion-grid>
 
         <!-- VERIFICA EMAIL -->
         <ion-list *ngIf="canVerify(tipoVerifica.verificaemail)">
@@ -153,12 +178,23 @@
                 </ion-input>
             </ion-item>
 
-            <ion-item detail="true" button="true" (click)="onClickReinviaCodice(tipoVerifica.verificaemail)"
-                class="ion-text-end" lines="none">
-                <ion-label class="ion-text-wrap">
-                    <i>invia di nuovo la mail con il codice</i>
-                </ion-label>
+            <ion-item 
+                    detail="false" 
+                    button="false" 
+                    class="ion-text-end" 
+                    lines="none">
+
+                <ion-button 
+                    (click)="onClickReinviaCodice(tipoVerifica.verificaemail)"
+                    color="danger" 
+                    size="small" 
+                    fill="clear" 
+                    slot="end">
+                    <ion-icon slot="start" name="mail-outline"></ion-icon>
+                    invia di nuovo la mail
+                </ion-button>
             </ion-item>
+
         </ion-list>
 
         <!-- VERIFICA SMS -->
@@ -174,12 +210,22 @@
                     [minlength]="codeLength" class="code-input" type="tel" inputmode="numeric"></ion-input>
             </ion-item>
 
-            <ion-item detail="true" button="true" (click)="onClickReinviaCodice(tipoVerifica.verificasms)"
-                class="ion-text-end" lines="none">
-                <ion-label class="ion-text-wrap">
-                    <i>reinvia sms</i>
-                </ion-label>
-            </ion-item>
+            <ion-item 
+                    detail="false" 
+                    button="false" 
+                    class="ion-text-end" 
+                    lines="none">
+
+                <ion-button 
+                    (click)="onClickReinviaCodice(tipoVerifica.verificasms)"
+                    color="danger" 
+                    size="small" 
+                    fill="clear" 
+                    slot="end">
+                    <ion-icon slot="start" name="id-card-outline"></ion-icon>
+                    invia di nuovo SMS
+                </ion-button>
+            </ion-item>            
 
         </ion-list>
 
@@ -227,12 +273,11 @@
                         <ion-icon name="person-outline" slot="end" color="primary"></ion-icon>
                         <ion-label>Qualche tua info</ion-label>
                     </ion-item-divider>
-                    
-                    
+
+
                     <!-- ALERT FOR NOME -->
-                    <ion-item 
-                            class="alert-validation"
-                            *ngIf="formRegister.controls['name'].invalid && (formRegister.controls['name'].dirty || formRegister.controls['name'].touched)">
+                    <ion-item class="alert-validation"
+                        *ngIf="formRegister.controls['name'].invalid && (formRegister.controls['name'].dirty || formRegister.controls['name'].touched)">
                         <ion-label *ngIf="formRegister.controls['name'].errors.required">
                             <ion-text color="primary">inserire il nome</ion-text>
                         </ion-label>
@@ -248,9 +293,8 @@
 
 
                     <!-- ALERT FOR COGNOME -->
-                    <ion-item 
-                            class="alert-validation"
-                            *ngIf="formRegister.controls['surname'].invalid && (formRegister.controls['surname'].dirty || formRegister.controls['surname'].touched)">
+                    <ion-item class="alert-validation"
+                        *ngIf="formRegister.controls['surname'].invalid && (formRegister.controls['surname'].dirty || formRegister.controls['surname'].touched)">
                         <ion-label *ngIf="formRegister.controls['surname'].errors.required">
                             <ion-text color="primary">inserire il cognome</ion-text>
                         </ion-label>
@@ -265,9 +309,8 @@
 
 
                     <!-- ALERT FOR CODICE FISCALE -->
-                    <ion-item 
-                            class="alert-validation"
-                            *ngIf="formRegister.controls['codFisc'].invalid && (formRegister.controls['codFisc'].dirty || formRegister.controls['codFisc'].touched)">
+                    <ion-item class="alert-validation"
+                        *ngIf="formRegister.controls['codFisc'].invalid && (formRegister.controls['codFisc'].dirty || formRegister.controls['codFisc'].touched)">
                         <ion-label *ngIf="formRegister.controls['codFisc'].errors">
                             <ion-text color="primary">inserire il codice di 16 caratteri</ion-text>
                         </ion-label>
@@ -313,41 +356,106 @@
     <!-- REGISTRAZIONE COMPLETATA -->
     <div *ngIf="actualStatePage==pageState.WELCOME">
 
-        <!-- IMMAGINE DI TESTATA PER LA VERIFICA CODICI -->
+        <!-- MODALITA DESKTOP-->
+        <div
+            class="ion-no-padding" 
+            *ngIf="isDesktop" >
+
+            <!-- IMMAGINE CONCLUSIVA -->
+            <ion-grid>
+                <ion-row 
+
+                    class="row-img">
+                    <ion-col size="4">
+                        <img class="small-height-viewport" src="assets/img/teamvolley.png" alt="" />
+                    </ion-col>
+
+                    <ion-col size="8">
+                        <ion-list>
+                            <ion-list-header>Benvenuto</ion-list-header>
+                
+                            <ion-item lines="none">
+                                <ion-label class="ion-text-wrap">
+                                    <h6>adesso anche tu fai parte del nostro team</h6>
+                                    <p>offriamo divertimento e il miglior modo per rimanere in forma</p>
+                                </ion-label>
+                            </ion-item>
+                
+                            <ion-item lines="none">
+                                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                                <ion-label class="ion-text-wrap">scopri i corsi che abbiamo pensato per te</ion-label>
+                            </ion-item>
+                
+                            <ion-item lines="none">
+                                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                                <ion-label class="ion-text-wrap">organizza un incontro e prenota uno dei nostri campi</ion-label>
+                            </ion-item>
+                
+                            <ion-item lines="none">
+                                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                                <ion-label class="ion-text-wrap">rimani aggiornato su tutti i nostri eventi</ion-label>
+                            </ion-item>
+                
+                        </ion-list>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+    
+        </div>
+
+        <!-- MODALITA MOBILE-->
+        <div
+            class="ion-no-padding" 
+            *ngIf="!isDesktop" >
+
+            <!-- IMMAGINE CONCLUSIVA -->
+            <ion-grid>
+                <ion-row class="row-img">
+                    <ion-col sizeXs="8" offsetXs="2">
+                        <img class="height-viewport" src="assets/img/teamvolley.png" alt="" />
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+    
+            <ion-list>
+                <ion-list-header>Benvenuto</ion-list-header>
+    
+                <ion-item lines="none">
+                    <ion-label class="ion-text-wrap">
+                        <h6>adesso anche tu fai parte del nostro team</h6>
+                        <p>offriamo divertimento e il miglior modo per rimanere in forma</p>
+                    </ion-label>
+                </ion-item>
+    
+                <ion-item lines="none">
+                    <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                    <ion-label class="ion-text-wrap">scopri i corsi che abbiamo pensato per te</ion-label>
+                </ion-item>
+    
+                <ion-item lines="none">
+                    <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                    <ion-label class="ion-text-wrap">organizza un incontro e prenota uno dei nostri campi</ion-label>
+                </ion-item>
+    
+                <ion-item lines="none">
+                    <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                    <ion-label class="ion-text-wrap">rimani aggiornato su tutti i nostri eventi</ion-label>
+                </ion-item>
+    
+            </ion-list>
+        </div>        
+    </div>
+
+
+    <div *ngIf="showFooterImage" class="ion-no-padding">
+        <!-- IMMAGINE -->
         <ion-grid>
             <ion-row class="row-img">
-                <ion-col sizeXs="8" offsetXs="2">
-                    <img class="height-viewport" src="assets/img/teamvolley.png" alt="" />
+                <ion-col>
+                    <img class="small-height-viewport" src="assets/img/inppassword.png" alt="" />
                 </ion-col>
             </ion-row>
         </ion-grid>
-
-        <ion-list>
-            <ion-list-header>Benvenuto</ion-list-header>
-
-            <ion-item lines="none">
-                <ion-label class="ion-text-wrap">
-                    <h6>adesso anche tu fai parte del nostro team</h6>
-                    <p>offriamo divertimento e il miglior modo per rimanere in forma</p>
-                </ion-label>
-            </ion-item>
-
-            <ion-item lines="none">
-                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
-                <ion-label class="ion-text-wrap">scopri i corsi che abbiamo pensato per te</ion-label>
-            </ion-item>
-
-            <ion-item lines="none">
-                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
-                <ion-label class="ion-text-wrap">organizza un incontro e prenota uno dei nostri campi</ion-label>
-            </ion-item>
-
-            <ion-item lines="none">
-                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
-                <ion-label class="ion-text-wrap">rimani aggiornato su tutti i nostri eventi</ion-label>
-            </ion-item>
-
-        </ion-list>
     </div>
 
 </ion-content>

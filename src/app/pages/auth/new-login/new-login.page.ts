@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ModalController, LoadingController, ToastController, NavController, AlertController } from '@ionic/angular';
+import { ModalController, LoadingController, ToastController, NavController, AlertController, IonInput } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -34,6 +34,7 @@ export class NewLoginPage implements OnInit {
   //variabile che indica lo stato della pagina
   //Se posizionato su Login, Register, Verifiy o Welcome
   actualStatePage:PageState = PageState.LOGIN;
+  
 
   //Situazione del Segment (Login o Register)
   actualStateSegment: PageState = PageState.LOGIN;
@@ -64,6 +65,14 @@ export class NewLoginPage implements OnInit {
   formRegister: FormGroup; 
   formLogin: FormGroup;
   formContact: FormGroup;
+  //Immagine del gruppo sportivo (Icona o Logo)
+  urlImage: string = '';
+
+  //Boolean per mostrare nascondere password
+  showCurrentPassword: boolean = false;
+  showPassword1: boolean = false;
+  showPassword2: boolean = false;
+
   
 
   //Dati
@@ -71,6 +80,7 @@ export class NewLoginPage implements OnInit {
   startListen: Subscription;
   docGruppo: Gruppo;
   docArea: Area;
+  
 
   //Utente
   docUtente= new Utente();
@@ -103,6 +113,7 @@ export class NewLoginPage implements OnInit {
     //Posizionato sulla pagina di login
     this.actualStatePage = PageState.LOGIN;
 
+
     //Segment Option puo' essere solo Login/Registration
     this.actualStateSegment = PageState.LOGIN;
    
@@ -113,6 +124,9 @@ export class NewLoginPage implements OnInit {
                 
                 //Memorizzo lo StartConfig
                 this.startConfig=data;
+
+                //Imposto l'immagine aziendale da mostrare 
+                this.setUrlImageLogo();
 
                 //Nel gruppo è specificato se è possibile effettuare 
                 //registrazioni con l'app
@@ -139,7 +153,8 @@ export class NewLoginPage implements OnInit {
     this.createLoginForm();
     this.createRegisterForm();
     this.createContactForm();
-    this.isDesktop=this.startService.isDesktop
+    
+    this.isDesktop=this.startService.isDesktop;
   }
 
   /**
@@ -156,6 +171,120 @@ export class NewLoginPage implements OnInit {
     }
 
     return strTitle;
+  }
+
+  /**
+   * Ritorna il nome del Gruppo
+   */
+  get nameGruppoSportivo(): string {
+    let myName: string = '';
+
+    if (this.docGruppo) {
+      myName = this.docGruppo.DENOMINAZIONE;
+    }
+
+    return myName;
+  }
+
+  /**
+   * Indica se bisogna mostrare la parte superiore con del testo
+   */
+  get showHeaderText(): boolean {
+    let showHeader = true;
+
+    if (this.isDesktop == false) {
+      
+      switch (this.actualStatePage) {
+        case PageState.WELCOME:
+          showHeader = false;
+          break;
+        
+        case PageState.LOGIN:
+            showHeader = true;
+            break;
+
+        case PageState.CONTACT:
+          showHeader = true;
+          break;    
+          
+        case PageState.VERIFY:
+          showHeader = true;
+          break;         
+
+        case PageState.REGISTRATION:
+          showHeader = false;
+          break;          
+      
+        default:
+          break;
+      }
+    }
+    else {
+      showHeader = false;
+    }
+
+    return showHeader;
+  }
+
+  /**
+   * Indica se bisogna mostrare una immagine nella parte inferiore
+   */
+   get showFooterImage(): boolean {
+    let showImage = true;
+
+    //Mostro solo in mobile l'immagine per riempire
+    if (this.isDesktop == false) {
+
+      switch (this.actualStatePage) {
+        case PageState.WELCOME:
+          showImage = false;
+          break;
+        
+        case PageState.LOGIN:
+            showImage = true;
+            break;
+  
+        case PageState.CONTACT:
+          showImage = true;
+          break;    
+          
+        case PageState.VERIFY:
+          showImage = true;
+          break;         
+  
+        case PageState.REGISTRATION:
+          showImage = false;
+          break;          
+      
+        default:
+          break;
+      }
+      
+    }
+    else {
+      showImage = false;
+    }
+
+    return showImage;
+  }  
+
+  /**
+   * Recupera l'icona quadrata del centro sportivo, oppure quella rettangolare
+   */
+  setUrlImageLogo():void {
+    let myUrl = '';
+
+    if (this.startConfig) {
+      //Prima chiedo l'icona quadrata
+      myUrl = this.startConfig.getUrlIcon();
+
+      if (!myUrl || myUrl.length == 0) {
+        //Chiedo quella rettangolare
+        myUrl = this.startConfig.getUrlLogo();
+      }
+    }
+
+    this.urlImage = myUrl;
   }
 
   /**
@@ -1139,6 +1268,30 @@ export class NewLoginPage implements OnInit {
     //Chiudo la modale
     this.modalCtrl.dismiss();
   }
+
+  /**
+   * Switch per mostrare o nascondere la password
+   * @param idElement 
+   * @param elementDOM 
+   */
+   showHideInput(idElement:string, elementDOM: IonInput) {
+    switch (idElement) {
+      case 'currentpassword':
+          this.showCurrentPassword = !this.showCurrentPassword;
+          elementDOM.type = (this.showCurrentPassword ? 'text':'password');
+        break;
+
+      case 'newPassword2':
+          this.showPassword2 = !this.showPassword2;
+          elementDOM.type = (this.showPassword2 ? 'text':'password');
+        break;
+
+      default:
+        break;
+    }
+
+    
+  }    
   
 
 //#region CREAZIONI FORM

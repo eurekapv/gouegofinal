@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { StartService } from 'src/app/services/start.service';
-import { ModalController, IonInput, LoadingController, ToastController, AlertButton, NavController } from '@ionic/angular';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { IonInput, AlertButton, NavController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-delete-account',

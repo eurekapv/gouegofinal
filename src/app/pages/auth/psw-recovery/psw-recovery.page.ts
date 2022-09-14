@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
-import { ModalController, LoadingController, ToastController } from '@ionic/angular';
+import { Component, OnInit} from '@angular/core';
+import { ModalController, LoadingController, ToastController, IonInput } from '@ionic/angular';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { Subscription } from 'rxjs';
+
 import { FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 import { RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
@@ -27,12 +27,13 @@ export class PswRecoveryPage implements OnInit {
 
   //Lo stato della pagina (inizialmente Richiesta codice)
   stato: PageState= PageState.richiestaCodice;
+  
 
   //La startConfig
   startConfig : StartConfiguration;
 
   //I 3 formGroups (Mail/telefono, codice di verifica, nuova password)
-  formContact : FormGroup;
+  formInputMailTel : FormGroup;
   formVerify : FormGroup;
   formPsw : FormGroup;
 
@@ -45,14 +46,23 @@ export class PswRecoveryPage implements OnInit {
   //la weblogin dell'utente
   descrUtente: string='';
 
+  //Immagine del gruppo sportivo (Icona o Logo)
+  urlImage: string = '';
+  //Indica se è stata inviata la mail
+  flagSentMail: boolean = false;
 
-   //#region questi servono per accedere ai corrispettivi elementi in HTML
-   @ViewChild('c1') c1;
-   @ViewChild('c2') c2;
-   @ViewChild('c3') c3;
-   @ViewChild('c4') c4;
-   @ViewChild('c5') c5; 
-   //#endregion
+  //Codici di verifica
+  codeVerificationMail: string = '';
+  //Lunghezza del codice di verifica
+  codeLength: number = 5;
+
+  //Dimensione del button
+  footerButtonSize="large";
+
+  //Mostra o nasconde le password
+  showPassword1 = false;
+  showPassword2 = false;
+
 
   constructor(
     private modalController:ModalController,
@@ -83,10 +93,13 @@ export class PswRecoveryPage implements OnInit {
       this.startConfig.gruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificasms
     )
 
+      //Imposto l'immagine aziendale da mostrare 
+      this.setUrlImageLogo();
+
      //SETUP INIZIALE      
       //creo i formGroups
       this.createVerifyForm();
-      this.createContactForm();
+      this.createInputMailTel();
       this.createPswForm();
 
   }
@@ -99,6 +112,26 @@ export class PswRecoveryPage implements OnInit {
   get isDesktop(){
     return this.startService.isDesktop;
   }
+
+  /**
+   * Recupera l'icona quadrata del centro sportivo, oppure quella rettangolare
+   */
+   setUrlImageLogo():void {
+    let myUrl = '';
+
+    if (this.startConfig) {
+      //Prima chiedo l'icona quadrata
+      myUrl = this.startConfig.getUrlIcon();
+
+      if (!myUrl || myUrl.length == 0) {
+        //Chiedo quella rettangolare
+        myUrl = this.startConfig.getUrlLogo();
+      }
+    }
+
+    this.urlImage = myUrl;
+  }
+
 
   /**
    * Crea un placeHolder per ion-input
@@ -118,33 +151,29 @@ export class PswRecoveryPage implements OnInit {
     return placeH;
   }
 
-  //creazione del ReactiveForm di inserimento del codice
+  
+  /**
+   * Creazione del form per la verifica di un codice
+   */
   createVerifyForm(){
+
     this.formVerify=new FormGroup({
-      c1: new FormControl(null, {
+
+      codicemail: new FormControl(null, {
         updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c2: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c3: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c4: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
-      }),
-      c5: new FormControl(null, {
-        updateOn: 'change',
-        validators: [Validators.required, Validators.maxLength(1),Validators.minLength(1)]
+        validators: [Validators.required, 
+                    Validators.maxLength(this.codeLength),
+                    Validators.minLength(this.codeLength)]
       })
     })
   }
-  //creazione del ReactiveForm di inserimento del telefono/mail
-  createContactForm(){
+
+
+  
+  /**
+   * Creazione del form con input mail e telefono
+   */
+  createInputMailTel(){
     let myValidators = [Validators.required];
 
     //posso usare sia mail che mobile
@@ -160,14 +189,18 @@ export class PswRecoveryPage implements OnInit {
       myValidators.push(Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/))
     }
      
-    this.formContact=new FormGroup({
+    this.formInputMailTel=new FormGroup({
       contatto: new FormControl(null, {
         updateOn: 'change',
         validators: myValidators
       })
     })
   }
-  //creazione del form di inserimento nuova psw
+
+
+  /**
+   * Creazione del form per l'inserimento della password nuova
+   */
   createPswForm(){
     this.formPsw=new FormGroup({
       psw: new FormControl(null, {
@@ -180,6 +213,7 @@ export class PswRecoveryPage implements OnInit {
       })
     },this.pswValidator)
   }
+
   /**
    * funzione di controllo uguaglianza delle psw, per la validazione del PswFormGroup
    * @param c 
@@ -200,40 +234,19 @@ export class PswRecoveryPage implements OnInit {
 
   
 
-  
-  /**
-   * procedura che sposta il focus sulla casella di input successiva
-   * @param evento parametri $event dell'eveno "ion-input", necessari a identificare
-   * in quale casella c'è stato l'input
-   */
-  changeFocus(evento)
-  {
-    let id=evento['target']['id'];
-        switch (id) {
-        case '1':
-          this.c2.setFocus();
-          break;
-        case '2':
-          this.c3.setFocus();
-          break;
-        case '3':
-          this.c4.setFocus();
-          break;
-        case '4':
-          this.c5.setFocus();
-          break;      
-        default:
-          break;
-      }
-    
-  }
-
   /**
    * Evento click per la richiesta da effettuare al server dei codici
    */
   onClickInviaCodice() {
     this.sendServerRichiestaCodici();
   }
+
+  /**
+   * Non ha ricevuto nessuna mail e vuole riprovare
+   */
+  onClickNoMailReceived() {
+    this.flagSentMail = false;
+  }  
 
   /**
    * evento che si attiva quando l'utente clicca "verifica" dopo aver inserito il codice
@@ -258,13 +271,13 @@ export class PswRecoveryPage implements OnInit {
         if (this.docRichiestaCodici.REQUESTEMAILCODE) {
 
             //mi ha richiesto il codice tramite mail
-            this.docVerifica.EMAILPINCODE=this.getInputPin();
+            this.docVerifica.EMAILPINCODE = this.getInputPinCode();
 
 
         }
         else if (this.docRichiestaCodici.REQUESTSMSCODE) {
           //mi ha richiesto il codice via sms
-          this.docVerifica.SMSPINCODE=this.getInputPin();
+          this.docVerifica.SMSPINCODE=this.getInputPinCode();
           
         }
         else{
@@ -369,7 +382,7 @@ export class PswRecoveryPage implements OnInit {
         elLoading.present();
         let contatto:string;
         //recupero il contatto inserito dall'utente
-        contatto=this.formContact.value.contatto;
+        contatto=this.formInputMailTel.value.contatto;
 
       //devo capire se l'utente ha inserito una mail o un telefono (se è presente @, presumo sia una mail) e valorizzare
       //l'oggetto "docRichiestaCodici" di conseguenza
@@ -407,17 +420,26 @@ export class PswRecoveryPage implements OnInit {
 
                             //Imposto IDRefer che devo reinviare quando chiedo di verificare il codice
                             this.docRichiestaCodici.IDREFER = risposta.idRefer;
+
+                            //Mail inviata correttamente
+                            this.flagSentMail = true;
                           }
                           else{
-                            //se la richiesta è andata a buon fine, ma il server non è riuscito ad inviare il messaggio, presumo che 
-                            //l'utente non esista
-                            this.showMessage(risposta.message);
+                            //se la richiesta è andata a buon fine, ma il server non è riuscito ad inviare il messaggio, 
+                            //presumo che l'utente non esista
+
+                            this.flagSentMail = false;
                             this.docRichiestaCodici.IDREFER = "";
+
+                            this.showMessage(risposta.message);
                             LogApp.consoleLog(risposta.message);
                           }
                 })
                 .catch(error => {
-                    //Se la richiesta non è andata a buon fine, dismetto il loading, lo stampo in console e scrivo all'utente "errore di connessione"
+                    //Se la richiesta non è andata a buon fine, dismetto il loading, 
+                    //lo stampo in console e scrivo all'utente "errore di connessione"
+                    this.flagSentMail = false;
+
                     elLoading.dismiss();
                     LogApp.consoleLog(error,'error');
                     this.showMessage("Errore di connessione");
@@ -555,16 +577,40 @@ export class PswRecoveryPage implements OnInit {
 
 
   /**
-   * restituisce il pin inserito nella form
+   * Switch per mostrare o nascondere la password
+   * @param idElement 
+   * @param elementDOM 
    */
-  getInputPin(): string{
-    return (
-      this.formVerify.value.c1+
-      this.formVerify.value.c2+
-      this.formVerify.value.c3+
-      this.formVerify.value.c4+
-      this.formVerify.value.c5
-      )
+  showHideInput(idElement:string, elementDOM: IonInput) {
+    switch (idElement) {
+      case 'newPassword1':
+          this.showPassword1 = !this.showPassword1;
+          elementDOM.type = (this.showPassword1 ? 'text':'password');
+        break;
+      case 'newPassword2':
+          this.showPassword2 = !this.showPassword2;
+          elementDOM.type = (this.showPassword2 ? 'text':'password');
+        break;
+
+      default:
+        break;
+    }
+
+    
+  }  
+
+
+  /**
+   * Ritorna il codice Pin inserito dall'utente
+   */
+  getInputPinCode(): string {
+    let myPinCode: string;
+    if (this.formVerify) {
+      myPinCode = this.formVerify.value.codicemail;
+    }
+
+    return myPinCode;
+
   }
   
 }

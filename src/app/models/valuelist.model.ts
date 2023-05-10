@@ -230,6 +230,11 @@ export enum TipoScadenza {
     ratePercentuali = 30
 }
 
+export enum PrenotaTesseramentoAzione {
+    emissioneNuovaTessera = 10,
+    rinnovoTessera = 20
+}
+
 //Stati possibili a seguito di una richiesta pagamento Paypal
 /*
 The possible values are:

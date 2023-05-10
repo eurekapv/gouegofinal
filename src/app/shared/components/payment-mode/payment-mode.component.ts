@@ -11,19 +11,22 @@ import { Platform, ActionSheetController } from '@ionic/angular';
 export class PaymentModeComponent implements OnInit {
 
   @Input() arPayment: AreaPaymentSetting[] = [];
+  //Modalità ad Icone e non con Alert Popup
+  @Input() set iconMode(value:boolean) {
+    this._iconMode = value;
+  }
   @Output() onPaymentModeChoosed = new EventEmitter<PaymentMode>();
   selectedPaymentMode: ValueList;
   
   arPaymentModeList: ValueList[] = []; //Il contenuto dell'array è al max 3 record (Paga struttura, adesso, bonifico)
-  
+  _iconMode: boolean = false;
+
   constructor(private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
     //Creo una lista con le possibilità
     this.arPaymentModeList = AreaPaymentSetting.prepareArPaymentMode(this.arPayment);
-
     this.chooseStartPayment();
-
   }
 
   /**
@@ -60,6 +63,41 @@ export class PaymentModeComponent implements OnInit {
     }
 
     return nameIcon;
+  }
+
+  /**
+   * Dimensione delle colonne in modalità Icone
+   */
+  get modeIconSizeColumn(): number {
+    let lunghezza = 0;
+    let size = 12;
+
+    if (this.arPaymentModeList) {
+      lunghezza = this.arPaymentModeList.length;
+    }
+
+    if (lunghezza != 0) {
+      size = Math.trunc(12 / lunghezza);
+      if (size < 3) {
+        size = 3;
+      }
+    }
+
+    return size;
+  }
+
+  /**
+   * Ritorna la classe da applicare (in versione Icon) alla colonna identificata dall'item
+   */
+  getModeIconClassColumn(item: ValueList): string {
+    let myClass = 'col-mode-payment';
+    if (item && this.selectedPaymentMode) {
+      if (item.value == this.selectedPaymentMode.value) {
+        myClass = `${myClass} selected`;
+      }
+    }
+
+    return myClass;
   }
 
 

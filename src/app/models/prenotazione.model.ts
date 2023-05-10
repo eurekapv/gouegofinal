@@ -2,6 +2,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { PrenotazionePianificazione } from './prenotazionepianificazione.model';
 import { PaymentChannel } from './valuelist.model';
+import { PrenotaTesseramento } from './prenota_tesseramento.model';
 
 export class Prenotazione extends IDDocument {
     DATA: Date; 
@@ -17,9 +18,11 @@ export class Prenotazione extends IDDocument {
     TOTALE: number;
     MSGINVALID: string;
     PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
+    PRENOTATESSERAMENTO: PrenotaTesseramento[];
     IDTRANSACTION: string;
     IDORDER: string;
     CHANNELPAYMENT: PaymentChannel;
+    NOTES: string;
 
     ISVALID: boolean; //Parametro indica che tutti i conteggi sono effettuati, 
                      //si puo' procedere al pagamento finale
@@ -42,6 +45,7 @@ export class Prenotazione extends IDDocument {
 
 
         this.PRENOTAZIONEPIANIFICAZIONE = [];
+        this.PRENOTATESSERAMENTO = [];
         
     }
 
@@ -142,13 +146,23 @@ export class Prenotazione extends IDDocument {
 
     setCollection(data: any) {
 
+    
         this.PRENOTAZIONEPIANIFICAZIONE = [];
+        this.PRENOTATESSERAMENTO = [];
 
         if (data.PRENOTAZIONEPIANIFICAZIONE) {
             this.setCollectionPianificazioni(data);
         }
+
+        if (data.PRENOTATESSERAMENTO) {
+            this.setCollectionTesseramenti(data);
+        }
     }
 
+    /**
+     * Importa le pianificazioni
+     * @param data 
+     */
     setCollectionPianificazioni(data: any) {
         data.PRENOTAZIONEPIANIFICAZIONE.forEach(element => {
             let newPianificazione = new PrenotazionePianificazione();
@@ -157,6 +171,26 @@ export class Prenotazione extends IDDocument {
             this.PRENOTAZIONEPIANIFICAZIONE.push(newPianificazione);
             
         })
+    }
+
+
+    /**
+     * Importa i tesseramenti
+     * @param data 
+     */
+    setCollectionTesseramenti(data: any) {
+        if (data && data.PRENOTATESSERAMENTO) {
+            
+            //Ciclo e creo le tessere
+            data.PRENOTATESSERAMENTO.forEach(element => {
+                
+                let recTesseramento = new PrenotaTesseramento();
+                //Imposto i dati
+                recTesseramento.setJSONProperty(element);
+                this.PRENOTATESSERAMENTO.push(recTesseramento);
+
+            })
+        }
     }
 
     /**
@@ -171,7 +205,8 @@ export class Prenotazione extends IDDocument {
                         'IDTIPOPAGAMENTO',
                         'MSGINVALID',
                         'IDTRANSACTION',
-                        'IDORDER'];
+                        'IDORDER',
+                        'NOTES'];
         let arNumber = ['CHANNELPAYMENT'];
         let arNumberDecimal = ['IMPORTO','INCASSATO','RESIDUO','IMPOSTA','TOTALE'];
         let arBoolean = ['ISVALID'];

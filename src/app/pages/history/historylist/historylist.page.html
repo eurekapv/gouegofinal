@@ -9,12 +9,12 @@
     <ion-title *ngIf="selectedView=='prenotazioni'">Le mie prenotazioni</ion-title> -->
 
     <ion-title>Attivit&agrave;</ion-title>
-    <ion-buttons slot="primary">
+    <!-- <ion-buttons slot="primary">
       <ion-button (click)="onClickSettings()">
         <ion-icon name="person-circle-outline">
         </ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
 
   </ion-toolbar>
 
@@ -140,5 +140,15 @@
   </div>
 </ion-content>
 <ion-footer>
-  
+  <ion-button 
+  color="tertiary"
+  expand="block" 
+  size="large"
+  (click)="onClickSettings()">
+    <ion-icon 
+      slot="start" 
+      name="person-circle-outline"
+      color="primary"></ion-icon>
+    Visualizza profilo
+  </ion-button>
 </ion-footer>

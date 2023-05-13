@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IDDocument } from '../library/models/iddocument.model';
 import { PostResponse } from '../library/models/postResult.model';
-import { PostParams, RequestParams } from '../library/models/requestParams.model';
+import { PostParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { MasterDocumento } from '../models/ricevuta.model';
-import { storageUtente, Utente } from '../models/utente.model';
+import { Utente } from '../models/utente.model';
+
 
 @Injectable({
   providedIn: 'root'

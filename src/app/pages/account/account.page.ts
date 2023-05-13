@@ -5,7 +5,6 @@ import { AlertController, NavController, ModalController } from '@ionic/angular'
 import { Utente } from 'src/app/models/utente.model';
 import { EditLoginPage } from './edit-login/edit-login.page';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { PhotoService } from 'src/app/services/photo.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

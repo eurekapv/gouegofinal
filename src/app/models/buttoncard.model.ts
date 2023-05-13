@@ -27,7 +27,8 @@ export class ButtonCard {
     disabled: boolean;
 
     constructor() {
-        this.settore = 0;
+
+        this.settore = null;
         this.id = '';
         this.idRefer = '';
         this.disabled = false;

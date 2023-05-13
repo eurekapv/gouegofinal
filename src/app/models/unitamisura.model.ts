@@ -7,11 +7,16 @@ export class UnitaMisura extends IDDocument{
     PREDEFINITA: boolean;
     ICONPREF: string;
 
+
+    constructor(onlyInstance?: boolean){
+        super(onlyInstance);
+    }
+
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
-        let arString = ['CODICE', 'DESCR', 'PREDEFINITA', 'ICONPREF'];
+        let arString = ['CODICE', 'DESCR', 'ICONPREF'];
         let arNumber = [];
-        let arBoolean = [];
+        let arBoolean = ['PREDEFINITA'];
         let arDate = [];
         let arDateTime =[];
         let arTime = [];

@@ -6,7 +6,6 @@ import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Utente } from 'src/app/models/utente.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
-import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { LogApp } from 'src/app/models/log.model';
 
 @Component({

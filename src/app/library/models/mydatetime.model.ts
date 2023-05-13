@@ -372,7 +372,7 @@ static getFesta(data: Date): TipoChiusura{
         break;
 
         default:
-            tipoChiusura = 0;
+            tipoChiusura = TipoChiusura.nofesta;
         break;
       }
     return tipoChiusura;

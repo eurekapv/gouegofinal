@@ -19,10 +19,17 @@
 </ion-header>
 
 <ion-content>
- 
+  
+  <!-- PULSANTI VISIBILI SOLO SE UTENTE E' LOGGATO -->
+  <ion-grid *ngIf="userLogged">
+    <ion-row>
+      <ion-col>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
   <!-- IMPEGNI -->
-
-
   <ion-grid *ngIf="listButtonImpegni.length === 1" >
 
     <ion-slides class="ion-no-padding ion-no-margin">
@@ -224,7 +231,7 @@
         fill="solid" 
         *ngIf="listAree.length>1" 
         size = "default"
-        (click)='showSceltaCentro($event)'>
+        (click)='onClickChooseArea($event)'>
         <ion-icon slot="start" color="primary" name="trail-sign-outline"></ion-icon>
       Cambia
     </ion-button>  
@@ -270,134 +277,6 @@
     </div>
 
   </div>
-
-
-
-  <!-- AGENDA OCCUPAZIONE -->
-  <!-- TITOLO -->
-  <!-- <ion-item 
-      type="header" 
-      lines="none" 
-      color="primary"
-      *ngIf="showAgenda">
-
-      <ion-icon 
-          slot="start" 
-          name="golf-outline"></ion-icon>
-      <ion-label class="ion-text-nowrap">
-        <h2>Agenda Struttura</h2>
-      </ion-label>
-      
-      <ion-button 
-          slot="end" 
-          color="light" 
-          fill="solid"
-          size = "default"
-          (click)="onClickShowAgenda()">
-          <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
-        Elenco
-      </ion-button>  
-  </ion-item> -->
-  <!-- FINE TITOLO -->
-
-  <!-- AGENDA CARD -->
-  <!-- <ion-grid *ngIf="agendaCards.length === 1 && showAgenda" class="grid-agenda">
-
-    <ion-slides class="ion-no-padding ion-no-margin">
-    <ion-slide 
-        class="ion-no-padding ion-no-margin"
-        *ngFor="let btn of agendaCards"> 
-        
-        <app-button-card 
-            class="small-button-card" 
-            [smallVersion]="false" 
-            [myButtonCard]="btn">
-        </app-button-card>
-
-      </ion-slide>
-    </ion-slides>
-  </ion-grid> -->
-
-<!-- <ion-grid *ngIf="agendaCards.length > 1 && showAgenda" class="grid-agenda">
-
-  <ion-slides class="ion-no-padding ion-no-margin" [options]="sliderOpts">
-  <ion-slide 
-      class="ion-no-padding ion-no-margin"
-      *ngFor="let btn of agendaCards"> 
-      
-      <app-button-card 
-          class="small-button-card" 
-          [smallVersion]="false" 
-          [myButtonCard]="btn">
-      </app-button-card>
-
-  </ion-slide>
-</ion-slides>
-</ion-grid> -->
-<!-- FINE AGENDA -->  
-
-<!-- <div *ngIf="showAgenda">
-  <div *ngFor="let loc of listLocation">
-    <ion-list>
-      <ion-list-header>
-        {{loc.DENOMINAZIONE}}
-      </ion-list-header>
-
-      
-    </ion-list>
-
-
-  </div>
-</div> -->
-
-
-
-
-<!-- <div class="ion-no-padding"> -->
-
-<!-- TITOLO -->
-<!-- <ion-item 
-    type="header" 
-    lines="none" 
-    color="primary"
-    *ngIf="showAgenda">
-
-    <ion-icon 
-        slot="start" 
-        name="golf-outline"></ion-icon>
-    <ion-label class="ion-text-nowrap">
-      <h2>Agenda Struttura</h2>
-    </ion-label>
-    
-    <ion-button 
-        slot="end" 
-        color="light" 
-        fill="solid"
-        size = "default"
-        (click)="onClickShowAgenda()">
-        <ion-icon slot="start" color="primary" name="layers-outline"></ion-icon>
-      Elenco
-    </ion-button>  
-</ion-item> -->
-
-<!-- SLIDES -->
-<!-- <ion-grid *ngIf="agendaCards.length > 1 && showAgenda" class="grid-agenda">
-
-  <ion-slides class="ion-no-padding ion-no-margin" [options]="sliderOpts">
-  <ion-slide 
-      class="ion-no-padding ion-no-margin"
-      *ngFor="let btn of agendaCards"> 
-      
-      <app-button-card 
-          class="small-button-card" 
-          [smallVersion]="false" 
-          [myButtonCard]="btn">
-      </app-button-card>
-
-  </ion-slide>
-</ion-slides>
-</ion-grid>
-</div> -->
 
 <!-- NEWS ED EVENTI PROSSIMI-->
 <!-- TITOLO -->

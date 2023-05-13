@@ -169,7 +169,8 @@ export enum TipoMasterDocumento{
     ricevuta = 530
 }
 
-export enum TipoChiusura{
+export enum TipoChiusura {
+    nofesta = 0,
     rangeDate = 10,
     natale = 20,
     santoStefano = 30,
@@ -233,6 +234,16 @@ export enum TipoScadenza {
 export enum PrenotaTesseramentoAzione {
     emissioneNuovaTessera = 10,
     rinnovoTessera = 20
+}
+
+export enum TipoAutomatismoTessera {
+    manuale = 0,
+    automatico = -1
+}
+
+export enum AutomatismoApplicazioneTessera {
+    pagamento = 1,
+    gratuita = -1
 }
 
 //Stati possibili a seguito di una richiesta pagamento Paypal

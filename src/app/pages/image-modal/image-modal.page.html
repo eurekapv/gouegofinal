@@ -1,0 +1,35 @@
+<ion-content>
+  <swiper-container #swiper zoom="true">
+    <swiper-slide>
+      <div class="swiper-zoom-container" data-swiper-zoom="5">
+        <img [src]="_imageUrl" tappable>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col size="4" class="ion-text-center">
+      <ion-button fill="clear" color="light" (click)="zoom(false)">
+        <ion-icon name="remove-circle-outline" slot="start"></ion-icon>
+        out
+      </ion-button>
+    </ion-col>
+
+    <ion-col size="4" class="ion-text-center">
+      <ion-button fill="clear" color="light" (click)="close()">
+        <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+        chiudi
+      </ion-button>
+    </ion-col>
+
+    <ion-col size="4" class="ion-text-center">
+      <ion-button fill="clear" color="light" (click)="zoom(true)">
+        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+        in
+      </ion-button>
+    </ion-col>    
+
+  </ion-row>
+</ion-footer>

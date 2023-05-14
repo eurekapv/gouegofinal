@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { Sport } from 'src/app/models/sport.model';
-import { StartService } from 'src/app/services/start.service';
+import { Swiper } from 'swiper';
 
 
 @Component({
@@ -13,90 +12,107 @@ export class SportScrollComponent implements OnInit {
 
   @Input() selectedSport: Sport;
   @Output() sportChanged= new EventEmitter<Sport>();
-  @Input() sportList:Sport[];
-  @ViewChild('sliderSport')sliderSport: IonSlides;
 
-  
-  sliderOpts1={
-    slidesPerView: 1,
-    spaceBetween: 0,
-    initialSlide: 0,
+  //Ricevo gli Sport da utilizzare
+  @Input() set sportList(value:Sport[]) {
+
+    //Memorizzo gli Sport disponibili
+    this._listAvailableSports = value;
+
+    //Flag se ci sono sport
+    this._flagAvailableSports = (this._listAvailableSports.length != 0)
+    
+    //Se è pronto lo Swiper configuro i parametri
+    this.setSwiperParams();
   }
 
-  sliderOpts2={
-    slidesPerView: 2,
-    spaceBetween: 0,
-    initialSlide: 0,
-  }
-  
-  sliderOpts3={
-    slidesPerView: 2.5,
-    spaceBetween: 0,
-    initialSlide: 0, //Dovrei farla variabile
-    // Responsive breakpoints   
-  //  breakpoints: {  
-   
-  //     // when window width is <= 320px     
-  //     320: {       
-  //        slidesPerView: 2.5,
-  //        spaceBetween: 1     
-  //     },     
-  //     // when window width is <= 480px     
-  //     480: {       
-  //        slidesPerView: 2.5,       
-  //        spaceBetween: 6     
-  //     },   
-  
-  //     // when window width is <= 640px     
-  //     640: {       
-  //        slidesPerView: 2.5,       
-  //        spaceBetween: 1     
-  //     },
 
-  //     1024: {
-  //       slidesPerView: 2.5,       
-  //       spaceBetween: 1  
-  //     }
+  _listAvailableSports: Sport[]; //Elenco degli Sport Disponibili
+  _flagAvailableSports: boolean = false;
 
+  @ViewChild('sliderSport') swiperRef: ElementRef | undefined;
+  swiper?: Swiper;
 
-  
-  //  } 
+  /**
+   * Indica il numero di Slide da mostrare 
+   */
+  get numSlidesPerView(): number {
+    let value:number = 2.5;
+
+    switch (this._listAvailableSports.length) {
+      case 1:
+        value = 1;
+        break;
+
+      case 2:
+          value = 2;
+        break;
+
+      case 3:
+          value = 2.5;
+        break;
+    
+      default:
+        value = 2.5;
+        break;
+    }
+    
+    return value;
   }
 
-  sliderOpts4={
-    slidesPerView: 3.5,
-    spaceBetween: 0,
-    initialSlide: 0
-  }
   
-  constructor(private startService: StartService) {
+  
+  constructor() {
   }
   
   ngOnInit() {
     
-    
-    
-  }
-  
-  ngOnChanges() {   
-    
-    
-  }
-  
-  ionViewDidEnter()
-  {
-    
-
   }
 
+  /**
+   * Lo Slider è stato creato nel DOM
+   */
+  swiperReady() {
+    //Memorizzo lo swiper presente
+    this.swiper = this.swiperRef?.nativeElement.swiper;
+    //Reimposto la configurazione
+    this.setSwiperParams();
+  }
+
+  /**
+   * Reimposta i parametri sullo Swiper
+   */
+  setSwiperParams() {
+    /*
+    La variazione dei parametri nel DOM con variabili non funziona
+    Funziona impostando valori fissi
+    Per modificare tali valori uso un timeout che mi da il tempo di avere l'elemento nel DOM
+    */
+    setTimeout(()=>{
+      this.setSwiperProp('slides-per-view', this.numSlidesPerView)
+    }, 300)
+  }
+
+  /**
+   * Reimposta il valore di un parametro dello SWiper
+   * @param nameProp 
+   * @param value 
+   */
+  setSwiperProp(nameProp: string, value: number) {
+    let element = this.swiperRef?.nativeElement;
+    
+    if (element) {
+      element.setAttribute(nameProp, value);
+    }
+  }
+  
 /**
  * Si posiziona sulla Slide richiesta
  * @param indexSlideZeroBased Indice della Slide
  */
   goToSlide(indexSlideZeroBased: number) {
-    if (this.sliderSport) {
-      this.sliderSport.slideTo(indexSlideZeroBased);
-    }
+    //Avavnzo alla Slide  
+    this.swiper?.slideTo(indexSlideZeroBased);
   }
   /**
    * Scelta di un nuovo sport
@@ -116,28 +132,6 @@ export class SportScrollComponent implements OnInit {
     this.sportChanged.emit(newSport);
   }
  
-
-    /**
-   * A seconda del numero di sport presenti, ritorna le opzioni da impostare
-   * @returns 
-   */
-     getSliderOptions():any {
-      let slidOpt: any;
-      if (this.sportList.length == 1) {
-        slidOpt = this.sliderOpts1;
-      }
-      else if (this.sportList.length == 2) {
-        slidOpt = this.sliderOpts2;
-      }
-      else if (this.sportList.length == 3) {
-        slidOpt = this.sliderOpts3;
-      }
-      else {
-        slidOpt = this.sliderOpts3;
-      }
-  
-      return slidOpt;
-    }
 
   /**
    * Ritorna il colore da applicare a seconda dello sport selezionato
@@ -165,7 +159,7 @@ export class SportScrollComponent implements OnInit {
       let myPos = -1;
   
       if (mySport) {
-        myPos = this.sportList.findIndex(el => {
+        myPos = this._listAvailableSports.findIndex(el => {
           return el.ID == mySport.ID
         });
       }

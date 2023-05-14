@@ -36,6 +36,10 @@ import { Valuta } from 'src/app/models/valuta.model';
 import { DataChiusura } from 'src/app/models/datachiusura.model';
 import { CorsoAllegato } from 'src/app/models/corsoallegato.model';
 import { TipoPagamento } from 'src/app/models/tipopagamento.model';
+import { TipoTessera } from 'src/app/models/tipo-tessera';
+import { PrenotaTesseramento } from 'src/app/models/prenota_tesseramento.model';
+import { TipoTesseraTemplate } from 'src/app/models/tipo-tessera-template';
+import { Tesseramento } from 'src/app/models/tesseramento';
 
 
 
@@ -69,6 +73,7 @@ export const Structure: any = {
     PianificazioneCorso,
     Prenotazione,
     PrenotazionePianificazione,
+    PrenotaTesseramento,
     Utente,
     UtenteIscrizione,
     UtenteLivello,
@@ -89,7 +94,10 @@ export const Structure: any = {
     UnitaMisura,
     DataChiusura,
     CorsoAllegato,
-    TipoPagamento
+    TipoPagamento,
+    TipoTessera,
+    TipoTesseraTemplate,
+    Tesseramento
 }
 
 export class DynamicClass {

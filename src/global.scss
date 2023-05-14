@@ -28,7 +28,14 @@
 
 /*Importazioni altri CSS */
 @import "./theme/various.scss";
+/* Custom CSS components */
+@import "./theme/modals.scss";
 
+/* Custom Swiper */
+@import "./theme/swiper-custom.scss";
+
+/*Importazione per Swiper */
+@import 'swiper/css/bundle';
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,500;0,600;0,800;1,300;1,500;1,600;1,800&display=swap');
 

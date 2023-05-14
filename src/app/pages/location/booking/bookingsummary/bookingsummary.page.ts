@@ -19,6 +19,7 @@ import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { AreaLink } from 'src/app/models/arealink.model';
 import { LogApp } from 'src/app/models/log.model';
+import { PrenotaTesseramento } from 'src/app/models/prenota_tesseramento.model';
 
 @Component({
   selector: 'app-bookingsummary',
@@ -59,7 +60,7 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
   checkBookId = true; 
 
   //accettazione delle condizioni di vendita
-  disclaimer: boolean =false;
+  disclaimer: boolean =true;
 
 
 
@@ -95,7 +96,8 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.disclaimer=false;
+
+    this.disclaimer = true;
     
     let result = true;
     let errMessage = '';
@@ -178,6 +180,33 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
       this.subPaymentResult.unsubscribe();
     }
 
+  }
+
+  /**
+   * Ritorna se è consigliabile visualizzare le note
+   */
+  get showGroupTesseramenti():boolean {
+    let flagShow = false;
+
+    if (this.collTesseramenti && this.collTesseramenti.length != 0) {
+      flagShow = true;
+    }
+
+    return flagShow;
+  }
+
+  /**
+   * Ritorna una collection di PrenotaTesseramento abbinata
+   */
+  get collTesseramenti(): PrenotaTesseramento[] {
+    let myColl: PrenotaTesseramento[];
+
+    if (this.activePrenotazione && this.activePrenotazione.PRENOTATESSERAMENTO) {
+      myColl = this.activePrenotazione.PRENOTATESSERAMENTO;
+    }
+
+
+    return myColl;
   }
 
   //Mi sottoscrivo alla ricezione della Prenotazione

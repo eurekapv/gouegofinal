@@ -1,0 +1,19 @@
+/*Da utilizzare per Swiper che contiene una gallery di immagini*/
+swiper-container.gallery {
+    
+    background-color: #e6e6e6;
+
+    swiper-slide {
+        text-align: center;
+    }
+
+    img {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        
+    }
+    /*Applicare cover per impostare il full sull'immagine*/
+    img.cover {
+        object-fit: cover;
+    }
+}

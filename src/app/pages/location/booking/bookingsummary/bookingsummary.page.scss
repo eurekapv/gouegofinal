@@ -49,5 +49,16 @@ ion-button.full-buttons{
     }
 }
 
+ion-label.ion-text-small {
+    font-size: 0.8em;
+}
+
+ion-card {
+    &.ion-margin-horizontal {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+    }
+}
+
 
 

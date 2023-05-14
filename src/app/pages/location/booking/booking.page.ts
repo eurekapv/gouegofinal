@@ -747,6 +747,7 @@ export class BookingPage implements OnInit,  OnDestroy {
     /* VERSIONE MODALE */
     this.modalCtrl.create({
       component: BookingsummaryPage,
+      cssClass: 'modal-xl-class',
       componentProps: {
         bookId: this.activePrenotazione.ID,
         locationId : this.selectedLocation.ID

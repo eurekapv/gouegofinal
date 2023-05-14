@@ -35,7 +35,15 @@ const routes: Routes = [
   {
     path: 'delete-account',
     loadChildren: () => import('./delete-account/delete-account.module').then( m => m.DeleteAccountPageModule)
+  },  {
+    path: 'club-cards',
+    loadChildren: () => import('./club-cards/club-cards.module').then( m => m.ClubCardsPageModule)
   },
+  {
+    path: 'badge-account',
+    loadChildren: () => import('./badge-account/badge-account.module').then( m => m.BadgeAccountPageModule)
+  },
+
 
 
 ];

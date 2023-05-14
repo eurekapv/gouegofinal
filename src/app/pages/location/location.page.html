@@ -12,11 +12,17 @@
 <ion-content>
   <!-- GALLERY IMAGES -->
   <ion-card class="ion-no-margin ion-no-padding backcolorcard">
-    <ion-slides pager>
-      <ion-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
+    <swiper-container
+        #swiperGallery 
+        class="gallery" 
+        [pagination]="true">
+
+      <swiper-slide 
+          *ngFor="let img of selectedLocation.LOCATIONIMAGE">
         <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
-      </ion-slide>
-    </ion-slides>
+      </swiper-slide>      
+    </swiper-container>
+
   </ion-card>
 
   <!-- BUTTON CARD PRENOTAZIONE E CORSI -->

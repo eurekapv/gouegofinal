@@ -68,6 +68,7 @@ export class Utente extends IDDocument {
 
     /**
      * Ritorna l'eta del partecipante
+     * in forma decimale
      */
     public get eta(): number {
         let num = 0;
@@ -80,6 +81,23 @@ export class Utente extends IDDocument {
         }
         return num;
     }
+
+    /**
+     * Ritorna ETA come numero Intero
+     * @returns 
+     */
+    public getEtaAsInteger(): number {
+        let num = 0;
+        let oggi = new Date();
+
+        if (this.NATOIL) {
+            if (this.NATOIL < oggi) {
+                num = MyDateTime.durataAnni(this.NATOIL, oggi);
+                num = Math.trunc(num);
+            }
+        }
+        return num;
+    }    
 
     /**
     * Ritorna il descrittore della Struttura Campi

@@ -68,6 +68,9 @@ import { SmartInterfaceService } from './smart-interface.service';
 import { AlertButton, SpinnerTypes } from "@ionic/core";
 import { Browser } from '@capacitor/browser';
 import { ConnectionMode, environment } from 'src/environments/environment';
+import { TipoTesseraService } from './tipo-tessera.service';
+import { TipoTessera } from '../models/tipo-tessera';
+import { TesseramentoService } from './tesseramento.service';
 
 @Injectable({
   providedIn: 'root'
@@ -180,7 +183,9 @@ export class StartService {
     private iscrizioneCorsoService: IscrizionecorsoService,
     private corsoValutazioneService: CorsoValutazioneService,
     private photoService: PhotoService,
-    private srvSmartInterface: SmartInterfaceService
+    private srvSmartInterface: SmartInterfaceService,
+    private srvTipoTessere: TipoTesseraService,
+    private srvTesseramento: TesseramentoService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -191,6 +196,7 @@ export class StartService {
 
   }
 
+  //#region FUNZIONI START
 
   /**
    * PRIMO STEP DI CONFIGURAZIONE
@@ -537,6 +543,7 @@ export class StartService {
 
   }
 
+  //#endregion
 
 
   //#region AREE
@@ -1003,6 +1010,19 @@ get actualUtenteLogged() {
 get actualUtente() {
   return this.utenteService.actualUtente;
 }
+
+/**
+ * Ritorna ID Utente attualmente loggato
+ */
+get actualIdUtente(): string {
+  let myId: string = '';
+  if (this.utenteService.actualUtente) {
+    myId = this.utenteService.actualUtente.ID;
+  }
+
+  return myId;
+
+}
 /**
  * Memorizza nello storage username e password
  * @param username Username da memorizzare
@@ -1264,8 +1284,21 @@ loadPictureUtente():Promise<string> {
   })
 }
 
+/**
+ * Lista Tessere Utente di tipo Observable
+ */
+get listTessereUtente$() {
+  return this.srvTesseramento.listTessere$;
+}
 
-
+/**
+ * Richiede i Tesseramenti per l'utente loggato
+ * @param idUtente 
+ */
+requestListTessereUtente():Promise<void> {
+  let idUtente = this.actualIdUtente;
+  return this.srvTesseramento.request(idUtente);
+}
 
 
 //#endregion
@@ -1344,6 +1377,8 @@ validationVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperatio
   const actualStartConfig = this._startConfig.getValue();
   return this.utenteService.validationVerifyCodici(actualStartConfig, docVerifyCode);
 }
+
+//#endregion
 
 //#region PRENOTAZIONE
 
@@ -1433,7 +1468,7 @@ requestDeletePianificazione(idPianificazione){
 //#endregion
 
 
-//#region UtentePrenotazione
+//#region UTENTEPRENOTAZIONI
 
 
 /**
@@ -1461,7 +1496,7 @@ get listUtentePrenotazioni() {
 //#endregion
 
 
-//#region UtenteIscrizione
+//#region UTENTE ISCRIZIONE
 
 
 /**
@@ -1568,6 +1603,8 @@ checkCodiceFiscale(codiceFiscale: string,
 
 //#endregion
 
+//#region PRIVATE IMAGES
+
 /**
  * dato un tipo di immagine, la funzione restituisce la stringa in B64
  * @param tipo il tipo di immagine richiesta 
@@ -1603,9 +1640,7 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
   //#region image
 }
 
-
 //#endregion
-
 
 //#region OCCUPAZIONICAMPI
 
@@ -1624,12 +1659,12 @@ requestOccupazioneById(idOccupazione: string, getRelReservation = false){
 //#endregion
 
 
-////#region DOCUMENTO
+//#region DOCUMENTO
 requestDocumento(urlDocumento: string){
   return this.documentoService.request(this.actualStartConfig, urlDocumento);
 }
 
-////#endregion
+//#endregion
 
 
 //#region INVOICES
@@ -1664,10 +1699,11 @@ requestDocumento(urlDocumento: string){
 
 
 
+
 //#endregion
 
 
-//#region posizione
+//#region POSIZIONE 
 
 /**
  * La funzione restituisce una promise con la posizione attuale
@@ -1698,6 +1734,19 @@ isFestivita(data: Date, idArea: string, idLocation: string, idCampo: string) {
     return this.corsoAllegatoService.requestByIdCorso(idCorso);
   }
 
+//#endregion
+
+//#region TIPO TESSERE
+get listTipoTessere$():BehaviorSubject<TipoTessera[]> {
+  return this.srvTipoTessere.listTipoTessere$;
+}
+
+/**
+ * Effettua la richiesta per la lista delle tipo tessere previste
+ */
+requestListTipoTessere(): Promise<void> {
+  return this.srvTipoTessere.request();
+}
 //#endregion
 
   /**
@@ -1790,22 +1839,34 @@ isFestivita(data: Date, idArea: string, idLocation: string, idCampo: string) {
    * Crea e presenta un Toast contenente un messaggio con l'uso del ToastController
    *
    *
-   * @param myMessage Messaggio da mostrare
+   * @param myMessage Stringa or Error Object
    * @param myTitle Titolo
    * @param position
    * @param duration
    * @returns
    */
-  presentToastMessage(myMessage: string,
+  presentToastMessage(myMessage: any,
     myTitle?: string,
     myPosition?: 'top' | 'bottom' | 'middle',
     myDuration: number = 2000): void {
 
-    this.srvSmartInterface
-      .showToastingMessage(myMessage, myTitle, myPosition, myDuration)
-      .then(elToast => {
-        elToast.present();
-      })
+      let myText = '';
+
+      if (typeof myMessage == 'string') {
+        myText = myMessage
+      }
+      else if (typeof myMessage == 'object') {
+        if (myMessage.message) {
+          myText = myMessage.message
+        }
+      }
+
+      //Creo e mostro il messaggio
+      this.srvSmartInterface
+        .showToastingMessage(myText, myTitle, myPosition, myDuration)
+        .then(elToast => {
+          elToast.present();
+        })
   }
 
 

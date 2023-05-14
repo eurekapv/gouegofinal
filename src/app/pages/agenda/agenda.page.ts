@@ -10,7 +10,7 @@ import { StartService } from 'src/app/services/start.service';
 })
 export class AgendaPage implements OnInit {
 
-  selectedArea: Area = new Area;
+  selectedArea: Area = new Area();
   agendaCards: ButtonCard[] = [];
 
 

@@ -1,27 +1,30 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import * as moment from "moment";
 import { IonSlides, PickerController } from '@ionic/angular';
 import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
 import { ValueList, Mesi } from 'src/app/models/valuelist.model';
-
+import { Swiper, SwiperOptions } from 'swiper';
+import { LogApp } from 'src/app/models/log.model';
 
 
 @Component({
   selector: 'app-calendarscroll',
   templateUrl: './calendarscroll.component.html',
-  styleUrls: ['./calendarscroll.component.scss'],
+  styleUrls: ['./calendarscroll.component.scss']
 })
 export class CalendarscrollComponent implements OnInit {
 
 
   @Input() activeDay = new Date();
   @Output() onChangeActiveDay = new EventEmitter<Date>();
-  @ViewChild('sliderDays')sliderDays: IonSlides;
+  // @ViewChild('sliderDays') sliderDays: IonSlides;
+  @ViewChild('swiperDays') swiperRef: ElementRef | undefined;
+  swiper?: Swiper;
 
   listDay: CalendarScrollItem[] = [];
   listMesi: ValueList[] = []; //Elenco dei mesi da visualizzare nel Picker
 
-  sliderOpts = {
+  public sliderOpts: SwiperOptions = {
     slidesPerView: 15,
     spaceBetween: 3,
     initialSlide: 1, //Dovrei farla variabile
@@ -54,25 +57,61 @@ export class CalendarscrollComponent implements OnInit {
 
   constructor(private pickController:PickerController) { 
     
-    this.setStartSlide();
+    //this.setStartSlide();
     
     //Creo l'Array dei Mesi che utilizzero nel Picker Date
     this.listMesi = ValueList.getArray(Mesi);
   }
 
+  //#region Swiper Method
+  /**
+   * Lo Slider è stato creato nel DOM
+   */
+  swiperReady() {
+    LogApp.consoleLog('Inizializzazione conclusa');
+
+    //Memorizzo lo swiper presente
+    this.swiper = this.swiperRef?.nativeElement.swiper;
+
+    //Applico la posizione iniziale
+    this.setStartSlide();
+  }
+
+   /**
+   * Reimposta il valore di un parametro dello SWiper
+   * @param nameProp 
+   * @param value 
+   */
+   setSwiperProp(nameProp: string, value: number) {
+    let element = this.swiperRef?.nativeElement;
+    
+    if (element) {
+      element.setAttribute(nameProp, value);
+    }
+  } 
+  //#endregion
+
+  
+
   /**
    * Imposta la Slide del giorno da mostrare a seconda del ActiveDay
    */
   setStartSlide() {
+
       //Prendo il giorno attivo -1
       let startSlide = this.activeDay.getDate() - 1;
+
       //Sottraggo 2 per dare più respiro
       startSlide -= 2;
+
       if (startSlide < 0) {
         startSlide = 0
       }
 
-      this.sliderOpts.initialSlide = startSlide;
+      setTimeout(()=> {
+        this.goToSlide(startSlide);
+      },300)
+      
       
   }
 
@@ -81,8 +120,8 @@ export class CalendarscrollComponent implements OnInit {
    * @param indexSlideZeroBased Indice della Slide
    */
   goToSlide(indexSlideZeroBased: number) {
-    if (this.sliderDays) {
-      this.sliderDays.slideTo(indexSlideZeroBased);
+    if (this.swiper) {
+      this.swiper?.slideTo(indexSlideZeroBased);
     }
   }
 

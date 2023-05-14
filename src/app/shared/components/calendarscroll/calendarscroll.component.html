@@ -11,7 +11,35 @@
   </ion-row>
 
   <ion-row class="ion-no-margin ion-padding-horizontal">
-    <ion-slides [options]="sliderOpts" #sliderDays>
+
+        <swiper-container 
+            (afterInit)="swiperReady()"
+            appSwiper [config]="sliderOpts" 
+            init="false"
+            #swiperDays>
+      <swiper-slide *ngFor="let objDay of listDay">
+
+        <ion-button *ngIf="objDay.type == 'prev'" class="ion-no-padding ion-no-margin btn-day" shape="round"
+          size="large" fill="outline" color="secondary" (click)="onClickButton(objDay)">
+          <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button *ngIf="objDay.type == 'day'" class="ion-no-padding ion-no-margin btn-day" shape="round" size="large"
+          [fill]="getFillButton(objDay)" color="secondary" (click)="onClickButton(objDay)">
+          {{ objDay.numValue }}
+          <br />
+          {{objDay.dateValue | date : 'EEEEE'}}
+        </ion-button>
+
+        <ion-button *ngIf="objDay.type == 'next'" class="ion-no-padding ion-no-margin btn-day" shape="round"
+          size="large" fill="outline" color="secondary" (click)="onClickButton(objDay)">
+          <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+        </ion-button> 
+
+      </swiper-slide>
+    </swiper-container>
+
+    <!-- <ion-slides [options]="sliderOpts" #sliderDays>
       <ion-slide *ngFor="let objDay of listDay">
 
         <ion-button *ngIf="objDay.type == 'prev'" class="ion-no-padding ion-no-margin btn-day" shape="round"
@@ -34,6 +62,8 @@
 
 
       </ion-slide>
-    </ion-slides>
+    </ion-slides> -->
+
+
   </ion-row>
 </ion-grid>

@@ -23,6 +23,7 @@ import { CryptoService } from './library/services/crypto.service';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { SwiperDirective } from './shared/directives/swiper.directive';
 
 registerLocaleData(localeIt,'it');
 

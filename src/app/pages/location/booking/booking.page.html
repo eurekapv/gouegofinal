@@ -28,20 +28,20 @@
     </ion-segment-button>
   </ion-segment> -->
 
-    <app-sport-scroll 
-        
+  <app-sport-scroll 
         [selectedSport]="selectedSport" 
         [sportList]="listLocationSport" 
         (sportChanged)="onChangeSport($event)" >
     </app-sport-scroll>
+  <app-campi-scroll 
+      [selectedCampo]="selectedCampo" 
+      [campiList]="availableFields" 
+      [canChoose]="ricevuti && bookable"
+      [selectedLocation]="selectedLocation"
+      (campoChanged)="onChangeCampo($event)">
+  </app-campi-scroll>
 
-    <app-campi-scroll 
-        [selectedCampo]="selectedCampo" 
-        [campiList]="availableFields" 
-        [canChoose]="ricevuti && bookable"
-        [selectedLocation]="selectedLocation"
-        (campoChanged)="onChangeCampo($event)">
-    </app-campi-scroll>
+
 
   </div>
 

@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { IonSlides } from '@ionic/angular';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { Campo } from 'src/app/models/campo.model';
 import { Location } from 'src/app/models/location.model';
-
+import { Swiper } from 'swiper';
 
 
 
@@ -15,104 +14,130 @@ export class CampiScrollComponent implements OnInit {
 
   @Input() selectedCampo: Campo;
   @Output() campoChanged= new EventEmitter<Campo>();
-  @Input() campiList:Campo[];
+  @Input() set campiList(value:Campo[]) {
+    //Imposto la property
+    this._listAvailableCampi = value;
+
+    if (this._listAvailableCampi) {
+      this._flagAvailableCampi = (this._listAvailableCampi?.length != 0);
+    }
+    else {
+      this._flagAvailableCampi = false;
+    }
+
+    //Se è pronto lo Swiper configuro i parametri
+    this.setSwiperParams();
+
+  }
   @Input() selectedLocation: Location;
   @Input() canChoose: boolean; //Indica se è possibile modificare la scelta con i pulsanti
-  @ViewChild('sliderCampi')sliderCampi: IonSlides;
 
+
+  _listAvailableCampi: Campo[]; //Lista dei campi disponibili
+  _flagAvailableCampi = false; //Indica la presenza di campi
+  @ViewChild('sliderCampi') swiperRef: ElementRef | undefined;
+  swiper?: Swiper;
+  
   styleInfoMessage: number = 2; //Stile del messaggio visualizzato
-  
-  sliderOpts1={
-    slidesPerView: 1,
-    spaceBetween: 0,
-    initialSlide: 0,
-  }
 
-  sliderOpts2={
-    slidesPerView: 2,
-    spaceBetween: 0,
-    initialSlide: 0,
-  }
-  
-  sliderOpts3={
-    slidesPerView: 2.5,
-    spaceBetween: 0,
-    initialSlide: 0, //Dovrei farla variabile
-    // Responsive breakpoints   
-  //  breakpoints: {  
-   
-  //     // when window width is <= 320px     
-  //     320: {       
-  //        slidesPerView: 2.5,
-  //        spaceBetween: 1     
-  //     },     
-  //     // when window width is <= 480px     
-  //     480: {       
-  //        slidesPerView: 2.5,       
-  //        spaceBetween: 6     
-  //     },   
-  
-  //     // when window width is <= 640px     
-  //     640: {       
-  //        slidesPerView: 2.5,       
-  //        spaceBetween: 1     
-  //     },
-
-  //     1024: {
-  //       slidesPerView: 2.5,       
-  //       spaceBetween: 1  
-  //     }
-
-
-  
-  //  } 
-  }
-
-  sliderOpts4={
-    slidesPerView: 3.5,
-    spaceBetween: 0,
-    initialSlide: 0
-  }
-  
   constructor() {
+  }
+
+  ngOnInit() {
+
+  }
+
+  /**
+   * Indica se è possibile mostrare il messaggio informativo
+   */
+  get showInfoField():boolean {
+    let flag:boolean = false;
+    if (this.selectedCampo && this.selectedLocation) {
+      flag = true;
+    }
+
+    return flag;
   }
 
 
   /**
-   * A seconda del numero di campi presenti, ritorna le opzioni da impostare
-   * @returns 
+   * Indica il numero di Slide da mostrare 
    */
-  getSliderOptions():any {
-    let slidOpt: any;
-    if (this.campiList.length == 1) {
-      slidOpt = this.sliderOpts1;
-    }
-    else if (this.campiList.length == 2) {
-      slidOpt = this.sliderOpts2;
-    }
-    else if (this.campiList.length == 3) {
-      slidOpt = this.sliderOpts3;
-    }
-    else {
-      slidOpt = this.sliderOpts3;
-    }
+  get numSlidesPerView(): number {
+    let value:number = 2.5;
 
-    return slidOpt;
+    switch (this._listAvailableCampi.length) {
+      case 1:
+        value = 1;
+        break;
+
+      case 2:
+          value = 2;
+        break;
+
+      case 3:
+          value = 2.5;
+        break;
+    
+      default:
+        value = 2.5;
+        break;
+    }
+    
+    return value;
   }
+
 
     /**
    * Si posiziona sulla Slide richiesta
    * @param indexSlideZeroBased Indice della Slide
    */
      goToSlide(indexSlideZeroBased: number) {
-      if (this.sliderCampi) {
-        this.sliderCampi.slideTo(indexSlideZeroBased);
+      if (this.swiper) {
+        this.swiper?.slideTo(indexSlideZeroBased);
       }
     }
   
-  ngOnInit() {
-
+  //#region Swiper Set
+  
+  /**
+   * Lo Slider è stato creato nel DOM
+   */
+  swiperReady() {
+    //Memorizzo lo swiper presente
+    this.swiper = this.swiperRef?.nativeElement.swiper;
+    //Reimposto la configurazione
+    this.setSwiperParams();
   }
+
+  /**
+   * Reimposta i parametri sullo Swiper
+   */
+  setSwiperParams() {
+    /*
+    La variazione dei parametri nel DOM con variabili non funziona
+    Funziona impostando valori fissi
+    Per modificare tali valori uso un timeout che mi da il tempo di avere l'elemento nel DOM
+    */
+    setTimeout(()=>{
+      this.setSwiperProp('slides-per-view', this.numSlidesPerView)
+    }, 400)
+  }
+
+  /**
+   * Reimposta il valore di un parametro dello SWiper
+   * @param nameProp 
+   * @param value 
+   */
+  setSwiperProp(nameProp: string, value: number) {
+    let element = this.swiperRef?.nativeElement;
+
+    if (element) {
+      element.setAttribute(nameProp, value);
+    }
+  }
+  //#endregion
+
 
   /**
    * Scelta di un nuovo campo inviata al chiamante
@@ -139,7 +164,7 @@ export class CampiScrollComponent implements OnInit {
     let myPos = -1;
 
     if (myCampo) {
-      myPos = this.campiList.findIndex(el => {
+      myPos = this._listAvailableCampi.findIndex(el => {
         return el.ID == myCampo.ID
       });
     }
@@ -157,7 +182,6 @@ export class CampiScrollComponent implements OnInit {
     
     if (this.selectedCampo && myCampo) {
       if (this.selectedCampo.ID == myCampo.ID) {
-        //myColor = 'danger';
         myColor = 'tertiary';
       }
     }

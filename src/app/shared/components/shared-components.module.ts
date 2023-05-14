@@ -35,7 +35,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
  * è possibile importarlo in altri moduli per utilizzare i componenti all'interno degli stessi
  */
-
+import {SwiperDirective} from "../directives/swiper.directive";
 
 @NgModule({
 
@@ -45,6 +45,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         CommonModule,
         FormsModule,
         ReactiveFormsModule
+        
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],    
     declarations: [
@@ -73,7 +74,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         LevelSetterComponent,
         ItemAgendaTrainerComponent,
         DtinputComponent,
-        QrCodeScannerComponent
+        QrCodeScannerComponent,
+        SwiperDirective
         
     ],
     exports: [
@@ -102,7 +104,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         LevelSetterComponent,
         ItemAgendaTrainerComponent,
         DtinputComponent,
-        QrCodeScannerComponent
+        QrCodeScannerComponent,
+        SwiperDirective
     ]
 })
 export class SharedComponentsModule {}

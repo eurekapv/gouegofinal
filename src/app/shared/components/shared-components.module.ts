@@ -30,7 +30,7 @@ import { LevelSetterComponent } from './level-setter/level-setter.component';
 import { ItemAgendaTrainerComponent } from './item-agenda-trainer/item-agenda-trainer.component';
 import { DtinputComponent } from './dtinput/dtinput.component';
 import { QrCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.component';
-
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 /**
  * Questo modulo, come quello delle pipes, dichiara tutti i componenti e li esporta;
  * è possibile importarlo in altri moduli per utilizzare i componenti all'interno degli stessi
@@ -46,6 +46,7 @@ import { QrCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.compon
         FormsModule,
         ReactiveFormsModule
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],    
     declarations: [
         AdvertisingComponent,
         ApertureComponent,

@@ -22,13 +22,13 @@ import localeIt from '@angular/common/locales/it';
 import { CryptoService } from './library/services/crypto.service';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
-
-
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 registerLocaleData(localeIt,'it');
 
 @NgModule({
     declarations: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     imports: [BrowserModule,
         FormsModule,
         HttpClientModule,

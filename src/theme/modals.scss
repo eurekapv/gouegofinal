@@ -19,6 +19,14 @@
 
 }
 
+.transparent-modal {
+  --background: rgba(44,39,45, 0.2);
+
+  &::part(content) {
+    backdrop-filter: blur(12px);
+  }
+}
+
 /*https://jhonny9550.medium.com/manipulating-ionic-modals-c10334e211b0*/
 
 // Globally wrap the custom modal classes inside de ion-modal component selector to avoid affect another elements inside the app

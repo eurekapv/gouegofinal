@@ -7,7 +7,10 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { StartConfiguration } from './models/start-configuration.model';
 import { StartService } from './services/start.service';
 import { Subscription } from 'rxjs';
+import { register } from 'swiper/element/bundle';
 
+//we need to call Swiper's register function to globally register Swiper's custom elements
+register();
 
 @Component({
   selector: 'app-root',

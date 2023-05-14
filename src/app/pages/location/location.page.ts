@@ -1,16 +1,19 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { Location } from 'src/app/models/location.model';
 import { LocationImage } from 'src/app/models/locaton-image.model';
 import { ModalController, NavController } from '@ionic/angular';
 import { AperturaLocation } from 'src/app/models/aperturalocation.model';
-import { GalleryPage } from './gallery/gallery.page';
 import { CampiNewPage } from './campi-new/campi-new.page'
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Subscription } from 'rxjs';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { TipoSocieta } from 'src/app/models/valuelist.model';
+import { ImageModalPage } from '../image-modal/image-modal.page';
+import SwiperCore, { SwiperOptions, Pagination  } from 'swiper';
+
+SwiperCore.use([Pagination]);
 
 @Component({
   selector: 'app-location',
@@ -19,21 +22,14 @@ import { TipoSocieta } from 'src/app/models/valuelist.model';
 })
 export class LocationPage implements OnInit, OnDestroy {
 
+  @ViewChild('swiperGallery') swiperRef: ElementRef | undefined;
   selectedLocation = new Location();
   subSelectedLocation: Subscription;
   myStartConfig: StartConfiguration;
 
   aperture: AperturaLocation[] = [];
   listButtonCard: ButtonCard[] = []; // Lista dei Bottoni
-  
-
-  sliderOpts = {
-    zoom: false,
-    slidesPerView: 1.5,
-    //centeredSlides: true,
-    centeredSlidesBounds: true,
-    spaceBetween: 20
-  };
+  showSliderPagination = true;
 
   constructor(private router: ActivatedRoute, 
               private startService: StartService,
@@ -65,20 +61,14 @@ export class LocationPage implements OnInit, OnDestroy {
         
         //Ricevo le info della Location
         this.subSelectedLocation = this.startService.activeLocation
-          .subscribe(element => {
-
-            this.selectedLocation = element;
-            if (!this.selectedLocation.do_inserted) {
-
-              /** Imposto i Bottoni Card */
-              this.setButtonCard();
-
-
-            }
-          });
+                                                        .subscribe(myLocation => {
+                                                          //Location caricata
+                                                          this.onLoadLocation(myLocation);
+                                                        });
         
       }
       else {
+        //Non è arrivata la location
         this.navCtrl.navigateForward(['/']);
       }
     });
@@ -90,6 +80,21 @@ export class LocationPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * In arrivo una location 
+   * @param incomingLocation 
+   */
+  onLoadLocation(incomingLocation: Location) {
+    //Applico la location
+    this.selectedLocation = incomingLocation;
+
+    //Imposto i Bottoni delle Card
+    if (!this.selectedLocation.do_inserted) {
+      /** Imposto i Bottoni Card */
+      this.setButtonCard();
+    }
+
+  }
 
   setButtonCard() {
     let tipoSocieta: TipoSocieta;
@@ -105,14 +110,17 @@ export class LocationPage implements OnInit, OnDestroy {
 
   }
 
-  /** Apre il Preview di una immagine */
-  openPreview(img: LocationImage) {
+  /**
+   * Apertura della Preview di una immagine
+   * @param myImageUrl 
+   */
+  openPreview(myImageUrl: LocationImage) {
     
-
     this.modalCtrl.create({
-      component: GalleryPage,
+      component: ImageModalPage,
+      cssClass: 'transparent-modal',
       componentProps: {
-        imgLocation: img
+        'imageUrl': myImageUrl.IMAGEURL
       }
     })
     .then(modal => {
@@ -125,7 +133,7 @@ export class LocationPage implements OnInit, OnDestroy {
     });
 
     
-  }
+  }  
 
   
 

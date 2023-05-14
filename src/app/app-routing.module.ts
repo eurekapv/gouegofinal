@@ -89,7 +89,11 @@ const routes: Routes = [
     // ** dovrebbe rappresentare tutti i percorsi che non vengono intercettati dalle rotte precedenti
     path: '**',
     redirectTo: ''
+  },  {
+    path: 'image-modal',
+    loadChildren: () => import('./pages/image-modal/image-modal.module').then( m => m.ImageModalPageModule)
   }
+
 
   
   // {

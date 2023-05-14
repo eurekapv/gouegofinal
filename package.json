@@ -62,11 +62,11 @@
     "moment": "^2.27.0",
     "native": "^0.2.0",
     "native-run": "^0.3.0",
-    "ngx-pinch-zoom-13": "^2.5.6",
     "run": "^1.4.0",
     "rxjs": "^6.6.0",
     "scriptjs": "^2.5.9",
     "sportsfont": "^1.1.1",
+    "swiper": "^9.3.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
   },

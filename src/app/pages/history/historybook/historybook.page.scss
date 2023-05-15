@@ -4,6 +4,12 @@ swiper-container {
     --swiper-pagination-progressbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.25);
     --swiper-scrollbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
     --swiper-scrollbar-drag-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.5);
+    
+    .swiper-pagination-bullets{
+        bottom: initial;
+        top: 10px;
+    }
+    
   }
 
 .div-qr

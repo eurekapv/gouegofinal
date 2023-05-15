@@ -84,15 +84,17 @@ const routes: Routes = [
     path: 'agenda-custode',
     loadChildren: () => import('./pages/agenda-custode/agenda-custode.module').then( m => m.AgendaCustodePageModule)
   },
-
+  {
+    path: 'appstart',
+    loadChildren: () => import('./pages/appstart-home/appstart-home.module').then( m => m.AppstartHomePageModule)
+  },
   {
     // ** dovrebbe rappresentare tutti i percorsi che non vengono intercettati dalle rotte precedenti
     path: '**',
     redirectTo: ''
-  },  {
-    path: 'image-modal',
-    loadChildren: () => import('./pages/image-modal/image-modal.module').then( m => m.ImageModalPageModule)
-  }
+  },
+  
+
 
 
   

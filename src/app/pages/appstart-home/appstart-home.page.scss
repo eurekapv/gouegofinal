@@ -1,0 +1,10 @@
+ion-tabs{
+    ion-tab-bar{
+        border-style: none;
+        box-shadow: 0px 0px 6px 2px #00000029;
+        --my-border-radius: calc(var(--base-border-radius) + 15pt);
+        border-radius: var(--my-border-radius) var(--my-border-radius) 0 0 ;
+
+    }
+  
+  }

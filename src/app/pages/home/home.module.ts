@@ -16,7 +16,7 @@ import { PswRecoveryPageModule } from '../auth/psw-recovery/psw-recovery.module'
 import { SharedComponentsModule } from '../../shared/components/shared-components.module';
 import { AllegatilistPageModule } from '../history/historycourse/allegatilist/allegatilist.module';
 import { AllegatilistPage } from '../history/historycourse/allegatilist/allegatilist.page';
-
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
     imports: [
@@ -27,7 +27,8 @@ import { AllegatilistPage } from '../history/historycourse/allegatilist/allegati
         NewLoginPageModule,
         PswRecoveryPageModule,
         SharedComponentsModule,
-        AllegatilistPageModule
+        AllegatilistPageModule,
+        
         // RouterModule.forChild([
         //   {
         //     path: '',
@@ -35,6 +36,7 @@ import { AllegatilistPage } from '../history/historycourse/allegatilist/allegati
         //   }
         // ]),
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA], 
     declarations: [
         HomePage,
     ],

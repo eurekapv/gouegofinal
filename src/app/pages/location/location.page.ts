@@ -164,13 +164,13 @@ export class LocationPage implements OnInit, OnDestroy {
     
     //Apertura modale della pagina dei campi
     this.modalCtrl
-    .create({
-      component: CampiNewPage,
-      componentProps: {
-        myLocation: this.selectedLocation
-      }
-    })
-    .then(modal => modal.present());
+        .create({
+          component: CampiNewPage,
+          componentProps: {
+            'location': this.selectedLocation
+          }
+        })
+        .then(modal => modal.present());
   }
 
 

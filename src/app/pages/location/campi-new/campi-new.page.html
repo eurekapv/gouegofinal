@@ -1,9 +1,9 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
-    <ion-title>{{myLocation.DENOMINAZIONE|titlecase}}</ion-title>
+    <ion-title>{{_location.DENOMINAZIONE|titlecase}}</ion-title>
     
     <ion-buttons slot="end">
-      <ion-button (click)="close()">
+      <ion-button (click)="onClickCloseButton()">
         <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -14,34 +14,63 @@
 <ion-content>
 
   <!-- CAMPI PRESENTI -->
-  <div class="cnt" *ngIf="myLocation.CAMPO.length>0">
+  <div class="cnt" *ngIf="_flagAvalaibleCampi">
+
+    <ion-card 
+          color="tertiary"
+          class="card-info">
+      <ion-img alt="giocatori beach" src="assets/boysbeach_3_2_small.png">
+      </ion-img>
+      <ion-card-header>
+        <ion-card-title>{{_location.DENOMINAZIONE}}</ion-card-title>
+        <ion-card-subtitle>{{_location?.getAddressLocation(false)}}</ion-card-subtitle>
+      </ion-card-header>
+    
+      <ion-card-content>
+        Qui trovi i campi e le attività che potrai effettuare presso il nostro centro
+      </ion-card-content>
+    </ion-card>
+
+
     <ion-grid>
       <ion-row>
         <ion-col
-          sizeXs="10"
-          offsetXs="1"
-          sizeMd="6"
-          offsetMd="0"
-         *ngFor="let campo of myLocation.CAMPO">
+          size-xs="10"
+          offset-xs="1"
+          size-md="6"
+          offset-md="0"
+         *ngFor="let itemCampo of _listAvailableCampi">
+
           <ion-card class="card-campo " mode="ios">
-            <ion-slides [options]="getSliderOpts(campo)">
-              <ion-slide  *ngFor="let sport of campo.CAMPOSPORT">
-                <ion-card class="card-sport">
-                  <ion-card-content >
-                    <i slot="start" class="icon-sport"><span [innerHTML]="getIconSport(sport)"></span></i>
-                  </ion-card-content>
-                  <ion-card-header >
-                    {{sport._DESCRSPORT}}
-                  </ion-card-header>
-                </ion-card>
-              </ion-slide>
-            </ion-slides>
+
+            <swiper-container 
+                  init = "false"
+                  appSwiper [config]="sliderOpts">
+              <swiper-slide
+              *ngFor="let sport of itemCampo.CAMPOSPORT">
+
+              <!-- CARD ATTIVITA-->
+              <ion-card class="card-sport">
+                <ion-card-content >
+                  <i slot="start" class="icon-sport">
+                    <span [innerHTML]="getIconSport(sport)">
+                    </span>
+                  </i>
+                </ion-card-content>
+                <ion-card-header >
+                  {{sport._DESCRSPORT}}
+                </ion-card-header>
+              </ion-card>
+
+              </swiper-slide>
+            </swiper-container>
+
             <ion-card-header color="tertiary">
               <ion-card-title>
-                {{campo.DENOMINAZIONE}}
+                {{itemCampo.DENOMINAZIONE}}
               </ion-card-title>
               <ion-card-subtitle>
-                {{campo.TIPOLOGIA | tipoCampo}} {{ campo.STRUTTURAATTUALE | strutturaCampo }}
+                {{itemCampo.TIPOLOGIA | tipoCampo}} {{ itemCampo.STRUTTURAATTUALE | strutturaCampo }}
               </ion-card-subtitle>
             </ion-card-header>
           </ion-card>
@@ -53,11 +82,22 @@
   <!-- CAMPI NON PRESENTI -->
   <div 
     class="nofind-cnt"
-    *ngIf="myLocation.CAMPO.length === 0" 
-    id="cam-nofind-cnt">
+    *ngIf="_flagAvalaibleCampi == false" 
+    >
 
-    <ion-label>Caratteristiche Struttura</ion-label>
-    <ion-label>non disponibili</ion-label>
+    <ion-card>
+      <ion-img alt="giocatori beach" src="assets/boysbeach_3_2_small.png">
+
+      </ion-img>
+      <ion-card-header>
+        <ion-card-title>{{_location.DENOMINAZIONE}}</ion-card-title>
+        <ion-card-subtitle>Informazioni non disponibili</ion-card-subtitle>
+      </ion-card-header>
+    
+      <ion-card-content>
+        Non sono disponibili le caratteristiche del Centro
+      </ion-card-content>
+    </ion-card>
     
   </div>
 

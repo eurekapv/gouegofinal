@@ -8,79 +8,80 @@
 </ion-header>
 
 <ion-content>
-  <!-- IN ATTESA DATI  -->
-  <!-- DATI  NON RICEVUTI -->
-  <!-- <div *ngIf="showSpinner" id="crs-spinner">
-    <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  </div> -->
-
-<!-- <div *ngIf="!showSpinner"> -->
 <div>
-  <ion-slides [options]="sliderOpts">
-    <ion-slide *ngFor="let docPianificazione of myPrenotazione.PRENOTAZIONEPIANIFICAZIONE; index as i">
-      <div style="width: 100%;" >
-        <div class="ion-text-center div-qr" mode="md">
-            <h6>ID: {{docPianificazione.PROGRESSIVO}}</h6>
-            <qrcode [qrdata]="docPianificazione.ID"></qrcode>
-            <p>
-              <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-              Presenta il Qr-code o l'ID prenotazione all'ingresso
-            </p>
-        </div>
-    
-        <div class="ion-text-center div-btns">
-          <ion-button layout="icon-top" fill="clear" size="large" (click)="onClickTrash(docPianificazione.ID)">
-            <ion-icon name="trash-outline"></ion-icon>
-          </ion-button>
-          <ion-button *ngIf="docPianificazione && docPianificazione['_EMAIL_Location']" fill="clear" size="large" href="{{'mailto:'+docPianificazione['_EMAIL_Location']+'?subject=Prenotazione numero '+docPianificazione.PROGRESSIVO}}">
-            <ion-icon name="mail-outline"></ion-icon>
-          </ion-button>
-          <ion-button  fill="clear" size="large" (click)="onShare(docPianificazione)">
-            <ion-icon name="share-social-outline"></ion-icon>
-          </ion-button>
-        </div>
-    
-        <ion-list lines="none">
-          <ion-item lines="full" *ngIf="myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length>1">
-            <ion-icon *ngIf="i!=0" color="primary" class="no-margin-vertical" slot="start" name="chevron-back"></ion-icon>
-            <ion-label class="no-margin-vertical">DATA {{i+1}} DI {{myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length}}</ion-label>
-            <ion-icon *ngIf="i<myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length-1" color="primary" class="no-margin-vertical" slot="end" name="chevron-forward"></ion-icon>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              <h2>{{docPianificazione['_DENOMINAZIONE_Sport']}}</h2>
-            </ion-label>
-            <ion-chip color="primary">
-              <i class="icon-sport"><span [innerHTML]="getIcon(docPianificazione.IDSPORT)"></span></i> 
-            </ion-chip>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              <h2>{{docPianificazione.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'|titlecase}}</h2>
-              <p>dalle {{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} alle {{docPianificazione.DATAORAFINE | date : 'HH:mm'}} </p>
-            </ion-label>
-            <ion-chip color="primary">
-              {{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE==1? 'Ora':'Ore'}} 
-            </ion-chip>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              <h2>{{docPianificazione['_DENOMINAZIONE_Campo']}}</h2>
-              <p>{{docPianificazione['_COMUNE_Location']|titlecase}}</p>
-              <p>{{docPianificazione['_INDIRIZZO_Location']|titlecase}}</p>
-            </ion-label>
-            <ion-chip color="primary">
-              {{docPianificazione.NUMPARTECIPANTI}}
-              <ion-icon name="person"></ion-icon>
-            </ion-chip>
-          </ion-item>
-        </ion-list>
-      </div>
-    </ion-slide>
-  </ion-slides>
-    <ion-item color="light">
+
+  <swiper-container 
+      init = "false"
+      appSwiper [config]="sliderOpts">
+      <swiper-slide 
+          *ngFor="let docPianificazione of myPrenotazione.PRENOTAZIONEPIANIFICAZIONE; index as i">
+          <div style="width: 100%;" >
+            <div class="ion-text-center div-qr" mode="md">
+                <h6>ID: {{docPianificazione.PROGRESSIVO}}</h6>
+                <qrcode [qrdata]="docPianificazione.ID"></qrcode>
+                <p>
+                  <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+                  Presenta il Qr-code o l'ID prenotazione all'ingresso
+                </p>
+            </div>
+        
+            <div class="ion-text-center div-btns">
+              <ion-button layout="icon-top" fill="clear" size="large" (click)="onClickTrash(docPianificazione.ID)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+              <ion-button *ngIf="docPianificazione && docPianificazione['_EMAIL_Location']" fill="clear" size="large" href="{{'mailto:'+docPianificazione['_EMAIL_Location']+'?subject=Prenotazione numero '+docPianificazione.PROGRESSIVO}}">
+                <ion-icon name="mail-outline"></ion-icon>
+              </ion-button>
+              <ion-button  fill="clear" size="large" (click)="onShare(docPianificazione)">
+                <ion-icon name="share-social-outline"></ion-icon>
+              </ion-button>
+            </div>
+        
+            <ion-list lines="none">
+              <ion-item lines="full" *ngIf="myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length>1">
+                <ion-icon *ngIf="i!=0" color="primary" class="no-margin-vertical" slot="start" name="chevron-back"></ion-icon>
+                <ion-label class="no-margin-vertical">DATA {{i+1}} DI {{myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length}}</ion-label>
+                <ion-icon *ngIf="i<myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length-1" color="primary" class="no-margin-vertical" slot="end" name="chevron-forward"></ion-icon>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h2>{{docPianificazione['_DENOMINAZIONE_Sport']}}</h2>
+                </ion-label>
+                <ion-chip color="primary">
+                  <i class="icon-sport"><span [innerHTML]="getIcon(docPianificazione.IDSPORT)"></span></i> 
+                </ion-chip>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h2>{{docPianificazione.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'|titlecase}}</h2>
+                  <p>dalle {{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} alle {{docPianificazione.DATAORAFINE | date : 'HH:mm'}} </p>
+                </ion-label>
+                <ion-chip color="primary">
+                  {{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE==1? 'Ora':'Ore'}} 
+                </ion-chip>
+              </ion-item>
+              <ion-item>
+                <ion-label>
+                  <h2>{{docPianificazione['_DENOMINAZIONE_Campo']}}</h2>
+                  <p>{{docPianificazione['_COMUNE_Location']|titlecase}}</p>
+                  <p>{{docPianificazione['_INDIRIZZO_Location']|titlecase}}</p>
+                </ion-label>
+                <ion-chip color="primary">
+                  {{docPianificazione.NUMPARTECIPANTI}}
+                  <ion-icon name="person"></ion-icon>
+                </ion-chip>
+              </ion-item>
+            </ion-list>
+          </div>
+      </swiper-slide>
+  </swiper-container>
+
+  <!-- DETTAGLI PAGAMENTO -->
+  <ion-list>
+    <ion-list-header>
       PAGAMENTO
-    </ion-item>
+    </ion-list-header>
+
     <ion-item lines="full">
       <ion-label slot="start">
         Importo
@@ -105,6 +106,9 @@
         {{myPrenotazione.RESIDUO | currency : 'EUR'}}
       </ion-label>
     </ion-item>
+
+  </ion-list>
+
   </div>
 </ion-content>
 

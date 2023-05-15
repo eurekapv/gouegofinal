@@ -9,7 +9,8 @@ import { HistorybookPageRoutingModule } from './historybook-routing.module';
 import { HistorybookPage } from './historybook.page';
 
 import { QRCodeModule } from 'angularx-qrcode'
-
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 @NgModule({
@@ -18,10 +19,11 @@ import { QRCodeModule } from 'angularx-qrcode'
     FormsModule,
     IonicModule,
     HistorybookPageRoutingModule,
-    
-    QRCodeModule
+    QRCodeModule,
+    SharedComponentsModule
       
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], 
   declarations: [HistorybookPage]
 })
 export class HistorybookPageModule {}

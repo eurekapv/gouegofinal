@@ -10,33 +10,47 @@ ion-content{
 
 
 
-ion-card.card-sport{
+ion-card {
     
-    ion-card-header{
-        padding:5px;
-        width: 110px;
+    &.card-sport {
+
+        ion-card-header{
+            // padding:5px;
+            // width: 110px;
+            text-align: center;
+        }
+    
+        ion-card-content{
+            padding: 5px;
+            text-align: center;
+    
+            i{
+                font-size: 40px;
+            }
+        }
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 
-    ion-card-content{
-        padding: 5px;
+    &.card-campo{
+    
+        ion-card-header{
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+       margin:5px;
     }
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+
+    &.card-info {
+        ion-img {
+            
+        }
+    }
 
 }
 
-i{
-    font-size: 40px;
-}
 
-ion-card.card-campo{
 
-    ion-card-header{
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-   margin:5px;
-}
 

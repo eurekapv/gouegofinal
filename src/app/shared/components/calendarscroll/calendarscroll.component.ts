@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import * as moment from "moment";
-import { IonSlides, PickerController } from '@ionic/angular';
+import { PickerController } from '@ionic/angular';
 import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
 import { ValueList, Mesi } from 'src/app/models/valuelist.model';
-import { Swiper, SwiperOptions } from 'swiper';
+import { Swiper, SwiperOptions, Navigation } from 'swiper';
 import { LogApp } from 'src/app/models/log.model';
-
+Swiper.use([Navigation]);
 
 @Component({
   selector: 'app-calendarscroll',
@@ -17,14 +17,17 @@ export class CalendarscrollComponent implements OnInit {
 
   @Input() activeDay = new Date();
   @Output() onChangeActiveDay = new EventEmitter<Date>();
-  // @ViewChild('sliderDays') sliderDays: IonSlides;
   @ViewChild('swiperDays') swiperRef: ElementRef | undefined;
   swiper?: Swiper;
 
   listDay: CalendarScrollItem[] = [];
   listMesi: ValueList[] = []; //Elenco dei mesi da visualizzare nel Picker
 
-  public sliderOpts: SwiperOptions = {
+  public sliderOpts: SwiperOptions = { 
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },      
     slidesPerView: 15,
     spaceBetween: 3,
     initialSlide: 1, //Dovrei farla variabile
@@ -57,8 +60,6 @@ export class CalendarscrollComponent implements OnInit {
 
   constructor(private pickController:PickerController) { 
     
-    //this.setStartSlide();
-    
     //Creo l'Array dei Mesi che utilizzero nel Picker Date
     this.listMesi = ValueList.getArray(Mesi);
   }
@@ -68,7 +69,7 @@ export class CalendarscrollComponent implements OnInit {
    * Lo Slider è stato creato nel DOM
    */
   swiperReady() {
-    LogApp.consoleLog('Inizializzazione conclusa');
+    LogApp.consoleLog('Swiper Ready','warn');
 
     //Memorizzo lo swiper presente
     this.swiper = this.swiperRef?.nativeElement.swiper;
@@ -120,6 +121,7 @@ export class CalendarscrollComponent implements OnInit {
    * @param indexSlideZeroBased Indice della Slide
    */
   goToSlide(indexSlideZeroBased: number) {
+    
     if (this.swiper) {
       this.swiper?.slideTo(indexSlideZeroBased);
     }
@@ -145,7 +147,7 @@ export class CalendarscrollComponent implements OnInit {
     totMonthDays += 1; //Incremento EndDay per usare la condizione <
 
     //Aggiungo pulsante per andare indietro
-    this.listDay.push({type:'prev'});
+    //this.listDay.push({type:'prev'});
 
     for (let index = 1; index < totMonthDays; index++) {
 
@@ -157,7 +159,7 @@ export class CalendarscrollComponent implements OnInit {
     }
 
     //Aggiungo pulsante per andare avanti
-    this.listDay.push({type:'next'});
+    //this.listDay.push({type:'next'});
   }
 
   // Ritorna il colore del Button
@@ -210,6 +212,29 @@ export class CalendarscrollComponent implements OnInit {
     }
   }
 
+  /**
+   * Spostamento al mese successivo/precedente
+   * @param direction 
+   */
+  onClickMonthButton(direction: 'next'|'prev') {
+    let nextDate: Date;
+
+    //Cambiamento al mese successivo o prossimo
+      switch (direction) {
+
+        case 'next':
+          //Vado al giorno 1 del mese successivo
+          nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).add(1, 'M')).toDate();
+          this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
+          break;
+
+        case 'prev':
+          //Vado al giorno ultimo del mese precedente
+          nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).subtract(1, 'days')).toDate();
+          this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
+          break;
+      }
+  }
 
 
   /**

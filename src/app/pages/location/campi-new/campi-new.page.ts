@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Location } from '../../../models/location.model';
 import { StartService } from 'src/app/services/start.service';
 import { ModalController } from '@ionic/angular';
@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Campo } from 'src/app/models/campo.model';
 import { Sport } from 'src/app/models/sport.model'
 import { CampoSport } from 'src/app/models/camposport.model';
-
+import { Swiper, SwiperOptions } from 'swiper';
 
 
 @Component({
@@ -18,38 +18,39 @@ export class CampiNewPage implements OnInit {
   myLocation: Location;
   listenLocation: Subscription;
   listSport: Sport[]=[];
+  @ViewChild('swiper') swiperRef: ElementRef | undefined;
+  swiper?: Swiper;
 
-  //opzioni dello slider
-
-  getSliderOpts (campo : Campo){
-
-    let _sliderOpts = {
-      slidesPerView: 2.3,
+  @Input() set location(value:Location) {
+    this._location = value;
+    if (this._location.CAMPO && this._location.CAMPO.length != 0) {
+      this._listAvailableCampi = this._location.CAMPO;
+      this._flagAvalaibleCampi = true;
+      //Richiedo le informazioni degli Sport
+      this.requestSports();
     }
-
-    if (campo){
-      if (campo.CAMPOSPORT){
-        if (campo.CAMPOSPORT.length <= 2){
-          _sliderOpts.slidesPerView = campo.CAMPOSPORT.length;
-        }
-      }
+    else {
+      this._flagAvalaibleCampi = false;
+      this._listAvailableCampi = [];
     }
-    return _sliderOpts;
-
   }
+  _location: Location;
+  _listAvailableCampi: Campo[] = [];
+  _flagAvalaibleCampi: boolean = false;
+
+  public sliderOpts: SwiperOptions = {
+    slidesPerView: 2.3,
+  }
+
+  
+
+
 
 
   constructor(private startService: StartService, 
               private mdlController: ModalController) { }
 
   ngOnInit() {
-
-    //Sottoscrivo a ricevere le infomazioni aggiuntive
-    this.listenLocation = this.startService.requestLocationCampiSport(this.myLocation)
-                                            .subscribe(filledLocation => {
-                      this.myLocation = filledLocation;
-    });
-
     
   }
 
@@ -60,18 +61,26 @@ export class CampiNewPage implements OnInit {
   }
 
   /**
+   * Effettuo la richiesta per ottenere gli sport
+   */
+  requestSports() {
+    //Sottoscrivo a ricevere le infomazioni aggiuntive
+    this.listenLocation = this.startService.requestLocationCampiSport(this._location)
+                                            .subscribe(incomingLocation => {
+                                                  //Reimposto la location con i campi e gli sport
+                                                  this._location = incomingLocation;
+                                                  this._listAvailableCampi = this._location?.CAMPO;
+                                                  this._flagAvalaibleCampi = (this._listAvailableCampi?.length != 0)
+                                            });
+  }
+
+  /**
    * Chiude la videata
    */
-  close() {
+  onClickCloseButton() {
     this.mdlController.dismiss();
   }
 
-  /** 
-   * Cambia l'espansione del campo
-   */
-  switchExpansion(campo: Campo) {
-    campo.selected = !campo.selected;
-  }
 
 
   

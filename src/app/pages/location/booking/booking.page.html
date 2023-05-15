@@ -33,6 +33,7 @@
         [sportList]="listLocationSport" 
         (sportChanged)="onChangeSport($event)" >
     </app-sport-scroll>
+
   <app-campi-scroll 
       [selectedCampo]="selectedCampo" 
       [campiList]="availableFields" 
@@ -98,21 +99,38 @@
   
   
       <div class="nofind-cnt" *ngIf="!actualSlotDay.APERTOCHIUSO">
-        <!-- <img src="https://ingliando.files.wordpress.com/2012/02/stop.png"> -->
-        <br/>
-        <ion-label>Prenotazione non effettuabile</ion-label>
-        <br/>
-        <ion-label>Cercare slot liberi modificando</ion-label>
-        <br/>
-        <ion-label>data, attività o struttura</ion-label>
+        <ion-card>
+          <ion-img alt="giocatori beach" src="assets/boysplaying_small.png">
+          </ion-img>
+          <ion-card-header>
+            <ion-card-title>Spiacenti</ion-card-title>
+            <ion-card-subtitle>Prenotazione non effettuabile</ion-card-subtitle>
+          </ion-card-header>
+        
+          <ion-card-content>
+            Cercare slot liberi modificando data, attività o struttura
+          </ion-card-content>
+        </ion-card>
       </div>
   
     </div>
 
     <!-- PRENOTAZIONE NON POSSIBILE-->
     <div class="nofind-cnt" *ngIf="!bookable">
-      <ion-label>Prenotazione</ion-label>
-      <ion-label>non disponibile</ion-label>
+      <ion-card>
+        <ion-img alt="giocatori beach" src="assets/boysplaying_small.png">
+        </ion-img>
+        <ion-card-header>
+          <ion-card-title>Spiacenti</ion-card-title>
+          <ion-card-subtitle>Prenotazione non disponibile</ion-card-subtitle>
+        </ion-card-header>
+      
+        <ion-card-content>
+          Non è possibile effettuare prenotazioni
+        </ion-card-content>
+      </ion-card>
+
+
     </div>
   </div>
 

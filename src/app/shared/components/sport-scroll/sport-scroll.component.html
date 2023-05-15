@@ -1,8 +1,10 @@
 
 <div>
-  <ion-item lines="none" *ngIf="_flagAvailableSports==false">
-    <ion-label>
-      Nessuna attività prevista
+  <ion-item 
+        color="light"
+        lines="none" *ngIf="_flagAvailableSports==false">
+    <ion-label class="ion-text-wrap">
+      Non sono previste attività nel centro
     </ion-label>
     <ion-icon slot="start" name="ban" color="danger"></ion-icon>
   </ion-item>

@@ -384,19 +384,19 @@ export class Location extends IDDocument {
     getAddressLocation(shortVersion: boolean) {
       let value = '';
       if (shortVersion) {
-        if (this.INDIRIZZO.length !== 0)  {
+        if (this.INDIRIZZO && this.INDIRIZZO.length !== 0)  {
           value = this.INDIRIZZO;
         }
-        else if (this.COMUNE.length !== 0) {
+        else if (this.COMUNE && this.COMUNE.length !== 0) {
           value = this.COMUNE;
         }
       }
       else {
-        if (this.INDIRIZZO.length !== 0)  {
+        if (this.INDIRIZZO && this.INDIRIZZO.length !== 0)  {
           value = this.INDIRIZZO;
         }
 
-        if (this.COMUNE.length !== 0) {
+        if (this.COMUNE && this.COMUNE.length !== 0) {
           if (value.length !== 0) {
             value += ' - ';
           }

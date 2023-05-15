@@ -17,7 +17,8 @@ export class SwiperDirective implements AfterViewInit {
 
   ngAfterViewInit() {
     Object.assign(this.swiperElement, this.config);
-    console.warn('Inizializzo Swiper');
+    LogApp.consoleLog('Eseguita Direttiva che inizializza lo Swiper con i parametri ','warn');
+    
     // @ts-ignore
     this.el.nativeElement.initialize();
   }

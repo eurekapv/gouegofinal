@@ -1,69 +1,95 @@
-<ion-grid class="ion-no-padding ion-no-margin">
-  <ion-row class=" date-row">
-    <ion-col (click)="showPickerDate()" size="" class="ion-text-center">
-      <div class="custom-div">
-        <h5 class="ion-no-margin custom-h5 ion-text-center">
-          <span> {{ activeDay | date: "EEEE dd MMMM yyyy" | titlecase}}</span>
-          <ion-icon name="chevron-down" color="primary" class=""></ion-icon>
-        </h5>
-      </div>
+<!-- GRID MONTH PICKER -->
+<ion-grid 
+      class="picker-month ion-no-padding ion-no-margin">
+  <ion-row>
+    <ion-col 
+        class="ion-text-center"
+        size="2">
+      <ion-button
+          (click) ="onClickMonthButton('prev')"
+          class="ion-no-padding ion-no-margin" 
+          shape="round"
+          size="medium" 
+          fill="clear" 
+          color="danger">
+      <ion-icon 
+          slot="icon-only" 
+          name="chevron-back-outline">
+        </ion-icon>
+    </ion-button>
+    
+    </ion-col>
+
+    <ion-col 
+        (click)="showPickerDate()" size="8" class="ion-text-center">
+
+        <ion-button 
+          shape="round"
+          color = "danger"
+          expand="block"
+          fill="outline" 
+          size="medium">
+                {{ activeDay | date: "EEE dd MMM yyyy" | titlecase}}
+        </ion-button>
+    </ion-col>
+
+    <ion-col 
+          class="ion-text-center"
+          size="2">
+      <ion-button
+          (click) ="onClickMonthButton('next')" 
+          class="ion-no-padding ion-no-margin" 
+          shape="round"
+          size="medium" 
+          fill="clear" 
+          color="danger">
+      <ion-icon 
+          slot="icon-only" 
+          name="chevron-forward-outline">
+        </ion-icon>
+    </ion-button>
     </ion-col>
   </ion-row>
+  </ion-grid> 
 
+
+<!-- GRID PICKER DAY -->
+<ion-grid class="picker-day ion-no-margin">
   <ion-row class="ion-no-margin ion-padding-horizontal">
+      <ion-col>
+        <div class="swiper_wrap">
+          <div class="slider-wrapper">
+            <div class="swiper-button-prev"></div>
+            <swiper-container
+                  navigation="true" 
+                  (afterinit)="swiperReady()"
+                  appSwiper [config]="sliderOpts" 
+                  init="false"
+                  #swiperDays>
+            <swiper-slide *ngFor="let objDay of listDay">
+      
 
-        <swiper-container 
-            (afterInit)="swiperReady()"
-            appSwiper [config]="sliderOpts" 
-            init="false"
-            #swiperDays>
-      <swiper-slide *ngFor="let objDay of listDay">
-
-        <ion-button *ngIf="objDay.type == 'prev'" class="ion-no-padding ion-no-margin btn-day" shape="round"
-          size="large" fill="outline" color="secondary" (click)="onClickButton(objDay)">
-          <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
-        </ion-button>
-
-        <ion-button *ngIf="objDay.type == 'day'" class="ion-no-padding ion-no-margin btn-day" shape="round" size="large"
-          [fill]="getFillButton(objDay)" color="secondary" (click)="onClickButton(objDay)">
-          {{ objDay.numValue }}
-          <br />
-          {{objDay.dateValue | date : 'EEEEE'}}
-        </ion-button>
-
-        <ion-button *ngIf="objDay.type == 'next'" class="ion-no-padding ion-no-margin btn-day" shape="round"
-          size="large" fill="outline" color="secondary" (click)="onClickButton(objDay)">
-          <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
-        </ion-button> 
-
-      </swiper-slide>
-    </swiper-container>
-
-    <!-- <ion-slides [options]="sliderOpts" #sliderDays>
-      <ion-slide *ngFor="let objDay of listDay">
-
-        <ion-button *ngIf="objDay.type == 'prev'" class="ion-no-padding ion-no-margin btn-day" shape="round"
-          size="large" fill="outline" color="secondary" (click)="onClickButton(objDay)">
-          <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
-        </ion-button>
-
-        <ion-button *ngIf="objDay.type == 'day'" class="ion-no-padding ion-no-margin btn-day" shape="round" size="large"
-          [fill]="getFillButton(objDay)" color="secondary" (click)="onClickButton(objDay)">
-          {{ objDay.numValue }}
-          <br />
-          {{objDay.dateValue | date : 'EEEEE'}}
-        </ion-button>
-
-        <ion-button *ngIf="objDay.type == 'next'" class="ion-no-padding ion-no-margin btn-day" shape="round"
-          size="large" fill="outline" color="secondary" (click)="onClickButton(objDay)">
-          <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
-        </ion-button>        
-
-
-
-      </ion-slide>
-    </ion-slides> -->
-
+      
+              <ion-button 
+                    *ngIf="objDay.type == 'day'" 
+                    class="ion-no-padding ion-no-margin btn-day" 
+                    shape="round" 
+                    size="large"
+                    [fill]="getFillButton(objDay)" 
+                    color="secondary" 
+                    (click)="onClickButton(objDay)">
+                {{ objDay.numValue }}
+                <br />
+                {{objDay.dateValue | date : 'EEEEE'}}
+              </ion-button>
+      
+      
+            </swiper-slide>
+          </swiper-container>            
+            <div class="swiper-button-next"></div>
+          </div>
+        </div>
+      </ion-col>
 
   </ion-row>
 </ion-grid>

@@ -17,7 +17,8 @@ import { PageType } from 'src/app/models/valuelist.model'
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { LogApp } from 'src/app/models/log.model';
-
+import { Swiper, SwiperOptions, Navigation, Pagination } from 'swiper';
+Swiper.use([Navigation, Pagination]);
 
 @Component({
   selector: 'app-historybook',
@@ -41,7 +42,9 @@ export class HistorybookPage implements OnInit, OnDestroy {
   //i metodi di pagamento possibili
   arPayments : AreaPaymentSetting[] = [];
 
-  sliderOpts={
+  //Opzioni per lo slider
+  sliderOpts: SwiperOptions = {
+    pagination: true,
     slidesPerView: 1,
     spaceBetween: 0,
     initialSlide: 0 

@@ -62,6 +62,52 @@ export class IscrizionecorsoService {
     })
   }
 
+  /**
+   * Chiama il server e richiede l'importo per una iscrizione del corso
+   * Al minimo deve essere valorizzato IDCorso, IDUtente
+   * @param docIscrizione Iscrizione Corso
+   * @returns PostResponse 
+   */
+  requestTotaleIscrizione(docIscrizione: IscrizioneCorso):Promise<IscrizioneCorso> {
+
+    return new Promise<IscrizioneCorso>((resolve, reject) => {
+      let myPostParams : PostParams = new PostParams();
+      
+      if (docIscrizione) {
+        myPostParams.key = 'sampleIscrizione';
+        myPostParams.value = docIscrizione;
+
+        this.docStructureService.requestForFunction(docIscrizione,'mobBookingTotale',docIscrizione,myPostParams)
+                        .then((data: any) => {
+                          let elIscrizione: IscrizioneCorso;
+                          elIscrizione = new IscrizioneCorso();
+
+                          
+                          if (data) {
+                            elIscrizione.setJSONProperty(data);
+                          }
+
+                          console.log('Ecco Data');
+                          console.log(data);
+
+                          console.log('Ecco Iscrizione');
+                          console.log(elIscrizione);
+
+                          resolve(elIscrizione);
+                        })
+                        .catch(error => {
+                          reject(error)
+                        })
+
+
+      }
+      else {
+        reject('Errore preparazione documenti');
+      }
+
+    })
+  }  
+
 
   /**
    * Chiama il server e richiede una nuova iscrizione corso

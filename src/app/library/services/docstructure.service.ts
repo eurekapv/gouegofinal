@@ -1287,7 +1287,8 @@ public getRelDocOriginale( docStart: IDDocument,
           }
 
           //Effettuo la chiamata POST
-          this.apiService.httpPost(myUrl,myHeaders,myParams, jsonBodyOrDoc)
+          //Era cosi' ho cambiato la variabile alla fine this.apiService.httpPost(myUrl,myHeaders,myParams, jsonBodyOrDoc)
+          this.apiService.httpPost(myUrl,myHeaders,myParams, myJsonBody)
           .subscribe(response => {
             resolve(response);
           }, error => {

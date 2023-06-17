@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { AlertController, LoadingController, ModalController, NavController, NavParams, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
@@ -8,18 +7,18 @@ import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { Corso } from 'src/app/models/corso.model';
 import { Location } from 'src/app/models/location.model';
 import { PaymentProcess } from 'src/app/models/payment-process.model';
-import { PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoRigoIncasso, TipoScadenza } from 'src/app/models/valuelist.model';
+import { PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoRigoIncasso, TipoScadenza, ZOrderIncasso } from 'src/app/models/valuelist.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { StartService } from 'src/app/services/start.service';
-import { Browser } from '@capacitor/browser';
 import { AreaLink } from 'src/app/models/arealink.model';
 import { Settimana } from 'src/app/models/settimana.model';
-import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { Utente } from 'src/app/models/utente.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { IscrizioneCorso } from 'src/app/models/iscrizionecorso.model';
 import { IscrizioneIncasso } from 'src/app/models/iscrizioneincasso.model';
 import { TipoPagamento } from 'src/app/models/tipopagamento.model';
+import { IscrizioneTesseramento } from 'src/app/models/iscrizione-tesseramento';
+import { LogApp } from 'src/app/models/log.model';
 
 
 @Component({
@@ -29,18 +28,21 @@ import { TipoPagamento } from 'src/app/models/tipopagamento.model';
 })
 export class BookcoursePage implements OnInit, OnDestroy {
 
-  myCorso: Corso = new Corso();
-  subMyCorso: Subscription;
+  corsoDoc: Corso = new Corso();  //Corso di riferimento
+  listenerCorsoDoc: Subscription;
 
-  myLocation: Location = new Location(); 
+  iscrizioneDoc: IscrizioneCorso; //Iscrizione
+  locationDoc: Location = new Location(); 
+
+  userDoc: Utente;
+  listenerUserDoc: Subscription;
+
 
   isDesktop: boolean;
   iconColor = 'primary';
   
   userLogged = false;
-  subUserLogged: Subscription;
-  docUser: Utente;
-  subUser: Subscription;
+  listenerUserLogged: Subscription;
 
   //Gestione Abilitazione Iscrizioni
   listenSelectedArea:Subscription;
@@ -48,7 +50,7 @@ export class BookcoursePage implements OnInit, OnDestroy {
   enableIscrizioni:boolean = false;
 
   //accettazione delle condizioni di vendita
-  disclaimer: boolean =false;
+  disclaimer: boolean = true;
 
   //Configurazioni di pagamento
   myListPayment: AreaPaymentSetting[];
@@ -116,17 +118,22 @@ export class BookcoursePage implements OnInit, OnDestroy {
  */
 onListenSelectedUser() {
   //Controllo se l'utente è loggato
-  this.subUserLogged = this.startService.utenteLogged
+  this.listenerUserLogged = this.startService.utenteLogged
                             .subscribe(element => {
                                     this.userLogged = element;
                             });
 
   //Sottoscrivo al documento Utente
-  this.subUser = this.startService.utente.subscribe(elUser => {
-      this.docUser = elUser;
+  this.listenerUserDoc = this.startService.utente.subscribe(elUser => {
+      this.userDoc = elUser;
+      //Riconfiguro il documento di Iscrizione
+      this.prepareDocIscrizione(this.corsoDoc, this.userDoc);
   })                            
 }
 
+/**
+ * Porzione di inizializzazione
+ */
 ngOnInit() {
 
   //this.isDesktop = this.startService.isDesktop;
@@ -134,55 +141,59 @@ ngOnInit() {
   this.isDesktop = false;
 
   //Recupero i parametri di chiamata
-  this.myCorso = this.navParams.get('params');
+  this.corsoDoc = this.navParams.get('params');
   
-  if (this.myCorso==null||this.myCorso==undefined){
+  if (this.corsoDoc == null || this.corsoDoc == undefined){
 
-      //se non ho i parametri, esco
-      this.showToastMessage("Corso non trovato");
+      //Esco e avviso
+      this.startService.presentToastMessage('Corso non recuperato');
 
       //Chiudo la modale
       this.closeModal();
   }
   else {
     //Recupero le giornate di corso
-    this.onlyDaysCorso = this.myCorso.getArrayGiorniCorso();
+    this.onlyDaysCorso = this.corsoDoc.getArrayGiorniCorso();
 
-    //Richiedo i Posti Disponibili per l'iscrizione
-    this.requestPostiDisponibili(this.myCorso.ID);
+    //Procedo con la preparazione dell'environment
+    this.prepareEnvironment();
 
-    //Richiedo la Location
-
-    //Imposto il loading
-    this.loadingController.create({
-      spinner: "circular",
-      message: 'Caricamento',
-      backdropDismiss: true
-    })
-    .then(elLoading => {
-
-      //Mostro il loading
-      elLoading.present();
-
-      //ora richiedo la location
-      this.requestLocationById(this.myCorso.IDLOCATION)
-          .then(() => {
-            //Posso rimanere nella pagina
-            elLoading.dismiss();
-          })
-          .catch(error => {
-
-            elLoading.dismiss();
-
-            this.showToastMessage('Spiacenti, errori nel recupero del corso');
-
-            this.closeModal();                         
-          })      
-
-    })
   }
             
 } 
+
+/**
+ * Effettua la preparazione dei documenti e dell'ambiente operativo
+ */
+prepareEnvironment():void {
+  let arPromise = [];
+
+  //Step A - Richiedo i posti diponibili
+  arPromise.push(this.requestPostiDisponibili(this.corsoDoc.ID));
+  //Step B - Richiesta Location
+  arPromise.push(this.requestLocationById(this.corsoDoc.IDLOCATION));
+  //Step C - Preparazione del documento Iscrizione
+  arPromise.push(this.prepareDocIscrizione(this.corsoDoc, this.userDoc));
+
+  this.startService.showLoadingMessage('Recupero in corso')
+                   .then(elLoading => {
+                      elLoading.present();
+                      Promise.all(arPromise)
+                             .then(() => {
+                                //Posso chiudere il loading
+                                elLoading.dismiss();
+                             })
+                             .catch(error => {
+
+                              //Errore o chiusura loading
+                              elLoading.dismiss();
+                              //Mostro un Toast
+                              this.startService.presentToastMessage('Spiacenti, errori nel recupero del corso');
+                              //Chiudo tutto
+                              this.closeModal();                         
+                            })                                   
+                   })
+}
 
 /**
  * Contatta il server per sapere se ci sono posti per l'iscrizione
@@ -192,30 +203,125 @@ ngOnInit() {
  * 
  * @param idCorso idCorso richiesto
  */
-requestPostiDisponibili(idCorso: string) {
+requestPostiDisponibili(idCorso: string):Promise<void> {
   
+  return new Promise<void>((resolve, reject) => {
 
-  this.startService.getPostiDisponibiliCorso(idCorso)
-      .then((elResponse:PostResponse) => {
-        if (elResponse.result) {
-          this.flagPostiDisponibili = true;
-        }
-        else {
-          this.flagPostiDisponibili = false;
-        }
+    //Chiamo il server e chiedo    
+    this.startService.getPostiDisponibiliCorso(idCorso)
+        .then((elResponse:PostResponse) => {
+          if (elResponse.result) {
+            this.flagPostiDisponibili = true;
+          }
+          else {
+            this.flagPostiDisponibili = false;
+          }
 
-        this.txtPostiDisponibili = elResponse.message;
-
-      })
+          this.txtPostiDisponibili = elResponse.message;
+          resolve();
+        })
+        .catch(error => {
+          reject();
+        })
+  })
 }
 
+
+//Preparazione del documento di Iscrizione
+prepareDocIscrizione(myCorso: Corso, myUtente:Utente):Promise<void> {
+
+  return new Promise<void>((resolve, reject) => {
+    
+    let requestRecalc = false;
+
+    //Documento non presente, faccio la richiesta
+    if (!this.iscrizioneDoc) {
+      this.iscrizioneDoc = new IscrizioneCorso();
+      this.iscrizioneDoc.DATAISCRIZIONE = new Date();
+    }
+
+    //E' presente il Documento del Corso
+    if (myCorso) {
+      if (myCorso.ID != this.iscrizioneDoc.IDCORSO) {
+        this.iscrizioneDoc.IDCORSO = myCorso.ID;
+        requestRecalc = true;
+      }
+    }
+
+    //E' presente il Documento del Utente    
+    if (myUtente) {
+      if (myUtente.ID != this.iscrizioneDoc.IDUTENTE) {
+        this.iscrizioneDoc.IDUTENTE = myUtente.ID;
+        requestRecalc = true;
+      }
+    }      
+  
+    //Devo procedere con la richiesta del totale
+    if (requestRecalc) {
+      //Preparo la chiamata al Server
+      this.startService.requestCalcoloTotaleIscrizioneCorso(this.iscrizioneDoc)
+                       .then(elIscrizione => {
+                        this.iscrizioneDoc = elIscrizione;
+                        resolve();
+                       })
+                       .catch(error => {
+                        LogApp.consoleLog(error);
+                        reject(error);
+                       })
+    }
+    else {
+      //Se non devo chiamare va bene cosi
+      resolve();
+    }
+
+  })
+}
+
+/**
+ * Richiedo la location
+ * @param idLocation idLocation 
+ */
+requestLocationById(idLocation: string): Promise<void>{
+
+  return new Promise<void>((resolve, reject) => {
+
+    //preparo il filtro
+    let filterLocation: Location = new Location(true);
+    //Imposto la location
+    filterLocation.ID = idLocation;
+
+    //faccio la richiesta
+    this.docStructureService.requestNew(filterLocation)
+        .then(listLocations => {
+      
+          if (listLocations && listLocations.length !=0){
+  
+            //Imposto la location
+            this.locationDoc = listLocations[0];
+            resolve();
+
+          }
+          else{
+            reject('Location not found');
+          }
+        }).catch(error => {
+
+            reject('Connection error' + error);
+      
+        })
+    
+    })
+}
+  
+
+
 ngOnDestroy() {
-  if (this.subMyCorso) {
-    this.subMyCorso.unsubscribe();
+  if (this.listenerCorsoDoc) {
+    this.listenerCorsoDoc.unsubscribe();
   }
 
-  if (this.subUserLogged) {
-    this.subUserLogged.unsubscribe();
+  if (this.listenerUserLogged) {
+    this.listenerUserLogged.unsubscribe();
   }
 
   if (this.listenSelectedArea) {
@@ -250,49 +356,17 @@ requestTypePaymentDefault() {
                           })
 }
 
+
+
 /**
- * Richiedo la location
- * @param idLocation idLocation 
+ * Chiama il servizio passandogli l'id dell'oggetto corso, 
+ * e restituisce la stringa dell'icona
+ * @param myCorso l'oggetto corso per cui si richiede l'icona
  */
-requestLocationById(idLocation: string): Promise<void>{
-
-  //preparo il filtro
-  let filterLocation: Location = new Location(true);
-  
-  return new Promise<void>((resolve, reject) => {
-    filterLocation.ID = idLocation;
-
-    //faccio la richiesta
-    this.docStructureService.requestNew(filterLocation)
-        .then(elLocation => {
-      
-          if (elLocation && elLocation.length !=0){
-  
-            //Imposto la location
-            this.myLocation = elLocation[0];
-            resolve();
-
-          }
-          else{
-            reject('Location not found');
-          }
-        }).catch(error => {
-            reject('Connection error' + error);
-      
-        })
-    
-    })
-}
-
-  /**
-   * Chiama il servizio passandogli l'id dell'oggetto corso, 
-   * e restituisce la stringa dell'icona
-   * @param corso l'oggetto corso per cui si richiede l'icona
-   */
-   getIcon(corso:Corso)
-   {
-     return this.startService.getSportIcon(corso.IDSPORT);
-   }
+  getIcon(myCorso:Corso)
+  {
+    return this.startService.getSportIcon(myCorso.IDSPORT);
+  }
 
   /**
  * Recupera il link per le condizioni di vendita Corso e apre il browser
@@ -308,7 +382,7 @@ requestLocationById(idLocation: string): Promise<void>{
       if (link && link.REFERURL) {
 
         //Apro il link
-        this.openLink(link.REFERURL);
+        this.startService.openLink(link.REFERURL);        
 
       }
     }
@@ -316,69 +390,46 @@ requestLocationById(idLocation: string): Promise<void>{
     
   }
 
+  //#region AREA TESSERAMENTI
+  get showGroupTesseramenti():boolean {
+
+    let flagShow = false;
+    if (this.iscrizioneDoc && 
+        this.iscrizioneDoc.ISCRIZIONETESSERAMENTO && 
+        this.iscrizioneDoc.ISCRIZIONETESSERAMENTO.length != 0) {
+          flagShow = true;
+        }
+    return flagShow;
+  }
+
+  /**
+   * Ritorna una collection di PrenotaTesseramento abbinata
+   */
+  get collTesseramenti(): IscrizioneTesseramento[] {
+    let myColl: IscrizioneTesseramento[];
+
+    if (this.iscrizioneDoc && this.iscrizioneDoc.ISCRIZIONETESSERAMENTO) {
+      myColl = this.iscrizioneDoc.ISCRIZIONETESSERAMENTO;
+    }
+
+
+    return myColl;
+  }  
+
+
+  //#endregion
+
 
   /**
    * Click sul bottone di Header
    */
   onClickButtonHeader() {
+
     if (!this.flagPostiDisponibili) {
       //Se non ci sono posti, uso il pulsante per chiudere
       this.closeModal();
     }
-  }
 
-  /**
-   * Click sull'item dell'importo
-   */
-  onClickImporto():void {
-    let myMessage = '';
-
-    if (this.paymentType.isRateale()) {
-
-      myMessage = 'E\' possibile effettuare il pagamento del corso sia in rata unica'
-      myMessage = myMessage + '<br/>'
-      myMessage = myMessage + 'che in modalità rateale '
-      if (this.paymentType.DESCR.length != 0) {
-        myMessage = myMessage + `(${this.paymentType.DESCR})`
-      }
-
-      myMessage = myMessage + '<br/>';
-      myMessage = myMessage + 'Il pagamento rateale è disponibile solo contattando la struttura';
-
-    }
-    else {
-      myMessage = 'E\' possibile effettuare il pagamento del corso unicamente attraverso una rata unica';
-      myMessage = myMessage + '<br/>';
-      myMessage = myMessage + 'Contattare la struttura per concordare, se possibile altre modalità di pagamento'
-    }
-
-    this.startService.presentAlertMessage(myMessage, 'Modalità pagamento');
-  }
-
-  /**
-   * Ritorna TRUE se il pulsante 
-   * Conferma Iscrizione è utilizzabile
-   */
-  enableButtonIscrizione(): boolean {
-    let flagEnable: boolean;
-    if (this.disclaimer && this.flagPostiDisponibili) {
-
-      //Corso a pagamento (Deve scegliere il pagamento)
-      if (this.myCorso.isAPagamento()) {
-
-        if (this.mySelectedPayment) {
-          flagEnable = true;
-        }
-
-      }
-      else {
-        //Non deve pagare niente
-        flagEnable = true;
-      }
-    }
-
-
-    return flagEnable;
   }
 
 
@@ -435,7 +486,7 @@ requestLocationById(idLocation: string): Promise<void>{
   /**
    * Pressione del pulsante in interfaccia di conferma 
    */
-   onConfirm()
+   onClickConfirmIscrizione()
    {
      //Vado al pagamento
       this.onExecPayment();
@@ -452,7 +503,7 @@ requestLocationById(idLocation: string): Promise<void>{
     let arModes:PaymentMode[]=[PaymentMode.pagaAdesso, PaymentMode.pagaBonifico, PaymentMode.pagaStruttura];
 
     //Presente un totale da pagare
-    if (this.myCorso.isAPagamento()) {
+    if (this.corsoDoc.isAPagamento()) {
 
       //L'utente ha selezionato come pagare
       if (arModes.includes(this.myPaymentMode)) {
@@ -477,8 +528,8 @@ requestLocationById(idLocation: string): Promise<void>{
           //Preparo un oggetto per processare il pagamento
           let myCheckoutPayment = new PaymentProcess(this.myPaymentMode);
           
-          myCheckoutPayment.amount = this.myCorso.PREZZOLORDO;
-          myCheckoutPayment.description = 'Pagamento Iscrizione Corso ' + this.myCorso.DENOMINAZIONE;
+          myCheckoutPayment.amount = this.iscrizioneDoc.TOTALE;
+          myCheckoutPayment.description = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
           myCheckoutPayment.currency = 'EUR';
   
           //il channelPayment viene impostato nel componente
@@ -536,7 +587,7 @@ requestLocationById(idLocation: string): Promise<void>{
       }
       else {
         //Pagamento non selezionato
-        this.showToastMessage('E\' necessario selezionare un pagamento');
+        this.startService.presentAlertMessage('E\' necessario selezionare un pagamento');
       }
       
     }
@@ -562,14 +613,10 @@ requestLocationById(idLocation: string): Promise<void>{
    */
    onPaymentSuccess(resultPayment?: PaymentProcess) {
     
-
-    let myDocIscrizione: IscrizioneCorso;
     let myDocRata: IscrizioneIncasso;
 
-    //Preparo i dati dell'iscrizione
-    myDocIscrizione = this.prepareDocIscrizione();
 
-    //Preparo i dati della Rata di Pagamento
+    //Preparo i dati da includere come rata di incasso
     myDocRata = new IscrizioneIncasso();
     
     //Step del pagamento Effettuato (Potrebbe avere effettivamente pagato, oppure non pagato e rimandato in struttura)
@@ -580,7 +627,7 @@ requestLocationById(idLocation: string): Promise<void>{
       if (resultPayment.idElectronicResult.length == 0) {
 
         //Se il corso è a pagamento, dovrà effettivamente pagare
-        if (this.myCorso.isAPagamento()) {
+        if (this.corsoDoc.isAPagamento()) {
 
           //E' a pagamento, in qualche modo dovrà pagare
           //Creo una scadenza
@@ -588,9 +635,10 @@ requestLocationById(idLocation: string): Promise<void>{
           myDocRata.IDORDER = '';
           myDocRata.MODALITA = resultPayment.channelPayment;
           myDocRata.TIPORIGO = TipoRigoIncasso.scadenza;
+          myDocRata.ZORDER = ZOrderIncasso.daIncassare;
           //Data operazione non viene valorizzata ma solo DataScadenza
-          myDocRata.DATASCADENZA = this.myCorso.DATAINIZIO;
-          myDocRata.IMPORTO = this.myCorso.PREZZOLORDO;
+          myDocRata.DATASCADENZA = this.corsoDoc.DATAINIZIO;
+          myDocRata.IMPORTO = this.iscrizioneDoc.TOTALE;
 
         }
         else {
@@ -600,7 +648,8 @@ requestLocationById(idLocation: string): Promise<void>{
           myDocRata.IDORDER = '';
           myDocRata.MODALITA = PaymentChannel.onSite;
           myDocRata.TIPORIGO = TipoRigoIncasso.incassato;
-          myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
+          myDocRata.ZORDER = ZOrderIncasso.incassato;          
+          myDocRata.DATAOPERAZIONE = this.iscrizioneDoc.DATAISCRIZIONE;
           //Non c'e' nessuna scadenza
           myDocRata.IMPORTO = 0;
         }
@@ -612,49 +661,47 @@ requestLocationById(idLocation: string): Promise<void>{
         myDocRata.IDORDER = resultPayment.idElectronicResult;
         myDocRata.MODALITA = resultPayment.channelPayment;
         myDocRata.TIPORIGO = TipoRigoIncasso.incassato;
-        myDocRata.DATAOPERAZIONE = myDocIscrizione.DATAISCRIZIONE;
+        myDocRata.ZORDER = ZOrderIncasso.incassato
+        myDocRata.DATAOPERAZIONE = this.iscrizioneDoc.DATAISCRIZIONE;
         //Non c'e' nessuna scadenza      
-        myDocRata.IMPORTO = this.myCorso.PREZZOLORDO;
+        myDocRata.IMPORTO = this.iscrizioneDoc.TOTALE;
 
       }
 
       //Aggiungo le informaioni del pagamento
-      myDocIscrizione.ISCRIZIONEINCASSO.push(myDocRata);
+      this.iscrizioneDoc.ISCRIZIONEINCASSO.push(myDocRata);
 
-      //Contatto il server per salvare il tutto
-      this.loadingController.create({
-            message: 'Richiesta Iscrizione',
-            spinner: 'circular'
-          })
-          .then(elLoading => {
+      this.startService.showLoadingMessage('Richiesta Iscrizione','bubbles',false)
+                        .then(elLoading => {
 
-            //Creo il loading
-            elLoading.present();
+                          //Creo il loading
+                          elLoading.present();
 
-            //Procedo con il salvataggio Iscrizione
-            this.startService.requestSaveIscrizione(myDocIscrizione)
-                            .then((response: PostResponse) => {
+                          //Procedo con il salvataggio Iscrizione
+                          this.startService.requestSaveIscrizioneCorso(this.iscrizioneDoc)
+                                          .then((response: PostResponse) => {
 
-                              elLoading.dismiss();
+                                            elLoading.dismiss();
 
-                              //Iscrizione salvata correttamente
-                              if (response.result && response.code && response.code.length != 0) {
-                                //Mi dirigo alla scheda dell'Iscrizione Corso e concludo la modale
-                                this.onAfterSaveIscrizione(response.code);
-                              }
-                              else {
-                                //Si sono verificati problemi
-                                this.showAlert(response.message,'Iscrizione Fallita');
-                              }
-                            })
-                            .catch(error => {
-                              elLoading.dismiss();
+                                            //Iscrizione salvata correttamente
+                                            if (response.result && response.code && response.code.length != 0) {
+                                              //Mi dirigo alla scheda dell'Iscrizione Corso e concludo la modale
+                                              this.onAfterSaveIscrizione(response.code);
+                                            }
+                                            else {
+                                              //Si sono verificati problemi
+                                              this.startService.presentAlertMessage(response.message,'Iscrizione Fallita');
+                                            }
+                                          })
+                                          .catch(error => {
 
-                              //Si sono verificati problemi
-                              this.showAlert(error.message,'Iscrizione Fallita');
-                            })
-               
-          });
+                                            elLoading.dismiss();
+
+                                            //Si sono verificati problemi
+                                            this.startService.presentAlertMessage(error.message,'Iscrizione Fallita');
+                                          })
+                            
+                        });
 
 
     }
@@ -670,12 +717,13 @@ requestLocationById(idLocation: string): Promise<void>{
    */
    onAfterSaveIscrizione(idIscrizione: string)
    {
-     this.showToastMessage('Iscrizione confermata');
-
-     //1) Chiudere la modale
+      //Avvisiamo utente
+      this.startService.presentToastMessage('Iscrizione confermata');
+     
+     //Chiudo la modale
      this.closeModal();
 
-     //2) Andare alla History sulla scheda
+     //Andare alla History sulla scheda
      this.navCtrl.navigateRoot(['historylist/course', idIscrizione]);
  
    }  
@@ -694,65 +742,13 @@ requestLocationById(idLocation: string): Promise<void>{
       }
     }
 
-    //Visualizzo il messaggio
-    this.showAlert(message, title);
+    this.startService.presentAlertMessage(message, title);
     
   }  
    //#endregion
 
 
-  //#region PREPARAZIONE DOCUMENTO ISCRIZIONE
-  prepareDocIscrizione(): IscrizioneCorso {
-    let myDoc = new IscrizioneCorso();
-
-    
-
-    if (this.myCorso && this.docUser) {
-
-      myDoc.IDCORSO = this.myCorso.ID;
-      myDoc.IDUTENTE = this.docUser.ID;
-      myDoc.DATAISCRIZIONE = new Date();
-      
-    }
-
-    return myDoc;
-  }
-   //#endregion
-/**
- * Mostra un messaggio a video
- * @param messaggio Messaggio
- */
-  showToastMessage(messaggio:string){
-
-      this.toastCtrl.create({
-        message: messaggio,
-        duration: 3000
-      });
-
-  }
-
-  /**
-   * Visualizza un alert con un pulsante Ok se !buttons, oppure con i bottoni dell'array
-   * @param messaggio Messaggio
-   * @param titolo Titolo
-   */
-   showAlert(messaggio:string, titolo?:string, bottoni?:string[]) {
-
-    if (!bottoni || bottoni.length == 0) {
-      bottoni = [];
-      bottoni.push('Ok');
-    }
-
-    //Mostro l'alert richiesto
-    this.alertCtrl.create({      
-      header: (titolo?titolo:'Attenzione'),      
-      message: messaggio,
-      buttons: bottoni
-    })
-    .then(elAlert => {
-      elAlert.present();
-    })
-  }  
+ 
 
 /**
 * Chiusura della videata
@@ -761,13 +757,53 @@ closeModal(){
   this.modalCtrl.dismiss();
 }
 
-/**
- * Apre una videata con la pagina richiesta
- * @param url Url da visualizzare
- */
-openLink(url:string)
-{
-  Browser.open({url:url})
-}
+  /**
+   * Mostra un alert per contattare la struttura
+   */
+  onClickContattaStruttura() {
+    let myButton = [];
+    let myMessage = ''
+
+    myMessage = 'Per l\'iscrizione è necessario contattare la struttura telefonicamente';
+    myButton = [
+      {
+        text: 'OK',
+        role: 'cancel'
+      }
+    ];
+
+    //Se ho il telefono, glielo scrivo
+     if (this.locationDoc.TELEFONO && 
+         this.locationDoc.TELEFONO.length != 0) {
+
+      myMessage = myMessage + ' al ' + `<strong>${this.locationDoc.TELEFONO}</strong>`;
+
+      if (!this.startService.isDesktop) {
+
+        myButton = [
+          {
+            text: 'OK',
+            role: 'cancel'
+          },
+          {
+            text: 'Chiama',
+            handler: () => {
+              const number = this.locationDoc.TELEFONO;
+              const link: HTMLAnchorElement = document.createElement('a');
+              link.setAttribute('href', `tel:${number}`);
+              link.click();
+  
+            }
+          }
+        ];
+
+      }
+      
+    }
+
+    //Mostro il messaggio
+    this.startService.presentAlertMessage(myMessage, 'Contatti', myButton);
+
+  }
 
 }

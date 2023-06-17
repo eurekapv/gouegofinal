@@ -1,42 +1,43 @@
 import { Descriptor, TypeDefinition } from "../library/models/descriptor.model";
 import { IDDocument } from "../library/models/iddocument.model";
+import { IscrizioneTesseramento } from "./iscrizione-tesseramento";
 import { IscrizioneIncasso } from "./iscrizioneincasso.model";
 import { Sesso, StatoIscrizione, TipoPrezzo } from "./valuelist.model";
 
 export class IscrizioneCorso extends IDDocument {
 
-    IDCORSO:               string; //
-    IDUTENTE:              string; //
-    DATAISCRIZIONE:        Date;
-    ANNOISCRIZIONE:        number;
-    NOMINATIVO:            string;
-    EMAIL:                 string;
-    MOBILENUMBER:          string;
-    NOTES:                 string;
-    IDSPORT:               string;
-    IDAREAOPERATIVA:       string; //
-    IDLOCATION:            string; //
-    IDCAMPO:               string;
-    DATAINIZIO:            Date;
-    CODICEALFA:            string;
-    CODICEINT:             number;
-    NATOIL:                Date;
-    SESSO:                 Sesso;
-    DATAFINEISCRIZIONE:    Date;    
-    STATOISCRIZIONE:       StatoIscrizione;
-    IDTIPOPAGAMENTO:       string;
-    
-    TIPOPREZZO:            TipoPrezzo;
-    IMPORTO:               number;
-    IDCODICEIMPOSTA:       string;
-    IDVALUTA:              string;
-    IMPOSTA:               number;
-    TOTALE:                number;
-    RESIDUO:               number;
-    INCASSATO:             number;
-
-
-    ISCRIZIONEINCASSO:     IscrizioneIncasso[];
+    IDCORSO:                     string; //
+    IDUTENTE:                    string; //
+    DATAISCRIZIONE:              Date;
+    ANNOISCRIZIONE:              number;
+    NOMINATIVO:                  string;
+    EMAIL:                       string;
+    MOBILENUMBER:                string;
+    NOTES:                       string;
+    IDSPORT:                     string;
+    IDAREAOPERATIVA:             string; //
+    IDLOCATION:                  string; //
+    IDCAMPO:                     string;
+    DATAINIZIO:                  Date;
+    CODICEALFA:                  string;
+    CODICEINT:                   number;
+    NATOIL:                      Date;
+    SESSO:                       Sesso;
+    DATAFINEISCRIZIONE:          Date;    
+    STATOISCRIZIONE:             StatoIscrizione;
+    IDTIPOPAGAMENTO:             string;
+          
+    TIPOPREZZO:                  TipoPrezzo;
+    IMPORTO:                     number;
+    IDVALUTA:                    string;
+    IMPOSTA:                     number;
+    TOTALE:                      number;
+    RESIDUO:                     number;
+    INCASSATO:                   number;
+      
+      
+    ISCRIZIONEINCASSO:           IscrizioneIncasso[];
+    ISCRIZIONETESSERAMENTO:      IscrizioneTesseramento[];
 
 
     constructor(onlyInstance?:boolean) {
@@ -95,7 +96,8 @@ export class IscrizioneCorso extends IDDocument {
         objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
     
-        objDescriptor.addCollection('ISCRIZIONEINCASSO','IscrizioneIncasso','IDISCRIZIONECORSO');
+        objDescriptor.addCollection('ISCRIZIONIINCASSI','IscrizioneIncasso','IDISCRIZIONECORSO');
+        objDescriptor.addCollection('ISCRIZIONITESSERAMENTO','IscrizioneTesseramento','IDISCRIZIONECORSO');
         
     
     
@@ -132,10 +134,16 @@ export class IscrizioneCorso extends IDDocument {
      * @param data JSON Ricevuto
      */
      setCollection(data: any) {
+
         this.ISCRIZIONEINCASSO = [];
+        this.ISCRIZIONETESSERAMENTO = [];
   
-        if (data.ISCRIZIONIINCASSI) {
-          this.setCollectionIscrizioniIncassi(data.ISCRIZIONIINCASSI);
+        if (data.ISCRIZIONEINCASSO) {
+          this.setCollectionIscrizioneIncasso(data.ISCRIZIONEINCASSO);
+        }
+
+        if (data.ISCRIZIONETESSERAMENTO) {
+          this.setCollectionIscrizioneTesseramentO(data.ISCRIZIONETESSERAMENTO);
         }
   
 
@@ -143,10 +151,10 @@ export class IscrizioneCorso extends IDDocument {
       }   
       
     /**
-     * Imposta la collection ISCRIZIONIINCASSI
+     * Imposta la collection ISCRIZIONEINCASSO
      * @param arIncassi JSON Ricevuti
      */
-    setCollectionIscrizioniIncassi(arIncassi: any[]) {
+    setCollectionIscrizioneIncasso(arIncassi: any[]) {
 
         this.ISCRIZIONEINCASSO = [];
   
@@ -188,5 +196,42 @@ export class IscrizioneCorso extends IDDocument {
 
 
         return existIscrizioneIncasso;
-    }      
+    }  
+    
+    
+    /**
+     * Imposta i dati nella collection Tesseramenti
+     * @param data 
+     */
+    setCollectionIscrizioneTesseramentO(data: any[]) {
+
+      this.ISCRIZIONETESSERAMENTO = [];
+
+      if (data) {
+
+        //Cicliamo sui dati
+        data.forEach(element => {
+          let myTesseramento: IscrizioneTesseramento;
+          
+          myTesseramento = this.ISCRIZIONETESSERAMENTO.find(elItem => {
+            elItem.ID == element.ID
+          });
+
+          //Non esiste lo creo nuovo
+          if (!myTesseramento) {
+
+            myTesseramento = new IscrizioneTesseramento();
+            myTesseramento.setJSONProperty(element);
+            this.ISCRIZIONETESSERAMENTO.push(myTesseramento);
+
+          }
+          else {
+            //Reimposto i valori
+            myTesseramento.setJSONProperty(element);
+          }
+
+
+        })
+      }
+    }     
 }

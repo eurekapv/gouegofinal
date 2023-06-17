@@ -12,177 +12,331 @@
 
 <ion-content>
   <div style="background-color:#EFF1F8">
+
     <ion-grid class="griglia-principale">
 
-      <!-- CONTROLLO PER POSTI DISPONIBILI -->
-      <ion-row>
-        <ion-col>
-          <ion-button 
-              [color]="flagPostiDisponibili ? 'success':'danger'" 
-              expand="block" 
-              class="full-buttons"
-            (click)="onClickButtonHeader()">
-            <ion-icon 
-                slot="end" 
-                [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
-            </ion-icon>
+      <!-- PULSANTE SUPERIORE -->
+        <!-- CONTROLLO PER POSTI DISPONIBILI -->
+        <ion-row>
+          <ion-col>
+            <ion-button 
+                [color]="flagPostiDisponibili ? 'success':'danger'" 
+                expand="block" 
+                class="full-buttons"
+              (click)="onClickButtonHeader()">
+              <ion-icon 
+                  slot="end" 
+                  [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
+              </ion-icon>
+  
+  
+              <h6 class="ion-text-wrap">{{txtPostiDisponibili}}</h6>
+            </ion-button>
+  
+          </ion-col>
+        </ion-row>      
+
+        <!-- GRID CON LE INFORMAZIONI CORSO-->
+      <ion-grid>
+        <ion-row>
+          <!-- COLONNA RELATIVA ALLE INFORMAZIONI DI ISCRIZIONE CORSO-->
+          <ion-col size="12" size-xl= "6" size-sm="12">
+            
+            <ion-grid id="info-corso">
+        
+              <!-- CARD INFORMAZIONI CORSO -->
+              <ion-row id="row-info-corso">
+                <ion-col>
+                  <ion-card>
+                    <ion-card-content class="ion-no-padding">
+        
+                      <ion-item lines="none">
+                        <ion-label class="ion-text-wrap">
+        
+                          <ion-text>Il corso</ion-text>
+                          <ion-text class="ion-text-bold">&nbsp;{{corsoDoc.DENOMINAZIONE}}&nbsp;</ion-text>
+                          <ion-text>&nbsp;({{ corsoDoc['_DENOMINAZIONE_Sport'] }})&nbsp;</ion-text>
+                          <ion-text>inizia&nbsp;</ion-text>
+                          <br/>
+                          <ion-text style="font-weight: bold;">{{corsoDoc.DATAINIZIO | date: 'EEEE' | titlecase }}&nbsp;</ion-text>
+                          <ion-text style="font-weight: bold;">{{corsoDoc.DATAINIZIO | date: 'dd/MM/yyyy' }}</ion-text>
+                          <br/>
+                          <ion-text>&nbsp;alle ore&nbsp;</ion-text>
+                          <ion-text style="font-weight: bold;">{{corsoDoc.ORAINIZIO | date:'HH:mm'}}</ion-text>
+                          <br/>
+                          <ion-text>&nbsp;e si conclude&nbsp;</ion-text>
+                          <br/>
+                          <ion-text style="font-weight: bold;">{{corsoDoc.DATAFINE | date: 'EEEE' | titlecase }}&nbsp;</ion-text>
+                          <ion-text style="font-weight: bold;">{{corsoDoc.DATAFINE | date: 'dd/MM/yyyy' }}</ion-text>
+                          <br/>
+                          <ion-text *ngIf="corsoDoc.NUMEROLEZIONI">
+                            per un totale di&nbsp;{{corsoDoc.NUMEROLEZIONI}}&nbsp;{{corsoDoc.NUMEROLEZIONI > 1 ?'Incontri':'Incontro '}}
+                            <br/>della durata di&nbsp;{{corsoDoc.ORELEZIONE}} {{corsoDoc.ORELEZIONE > 1 ?'Ore':'Ora'}}
+                          </ion-text>
+        
+                        </ion-label>
+                      </ion-item>
+
+                      <!-- INFORMAZIONI SULLE GIORNATE DI CORSO-->
+                      <ion-accordion-group *ngIf="onlyDaysCorso?.length != 0">
+                        <ion-accordion>
+                          <ion-item slot="header" color="light">
+                            <ion-label class="ion-text-wrap"> 
+                              Lezioni Settimanali
+                            </ion-label>
+                            <ion-badge
+                                class="big-badge"
+                                color="success"
+                                slot="start">
+                              &nbsp;{{onlyDaysCorso?.length}}&nbsp;
+                            </ion-badge>
+                          </ion-item>  
+                          <!-- Elenco Giornate -->
+                          <div class="ion-padding" slot="content">
+
+                            <ion-list 
+                                *ngFor="let recGiorno of onlyDaysCorso">
+                              <ion-item color="success">
+                                <ion-label>{{recGiorno.label |uppercase}}</ion-label>
+                              </ion-item>                              
+                            </ion-list>
+
+                            <ion-item>
+                              <ion-label 
+                                  class="ion-text-wrap">
+                                controllare il calendario dettagliato per orari e giornate di corso
+                              </ion-label>
+                            </ion-item>
+
+                          </div>
+                        </ion-accordion>
+                      </ion-accordion-group>
+
+                      <!-- INFORMAZIONI A CHI E' RIVOLTO-->
+                      <ion-accordion-group>
+                        <ion-accordion value="notes">
+                          <ion-item slot="header" color="warning">
+                            <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+                            <ion-label class="ion-text-wrap">a chi è rivolto</ion-label>
+                          </ion-item>     
+                          <div class="ion-padding-horizontal" slot="content">
+                             <ion-list lines="none">
+       
+                               <ion-item class="ion-no-padding">
+                                 <ion-icon name="stats-chart-outline" slot="start" [color]="iconColor"></ion-icon>
+                                 <ion-label>{{corsoDoc['_DENOMINAZIONE_Livello']?corsoDoc['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}
+                                 </ion-label>
+                               </ion-item>
+                 
+                               <ion-item class="ion-no-padding">
+                                 <ion-icon name="bookmark-outline" slot="start" [color]="iconColor"></ion-icon>
+                                 <ion-label>{{corsoDoc['_DESCTOOLTIP_CategoriaEta']?corsoDoc['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
+                               </ion-item>
+                 
+                               <ion-item 
+                                     class="ion-no-padding"
+                                     *ngIf="corsoDoc.TARGETSESSO">
+                                 <ion-icon name="transgender-outline" slot="start" [color]="iconColor"></ion-icon>
+                                 <ion-label>{{corsoDoc.TARGETSESSO | targetSesso}}</ion-label>
+                               </ion-item>
+       
+                             </ion-list>
+                          </div>
+                          </ion-accordion>           
+                      </ion-accordion-group>
+
+                     <!-- INFO LOCATION -->
+                     <ion-accordion-group *ngIf="locationDoc">
+                      <ion-accordion value="notes">
+                        <ion-item slot="header" color="warning">
+                          <ion-icon slot="start" name="location-outline"></ion-icon>                          
+                          <ion-label class="ion-text-wrap">dove si svolge</ion-label>
+                        </ion-item>     
+                        <div class="ion-padding-horizontal" slot="content">
+                          <ion-list lines="none">
+                              <!-- COMUNE -->
+                              <ion-item 
+                                    class="ion-no-padding"
+                                    *ngIf="locationDoc?.COMUNE">
+                                <ion-icon name="home-outline" slot="start" [color]="iconColor"></ion-icon>
+                                <ion-label>{{locationDoc?.COMUNE}}</ion-label>
+                              </ion-item>
+                
+                              <!-- INDIRIZZO -->
+                              <ion-item 
+                                  class="ion-no-padding"
+                                  *ngIf="locationDoc?.INDIRIZZO">
+                                <ion-icon name="navigate-outline" slot="start" [color]="iconColor">
+                                </ion-icon>
+                
+                                <ion-label>
+                                  {{locationDoc?.INDIRIZZO}}
+                                </ion-label>
+                
+                              </ion-item>
+                
+                              <ion-item 
+                                  class="ion-no-padding"
+                                  *ngIf="locationDoc?.TELEFONO">
+                                <ion-icon name="call-outline" slot="start" [color]="iconColor"></ion-icon>
+                                <ion-label>{{locationDoc?.TELEFONO}}</ion-label>
+                              </ion-item>                    
+                          </ion-list>
+                        </div>
+                        </ion-accordion>           
+                    </ion-accordion-group>
+
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <!-- FINE INFO CORSO-->
+          </ion-col>
+
+          <!-- PORZIONE DESTRA Scheda Importo -->
+          <ion-col  size="12" size-xl= "6" size-sm="12">
+            <!--GRIGLIA CON TOTALE E PAGAMENTO-->
+            <ion-grid>
+
+              <!-- RIGA CON CARD DEL TOTALE -->
+              <ion-row>
+                <ion-col>
+                  <ion-card>
+                    <!-- TESTATA CON IMPORTO -->
+                    <ion-card-header>
+                      <ion-grid>
+                          <!-- IMPORTO PRENOTAZIONI -->
+                          <ion-row class="ion-align-items-center">
+                            <ion-col size="5" class="ion-text-center left-col">
+                              <h6 class="ion-no-margin ion-text-bold">Totale Iscrizione</h6>
+                            </ion-col>
+                            <ion-col size="7">
+                              <h5 class="ion-no-margin ion-text-right ion-text-bold">{{iscrizioneDoc?.TOTALE | currency: "EUR"}}</h5>
+                            </ion-col>
+                          </ion-row>
+                      </ion-grid>
+                    </ion-card-header>
+
+                    <ion-card-content class="ion-padding-horizontal">
+
+                      <ion-grid>
+
+                        <!-- CONDIZIONI DI VENDITA -->
+                        <ion-row 
+                            class="ion-padding-vertical"
+                            (click)="onClickCondizioniVendita()">
+                          <ion-col size="9">
+                              <small>procedendo con l'iscrizione si accettano le condizioni di vendita</small>
+                          </ion-col>
+                          <ion-col size="3" class="ion-text-right">
+                            <ion-badge color="success"><small>LEGGI</small></ion-badge>
+                          </ion-col>
+                        </ion-row>
+
+                        <!-- ANNOTAZIONI IMPORTO-->
+                        <ion-row *ngIf="showGroupTesseramenti">
+                          <ion-col>
+                            <ion-accordion-group>
+                              <ion-accordion value="notes">
+
+                                <ion-item slot="header" color="light">
+                                  <ion-badge color="success" slot="start" class="big-badge">&nbsp;{{collTesseramenti?.length}}&nbsp;</ion-badge>
+                                  <ion-label class="ion-text-wrap">{{collTesseramenti?.length == 1 ? 'Tessera Associativa':'Tessere Associative'}}</ion-label>
+                                </ion-item>
+
+                              <div class="ion-padding" slot="content">
+                                Il totale &egrave; comprensivo della emissione/rinnovo delle seguenti tessere
+                                <ion-grid>
+                                    <!-- TESSERA GRATUITA-->
+                                    <ion-row *ngFor="let recTessera of collTesseramenti">
+                                      <ion-col size="9" *ngIf="recTessera.GRATUITA">
+                                        <ion-label class="ion-text-wrap">
+                                          <small>{{recTessera.DESCR}}</small>
+                                        </ion-label>
+                                      </ion-col>
+  
+                                      <ion-col size="3" class="ion-text-right" *ngIf="recTessera.GRATUITA">
+                                        <ion-badge color="success"><small>GRATUITA</small></ion-badge>
+                                      </ion-col>
+  
+  
+                                    <!-- TESSERA A PAGAMENTO-->
+                                    <ion-col size="9" *ngIf="!recTessera.GRATUITA">
+                                      <ion-label class="ion-text-wrap">
+                                        <small>{{recTessera.DESCR}}</small>
+                                        <p *ngIf="recTessera.ALIQUOTA != 0"><small>(prezzo escluso imposte)</small></p>
+                                      </ion-label>
+                                    </ion-col>
+  
+                                    <ion-col size="3" class="ion-text-right" *ngIf="!recTessera.GRATUITA">
+                                      <ion-label class="ion-text-wrap">
+                                        <small>{{recTessera.IMPONIBILE | currency: "EUR"}}</small>
+                                      </ion-label>
+                                    </ion-col>
+                                  </ion-row>
+                                </ion-grid>
+                              </div>
+                            </ion-accordion>
+                            </ion-accordion-group>
+                          </ion-col>
+                        </ion-row>
+          
+                        <app-payment-mode
+                          *ngIf="corsoDoc?.isAPagamento()" 
+                          [iconMode]="true"
+                          [arPayment]="myListPayment"
+                          (onPaymentModeChoosed)="onPaymentModeSelected($event)">
+                        </app-payment-mode>
+
+                        <!-- INFO PAGAMENTO RATEALE -->
+                        <ion-accordion-group 
+                              class="ion-margin-vertical" 
+                              *ngIf="corsoDoc?.isAPagamento()">
+                              <ion-accordion value="notes">
+                                <ion-item slot="header" color="light">
+                                  <ion-icon slot="start" name="help-circle-outline"></ion-icon>
+                                  <ion-label class="ion-text-wrap">Pagamento rateale</ion-label>
+                                </ion-item>
+
+                                <div class="ion-padding" slot="content">
+
+                                  <ion-text *ngIf="paymentType.isRateale()">
+                                    &Egrave; possibile effettuare il pagamento del corso sia in rata unica che in modalit&agrave; <strong>rateale</strong>
+                                    <br/>
+                                    <strong>{{paymentType && paymentType.DESCR.length != 0 ? this.paymentType.DESCR : ''}}</strong>
+                                    <br/>
+                                    Il pagamento rateale &egrave; disponibile solo contattando la struttura <strong>{{locationDoc?.TELEFONO && locationDoc?.TELEFONO.length != 0 ? 'al numero ' + locationDoc?.TELEFONO : ''}}</strong>
+                                  </ion-text>
+
+                                  <ion-text *ngIf="!paymentType.isRateale()">
+                                    &Egrave; possibile effettuare il pagamento del corso unicamente attraverso il pagamento anticipato dell'intero importo.
+                                    <br/>
+                                    Contattare la struttura telefonicamente <strong>{{locationDoc?.TELEFONO && locationDoc?.TELEFONO.length != 0 ? 'al numero ' + locationDoc?.TELEFONO : ''}}</strong>
+                                    per concordare altre modalità di pagamento.
+                                  </ion-text>
+
+                                </div>
 
 
-            <h6 class="ion-text-wrap">{{txtPostiDisponibili}}</h6>
-          </ion-button>
+                              </ion-accordion>
+                        </ion-accordion-group>
 
-        </ion-col>
-      </ion-row>
+          
+                      </ion-grid>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
 
-      <!-- CARD INFORMAZIONI CORSO -->
-      <ion-row>
-        <ion-col>
-
-          <ion-card>
-
-            <ion-card-header>
-              <ion-card-subtitle>Iscrizione al corso</ion-card-subtitle>
-              <ion-card-title>{{ myCorso.DENOMINAZIONE }}</ion-card-title>
-
-              <ion-item button="false" lines="none" class="ion-no-padding">
-                <i class="icon-sport" slot="start">
-                  <span [innerHTML]="getIcon(myCorso)"></span>
-                </i>
-
-                <ion-label>
-                  <h6 class="ion-text-wrap">
-                    {{ myCorso['_DENOMINAZIONE_Sport'] }}
-                  </h6>
-                </ion-label>
-              </ion-item>
-
-            </ion-card-header>
+            </ion-grid>
+          </ion-col>
 
 
 
-            <ion-card-content class="ion-no-padding">
-
-              <ion-item lines="none">
-                <ion-label class="ion-text-wrap">
-
-                  <ion-text>Il corso inizia&nbsp;</ion-text>
-                  <ion-text style="font-weight: bold;">{{myCorso.DATAINIZIO | date: 'EEEE' | titlecase }}&nbsp;
-                  </ion-text>
-                  <ion-text style="font-weight: bold;">{{myCorso.DATAINIZIO | date: 'dd/MM/yyyy' }}</ion-text>
-                  <ion-text>&nbsp;alle ore&nbsp;</ion-text>
-                  <ion-text style="font-weight: bold;">{{myCorso.ORAINIZIO | date:'HH:mm'}}</ion-text>
-                  <ion-text>&nbsp;e si conclude&nbsp;</ion-text>
-                  <ion-text style="font-weight: bold;">{{myCorso.DATAFINE | date: 'EEEE' | titlecase }}&nbsp;</ion-text>
-                  <ion-text style="font-weight: bold;">{{myCorso.DATAFINE | date: 'dd/MM/yyyy' }}</ion-text>
-                  <ion-text *ngIf="myCorso.NUMEROLEZIONI">
-                    &nbsp;per un totale di&nbsp;{{myCorso.NUMEROLEZIONI}}&nbsp;{{myCorso.NUMEROLEZIONI > 1 ?'Incontri
-                    ':'Incontro '}} della durata di&nbsp;{{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
-                  </ion-text>
-
-                </ion-label>
-              </ion-item>
-
-              <ion-item lines="none" *ngIf="onlyDaysCorso?.length == 1">
-                <ion-label class="ion-text-wrap">
-                  <ion-text>Il corso è pianificato 1 volta a settimana al &nbsp;</ion-text>
-                  <ion-text color="danger">{{onlyDaysCorso[0].label |titlecase}}</ion-text>
-                </ion-label>
-
-              </ion-item>
-
-              <ion-item lines="none" *ngIf="onlyDaysCorso?.length > 1">
-                <ion-label class="ion-text-wrap">
-                  <ion-text>Il corso è pianificato {{onlyDaysCorso?.length}} volte a settimana</ion-text>
-                  <p *ngFor="let giorno of onlyDaysCorso">
-                    <ion-text color="danger">{{giorno.label |titlecase}}</ion-text>
-                  </p>
-                </ion-label>
-
-              </ion-item>
-
-              <ion-item lines="none">
-                <ion-label class="ion-text-wrap">
-                  <ion-text>
-                    Si consiglia di controllare il calendario dettagliato per conoscere i giorni e gli orari precisi del
-                    corso.
-                  </ion-text>
-                </ion-label>
-              </ion-item>
-
-
-
-
-
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-
-
-      <!-- CARD A CHI E' RIVOLTO IL CORSO -->
-      <ion-row>
-        <ion-col>
-          <ion-card>
-            <ion-card-header>
-              <ion-card-subtitle>Rivolto a</ion-card-subtitle>
-            </ion-card-header>
-            <ion-card-content>
-
-              <ion-item>
-                <ion-icon name="stats-chart-outline" slot="start" [color]="iconColor"></ion-icon>
-                <ion-label>{{myCorso['_DENOMINAZIONE_Livello']?myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}
-                </ion-label>
-              </ion-item>
-
-              <ion-item lines="none">
-                <ion-icon name="bookmark-outline" slot="start" [color]="iconColor"></ion-icon>
-                <ion-label>{{myCorso['_DESCTOOLTIP_CategoriaEta']?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le
-                  età'}}</ion-label>
-              </ion-item>
-
-              <ion-item lines="none" *ngIf="myCorso.TARGETSESSO">
-                <ion-icon name="transgender-outline" slot="start" [color]="iconColor"></ion-icon>
-                <ion-label>{{myCorso.TARGETSESSO | targetSesso}}</ion-label>
-              </ion-item>
-            </ion-card-content>
-          </ion-card>
-
-          <!-- CARD LOCATION -->
-          <ion-card *ngIf="myLocation?.COMUNE || myLocation?.INDIRIZZO || myLocation?.TELEFONO">
-            <ion-card-header>
-              <ion-card-subtitle>Dove</ion-card-subtitle>
-            </ion-card-header>
-            <ion-card-content>
-              <!-- COMUNE -->
-              <ion-item *ngIf="myLocation?.COMUNE">
-                <ion-icon name="home-outline" slot="start" [color]="iconColor"></ion-icon>
-                <ion-label>{{myLocation?.COMUNE}}</ion-label>
-              </ion-item>
-
-              <!-- INDIRIZZO -->
-              <ion-item *ngIf="myLocation?.INDIRIZZO">
-                <ion-icon name="navigate-outline" slot="start" [color]="iconColor">
-                </ion-icon>
-
-                <ion-label>
-                  {{myLocation?.INDIRIZZO}}
-                </ion-label>
-
-              </ion-item>
-
-              <ion-item *ngIf="myLocation?.TELEFONO">
-                <ion-icon name="call-outline" slot="start" [color]="iconColor"></ion-icon>
-                <ion-label>{{myLocation?.TELEFONO}}</ion-label>
-              </ion-item>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-
-
+        </ion-row>
+      </ion-grid>
     </ion-grid>
-
-
 
   </div>
 
@@ -190,123 +344,50 @@
 
 <ion-footer>
 
+  <!-- NUOVO FOOTER -->
   <ion-grid>
-
-    <!-- ISCRIZIONE ABILITATA -->
-    <ion-list *ngIf="flagPostiDisponibili">
-      <ion-item button (click)="disclaimer=!disclaimer; " lines="full">
-        <ion-checkbox [(ngModel)]="disclaimer" slot="start" (click)="$event.stopPropagation();">
-        </ion-checkbox>
-        <ion-label class="ion-text-wrap">
-          <p>Lette e approvate le
-            <a (click)="$event.stopPropagation(); onClickCondizioniVendita();">condizioni di vendita</a>
-          </p>
-        </ion-label>
-      </ion-item>
-
-      <!-- Componente scelta Pagamento -->
-      <app-payment-mode 
-          *ngIf="myCorso?.isAPagamento()" 
-          [arPayment]="myListPayment"
-          (onPaymentModeChoosed)="onPaymentModeSelected($event)">
-      </app-payment-mode>
-
-
-
-      <!-- Se non a pagamento mostro Iscrizione Gratuita -->
-      <div *ngIf="myCorso?.isAPagamento() == false">
-
-        <ion-item class="ion-text-center">
-          <ion-chip class="wide" color="danger">Iscrizione Gratuita</ion-chip>
-        </ion-item>
-
-        <ion-item lines="none" id="item-totale">
-          <ion-label slot="start">Nessun costo previsto</ion-label>
-        </ion-item>
-
-      </div>
-      
-      <!-- ISCRIZIONE A PAGAMENTO-->
-      <div *ngIf="myCorso?.isAPagamento() == true">
-
-        <ion-item 
-                lines="none" 
-                detail="true"
-                  (click)="onClickImporto()"
-                  id="item-totale">
-          <ion-label class="title" slot="start">Prezzo</ion-label>
-          <ion-label style="text-align:right;">
-            <h4>
-              {{myCorso?.PREZZOLORDO | currency: "EUR"}}
-            </h4>
-            <p class="ion-text-wrap" *ngIf="paymentType.isRateale()">pagamento rateale disponibile</p>
-          </ion-label>
-        </ion-item>
-
-
-      </div>
-
-
-
-    </ion-list>
-
-    <!-- POSTI NON DISPONIBILI: Mostro solo il prezzo-->
-
-    <ion-list *ngIf="!flagPostiDisponibili">
-
-      <!-- NON A PAGAMENTO -->
-      <div *ngIf="myCorso?.isAPagamento() == false">
-        <ion-item class="ion-text-center">
-          <ion-chip class="wide" color="danger">Iscrizione Gratuita</ion-chip>
-        </ion-item>
-
-        <ion-item lines="none" id="item-totale">
-          <ion-label slot="start">Nessun costo previsto</ion-label>
-        </ion-item>
-      </div>
-
-      <!-- A PAGAMENTO -->
-      <div *ngIf="myCorso?.isAPagamento() == true">
-
-        <ion-item lines="none" 
-                  detail="true"
-                  (click)="onClickImporto()"
-                  id="item-totale">
-          <ion-label slot="start">Prezzo</ion-label>
-          <ion-label style="text-align:right;">
-            <h4>
-              {{myCorso?.PREZZOLORDO | currency: "EUR"}}
-            </h4>
-            <p class="ion-text-wrap" *ngIf="paymentType.isRateale()">pagamento rateale disponibile</p>
-          </ion-label>
-        </ion-item>
-
-      </div>
-
-      <ion-item lines="none">
-        <ion-label class="ion-text-wrap ion-text-center">
-          <ion-text class="ion-text-center">Contatta la struttura per maggiori informazioni</ion-text>
-        </ion-label>
-      </ion-item>
-
-    </ion-list>
-
-    <ion-row *ngIf="flagPostiDisponibili">
+    <!-- POSTI ESAURITI -->
+    <ion-row *ngIf="!flagPostiDisponibili">
       <ion-col>
-        <ion-button 
-            color="tertiary" 
+        <ion-button
+            (click)="onClickContattaStruttura()"
+            color="danger" 
             expand="block" 
-            class="full-buttons" 
-            [disabled]="!enableButtonIscrizione()"
-          (click)="onConfirm()">
-          Conferma Iscrizione
+            class="full-buttons"
+        >
+          Contatta la struttura per l'iscrizione
         </ion-button>
       </ion-col>
     </ion-row>
 
+    <!-- POSTI DISPONIBILE - CORSO NON A PAGAMENTO -->
+    <ion-row *ngIf="flagPostiDisponibili && corsoDoc?.isAPagamento() == false">
+      <ion-col>
+        <ion-button
+            (click)="onClickConfirmIscrizione()"
+            color="success" 
+            expand="block" 
+            class="full-buttons"
+        >
+          Iscriviti Gratuitamente
+        </ion-button>
+      </ion-col>
+    </ion-row>    
 
-
-
+    <!-- POSTI DISPONIBILE - CORSO NON A PAGAMENTO -->
+    <ion-row *ngIf="flagPostiDisponibili && corsoDoc?.isAPagamento() == true">
+      <ion-col>
+        <ion-button
+            (click)="onClickConfirmIscrizione()"
+            color="success" 
+            expand="block" 
+            class="full-buttons"
+        >
+          Concludi Iscrizione
+        </ion-button>
+      </ion-col>
+    </ion-row>  
 
   </ion-grid>
+
 </ion-footer>

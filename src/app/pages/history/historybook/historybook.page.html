@@ -54,7 +54,7 @@
               <ion-item>
                 <ion-label>
                   <h2>{{docPianificazione.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'|titlecase}}</h2>
-                  <p>dalle {{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} alle {{docPianificazione.DATAORAFINE | date : 'HH:mm'}} </p>
+                  <p style="font-weight: 700;">dalle {{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} alle {{docPianificazione.DATAORAFINE | date : 'HH:mm'}} </p>
                 </ion-label>
                 <ion-chip color="primary">
                   {{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE==1? 'Ora':'Ore'}} 

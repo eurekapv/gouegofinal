@@ -396,6 +396,7 @@ export class ListcoursesPage implements OnInit, OnDestroy {
               //Posso procedere con la pagina di prenotazione
               this.mdlController.create({
                 component: BookcoursePage,
+                cssClass: 'modal-xl-class',
                 componentProps: {
                   params: selectedCorso
                 }

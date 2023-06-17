@@ -1,12 +1,14 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import { PrenotaTesseramentoAzione } from './valuelist.model';
+import { AzioneTesseramento } from './valuelist.model';
 
 export class PrenotaTesseramento extends IDDocument {
 
     IDPRENOTAZIONE: string;
-    AZIONE: PrenotaTesseramentoAzione;
+    IDTIPOTESSERA: string;
+    DURATAMESI: number;
     IDPRIMARY: string;
+    AZIONE: AzioneTesseramento;
     IDARTICOLO: string;
     IDCODICEIMPOSTA: string;
     DESCR: string;
@@ -19,8 +21,6 @@ export class PrenotaTesseramento extends IDDocument {
     SCONTORIGA: number;
     PREZZOSCONTATO: number;
     IMPOSTA: number;
-    DURATAMESI: number;
-    IDTIPOTESSERA: string;
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);

@@ -203,6 +203,11 @@ export enum TipoRigoIncasso {
     perdita = 40
 }
 
+export enum ZOrderIncasso {
+    incassato = 10,
+    daIncassare = 20
+}
+
 //Canali dove effettuare il pagamento, compreso onSite in contanti
 export enum PaymentChannel {
     onSite = 10,
@@ -231,10 +236,12 @@ export enum TipoScadenza {
     ratePercentuali = 30
 }
 
-export enum PrenotaTesseramentoAzione {
+export enum AzioneTesseramento {
     emissioneNuovaTessera = 10,
-    rinnovoTessera = 20
+    rinnovoTessera = 20,
+    upgradeTessera = 100
 }
+
 
 export enum TipoAutomatismoTessera {
     manuale = 0,

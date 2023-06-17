@@ -80,7 +80,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
               private toastCtrl: ToastController,
               private navParams: NavParams, 
               private modalCtrl: ModalController,
-              private platform: Platform,
               private alertCtrl: AlertController
               ) {
 
@@ -315,9 +314,6 @@ export class BookingsummaryPage implements OnInit, OnDestroy {
         
       });
   }
-
-
-
 
 
   //Ritorna un indirizzo Location da mostrare

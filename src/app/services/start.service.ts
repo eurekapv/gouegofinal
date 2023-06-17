@@ -955,10 +955,19 @@ getPostiDisponibiliCorso(idCorso: string):Promise<PostResponse> {
 }
 
 /**
+ * Si richiede il calcolo del totale di una iscrizione Corso
+ * @param docIscrizione 
+ * @returns 
+ */
+requestCalcoloTotaleIscrizioneCorso(docIscrizione: IscrizioneCorso):Promise<IscrizioneCorso> {
+  return this.iscrizioneCorsoService.requestTotaleIscrizione(docIscrizione);
+}
+
+/**
  * Chiama il server per il salvataggio di una nuova iscrizione
  * @param docIscrizione Documento Iscrizione da creare
  */
-requestSaveIscrizione(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
+requestSaveIscrizioneCorso(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
   return this.iscrizioneCorsoService.requestSaveIscrizione(docIscrizione);
 }
 //#endregion
@@ -1749,16 +1758,16 @@ requestListTipoTessere(): Promise<void> {
 }
 //#endregion
 
-  /**
-   * Apre una pagina con il link passato
-   * @param url Url a cui indirizzarsi
-   */
-  openLink(url:string): void
-  {
-    if (url && url.length != 0) {
-      Browser.open({url:url});
-    }
+/**
+ * Apre una pagina con il link passato
+ * @param url Url a cui indirizzarsi
+ */
+openLink(url:string): void
+{
+  if (url && url.length != 0) {
+    Browser.open({url:url});
   }
+}
 
   //#region SMART INTERFACE PROMISE
 

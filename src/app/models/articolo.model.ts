@@ -21,6 +21,7 @@ export class Articolo extends IDDocument{
     FLAGCOLORI: boolean;
     FLAGSHOPONLINE: boolean;
     IDVALUTA: string;
+    TOTMINUTI: number;
     ARTICOLITAGLIEMISURE: ArticoloTaglieMisura[];
     ARTICOLICOLORI: ArticoloColore[];
 

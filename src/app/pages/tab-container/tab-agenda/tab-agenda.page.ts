@@ -402,6 +402,16 @@ export class TabAgendaPage implements OnInit, OnDestroy {
 
 
   //#region IMPEGNI PERSONALI
+
+  /**
+   * Vado alla pagina della Lista Generale della persona
+   */
+  onClickGoToPersonalHistoryList() {
+    let urlPath = this.startService.getUrlPageHistoryPersonal('list');
+    this.navController.navigateForward(urlPath);
+  }
+
+
   /**
    * Prepara la Card da visualizzare per gli impegni personali
    * a seconda se è presente un impegno oppure no

@@ -16,7 +16,6 @@ import { PipesModule } from 'src/app/shared/pipes/pipes.module'
     FormsModule,
     IonicModule,
     HistorylistPageRoutingModule,
-    
     PipesModule
   ],
   declarations: [HistorylistPage]

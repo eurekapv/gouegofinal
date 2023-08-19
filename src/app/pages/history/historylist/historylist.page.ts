@@ -43,7 +43,7 @@ export class HistorylistPage implements OnInit {
     private loadingCtrl:LoadingController,
     private toastCtrl: ToastController,
     private docstructureService:DocstructureService,
-    private gestureCtrl: GestureController
+    
   ) 
   { 
      
@@ -229,53 +229,54 @@ export class HistorylistPage implements OnInit {
   //Richiesta di Refresh
   doRefresh(event) {
 
-    if(this.docUtente&&this.docUtente.ID)
-    switch (this.selectedView) {
-      case 'prenotazioni':
-
-        let filterUtentePrenotazioni = new UtentePrenotazione(true);
-        filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
-
-
-        this.docstructureService.requestNew(filterUtentePrenotazioni)
-              .then(list=>{
-                      this.listUtentePrenotazione=list;
-                      //Sparisce il pullToRefresh Image
-                      event.target.complete();
-              })
-              .catch(error=>{
-                      //Sparisce il pullToRefresh Image
-                      event.target.complete();
-
-                      
-                      LogApp.consoleLog(error,'error');
-                      this.showMessage('Errore nel caricamento');
-              });
-        break;
-
-      case 'corsi':
-        //Richiedo le Iscrizioni
-        let filterUtenteIscrizioni= new UtenteIscrizione(true);
-        filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
-
-        this.docstructureService.requestNew(filterUtenteIscrizioni)
-              .then(list=>{
-                  
-                      this.listUtenteCorsi=list;
-                      //Sparisce il pullToRefresh Image
-                      event.target.complete();
-              })
-              .catch(error=>{
-
-                      //Sparisce il pullToRefresh Image
-                      event.target.complete();
-                      
-                      LogApp.consoleLog(error,'error');
-                      this.showMessage('Errore nel caricamento');
-              });
-    
-      default:
-        break;
+    if(this.docUtente && this.docUtente.ID) {
+      switch (this.selectedView) {
+        case 'prenotazioni':
+  
+          let filterUtentePrenotazioni = new UtentePrenotazione(true);
+          filterUtentePrenotazioni.IDUTENTE=this.docUtente.ID
+  
+  
+          this.docstructureService.requestNew(filterUtentePrenotazioni)
+                .then(list=>{
+                        this.listUtentePrenotazione=list;
+                        //Sparisce il pullToRefresh Image
+                        event.target.complete();
+                })
+                .catch(error=>{
+                        //Sparisce il pullToRefresh Image
+                        event.target.complete();
+  
+                        
+                        LogApp.consoleLog(error,'error');
+                        this.showMessage('Errore nel caricamento');
+                });
+          break;
+  
+        case 'corsi':
+          //Richiedo le Iscrizioni
+          let filterUtenteIscrizioni= new UtenteIscrizione(true);
+          filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
+  
+          this.docstructureService.requestNew(filterUtenteIscrizioni)
+                .then(list=>{
+                    
+                        this.listUtenteCorsi=list;
+                        //Sparisce il pullToRefresh Image
+                        event.target.complete();
+                })
+                .catch(error=>{
+  
+                        //Sparisce il pullToRefresh Image
+                        event.target.complete();
+                        
+                        LogApp.consoleLog(error,'error');
+                        this.showMessage('Errore nel caricamento');
+                });
+      
+        default:
+          break;
+      }
     }
 
   }

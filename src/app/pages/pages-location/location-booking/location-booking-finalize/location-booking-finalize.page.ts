@@ -351,6 +351,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
     //1) Chiudere la modale
     this.closeModal();
     //2) Andare alla History sulla scheda
+    
     this.navCtrl.navigateRoot(['historylist/booking', this.activePrenotazione.ID + '-' + this.docPianificazione.ID]);
 
   }

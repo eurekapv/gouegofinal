@@ -23,7 +23,15 @@ const routes: Routes = [
   {
     path: 'custode/detail-occupazione/:pianificazioneId',
     loadChildren: () => import('../../pages-agenda/pages-custode/agenda-custode-details/agenda-custode-details.module').then( m => m.AgendaCustodeDetailsPageModule)
-  }
+  },
+  {
+    path: 'history-list',
+    loadChildren: () => import('../../pages-history/history-list/history-list.module').then( m => m.HistoryListPageModule)
+  }  
+  // {
+  //   path: 'history-list',
+  //   loadChildren: () => import('../../history/historylist/historylist.module').then( m => m.HistorylistPageModule)
+  // }
 
 ];
 

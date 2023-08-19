@@ -80,10 +80,9 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
               private startService:StartService,
               private navController: NavController,
               private loadingController: LoadingController,
-              private toastCtrl: ToastController,
               private modalCtrl: ModalController,
               private actionSheetController: ActionSheetController,
-              private alertController: AlertController) { 
+              ) { 
 
     //Creo un documento di Pianificazione
     this.actualPlanning = new PrenotazionePianificazione;
@@ -178,7 +177,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
                   loading.dismiss();
               },()=>{
                   loading.dismiss();
-                  this.showMessage('Errore di connessione');
+                  this.showMessage('Errore di connessione','toast');
             });
 
             //Mi sottoscrivo alla ricezione
@@ -649,20 +648,10 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
         ];
 
       }
-
-
       
     }
 
-    this.alertController.create({
-      header: 'Contattare la struttura',
-      subHeader: 'per richiedere informazioni',
-      message: myMessage,
-      buttons: myButton
-    })
-    .then(elAlert => {
-      elAlert.present();
-    });
+    this.startService.presentAlertMessage(myMessage, 'Contattare la struttura', myButton);
   }
 
 
@@ -800,14 +789,14 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
                 else {
                   
                   let msg = (newPrenotazione.MSGINVALID ? newPrenotazione.MSGINVALID: 'Errore comunicazione imprevisto');
-                  this.showMessage(msg);
+                  this.showMessage(msg,'alert');
                 }
 
 
               }, error => {
                 //Chiudo il loading
                 elLoading.dismiss();
-                this.showMessage(error);
+                this.showMessage(error, 'alert');
               });
         });
     
@@ -831,20 +820,17 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   }
 
   /**
-   * Visualizza un messaggio come Toast
+   * Visualizza un messaggio
    * @param message Messaggio da mostrare
    */
-  showMessage(message: string) {
+  showMessage(message: string, type:'alert' | 'toast' = 'alert') {
 
-    //Creo un messaggio
-    this.toastCtrl.create({
-      message: message,
-      duration: 3000
-    })
-    .then(tstMsg => {
-      tstMsg.present();
-    });
-
+    if (type == 'alert') {
+      this.startService.presentAlertMessage(message);
+    }
+    else if (type == 'toast') {
+      this.startService.presentToastMessage(message);
+    }
   }
 
   /**

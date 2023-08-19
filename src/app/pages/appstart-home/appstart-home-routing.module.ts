@@ -27,7 +27,7 @@ const routes: Routes = [
       {
         path: 'tab-profile',
         loadChildren: () => import('../tab-container/tab-profile/tab-profile.module').then( m => m.TabProfilePageModule)
-      },                 
+      },           
       {
         path: '',
         redirectTo: '/appstart-home/tab-home',

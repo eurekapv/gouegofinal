@@ -1898,6 +1898,26 @@ requestListTipoTessere(): Promise<void> {
 //#region IMPEGNI
 
 /**
+ * Ritorna URL per accedere a History
+ * list / course / book
+ * In caso di Corso o Book passando la primary key manda alla pagina dettaglio
+ * @param type 
+ * @returns 
+ */
+getUrlPageHistoryPersonal(type: 'list' | 'course' | 'book', primaryKey?:string): string[] {
+  let retPath = [];
+  switch (type) {
+    case 'list':
+      retPath = ['/','appstart-home','tab-agenda','history-list'];
+      break;
+  
+    default:
+      break;
+  }
+  return retPath;
+}
+
+/**
  * Per ottenere la lista Impegni Personali
  * è necessario effettuare la richiesta con 
  * requestImpegniPersonali

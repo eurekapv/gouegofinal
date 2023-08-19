@@ -243,7 +243,9 @@ export class TabHomePage implements OnInit, OnDestroy {
    * @param location Location Selezionata
    */
   onClickPrenota(location: Location) {
-    this.navController.navigateForward(['/', 'location', location.ID, 'booking']);
+    let fullPath: string[] = [];
+    fullPath = this.startService.getUrlPageLocation(location.ID, 'book');
+    this.navController.navigateForward(fullPath);
   }
 
   /**

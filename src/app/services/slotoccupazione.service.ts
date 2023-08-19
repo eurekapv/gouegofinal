@@ -63,7 +63,7 @@ export class SlotoccupazioneService {
           templateSlotDay: SlotDay,
           docLocation: Location, 
           docCampo: Campo, 
-          dataGiorno: Date) {
+          dataGiorno: Date): Promise<void> {
     return new Promise<void>((resolve, reject)=>{
 
       let myHeaders = config.getHttpHeaders();
@@ -97,11 +97,13 @@ export class SlotoccupazioneService {
       }
       else {
   
+        //Reimposto lo stesso Slot che mi era stato passato
+        this._docOccupazione.next(templateSlotDay);
+        
         LogApp.consoleLog('Dati Occupazione: RICHIESTA FAILED');
         LogApp.consoleLog('Manca' + (!docLocation?'Location':'') + ' ' + (!docCampo?'Campo':''));
-  
-        this._docOccupazione.next(templateSlotDay);
-        reject();
+        
+        reject('Richiesta non effettuata');
         
       }
     })

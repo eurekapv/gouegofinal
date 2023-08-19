@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController, AlertController} from '@ionic/angular';
@@ -46,8 +46,8 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   docUtente: Utente;
   subDocUtente: Subscription; 
 
-  ricevuti: boolean; //Dati Ricevuti
-  bookable: boolean = false; //Ho ricevuto dei campi, quindi potrei effettuare prenotazioni
+  flagDatiRicevuti: boolean; //Dati Ricevuti
+  flagPrenotazioneDisponibile: boolean = false; //Ho ricevuto dei campi, quindi potrei effettuare prenotazioni
 
   templateWeekSlot: SlotWeek = new SlotWeek(); //Template con gli slotTime settimanali relativi alla location
   
@@ -73,6 +73,8 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   showExtraToolbar = true;
   isOnAppleSystem = false; //Sta girando su sistemi IOS (Introdotto per animare diversamente la toolbar Hide)
   
+  //Grid completa che contiene le 2 colonne o la colonna singola
+  @ViewChild('gridcontainer', {read: ElementRef}) refGridContainer: ElementRef | undefined;
 
   constructor(private router: ActivatedRoute, 
               private startService:StartService,
@@ -82,7 +84,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
               private modalCtrl: ModalController,
               private actionSheetController: ActionSheetController,
               private alertController: AlertController) { 
-
 
     //Creo un documento di Pianificazione
     this.actualPlanning = new PrenotazionePianificazione;
@@ -96,10 +97,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
   }
   
-// Problematica dell'animazione toolbar
-//https://github.com/ionic-team/ionic-framework/issues/17728
-//https://github.com/ionic-team/ionic-framework/pull/17224
-
   
   /**
    * Crea l'array con i soli Campi dove è possibile effettuare l'attività selezionata
@@ -145,8 +142,8 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
         LogApp.consoleLog('Presentazione Loading');
 
         loading.present()
-        this.ricevuti = false;
-        this.bookable = false;
+        this.flagDatiRicevuti = false;
+        this.flagPrenotazioneDisponibile = false;
       
 
         //Controllo dei parametri del router
@@ -177,7 +174,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
             this.startService.requestLocationByID(this.idLocation, 3)
               .then(()=>{
-                  this.ricevuti=true;
+                  this.flagDatiRicevuti=true;
                   loading.dismiss();
               },()=>{
                   loading.dismiss();
@@ -215,14 +212,14 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
         }
         else {
           // Dico che non posso prenotare
-          this.bookable = false;
-          this.ricevuti = true;
+          this.flagPrenotazioneDisponibile = false;
+          this.flagDatiRicevuti = true;
         }
         
       }
       else {
         //Rimando alla HOME
-        this.navController.navigateForward(['/']);
+        this.onGoToBack();
       }
 
     })
@@ -261,6 +258,80 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     }
 
 
+  }
+
+
+  //#region PULSANTE BACK
+  /**
+   * Ritorna un Array con il percorso di ritorno
+   */
+  get backPathArray():string[] {
+    let retPath = ['/','appstart-home','tab-home'];
+
+    return retPath;
+  }
+    
+  //Ritorna il Path Array Back in formato stringa concatenata
+  get backButtonHref(): string {
+      let myHref = '';
+      myHref = this.backPathArray.join('/').substring(1);
+  
+      return myHref;
+  }
+    
+  /**
+   * Torno alla pagina Home
+   */
+  onGoToBack() {
+        this.navController.navigateBack(this.backPathArray);
+  }
+  
+  //#endregion
+
+
+  //#GESTIONE CSS PER COLONNA SLIDE SPORT E CAMPI
+  get directionSliderSportCampi(): 'horizontal' | 'vertical' {
+    let direction : 'horizontal' | 'vertical' = 'horizontal';
+    //Devo capire quanto è larga la colonna di riferimento
+    if (this.refGridContainer && this.refGridContainer.nativeElement) {
+      try {
+        const width = this.refGridContainer.nativeElement.offsetWidth;
+        
+        const brkPoint = this.startService.getDefaultBreakpoint(width);
+        if (['md','lg','xl'].includes(brkPoint)) {
+          direction = 'vertical';
+        }
+      } catch (error) {
+        direction = 'horizontal';
+      }
+
+    }
+
+    
+    return direction;
+  }
+
+  /**
+   * Ritorna in formato stringa la scelta di
+   * Attività e Campo
+   */
+  get descriptionScelta(): string {
+    let value = '';
+    if (this.selectedSport) {
+      value = this.selectedSport.DENOMINAZIONE
+    }
+    if (this.selectedCampo) {
+      value = value + ` su ${this.selectedCampo.DENOMINAZIONE}`
+    }
+    if (this.selectedLocation) {
+      value = value + ` in ${this.selectedLocation.DENOMINAZIONE}`
+    }
+
+    if (value.length == 0) {
+      value = 'SCEGLI ORARIO: '
+    }
+
+    return value;
   }
 
   /*
@@ -370,7 +441,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
       if (this.selectedCampo) {
 
         LogApp.consoleLog('Richiesto Refresh success, getOccupazioni');
-        this.bookable = (this.selectedCampo?true:false);
+        this.flagPrenotazioneDisponibile = (this.selectedCampo?true:false);
 
         //Richiesta delle nuove occupazioni e impostazione nuova Pianificazione
         this.getOccupazioni();
@@ -427,7 +498,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
    * @param newDate Nuova Data
    */
   onChangeBookDay(newDate: Date) {
-    
+    console.log(newDate);
     this.actualBookDay = newDate;
 
     //Richiedo le occupazioni
@@ -479,10 +550,9 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     
     //Step b) Chiamo il servizio
     this.startService.requestSlotOccupazioni(this.actualSlotDay, 
-      this.selectedLocation, 
-      this.selectedCampo, 
-      this.actualBookDay)
-      
+                                            this.selectedLocation, 
+                                            this.selectedCampo, 
+                                            this.actualBookDay)
       .then(() => {
         //Per gli orario del centro saremmo aperti (come giornata)
         if (this.actualSlotDay.APERTOCHIUSO == true) {
@@ -500,7 +570,11 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
           }
         }
 
-      });
+      })
+      .catch(error => {
+        //Non ho fatto la richiesta per mancanza
+        LogApp.consoleLog(error);
+      })
       
       
 
@@ -753,14 +827,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
         locationId : this.selectedLocation.ID
       }
     })
-    .then(modal => modal.present());
-
-    /* VERSIONE PAGINA FULLSCREEN
-    this.navController.navigateForward(['/','location',
-                                              this.selectedLocation.ID,
-                                            'booking','bookingsummary',
-                                            this.activePrenotazione.ID]);
-    */                                            
+    .then(modal => modal.present());                                           
   }
 
   /**

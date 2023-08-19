@@ -31,7 +31,11 @@ export class CampiScrollComponent implements OnInit {
   }
   @Input() selectedLocation: Location;
   @Input() canChoose: boolean; //Indica se è possibile modificare la scelta con i pulsanti
-
+  @Input() set direction(value: 'horizontal' | 'vertical') {
+    this._direction = value;
+    //Se è pronto lo Swiper configuro i parametri
+    this.setSwiperParams();
+  }
 
   _listAvailableCampi: Campo[]; //Lista dei campi disponibili
   _flagAvailableCampi = false; //Indica la presenza di campi
@@ -39,6 +43,7 @@ export class CampiScrollComponent implements OnInit {
   swiper?: Swiper;
   
   styleInfoMessage: number = 2; //Stile del messaggio visualizzato
+  _direction: 'horizontal' | 'vertical' = 'horizontal';
 
   constructor() {
   }
@@ -121,6 +126,7 @@ export class CampiScrollComponent implements OnInit {
     */
     setTimeout(()=>{
       this.setSwiperProp('slides-per-view', this.numSlidesPerView)
+      this.setSwiperProp('direction', this._direction);
     }, 400)
   }
 
@@ -129,13 +135,32 @@ export class CampiScrollComponent implements OnInit {
    * @param nameProp 
    * @param value 
    */
-  setSwiperProp(nameProp: string, value: number) {
+  setSwiperProp(nameProp: string, value: number | string) {
     let element = this.swiperRef?.nativeElement;
 
     if (element) {
       element.setAttribute(nameProp, value);
     }
   }
+
+  /**
+   * Questo è il reale Oggetto Swiper su cui è possibile chiamare i metodi 
+   * https://swiperjs.com/swiper-api#methods--properties
+   * @returns 
+   */
+  getSwiperObject(): any {
+    let element = this.swiperRef?.nativeElement;
+    let objSwiper = null;
+    if (element) {
+      try {
+        objSwiper = element.swiper;
+      } catch (error) {
+        objSwiper = null;
+      }
+    }
+
+    return objSwiper;
+  }  
   //#endregion
 
 

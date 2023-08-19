@@ -740,6 +740,9 @@ export class StartService {
           retPath.push(idLocation);
           break;
         case 'book':
+          retPath.push('booking');
+          retPath.push(idLocation);
+          break;          
           break;
         case 'course':
           break;
@@ -2013,6 +2016,34 @@ openLink(url:string): void
   if (url && url.length != 0) {
     Browser.open({url:url});
   }
+}
+
+/**
+ * Ritorna una stringa che identifica il breakpoint di riferimento
+ * rispetto alla dimensione larghezza passata
+ * @param actualWidth Larghezza Attuale
+ */
+getDefaultBreakpoint(actualWidth: number): 'xs' | 'sm' | 'md' | 'lg' | 'xl' {
+  let value : 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'lg';
+
+
+  if (actualWidth < 576) {
+    value = 'xs'
+  }
+  else if (actualWidth < 768) {
+    value = 'sm'
+  }
+  else if (actualWidth < 992) {
+    value = 'md'
+  }
+  else if (actualWidth < 1200) {
+    value = 'lg'
+  }
+  else {
+    value = 'xl'
+  }
+
+  return value;
 }
 
 //#endregion

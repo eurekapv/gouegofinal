@@ -99,7 +99,7 @@ export class LocationDetailPage implements OnInit, OnDestroy {
   }
     
   /**
-   * Torno alla pagina del profilo
+   * Torno alla pagina del home
    */
   onGoToBack() {
         this.navController.navigateBack(this.backPathArray);
@@ -169,11 +169,13 @@ export class LocationDetailPage implements OnInit, OnDestroy {
    * @param btn Bottone utilizzato
    */
   onClickButtonCard(btn: ButtonCard) {
-    
+    let arPath = [];
+
     switch (btn.functionCod) {
       case 'book':
+        arPath = this.startService.getUrlPageLocation(this.selectedLocation.ID, 'book');
         //Prenotazioni
-        this.navController.navigateForward(['/','location',this.selectedLocation.ID,'booking']);
+        this.navController.navigateForward(arPath);
         break;
       case 'course':
         // Corsi

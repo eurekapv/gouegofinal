@@ -1,11 +1,16 @@
-img{
+img {
     &.height-viewport {
         max-height: 30vh;
     }
 
     &.small-height-viewport {
         max-height: 25vh;
-    }    
+    }
+    
+    &.cover {
+      object-fit:cover;
+    }
+
 }
 
 ion-title {
@@ -24,6 +29,9 @@ ion-row.row-img {
 .ion-text-right {
     text-align: right;
 }
+
+
+
 
 /* Stili Segment */
 

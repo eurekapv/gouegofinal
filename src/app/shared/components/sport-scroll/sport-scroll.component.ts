@@ -26,9 +26,16 @@ export class SportScrollComponent implements OnInit {
     this.setSwiperParams();
   }
 
+  @Input() set direction(value: 'horizontal' | 'vertical') {
+    this._direction = value;
+    //Se è pronto lo Swiper configuro i parametri
+    this.setSwiperParams();
+  }
+
 
   _listAvailableSports: Sport[]; //Elenco degli Sport Disponibili
   _flagAvailableSports: boolean = false;
+  _direction: 'horizontal' | 'vertical' = 'horizontal';
 
   @ViewChild('sliderSport') swiperRef: ElementRef | undefined;
   swiper?: Swiper;
@@ -89,7 +96,8 @@ export class SportScrollComponent implements OnInit {
     Per modificare tali valori uso un timeout che mi da il tempo di avere l'elemento nel DOM
     */
     setTimeout(()=>{
-      this.setSwiperProp('slides-per-view', this.numSlidesPerView)
+      this.setSwiperProp('slides-per-view', this.numSlidesPerView);
+      this.setSwiperProp('direction', this._direction);
     }, 300)
   }
 
@@ -98,12 +106,32 @@ export class SportScrollComponent implements OnInit {
    * @param nameProp 
    * @param value 
    */
-  setSwiperProp(nameProp: string, value: number) {
+  setSwiperProp(nameProp: string, value: number | string) {
     let element = this.swiperRef?.nativeElement;
     
+
     if (element) {
       element.setAttribute(nameProp, value);
     }
+  }
+
+  /**
+   * Questo è il reale Oggetto Swiper su cui è possibile chiamare i metodi 
+   * https://swiperjs.com/swiper-api#methods--properties
+   * @returns 
+   */
+  getSwiperObject(): any {
+    let element = this.swiperRef?.nativeElement;
+    let objSwiper = null;
+    if (element) {
+      try {
+        objSwiper = element.swiper;
+      } catch (error) {
+        objSwiper = null;
+      }
+    }
+
+    return objSwiper;
   }
   
 /**

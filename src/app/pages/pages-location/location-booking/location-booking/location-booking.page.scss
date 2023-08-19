@@ -1,5 +1,8 @@
 ion-content {
     --background: var(--ion-color-light-tint);
+    > ion-grid {
+      --background: var(--ion-color-light-tint);
+    }
   }
 
 ion-segment {

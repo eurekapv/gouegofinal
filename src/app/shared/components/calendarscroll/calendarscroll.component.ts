@@ -41,17 +41,17 @@ export class CalendarscrollComponent implements OnInit {
       },     
       // when window width is <= 480px     
       480: {       
-         slidesPerView: 7,       
+         slidesPerView: 5,       
          spaceBetween: 3     
       },   
   
       // when window width is <= 640px     
       640: {       
-         slidesPerView: 10,       
+         slidesPerView: 5,       
          spaceBetween: 1     
       },
       1000: {       
-        slidesPerView: 15,       
+        slidesPerView: 8,       
         spaceBetween: 1     
      } 
   

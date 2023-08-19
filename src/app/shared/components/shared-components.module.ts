@@ -42,6 +42,7 @@ import { MaskitoModule } from '@maskito/angular';
 import { TableEventiComponent } from './table-eventi/table-evento.component';
 import { TableArticoliComponent } from './table-articoli/table-articoli.component';
 import { TableItemArticoloComponent } from './table-item-articolo/table-item-articolo.component';
+import { CardImageComponent } from './card-image/card-image.component';
 
 @NgModule({
 
@@ -87,6 +88,7 @@ import { TableItemArticoloComponent } from './table-item-articolo/table-item-art
         TableEventiComponent,
         TableArticoliComponent,
         TableItemArticoloComponent,
+        CardImageComponent
     ],
     exports: [
         AdvertisingComponent,
@@ -120,7 +122,8 @@ import { TableItemArticoloComponent } from './table-item-articolo/table-item-art
         SwiperDirective,
         TableEventiComponent,
         TableArticoliComponent,
-        TableItemArticoloComponent
+        TableItemArticoloComponent,
+        CardImageComponent
     ]
 })
 export class SharedComponentsModule {}

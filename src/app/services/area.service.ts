@@ -6,6 +6,8 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Area } from '../models/area.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { RequestParams } from '../library/models/requestParams.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +31,8 @@ export class AreaService {
     return this._areaSelected.getValue();
   }
 
-  constructor(private apiService: ApicallService) { }
+  constructor(private apiService: ApicallService,
+              private docStructure: DocstructureService) { }
 
 
   /**
@@ -122,6 +125,43 @@ export class AreaService {
       //Ememtto la modifica
       this._areaSelected.next(elSelected);
     }
+  }
+
+  /**
+   * Effettua la richiesta dei dati di un'area
+   * @param idArea 
+   * @param numChild 
+   * @returns 
+   */
+  requestAreaById(idArea: string, numChild: number = 0): Promise<Area> {
+    return new Promise<Area>((resolve, reject) => {
+
+      if (idArea && idArea.length != 0) {
+
+        let reqParams: RequestParams = new RequestParams();
+        reqParams.child_level = numChild;
+
+        let filterAreaDoc = new Area(true);
+        filterAreaDoc.ID = idArea;
+
+        this.docStructure.requestNew(filterAreaDoc, reqParams)
+                         .then(listReceived => {
+                            if (listReceived && listReceived.length != 0) {
+                              resolve(listReceived[0]);
+                            }
+                            else {
+                              resolve(null);
+                            }
+                         })
+                         .catch(error => {
+                          reject(error);
+                         })
+
+      }
+      else {
+        reject('Area non specificata')
+      }
+    })
   }
 
 }

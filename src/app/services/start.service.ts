@@ -643,6 +643,14 @@ export class StartService {
           })
     }
 
+    /**
+     * Effettua la richiesta di un'area precisa
+     * @param idArea 
+     * @param numChild 
+     */
+    requestAreaById(idArea: string, numChild: number = 0): Promise<Area> {
+      return this.areaService.requestAreaById(idArea, numChild);
+    }
 
 
   //#endregion
@@ -1910,7 +1918,17 @@ getUrlPageHistoryPersonal(type: 'list' | 'course' | 'book', primaryKey?:string):
     case 'list':
       retPath = ['/','appstart-home','tab-agenda','history-list'];
       break;
-  
+    case 'book':
+      if (primaryKey && primaryKey.length != 0) {        
+        retPath = ['/','appstart-home','tab-agenda','history-booking', primaryKey];
+      }
+      break;
+
+    case 'course':
+        if (primaryKey && primaryKey.length != 0) {
+          retPath = ['/','appstart-home','tab-agenda','history-course', primaryKey];
+        }
+        break;  
     default:
       break;
   }

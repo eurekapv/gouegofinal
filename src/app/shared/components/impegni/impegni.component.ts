@@ -73,7 +73,6 @@ export class ImpegniComponent {
   * Click sull'elemento (giro il click al chiamante)
   */
   onClickElement() {
-      
     this.OnClickItem.emit(this._impegnoDoc);
     
 }

@@ -27,7 +27,7 @@ export class Impegno extends IDDocument {
       /**
     * Ritorna il descrittore della Struttura Campi
     */
-   getDescriptor(): Descriptor {
+    getDescriptor(): Descriptor {
     let objDescriptor = new Descriptor();
     let arString = ['IDREFER',
                     'DENOMINAZIONE',
@@ -63,7 +63,29 @@ export class Impegno extends IDDocument {
     objDescriptor.setRelation('IDUTENTE','Utente');
     
     return objDescriptor;
-}
+    }
+
+    /**
+     * Ritorna un Identificatore Univoco del record unendo eventuale campi
+     */
+    getIdentifier(): string {
+        let identifier = '';
+
+        switch (this.SETTORE) {
+            case SettoreAttivita.settoreCorso:
+                identifier = this.IDREFER + '-' + this.ID;
+                break;
+
+            case SettoreAttivita.settorePrenotazione:
+                identifier = this.IDREFER + '-' + this.ID;
+                break;
+        
+            default:
+                break;
+        }
+
+        return identifier;
+    }
 
 static getReqForeignKeys(): RequestForeign[] {
     let arRequest: RequestForeign[] = [];

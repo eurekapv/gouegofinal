@@ -140,12 +140,12 @@ export class UtenteIscrizione extends IDDocument {
                 caption = 'Paga Ora';
             }
             else {
-                caption = 'Corso da pagare';
+                caption = 'Residuo da pagare';
             }
         }
         else {
 
-            caption = 'Corso pagato';
+            caption = 'Iscrizione pagata';
         }
         return caption;
       }

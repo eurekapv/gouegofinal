@@ -23,7 +23,7 @@ import { RequestParams } from 'src/app/library/models/requestParams.model';
 })
 export class HistorycoursePage implements OnInit {
 
-  StatoPagamento : typeof StatoPagamento=StatoPagamento
+  StatoPagamento : typeof StatoPagamento=StatoPagamento;
   docUtente: Utente;
   subDocUtente: Subscription;
 
@@ -205,35 +205,7 @@ export class HistorycoursePage implements OnInit {
 
   }
 
-  OldrequestCorso(docIscrizione: UtenteIscrizione): Promise<Corso> {
-    return new Promise<Corso>((resolve, reject) => {
-
-    
-    this.docstructrureService.getRelDoc(docIscrizione, ['IDCORSO'],1)
-      .then(docCorso => {
-      
-
-        if (docCorso) {
-          //Scarico la collection CORSO PROGRAMMA
-          this.docstructrureService.loadCollection(docCorso, 'CORSOPROGRAMMA')
-                  .then(() => {
-                    resolve( docCorso );
-                  })
-                  .catch(error => {
-                    reject(error);
-                  });
-        }
-        else {
-          reject('Corso non trovato');
-        }
-
-      })
-      .catch(error => {
-        LogApp.consoleLog(error,'error');
-      });
-    });
-
-  }  
+ 
 
   /**
    * Richiede un documento correlato della Location ed imposto this.myLocation
@@ -286,15 +258,15 @@ export class HistorycoursePage implements OnInit {
   onClickCalendar() {
     /* Apro in modale il calendario */
     this.modalController
-    .create({
-      component: CalendarPage,
-      componentProps: {
-        'myCorso': this.myCorso
-      }
-    })
-    .then(formModal => {
-      formModal.present();
-    });
+        .create({
+          component: CalendarPage,
+          componentProps: {
+            'myCorso': this.myCorso
+          }
+        })
+        .then(formModal => {
+          formModal.present();
+        });
 
   }
 

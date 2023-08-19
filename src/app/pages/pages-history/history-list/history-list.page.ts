@@ -219,9 +219,11 @@ export class HistoryListPage implements OnInit {
  */
   onClickCorso(selectedCorso: Corso)
   {
-    //MODIFICARE
-    this.navController.navigateForward(['/','historylist','course',selectedCorso.ID])
-
+    //Concateno IDPrenotazione con IDPianificazione
+    let historyId = selectedCorso.ID;
+    let urlPath = [];
+    urlPath = this.startService.getUrlPageHistoryPersonal('course', historyId);
+    this.navController.navigateForward(urlPath);
   }
 
   /**
@@ -232,8 +234,10 @@ export class HistoryListPage implements OnInit {
   {
     //Concateno IDPrenotazione con IDPianificazione
     let historyId = selectedPrenotazione.IDPRENOTAZIONE + '-' + selectedPrenotazione.ID;
+    let urlPath = [];
+    urlPath = this.startService.getUrlPageHistoryPersonal('book', historyId);
     //MODIFICARE
-    this.navController.navigateForward(['/','historylist','booking',historyId])
+    this.navController.navigateForward(urlPath)
   } 
 
   //Richiesta di Refresh

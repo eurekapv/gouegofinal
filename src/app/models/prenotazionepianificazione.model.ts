@@ -124,4 +124,13 @@ export class PrenotazionePianificazione extends IDDocument {
 
         return arRequest;
     }
+
+    /**
+     * Ritorna un Identificatore Univoco del record unendo eventuale campi
+     */
+    getIdentifier(): string {
+        let identifier = '';        
+        identifier = this.IDPRENOTAZIONE + '-' + this.ID;
+        return identifier;
+    }        
 }

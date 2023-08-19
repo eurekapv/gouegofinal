@@ -27,11 +27,16 @@ const routes: Routes = [
   {
     path: 'history-list',
     loadChildren: () => import('../../pages-history/history-list/history-list.module').then( m => m.HistoryListPageModule)
-  }  
-  // {
-  //   path: 'history-list',
-  //   loadChildren: () => import('../../history/historylist/historylist.module').then( m => m.HistorylistPageModule)
-  // }
+  },
+  {
+    path: 'history-booking/:historyId',
+    loadChildren: () => import('../../pages-history/history-booking/history-booking.module').then( m => m.HistoryBookingPageModule)
+  },
+  {
+    path: 'history-course/:historyId',
+    loadChildren: () => import('../../pages-history/history-course/history-course.module').then( m => m.HistoryCoursePageModule)
+  }
+
 
 ];
 

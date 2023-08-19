@@ -17,7 +17,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         IonicModule,
         LocationDetailPageRoutingModule,
         PipesModule,
-        
         LocationCampiListPageModule,
         FormsModule,
         SharedComponentsModule,

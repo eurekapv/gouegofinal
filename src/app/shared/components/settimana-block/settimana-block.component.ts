@@ -18,8 +18,12 @@ export class SettimanaBlockComponent implements OnInit {
   @Input() colorNotSelected: string = 'secondary';
   @Input() clickable: boolean = false;
   @Input() isDesktop: boolean = false;
+  @Input() set size(value: 'sm' | 'md' | 'lg') {
+    this._size = value;
+  }
   @Output() clickElement: EventEmitter<Settimana> = new EventEmitter();
 
+  _size: 'sm' | 'md' | 'lg' = 'sm';
 
   ngOnInit() {}
 
@@ -63,7 +67,26 @@ export class SettimanaBlockComponent implements OnInit {
       myLabel = myDay.label.toUpperCase();
     }
     else {
-      myLabel = myDay.xsLabel.toUpperCase();
+
+      switch (this._size) {
+
+        case 'lg':
+          myLabel = myDay.label.toUpperCase();
+          break;
+
+        case 'md':
+          myLabel = myDay.smallLabel.toUpperCase();
+          break;
+
+        case 'sm':
+          myLabel = myDay.xsLabel.toUpperCase();
+          break;
+      
+        default:
+          myLabel = myDay.xsLabel.toUpperCase();
+          break;
+      }
+
     }
 
     return myLabel;

@@ -1304,6 +1304,23 @@ public getRelDocOriginale( docStart: IDDocument,
 
   }
 
+  /**
+   * Prende la collection e ne torna il primo elemento
+   * Reject se non lo trovasse 
+   * @param Collection 
+   * @returns 
+   */
+  public findFirstDoc<T>(Collection: T[]): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      if (Collection && Collection.length != 0) {
+        resolve(Collection[0]);
+      }
+      else {
+        reject('No Document find');
+      }
+    })
+  }
+
   // **********************************************
   // *          REQUEST FOR UPDATE                *
   // **********************************************

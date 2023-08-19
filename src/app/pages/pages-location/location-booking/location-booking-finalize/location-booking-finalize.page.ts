@@ -75,7 +75,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
   
   
   constructor(private startService:StartService,
-              private navCtrl: NavController,
+              private navController: NavController,
               private loadingController: LoadingController,
               private toastCtrl: ToastController,
               private navParams: NavParams, 
@@ -351,8 +351,10 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
     //1) Chiudere la modale
     this.closeModal();
     //2) Andare alla History sulla scheda
-    
-    this.navCtrl.navigateRoot(['historylist/booking', this.activePrenotazione.ID + '-' + this.docPianificazione.ID]);
+    let identifier = this.docPianificazione.getIdentifier();
+    let arPath = this.startService.getUrlPageHistoryPersonal('book',identifier);
+    //Adesso mi sposto
+    this.navController.navigateRoot(arPath);
 
   }
 

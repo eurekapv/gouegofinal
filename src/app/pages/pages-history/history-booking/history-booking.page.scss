@@ -1,0 +1,50 @@
+swiper-container {
+    --swiper-pagination-bullet-inactive-color: var(--ion-color-step-200, #cccccc);
+    --swiper-pagination-color: var(--ion-color-primary, #3880ff);
+    --swiper-pagination-progressbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.25);
+    --swiper-scrollbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
+    --swiper-scrollbar-drag-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.5);
+    
+    .swiper-pagination-bullets{
+        bottom: initial;
+        top: 10px;
+    }
+    
+  }
+
+.div-qr
+{
+    h6{
+        margin: 0px;
+        margin-bottom: 8px;
+        color: var(--ion-color-primary);
+        font-weight: 700;
+    }
+    p{
+        font-size: 14px;
+        margin: 0px;
+        margin-top: 8px;
+        color: rgb(43, 43, 43);
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+    background-color: var(--ion-color-light) ;
+    padding-top:3vh;
+    padding-bottom:3vh;
+}
+    
+
+
+.div-btns
+{
+    border-bottom-style: solid;
+    border-bottom-color: rgb(228, 228, 228);
+    border-bottom-width:1px;
+}
+.btn-pay
+{
+    margin-top:4vh;
+}
+i{
+    font-size: 30px
+}

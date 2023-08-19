@@ -400,7 +400,6 @@ export class TabAgendaPage implements OnInit, OnDestroy {
     }
   }
 
-
   //#region IMPEGNI PERSONALI
 
   /**
@@ -411,6 +410,42 @@ export class TabAgendaPage implements OnInit, OnDestroy {
     this.navController.navigateForward(urlPath);
   }
 
+  /**
+   * Click su un impegno personale
+   * @param impegnoDoc 
+   */
+  onClickImpegnoPersonale(impegnoDoc: Impegno) {
+    let urlPath = [];
+    let primaryKey = '';
+    let typeUrl: 'list' | 'course' | 'book';
+
+    
+    if (impegnoDoc) {
+      primaryKey = impegnoDoc.getIdentifier();
+
+      if (primaryKey.length != 0) {
+
+        switch (impegnoDoc.SETTORE) {
+          case SettoreAttivita.settoreCorso:
+              typeUrl = 'course';
+            break;
+
+          case SettoreAttivita.settorePrenotazione:
+            typeUrl = 'book';
+          break;            
+        
+          default:
+            break;
+        }
+
+        if (typeUrl.length != 0) {
+          urlPath = this.startService.getUrlPageHistoryPersonal(typeUrl,primaryKey);
+          this.navController.navigateForward(urlPath);
+        }
+      }
+      
+    }
+  }
 
   /**
    * Prepara la Card da visualizzare per gli impegni personali

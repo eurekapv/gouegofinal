@@ -67,6 +67,28 @@ export class ImpegnoCustode extends IDDocument {
     return objDescriptor;
 }
 
+    /**
+     * Ritorna un Identificatore Univoco del record unendo eventuale campi
+     */
+    getIdentifier(): string {
+        let identifier = '';
+
+        switch (this.SETTORE) {
+            case SettoreAttivita.settoreCorso:
+                identifier = this.IDREF + '-' + this.ID;
+                break;
+
+            case SettoreAttivita.settorePrenotazione:
+                identifier = this.IDREF + '-' + this.ID;
+                break;
+        
+            default:
+                break;
+        }
+
+        return identifier;
+    }
+
 /**
  * Verifica se il documento contiene la stessa DATA (non ora) nelle due date presenti
  */

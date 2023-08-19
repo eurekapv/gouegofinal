@@ -50,9 +50,6 @@
               <ion-label>Custode</ion-label>
               <ion-icon name="man-outline"></ion-icon>
             </ion-segment-button>
-
-
-
           </ion-segment>
 
 
@@ -63,6 +60,7 @@
             <!-- BUTTON CARD CON IL PRIMO IMPEGNO-->
             <div>
               <app-button-card
+                  (clickElement)="onClickImpegnoPersonale(nextImpegno)"
                   [myButtonCard] = "nextImpegnoCard"
                   smallVersion="false"
                   class="small-button-card">
@@ -72,6 +70,7 @@
             <!-- SE SONO PRESENTI IMPEGNI LI ELENCO -->
             <div *ngIf="listImpegni && listImpegni.length != 0">
               <app-impegni 
+                  (OnClickItem)="onClickImpegnoPersonale(item)"
                   [impegnoDoc]="item"
                   *ngFor="let item of listImpegni">
               </app-impegni>
@@ -81,6 +80,7 @@
                   (click)="onClickGoToPersonalHistoryList()"
                   class="mostra-tutto" 
                   button="true"
+                  detail="true"
                   >
               <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
               <ion-label>mostra tutto</ion-label>

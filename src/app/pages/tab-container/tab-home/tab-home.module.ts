@@ -9,7 +9,7 @@ import { NewsdetailPageModule } from '../../pages-eventi/news-detail/news-detail
 import { TabHomePageRoutingModule } from './tab-home-routing.module'
 import { UserPasswordRecoveryPageModule } from '../../pages-profile/authorization-account/user-password-recovery/user-password-recovery.module';
 import { SharedComponentsModule } from '../../../shared/components/shared-components.module';
-import { AllegatilistPageModule } from '../../history/historycourse/allegatilist/allegatilist.module';
+import { AllegatilistPageModule } from '../../pages-history/allegatilist/allegatilist.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({

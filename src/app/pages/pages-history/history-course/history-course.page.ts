@@ -13,7 +13,7 @@ import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { StatoIscrizione, StatoPagamento } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { CalendarPage } from '../../location/course/detailcourse/calendar/calendar.page';
-import { AllegatilistPage } from '../../history/historycourse/allegatilist/allegatilist.page';
+import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 
 @Component({
   selector: 'app-history-course',

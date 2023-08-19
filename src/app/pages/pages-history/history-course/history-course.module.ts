@@ -10,7 +10,7 @@ import { HistoryCoursePage } from './history-course.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { QRCodeModule } from 'angularx-qrcode';
 import { CalendarPageModule } from '../../location/course/detailcourse/calendar/calendar.module';
-import { AllegatilistPageModule } from '../../history/historycourse/allegatilist/allegatilist.module';
+import { AllegatilistPageModule } from '../allegatilist/allegatilist.module';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 
 @NgModule({

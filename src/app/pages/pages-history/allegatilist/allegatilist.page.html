@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Materiale Allegato</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="onClose()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="requestListAllegati($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- NESSUN DOCUMENTO PRESENTE -->
+  <div *ngIf="listAllegati.length === 0" class="nofind-cnt">
+    <ion-label>Nessun allegato</ion-label>
+    <ion-label>disponibile</ion-label>
+  </div>
+
+
+  <!-- DOCUMENTI PRESENTI -->
+  <ion-list *ngIf="listAllegati.length > 0">
+    <ion-item *ngFor="let allegato of listAllegati" button (click)="downloadAllegato(allegato)">
+      <ion-icon slot="start" class="" color ="" [name]="allegato.fileTypeIconName"></ion-icon>
+        <ion-label>
+          <h3>{{allegato.DESCRIZIONE}}</h3>
+        </ion-label>
+        <ion-icon slot="end" color="primary" name="cloud-download-outline"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -13,7 +13,7 @@ import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-accoun
 import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
 import { TempoCorso, TipoCorso } from 'src/app/models/valuelist.model';
-import { AllegatilistPage } from 'src/app/pages/history/historycourse/allegatilist/allegatilist.page';
+import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
 import { LogApp } from 'src/app/models/log.model';
 
 @Component({

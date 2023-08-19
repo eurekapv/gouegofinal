@@ -1,0 +1,218 @@
+<ion-header>
+  <ion-toolbar color="primary" mode="md">
+    <ion-buttons slot="secondary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+        
+    <ion-title>
+      Agenda
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+
+          <ion-segment
+              *ngIf="showSegmentTop" 
+              mode="md"
+              [(ngModel)] = "selectedView"
+              (ionChange) = "onChangeSegmentTop($event)"
+              >
+
+            <ion-segment-button value="personal">
+              <ion-label>Personali</ion-label>
+              <ion-icon name="person-circle-outline"></ion-icon>
+            </ion-segment-button>
+
+            <ion-segment-button 
+                    *ngIf="showTrainer"
+                    value="trainer">
+              <ion-label>Trainer</ion-label>
+              <ion-icon name="barbell-outline"></ion-icon>
+            </ion-segment-button>
+
+            <ion-segment-button 
+                    *ngIf="showCustode"
+                    value="custode">
+              <ion-label>Custode</ion-label>
+              <ion-icon name="man-outline"></ion-icon>
+            </ion-segment-button>
+
+
+
+          </ion-segment>
+
+
+
+          <!-- SEGMENTO PERSONALE -->
+          <div *ngIf="selectedView == 'personal'">
+
+            <!-- BUTTON CARD CON IL PRIMO IMPEGNO-->
+            <div>
+              <app-button-card
+                  [myButtonCard] = "nextImpegnoCard"
+                  smallVersion="false"
+                  class="small-button-card">
+              </app-button-card>
+            </div>
+
+            <!-- SE SONO PRESENTI IMPEGNI LI ELENCO -->
+            <div *ngIf="listImpegni && listImpegni.length != 0">
+              <app-impegni 
+                  [impegnoDoc]="item"
+                  *ngFor="let item of listImpegni">
+              </app-impegni>
+            </div>
+
+          </div>
+
+          <!-- SEGMENTO TRAINER -->
+          <div *ngIf="selectedView == 'trainer'">
+            <ion-button 
+                  expand="full"
+                  (click)="onClickGoToListaValutazioniTrainer()">
+              Valutazioni fine corsi
+            </ion-button>
+            <!-- AREA FILTRO -->
+            <ion-card 
+                color="light"
+                class="filter">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col *ngFor="let item of searchListPeriodi">
+                        <ion-button
+                          (click) ="onChangePeriodoTrainer(item.value)"
+                          [color] = "item.value==searchTrainerPeriodo ? 'success':'light'"
+                          expand="full">
+                          {{item.title}}
+                        </ion-button>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <app-dtinput
+                        textAlignmentRight="true"
+                        title="Filtro"
+                        [label]="searchTrainerDateLabel"
+                        itemColor="light"
+                        itemLines="none"
+                        iconName="calendar-outline"
+                        iconColor="primary"
+                        maskFormat="dddd dd/MM/yyyy"
+                        [calendarMode]="searchTrainerCalendarMode"
+                        [(actualDate)]="searchTrainerDate"
+                        (actualDateChange)="requestListImpegniTrainer()"
+                    >
+                    </app-dtinput>
+                    </ion-col>
+
+                  </ion-row>
+                </ion-grid>
+            </ion-card>
+              <!-- BUTTON CARD IN ASSENZA IMPEGNO TRAINER -->
+              <div 
+                class="ion-no-padding ion-no-margin"
+                *ngIf="!listImpegniTrainer || listImpegniTrainer.length == 0">
+                <app-button-card
+                    [myButtonCard] = "emptyImpegnoTrainerCard"
+                    smallVersion="true"
+                    class="small-button-card">
+                </app-button-card>
+              </div>
+
+              <!-- SE SONO PRESENTI IMPEGNI TRAINER LI ELENCO -->
+              <div *ngIf="listImpegniTrainer && listImpegniTrainer.length != 0">
+                <app-impegni-collaboratori
+                    [impegnoDoc]="item"
+                    (OnClickItem)="onClickImpegnoTrainer(item)" 
+                    *ngFor="let item of listImpegniTrainer">
+                </app-impegni-collaboratori>
+              </div>
+
+
+          </div>
+
+          <!-- SEGMENTO CUSTODE -->
+          <div *ngIf="selectedView == 'custode'">
+            <ion-button 
+                *ngIf="!platformDesktop"
+                expand="full"
+                (click)="onClickQrCodeCustode()">
+                <ion-icon slot="start" name="qrcode"></ion-icon>
+                Scansiona Codice
+            </ion-button>
+            <!-- AREA FILTRO -->
+            <ion-card 
+                color="light"
+                class="filter">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col *ngFor="let item of searchListPeriodi">
+                        <ion-button
+                          (click) ="onChangePeriodoCustode(item.value)"
+                          [color] = "item.value==searchCustodePeriodo ? 'success':'light'"
+                          expand="full">
+                          {{item.title}}
+                        </ion-button>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <app-dtinput
+                        textAlignmentRight="true"
+                        title="Filtro"
+                        [label]="searchCustodeDateLabel"
+                        itemColor="light"
+                        itemLines="none"
+                        iconName="calendar-outline"
+                        iconColor="primary"
+                        maskFormat="dddd dd/MM/yyyy"
+                        [calendarMode]="searchCustodeCalendarMode"
+                        [(actualDate)]="searchCustodeDate"
+                        (actualDateChange)="requestListImpegniCustode()"
+                    >
+                    </app-dtinput>
+                    </ion-col>
+
+                  </ion-row>
+                </ion-grid>
+            </ion-card>
+              <!-- BUTTON CARD IN ASSENZA IMPEGNO CUSTODI -->
+              <div 
+                class="ion-no-padding ion-no-margin"
+                *ngIf="!listImpegniCustode || listImpegniCustode.length == 0">
+                <app-button-card
+                    [myButtonCard] = "emptyImpegnoCustodeCard"
+                    smallVersion="true"
+                    class="small-button-card">
+                </app-button-card>
+              </div>
+
+              <!-- SE SONO PRESENTI IMPEGNI CUSTODE LI ELENCO -->
+              <div *ngIf="listImpegniCustode && listImpegniCustode.length != 0">
+                <app-impegni-custodi
+                    [impegnoDoc]="item"
+                    (OnClickItem)="onClickImpegnoCustode(item)" 
+                    *ngFor="let item of listImpegniCustode">
+                </app-impegni-custodi>
+              </div>
+
+
+          </div>
+      </ion-col>  
+    </ion-row>  
+  </ion-grid>                
+</ion-content>

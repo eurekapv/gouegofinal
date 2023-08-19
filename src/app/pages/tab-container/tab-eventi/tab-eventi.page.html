@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar color="primary" mode="md">
+    <ion-buttons slot="secondary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="newspaper"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+        
+    <ion-title>
+      Eventi e News
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+                sizeSm="12" 
+                sizeMd="6" offsetMd="3"
+                sizeLg="6" offsetLg="3"
+                sizeXl="6" offsetXl="3">
+
+        <ion-segment 
+            mode="md"
+            [(ngModel)] = "selectedView"
+            (ionChange) = "onChangeSegment($event)"
+            >
+          <ion-segment-button value="pag-eventi">
+            <ion-label>Eventi</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="pag-news">
+            <ion-label>News</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+
+        <!-- LISTA EVENTI -->
+        <ion-list *ngIf="selectedView == 'pag-eventi'">
+          <ion-list-header>
+            <ion-label>
+              <h1>
+                Prossimi Eventi
+              </h1>
+          </ion-label>
+          </ion-list-header>
+
+          <ion-grid class="ion-no-padding" *ngIf="listEventi.length === 0">
+            <ion-row>
+              <ion-col>
+                <app-news-eventi [myNews]="cardNessunEvento" size="12"></app-news-eventi>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+          <app-table-eventi [listEventi]="listEventi"></app-table-eventi>
+        </ion-list>
+
+        <ion-list *ngIf="selectedView == 'pag-news'">
+          <ion-list-header>
+            <ion-label>
+              <h1>
+                News dal centro
+              </h1>
+            </ion-label>
+            <ion-button 
+                *ngIf="numRequestNews != numMaxNews"
+                (click)="onClickShowAllNews()">Mostra tutti</ion-button>
+          </ion-list-header>
+          <ion-grid class="ion-no-padding" *ngIf="listNews.length === 0">
+            <ion-row>
+              <ion-col>
+                <app-news-eventi [myNews]="cardNessunaNews" size="12"></app-news-eventi>
+              </ion-col>
+            </ion-row>
+            </ion-grid>
+          <ion-grid class="ion-no-padding" *ngIf="listNews.length !== 0">
+            <ion-row>
+              <ion-col *ngFor="let news of listNews" size ="12" >
+                <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
+              </ion-col>
+            </ion-row>
+            </ion-grid>
+        </ion-list>  
+      </ion-col>
+    </ion-row>
+  </ion-grid>  
+</ion-content>

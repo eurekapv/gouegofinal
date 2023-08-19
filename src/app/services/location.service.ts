@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, take, max } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 
 import { Location } from '../models/location.model';
 import { ApicallService } from './apicall.service';
@@ -9,9 +9,6 @@ import { StartConfiguration } from '../models/start-configuration.model';
 import { Sport } from '../models/sport.model';
 import { CampoSport } from '../models/camposport.model';
 import { SlotWeek } from '../models/imdb/slotweek.model';
-import { LoadingController } from '@ionic/angular';
-import { error } from 'protractor';
-import { LogApp } from '../models/log.model';
 import { RequestDecode, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { LocationAppVisibility } from '../models/valuelist.model';
@@ -43,7 +40,6 @@ export class LocationService {
 
   constructor(
                 private apiService:ApicallService,
-                private loadingCtrl: LoadingController,
                 private docStructureService: DocstructureService
               ) { }
 
@@ -202,30 +198,39 @@ export class LocationService {
     //Creo un Observable
     let myLocation = new BehaviorSubject<Location>(docLocation);
 
-    docLocation.CAMPO.forEach(elCampo => {
-      this.syncInfoCampoSport(config, elCampo.ID)
-        .subscribe(resultData => {
+    if (docLocation && docLocation.CAMPO) {
 
-          resultData.forEach(elCampoSport => {
+      docLocation.CAMPO.forEach(elCampo => {
 
-            let docCampoSport = new CampoSport();
-            docCampoSport.setJSONProperty(elCampoSport);
-            docCampoSport.lookup('IDSPORT',this._decodeListSport, 'DENOMINAZIONE');
-            
-            myLocation
-            .pipe(take(1))
-            .subscribe( docLocation => {
-              docLocation.addCampoSport(docCampoSport, elCampo.ID);
+        //Sincronizzo informazioni sui campi
+        this.syncInfoCampoSport(config, elCampo.ID)
+                        .subscribe(resultData => {
+  
+                          if (resultData && Array.isArray(resultData)) {
 
-              myLocation.next(docLocation);
-            }
-
-            );
-
-          });
-
-        })
-    });
+                            //Ciclo sui risultati
+                            resultData.forEach(elCampoSport => {
+                  
+                              let docCampoSport = new CampoSport();
+                              docCampoSport.setJSONProperty(elCampoSport);
+                              docCampoSport.lookup('IDSPORT',this._decodeListSport, 'DENOMINAZIONE');
+                              
+                              myLocation
+                              .pipe(take(1))
+                              .subscribe( docLocation => {
+                                docLocation.addCampoSport(docCampoSport, elCampo.ID);
+                  
+                                myLocation.next(docLocation);
+                              }
+                  
+                              );
+                  
+                            });
+                          }
+  
+          })
+      });
+    }
 
     return myLocation.asObservable();
 

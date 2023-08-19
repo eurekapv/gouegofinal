@@ -74,9 +74,21 @@ export class NewsEvento extends IDDocument {
     } 
     
     /**
-     * Torna un oggetto News per indicare che non ci sono News
+     * Torna un oggetto News per indicare che non 
+     * ci sono News
      */
     static getNoNews(): NewsEvento {
+        let objNews = new NewsEvento();
+
+        objNews.TITLE = 'Nessuna notizia dal centro';
+        objNews.SUBTITLE = 'Torna a trovarci per scoprire le prossime novità';
+        objNews.do_loaded = false;
+        objNews.do_deleted = false;
+
+        return objNews;
+    }
+
+    static getNoEventi(): NewsEvento {
         let objNews = new NewsEvento();
 
         objNews.TITLE = 'Nessun evento in programma';
@@ -85,5 +97,5 @@ export class NewsEvento extends IDDocument {
         objNews.do_deleted = false;
 
         return objNews;
-    }
+    }    
 }

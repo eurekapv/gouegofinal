@@ -21,7 +21,7 @@
   <ion-toolbar *ngIf="showTabs" mode="md">
 
     <ion-segment 
-          
+          mode="md"
           [(ngModel)]="selectedView" 
           value="prenotazioni"
           (ionChange)="onChangeSegment($event)" >
@@ -51,7 +51,7 @@
   </ion-refresher>
 
 
-
+ 
   <!-- PARTE CORSI -->
   <div class="contentExpand" *ngIf="selectedView=='corsi'">
 

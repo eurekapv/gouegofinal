@@ -54,7 +54,7 @@ export class Location extends IDDocument {
     }
 
 
-            /**
+    /**
     * Ritorna il descrittore della Struttura Campi
     */
    getDescriptor(): Descriptor {

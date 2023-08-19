@@ -286,6 +286,22 @@ static durataAnni(inferiorDate: Date, superiorDate: Date): number {
 }
 
 /**
+ * Durata in secondi tra le due date
+ * @param date1 
+ * @param date2 
+ */
+static durataSecondi(date1: Date, date2: Date): number {
+    let mySec = 0;
+    if (date1 && date2) {
+        let m1 = moment(date1);
+        let m2 = moment(date2);
+        mySec = m1.diff(m2, 'seconds',true)
+    }
+
+    return mySec;
+}
+
+/**
  * Aggiungo o sottrae da una data il periodo passato nei parametri
  * @param dateTime Data Ora di partenza
  * @param addOrSub Valore numerico positivo per aggiungere, neghativo per sottrarre
@@ -310,6 +326,20 @@ static calcola(dateTime: Date, addOrSub: number, period:TypePeriod): Date {
     }
 
     return dReturn;
+}
+
+/**
+ * Compara la componente Data (non ora) e ritorna TRUE se sono uguali
+ * @param date1 
+ * @param date2 
+ */
+static compareEqualDate(date1: Date, date2: Date): boolean {
+    let flagResult = false;
+    if (date1 && date2) {
+        flagResult = moment(date1).isSame(date2,'day');
+    }
+
+    return flagResult;
 }
 
 

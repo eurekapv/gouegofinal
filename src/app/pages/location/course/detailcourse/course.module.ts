@@ -9,13 +9,10 @@ import { CoursePageRoutingModule } from './course-routing.module';
 import { CoursePage } from './course.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 import { CalendarPageModule } from './calendar/calendar.module';
-import { CalendarPage } from './calendar/calendar.page';
-import { VerifyPageModule } from 'src/app/pages/auth/verify/verify.module';
-import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
-import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page'
-import { NewLoginPageModule } from 'src/app/pages/auth/new-login/new-login.module'
+
+import { UserVerifyPageModule } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.module';
+import { UserLoginPageModule } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.module'
 import { BookcoursePageModule } from '../bookcourse/bookcourse.module';
-import { BookcoursePage } from '../bookcourse/bookcourse.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
@@ -26,8 +23,8 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
         FormsModule,
         PipesModule,
         CalendarPageModule,
-        NewLoginPageModule,
-        VerifyPageModule,
+        UserLoginPageModule,
+        UserVerifyPageModule,
         BookcoursePageModule,
         SharedComponentsModule
     ],

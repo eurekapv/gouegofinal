@@ -27,7 +27,7 @@ import { HideHeaderDirective } from '../directives/hide-header.directive';
 import { PaymentModeComponent } from './payment-mode/payment-mode.component';
 import { SettimanaBlockComponent } from './settimana-block/settimana-block.component';
 import { LevelSetterComponent } from './level-setter/level-setter.component';
-import { ItemAgendaTrainerComponent } from './item-agenda-trainer/item-agenda-trainer.component';
+import { ItemTrainerCorsoComponent } from './item-corso-trainer/item-trainer-corso.component';
 import { DtinputComponent } from './dtinput/dtinput.component';
 import { QrCodeScannerComponent } from './qr-code-scanner/qr-code-scanner.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -36,6 +36,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
  * è possibile importarlo in altri moduli per utilizzare i componenti all'interno degli stessi
  */
 import {SwiperDirective} from "../directives/swiper.directive";
+import { ImpegniCollaboratoriComponent } from './impegni-collaboratori/impegni-collaboratori.component';
+import { ImpegniCustodiComponent } from './impegni-custodi/impegni-custodi.component';
+import { MaskitoModule } from '@maskito/angular';
+import { TableEventiComponent } from './table-eventi/table-evento.component';
+import { TableArticoliComponent } from './table-articoli/table-articoli.component';
+import { TableItemArticoloComponent } from './table-item-articolo/table-item-articolo.component';
 
 @NgModule({
 
@@ -44,8 +50,8 @@ import {SwiperDirective} from "../directives/swiper.directive";
         IonicModule,
         CommonModule,
         FormsModule,
-        ReactiveFormsModule
-        
+        ReactiveFormsModule,
+        MaskitoModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],    
     declarations: [
@@ -59,6 +65,8 @@ import {SwiperDirective} from "../directives/swiper.directive";
         FootbookedComponent,
         HorTimelineComponent,
         ImpegniComponent,
+        ImpegniCollaboratoriComponent,
+        ImpegniCustodiComponent,
         ItemCalendarioComponent,
         NewsEventiComponent,
         PaymentChooseComponent,
@@ -72,11 +80,13 @@ import {SwiperDirective} from "../directives/swiper.directive";
         HideHeaderDirective,
         SettimanaBlockComponent,
         LevelSetterComponent,
-        ItemAgendaTrainerComponent,
+        ItemTrainerCorsoComponent,
         DtinputComponent,
         QrCodeScannerComponent,
-        SwiperDirective
-        
+        SwiperDirective,
+        TableEventiComponent,
+        TableArticoliComponent,
+        TableItemArticoloComponent,
     ],
     exports: [
         AdvertisingComponent,
@@ -89,6 +99,8 @@ import {SwiperDirective} from "../directives/swiper.directive";
         FootbookedComponent,
         HorTimelineComponent,
         ImpegniComponent,
+        ImpegniCollaboratoriComponent,
+        ImpegniCustodiComponent,
         ItemCalendarioComponent,
         NewsEventiComponent,
         PaymentChooseComponent,
@@ -102,10 +114,13 @@ import {SwiperDirective} from "../directives/swiper.directive";
         HideHeaderDirective,
         SettimanaBlockComponent,
         LevelSetterComponent,
-        ItemAgendaTrainerComponent,
+        ItemTrainerCorsoComponent,
         DtinputComponent,
         QrCodeScannerComponent,
-        SwiperDirective
+        SwiperDirective,
+        TableEventiComponent,
+        TableArticoliComponent,
+        TableItemArticoloComponent
     ]
 })
 export class SharedComponentsModule {}

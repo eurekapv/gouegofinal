@@ -1,32 +1,32 @@
 <ion-card [ngClass]="{'card-small-version': smallVersion, 'card-home-custode': homeCustodeVersion}">
   <ion-item 
-      [button]="myButtonCard.iconLink" 
-      (click)="onClickElement(myButtonCard)" 
+      [button]="_iconLink" 
+      (click)="onClickElement(_buttonCard)" 
       lines="none"
-      [detail] = "myButtonCard.iconLink"
-      [disabled] = "myButtonCard.disabled"
+      [detail] = "_iconLink"
+      [disabled] = "_disabled"
       >
 
     <ion-icon 
-        [slot]="myButtonCard.sloticon" 
-        [name]="myButtonCard.nameicon" 
-        [color]="myButtonCard.color"></ion-icon>
+        [slot]="_slotIcon" 
+        [name]="_nameIcon" 
+        [color]="_color"></ion-icon>
 
     <ion-label *ngIf="!smallVersion">
       <h2 class="ion-text-wrap">
-        {{ myButtonCard.title }}
+        {{ _title }}
       </h2>
       <h3 class="ion-text-wrap">
-        {{ myButtonCard.subtitle }}
+        {{ _subtitle }}
       </h3>
     </ion-label>
 
     <ion-label *ngIf="smallVersion">
       <h3 class="ion-text-wrap">
-        {{ myButtonCard.title }}
+        {{ _title }}
       </h3>
       <p class="ion-text-wrap">
-        {{ myButtonCard.subtitle }}
+        {{ _subtitle }}
       </p>
     </ion-label>
 

@@ -1,0 +1,36 @@
+<ion-card 
+    *ngIf="flagEmptyCard"
+    class="ion-text-center">
+  <img alt="cestino prodotti" src="assets/commercial/basketarticoli_small.png">
+  <ion-card-header>
+    <ion-card-title>Spiacenti</ion-card-title>
+    <ion-card-subtitle>Nessun {{labelFor()}} disponibile</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    Seleziona una tipologia differente o ritorna a trovarci per trovare novità
+  </ion-card-content>
+</ion-card>
+
+<ion-item 
+    lines="none"
+    *ngIf="!flagEmptyCard">
+    <ion-thumbnail slot="start">
+      <img alt="cestino prodotti" src="assets/commercial/shopmobilelogo.png">
+    </ion-thumbnail>
+    <ion-label 
+        class="ion-text-wrap">
+      <p class="ion-text-success">scopri i nostri prodotti, servizi, pacchetti orari; a breve sarà possibile ordinarli direttamente da qui</p>
+    </ion-label>
+</ion-item>
+
+<ion-list 
+    class="ion-padding-vertical"
+    *ngIf="!flagEmptyCard">
+  <app-table-item-articolo 
+      *ngFor="let item of _listArticoli"
+      [itemArticolo]="item"
+      (clickArticolo)="onClickArticolo(item)">
+
+  </app-table-item-articolo>
+</ion-list>

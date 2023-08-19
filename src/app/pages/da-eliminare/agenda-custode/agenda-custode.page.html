@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Occupazioni</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content scrollEvents>
+
+  <ion-refresher slot="fixed" (ionRefresh)="requestOccupazioni($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- PORZIONE FILTRI -->
+  <ion-list
+    class="ion-no-padding">
+
+    <ion-segment 
+        mode="md"
+        (ionChange)="onChangeAreaSelected($event)"
+        [(ngModel)]="areaSelected" 
+        scrollable="true">
+      <ion-segment-button [value]="area" *ngFor="let area of listAree">
+    <ion-label>{{area.DENOMINAZIONE}}</ion-label>
+  </ion-segment-button>
+</ion-segment>
+
+    <!-- DEFINIZIONE LOCATION -->
+    <ion-item
+      lines="full"
+      color=""
+      (click)="onChooseLocation()"
+      detail="true">
+      <ion-icon 
+          slot="start" 
+          name="location-outline"></ion-icon>
+      <ion-label>
+        <h5>{{labelLocation}}</h5></ion-label>
+    </ion-item>
+  
+  
+    <!-- DATA OCCUPAZIONE -->
+    <app-dtinput
+        title="Seleziona giornata"
+        label="del"
+        itemLines="full"
+        itemDetail="true"
+        iconName="calendar-outline"
+        iconColor="primary"
+        maskFormat="dddd dd/MM/yyyy"
+        calendarMode="date"
+        [(actualDate)]="selectedDate"
+        (actualDateChange)="requestOccupazioni()"
+    >
+    </app-dtinput>
+
+
+  </ion-list>
+
+
+  <div *ngIf="!showCanvasNoData" class="ion-no-padding">
+    <ion-list class="ion-padding-vertical">
+      <app-item-calendario 
+        *ngFor="let occupazione of listOccupazioni" 
+        [params]="getItemCalendario(occupazione)"
+        (click)="onClickOccupazione(occupazione)">
+      </app-item-calendario>
+    </ion-list>
+
+  </div>
+
+
+  <!-- NESSUN ELEMENTO -->
+  <div class="nofind-cnt reduce-height" *ngIf="showCanvasNoData">
+    <ion-label>
+      <h3>Nessun corso o prenotazione</h3>
+      <p>in programma</p>
+    </ion-label>
+  </div>
+  
+</ion-content>
+
+
+
+<ion-footer>
+  <ion-button 
+        color="primary" 
+        expand="block" 
+        [disabled]="myIsDesktop" 
+        (click)="scanQr()"> 
+        
+    <ion-icon slot="start" name="qr-code-outline"  ></ion-icon>
+    Qr-Code Prenotazione
+  </ion-button>
+</ion-footer>

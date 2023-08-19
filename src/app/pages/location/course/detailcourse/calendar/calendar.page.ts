@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Corso } from 'src/app/models/corso.model';
-import { StartService } from 'src/app/services/start.service';
 import { ModalController, ToastController, LoadingController } from '@ionic/angular';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
 import { Subscription } from 'rxjs';

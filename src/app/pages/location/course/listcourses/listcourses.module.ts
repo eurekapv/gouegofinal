@@ -7,16 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { ListcoursesPageRoutingModule } from './listcourses-routing.module';
 
 import { ListcoursesPage } from './listcourses.page';
-import { FilterPage } from './filter/filter.page';
+
 import { FilterPageModule } from './filter/filter.module';
 
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { BookcoursePageModule } from '../bookcourse/bookcourse.module';
-import { BookcoursePage } from '../bookcourse/bookcourse.page';
-import { NewLoginPageModule } from 'src/app/pages/auth/new-login/new-login.module';
-import { VerifyPageModule } from 'src/app/pages/auth/verify/verify.module';
-import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
-import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
+
+import { UserLoginPageModule } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.module';
+import { UserVerifyPageModule } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.module';
+import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
+import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
 
 
 
@@ -30,10 +30,10 @@ import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
         BookcoursePageModule,
         FilterPageModule,
         SharedComponentsModule,
-        NewLoginPageModule,
-        VerifyPageModule
+        UserLoginPageModule,
+        UserVerifyPageModule
     ],
     declarations: [ListcoursesPage],
-    exports: [NewLoginPage, VerifyPage]
+    exports: [UserLoginPage, UserVerifyPage]
 })
 export class ListcoursesPageModule {}

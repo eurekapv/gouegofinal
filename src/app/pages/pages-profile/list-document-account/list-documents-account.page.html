@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Certificati ed altro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="requestListaDocumenti($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+               
+               <div class="info" >
+                <ion-item color="light" lines="none">
+                  <ion-label>
+                    <p class="ion-text-wrap">
+                      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+                      <ion-text>qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato</ion-text>
+                      <ion-text *ngIf="listaTipiDocumento?.length != 0">, oppure invia un nuovo documento.</ion-text>
+                  </ion-label>
+                  <ion-button 
+                          *ngIf="listaTipiDocumento?.length != 0"
+                          (click)="onAddDocument()"
+                          slot="end"
+                          color="danger"
+                          size="large">
+                    <ion-icon name="add-circle-outline"></ion-icon>
+                    Invia
+                  </ion-button>
+                </ion-item>
+              </div>  
+
+               <!-- NESSUN DOCUMENTO PRESENTE -->
+               <div *ngIf="listDocumenti.length === 0" class="nofind-cnt">
+                 <ion-label>Nessun documento</ion-label>
+                 <ion-label>disponibile</ion-label>
+               </div>
+             
+               <!-- DOCUMENTI PRESENTI  -->
+               <div *ngIf="listDocumenti.length > 0">
+                 <ion-list>
+                   <ion-item 
+                           *ngFor="let documento of listDocumenti"
+                           (click)="onClickElement(documento)">
+                     <ion-icon slot="start" class="icon-left" color ="" name="document-text-outline"></ion-icon>
+                     <ion-label>
+                       <h3>{{documento['_DENOMINAZIONE_TipoDocumentazione']}}</h3>
+                       <p>Ultima modifica: {{documento.DATAORAMODIFICA | date : 'dd/LL/yyyy' }}</p>
+             
+                       <div *ngIf="documento.REQUESTCONTROLLO">
+                         <ion-chip
+                             color="warning">
+                             IN ATTESA DI VERIFICA
+                         </ion-chip>
+                       </div>
+             
+                       <div *ngIf="!documento.REQUESTCONTROLLO">
+                         <ion-chip 
+                             *ngIf="!documento.checkValidita()"
+                             color="danger">SCADUTO
+                         </ion-chip>
+             
+                         <ion-chip 
+                             *ngIf="documento.checkValidita()"
+                             color="success">VALIDO
+                         </ion-chip>
+             
+                       </div>          
+             
+             
+             
+             
+                     </ion-label>
+                     <ion-icon slot="end" color="primary" name="cloud-download-outline"></ion-icon>
+                   </ion-item>
+                 </ion-list>
+               </div>
+
+      </ion-col>      
+    </ion-row>
+  </ion-grid>
+
+
+
+  
+</ion-content>

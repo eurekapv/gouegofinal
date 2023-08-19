@@ -1,0 +1,252 @@
+import { Component, OnInit } from '@angular/core';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { MasterDocumento } from 'src/app/models/ricevuta.model';
+import { StartService } from 'src/app/services/start.service';
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { Utente } from 'src/app/models/utente.model';
+import { PostResponse } from 'src/app/library/models/postResult.model';
+import { LogApp } from 'src/app/models/log.model';
+
+@Component({
+  selector: 'app-invoices',
+  templateUrl: './list-invoices-account.page.html',
+  styleUrls: ['./list-invoices-account.page.scss'],
+})
+export class ListInvoicesAccountPage implements OnInit {
+
+  actualUtente: Utente = new Utente();
+
+  listRicevute: MasterDocumento[] = [];  
+
+  //Data con l'anno selezionato
+  yearSelected = new Date();
+
+
+  constructor(
+    private loadingController: LoadingController,
+    private startService: StartService,
+    private file: File,
+    private fileOpener: FileOpener,
+    private toastController: ToastController,
+    private navController: NavController
+    
+
+
+  ) {
+
+   }
+
+
+  ngOnInit() {
+
+    //recupero l'utente
+    this.actualUtente = this.startService.actualUtente;
+    if (this.actualUtente) {
+        //posso recuperare l'elenco delle ricevute 
+        this.requestRicevute();
+    }
+    else {
+      this.onGoToBack();
+    }
+  }
+
+    /**
+   * Ritorna un Array con il percorso di ritorno
+   */
+    get backPathArray():string[] {
+      let retPath = ['/','appstart-home','tab-profile'];
+  
+      return retPath;
+    }
+  
+    //Ritorna il Path Array Back in formato stringa concatenata
+    get backButtonHref(): string {
+      let myHref = '';
+      myHref = this.backPathArray.join('/').substring(1);
+  
+      return myHref;
+    }
+
+   /**
+   * Torno alla pagina del profilo
+   */
+  onGoToBack() {
+    //Torno alla tab profilo
+    this.navController.navigateBack(this.backPathArray);
+  }
+
+
+  /**
+   * richiede al servizio l'utente con le ricevute, e lo inserisce in actualUtente'
+   * @param event Evento opzionale da completare dopo aver eseguito l'aggiornamento (usato per il refresher)
+   */
+  requestRicevute(event?: any){
+    let anno:number;
+
+    if (this.yearSelected) {
+
+      anno = this.yearSelected.getFullYear();
+      
+      if(event){
+        //La funzione è stata chiamata dal refresher
+        this.startService.requestInvoices(this.actualUtente, anno)
+        .then((listRicevute) => {
+      
+          this.listRicevute = listRicevute;
+          event.target.complete();
+        })
+        .catch(error => {
+          LogApp.consoleLog(error,'error');
+          this.showMessage('Errore di connessione');
+          event.target.complete();
+        })
+      
+      }
+      else{
+      
+        //la funzione non è stata chiamata dal refresher
+        this.loadingController.create()
+        .then(elLoading => {
+      
+          elLoading.present();
+          this.startService.requestInvoices(this.actualUtente, anno)
+          .then((listRicevute) => {
+            this.listRicevute = listRicevute;
+            elLoading.dismiss();
+          })
+          .catch(error => {
+            LogApp.consoleLog(error,'error');
+            this.showMessage('Errore di connessione');
+            elLoading.dismiss();
+          })
+        })
+        
+      }
+
+    }
+    
+
+
+   
+  }
+
+  
+  onClickElement(elemento: MasterDocumento){
+    //creo il loading e lo presento
+    this.loadingController.create({
+      message: 'Caricamento',
+      spinner: 'circular',
+      backdropDismiss: true
+    }).then(elLoading => {
+      elLoading.present();
+
+      //ora faccio la get del file
+      this.startService.downloadInvoice(elemento)
+      .then((response: PostResponse) => {
+        
+        //risposta ricevuta
+        elLoading.dismiss();
+
+        if (response.result){
+
+          // è andato tutto bene, converto il base64 in blob
+          this.startService.base64toBlob(response.code)
+                .then(blob => {
+
+                  //ora che ho il blob, lo posso aprire
+                  if(this.startService.isDesktop){
+
+                    //apertura per desktop
+                    this.openDesktop(blob);
+                    
+                  }
+                  else{
+
+                    //apertura per mobile
+                    this.openMobile(blob);
+
+                  }
+                })
+          
+        }
+
+        else{
+          //la richiesta non è andata a buon fine
+          this.showMessage(response.message);
+        }
+
+      })
+      .catch(error => {
+
+        //errore di connessione
+        elLoading.dismiss();
+        LogApp.consoleLog(error,'error');
+        this.showMessage('Errore di connessione');
+      })
+    })
+  }
+
+  /**
+   * Scaricamento di un file Blob nella modalità Desktop
+   * @param blob 
+   */
+  openDesktop(blob: Blob){
+
+
+    //per scaricare il file creo via javascript un link fittizio agganciando il percorso del blob, e ne scateno l'evento click
+    let name='File'
+    let url  = window.URL.createObjectURL(blob);
+    let link = document.createElement("a");
+    link.download = name;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+
+  }
+
+  /**
+   * Apertura del Blob in versione Mobile
+   * @param blob 
+   */
+  openMobile(blob: Blob){
+    let fileName='Documento';         
+    let filePath= this.file.cacheDirectory;      
+    
+
+        this.file.writeFile(filePath, fileName, blob, { replace:true }).then((fileEntry) => {
+
+                  
+          this.fileOpener.open(fileEntry.toURL(), blob.type)
+            .then(() => LogApp.consoleLog('File is opened'))
+            .catch(err => LogApp.consoleLog('Error openening file: ' + err,'error'));
+        })
+          .catch((err) => {
+            LogApp.consoleLog("Error creating file: ",'error');
+            LogApp.consoleLog(err,'error');
+            throw err;  
+          });
+  }
+
+  /**
+   * Visualizzo un messaggio toast
+   * @param messaggio Messaggio da visualizzare
+   */
+  showMessage(messaggio: string){
+    this.toastController.create({
+      message: messaggio,
+      duration: 3000
+    })
+    .then(elToast => {
+      elToast.present();
+    })
+  }
+
+
+
+
+
+
+}

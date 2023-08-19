@@ -36,7 +36,7 @@ import { Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
-import { TimeTrainerCourse, TipoPrivateImage } from 'src/app/models/valuelist.model'
+import { Mansione, RangeSearch, TimeTrainerCourse, TipoArticolo, TipoPrivateImage } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { OccupazioniService } from './occupazioni.service';
 
@@ -71,6 +71,14 @@ import { ConnectionMode, environment } from 'src/environments/environment';
 import { TipoTesseraService } from './tipo-tessera.service';
 import { TipoTessera } from '../models/tipo-tessera';
 import { TesseramentoService } from './tesseramento.service';
+import { EventoService } from './evento.service';
+import { ImpegnoService } from './impegno.service';
+import { ImpegnoCollaboratoreService } from './impegno-collaboratore.service';
+import { ImpegnoCustodeService } from './impegno-custode.service';
+import { Evento } from '../models/evento.model';
+import { ImpegnoCustode } from '../models/impegno-custode.model';
+import { ArticoloService } from './articolo.service';
+import { Articolo } from '../models/articolo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -185,7 +193,12 @@ export class StartService {
     private photoService: PhotoService,
     private srvSmartInterface: SmartInterfaceService,
     private srvTipoTessere: TipoTesseraService,
-    private srvTesseramento: TesseramentoService
+    private srvTesseramento: TesseramentoService,
+    private eventoService: EventoService,
+    private impegniService: ImpegnoService,
+    private impegniCollaboratoreService: ImpegnoCollaboratoreService,
+    private impegniCustodeService: ImpegnoCustodeService,
+    private articoloService: ArticoloService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -710,6 +723,34 @@ export class StartService {
 
   }
   
+  /**
+  * Nel caso debba navigare verso una location utilizzare questo metodo per 
+  * avere il percorso corretto
+  * 
+  * Url pagina per andare verso una location
+  * @param idLocation Location di riferimento
+  * @param where Cosa si desidera effettuare con la location
+  */
+  getUrlPageLocation(idLocation: string, where: 'book' | 'detail' | 'course'): string[] {
+      let retPath = ['/','appstart-home','tab-home','location'];
+
+      switch (where) {
+        case 'detail':
+          retPath.push('detail');
+          retPath.push(idLocation);
+          break;
+        case 'book':
+          break;
+        case 'course':
+          break;
+      
+        default:
+          break;
+      }
+  
+      return retPath;
+  }
+
   //#endregion
 
 
@@ -883,13 +924,22 @@ newRequestCorsoById(idcorso: string){
    this.corsoService.requestTimeTrainerCourse(idTrainer, timeState);
  }
 
-//#region coursescheduler
+//#region PIANIFICAZIONI CORSI
 
   /**
    * Ritorna il calendario di un corso
    */
   get calendarioCorso() {
     return this.corsoCalendarioService.calendarioCorso;
+  }
+
+  /**
+   * Richiede al server la pianificazione del Corso
+   * @param idPianificazioneCorso 
+   * @returns 
+   */
+  requestPianificazioneCorso(idPianificazioneCorso: string): Promise<PianificazioneCorso> {
+    return this.corsoCalendarioService.requestPianificazione(idPianificazioneCorso);
   }
 
   /**
@@ -902,7 +952,7 @@ newRequestCorsoById(idcorso: string){
     return this.corsoCalendarioService.requestCalendario(actualStartConfig, idCorso);
   }
 
-  requestImpegniTrainer(idRef: string, dataInizio: Date, dataFine?: Date){
+  requestImpegniTrainerOLD(idRef: string, dataInizio: Date, dataFine?: Date){
     return this.corsoCalendarioService.requestImpegniTrainer(idRef,dataInizio,dataFine);
   }
 
@@ -1460,13 +1510,37 @@ getSelectedCampoPrenotazione() {
 
 /**
  * Richiede al server una Prenotazione
- * @param idPrenotazione idPrenotazione Padre
+ * VERSIONE OBSERVABLE
+ * @param idPrenotazione idPrenotazione
+ * @param numLivelli Default Numero Livello = 0
  */
-requestPrenotazioneById(idPrenotazione: string, numLivelli: number) {
+requestPrenotazioneById$(idPrenotazione: string, 
+                        numLivelli: number = 0):Observable<Prenotazione> {
+
   const actualStartConfig = this._startConfig.getValue();
-  return this.prenotazioniService.requestById(actualStartConfig, idPrenotazione, numLivelli);
+  return this.prenotazioniService.requestById$(actualStartConfig, idPrenotazione, numLivelli);
 }
 
+  /**
+   * Effettua una chiamata al server per il recupero della prenotazione
+   * NUOVA MODALITA
+   * @param idPrenotazione 
+   * @param numChild Profondità della richiesta
+   * @param decodeAll Decodifica le chiavi esterne
+   * @returns 
+   */
+  requestPrenotazioneById(idPrenotazione: string, numChild = 0, decodeAll = false): Promise<Prenotazione> {
+    return this.prenotazioniService.requestPrenotazioneById(idPrenotazione, numChild, decodeAll);
+  }
+
+/**
+ * Richiede al server un documento di PrenotazionePianificazione
+ * @param idPianificazione 
+ * @returns 
+ */
+requestPianificazionePrenotazioneById(idPianificazione: string): Promise<PrenotazionePianificazione> {
+  return this.prenotazioniService.requestPianificazioneById(idPianificazione);
+}
 
 requestDeletePianificazione(idPianificazione){
   const actualStartConfig = this._startConfig.getValue();
@@ -1475,7 +1549,6 @@ requestDeletePianificazione(idPianificazione){
 }
 
 //#endregion
-
 
 //#region UTENTEPRENOTAZIONI
 
@@ -1503,7 +1576,6 @@ get listUtentePrenotazioni() {
 }
 
 //#endregion
-
 
 //#region UTENTE ISCRIZIONE
 
@@ -1534,34 +1606,95 @@ requestIscrizioneById(idIscrizione){
 
 //#endregion
 
-//#region NEWS EVENTI
+//#region NEWS EVENTI (Controllato)
 get listNews() {
   return this.newsEventiService.listNews;
 }
 
+/**
+ * Recupera le news relative ad un'area
+ * @param guidArea il guid dell'area 
+ * @param nElementi il numero di elementi richiesti
+ */
+requestNews(guidArea: string, nElementi: number){
+  const actualStartConfig= this._startConfig.getValue();
+  return this.newsEventiService.request(actualStartConfig,guidArea,nElementi);
+}
+
+/** Effettua la richiesta al servizio di una news
+ * @param idNews News scelta 
+ * 
+ */
+requestNewsByID(idNews: string) {
+  
+  return this.newsEventiService.getNewsById(idNews);
+  
+}
+
+//#endregion
+
+//#region EVENTI
+get listEventi() {
+  return this.eventoService.listEventi$;
+}
+
+/**
+ * Effettuo la richiesta di un Evento
+ * @param idEvento 
+ * @param numChild Profondità della richiesta
+ * @param decodeAll Decodifica le chiavi esterne
+ * @returns 
+ */
+requestEventoById(idEvento: string, numChild = 0, decodeAll = false): Promise<Evento> {
+  return this.eventoService.requestById(idEvento, numChild, decodeAll);
+}
+/**
+ * Richiede i prossimi eventi per l'area
+ * I risultati sono disponibile in listEventi
+ * @param idArea 
+ * @returns 
+ */
+requestNextEventi(idArea: string): Promise<Evento[]> {
+  return this.eventoService.requestNextEventi(idArea);
+}
 
 
 
-  /**
-   * Recupera le news relative ad un'area
-   * @param guidArea il guid dell'area 
-   * @param nElementi il numero di elementi richiesti
+//#endregion
+
+//#region ARTICOLO
+get listProdotti() {
+  return this.articoloService.listProdotti$;
+}
+
+get listServizi() {
+  return this.articoloService.listServizi$;
+}
+get listPacchetti() {
+  return this.articoloService.listPacchetti$;
+}
+
+/**
+   * Effettuo la richiesta degli articoli
+   * @param idArea Area di riferimento
+   * @param tipoArticolo Tipologia Articolo (NULL per tutte)
    */
-  requestNews(guidArea: string, nElementi: number){
-    const actualStartConfig= this._startConfig.getValue();
-    return this.newsEventiService.request(actualStartConfig,guidArea,nElementi);
-  }
+requestArticoli(idArea: string, tipoArticolo?:TipoArticolo): Promise<void> {
+  return this.articoloService.request(this.actualStartConfig, idArea, tipoArticolo);
+}
 
-  /** Effettua la richiesta al servizio di una news
-   * @param idNews News scelta 
-   * 
+/**
+   * Effettuo la richiesta di un Articolo
+   * @param idArticolo 
+   * @param numChild Profondità della richiesta
+   * @param decodeAll Decodifica le chiavi esterne
+   * @returns 
    */
-  requestNewsByID(idNews: string) {
-    
-    
-    return this.newsEventiService.getNewsById(idNews);
-    
-  }
+requestArticoloById(idArticolo: string, numChild = 0, decodeAll = false): Promise<Articolo> {
+  return this.articoloService.requestById(idArticolo, numChild, decodeAll);
+}
+
+
 //#endregion
 
 //#region OCCUPAZIONE CAMPI
@@ -1596,7 +1729,6 @@ requestSlotOccupazioni(templateSlotDay: SlotDay,
 
 //#endregion
 
-
 //#region CODICE FISCALE
 /**
  * Promise per il controllo e la decodifica del codice fiscale
@@ -1627,13 +1759,7 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
     
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override','getBase64PrivateImage');
-
-    // =new HttpHeaders({
-    //   'Content-Type': 'text/plain',
-    //   'appid': config.appId,
-    //   'X-HTTP-Method-Override':'getBase64PrivateImage'
-    // });
-    
+   
     let myParams= new HttpParams().set('Tipo', tipo+'');
 
     this.apiService.httpGet(myUrl,myHeaders, myParams)
@@ -1646,7 +1772,7 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
       reject(error);
     });
   });
-  //#region image
+  
 }
 
 //#endregion
@@ -1662,6 +1788,14 @@ requestOccupazioniByFilter(filter: OccupazioneCampi, params?: RequestParams){
   return this.occupazioniService.requestByFilter(filter, params);
 }
 
+/**
+ * Richiede una singola occupazione cercando per id, se il secondo parametro è true, 
+ * richiede anche il docprenotazione collegato e lo inserisce nel repository
+ * il docprenotazione viene inoltre decodificato, e contiene l'elenco delle pianificazioni; 
+ * anch'esse decodificate
+ * @param idOccupazione id da cercare
+ * @param getRelReservation indica se richiedere anche il documento prenotazione collegato e inserirlo nel docrepository
+ */
 requestOccupazioneById(idOccupazione: string, getRelReservation = false){
   return this.occupazioniService.requestById(idOccupazione, getRelReservation);
 }
@@ -1758,6 +1892,118 @@ requestListTipoTessere(): Promise<void> {
 }
 //#endregion
 
+//#region IMPEGNI
+
+/**
+ * Per ottenere la lista Impegni Personali
+ * è necessario effettuare la richiesta con 
+ * requestImpegniPersonali
+ */
+get listImpegniPersonali$() {
+  return this.impegniService.listImpegni$;
+}
+
+/**
+ * Per ottenere il prossimo impegno è necessario 
+ * effettuare la richiesta con 
+ * requestImpegniPersonali
+ */
+get nextImpegnoPersonale$() {
+  return this.impegniService.nextImpegno$;
+}
+/**
+ * Richiede gli impegni personali del cliente
+ * @param idUtente Utente di riferimento
+ * @param onlyFuture Solo Impegni futuri
+ * @param numMaxRequest Default 10 Impegni
+ * @returns 
+ */
+requestImpegniPersonali(idUtente: string, 
+                        onlyFuture: boolean = true,
+                        numMaxRequest: number = 10): Promise<void> {
+   return this.impegniService.request(idUtente, onlyFuture, numMaxRequest);
+}
+//#endregion
+
+//#region IMPEGNI TRAINER
+
+/**
+ * Per ottenere la lista Impegni Trainer/Assistente trainer
+ * è necessario effettuare la richiesta con 
+ * requestImpegniCollaboratore
+ */
+get listImpegniCollaboratore$() {
+  return this.impegniCollaboratoreService.listImpegni$;
+}
+
+/**
+ * 
+ * @param idCollaboratore Trainer/Assistente
+ * @param periodAnalize   Periodo
+ * @param periodDate      Data di partenza
+ * @param numMaxRequest   numero massimo di elementi
+ * @returns 
+ */
+requestImpegniCollaboratore(idCollaboratore: string,
+                            mansione: Mansione,
+                            periodAnalize: RangeSearch,
+                            periodDate: Date,
+                            numMaxRequest: number = 10): Promise<void> {
+
+  return this.impegniCollaboratoreService.request(idCollaboratore,
+                                            mansione,
+                                            periodAnalize,
+                                            periodDate,
+                                            numMaxRequest);
+}
+
+//#endregion
+
+//#region IMPEGNI CUSTODE
+
+/**
+ * Per ottenere la lista Impegni Custode
+ * è necessario effettuare la richiesta con 
+ * requestImpegniCustode
+ */
+get listImpegniCustode$() {
+  return this.impegniCustodeService.listImpegni$;
+}
+
+/**
+ * 
+ * @param idArea          Area di riferimento
+ * @param periodAnalize   Periodo
+ * @param periodDate      Data di partenza
+ * @param numMaxRequest   numero massimo di elementi
+ * @returns 
+ */
+requestImpegniCustode(idArea: string,
+                      periodAnalize: RangeSearch,
+                      periodDate: Date,
+                      numMaxRequest: number = 10): Promise<void> {
+
+  return this.impegniCustodeService.request(idArea,
+                                            periodAnalize,
+                                            periodDate,
+                                            numMaxRequest);
+}
+
+  /**
+   * Carica un Impegno Custode per ID
+   * @param idImpegno 
+   * @param numChild Numero Livelli Default = 0
+   * @param decodeAll Decodifica Tutto (Default FALSE)
+   * @returns 
+   */
+  requestImpegnoCustodeById(idImpegno: string, numChild = 0, decodeAll = false): Promise<ImpegnoCustode> {
+    return this.impegniCustodeService.requestById(idImpegno, numChild, decodeAll);
+  }
+
+//#endregion
+
+
+//#region VARIE
 /**
  * Apre una pagina con il link passato
  * @param url Url a cui indirizzarsi
@@ -1768,6 +2014,8 @@ openLink(url:string): void
     Browser.open({url:url});
   }
 }
+
+//#endregion
 
   //#region SMART INTERFACE PROMISE
 

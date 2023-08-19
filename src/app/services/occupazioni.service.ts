@@ -192,7 +192,6 @@ export class OccupazioniService {
 
         //faccio la richiesta
         this.docStructureService.requestNew(myFilter, myParams)
-
         .then((resultList: OccupazioneCampi[]) => {
           //se ho ottenuto qualcosa, lo ritorno al prossimo .then
           if (resultList[0]){

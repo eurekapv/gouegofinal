@@ -8,8 +8,8 @@ import { Location } from 'src/app/models/location.model';
 import { CalendarPage } from './calendar/calendar.page';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Area } from 'src/app/models/area.model';
-import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
-import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
+import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
+import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
 import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
 import { TempoCorso, TipoCorso } from 'src/app/models/valuelist.model';
@@ -242,7 +242,7 @@ onListenSelectedUser() {
         
         //Ora preparo e creo la pagina di Login
         this.mdlController.create({
-          component:NewLoginPage
+          component:UserLoginPage
         })
           .then(modal=>{
             modal.present();
@@ -260,7 +260,7 @@ onListenSelectedUser() {
           if (paramsVerifica){
             //se ci sono parametri, significa che devo chiamare la pagina di verifica
             this.mdlController.create({
-              component: VerifyPage,
+              component: UserVerifyPage,
               componentProps:{
                 params: paramsVerifica
               } 

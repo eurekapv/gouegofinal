@@ -1,0 +1,36 @@
+<ion-item 
+    (click)="onClickEvento(item)"
+    *ngFor="let item of _listEventi">
+
+<ion-label>
+  <p class="ion-text-bold">{{item['_DENOMINAZIONE_Sport']}}</p>
+  <h3 class="ion-text-wrap">
+    {{ item.DENOMINAZIONE }}
+  </h3>
+  <p
+    class="ion-text-bold ion-text-success ion-text-wrap" 
+    *ngIf="item.DATAINIZIO && !item.DATAFINE">da {{item.DATAINIZIO | date: 'EEEE dd/MM/yyyy' }}
+  </p>
+  <p
+    class="ion-text-bold ion-text-success ion-text-wrap" 
+    *ngIf="!item.DATAINIZIO && item.DATAFINE">fino a {{item.DATAFINE | date: 'EEEE dd/MM/yyyy' }}
+  </p> 
+  <p
+    class="ion-text-bold ion-text-success ion-text-wrap" 
+    *ngIf="item.DATAINIZIO && item.DATAFINE">da {{item.DATAINIZIO | date: 'EEEE dd/MM/yyyy' }} a {{item.DATAFINE | date: 'EEEE dd/MM/yyyy' }} 
+  </p>  
+</ion-label>
+<ion-badge 
+    color="success"
+    *ngIf="item.DATAORAINIZIO"
+    slot="end">{{item.DATAORAINIZIO | date : 'HH:mm'}}
+</ion-badge>
+
+
+  <!-- <p class="ion-text-wrap" *ngIf="eventoDoc.SUBTITLE">
+    {{ eventoDoc.SUBTITLE }}
+  </p>
+  <p *ngIf="eventoDoc.PUBBLICATADAL" color="medium" class="ion-text-right ion-padding-horizontal">
+    <em>{{ eventoDoc.PUBBLICATADAL | date : 'dd/MM/yyyy' }}</em>
+  </p> -->
+</ion-item>

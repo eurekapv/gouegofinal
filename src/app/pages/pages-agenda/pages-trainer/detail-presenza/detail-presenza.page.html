@@ -1,0 +1,243 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="onClickGoBack()" fill="clear" >
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Presenze</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scrollEvents (ionScroll)="onScroll($event)">
+  <div style="height: 1vh" ></div>
+  <ion-grid *ngIf="loadingComplete">
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+
+        <!-- ERRORI DI CARICAMENTO DATI -->
+        <ion-card *ngIf="loadingError">
+          <ion-card-header>
+            <ion-card-title>Spiacenti</ion-card-title>
+            <ion-card-subtitle>{{messageError}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Non è possibile operare con le presenze</p>
+          </ion-card-content>
+        </ion-card> 
+
+    <!-- CARD INFORMATIVA CORSO -->
+    <div
+        *ngIf="!loadingError"
+        class="ion-no-padding div-header" >
+
+      <ion-item lines="none" color="light">
+        <ion-icon slot="start" name="school-outline" color="primary">
+        </ion-icon>
+        <ion-label class="ion-text-wrap">
+          <h2>{{pianificazioneDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
+          <h2>{{pianificazioneDoc.DATAORAINIZIO | date: 'H.mm'}} - {{pianificazioneDoc.DATAORAFINE | date: 'H.mm'}}</h2>
+          <h1>{{pianificazioneDoc['_DENOMINAZIONE_Corso']}}</h1>
+          <p>{{(pianificazioneDoc['_DENOMINAZIONE_Location'] | titlecase) + ' - ' + (pianificazioneDoc['_DENOMINAZIONE_Campo'] | titlecase)}}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item lines="none" color="light">
+        <p class="text-small">
+          <ion-icon name="information-circle-outline" color="primary"></ion-icon> 
+          {{pianificazioneDoc.msgCanUpdatePresenze(gapAggiornamentoPresenze)}}
+        </p>
+      </ion-item>
+
+      <ion-item *ngIf="!canUpdate" color="danger">
+        <ion-label>Scheda Presenze Bloccata</ion-label>
+      </ion-item>
+
+      <ion-button 
+          *ngIf="canUpdate"
+          color="success" 
+          expand="full" 
+          (click)="onSubmit()">
+        Conferma Presenze
+      </ion-button>      
+    </div>
+
+    <!-- SEGMENT CON LE DUE AREE (NOTE e PRESENZE)-->
+    <ion-segment 
+        mode="md"
+        [(ngModel)]="selectedView" 
+        >
+  
+      <ion-segment-button [value]="1">
+        <ion-icon name="people-circle-outline"></ion-icon>
+        <ion-label>Presenze</ion-label>
+      </ion-segment-button>
+  
+      <ion-segment-button [value]="2">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <ion-label>Note</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+    <ion-grid>
+      <!-- BUTTON AZIONE PRESENZA-->
+      <ion-row 
+          *ngIf="canUpdate && selectedView == 1">
+        <ion-col>
+            <ion-button
+                (click) ="setAllPresenze(true)"
+                expand="full"
+                color="success">
+              <ion-icon name="thumbs-up"></ion-icon>
+              Segna presenti
+            </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button
+              (click) ="setAllPresenze(false)" 
+              expand="full"
+              color="danger">
+            <ion-icon name="thumbs-down"></ion-icon>
+            Segna assenti
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <!-- VISTA PRESENTI -->
+      <ion-row *ngIf="selectedView == 1">
+
+        <ion-col>
+          <!-- Iscritti confermati -->
+          <ion-list>
+            <ion-list-header>
+              Partecipanti
+            </ion-list-header>
+            <ion-item 
+                *ngIf="listPresenzeConfermate.length == 0">
+              Nessun iscritto al corso
+            </ion-item>
+
+            <ion-item
+                  *ngFor="let presenza of listPresenzeConfermate" 
+                  [button]="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)" 
+                  (click)="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)? onClickElement(presenza) : {}"
+                  >
+            <ion-icon *ngIf="presenza.PRESENTE==true" slot="start" name="thumbs-up-outline" color="primary"></ion-icon>
+            <ion-icon *ngIf="presenza.PRESENTE==false" slot="start" name="thumbs-down-outline" color="danger"></ion-icon>
+            <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" color="" name="person-circle-outline"></ion-icon>
+            <ion-label>
+              <h2>{{presenza.NOMINATIVO}}</h2>
+              <h4 *ngIf="this.tipoSocieta == TipoSocieta.sportiva">
+                Certificato medico: 
+                <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
+                  {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
+                </ion-badge> 
+              </h4>
+            </ion-label>
+            <ion-badge
+              *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined && isDesktop"
+              slot="end"
+              [color]="presenza.PRESENTE? 'primary' : 'danger'"
+            >
+            {{presenza.PRESENTE? 'Presente' : 'Assente'}}
+            </ion-badge>
+            </ion-item>
+          </ion-list>
+          <ion-list *ngIf="listPresenzeInProva.length > 0">
+            <ion-list-header>
+              In Prova
+            </ion-list-header>
+            <!-- Iscritti in prova -->
+            <ion-item 
+              *ngFor="let presenza of listPresenzeInProva" 
+              [button]="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)" 
+              (click)="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)? onClickElement(presenza) : {}">
+              <ion-icon *ngIf="presenza.PRESENTE==true" slot="start" name="thumbs-up-outline" color="primary"></ion-icon>
+              <ion-icon *ngIf="presenza.PRESENTE==false" slot="start" name="thumbs-down-outline" color="danger"></ion-icon>
+              <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" color="" name="person-circle-outline"></ion-icon>
+              <ion-label>
+                <h2>{{presenza.NOMINATIVO}}</h2>
+                <h4 *ngIf="tipoSocieta == TipoSocieta.sportiva">
+                  Certificato medico: 
+                  <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
+                    {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
+                  </ion-badge> 
+                </h4>
+              </ion-label>
+              <ion-badge
+                *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined && isDesktop"
+                slot="end"
+                [color]="presenza.PRESENTE? 'primary' : 'danger'"
+              >
+              {{presenza.PRESENTE? 'Presente' : 'Assente'}}
+              </ion-badge>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+
+      <!-- SEGMENT ANNOTAZIONI (Istruttore)-->
+      <ion-row *ngIf="selectedView == 2">
+        <ion-col>
+          <!-- Note istruttore -->
+          <ion-list>
+            <ion-list-header mode="ios">
+              Alla segreteria
+            </ion-list-header>
+
+            <!-- Non posso aggiornare e non ho note-->
+            <ion-item 
+                *ngIf="!canUpdate && !containNoteTrainer">
+                <ion-label class="ion-text-wrap">
+                  Non è possibile aggiornare le note 
+                </ion-label>
+            </ion-item>
+
+            <!-- CI SONO DELLE NOTE -->
+            <ion-item>
+              <ion-label 
+                  *ngIf="!canUpdate && containNoteTrainer"
+                  class="ion-text-wrap">
+                {{pianificazioneDoc.NOTETRAINER}}
+              </ion-label>
+
+              <ion-textarea
+                  *ngIf="canUpdate"
+                  lines="10" 
+                  placeholder="Inserisci una nota"  
+                  [(ngModel)]="pianificazioneDoc.NOTETRAINER" maxlength="200">
+              </ion-textarea>      
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <!-- SEGMENT ANNOTAZIONI (Segreteria)-->
+      <ion-row *ngIf="showNoteFromBackoffice && selectedView == 2">
+        <ion-col>
+          <ion-list>
+            <ion-list-header mode="ios">
+              Ricevute dalla segreteria
+            </ion-list-header>  
+            <ion-item>
+              <ion-icon slot="start" name="pencil-outline"></ion-icon>
+              <ion-label class="ion-text-wrap">
+                <p>
+                  {{pianificazioneDoc.NOTEADMIN}}
+                </p>
+              </ion-label>
+            </ion-item>               
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>    
+
+  </ion-col>
+  </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+
+</ion-footer>

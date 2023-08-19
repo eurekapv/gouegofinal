@@ -1,0 +1,229 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{captionHeader}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- GRID QUANDO E' FALLITO IL CARICAMENTO DEI DATI-->
+  <ion-grid 
+      *ngIf="loadingComplete && loadingError">
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+
+        <!-- ERRORI DI CARICAMENTO DATI -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Spiacenti</ion-card-title>
+            <ion-card-subtitle>{{messageError}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Recupero dei dati dell'agenda fallito</p>
+          </ion-card-content>
+        </ion-card>                
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- SCHEDA INFORMATIVA SUPERIORE -->
+  <ion-grid 
+    class="ion-no-margin ion-no-padding"
+    *ngIf="loadingComplete && !loadingError">
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+        <div
+            class="ion-no-padding div-header" >
+
+            <ion-item lines="none" color="light">
+              <ion-icon slot="start" [name]="iconHeader" color="primary">
+              </ion-icon>
+              <ion-label class="ion-text-wrap">
+                <h2>{{impegnoDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
+                <h2><span>{{impegnoDoc.DATAORAINIZIO | date: 'H.mm'}} - {{impegnoDoc.DATAORAFINE | date: 'H.mm'}}&nbsp;</span>
+                  <ion-chip *ngIf="settoreRefer == Tiposettore.settorePrenotazione" color="danger">
+                    {{pianificazioneDoc?.DURATAORE}} {{pianificazioneDoc?.DURATAORE==1? 'Ora':'Ore'}}
+                  </ion-chip>
+                </h2>
+                <h1>{{impegnoDoc.DENOMINAZIONE}}</h1>
+                <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONELOCATION | titlecase)}}</p>
+                <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONECAMPO | titlecase)}}</p>
+                <p class="ion-text-bold">{{impegnoDoc.DENOMINAZIONESPORT}}</p>
+              </ion-label>
+            </ion-item>
+        </div>               
+      </ion-col>
+      </ion-row>
+  </ion-grid>
+
+  <!-- BUTTON PER MODIFICARE I DATI -->
+  <div *ngIf="loadingComplete && !loadingError && settoreRefer == Tiposettore.settorePrenotazione">
+    <ion-grid>
+      <ion-row>
+        <ion-col sizeXs="12" 
+                 sizeSm="12" 
+                 sizeMd="6" offsetMd="3"
+                 sizeLg="6" offsetLg="3"
+                 sizeXl="6" offsetXl="3">
+          <ion-button
+              (click)="onClickConferma()"
+              expand="full"
+              shape="fill"
+              color="success"
+                 >
+                <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+                Conferma prenotazione
+             </ion-button>                 
+      </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- GRID RELATIVA A PRENOTAZIONI -->
+  <ion-grid *ngIf="loadingComplete && !loadingError && settoreRefer == Tiposettore.settorePrenotazione">
+    <ion-row>
+      <!-- COLONNA PRIMARIA-->
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" 
+               sizeLg="6" 
+               sizeXl="6" 
+               >
+        <ion-grid class="ion-no-margin ion-no-padding">
+          <ion-row>
+            <ion-col>
+              <ion-list mode="ios">
+                <ion-list-header>
+                  Numero partecipanti
+                </ion-list-header>
+
+                <ion-item lines="none" *ngIf="!lockedForm">
+                  <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+                  <ion-label class="ion-text-wrap">modifica il numero dei partecipanti per ricalcolare l'importo</ion-label>
+                </ion-item>
+
+                <ion-item 
+                    lines="none"
+                    *ngIf="lockedForm">
+                  <ion-icon
+                      slot="start"
+                      size="large" 
+                      name ="person-circle" 
+                      color="primary" 
+                  ></ion-icon>
+                  <h1>{{pianificazioneDoc.NUMPARTECIPANTI}} {{pianificazioneDoc.NUMPARTECIPANTI > 1? 'Giocatori':'Giocatore'}}</h1>
+                </ion-item>
+
+                <ion-button
+                    *ngIf="lockedForm"
+                    (click)="onClickLockButton()"
+                    expand="full"
+                    shape="fill"
+                    color="primary"
+                    >
+                      <ion-icon name="create-outline" slot="start"></ion-icon>
+                  Modifica partecipanti
+                </ion-button>  
+                
+                <app-player-number 
+                    *ngIf="!lockedForm"
+                    [numPlayer]="pianificazioneDoc.NUMPARTECIPANTI"
+                    (changeNumPlayer)="onChangedNumPlayer($event)">
+                </app-player-number>                               
+              </ion-list>
+
+
+
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+      <!-- COLONNA DESTRA CON IMPORTI -->
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" 
+               sizeLg="6" 
+               sizeXl="6" 
+               >
+        <!-- RIGA CON CARD DEL TOTALE -->
+        <ion-list 
+              line="none">
+          <ion-list-header mode="ios">
+            Importo Prenotazione 
+          </ion-list-header>
+          <ion-grid>
+            <!-- IMPORTO PRENOTAZIONI -->
+            <ion-row class="ion-align-items-center">
+              <ion-col size="5" class="ion-text-center left-col">
+                <h4 class="ion-no-margin ion-text-bold">Totale</h4>
+              </ion-col>
+              <ion-col size="7">
+                <h4 
+                  class="ion-no-margin ion-text-right ion-text-bold">
+                  {{pianificazioneDoc?.TOTALE | currency: "EUR"}}
+                </h4>
+              </ion-col>
+            </ion-row>
+
+            <!-- INCASSATO -->
+            <ion-row class="ion-align-items-center">
+              <ion-col size="5" class="ion-text-center left-col">
+                <h4 class="ion-no-margin ion-text-bold">Incassato</h4>
+              </ion-col>
+              <ion-col size="7">
+                <h4 
+                  class="ion-no-margin ion-text-right ion-text-bold">
+                  {{pianificazioneDoc?.INCASSATO | currency: "EUR"}}
+                </h4>
+              </ion-col>
+            </ion-row>
+
+            <!-- IMPORTO RESIDUO DA INCASSARE -->
+            <ion-row 
+                *ngIf="pianificazioneDoc?.RESIDUO != 0"
+                class="ion-align-items-center danger-price">
+              <ion-col size="5" class="ion-text-center left-col">
+                <h6 class="ion-no-margin ion-text-bold">da incassare</h6>
+              </ion-col>
+              <ion-col size="7">
+                <h5 
+                    class="ion-no-margin ion-text-right ion-text-bold">
+                    {{pianificazioneDoc?.RESIDUO | currency: "EUR"}}
+                </h5>
+              </ion-col>
+            </ion-row> 
+            
+            <ion-item lines="none" 
+                *ngIf="pianificazioneDoc?.RESIDUO != 0">
+              <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+              <ion-label class="ion-text-wrap">confermare la prenotazione per inserire l'importo riscosso dal cliente</ion-label>
+            </ion-item>
+
+            <!-- NULLA DA INCASSARE -->
+            <ion-row 
+                *ngIf="pianificazioneDoc?.RESIDUO == 0"
+                class="ion-align-items-center success-price">
+              <ion-col size="12" class="ion-text-center left-col">
+                <h6 class="ion-no-margin ion-text-bold">INCASSATO COMPLETAMENTE</h6>
+              </ion-col>
+            </ion-row>     
+
+
+          </ion-grid>
+        </ion-list>
+      
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+

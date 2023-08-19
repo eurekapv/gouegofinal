@@ -14,8 +14,8 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 import { Area } from 'src/app/models/area.model';
-import { NewLoginPage } from 'src/app/pages/auth/new-login/new-login.page';
-import { VerifyPage } from 'src/app/pages/auth/verify/verify.page';
+import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
+import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
 import { BookcoursePage } from '../bookcourse/bookcourse.page';
 import { LogApp } from 'src/app/models/log.model';
 
@@ -364,7 +364,7 @@ export class ListcoursesPage implements OnInit, OnDestroy {
           
           //Ora preparo e creo la pagina di Login
           this.mdlController.create({
-            component:NewLoginPage
+            component:UserLoginPage
           })
             .then(modal=>{
               modal.present();
@@ -382,7 +382,7 @@ export class ListcoursesPage implements OnInit, OnDestroy {
             if (paramsVerifica){
               //se ci sono parametri, significa che devo chiamare la pagina di verifica
               this.mdlController.create({
-                component: VerifyPage,
+                component: UserVerifyPage,
                 componentProps:{
                   params: paramsVerifica
                 } 

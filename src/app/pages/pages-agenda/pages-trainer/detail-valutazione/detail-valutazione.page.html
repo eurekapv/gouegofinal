@@ -1,0 +1,218 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Valutazione</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid *ngIf="loadingComplete">
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+
+        <!-- PARTE SUPERIORE CON LA CARD INFORMATIVA -->
+        <ion-card *ngIf="myCorso">
+          <ion-card-header class="ion-no-padding">
+            <!-- FAB CON LA VOCE PROVA -->
+            <ion-fab *ngIf="showFabProva()" vertical="top" horizontal="end">
+              <ion-fab-button color="danger">Prova</ion-fab-button>
+            </ion-fab>
+      
+            <ion-item button="false" lines="none">
+              <i class="icon-sport" slot="start">
+                <span [innerHTML]="getIcon(myCorso)"></span>
+              </i>
+              <ion-label>
+                <h1 class="ion-text-wrap">{{ myCorso.DENOMINAZIONE }}</h1>
+                <h3 class="ion-text-wrap">{{ myCorso['_DENOMINAZIONE_Sport'] }}</h3>
+              </ion-label>
+            </ion-item>
+      
+            <ion-item button="false" lines="none">
+              <ion-label class="ion-text-wrap" color="primary">
+                <p>
+                  da&nbsp;<ion-text style="font-weight: bold;">{{myCorso.DATAINIZIO|date:'EEE dd/MM/yyyy' | titlecase}}
+                  </ion-text>
+                  a&nbsp;<ion-text style="font-weight: bold;">{{myCorso.DATAFINE|date:'EEE dd/MM/yyyy' | titlecase}}
+                  </ion-text>
+                </p>
+              </ion-label>
+            </ion-item>
+      
+          </ion-card-header>
+      
+          <ion-card-content>
+      
+            <ion-list class="ion-no-padding">
+      
+              <ion-item-group>
+      
+                <ion-item-divider color="light" (click)="onClickCollapsed()">
+                  <ion-icon slot="start" [name]="cardCollapsed ? 'chevron-down-outline':'chevron-up-outline'"></ion-icon>
+                  <ion-label>
+                    <h2>Altre informazioni</h2>
+                  </ion-label>
+                </ion-item-divider>
+              </ion-item-group>
+      
+      
+              <ion-item *ngIf="!cardCollapsed">
+                <ion-icon name="time-outline" slot="start"></ion-icon>
+                <ion-label>
+                  {{myCorso.ORAINIZIO|date:'HH:mm'}}
+                </ion-label>
+              </ion-item>
+      
+              <ion-item *ngIf="!cardCollapsed">
+                <ion-icon name="stats-chart-outline" slot="start"></ion-icon>
+                <ion-label>{{myCorso['_DENOMINAZIONE_Livello']?myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}
+                </ion-label>
+              </ion-item>
+      
+              <ion-item *ngIf="!cardCollapsed">
+                <ion-icon name="bookmark-outline" slot="start"></ion-icon>
+                <ion-label>{{myCorso['_DESCTOOLTIP_CategoriaEta']?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}
+                </ion-label>
+              </ion-item>
+      
+              <ion-item lines="none" *ngIf="myCorso.TARGETSESSO && !cardCollapsed">
+                <ion-icon name="transgender-outline" slot="start"></ion-icon>
+                <ion-label>{{myCorso.TARGETSESSO | targetSesso}}</ion-label>
+              </ion-item>
+      
+            </ion-list>
+      
+          </ion-card-content>
+        </ion-card>
+
+        <!-- ERRORI DI CARICAMENTO DATI -->
+        <ion-card *ngIf="loadingError">
+          <ion-card-header>
+            <ion-card-title>Spiacenti</ion-card-title>
+            <ion-card-subtitle>{{messageError}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Non è possibile operare con la valutazione</p>
+          </ion-card-content>
+        </ion-card>
+        
+        <!-- CARICAMENTO DATI ANDATO A BUON FINE -->
+        <div *ngIf="!loadingError">
+        
+          <!-- SEGMENTI PER INSERIRE IL TESTO E LE VALUTAZIONI LIVELLO -->
+          <ion-segment 
+              mode="md"
+              *ngIf="showSegmentButton" 
+              [(ngModel)]="selectedView" 
+              (ionChange)="onChangeSegment($event)">
+        
+            <ion-segment-button [value]="1">
+              <ion-icon name="star-outline"></ion-icon>
+              <ion-label>Valutazione</ion-label>
+            </ion-segment-button>
+        
+            <ion-segment-button [value]="2">
+              <ion-icon name="bar-chart-outline"></ion-icon>
+              <ion-label>Livelli</ion-label>
+            </ion-segment-button>
+        
+          </ion-segment>
+
+          
+          <ion-grid class="ion-padding">
+            <ion-row>
+              <ion-col>
+                
+                <ion-item *ngIf="!canUpdate" color="danger">
+                  <ion-label>Scheda Bloccata. Contattare Segreteria</ion-label>
+                </ion-item>
+                
+                <ion-button
+                    *ngIf="canUpdate" 
+                    color="success" 
+                    expand="block" 
+                    (click)="onConfirm()">
+                    Conferma Valutazione
+                </ion-button>
+              </ion-col>
+            </ion-row>            
+          </ion-grid>
+
+
+            <!-- VISTA PAGINE PER INSERIMENTO VALUTAZIONE -->
+            <div class="contentExpand" *ngIf="selectedView == 1">
+          
+              <ion-item lines="none">
+                <ion-label position="stacked">Soddisfazione Corso</ion-label>
+          
+                <ion-row>
+                  <ion-col *ngFor="let element of collStars; index as i">
+                    <ion-icon size="large" (click)="setStars(i+1)" [name]="element?'star':'star-outline'"></ion-icon>
+                  </ion-col>
+                </ion-row>
+          
+              </ion-item>
+          
+          
+          
+              <ion-item>
+                <ion-label position="stacked">Considerazioni finali</ion-label>
+                <ion-textarea class="back-medium" autoGrow="true" [disabled]="!canUpdate" [readonly]="!canUpdate"
+                  [(ngModel)]="myCorsoValutazione.TESTOVALUTAZIONE">
+                </ion-textarea>
+              </ion-item>
+          
+            </div>
+          
+            <!-- VISTA PAGINE PER INSERIMENTO LIVELLI -->
+            <div class="contentExpand" *ngIf="selectedView == 2">
+          
+              <!-- NESSUN ISCRITTO TROVATO  -->
+              <div class="nofind-cnt" *ngIf="showAlertNoIscritti">
+                <ion-label>Nessun iscritto al corso</ion-label>
+              </div>
+          
+              <!-- LISTA ISCRITTI -->
+              <div *ngIf="showListIscritti">
+                <ion-item lines="none">
+                  <ion-label>
+                    <h6>Partecipanti</h6>
+                  </ion-label>
+          
+                  <ion-chip 
+                      (click)="chooseLivelloFinale()"
+                      color="warning"
+                      slot="end">
+                    <ion-icon name="people-circle-outline"></ion-icon>
+                    <ion-label>{{myListValutazioni.length}}&nbsp;{{myListValutazioni.length != 1 ? 'Iscritti al corso':'Iscritto al corso'}}</ion-label>
+                  </ion-chip>
+                  
+                </ion-item>
+          
+          
+                <app-level-setter 
+                    *ngFor="let iscrittoVal of myListValutazioni" 
+                    [readOnly]="!canUpdate"
+                    [listLivelli]="myListLivelli"
+                    [valutazione]="iscrittoVal" 
+                    (onChoose)="onChangeLivello($event)">
+                </app-level-setter>
+              </div>
+          
+            </div>
+
+            
+
+
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

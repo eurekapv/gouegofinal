@@ -40,14 +40,10 @@ import { TipoTessera } from 'src/app/models/tipo-tessera';
 import { PrenotaTesseramento } from 'src/app/models/prenota_tesseramento.model';
 import { TipoTesseraTemplate } from 'src/app/models/tipo-tessera-template';
 import { Tesseramento } from 'src/app/models/tesseramento';
-
-
-
-
-
-
-
-
+import { ImpegnoCollaboratore } from 'src/app/models/impegno-collaboratore.model';
+import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
+import { Evento } from 'src/app/models/evento.model';
+import { TipoEvento } from 'src/app/models/tipo-evento.model';
 
 
 
@@ -79,6 +75,8 @@ export const Structure: any = {
     UtenteLivello,
     UtentePrenotazione,
     Impegno,
+    ImpegnoCollaboratore,
+    ImpegnoCustode,
     AccountOperationResponse , 
     AccountRequestCode, 
     AccountVerifyCode,
@@ -97,7 +95,10 @@ export const Structure: any = {
     TipoPagamento,
     TipoTessera,
     TipoTesseraTemplate,
-    Tesseramento
+    Tesseramento,
+    Evento,
+    TipoEvento
+
 }
 
 export class DynamicClass {

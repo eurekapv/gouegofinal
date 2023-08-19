@@ -1,0 +1,30 @@
+<ion-item
+    (click)="onClickElement()"
+    button="true">
+    <!-- PORZIONE ICONA -->
+    <ion-icon 
+      [name]="iconName" 
+      slot="start"
+      [color]="iconColor">
+    </ion-icon>
+
+<ion-label 
+
+    class="ion-text-wrap">
+  <p *ngIf="_impegnoDoc.DATAORAINIZIO">
+    {{_impegnoDoc.DATAORAINIZIO| date : 'EEEE dd/MM/yyyy' | titlecase}}
+    <span *ngIf="_impegnoDoc.compareEqualDate() == false"> fino a {{_impegnoDoc?.DATAORAFINE| date : 'EEEE dd/MM/yyyy' | titlecase}}</span>
+  </p>
+
+  <h3>{{_impegnoDoc.DENOMINAZIONE}}</h3>
+  <h4>{{_impegnoDoc.DENOMINAZIONELOCATION}} </h4>
+  <p>{{_impegnoDoc.DENOMINAZIONESPORT}}</p>
+</ion-label> 
+
+<ion-chip 
+  [color]="iconColor">
+  {{_impegnoDoc.DATAORAINIZIO | date: 'HH:mm'}}
+  <ion-icon name="time-outline"></ion-icon>
+</ion-chip>
+
+</ion-item>

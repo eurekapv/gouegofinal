@@ -106,7 +106,7 @@ export class CourseService {
       }
 
       let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
+      
       const doObject = 'CORSO';
       
   
@@ -124,7 +124,7 @@ export class CourseService {
           }))
           .subscribe( resultData => {
 
-            if (resultData[0] && resultData[0]!={}){
+            if (resultData[0]){
               let objCorso = new Corso();
               objCorso.setJSONProperty(resultData[0]);
               

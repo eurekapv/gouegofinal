@@ -1,0 +1,574 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ModalController, NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { ModesCalendar } from 'src/app/library/models/mydatetime.model';
+import { Area } from 'src/app/models/area.model';
+import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { ImpegnoCollaboratore } from 'src/app/models/impegno-collaboratore.model';
+import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
+import { Impegno } from 'src/app/models/impegno.model';
+import { Utente } from 'src/app/models/utente.model';
+import { RangeSearch, SettoreAttivita } from 'src/app/models/valuelist.model';
+import { StartService } from 'src/app/services/start.service';
+import { QrCodeScannerComponent } from 'src/app/shared/components/qr-code-scanner/qr-code-scanner.component';
+
+@Component({
+  selector: 'app-tab-agenda',
+  templateUrl: './tab-agenda.page.html',
+  styleUrls: ['./tab-agenda.page.scss'],
+})
+export class TabAgendaPage implements OnInit, OnDestroy {
+
+  constructor(private startService: StartService,
+              private navController: NavController,
+              private modalController: ModalController) { 
+
+    this.prepareCardImpegniPersonali();
+    //Preparo la card in caso di assenza Impegni Trainer
+    this.emptyImpegnoTrainerCard = ImpegnoCollaboratore.asEmptyButtonCard();
+    //Preparo la card in caso di assenza Impegni Custode
+    this.emptyImpegnoCustodeCard = ImpegnoCustode.asEmptyButtonCard();
+
+    //Controllo se sono in versione Desktop
+    this.platformDesktop = this.startService.isDesktop;
+  }
+
+  platformDesktop = false;
+  flagOnRefresh: boolean = false;
+  refresherEvent: any; //Evento di refresh
+
+  selectedArea: Area;
+  selectedAreaListen: Subscription;
+  
+  //Identificativo Utente Loggato
+  flagUserLogged: boolean = false;
+  subFlagUserLogged: Subscription;
+
+  //Utente Loggato
+  utenteDoc: Utente;
+  subUtenteDoc: Subscription;
+  
+  //Lista Impegni Personali
+  listImpegni: Impegno[] = [];
+  subListImpegni: Subscription;
+  nextImpegno: Impegno = null;
+  nextImpegnoCard: ButtonCard = null;
+  subNextImpegno: Subscription;
+
+  //Lista Impegni Trainer
+  listImpegniTrainer: ImpegnoCollaboratore[] = [];
+  sublistImpegniTrainer: Subscription;
+  emptyImpegnoTrainerCard: ButtonCard = null;
+
+  //Lista Impegni Custode
+  listImpegniCustode: ImpegnoCustode[] = [];
+  sublistImpegniCustode: Subscription;
+  emptyImpegnoCustodeCard: ButtonCard = null;
+  
+
+  selectedView: 'personal' | 'trainer' | 'custode' = 'personal';
+
+  numRequestImpegniTop = 10; //Numero dei dati richiesti come impegni personali
+  numRequestImpegniTrainerTop = 10; //Numero dei dati richiesti come impegni trainer
+  numRequestImpegniCustodeTop = 10; //Numero dei dati richiesti come impegni custode
+  futureRequestImpegni = true; //Chiede solo quelli futuri
+
+  
+  //#region FILTRO RICERCA TRAINER
+
+  /* Filtri ricerca Trainer */
+  searchTrainerPeriodo = RangeSearch.giorno;
+
+  //Lista di ricerca dei possibili periodi
+  searchListPeriodi: IMapData[] = [{
+      value: RangeSearch.giorno,
+      title: 'Giorno'
+    }, 
+    {
+      value: RangeSearch.settimana,
+      title: 'Settimana'
+    },
+    {
+      value: RangeSearch.mese,
+      title: 'Mese'
+    }];
+
+    //Data Analisi ricerca Trainer
+    searchTrainerDate: Date = new Date();
+
+    /**
+   * Modalità del calendario per il filtro trainer
+   */
+  get searchTrainerCalendarMode(): ModesCalendar {
+    let mode: ModesCalendar = ModesCalendar.date;
+
+    switch (this.searchTrainerPeriodo) {
+
+      case RangeSearch.giorno:
+        mode = ModesCalendar.date;
+        break;
+
+      case RangeSearch.settimana:
+        mode = ModesCalendar.date;
+        break;
+      
+      case RangeSearch.mese:
+        mode = ModesCalendar.monthYear;
+        break;
+        
+    
+      default:
+        mode = ModesCalendar.date;
+        break;
+    }
+
+    return mode;
+  }
+
+  /**
+   * Etichetta mostrata nel filtro della Data Search Trainer
+   */
+  get searchTrainerDateLabel(): string {
+    let myLabel = 'filtro';
+
+    switch (this.searchTrainerPeriodo) {
+
+      case RangeSearch.giorno:
+        myLabel = 'giornata del';
+        break;
+
+      case RangeSearch.settimana:
+        myLabel = 'settimana del';
+        break;
+      
+      case RangeSearch.mese:
+        myLabel = 'mese di';
+        break;
+        
+    
+      default:
+        myLabel = 'filtro';
+        break;
+    }
+
+    return myLabel;
+  }
+  //#endregion
+
+  //#region FILTRO RICERCA CUSTODE
+
+  /* Filtri ricerca Custode */
+  searchCustodePeriodo = RangeSearch.giorno;
+
+  //Data Analisi ricerca Trainer
+  searchCustodeDate: Date = new Date();
+
+    /**
+   * Modalità del calendario per il filtro custode
+   */
+  get searchCustodeCalendarMode(): ModesCalendar {
+    let mode: ModesCalendar = ModesCalendar.date;
+
+    switch (this.searchCustodePeriodo) {
+
+      case RangeSearch.giorno:
+        mode = ModesCalendar.date;
+        break;
+
+      case RangeSearch.settimana:
+        mode = ModesCalendar.date;
+        break;
+      
+      case RangeSearch.mese:
+        mode = ModesCalendar.monthYear;
+        break;
+        
+    
+      default:
+        mode = ModesCalendar.date;
+        break;
+    }
+
+    return mode;
+  }
+
+  /**
+   * Etichetta mostrata nel filtro della Data Search Custode
+   */
+  get searchCustodeDateLabel(): string {
+    let myLabel = 'filtro';
+
+    switch (this.searchCustodePeriodo) {
+
+      case RangeSearch.giorno:
+        myLabel = 'giornata del';
+        break;
+
+      case RangeSearch.settimana:
+        myLabel = 'settimana del';
+        break;
+      
+      case RangeSearch.mese:
+        myLabel = 'mese di';
+        break;
+        
+    
+      default:
+        myLabel = 'filtro';
+        break;
+    }
+
+    return myLabel;
+  }
+  //#endregion  
+
+  //Utente Trainer
+  get showTrainer(): boolean {
+    return (this.flagUserLogged && (this.utenteDoc.isAssistenteTrainer || this.utenteDoc.isTrainer))
+  } 
+  
+  //Utente Custode
+  get showCustode(): boolean {
+    return (this.flagUserLogged && this.utenteDoc.isCustode)
+  } 
+
+  /**
+   * Visualizzo il Segmento superiore solo se sono anche un trainer o custode
+   */
+  get showSegmentTop():boolean {
+    return this.showTrainer || this.showCustode;
+  }
+  
+  
+
+  ngOnInit(): void {
+    this.onListenArea();
+    this.onListenUtente();
+    this.onListenImpegniPersonali();
+    this.onListenImpegniTrainer();
+    this.onListenImpegniCustode();
+  }
+
+  ngOnDestroy(): void {
+    this.onUnscribeAll();
+  }
+
+  /**
+   * Metto in ascolto della modifica dell'area
+   */
+  onListenArea(): void {
+    this.selectedAreaListen = this.startService.areaSelected
+                    .subscribe(areaSel => {
+                        //Area cambiata
+                        this.selectedArea = areaSel;
+                        //Richiesta Custode
+                        this.requestListImpegniCustode();
+                    });                  
+  }
+
+  /**
+   * Metto in ascolto delle modifiche dell'utente
+   */
+  onListenUtente(): void {
+
+    //Sottoscrivo all'ascolto dell'Account
+    this.subUtenteDoc = this.startService.utente
+            .subscribe(element => {
+              //Recupero utente
+                this.utenteDoc = element;
+                //Simulo un cambio segmento
+                this.onChangeSegmentTop(null);
+            });    
+
+    //Sottoscrivo all'ascolto di un utente loggato
+    this.subFlagUserLogged = this.startService.utenteLogged
+          .subscribe(element => {
+              //Recupero l'utente
+              this.flagUserLogged = element;    
+          });
+
+  }  
+
+  /**
+   * Sottoscrivo all'elenco degli impegni personali
+   */
+  onListenImpegniPersonali(): void {
+    //In ascolto della Lista Impegni
+    this.subListImpegni = this.startService.listImpegniPersonali$
+                                           .subscribe(dataList => {
+                                              //Cambia la lista degli impegni
+                                              this.listImpegni = dataList;
+                                              //Gestione dell'eventuale refresher
+                                              this.onAfterRefresh();
+                                           });
+
+    this.subNextImpegno = this.startService.nextImpegnoPersonale$
+                                          .subscribe(myImpegno => {
+                                            //Cambia il prossimo impegno
+                                            this.nextImpegno = myImpegno;
+                                            //Preparo la card del prossimo impegno personale
+                                            this.prepareCardImpegniPersonali();
+                                          })
+  }
+
+  onListenImpegniTrainer(): void {
+    this.sublistImpegniTrainer = this.startService.listImpegniCollaboratore$
+                                     .subscribe(dataList => {
+                                        //Cambia la lista Trainer
+                                        this.listImpegniTrainer = dataList;
+                                        //Gestione dell'eventuale refresher
+                                        this.onAfterRefresh();
+                                     })
+  }
+
+  onListenImpegniCustode(): void {
+    this.sublistImpegniCustode = this.startService.listImpegniCustode$
+                                     .subscribe(dataList => {
+                                        //Cambia la lista Custodi
+                                        this.listImpegniCustode = dataList;
+                                        //Gestione dell'eventuale refresher
+                                        this.onAfterRefresh();
+                                     })
+  }  
+
+  onUnscribeAll(): void {
+    if (this.selectedAreaListen) {
+      this.selectedAreaListen.unsubscribe();
+    }
+
+    if (this.subFlagUserLogged) {
+      this.subFlagUserLogged.unsubscribe();
+    }
+
+    if (this.subUtenteDoc) {
+      this.subUtenteDoc.unsubscribe();
+    }  
+    
+    if (this.subListImpegni) {
+      this.subListImpegni.unsubscribe();
+    }
+    
+    if (this.sublistImpegniTrainer) {
+      this.sublistImpegniTrainer.unsubscribe();
+    }
+
+    if (this.sublistImpegniCustode) {
+      this.sublistImpegniCustode.unsubscribe();
+    }    
+
+  }  
+
+  /* Gestione Segment */
+  onChangeSegmentTop(event:any) {
+    switch (this.selectedView) {
+      case 'personal': 
+          this.requestListImpegniPersonali();
+          break;
+      case 'trainer':
+          this.requestListImpegniTrainer();        
+        break;
+      case 'custode':
+          this.requestListImpegniCustode();
+        break;
+    }
+  }
+
+    /**
+   * Esecuzione del Refresh Dati
+   * @param event 
+   */
+    doRefresh(event:any) {
+
+      this.flagOnRefresh = true;
+      this.refresherEvent = event;
+
+      this.onChangeSegmentTop(event);
+    }
+
+   /**
+   * Chiamare al termine della ricezione dei dati   
+   */
+  onAfterRefresh() {
+    //Chiude il refresher in interfaccia
+    if (this.flagOnRefresh) {
+      this.flagOnRefresh = false;
+
+      if (this.refresherEvent && this.refresherEvent.target) {
+        this.refresherEvent.target.complete();      
+      }
+
+    }
+  }
+
+
+  //#region IMPEGNI PERSONALI
+  /**
+   * Prepara la Card da visualizzare per gli impegni personali
+   * a seconda se è presente un impegno oppure no
+   */
+  prepareCardImpegniPersonali() {
+    if (this.nextImpegno) {
+      this.nextImpegnoCard = this.nextImpegno.asButtonCard();
+    }
+    else {
+      this.nextImpegnoCard = Impegno.asEmptyButtonCard();
+    }
+  }
+
+  /**
+   * Richiede la lista degli impegni personali
+   */
+  requestListImpegniPersonali() {
+    let idUtente = (this.utenteDoc ? this.utenteDoc.ID : '');
+    //Effettuo la richiesta
+    this.startService.requestImpegniPersonali(idUtente, this.futureRequestImpegni, this.numRequestImpegniTop);
+  }
+
+  
+  //#endregion
+
+  //#region IMPEGNI TRAINER
+  
+  /**
+   * Url pagina della lista Valutazioni Trainer
+   */
+  get urlPageListValutazioniTrainer(): string[] {
+    let retPath = ['/','appstart-home','tab-agenda','trainer','list-valutazioni'];
+
+    return retPath;
+  }
+
+  /**
+   * Vado alla pagina della Lista Valutazioni Trainer
+   */
+  onClickGoToListaValutazioniTrainer() {
+    let urlPath = this.urlPageListValutazioniTrainer;
+    this.navController.navigateForward(urlPath);
+  }
+  /**
+   * Effettua la ricerca degli impegni Trainer
+   */
+  requestListImpegniTrainer() {
+    let idCollaboratore = (this.utenteDoc ? this.utenteDoc.ID : '');
+    let mansione = (this.utenteDoc ? this.utenteDoc.MANSIONE : 0);
+
+    this.startService.requestImpegniCollaboratore(idCollaboratore, 
+                                            mansione,
+                                            this.searchTrainerPeriodo, 
+                                            this.searchTrainerDate,
+                                            this.numRequestImpegniTrainerTop);
+  }
+
+
+  /**
+   * 
+   * @param valuePeriod Modifica del periodo di ricerca trainer
+   */
+  onChangePeriodoTrainer(valuePeriod: RangeSearch) {
+    this.searchTrainerPeriodo = valuePeriod;
+    this.requestListImpegniTrainer();
+  }
+
+
+  /**
+   * Click per la visualizzazione dell'impegno
+   * @param impegnoDoc 
+   */
+  onClickImpegnoTrainer(impegnoDoc: ImpegnoCollaboratore): void {
+    let pathNavigate = [];
+
+    if (impegnoDoc) {
+      //Per ora gestisco solo i corsi
+      if (impegnoDoc.SETTORE == SettoreAttivita.settoreCorso) {
+        //trainer/detail-presenza/
+        pathNavigate = ['/','appstart-home','tab-agenda','trainer','detail-presenza',impegnoDoc.ID]; 
+        this.navController.navigateForward(pathNavigate);
+      }
+    }
+  }
+  //#endregion
+
+  //#region IMPEGNI CUSTODE
+  /**
+   * Effettua la ricerca degli impegni Custode
+   */
+  requestListImpegniCustode() {
+    let idArea = (this.selectedArea ? this.selectedArea.ID : '');
+
+    this.startService.requestImpegniCustode(idArea,
+                                            this.searchCustodePeriodo, 
+                                            this.searchCustodeDate,
+                                            this.numRequestImpegniCustodeTop);
+  }
+
+
+  /**
+   * 
+   * @param valuePeriod Modifica del periodo di ricerca custode
+   */
+  onChangePeriodoCustode(valuePeriod: RangeSearch) {
+    this.searchCustodePeriodo = valuePeriod;
+    this.requestListImpegniCustode();
+  }
+
+
+  /**
+   * Click per la visualizzazione dell'impegno
+   * @param impegnoDoc 
+   */
+  onClickImpegnoCustode(impegnoDoc:ImpegnoCustode): void {
+
+    if (impegnoDoc) {
+      this.goToDetailCustode(impegnoDoc.ID);
+    }
+  }
+
+  /**
+   * Click per la lettura di un QrCode Custode
+   */
+  onClickQrCodeCustode() {
+    if (!this.platformDesktop) {
+      //Apro la modale per lo scanner
+      this.modalController.create({
+        component: QrCodeScannerComponent,
+        swipeToClose: true
+      })
+      .then(elModal => {
+        elModal.present();
+        return elModal.onDidDismiss();
+      })
+      .then(objReturn => {
+        if (objReturn && objReturn.data) {
+
+          if (objReturn.data.qrcodeData && objReturn.data.qrcodeData.length != 0) {
+            let idPianificazione = objReturn.data.qrcodeData;
+            //Pianificazione Corso / Evento / Prenotazione
+            this.goToDetailCustode(idPianificazione);
+          }
+        }
+      })
+    }
+  }
+
+  /**
+   * Va alla pagina del dettaglio informativo per il custode
+   * @param idPianificazione (Pianificazione Corso/Prenotazione/Evento)
+   */
+  goToDetailCustode(idPianificazione: string) {
+    let pathNavigate = [];
+    
+    if (idPianificazione && idPianificazione.length != 0) {
+      pathNavigate = ['/','appstart-home','tab-agenda','custode','detail-occupazione',idPianificazione];
+      this.navController.navigateForward(pathNavigate);
+    }
+  }
+
+  
+  //#endregion
+
+}
+
+interface IMapData {
+  value: RangeSearch,
+  title: string;
+}

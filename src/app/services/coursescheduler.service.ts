@@ -1,19 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { HttpHeaders, HttpParams, JsonpInterceptor } from '@angular/common/http';
-
+import { HttpParams } from '@angular/common/http';
 import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
 import { DocstructureService } from '../library/services/docstructure.service';
-import { IDDocument, ParamsExport } from '../library/models/iddocument.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
-import { resolve } from 'url';
-import { promise } from 'protractor';
 import { PostResponse } from '../library/models/postResult.model';
-import { PostParams } from '../library/models/requestParams.model';
+import { PostParams, RequestDecode, RequestParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -42,7 +38,50 @@ export class CourseschedulerService {
     return this._listImpegniTrainer.asObservable();
   }
 
+  /**
+   * 
+   * @param idPianificazione 
+   * @returns Recupera dal server una pianificazione corso
+   */
+  requestPianificazione(idPianificazione: string): Promise<PianificazioneCorso> {
+    return new Promise<PianificazioneCorso>((resolve, reject) => {
+      let filterDoc = null;
+      let reqParams: RequestParams;
 
+      if (idPianificazione && idPianificazione.length != 0) {
+
+        filterDoc = new PianificazioneCorso(true);
+        filterDoc.ID = idPianificazione;
+
+        reqParams = new RequestParams();
+        reqParams.child_level = 2;
+        reqParams.decode.active = true;
+        reqParams.decode.addForeignField('IDLOCATION');
+        reqParams.decode.addForeignField('IDCAMPO');
+
+
+        this.docStructureService.requestNew(filterDoc,reqParams)
+                                .then(listData => {
+                                  return (listData && listData.length != 0 ? listData[0] : null)
+                                })
+                                .then(singleDoc => {
+                                  if (singleDoc) {
+                                    resolve(singleDoc);
+                                  }
+                                  else {
+                                    reject('Pianificazione non recuperata');
+                                  }
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+
+      }
+      else {
+        reject('idPianificazione not setting')
+      }
+    })
+  }
 
     /**
    * Effettua una chiamata al server per il recupero dei corsi

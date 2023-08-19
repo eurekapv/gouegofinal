@@ -1,0 +1,148 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Eliminazione Profilo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+
+               <ion-grid>
+                  <ion-row>
+                    <ion-col>
+                      <ion-list-header>
+                        <ion-label>Vuoi cancellare il profilo ?</ion-label>
+                      </ion-list-header>
+                      
+                      <ion-list>
+                        <ion-item lines="none">
+                          <ion-label class="ion-text-wrap">
+                            <ion-text color="danger"><h4>Stai eliminando definitivamente il tuo profilo.</h4></ion-text>
+                            <p style="font-weight: 700;">
+                              Eliminando il profilo, non potrai più controllare le attività presso il centro, effettuare iscrizione ai corsi e prenotazione dei campi.
+                              Per continuare a rimanere aggiornato sulle nostre attività, ti invitiamo a non eliminare il profilo.
+                            </p>
+                          </ion-label>
+                        </ion-item>
+                      </ion-list>
+
+                      <div class="title-image">
+                        <img src="assets/img/profilemobile200.jpg"/>
+                      </div>
+                      
+                      <form [formGroup]="form" class="ion-margin-horizontal">
+                        <ion-list>
+                          <!-- PASSWORD ATTUALE -->
+                          <ion-list-header>
+                            <ion-label>Password Attuale</ion-label>
+                          </ion-list-header>
+
+                          <ion-list>
+                            <ion-item lines="none">
+                              <ion-label class="ion-text-wrap">
+                                <ion-text color="danger"><h4>E' necessaria una ulteriore verifica</h4></ion-text>
+                                <p style="font-weight: 700;">
+                                  Ti invitiamo a inserire la tua password attuale per completare l'eliminazione del profilo
+                                </p>
+                              </ion-label>
+                            </ion-item>
+                          </ion-list>      
+
+                          <ion-item >
+                            <ion-icon 
+                            name="lock-closed-outline" 
+                            slot="start"></ion-icon>
+                            <ion-input 
+                                type="password" 
+                                inputmode="password" 
+                                formControlName="actualPassword1" 
+                                placeholder="password attuale" 
+                                id="actualPassword1"
+                                #actualPassword1 ></ion-input>
+
+                            <ion-button slot="end" fill="clear" (click)="showHideInput('actualPassword1',actualPassword1)">
+                              <ion-icon 
+                                  [name]="showNew ? 'eye-off-outline':'eye-outline'" 
+                                  slot="icon-only">
+                              </ion-icon>
+                            </ion-button>
+
+                          </ion-item>
+                        
+                          <ion-item>
+                            <ion-icon 
+                            name="lock-closed-outline" 
+                            slot="start"></ion-icon>
+
+                            <ion-input 
+                                type="password" 
+                                inputmode="password" 
+                                formControlName="actualPassword2" 
+                                placeholder="conferma password" 
+                                id="actualPassword2"
+                                #actualPassword2></ion-input>
+
+                            <ion-button slot="end" fill="clear" (click)="showHideInput('actualPassword2',actualPassword2)">
+                              <ion-icon 
+                                  [name]="showNewRetype ? 'eye-off-outline':'eye-outline'" 
+                                  slot="icon-only">
+                              </ion-icon>
+                            </ion-button>
+
+
+                            </ion-item>
+                          
+                          <!-- ERROR MESSAGE -->
+                          <ion-item 
+                              lines="none" 
+                              *ngIf="!form.valid">
+                              <ion-label 
+                                class="ion-text-wrap"
+                                color="danger">
+                                <h5>
+                                  {{ invalidMessage() }}
+                                </h5>
+                              </ion-label>
+                          </ion-item>
+                        </ion-list>
+                      </form>
+                  </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeXl="6" sizeLg="6">
+                      <ion-button
+                      (click)="onClickElimina()"
+                      [disabled]="!form.valid"
+                      color="danger"
+                      expand="block"
+                      >Elimina Profilo</ion-button
+                    >
+                    </ion-col>
+                    <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeXl="6" sizeLg="6">
+                      <ion-button
+                        (click)="onGoToBack()"
+                      expand="block"
+                      fill="outline"
+                      >Annulla</ion-button
+                    >
+                    </ion-col>
+                  </ion-row>
+          </ion-grid>
+
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+</ion-content>
+

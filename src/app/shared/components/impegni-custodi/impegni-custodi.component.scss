@@ -1,0 +1,16 @@
+ion-item {
+
+    >ion-icon {
+        font-size: 40px;
+    }
+}
+
+ion-label {
+    p {
+        color: var(--ion-accent-contrast);
+    }
+}
+
+.text-bold {
+    font-weight: 700;
+}

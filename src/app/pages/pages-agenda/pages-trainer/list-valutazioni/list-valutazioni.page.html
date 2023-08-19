@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Valutazioni</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+
+  <!-- PORZIONI VALUTAZIONI -->
+  <ion-segment 
+    mode="md"
+    (ngModelChange)="requestTimeCorsi()"
+    [(ngModel)]="valutazioniSelectedMode" 
+    scrollable="true">
+    <ion-segment-button 
+          [value]="mode" 
+          *ngFor="let mode of valutazioniModes">
+      <ion-label>{{mode.title}}</ion-label>
+      <ion-icon [name]="mode.icon"></ion-icon>
+    </ion-segment-button>
+  </ion-segment>
+
+      <!-- CORSI TROVATI -->
+      <div class="ion-no-padding" *ngIf="myListCorsi && myListCorsi.length != 0">
+        <ion-list           
+            class="ion-no-padding">
+
+            <app-item-trainer-corso
+                  *ngFor="let itemCorso of myListCorsi"
+                  [myDocument] = "itemCorso"
+                  (click)="onClickItemCorso(itemCorso)">
+            </app-item-trainer-corso>
+
+        </ion-list>
+      </div>
+
+
+      <!-- NESSUN CORSO TROVATO  -->
+      <div class="nofind-cnt" *ngIf="!myListCorsi || myListCorsi.length == 0">
+        <ion-label>Nessun corso trovato</ion-label>
+      </div> 
+  </ion-col>  
+  </ion-row>
+  </ion-grid>
+
+</ion-content>
+

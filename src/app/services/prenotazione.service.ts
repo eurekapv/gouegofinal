@@ -13,6 +13,8 @@ import { PrenotazionePianificazione } from '../models/prenotazionepianificazione
 import { SportService } from './sport.service';
 import { ParamsExport } from '../library/models/iddocument.model';
 import { PostResponse } from '../library/models/postResult.model';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { RequestParams } from '../library/models/requestParams.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +26,9 @@ export class PrenotazioneService {
   private _activePrenotazione = new BehaviorSubject<Prenotazione>(new Prenotazione());
   private _selectedCampo: Campo;
 
-  constructor(private apiService: ApicallService, private sportService: SportService) { }
+  constructor(private apiService: ApicallService, 
+              private sportService: SportService,
+              private docStructureService: DocstructureService) { }
 
   /** Prenotazione */
   get activePrenotazione() {
@@ -150,11 +154,11 @@ export class PrenotazioneService {
 
 
   /**
-   * Richiede una prenotazione al server
+   * Richiede una prenotazione al server (Versione OBSERVABLE)
    * @param config Dati configurazione
    * @param idPrenotazione IdPrenotazione 
    */
-  requestById(config: StartConfiguration, idPrenotazione: string, numLivelli: number) {
+  requestById$(config: StartConfiguration, idPrenotazione: string, numLivelli: number) {
     //let myHeaders = new HttpHeaders({'Content-type':'text/plain'}).append('child-level', numLivelli + '');
     let myHeaders = config.getHttpHeaders();
     const doObject = 'PRENOTAZIONE';
@@ -194,6 +198,84 @@ export class PrenotazioneService {
   }
 
 
+  /**
+   * Effettua una chiamata al server per il recupero della prenotazione
+   * NUOVA MODALITA
+   * @param idPrenotazione 
+   * @param numChild Profondità della richiesta
+   * @param decodeAll Decodifica le chiavi esterne
+   * @returns 
+   */
+  requestPrenotazioneById(idPrenotazione: string, numChild = 0, decodeAll = false): Promise<Prenotazione> {
+    return new Promise<Prenotazione>((resolve, reject) => {
+
+      if (idPrenotazione && idPrenotazione.length != 0) {
+        let filter = new Prenotazione(true);
+        filter.ID = idPrenotazione;
+
+        let reqParams = new RequestParams();
+        reqParams.child_level = numChild;
+        reqParams.decode.active = decodeAll;
+
+        this.docStructureService.requestNew(filter, reqParams)
+                                .then(listResult => {
+                                  console.log(listResult);
+                                  if (listResult && listResult.length != 0) {
+                                    return listResult[0];
+                                  }
+                                  else {
+                                    reject('Documento non trovato');
+                                  }
+                                })
+                                .then(singleDoc => {
+                                  resolve(singleDoc);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+        
+      }
+      else {
+        reject('idPrenotazione non definito');
+      }
+    })
+  }
+  
+  
+  /**
+   * Effettua una chiamata al server per il recupero della pianificazione
+   * @param idPianificazione 
+   * @returns 
+   */
+  requestPianificazioneById(idPianificazione: string): Promise<PrenotazionePianificazione> {
+    return new Promise<PrenotazionePianificazione>((resolve, reject) => {
+
+      if (idPianificazione && idPianificazione.length != 0) {
+        let filter = new PrenotazionePianificazione(true);
+        filter.ID = idPianificazione;
+
+        this.docStructureService.requestNew(filter)
+                                .then(listResult => {
+                                  if (listResult && listResult.length != 0) {
+                                    return listResult[0];
+                                  }
+                                  else {
+                                    reject('Documento non trovato');
+                                  }
+                                })
+                                .then(singleDoc => {
+                                  resolve(singleDoc);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+        
+      }
+      else {
+        reject('idPianificazione non definito');
+      }
+    })
+  }
 
 
   /**

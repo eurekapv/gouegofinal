@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar color="primary" mode="md">
+    <ion-title 
+      class="title-image">
+      <div class="logodiv">
+        <img class="logo" [src]="this.startConfig.getUrlIcon()">
+        {{startConfig?.companyName | titlecase }}
+      </div>
+    </ion-title>
+  </ion-toolbar>
+
+  <!-- SELETTORE DI AREA OPERATIVA -->
+  <ion-grid *ngIf="listAree && listAree.length > 1">
+    <ion-row
+        class="ion-no-margin"
+        >
+      <ion-col sizeXs="12" 
+                sizeSm="12" 
+                sizeMd="6" offsetMd="3"
+                sizeLg="6" offsetLg="3"
+                sizeXl="6" offsetXl="3">
+  
+            <ion-segment 
+            mode="md"
+            [value] = "selectedIdArea"
+            (ionChange) = "onChangeSegment($event)"
+            >
+              <ion-segment-button 
+                  *ngFor="let item of listAree"
+                  value = {{item.ID}}
+                  >
+                  <ion-label>{{item.DENOMINAZIONE}}</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+  
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-header>
+
+<ion-content>
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+                sizeSm="12" 
+                sizeMd="8" offsetMd="2"
+                sizeLg="8" offsetLg="2"
+                sizeXl="8" offsetXl="2">   
+                
+                <!-- CARD STRUTTURA -->
+                <div class="box-struttura ion-no-padding ion-no-margin">
+                      <!--striscia titolo -->
+                      <ion-item 
+                          type="header" 
+                          lines="none" 
+                          color="success">
+              
+                          <ion-icon 
+                              slot="start" 
+                              name="location-outline"></ion-icon>
+                          <ion-label class="ion-text-nowrap">
+                            <h2 class="ion-text-bold">{{ selectedArea.DENOMINAZIONE | titlecase }}</h2>
+                          </ion-label> 
+                      </ion-item>
+                      
+                      <ion-grid>
+                        <ion-row
+                              class="ion-justify-content-center">
+                          <ion-col 
+                              [sizeXs]="getValueIonColSize('xs')" 
+                              [sizeSm]="getValueIonColSize('sm')" 
+                              [sizeMd]="getValueIonColSize('md')"
+                              [sizeLg]="getValueIonColSize('lg')" 
+                              [sizeXl]="getValueIonColSize('xl')"
+                              *ngFor="let locationItem of listLocation"
+                              >   
+                              <app-centri 
+                                  [area]="selectedArea"
+                                  [location]="locationItem"
+                                  [showActionButton]="true"
+                                  (clickPrenota)="onClickPrenota($event)"
+                                  (clickCorsi)="onClickCorsi($event)"
+                                  (clickLocation)="onClickLocation($event)"
+                                  [myStartConfig]="startConfig">
+                              
+                            </app-centri> 
+
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
+                      
+                       <!-- LOCATION -->
+                      <!-- <div id="div-content">
+                    
+                        
+                        <ion-grid *ngIf="listLocation.length===1" >
+                          <ion-row>
+                            <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
+                    
+                              <app-centri 
+                                  [area]="selectedArea"
+                                  [location]="listLocation[0]"
+                                  [showActionButton]="true"
+                                  [centerCard]="true"
+                                  (clickPrenota)="onClickPrenota($event)"
+                                  (clickCorsi)="onClickCorsi($event)"              
+                                  (clickLocation)="onClickLocation($event)"
+                                  [myStartConfig]="startConfig">
+                                  
+                              </app-centri>
+                    
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      
+                        
+                        <div scrollX="true" *ngIf="listLocation.length>1">
+                            <app-centri 
+                              *ngFor="let locationItem of listLocation"
+                                  [area]="selectedArea"
+                                  [location]="locationItem"
+                                  [showActionButton]="true"
+                                  (clickPrenota)="onClickPrenota($event)"
+                                  (clickCorsi)="onClickCorsi($event)"
+                                  (clickLocation)="onClickLocation($event)"
+                                  [myStartConfig]="startConfig">
+                              
+                            </app-centri>    
+                        </div>
+                    
+                      </div> -->
+                </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+

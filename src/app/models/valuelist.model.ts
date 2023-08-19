@@ -8,13 +8,13 @@ export enum TipoArea {
 export enum SettoreAttivita {
     settoreCorso = 10,
     settorePrenotazione = 20,
-    settoreTorneo = 30
+    settoreEvento = 30
 }
 
 export enum SettorePagamentiAttivita {
     settorePagamentoCorso = 10,
     settorePagamentoPrenotazione = 20,
-    settorePagamentoTorneo = 30,
+    settorePagamentoEvento = 30,
     settorePagamentoShop = 40
 }
 
@@ -153,7 +153,8 @@ export enum RequestPincodeUse {
 
 export enum TipoArticolo {
     prodotto = 10,
-    servizio = 20
+    servizio = 20,
+    pacchettoOre = 30
 }
 
 export enum TipoPrezzo {

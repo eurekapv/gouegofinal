@@ -1,0 +1,19 @@
+<ion-item 
+  class="ion-no-margin">
+  <ion-thumbnail slot="start">
+    <img [src]="_itemArticolo.getSrcImg()" [alt]="_itemArticolo.DESCR" #image (error)="setPlaceholder(image)">
+  </ion-thumbnail>
+  <ion-label>
+    <h3>
+      {{_itemArticolo.DESCR}}
+    </h3>
+    <p
+      class="ion-text-wrap" 
+      *ngIf="_itemArticolo.DESCRADDITIONAL && _itemArticolo.DESCRADDITIONAL.length != 0">{{_itemArticolo.DESCRADDITIONAL}}</p>
+  </ion-label>
+  <ion-label 
+      slot="end">
+      {{_itemArticolo.PREZZOLORDO | currency : 'EUR'}}
+  </ion-label>
+</ion-item>
+

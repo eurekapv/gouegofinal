@@ -87,12 +87,6 @@ export class IscrizionecorsoService {
                             elIscrizione.setJSONProperty(data);
                           }
 
-                          console.log('Ecco Data');
-                          console.log(data);
-
-                          console.log('Ecco Iscrizione');
-                          console.log(elIscrizione);
-
                           resolve(elIscrizione);
                         })
                         .catch(error => {

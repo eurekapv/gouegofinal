@@ -1,10 +1,35 @@
 ion-tabs{
-    ion-tab-bar{
+    ion-tab-bar {
+        background-color: var(--ion-tab-background);
+        box-shadow: 0px 0px 6px 2px var(--ion-tab-shadow);
         border-style: none;
-        box-shadow: 0px 0px 6px 2px #00000029;
         --my-border-radius: calc(var(--base-border-radius) + 15pt);
         border-radius: var(--my-border-radius) var(--my-border-radius) 0 0 ;
 
+        ion-tab-button {
+            --background: var(--ion-tab-background);
+            --background-focused: var(--ion-tab-selected-background);
+            --color: var(--ion-tab-color);
+            --color-selected: var(--ion-tab-selected-color);
+            --color-focused: var(--ion-tab-selected-color);
+
+            background-color: var(--ion-accent-shade);
+            color: white;
+
+            &.tab-selected {
+                --background: var(--ion-tab-selected-background);
+                background-color: var(--ion-tab-selected-background);
+                --color: var(--ion-tab-selected-color);
+                color: var(--ion-tab-selected-color);                
+            }
+        }
+
+        ion-tab-button::part(native) {
+            &:focus, &:hover {
+                background-color: var(--ion-tab-selected-background);
+                color: var(--ion-tab-selected-color);  
+            }
+        }
     }
   
   }

@@ -645,7 +645,7 @@ export class DocstructureService {
    */
   public decodeCollection(collection: IDDocument[], 
                           foreignFields?:RequestForeign[],
-                          useCache:boolean = true) {
+                          useCache:boolean = true): Promise<any> {
     
     //Devo decodificare l'intera collection di dati
     //Versione 1: foreignField non presente
@@ -705,6 +705,8 @@ export class DocstructureService {
                   resolve(collection);    
                 })
                 .catch(err => {
+                  LogApp.consoleLog(err, "error");
+                  
                   reject(err);
                 });
         }

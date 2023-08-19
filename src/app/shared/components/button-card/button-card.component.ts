@@ -8,10 +8,68 @@ import { ButtonCard } from 'src/app/models/buttoncard.model';
 })
 export class ButtonCardComponent implements OnInit {
 
-  @Input() myButtonCard: ButtonCard = new ButtonCard();
+  @Input() set myButtonCard(value: ButtonCard) {
+
+    if (value) {
+      this._buttonCard = value;
+      this._iconLink = value.iconLink;
+      this._disabled = value.disabled;
+      this._slotIcon = value.sloticon;
+      this._nameIcon = value.nameicon;
+      this._color = value.color;
+      this._title = value.title;
+      this._subtitle = value.subtitle;
+
+    }
+  }
   @Input() smallVersion = false; //Small Version usa H2 e P invece di H1 e H3
   @Input() homeCustodeVersion;
-  @Input() disabled = false;
+
+
+  _buttonCard: ButtonCard = new ButtonCard();
+
+  _iconLink: boolean = false;
+  @Input() set iconLink(value: boolean) {
+    this._iconLink = value;
+    this._buttonCard.iconLink = value;
+  }
+  
+  _disabled: boolean = false;
+  @Input() set disabled(value: boolean) {
+    this._disabled = value;
+    this._buttonCard.disabled = value;
+  }
+
+  _slotIcon: string = '';
+  @Input() set slotIcon(value: string) {
+    this._slotIcon = value;
+    this._buttonCard.sloticon = value;
+  }
+
+  _nameIcon: string = '';
+  @Input() set nameIcon(value: string) {
+    this._nameIcon = value;
+    this._buttonCard.nameicon = value;
+  }
+
+  _color: string = '';
+  @Input() set color(value: string) {
+    this._color = value;
+    this._buttonCard.color = value;
+  }
+
+  _title: string = '';
+  @Input() set title(value: string) {
+    this._title = value;
+    this._buttonCard.title = value;
+  }
+
+  _subtitle: string = '';
+  @Input() set subtitle(value: string) {
+    this._subtitle = value;
+    this._buttonCard.subtitle = value;
+  }
+
   @Output() clickElement = new EventEmitter<ButtonCard>();
   
   constructor() { }

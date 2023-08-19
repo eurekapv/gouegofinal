@@ -274,6 +274,21 @@ export class StartConfiguration {
         return myUrl
     }
 
+    /**
+     * Ritorna il percorso dello Storage 
+     */
+    get urlStorageGroup(): string {
+        let myUrl = ``;
+
+        if (this._urlProtocol && this._urlProtocol.length != 0 &&
+            this._urlFileServer && this._urlFileServer.length != 0 &&
+            this._appId && this._appId.length != 0) {
+                myUrl = `${this._urlProtocol}://${this._urlFileServer}/storage/${this._appId}`;
+            }
+
+        return myUrl;
+    }    
+
     //Url di Base per effettuare la chiamata
     get urlBase():string {
         let myUrl = `${this._urlProtocol}://${this._urlDomain}`;

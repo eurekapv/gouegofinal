@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar color="primary" mode="md">
+    <ion-buttons slot="secondary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="basket-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+        
+    <ion-title>
+      Acquista
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+                sizeSm="12" 
+                sizeMd="6" offsetMd="3"
+                sizeLg="6" offsetLg="3"
+                sizeXl="6" offsetXl="3">
+
+        <ion-segment 
+            mode="md"
+            [(ngModel)] = "selectedView"
+            (ionChange) = "onChangeSegment($event)"
+            >
+          <ion-segment-button [value]="TypeArticle.prodotto">
+            <ion-label>Prodotti</ion-label>
+          </ion-segment-button>
+          <ion-segment-button [value]="TypeArticle.servizio">
+            <ion-label>Servizi</ion-label>
+          </ion-segment-button>
+          <ion-segment-button [value]="TypeArticle.pacchettoOre">
+            <ion-label>Pacchetti</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+        <!-- LISTA PRODOTTI -->
+        <div *ngIf="selectedView == TypeArticle.prodotto">
+            <app-table-articoli [listArticoli]="listProdotti" [typeArticolo]="selectedView"></app-table-articoli>
+        </div>
+
+        <!-- LISTA SERVIZI -->
+        <div *ngIf="selectedView == TypeArticle.servizio">
+          <app-table-articoli [listArticoli]="listServizi" [typeArticolo]="selectedView"></app-table-articoli>
+        </div>
+        <!-- LISTA PACCHETTI -->
+        <div *ngIf="selectedView == TypeArticle.pacchettoOre">
+          <app-table-articoli [listArticoli]="listPacchetti" [typeArticolo]="selectedView"></app-table-articoli>
+        </div>
+      </ion-col>  
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

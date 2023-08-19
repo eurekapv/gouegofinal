@@ -1,0 +1,505 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start" *ngIf="actualStatePage==pageState.REGISTRATION||actualStatePage==pageState.VERIFY">
+
+            <ion-button fill="clear" (click)="backStepRegistration()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+
+        </ion-buttons>
+
+        <ion-title>{{getCaptionTitle()}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button fill="clear" (click)="closeModal()">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+
+
+<!-- CONTENT PAGES -->
+<ion-content>
+
+
+    <ion-list *ngIf="actualStatePage !== pageState.WELCOME && showHeaderText">
+
+        <ion-list-header>
+            <ion-label>Entra nella nostra famiglia</ion-label>
+        </ion-list-header>
+
+        <ion-item lines="none">
+
+            <ion-label class="ion-text-wrap">
+                <ion-text color="danger">
+                    <h4>Entra a far parte della famiglia {{nameGruppoSportivo}}</h4>
+                </ion-text>
+                <p style="font-weight: 700;">
+                    <i>avrai le nostre attività a portata di mano; facile e immediato conoscere i nostri corsi e
+                        prenotare presso la nostra struttura</i>
+                </p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+
+    <!-- STEP ONE: ACCEDI O REGISTRATI -->
+    <div class="ion-padding" *ngIf="actualStatePage !== pageState.WELCOME">
+
+        <ion-segment 
+                mode="md" 
+                [(ngModel)]="actualStateSegment" 
+                (ionChange)="onSegmentChanged($event)">
+            <ion-segment-button [value]="pageState.LOGIN">
+                Accedi
+            </ion-segment-button>
+
+            <ion-segment-button [value]="pageState.REGISTRATION" *ngIf="registrationInApp">
+                Registrati
+            </ion-segment-button>
+
+        </ion-segment>
+    </div>
+
+    <!-- PORZIONE LOGIN -->
+    <div *ngIf="actualStatePage==pageState.LOGIN" class="ion-padding-horizontal">
+
+        <form [formGroup]="formLogin">
+            <ion-list>
+                <ion-item lines="none">
+                    <!-- <ion-avatar *ngIf="urlImage && urlImage.length != 0">
+                        <img [src]="urlImage">
+                    </ion-avatar> -->
+                    <ion-label class="ion-text-wrap ion-text-center">
+                        <i>per accedere al proprio account utilizzare indirizzo email e password impostate in fase di
+                            registrazone</i>
+                    </ion-label>
+                </ion-item>
+
+                <!-- CREDENZIALI: EMAIL -->
+                <ion-item>
+                    <ion-icon slot="start" name="at-outline" color="primary"></ion-icon>
+                    <ion-input inputmode="email" type="email" placeholder="E-mail" formControlName="username"
+                        autocomplete="on"></ion-input>
+                </ion-item>
+
+                <!-- CREDENZIALI PASSWORD -->
+                <ion-item>
+                    <ion-icon slot="start" name="key-outline" color="primary"></ion-icon>
+                    <ion-input inputmode="text" type="password" placeholder="Password" formControlName="password"
+                        autocomplete="current-password" id="currentpassword" #currentpassword></ion-input>
+
+                    <ion-button slot="end" fill="clear" (click)="showHideInput('currentpassword',currentpassword)">
+                        <ion-icon [name]="showCurrentPassword ? 'eye-off-outline':'eye-outline'" slot="icon-only">
+                        </ion-icon>
+                    </ion-button>
+                </ion-item>
+
+
+
+                <ion-item detail="false" class="ion-text-end ion-padding-vertical" lines="none">
+                    <ion-button (click)="onClickReimpostaPsw()" color="danger" size="small" fill="clear" slot="end">
+                        <ion-icon slot="start" name="mail-unread-outline"></ion-icon>
+                        non ricordo la password
+                    </ion-button>
+                </ion-item>
+            </ion-list>
+        </form>
+
+
+    </div>
+
+    <!-- PORZIONE REGISTRATI -->
+    <div *ngIf="actualStatePage==pageState.CONTACT" class="ion-padding-horizontal">
+
+        <form [formGroup]="formContact">
+            <ion-list>
+
+                <ion-item lines="none">
+                    <!-- <ion-avatar *ngIf="urlImage && urlImage.length != 0">
+                        <img [src]="urlImage">
+                    </ion-avatar>                     -->
+                    <ion-label class="ion-text-wrap ion-text-center">
+                        <i>per iniziare la registrazione è necessario impostare un indirizzo email valido ed un numero
+                            cellulare</i>
+                    </ion-label>
+                </ion-item>
+
+                <ion-item>
+                    <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
+                    <ion-input type="email" placeholder="E-Mail" formControlName="email"></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-icon name="call-outline" slot="start" color="primary"></ion-icon>
+                    <ion-input type="tel" inputmode="tel" placeholder="+39 Cellulare" formControlName="telephone">
+                    </ion-input>
+                </ion-item>
+
+
+                <!-- AVVISO SU COSA SUCCEDE -->
+                <ion-item lines="none">
+                    <ion-label class="ion-text-wrap ion-text-center">
+                        <p><i>{{labelFooterRegistrazione}}</i></p>
+                    </ion-label>
+                </ion-item>
+
+                <ion-item *ngIf="isPolicyLink()" detail="false" button="false" class="ion-text-end" lines="none">
+                    <ion-button (click)="openPolicyLink()" color="danger" size="small" fill="clear" slot="end">
+                        <ion-icon slot="start" name="book-outline"></ion-icon>
+                        leggi le condizioni di registrazione
+                    </ion-button>
+                </ion-item>
+
+
+
+            </ion-list>
+
+        </form>
+
+    </div>
+
+
+    <!-- PAGINA PER INSERIMENTO DELLA VERIFICA -->
+    <div *ngIf="actualStatePage==pageState.VERIFY" class="step-verifica">
+
+        <!-- VERIFICA EMAIL -->
+        <ion-list *ngIf="canVerify(tipoVerifica.verificaemail)">
+            <ion-item lines="none">
+                <ion-label class="ion-text-wrap ion-text-center">
+                    <i>abbiamo inviato una mail a {{formContact.value.email}}</i>
+                </ion-label>
+            </ion-item>
+
+            <ion-item>
+                <ion-input [(ngModel)]="codeVerificationMail" placeholder="inserisci codice mail"
+                    [maxlength]="codeLength" [minlength]="codeLength" class="code-input" type="tel" inputmode="numeric">
+                </ion-input>
+            </ion-item>
+
+            <ion-item 
+                    detail="false" 
+                    button="false" 
+                    class="ion-text-end" 
+                    lines="none">
+
+                <ion-button 
+                    (click)="onClickReinviaCodice(tipoVerifica.verificaemail)"
+                    color="danger" 
+                    size="small" 
+                    fill="clear" 
+                    slot="end">
+                    <ion-icon slot="start" name="mail-outline"></ion-icon>
+                    invia di nuovo la mail
+                </ion-button>
+            </ion-item>
+
+        </ion-list>
+
+        <!-- VERIFICA SMS -->
+        <ion-list *ngIf="canVerify(tipoVerifica.verificasms)">
+            <ion-item lines="none">
+                <ion-label class="ion-text-wrap ion-text-center">
+                    <i>abbiamo inviato un SMS a {{formContact.value.telephone}}</i>
+                </ion-label>
+            </ion-item>
+
+            <ion-item>
+                <ion-input [(ngModel)]="codeVerificationSms" placeholder="inserisci codice sms" [maxlength]="codeLength"
+                    [minlength]="codeLength" class="code-input" type="tel" inputmode="numeric"></ion-input>
+            </ion-item>
+
+            <ion-item 
+                    detail="false" 
+                    button="false" 
+                    class="ion-text-end" 
+                    lines="none">
+
+                <ion-button 
+                    (click)="onClickReinviaCodice(tipoVerifica.verificasms)"
+                    color="danger" 
+                    size="small" 
+                    fill="clear" 
+                    slot="end">
+                    <ion-icon slot="start" name="id-card-outline"></ion-icon>
+                    invia di nuovo SMS
+                </ion-button>
+            </ion-item>            
+
+        </ion-list>
+
+    </div>
+
+    <!-- PAGINA PER NOMINATIVO E CREDENZIALI -->
+    <div *ngIf="actualStatePage==pageState.REGISTRATION">
+
+        <form [formGroup]="formRegister">
+            <ion-list>
+
+                <ion-item lines="none">
+                    <ion-label class="ion-text-wrap ion-text-center">
+                        <i>ancora qualche informazione per concludere la registrazione</i>
+                    </ion-label>
+                </ion-item>
+
+                <!-- CREDENZIALI  -->
+
+                <ion-item-group>
+
+                    <ion-item-divider sticky="true" color="light">
+                        <ion-icon name="key-outline" slot="end" color="primary"></ion-icon>
+                        <ion-label>Credenziali accesso</ion-label>
+                    </ion-item-divider>
+
+                    <ion-item>
+                        <ion-icon name="at-outline" slot="start" color="primary"></ion-icon>
+                        <ion-label><i>{{formContact.value.email}}</i></ion-label>
+                    </ion-item>
+
+                    <ion-item>
+                        <ion-icon slot="start" name="key-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="immetti una password " formControlName="psw"></ion-input>
+                    </ion-item>
+
+                    <ion-item>
+                        <ion-icon slot="start" name="key-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="ripeti la password" formControlName="verifyPsw"></ion-input>
+                    </ion-item>
+                </ion-item-group>
+
+                <ion-item-group>
+                    <ion-item-divider sticky="true" color="light">
+                        <ion-icon name="person-outline" slot="end" color="primary"></ion-icon>
+                        <ion-label>Qualche tua info</ion-label>
+                    </ion-item-divider>
+
+
+                    <!-- ALERT FOR NOME -->
+                    <ion-item class="alert-validation"
+                        *ngIf="formRegister.controls['name'].invalid && (formRegister.controls['name'].dirty || formRegister.controls['name'].touched)">
+                        <ion-label *ngIf="formRegister.controls['name'].errors.required">
+                            <ion-text color="primary">inserire il nome</ion-text>
+                        </ion-label>
+                    </ion-item>
+
+                    <!-- INPUT NOME -->
+                    <ion-item>
+                        <!-- <ion-label slot="start" position="fixed">Nome</ion-label> -->
+                        <ion-icon slot="start" name="id-card-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="nome" formControlName="name"></ion-input>
+                    </ion-item>
+
+
+
+                    <!-- ALERT FOR COGNOME -->
+                    <ion-item class="alert-validation"
+                        *ngIf="formRegister.controls['surname'].invalid && (formRegister.controls['surname'].dirty || formRegister.controls['surname'].touched)">
+                        <ion-label *ngIf="formRegister.controls['surname'].errors.required">
+                            <ion-text color="primary">inserire il cognome</ion-text>
+                        </ion-label>
+                    </ion-item>
+
+                    <!-- COGNOME -->
+                    <ion-item>
+                        <!-- <ion-label slot="start" position="fixed">Cognome</ion-label> -->
+                        <ion-icon slot="start" name="id-card-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="cognome" formControlName="surname"></ion-input>
+                    </ion-item>
+
+
+                    <!-- ALERT FOR CODICE FISCALE -->
+                    <ion-item class="alert-validation"
+                        *ngIf="formRegister.controls['codFisc'].invalid && (formRegister.controls['codFisc'].dirty || formRegister.controls['codFisc'].touched)">
+                        <ion-label *ngIf="formRegister.controls['codFisc'].errors">
+                            <ion-text color="primary">inserire il codice di 16 caratteri</ion-text>
+                        </ion-label>
+                    </ion-item>
+
+                    <!-- CODICE FISCALE -->
+                    <ion-item>
+                        <!-- <ion-label slot="start" position="fixed">Codice Fiscale</ion-label> -->
+                        <ion-icon slot="start" name="card-outline" color="primary"></ion-icon>
+                        <ion-input type="text" placeholder="codice fiscale" formControlName="codFisc"></ion-input>
+                    </ion-item>
+
+                    <ion-item lines="none" *ngIf="isPolicyLink()">
+
+                        <ion-label>Accetto la <a (click)="openPolicyLink()">privacy policy</a></ion-label>
+                        <ion-checkbox mode="md" slot="start" color="primary" formControlName="chkPrivacy">
+                        </ion-checkbox>
+                    </ion-item>
+
+                    <ion-item lines="none">
+                        <ion-label>voglio ricevere la newsletter</ion-label>
+                        <ion-checkbox mode="md" slot="start" color="primary" formControlName="chkNewsletter">
+                        </ion-checkbox>
+                    </ion-item>
+
+                    <ion-item lines="none">
+                        <ion-label class="ion-text-wrap ion-text-center">
+                            <i>se vuoi rimanere aggiornato sulle nostre attività ti invitiamo a spuntare la voce
+                                newsletter</i>
+                        </ion-label>
+                    </ion-item>
+
+                </ion-item-group>
+
+
+            </ion-list>
+        </form>
+
+
+    </div>
+
+
+    <!-- REGISTRAZIONE COMPLETATA -->
+    <div *ngIf="actualStatePage==pageState.WELCOME">
+
+        <!-- MODALITA DESKTOP-->
+        <div
+            class="ion-no-padding" 
+            *ngIf="isDesktop" >
+
+            <!-- IMMAGINE CONCLUSIVA -->
+            <ion-grid>
+                <ion-row 
+
+                    class="row-img">
+                    <ion-col size="4">
+                        <img class="small-height-viewport" src="assets/img/teamvolley.png" alt="" />
+                    </ion-col>
+
+                    <ion-col size="8">
+                        <ion-list>
+                            <ion-list-header>Benvenuto</ion-list-header>
+                
+                            <ion-item lines="none">
+                                <ion-label class="ion-text-wrap">
+                                    <h6>adesso anche tu fai parte del nostro team</h6>
+                                    <p>offriamo divertimento e il miglior modo per rimanere in forma</p>
+                                </ion-label>
+                            </ion-item>
+                
+                            <ion-item lines="none">
+                                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                                <ion-label class="ion-text-wrap">scopri i corsi che abbiamo pensato per te</ion-label>
+                            </ion-item>
+                
+                            <ion-item lines="none">
+                                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                                <ion-label class="ion-text-wrap">organizza un incontro e prenota uno dei nostri campi</ion-label>
+                            </ion-item>
+                
+                            <ion-item lines="none">
+                                <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                                <ion-label class="ion-text-wrap">rimani aggiornato su tutti i nostri eventi</ion-label>
+                            </ion-item>
+                
+                        </ion-list>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+    
+        </div>
+
+        <!-- MODALITA MOBILE-->
+        <div
+            class="ion-no-padding" 
+            *ngIf="!isDesktop" >
+
+            <!-- IMMAGINE CONCLUSIVA -->
+            <ion-grid>
+                <ion-row class="row-img">
+                    <ion-col sizeXs="8" offsetXs="2">
+                        <img class="height-viewport" src="assets/img/teamvolley.png" alt="" />
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+    
+            <ion-list>
+                <ion-list-header>Benvenuto</ion-list-header>
+    
+                <ion-item lines="none">
+                    <ion-label class="ion-text-wrap">
+                        <h6>adesso anche tu fai parte del nostro team</h6>
+                        <p>offriamo divertimento e il miglior modo per rimanere in forma</p>
+                    </ion-label>
+                </ion-item>
+    
+                <ion-item lines="none">
+                    <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                    <ion-label class="ion-text-wrap">scopri i corsi che abbiamo pensato per te</ion-label>
+                </ion-item>
+    
+                <ion-item lines="none">
+                    <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                    <ion-label class="ion-text-wrap">organizza un incontro e prenota uno dei nostri campi</ion-label>
+                </ion-item>
+    
+                <ion-item lines="none">
+                    <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                    <ion-label class="ion-text-wrap">rimani aggiornato su tutti i nostri eventi</ion-label>
+                </ion-item>
+    
+            </ion-list>
+        </div>        
+    </div>
+
+
+    <div *ngIf="showFooterImage" class="ion-no-padding">
+        <!-- IMMAGINE -->
+        <ion-grid>
+            <ion-row class="row-img">
+                <ion-col>
+                    <img class="small-height-viewport" src="assets/img/inppassword.png" alt="" />
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+                    
+
+</ion-content>
+
+<!-- FOOTER PAGES-->
+<ion-footer>
+
+    <div id="footer-login" *ngIf="actualStatePage==pageState.LOGIN">
+        <ion-button class="btn-confirm" [color]="colorButton" expand="block" (click)="onClickFooterAvanti()"
+            [disabled]="!formLogin.valid">
+            ACCEDI
+        </ion-button>
+    </div>
+
+    <div id="footer-contact" *ngIf="actualStatePage==pageState.CONTACT">
+        <ion-button [color]="colorButton" class="btn-confirm" expand="block" [disabled]="!this.formContact.valid"
+            (click)="onClickFooterAvanti()">Avanti</ion-button>
+    </div>
+
+    <div id="footer-verify" *ngIf="actualStatePage==pageState.VERIFY">
+
+        <ion-button class="btn-confirm" [color]="colorButton" expand="block" (click)="onClickFooterAvanti()"
+            [disabled]="!isEnableAvantiOnVerify()">
+            Verifica
+        </ion-button>
+
+
+    </div>
+
+    <div id="footer-registration" *ngIf="actualStatePage==pageState.REGISTRATION">
+
+
+        <ion-button class="btn-confirm" [color]="colorButton" expand="block" (click)="onClickFooterAvanti()">
+            Registrati
+        </ion-button>
+
+    </div>
+
+    <div id="footer-welcome" *ngIf="actualStatePage==pageState.WELCOME">
+        <ion-button class="btn-confirm" [color]="colorButton" expand="block" (click)="closeModal()">
+            Inizia
+        </ion-button>
+    </div>
+
+</ion-footer>

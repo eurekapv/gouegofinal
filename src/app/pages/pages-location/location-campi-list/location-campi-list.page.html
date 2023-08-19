@@ -1,0 +1,107 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Struttura</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="onClickCloseButton()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- CAMPI PRESENTI -->
+  <div class="cnt" 
+        *ngIf="_flagAvalaibleCampi">
+
+    <ion-item 
+          lines="none">
+        <ion-thumbnail 
+            slot="start">
+            <ion-img src="assets/boysbeach_3_2_small.png" ></ion-img>
+        </ion-thumbnail>
+      <ion-label 
+            class="ion-text-wrap">
+        <h3 class="ion-text-primary ion-text-bold">{{_location.DENOMINAZIONE}}</h3>
+        <p class="ion-text-bold">{{_location?.getAddressLocation(false)}}</p>
+        <p class="ion-text-wrap">
+          Ecco come &egrave; composto il nostro centro; questi sono i campi/sale che potrai utilizzare per le tue attivit&agrave;
+          </p>
+      </ion-label>
+
+    </ion-item>
+
+    <ion-grid 
+        >
+      <ion-row>
+        <ion-col
+          size-xs="10"
+          offset-xs="1"
+          size-md="6"
+          offset-md="0"
+         *ngFor="let itemCampo of _listAvailableCampi">
+
+          <ion-card class="card-campo " mode="ios">
+
+            <swiper-container 
+                  init = "false"
+                  appSwiper [config]="sliderOpts">
+              <swiper-slide
+              *ngFor="let sport of itemCampo.CAMPOSPORT">
+
+              <!-- CARD ATTIVITA-->
+              <ion-card class="card-sport">
+                <ion-card-content >
+                  <i slot="start" class="icon-sport">
+                    <span [innerHTML]="getIconSport(sport)">
+                    </span>
+                  </i>
+                </ion-card-content>
+                <ion-card-header >
+                  {{sport._DESCRSPORT}}
+                </ion-card-header>
+              </ion-card>
+
+              </swiper-slide>
+            </swiper-container>
+
+            <ion-card-header color="tertiary">
+              <ion-card-title>
+                {{itemCampo.DENOMINAZIONE}}
+              </ion-card-title>
+              <ion-card-subtitle>
+                {{itemCampo.TIPOLOGIA | tipoCampo}} {{ itemCampo.STRUTTURAATTUALE | strutturaCampo }}
+              </ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- CAMPI NON PRESENTI -->
+  <div 
+    class="nofind-cnt"
+    *ngIf="_flagAvalaibleCampi == false" 
+    >
+
+    <ion-card>
+      <ion-img alt="giocatori beach" src="assets/boysbeach_3_2_small.png">
+
+      </ion-img>
+      <ion-card-header>
+        <ion-card-title>{{_location.DENOMINAZIONE}}</ion-card-title>
+        <ion-card-subtitle>Informazioni non disponibili</ion-card-subtitle>
+      </ion-card-header>
+    
+      <ion-card-content>
+        Non sono disponibili le caratteristiche del Centro
+      </ion-card-content>
+    </ion-card>
+    
+  </div>
+
+</ion-content>

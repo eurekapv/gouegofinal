@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ricevute Acquisti</ion-title>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content>
+  <!-- REFRESHER -->
+  <ion-refresher slot="fixed" (ionRefresh)="requestRicevute($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
+
+               <div class="info" >
+                <ion-item color="light" lines="none">
+                  <ion-label>
+                    <p class="ion-text-wrap">
+                      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+                      qui trovi l'elenco delle ricevute relative alle iscrizioni corsi ed alle prenotazioni presso il centro.
+                  </ion-label>
+                </ion-item>
+              </div>
+            
+              <app-dtinput
+                    textAlignmentRight="true"
+                    [(actualDate)]="yearSelected"
+                    (actualDateChange)="requestRicevute()"
+                    calendarMode="year"
+                    iconColor="primary"
+                    iconName="calendar-outline" 
+                    itemLines="full"
+                    label="Periodo"
+                    title="Seleziona un Anno"
+                    >
+              
+              </app-dtinput>
+            
+            
+              <!-- NESSUN DOCUMENTO PRESENTE -->
+              <div *ngIf="listRicevute.length === 0" class="nofind-cnt reduce-height">
+                <ion-label>Nessuna ricevuta</ion-label>
+                <ion-label>disponibile</ion-label>
+              </div>
+            
+              <!-- DOCUMENTI PRESENTI  -->
+              <div *ngIf="listRicevute.length > 0">
+                <ion-list>
+                  <ion-item *ngFor="let ricevuta of listRicevute" button (click)="onClickElement(ricevuta)">
+                    <ion-icon slot="start" class="icon-left" color ="" name="document-text-outline"></ion-icon>
+                    <ion-label>
+                      <h3>{{ricevuta.TIPOLOGIA | tipomasterdocumento}} num. {{ricevuta.NUMEROSTAMPA}}</h3>
+                      <p>Emessa il: {{ricevuta.DATADOCUMENTO | date : 'dd/LL/yyyy' }}</p>
+                      <p *ngIf="ricevuta.NOTESSTAMPA && ricevuta.NOTESSTAMPA.length !== 0">{{ricevuta.NOTESSTAMPA}}</p>
+                    </ion-label>
+                    <ion-chip color="primary" slot="end">{{ricevuta.TOTDOCUMENTO | currency: 'EUR'}}</ion-chip>
+                    <!-- <ion-badge color="light" slot="end">{{ricevuta.TOTDOCUMENTO | currency: 'EUR'}}</ion-badge> -->
+                    
+                  </ion-item>
+                </ion-list>
+              </div>               
+
+      </ion-col>                     
+    </ion-row>
+  </ion-grid>
+
+
+
+
+</ion-content>

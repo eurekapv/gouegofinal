@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IDDocument } from 'src/app/library/models/iddocument.model';
 import { ModesCalendar } from 'src/app/library/models/mydatetime.model';
-import { format, parseISO } from 'date-fns';
 import { LogApp } from 'src/app/models/log.model';
 //import { format, utcToZonedTime } from 'date-fns-tz';
 

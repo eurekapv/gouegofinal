@@ -1,0 +1,209 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="primary">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" ios="close" md="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Finalizza</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div style="background-color:#EFF1F8" >
+
+    <ion-grid class="griglia-principale">
+
+      <ion-row>
+        <ion-col>
+          <ion-button 
+              color="danger" 
+              expand="block" 
+              class="full-buttons" 
+              (click)="closeModal()">
+            Aspetta, voglio modificare
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-grid>
+        <ion-row>
+          <!-- size-lg= "6" size-md="12" -->
+          <ion-col size="12" size-xl= "6" size-sm="12">
+            <ion-grid>
+              <!-- GRIGLIA CON DATA/LOCATION ORARI / PARTECIPANTI-->
+              
+              <!-- RIGA CON CARD DATA E LOCATION -->
+              <ion-row>
+                <ion-col>
+                  <ion-card class="ion-margin-horizontal">
+                    <ion-grid>
+                      <ion-row class="ion-align-items-center">
+                        <ion-col size="3" class="ion-text-center  left-col">
+                          <h6 class="ion-no-margin">{{ docPianificazione?.DATAORAINIZIO | date: "EEE" | uppercase}}</h6>
+                          <h4 class="ion-no-margin" style="margin-top: 0px; margin-bottom: 0px;">{{docPianificazione?.DATAORAINIZIO | date: "dd"}}</h4>
+                          <p class="ion-no-margin">{{ docPianificazione?.DATAORAINIZIO | date: "MMM" | titlecase}} '{{ docPianificazione?.DATAORAINIZIO | date: "YY" | titlecase}}</p>
+                        </ion-col>
+                        <ion-col size="9">
+                          <h6>{{docPianificazione?._DESCRSPORT}}</h6>
+                          <h4>{{selectedCampo?.DENOMINAZIONE}}</h4>
+                          <h6>{{getAddressLocation()|titlecase}}</h6>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+        
+              <!-- RIGA CON CARD ORARIA -->
+              <ion-row>
+                <ion-col>
+                  <ion-card class="ion-margin-horizontal">
+                    <ion-grid>
+                      <ion-row class="ion-align-items-center">
+                        <ion-col size="3" class="ion-text-center left-col">
+                          <h6 class="ion-no-margin ion-text-bold">{{docPianificazione?.DATAORAINIZIO | date: "HH:mm" | uppercase}}</h6>
+                          <h6 class="ion-no-margin ion-text-bold">{{docPianificazione?.DATAORAFINE | date: "HH:mm"}}</h6>
+                        </ion-col>
+                        <ion-col size="9">
+                          <h5 class="ion-no-margin">
+                            {{docPianificazione?.DURATAORE > 1 ? docPianificazione?.DURATAORE : docPianificazione?.DURATAORE*60}} {{docPianificazione?.DURATAORE>1? 'Ore' : 'Min.'}}
+                            <!-- {{docPianificazione?.DURATAORE}} {{docPianificazione?.DURATAORE!=1? "Ore":"Ora"}} -->
+                          </h5>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+        
+              <!-- RIGA CON CARD NUMERO PARTECIPANTI-->
+              <ion-row>
+                <ion-col>
+                  <app-player-number [numPlayer]="docPianificazione?.NUMPARTECIPANTI" (changeNumPlayer)="onChangedNumPlayer($event)" ></app-player-number>
+                </ion-col>
+              </ion-row>
+
+            </ion-grid>
+          </ion-col>
+
+          <!-- size-lg= "6" size-md="12" -->
+          <ion-col  size="12" size-xl= "6" size-sm="12">
+            <ion-grid>
+              <!--GRIGLIA CON TOTALE E PAGAMENTO-->
+
+              <!-- RIGA CON CARD DEL TOTALE -->
+              <ion-row>
+                <ion-col>
+                  <ion-card class="ion-margin-horizontal">
+                    <ion-grid>
+                      <!-- IMPORTO PRENOTAZIONI -->
+                      <ion-row class="ion-align-items-center">
+                        <ion-col size="5" class="ion-text-center left-col">
+                          <h6 class="ion-no-margin ion-text-bold">Totale Prenotazione</h6>
+                        </ion-col>
+                        <ion-col size="7">
+                          <h5 class="ion-no-margin ion-text-right ion-text-bold">{{activePrenotazione?.TOTALE | currency: "EUR"}}</h5>
+                        </ion-col>
+                      </ion-row>
+                      <!-- CONDIZIONI DI VENDITA -->
+                      <ion-row (click)="onClickCondizioniVendita()">
+                        <ion-col size="9">
+                            <small>procedendo con l'acquisto si accettano le condizioni di vendita</small>
+                        </ion-col>
+                        <ion-col size="3" class="ion-text-right">
+                          <ion-badge color="success"><small>LEGGI</small></ion-badge>
+                        </ion-col>
+                      </ion-row>
+        
+                      <!-- ANNOTAZIONI IMPORTO-->
+                      <ion-row *ngIf="showGroupTesseramenti">
+                        <ion-col>
+                          <ion-accordion-group>
+                            <ion-accordion value="notes">
+                              <ion-item slot="header" color="warning">
+                                <ion-label class="ion-text-wrap"> {{activePrenotazione?.NOTES}}</ion-label>
+                              </ion-item>
+                            <div class="ion-padding" slot="content">
+                              Il totale è comprensivo della emissione/rinnovo delle seguenti tessere
+                              <ion-grid>
+                                  <!-- TESSERA GRATUITA-->
+                                  <ion-row *ngFor="let recTessera of collTesseramenti">
+                                    <ion-col size="9" *ngIf="recTessera.GRATUITA">
+                                      <ion-label class="ion-text-wrap">
+                                        <small>{{recTessera.DESCR}}</small>
+                                      </ion-label>
+                                    </ion-col>
+
+                                    <ion-col size="3" class="ion-text-right" *ngIf="recTessera.GRATUITA">
+                                      <ion-badge color="success"><small>GRATUITA</small></ion-badge>
+                                    </ion-col>
+
+
+                                  <!-- TESSERA A PAGAMENTO-->
+                                  <ion-col size="9" *ngIf="!recTessera.GRATUITA">
+                                    <ion-label class="ion-text-wrap">
+                                      <small>{{recTessera.DESCR}}</small>
+                                      <p *ngIf="recTessera.ALIQUOTA != 0"><small>(prezzo escluso imposte)</small></p>
+                                    </ion-label>
+                                  </ion-col>
+
+                                  <ion-col size="3" class="ion-text-right" *ngIf="!recTessera.GRATUITA">
+                                    <ion-label class="ion-text-wrap">
+                                      <small>{{recTessera.IMPONIBILE | currency: "EUR"}}</small>
+                                    </ion-label>
+                                  </ion-col>
+                                </ion-row>
+                              </ion-grid>
+                            </div>
+                          </ion-accordion>
+                          </ion-accordion-group>
+                        </ion-col>
+                      </ion-row>
+        
+                      <app-payment-mode
+                        [iconMode]="true"
+                        [arPayment]="myListPayment"
+                        (onPaymentModeChoosed)="onPaymentModeSelected($event)">
+                      </app-payment-mode>
+        
+                    </ion-grid>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+
+            </ion-grid>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+
+
+
+    </ion-grid>
+
+
+
+  </div>
+
+
+</ion-content>
+<!-- BOTTONE CONFERMA NEL FOOTER-->
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button 
+            color="tertiary" 
+            expand="block" 
+            class="full-buttons" 
+            [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !mySelectedPayment " 
+            (click)="onConfirm()">
+          Conferma Prenotazione
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
+

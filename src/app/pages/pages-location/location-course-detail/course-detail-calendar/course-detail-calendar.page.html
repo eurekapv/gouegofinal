@@ -1,0 +1,80 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    
+    <ion-title>{{myCorso.DENOMINAZIONE|titlecase}}</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="closeCalendar()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- RICEVUTI E PRESENTI -->
+  <ion-list class="ion-no-padding" *ngIf="calendarCorso.length !== 0" id="cal-find">
+    <ion-item *ngFor="let giornata of calendarCorso" class="ion-no-padding ion-no-margin" color="light">
+
+      <ion-col size="4" class="colGiorno">
+        <div class="contentGiorno ion-no-padding">
+          <h5>
+            {{giornata.DATA | date:'EEEE'|titlecase}}
+          </h5>
+          <h4>
+            {{giornata.DATA | date:'d'}}
+            {{giornata.DATA | date:'MMM' | uppercase}} 
+            '{{giornata.DATA | date:'yy'}}
+          </h4>      
+          <h6>
+            {{giornata['_DENOMINAZIONE_Campo']}}
+          </h6>    
+        </div>
+      </ion-col>
+
+      <ion-col size="8" class="colOrario">
+        <ion-card mode="ios" class="ion-no-margin ion-no-padding">
+          <ion-card-content class="ion-no-margin ion-no-padding" >
+            <ion-list class="ion-no-margin">
+              <ion-item lines="none" [color]="colorItem(giornata)">
+                <ion-icon name="play" slot="start"></ion-icon>
+                <ion-label> {{giornata.DATAORAINIZIO | date:'HH:mm'}}</ion-label>
+                
+              </ion-item>
+
+              <ion-item lines="none"  >
+                <ion-icon name="pause" slot="start"></ion-icon>
+                <ion-label> {{giornata.DATAORAFINE | date:'HH:mm'}}</ion-label>
+                <ion-badge [color]="colorItem(giornata)" slot="end">{{ giornata.ORELEZIONE }} h</ion-badge>
+              </ion-item>
+
+            </ion-list>
+
+
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+    </ion-item>
+  </ion-list>
+
+
+  <div 
+    *ngIf="ricevuti && calendarCorso.length === 0" 
+    class="nofind-cnt" >
+
+    <ion-label>Programmazione</ion-label>
+    <ion-label>non disponibile</ion-label>
+    
+  </div>
+
+
+</ion-content>
+

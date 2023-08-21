@@ -12,7 +12,7 @@ import { Location } from 'src/app/models/location.model';
 import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { StatoIscrizione, StatoPagamento } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
-import { CalendarPage } from '../../location/course/detailcourse/calendar/calendar.page';
+import { CourseDetailCalendarPage } from '../../pages-location/location-course-detail/course-detail-calendar/course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 
 @Component({
@@ -268,7 +268,7 @@ export class HistoryCoursePage implements OnInit {
     /* Apro in modale il calendario */
     this.modalController
         .create({
-          component: CalendarPage,
+          component: CourseDetailCalendarPage,
           componentProps: {
             'myCorso': this.myCorso
           }

@@ -9,7 +9,7 @@ import { HistoryCoursePageRoutingModule } from './history-course-routing.module'
 import { HistoryCoursePage } from './history-course.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { QRCodeModule } from 'angularx-qrcode';
-import { CalendarPageModule } from '../../location/course/detailcourse/calendar/calendar.module';
+import { CourseDetailCalendarPageModule } from '../../pages-location/location-course-detail/course-detail-calendar/course-detail-calendar.module';
 import { AllegatilistPageModule } from '../allegatilist/allegatilist.module';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 

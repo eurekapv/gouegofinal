@@ -328,6 +328,45 @@ export class Corso extends IDDocument {
       return value;
     }
 
+    tempoIscrizioni():TempoCorso {
+      let adesso = new Date();
+      let value:TempoCorso = TempoCorso.PASSATO;
+      let dataInizioIscrizioni: Date;
+      let dataFineIscrizioni: Date;
+
+      if (!this.ISCRIZIONEDAL && !this.ISCRIZIONEAL) {
+        //Non ho date di iscrizioni
+        value = TempoCorso.PASSATO;
+      }
+      else {
+        if (!this.ISCRIZIONEDAL) {
+          dataInizioIscrizioni = new Date(2000,1,1);
+        }
+        else {
+          dataInizioIscrizioni = this.ISCRIZIONEDAL
+        }
+
+        if (!this.ISCRIZIONEAL) {
+          dataFineIscrizioni = new Date(2050,1,1);
+        }
+        else {
+          dataFineIscrizioni = this.ISCRIZIONEAL
+        }
+
+        if (dataInizioIscrizioni > adesso) {
+          value = TempoCorso.FUTURO;
+        }
+        else if (dataFineIscrizioni > adesso) {
+          value = TempoCorso.IN_CORSO;
+        }
+        else {
+          value = TempoCorso.PASSATO;
+        }
+
+      }
+
+      return value;
+    }    
 
     /**
      * Ritorna TRUE se Oggi è possibile iscriversi al corso

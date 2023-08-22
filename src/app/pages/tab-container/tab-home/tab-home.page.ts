@@ -6,6 +6,7 @@ import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
 import { ActionSheetController, NavController, ModalController, ToastController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
+import { TypeUrlPageLocation } from 'src/app/models/valuelist.model';
 
 
 
@@ -244,16 +245,18 @@ export class TabHomePage implements OnInit, OnDestroy {
    */
   onClickPrenota(location: Location) {
     let fullPath: string[] = [];
-    fullPath = this.startService.getUrlPageLocation(location.ID, 'book');
+    fullPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.LocationBooking, location.ID);
     this.navController.navigateForward(fullPath);
   }
 
   /**
-   * Visualizzazione dei corsi
+   * Visualizzazione della lista dei corsi
    * @param location Location Selezionata
    */
    onClickCorsi(location: Location) {
-    this.navController.navigateForward(['/', 'listcourses', location.ID]);
+    let fullPath: string[] = [];
+    fullPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.CourseList, location.ID);
+    this.navController.navigateForward(fullPath);
   }  
 
   /**
@@ -266,8 +269,8 @@ export class TabHomePage implements OnInit, OnDestroy {
 
     if (location) {
 
-      fullPath = this.startService.getUrlPageLocation(location.ID, 'detail');
-      
+      fullPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.LocationDetail, location.ID);
+     
       this.navController.navigateForward(fullPath);
     }
   }

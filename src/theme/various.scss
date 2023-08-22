@@ -1,3 +1,7 @@
+body {
+  height: calc(100% - var(--ion-safe-area-bottom));
+}
+
 img {
     &.height-viewport {
         max-height: 30vh;
@@ -23,7 +27,7 @@ ion-row.row-img {
 }
 
 .ion-text-bold {
-    font-weight: 700;
+    font-weight: 700 !important;
 }
 
 .ion-text-right {

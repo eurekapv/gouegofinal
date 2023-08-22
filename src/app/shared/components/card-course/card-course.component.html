@@ -1,13 +1,9 @@
-<ion-card  
-  class="ion-no-margin ion-margin-horizontal" 
+<ion-card *ngIf="_version == 1"  
+  class="version-1 ion-no-margin ion-margin-horizontal" 
   button (click)="goToDetail()">
-
-
   
   <!-- SPORT E NOME CORSO-->
   <ion-card-header [ngClass]="getClassHeader()">
-    
-
     <!-- FAB CON LA VOCE PROVA -->
    <ion-fab 
         *ngIf="showFabProva()"
@@ -17,16 +13,14 @@
         color="danger">Prova</ion-fab-button> 
    </ion-fab>
 
-
-
     <ion-grid class="ion-no-padding">
       <ion-row class="ion-no-padding ion-align-items-center">
         <ion-col size="2" class="ion-no-padding">
-          <i class="icon-sport"><span [innerHTML]="getSportIcon(myCorso)" ></span> </i>
+          <i class="icon-sport"><span [innerHTML]="getSportIcon(_myCorso)" ></span> </i>
         </ion-col>
         <ion-col size="10" class="ion-no-padding">
-          <ion-card-subtitle>{{myCorso['_DENOMINAZIONE_Sport']}}</ion-card-subtitle>
-          <ion-card-title>{{myCorso.DENOMINAZIONE}}</ion-card-title>
+          <ion-card-subtitle>{{_myCorso['_DENOMINAZIONE_Sport']}}</ion-card-subtitle>
+          <ion-card-title>{{_myCorso.DENOMINAZIONE}}</ion-card-title>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -46,7 +40,7 @@
               >
 
             <ion-icon name="time" slot="start"></ion-icon>
-            {{myCorso.ORAINIZIO | date:'HH:mm'}}
+            {{_myCorso.ORAINIZIO | date:'HH:mm'}}
           </ion-button>
         </ion-col>
 
@@ -58,20 +52,16 @@
             fill="outline"
             >
             <ion-icon name="infinite" slot="start"></ion-icon>
-            {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
+            {{_myCorso.ORELEZIONE}} {{_myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
           </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
-  </ion-card-content>
-
-
-  <!-- BOX GIORNATE -->
-  <ion-card-content class="ion-no-padding">
+    <!-- BOX GIORNATE -->
     <div class="div-giornate ion-text-center" >
       <table style="width: 100%;">
         <tr>
-          <td *ngFor="let giorno of myCorso._SETTIMANA">
+          <td *ngFor="let giorno of _myCorso._SETTIMANA">
             <ion-button 
                 color="secondary"
                 size="small" 
@@ -83,49 +73,64 @@
       </table>
     </div>
       <!-- NUMERO LEZIONI-->
-    <div 
-        class="contentLezioni ion-margin-horizontal" 
-        
-        *ngIf="myCorso.NUMEROLEZIONI">
+    <div class="contentLezioni ion-margin-horizontal" 
+        *ngIf="_myCorso.NUMEROLEZIONI">
       <h6>
-        <em>{{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</em>
+        <em>{{_myCorso.NUMEROLEZIONI}} {{_myCorso.NUMEROLEZIONI > 1 ?'Incontri ':'Incontro '}}</em>
       </h6>
     </div>
+    <!-- LISTA INFORMAZIONI LIVELLO, ETA, SESSO-->
+    <ion-item>
+      <ion-icon 
+          name="stats-chart-outline" 
+          slot="start" 
+          [color]="iconColor"></ion-icon>
+    <ion-label>{{_myCorso['_DENOMINAZIONE_Livello'] ? _myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}</ion-label>
+    </ion-item>
+  
+    <ion-item>
+      <ion-icon 
+          name="bookmark-outline" 
+          slot="start" 
+          [color]="iconColor"></ion-icon>
+      <ion-label>{{_myCorso.IDCATEGORIEETA?_myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
+    </ion-item>
+  
+    <ion-item lines="none">
+      <ion-icon 
+        name="transgender-outline" 
+        slot="start" 
+        [color]="iconColor"></ion-icon>
+      <ion-label>{{getLabelTargetSesso()}}</ion-label>
+    </ion-item>
+
   </ion-card-content>
-
-  <!-- LISTA INFORMAZIONI LIVELLO, ETA, SESSO-->
-  <ion-item>
-    <ion-icon 
-        name="stats-chart-outline" 
-        slot="start" 
-        [color]="iconColor"></ion-icon>
-  <ion-label>{{myCorso['_DENOMINAZIONE_Livello'] ? myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}</ion-label>
-  </ion-item>
-
-  <ion-item>
-    <ion-icon 
-        name="bookmark-outline" 
-        slot="start" 
-        [color]="iconColor"></ion-icon>
-    <ion-label>{{myCorso.IDCATEGORIEETA?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
-  </ion-item>
-
-  <ion-item lines="none">
-    <ion-icon 
-      name="transgender-outline" 
-      slot="start" 
-      [color]="iconColor"></ion-icon>
-    <ion-label>{{getLabelTargetSesso()}}</ion-label>
-  </ion-item>
 
   <ion-footer>
     <ion-row>
       <ion-col 
           size="12" 
           size-sm="12">
-          <p class="footer" *ngIf="myCorso.tempoCorso()==tempoCorso.FUTURO">Inizia il {{myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
-          <p class="footer" *ngIf="myCorso.tempoCorso()==tempoCorso.IN_CORSO">Termina il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
-          <p class="footer" *ngIf="myCorso.tempoCorso()==tempoCorso.PASSATO">Concluso il {{myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="_myCorso.tempoCorso()==tempoCorso.FUTURO">Inizia il {{_myCorso.DATAINIZIO|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="_myCorso.tempoCorso()==tempoCorso.IN_CORSO">Termina il {{_myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+          <p class="footer" *ngIf="_myCorso.tempoCorso()==tempoCorso.PASSATO">Concluso il {{_myCorso.DATAFINE|date:'dd/MM/yyyy'}}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row 
+      *ngIf="_flagIscrizioni">
+      <ion-col
+        size="12" 
+        size-sm="12">
+    
+          <ion-button 
+            color="success" 
+            fill="solid" 
+            expand="block"
+            *ngIf = "_flagIscrizioni"
+            (click)="onClickIscrizione()">
+              Iscriviti adesso
+          </ion-button>
+    
       </ion-col>
     </ion-row>
 
@@ -134,22 +139,192 @@
 
 </ion-card>
 
-<ion-row *ngIf = "showIscrizioniButton()">
-  <ion-col
-    size="12" 
-    size-sm="12">
 
-      <ion-button 
-        color="success" 
-        fill="solid" 
-        expand="block"
-        *ngIf = "showIscrizioniButton()"
-        (click)="onClickIscrizione()">
-          Iscriviti adesso
-      </ion-button>
+<!-- VERSIONE 2 COMPONENTE -->
+<ion-card *ngIf="_version == 2"  
+      class="ion-no-margin ion-margin-horizontal version-2" 
+      button="true"
+      (click)="goToDetail()"
+      >
+      <ion-card-header color="warning">
+          <ion-grid class="ion-no-margin ion-no-padding">
+            <ion-row>
+              <ion-col size="7">
+                <ion-card-title>{{_myCorso.TIPO == tipoCorso.prova ? 'Prova' : 'Corso'}}</ion-card-title>
+                <ion-card-subtitle>{{_myCorso['_DENOMINAZIONE_Sport']}}</ion-card-subtitle>
+              </ion-col>
+              <ion-col 
+                    class="ion-text-right"
+                    size="5">
+                <ion-button *ngIf="_flagIscrizioni">
+                  ISCRIVITI                  
+                  <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
+                </ion-button>
+                <ion-badge 
+                    *ngIf="_myTempoIscrizioni == tempoCorso.FUTURO"
+                    color="danger">Iscrizioni da<br>{{_myCorso.ISCRIZIONEDAL | date: "EEEE dd/mm/yyyy"}}</ion-badge>
 
-  </ion-col>
-</ion-row>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+      </ion-card-header>
 
+      <ion-card-content class="ion-no-padding">
+        <ion-grid class="ion-no-margin ion-no-padding">
+          <ion-row class="ion-padding">
+            <ion-col>
+              <h1>{{_myCorso.DENOMINAZIONE}}</h1>
+            </ion-col>
+          </ion-row>
+
+          <!-- RIGO PROVA -->
+          <ion-row 
+              *ngIf="_myCorso.TIPO == tipoCorso.prova"
+              class="ion-padding">
+            <ion-col>
+              La Prova {{_myCorso.isAPagamento() ? '' : 'GRATUITA'}} &egrave; destinata a giocatori di&nbsp;
+              <ion-text class="ion-text-bold">{{getLabelFor('livello')}}</ion-text>
+              ,&nbsp;{{getLabelFor('eta')}} di sesso <ion-text class="ion-text-bold">{{getLabelFor('sesso')}}</ion-text>
+            </ion-col>
+          </ion-row> 
+
+          <!-- DATE PROVA -->
+          <ion-row 
+              *ngIf="_myCorso.TIPO == tipoCorso.prova"
+              class="ion-padding-horizontal">
+              <!-- DEVE INIZIARE-->
+              <ion-col *ngIf="_myCorso.tempoCorso()==tempoCorso.FUTURO"
+                >         
+                La prova avr&agrave; inizio<br/><h5  class="ion-text-bold ion-text-success ion-text-22">{{_myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy' | titlecase}}</h5>
+                <ion-text *ngIf="_myCorso.NUMEROLEZIONI">&nbsp;per {{_myCorso['NUMEROLEZIONI']}} {{_myCorso['NUMEROLEZIONI'] != 1 ? 'incontri' : 'incontro'}}</ion-text>
+                e terminer&agrave; <ion-text class="ion-text-bold">{{_myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text> 
+              </ion-col>
+              <!-- E' IN CORSO -->
+              <ion-col *ngIf="_myCorso.tempoCorso()==tempoCorso.IN_CORSO">
+                La prova &egrave; in corso e terminer&agrave; <ion-text class="ion-text-bold ion-text-danger">{{_myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
+              </ion-col>
+
+              <!-- CONCLUSO -->
+              <ion-col *ngIf="_myCorso.tempoCorso()==tempoCorso.PASSATO">
+                La prova &egrave; terminata <ion-text class="ion-text-bold ion-text-danger">{{_myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
+              </ion-col>
+          </ion-row>
+
+          <!-- RIGO CORSO -->
+          <ion-row 
+            *ngIf="_myCorso.TIPO == tipoCorso.corso"
+            class="ion-padding">
+            <ion-col>
+              Il corso {{_myCorso.isAPagamento() ? '' : 'GRATUITO'}} &egrave; destinato a giocatori di&nbsp;
+              <ion-text class="ion-text-bold">{{getLabelFor('livello')}}</ion-text>
+              ,&nbsp;{{getLabelFor('eta')}} di sesso <ion-text class="ion-text-bold">{{getLabelFor('sesso')}}</ion-text>              
+            </ion-col>
+          </ion-row>  
+          
+          <!-- DATE CORSO -->
+          <ion-row 
+              *ngIf="_myCorso.TIPO == tipoCorso.corso"
+              class="ion-padding-horizontal">
+              <!-- DEVE INIZIARE-->
+              <ion-col *ngIf="_myCorso.tempoCorso()==tempoCorso.FUTURO"
+                >         
+                Il corso avr&agrave; inizio<br/><h5  class="ion-text-bold ion-text-success ion-text-22">{{_myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy' | titlecase}}</h5>
+                <ion-text *ngIf="_myCorso.NUMEROLEZIONI">&nbsp;per {{_myCorso['NUMEROLEZIONI']}} {{_myCorso['NUMEROLEZIONI'] != 1 ? 'incontri' : 'incontro'}}</ion-text>
+                e terminer&agrave; <ion-text class="ion-text-bold">{{_myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text> 
+              </ion-col>
+              <!-- E' IN CORSO -->
+              <ion-col *ngIf="_myCorso.tempoCorso()==tempoCorso.IN_CORSO">
+                Il corso &egrave; attualmente in esecuzione e terminer&agrave; <ion-text class="ion-text-bold ion-text-danger">{{_myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
+              </ion-col>
+
+              <!-- CONCLUSO -->
+              <ion-col *ngIf="_myCorso.tempoCorso()==tempoCorso.PASSATO">
+                Il corso si è concluso <ion-text class="ion-text-bold ion-text-danger">{{_myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
+              </ion-col>
+          </ion-row>          
+
+          <!-- RIGA CON ORARIO E DURATA-->
+          <ion-row 
+                class="ion-padding ion-align-items-center">
+            <ion-col size = "6">
+              <ion-button
+                  class="orario"
+                  color="primary"
+                  fill="outline"
+                  expand="block"
+                  size="default"
+                  >
+                  <ion-icon name="time-outline" slot="start"></ion-icon>
+                  alle {{_myCorso.ORAINIZIO | date:'HH:mm'}}
+              </ion-button>
+            </ion-col>
+            <ion-col
+                class="ion-text-end"
+                size="6">
+              <ion-badge [color]="_footerColor">per <ion-icon name="infinite-outline" slot="start"></ion-icon>
+                {{_myCorso.ORELEZIONE}} {{_myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}</ion-badge>
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
+
+
+
+
+      </ion-card-content>
+      
+      <ion-footer [class]="_footerColor + ' ' + 'ion-no-padding'">
+        
+        <!-- OVERLAY GIORNATE -->
+        <div class="overlay overlay_0" >
+          <app-settimana-block
+              colorSelected="light"
+              size="auto"
+              [showOnlySelected] = "true"
+              [listDays]="_myCorso?._SETTIMANA"
+              >
+          </app-settimana-block>
+        </div>
+
+        <ion-grid>
+          <!-- FOOTER -->
+          <ion-row 
+                class="ion-no-margin ion-padding-horizontal">
+            <ion-col 
+                *ngIf="_myCorso.isAPagamento() == false"
+                size="12"
+                class="ion-no-padding">
+              <h5>GRATUITO</h5>
+            </ion-col>
+            <ion-col 
+                *ngIf="_myCorso.isAPagamento()"
+                size="12"
+                class="ion-no-padding">
+              <h6>{{_myCorso.PREZZOLORDO | currency : 'EUR'}}</h6>
+            </ion-col>            
+          </ion-row>
+        </ion-grid>
+
+      </ion-footer>
+    
+</ion-card>
+
+<!-- VERSIONE 3 COMPONENTE COME ITEM -->
+<ion-item *ngIf="_version == 3"
+      (click)="goToDetail()"
+      detail="true"
+      button="true">
+<ion-label class="ion-text-wrap">
+  <h2>{{_myCorso.DENOMINAZIONE}}</h2>
+  <h4>{{_myCorso['_DENOMINAZIONE_Sport']}}</h4>
+  <p>da <ion-text class="ion-text-bold ion-text-danger">{{_myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text><ion-text *ngIf="_myCorso.NUMEROLEZIONI">&nbsp;per {{_myCorso['NUMEROLEZIONI']}} {{_myCorso['NUMEROLEZIONI'] != 1 ? 'incontri' : 'incontro'}}</ion-text> </p>
+    <app-settimana-block
+      [asText] = "true"
+      [listDays]="_myCorso?._SETTIMANA"
+      >
+  </app-settimana-block>
+</ion-label>
+<ion-badge [color]="_footerColor">{{_myCorso.TIPO == tipoCorso.prova ? 'Prova' : 'Corso'}}</ion-badge>
+</ion-item>
         
 

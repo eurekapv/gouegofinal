@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
-
+import { take } from 'rxjs/operators';
 import { CategoriaEta } from '../models/categoriaeta.model';
-import { ApicallService } from './apicall.service';
-import { StartConfiguration } from '../models/start-configuration.model';
-import { resolve } from 'url';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { LogApp } from '../models/log.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -26,63 +24,35 @@ export class CategoriaetaService {
     return this._listCategorieEta.getValue();
   }
 
-  constructor(private apiService: ApicallService) { }
+  constructor(private serviceDocStructure: DocstructureService) { }
 
   /**
    * Richiede al server l'elenco delle Categorie Eta
    * @param config Parametri configurazione chiamata
    */
-  request(config: StartConfiguration) {
-    return new Promise<void>((resolve,reject)=>{
-      let myHeaders = config.getHttpHeaders();
+  request():Promise<CategoriaEta[]> {
+    return new Promise<CategoriaEta[]>((resolve,reject)=>{
 
-      const doObject = 'CATEGORIEETA';
-  
-      
-      //Nei Parametri imposto il LivelloAutorizzazione
-      //TODO: Fatta cosi non mi piace
-      let myParams = new HttpParams().set('LivelloAutorizzazione','0');
-      let myUrl = config.urlBase + '/' + doObject;
-  
-      this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-          return data.CATEGORIEETA
-        }))
-        .subscribe(resultData => {
-  
-          if (resultData) {
-            
-            resultData.forEach(element => {
-              let newCategoria = new CategoriaEta();
-              newCategoria.setJSONProperty(element);
-              this.addCategoriaEta(newCategoria);
-              resolve();
-            });
-          }
-          else {
-            reject('no data Categoria Eta retrieved');
-          }
+      let filterCategoria: CategoriaEta = new CategoriaEta(true);
 
-           },
-           error=>{
-             reject(error);
-           }
-        )
+      //Richiedo tutte le categorie
+      filterCategoria.ID = '.';
+      this.serviceDocStructure.requestNew(filterCategoria)
+                              .then(listReceived => {
+                                let listReceivedTyped: CategoriaEta[] = listReceived;
+                                //Riemetto Observable
+                                this._listCategorieEta.next(listReceivedTyped);
+                                //Chiudo la Promise
+                                resolve(listReceivedTyped);
+                              })
+                              .catch(error => {
+                                LogApp.consoleLog(error);
+                                reject(error);
+                              })
     })
   }
 
-  /**
-   * Aggiunge un oggetto Categorie Eta all'Observable
-   * @param objCategoriaEta Oggetto Categoria Eta da aggiungere
-   */
-  addCategoriaEta(objCategoriaEta: CategoriaEta) {
-    this.listCategorieEta
-      .pipe(take(1))
-      .subscribe( collEta => {
-        this._listCategorieEta.next( collEta.concat(objCategoriaEta));
-      })
-  }
+
 
   /**
    * Cerca e ritorna un record della categoria eta

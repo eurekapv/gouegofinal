@@ -46,95 +46,109 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-    
-  <!-- VISUALIZZAZIONE TUTTI -->
-  <div *ngIf="listCorsi.length !== 0 && statoPagina==PageState.TUTTI" id="crs-lista">
-    <ion-grid>
-      <ion-row >
-        <ion-col *ngFor="let corso of listCorsi" 
-                  sizeXs="12" 
 
-                  sizeSm="8"  
-                  offsetSm="2" 
-                  
-                  sizeMd="6"
-                  offsetMd="0"
-                  
-                  sizeLg="5"
-                  offsetLg="0.5"
+  <ion-grid>
+    <ion-row
+            *ngIf="(statoPagina==PageState.TUTTI && listCorsi.length !== 0) || (statoPagina==PageState.MIEI && listCorsiMioLivello.length !== 0)" 
+            class="ion-padding-horizontal">
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="8" offsetMd="2"
+               sizeLg="8" offsetLg="2"
+               sizeXl="8" offsetXl="2">
+      <ion-item
+          (click)="onChangeVersionList()" 
+          button="true"
+          detail="false"
+          lines="none">
+        <ion-label>
+          Cambia visualizzazione in
+        </ion-label>
+        <ion-badge color="success">{{listVersion == 2 ? 'Elenco' : 'Card'}}</ion-badge>
+      </ion-item>
+      </ion-col>
+    </ion-row>
 
-                  sizeXl = "4"
-                  offsetXl = "0"
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="8" offsetMd="2"
+               sizeLg="8" offsetLg="2"
+               sizeXl="8" offsetXl="2">
+               <!-- VISUALIZZAZIONE TUTTI -->
+               <div *ngIf="statoPagina==PageState.TUTTI">
+                <!-- DATI PRESENTI -->
+                 <ion-grid *ngIf="listCorsi.length !== 0">
+                   <ion-row >
+                     <ion-col *ngFor="let itemCorso of listCorsi" 
+                               sizeXs="12" 
+                               sizeSm="12"  
+                               sizeMd="12"
+                               [sizeLg]="listVersion==2 ? 6: 12"
+                               [sizeXl]="listVersion==2 ? 6: 12"
+                               >
+               
+                           <app-card-course 
+                             [version]="listVersion"
+                             [myCorso]="itemCorso" 
+                             [useIscrizioniColor]="enableIscrizioni"
+                             (clickDetail)="onClickCardDetail($event)"
+                             (clickIscrizione)="onClickIscrizione($event)">
+                           </app-card-course>
+               
+                     </ion-col>
+                   </ion-row>
+                 </ion-grid>
+                 <!-- DATI NON PRESENTI -->
+                  <app-card-image
+                      *ngIf="listCorsi.length === 0"
+                      src="assets/boysplaying_small.png"
+                      title="Guardando in archivio"
+                      subtitle="Non ho trovato nessun corso con i criteri impostati"
+                      >
+                  </app-card-image> 
+               </div>
+               <div *ngIf="statoPagina==PageState.MIEI">
+                <!-- DATI PRESENTI -->
+                <ion-grid *ngIf="listCorsiMioLivello.length !== 0">
+                  <ion-row >
+                    <ion-col *ngFor="let corso of listCorsiMioLivello" 
+                          sizeXs="12" 
+                          sizeSm="12"  
+                          sizeMd="12"
+                          [sizeLg]="listVersion==2 ? 6: 12"
+                          [sizeXl]="listVersion==2 ? 6: 12"
+                              >
+                          <app-card-course 
+                              [version]="listVersion"
+                              [myCorso]="corso" 
+                              [useIscrizioniColor]="enableIscrizioni"
+                              (clickDetail)="onClickCardDetail($event)"
+                              (clickIscrizione)="onClickIscrizione($event)">
+                          </app-card-course>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+                 <!-- DATI NON PRESENTI -->
+                 <app-card-image
+                    *ngIf="listCorsiMioLivello.length === 0"
+                    src="assets/boysplaying_small.png"
+                    title="Guardando in archivio"
+                    subtitle="Non ho trovato nessun corso disponibile"
                   >
-
-              <app-card-course 
-                [myCorso]="corso" 
-                [useIscrizioniColor]="enableIscrizioni"
-                (clickDetail)="onClickCardDetail($event)"
-                (clickIscrizione)="onClickIscrizione($event)">
-              </app-card-course>
-
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-  </div>
-
-
-
-
-  <!-- VISUALIZZAZIONE MIEI -->
-  <div *ngIf="listCorsiMioLivello.length !== 0 && statoPagina==PageState.MIEI" id="crs-lista">
-    <ion-grid>
-      <ion-row >
-        <ion-col *ngFor="let corso of listCorsiMioLivello" 
-                  sizeXs="12" 
-
-                  sizeSm="8"  
-                  offsetSm="2" 
-                  
-                  sizeMd="6"
-                  offsetMd="0"
-                  
-                  sizeLg="5"
-                  offsetLg="0.5"
-
-                  sizeXl = "4"
-                  offsetXl = "0"
-                  >
-
-              <app-card-course 
-                  [myCorso]="corso" 
-                  [useIscrizioniColor]="enableIscrizioni"
-                  (clickDetail)="onClickCardDetail($event)"
-                  (clickIscrizione)="onClickIscrizione($event)">
-              </app-card-course>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-
-
-  </div>
-
-  <!-- SE SONO SU TUTTI, MA NON CI SONO -->
-  <div *ngIf="listCorsi.length === 0&&statoPagina==PageState.TUTTI" class="nofind-cnt">
-    <ion-label>Nessun corso disponibile</ion-label>
-    <ion-label>Modifica i parametri</ion-label>
-    <ion-label>di Ricerca</ion-label>
-  </div>
-
-  <!-- SE SONO SU MIEI, MA NON CI SONO -->
-  <div *ngIf="listCorsiMioLivello.length === 0&&statoPagina==PageState.MIEI" class="nofind-cnt">
-    <ion-label>Nessun corso disponibile</ion-label>
-    <ion-label>Modifica i parametri</ion-label>
-    <ion-label>di Ricerca</ion-label>
-  </div>
-
+                  </app-card-image>                 
+               </div>
+      </ion-col>
+    </ion-row>
+    <!-- SPAZIO FINALE -->
+    <ion-row style="min-height: 200px;height: 200px;">
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="8" offsetMd="2"
+               sizeLg="8" offsetLg="2"
+               sizeXl="8" offsetXl="2">
+      </ion-col>
+    </ion-row>    
+  </ion-grid>
 
 </ion-content>
-
-<ion-footer>
-  
-
-</ion-footer>

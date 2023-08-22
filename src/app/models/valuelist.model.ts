@@ -310,6 +310,13 @@ export enum TempoCorso {
     PASSATO = 'passato'
 }
 
+export enum TypeUrlPageLocation {
+    LocationBooking = 'locationbooking',
+    LocationDetail = 'locationdetail' ,
+    CourseList = 'courselist',
+    CourseDetail = 'coursedetail',
+    CourseSubscribe = 'coursesubscribe'
+}
 
 
 export class ValueList {

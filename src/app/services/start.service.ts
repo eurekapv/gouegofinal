@@ -36,7 +36,7 @@ import { Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
-import { Mansione, RangeSearch, TimeTrainerCourse, TipoArticolo, TipoPrivateImage } from 'src/app/models/valuelist.model'
+import { Mansione, RangeSearch, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TypeUrlPageLocation } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { OccupazioniService } from './occupazioni.service';
 
@@ -79,6 +79,8 @@ import { Evento } from '../models/evento.model';
 import { ImpegnoCustode } from '../models/impegno-custode.model';
 import { ArticoloService } from './articolo.service';
 import { Articolo } from '../models/articolo.model';
+import { Sport } from '../models/sport.model';
+import { CategoriaEta } from '../models/categoriaeta.model';
 
 @Injectable({
   providedIn: 'root'
@@ -527,29 +529,39 @@ export class StartService {
 
     //0- RECUPERO LE CHIUSURE DEL GRUPPO
     this.dataChiusuraService.request()
-                  .then((listChiusure: DataChiusura[]) => {
-                  });
+                            .then(() => {
+                              LogApp.consoleLog('Recupero Date Chiusura');
+                             })
+                             .catch(error => {
+                              LogApp.consoleLog("Errore recupero date chiusura","error")
+                             });
 
     // 1- CHIEDO ELENCO SPORT, LIVELLI, CATEGORIEETA che mi servono sempre
-    let elStartConfig = this._startConfig.getValue();
 
-    this.sportService
-      .request(elStartConfig, false)
-      .catch(error => {
-        LogApp.consoleLog(error,'error');
-      });
+    //Richiedo gli Sport
+    this.sportService.request()
+                     .then(() => {
+                        LogApp.consoleLog('Sport richiesti');
+                     })
+                      .catch(error => {
+                        LogApp.consoleLog(error,'error');
+                      });
 
-    this.livelloService
-      .request(elStartConfig)
-      .catch(error => {
-        LogApp.consoleLog(error,'error');
-      });
+    this.livelloService.request()
+                        .then(() => {
+                          LogApp.consoleLog('Livelli richiesti');
+                      })    
+                      .catch(error => {
+                        LogApp.consoleLog(error,'error');
+                      });
 
-    this.categoriaEtaService
-        .request(elStartConfig)
-        .catch(error => {
-          LogApp.consoleLog(error,'error');
-        });
+    this.categoriaEtaService.request()
+                            .then(() => {
+                              LogApp.consoleLog('Categorie Età richieste');
+                             })
+                            .catch(error => {
+                              LogApp.consoleLog(error,'error');
+                            });
 
     // 2 - TENTO L'ACCESSO AUTOMATICO
     this.loadStorageUtente();
@@ -736,24 +748,34 @@ export class StartService {
   * avere il percorso corretto
   * 
   * Url pagina per andare verso una location
-  * @param idLocation Location di riferimento
   * @param where Cosa si desidera effettuare con la location
+  * @param idLocation Location di riferimento
   */
-  getUrlPageLocation(idLocation: string, where: 'book' | 'detail' | 'course'): string[] {
+  getUrlPageLocation(where: TypeUrlPageLocation, 
+                     idPrimaryKey: string, 
+                     ): string[] {
       let retPath = ['/','appstart-home','tab-home','location'];
 
       switch (where) {
-        case 'detail':
+        case TypeUrlPageLocation.LocationDetail:
           retPath.push('detail');
-          retPath.push(idLocation);
+          retPath.push(idPrimaryKey);
           break;
-        case 'book':
+
+        case TypeUrlPageLocation.LocationBooking:
           retPath.push('booking');
-          retPath.push(idLocation);
+          retPath.push(idPrimaryKey);
+          break;  
+                
+        case TypeUrlPageLocation.CourseList:
+          retPath.push('courselist');
+          retPath.push(idPrimaryKey);          
+          break;
+
+        case TypeUrlPageLocation.CourseDetail:
+          retPath.push('coursedetail');
+          retPath.push(idPrimaryKey);          
           break;          
-          break;
-        case 'course':
-          break;
       
         default:
           break;
@@ -770,7 +792,7 @@ export class StartService {
 /**
  * Richiede in modalità Observable l'elenco degli sport
  */
-get listSport() {
+get listSport():Observable<Sport[]> {
   return this.sportService.listSport;
 }
 
@@ -793,12 +815,11 @@ getSportIcon(idSport:string){
 /**
  * Richiedo al servizio gli Sport
  * @param withLivelli Scaricamento con Livelli 
+ * @param forceReload Ricaricamento forzato
  */
-requestSport(withLivelli?:boolean) {
-  const actualStartConfig = this._startConfig.getValue();
-
-  this.sportService
-      .request(actualStartConfig, withLivelli);
+requestSport(withLivelli?:boolean, forceReload = false):Promise<Sport[]> {
+  
+  return this.sportService.request(withLivelli, forceReload);
             
 }
 
@@ -835,11 +856,9 @@ get listLivelli() {
 /**
  * Richiedo al servizio i Livelli
  */
-requestLivelli() {
-  const actualStartConfig = this._startConfig.getValue();
-
-  return this.livelloService
-    .request(actualStartConfig);
+requestLivelli():Promise<Livello[]> {
+  
+  return this.livelloService.request();
 }
 
 
@@ -861,12 +880,11 @@ get listCategoriaEta() {
 
 /**
  * Richiede al server le Categorie Eta
+ * Emette Observable e le  ritorna anche come Promise
  */
-requestCategorieEta() {
-  const actualStartConfig = this._startConfig.getValue();
-
-  this.categoriaEtaService
-      .request(actualStartConfig);
+requestCategorieEta():Promise<CategoriaEta[]> {
+  
+  return this.categoriaEtaService.request();
             
 }
 

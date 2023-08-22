@@ -1,15 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-
-
-
 import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
-import { SegmentCorsi } from 'src/app/models/valuelist.model';
-
+import { SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/valuelist.model';
 import { ModalController, NavController, LoadingController, ToastController, Gesture, GestureController } from '@ionic/angular';
-
-
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
@@ -22,8 +16,9 @@ import { Corso } from 'src/app/models/corso.model';
 import { StartService } from 'src/app/services/start.service';
 
 import { CourseDetailCalendarPage } from '../location-course-detail/course-detail-calendar/course-detail-calendar.page';
-import { BookcoursePage } from '../../location/course/bookcourse/bookcourse.page';
+
 import { CourseListFilterPage } from './course-list-filter/course-list-filter.page';
+import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
 
 
 enum PageState{
@@ -59,6 +54,9 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
   statoPagina = PageState.TUTTI;
 
   showTabs = true;
+  cardNewTemplateMode = true; //Disegno le Card corsi nella nuova modalità
+
+  listVersion = 2; //Versione delle Liste (2 = Card / 3 = Item)
 
   //Gestione Abilitazione Iscrizioni
   listenSelectedArea:Subscription;
@@ -205,7 +203,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
         //Chiudo il loading
         loading.dismiss();
 
-        this.showMessage('Errore di connessione');
+        this.showMessage('Errore caricamento corsi','','toast');
         
         LogApp.consoleLog(error,'error');
       })
@@ -266,6 +264,21 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
     
   }
 
+  /**
+   * Cambia la versione della lista da 2 a 3 e viceversa
+   */
+  onChangeVersionList(): void {
+    if (this.listVersion == 2) {
+      this.listVersion = 3;
+    }
+    else {
+      this.listVersion = 2;
+    }
+  }  
+
+  /**
+   * Mostra la pagina dei Filtri
+   */
   goToFilter() {
     this.mdlController
       .create({
@@ -297,44 +310,31 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
   }
 
 
-
-  /* ****** CALENDAR ******** */
-  onClickCardCalendar(corso: Corso) {
-    /* Apro in modale il calendario */
-    this.mdlController
-    .create({
-      component: CourseDetailCalendarPage,
-      componentProps: {
-        'myCorso': corso
-      }
-    })
-    .then(formModal => {
-      formModal.present();
-    });
-
-  }
-
-
   /**
    * Visualizza un messaggio
    * @param message Messaggio
    */
-  showMessage(message: string) {
+  showMessage(message: string, title?:string, type: 'alert' | 'toast' = 'alert') {
 
-    //Creo un messaggio
-    this.toastCtrl.create({
-      message: message,
-      duration: 3000
-    })
-    .then(tstMsg => {
-      tstMsg.present();
-    });
-
+    if (type == 'alert') {
+      this.startService.presentAlertMessage(message, title);
+    }
+    else if (type == 'toast') {
+      this.startService.presentToastMessage(message, title);
+    }
   }
 
-  doRefresh(event){
+
+  /**
+   * Esecuzione del refresh della Lista
+   * @param event 
+   */
+  doRefresh(event): void {
     this.requestCorsi();
-    event.target.complete();
+
+    if (event) {
+      event.target.complete();
+    }
   }
 
 
@@ -343,8 +343,12 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
    * @param myCorso Corso Richiesto
    */
   onClickCardDetail(myCorso: Corso) {
+    let arPath = [];
 
-    this.navController.navigateForward(['/','detailcourse',myCorso.ID]);
+    if (myCorso) {
+      arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.CourseDetail, myCorso.ID);
+      this.navController.navigateForward(arPath);
+    }
     
   }
 
@@ -401,7 +405,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
       
               //Posso procedere con la pagina di prenotazione
               this.mdlController.create({
-                component: BookcoursePage,
+                component: LocationCourseSubscribePage,
                 cssClass: 'modal-xl-class',
                 componentProps: {
                   params: selectedCorso

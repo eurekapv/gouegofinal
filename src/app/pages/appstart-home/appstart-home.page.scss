@@ -6,13 +6,15 @@ ion-tabs{
         --my-border-radius: calc(var(--base-border-radius) + 15pt);
         border-radius: var(--my-border-radius) var(--my-border-radius) 0 0 ;
 
+
         ion-tab-button {
+            margin-top: 5px;
             --background: var(--ion-tab-background);
             --background-focused: var(--ion-tab-selected-background);
             --color: var(--ion-tab-color);
             --color-selected: var(--ion-tab-selected-color);
             --color-focused: var(--ion-tab-selected-color);
-
+            
             background-color: var(--ion-accent-shade);
             color: white;
 
@@ -20,7 +22,8 @@ ion-tabs{
                 --background: var(--ion-tab-selected-background);
                 background-color: var(--ion-tab-selected-background);
                 --color: var(--ion-tab-selected-color);
-                color: var(--ion-tab-selected-color);                
+                color: var(--ion-tab-selected-color);  
+                border-radius: 0px 30px 0px 30px;              
             }
         }
 
@@ -28,6 +31,7 @@ ion-tabs{
             &:focus, &:hover {
                 background-color: var(--ion-tab-selected-background);
                 color: var(--ion-tab-selected-color);  
+                border-radius: 0px 30px 0px 30px;
             }
         }
     }

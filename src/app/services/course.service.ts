@@ -14,8 +14,6 @@ import { CategoriaEta } from '../models/categoriaeta.model';
 import { PostParams, RequestDecode, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { TimeTrainerCourse } from '../models/valuelist.model';
-import { DynamicClass } from '../library/models/structure.model';
-
 
 
 @Injectable({
@@ -40,8 +38,6 @@ export class CourseService {
   ){
 
   }
-
-
 
   get listCorsi() {
     return this._listCorsi.asObservable();

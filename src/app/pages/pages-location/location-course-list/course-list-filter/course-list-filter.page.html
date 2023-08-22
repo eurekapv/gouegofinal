@@ -10,6 +10,12 @@
       </ion-button>
     </ion-buttons>
 
+    <ion-buttons slot="end">
+      <ion-button (click)="emptyFilter()">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>    
+
   </ion-toolbar>
 </ion-header>
 
@@ -21,101 +27,164 @@
     </ion-label>
   </ion-item>
 
-  <!-- TARGET SESSO-->
-  <ion-item lines="full">
-
-    <ion-label
-        slot="start" 
-        position="fixed">Target
-    </ion-label>
-
-    <ion-select 
-        [compareWith]="compareWithSelect" 
-        [(ngModel)]="myFilter.TARGETSESSO"
-        [interface]="typeSelectInterface"
-        placeHolder="tutti">
-          <ion-select-option 
-            *ngFor="let itemTarget of listTargetSesso"
-            [value]="itemTarget.value">
-            {{itemTarget.description}}
-          </ion-select-option>
-    </ion-select>
-
-  </ion-item>  
-
-  <!-- CATEGORIA ETA -->
-  <ion-item>
-    <ion-label 
-        slot="start" 
-        position="fixed">Età</ion-label>
-    <ion-select [compareWith]="compareWithSelect" 
-                [(ngModel)]="myFilter.IDCATEGORIEETA"
-                [interface]="typeSelectInterface"
-                placeHolder="tutte">
-      <ion-select-option 
-        *ngFor="let catEta of listCatEta"
-        [value]="catEta.ID"
+  <ion-card>
+    <ion-card-content>
+      <ion-accordion-group
         >
-        {{catEta.DESCTOOLTIP}}
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
-
-    <!-- SPORT --> 
-    <ion-item>
-      <ion-label 
-          slot="start" 
-          position="fixed">Attività</ion-label>
-
-      <ion-select [compareWith]="compareWithSelect" 
-                  [(ngModel)]="myFilter.IDSPORT"
-                  [interface]="typeSelectInterface"
-                  placeHolder="tutte">
-        <ion-select-option 
-            *ngFor="let itemSport of listSport"
-            [value]="itemSport.ID">
-          {{itemSport.DENOMINAZIONE}}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <!-- TIPOLOGIA --> 
-    <ion-item>
-      <ion-label 
-            slot="start" 
-            position="fixed">Tipologia</ion-label>
-      <ion-select [compareWith]="compareWithSelect" 
-                  [(ngModel)]="myFilter.TIPO"
-                  [interface]="typeSelectInterface"
-                  placeHolder="tutti">
-        <ion-select-option 
-            *ngFor="let itemTipo of listTipoCorso"
-            [value]="itemTipo.value">
-          {{itemTipo.description}}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <!-- DATA CORSO --> 
-    <app-dtinput
-      [(actualDate)]="dataFine"
-      calendarMode="date"
-      label="dal"
-      title="Dalla data">
-    </app-dtinput>
-
-    <ion-item
-          detail="false"
-          button="true"
-          (click)="emptyFilter()"
-          class="ion-text-end"
-          lines="none">
-      <ion-label 
-        class="ion-text-wrap">
-        reimposta i filtri
-      </ion-label>
-      <ion-icon slot="end" name="trash-outline"></ion-icon>
-    </ion-item>
+        
+        <!-- ACCORDION TARGET SESSO -->
+        <ion-accordion value="targetsesso">
+          <ion-item slot="header" color="light">
+            <ion-label>Sesso</ion-label>
+            <ion-badge color="success">{{_myFilter['_DESCRTARGETSESSO']}}</ion-badge>
+          </ion-item>
+    
+          <div class="ion-padding" slot="content">
+            <ion-list>
+    
+              <ion-item 
+                  detail="false"
+                  button="true"
+                  (click)="onClickChooseSesso()">
+                <ion-label>Tutti</ion-label>
+                <ion-icon 
+                    color="success"
+                    *ngIf="!_myFilter.TARGETSESSO" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+              <ion-item 
+                      (click)="onClickChooseSesso(item)"
+                      *ngFor="let item of listTargetSesso">
+                  <ion-label>{{item.description}}</ion-label>
+                  <ion-icon 
+                      color="success"
+                      *ngIf="item.value == _myFilter.TARGETSESSO" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+            </ion-list>
+          </div>
+        </ion-accordion>
+    
+        <!-- ACCORDION CATEGORIA ETA -->
+        <ion-accordion value="categoriaeta">
+          <ion-item slot="header" color="light">
+            <ion-label>Range Et&agrave;</ion-label>
+            <ion-badge color="success">{{_myFilter['_DESCRCATEGORIAETA']}}</ion-badge>
+          </ion-item>
+    
+          <div class="ion-padding" slot="content">
+            <ion-list>
+    
+              <ion-item 
+                  detail="false"
+                  button="true"
+                  (click)="onClickChooseCategoriaEta()">
+                <ion-label>Tutte</ion-label>
+                <ion-icon 
+                    color="success"
+                    *ngIf="!_myFilter.IDCATEGORIEETA" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+              <ion-item 
+                      (click)="onClickChooseCategoriaEta(item)"
+                      *ngFor="let item of listCatEta">
+                  <ion-label>{{item.DESCTOOLTIP}}</ion-label>
+                  <ion-icon 
+                      color="success"
+                      *ngIf="item.ID == _myFilter.IDCATEGORIEETA" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+            </ion-list>
+          </div>
+        </ion-accordion>    
+    
+        <!-- ACCORDION ATTIVITA' -->
+        <ion-accordion value="sport">
+          <ion-item slot="header" color="light">
+            <ion-label>Attivit&agrave;</ion-label>
+            <ion-badge color="success">{{_myFilter['_DESCRSPORT']}}</ion-badge>
+          </ion-item>
+    
+          <div class="ion-padding" slot="content">
+            <ion-list>
+    
+              <ion-item 
+                  detail="false"
+                  button="true"
+                  (click)="onClickChooseSport()">
+                <ion-label>Tutte</ion-label>
+                <ion-icon 
+                    color="success"
+                    *ngIf="!_myFilter.IDSPORT" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+              <ion-item 
+                      (click)="onClickChooseSport(item)"
+                      *ngFor="let item of listSport">
+                  <ion-label>{{item.DENOMINAZIONE}}</ion-label>
+                  <ion-icon 
+                      color="success"
+                      *ngIf="item.ID == _myFilter.IDSPORT" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+            </ion-list>
+          </div>
+        </ion-accordion> 
+        
+        <!-- ACCORDION TIPO -->
+        <ion-accordion value="tipo">
+          <ion-item slot="header" color="light">
+            <ion-label>Tipologia</ion-label>
+            <ion-badge color="success">{{_myFilter['_DESCRTIPO']}}</ion-badge>
+          </ion-item>
+    
+          <div class="ion-padding" slot="content">
+            <ion-list>
+    
+              <ion-item 
+                  detail="false"
+                  button="true"
+                  (click)="onClickChooseTipologia()">
+                <ion-label>Tutti</ion-label>
+                <ion-icon 
+                    color="success"
+                    *ngIf="!_myFilter.TIPO" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+              <ion-item 
+                      (click)="onClickChooseTipologia(item)"
+                      *ngFor="let item of listTipoCorso">
+                  <ion-label>{{item.description}}</ion-label>
+                  <ion-icon 
+                      color="success"
+                      *ngIf="item.value == _myFilter.TIPO" name="checkmark-outline" slot="end"></ion-icon>
+              </ion-item>
+    
+            </ion-list>
+          </div>
+        </ion-accordion>   
+        
+        <!-- ACCORDION DATAFINE -->
+        <ion-accordion value="datafine">
+          <ion-item slot="header" color="light">
+            <ion-label>fino a</ion-label>
+            <ion-badge color="success">{{dataFine | date: "EEEE dd/MM/yyyy" }}</ion-badge>
+          </ion-item>
+    
+          <div class="ion-padding" slot="content">        
+            <!-- DATA CORSO --> 
+            <app-dtinput
+              [(actualDate)]="dataFine"
+              calendarMode="date"
+              label="dal"
+              title="Dalla data">
+            </app-dtinput>
+          </div>
+        </ion-accordion>      
+    
+      </ion-accordion-group> 
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>
 

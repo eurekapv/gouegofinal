@@ -47,7 +47,8 @@ export class Sport extends IDDocument {
     objDescriptor.addMultiple(arDate, TypeDefinition.date);
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
-    objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    //objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
+    objDescriptor.addCollection('LIVELLO','Livello', 'IDSPORT');
     
     return objDescriptor;
 }    

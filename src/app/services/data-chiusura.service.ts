@@ -12,6 +12,7 @@ import { DataChiusura } from '../models/datachiusura.model';
 import { Gruppo } from '../models/gruppo.model';
 import { Location } from '../models/location.model';
 import { AttivitaChiusura, TipoChiusura } from '../models/valuelist.model';
+import { LogApp } from '../models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,29 +40,32 @@ export class DataChiusuraService {
   /**
    * Richiede l'elenco completo di tutte le chiusure del gruppo sportivo SOLO PER GLI AFFITTI
    */
-  request(){
+  request(): Promise<DataChiusura[]>{
 
-    return new Promise ((resolve, reject) => {
+    return new Promise<DataChiusura[]>((resolve, reject) => {
 
       
       //creo il filtro
       let filterDocument = new DataChiusura(true);
-
   
       //aggiungo le due condizioni in or (chiusure per affitti e per affitti/corsi)
       filterDocument.addFilterCondition(OperatorCondition.uguale, 'ATTIVITACHIUSURA', [AttivitaChiusura.affittoStrutture, AttivitaChiusura.tutte]);
   
       //ora faccio la richiesta
       this.docStructureService.requestNew(filterDocument)
-      .then(rawListChiusure => {
-  
-        //salvo la lista ed emetto l'observable
-        this._listChiusure = rawListChiusure;
-        this.listChiusure.next(this._listChiusure);
-  
-        //risolvo la lista
-        resolve(this._listChiusure);
-      })
+                              .then(rawListChiusure => {
+                          
+                                //salvo la lista ed emetto l'observable
+                                this._listChiusure = rawListChiusure;
+                                this.listChiusure.next(this._listChiusure);
+                          
+                                //risolvo la lista
+                                resolve(this._listChiusure);
+                              })
+                              .catch(error => {
+                                LogApp.consoleLog(error,"error");
+                                reject(error);
+                              })
     })
 
     

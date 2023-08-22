@@ -14,60 +14,226 @@ import { Corso } from 'src/app/models/corso.model';
 })
 export class CourseListFilterPage implements OnInit, OnDestroy {
 
-  @Input() myFilter: Corso;
+  @Input() set myFilter(value: Corso) {
+    this._myFilter = value;
+    //Procedo alla decodifica
+    this.onDecodeId();
+  }
+  _myFilter: Corso = new Corso(true);
 
   listSport: Sport[];
   listCatEta: CategoriaEta[];
-  listenSport: Subscription;
-  listenCatEta: Subscription;
+  subListenSport: Subscription;
+  subListenCatEta: Subscription;
 
   listTargetSesso: ValueList[] = [];
   listTipoCorso: ValueList[] = [];
 
   dataFine: Date = new Date();
-  typeSelectInterface = 'action-sheet'; 
+
 
   constructor(private startService: StartService,
               private mdlController: ModalController) { 
-
-    this.listenSport = this.startService.listSport.subscribe(listElements => {
-      this.listSport = listElements;
-    });
-
-    this.listenCatEta = this.startService.listCategoriaEta.subscribe( listElements => {
-      this.listCatEta = listElements;
-    });
-
-    this.listTargetSesso = ValueList.getArray(TargetSesso);
-    this.listTipoCorso = ValueList.getArray(TipoCorso);
-  }
+                this.onListenData();
+              }
 
 
   ngOnInit() {
-    if (this.startService.isOnWeb) {
-      this.typeSelectInterface = 'popover'
-    }
-    else {
-      this.typeSelectInterface = 'action-sheet'
-    }
-  }
+
+    //Richiedo la lista Sport e Eta
+    this.startService.requestSport(true, true);
+    this.startService.requestCategorieEta();
+
+  } 
 
   ngOnDestroy() {
-    if (this.listenSport) {
-      this.listenSport.unsubscribe();
+    if (this.subListenSport) {
+      this.subListenSport.unsubscribe();
     }
 
-    if (this.listenCatEta) {
-      this.listenCatEta.unsubscribe();
+    if (this.subListenCatEta) {
+      this.subListenCatEta.unsubscribe();
+    }
+  }  
+/**
+ * Effettuo la sottoscrizione alla ricezione
+ */
+ onListenData() {
+                
+  this.subListenSport = this.startService.listSport.subscribe(listElements => {
+    this.listSport = listElements.filter(item => {
+      return !item.DATACANC
+    });
+    //Procedo alla decodifica
+    this.onDecodeId();
+  });
+
+  this.subListenCatEta = this.startService.listCategoriaEta.subscribe( listElements => {
+    this.listCatEta = listElements;
+    //Procedo alla decodifica
+    this.onDecodeId();
+  });
+
+  this.listTargetSesso = ValueList.getArray(TargetSesso);
+  this.listTipoCorso = ValueList.getArray(TipoCorso);
+  //Procedo alla decodifica
+  this.onDecodeId();
+
+ }
+
+ /**
+  * Cerca di decodificare i campi impostando una descrizione
+  */
+ onDecodeId(): void {
+  let mySport: Sport;
+  let myCatEta: CategoriaEta;
+  let myTarget: ValueList;
+  let myTipoCorso: ValueList;
+  let nameProp = '';
+  
+
+  if (this._myFilter) {
+
+    //Lista Sport presente
+    if (this.listSport) {
+      mySport = this.listSport.find(elItem => {
+        return elItem.ID == this._myFilter.IDSPORT
+      });
+
+    }
+
+    if (this.listCatEta) {
+      myCatEta = this.listCatEta.find(elItem => {
+        return elItem.ID == this._myFilter.IDCATEGORIEETA
+      });
+    }   
+    
+    if (this._myFilter.TIPO) {
+      if (this.listTipoCorso) {
+        myTipoCorso = this.listTipoCorso.find(elItem => {
+          return elItem.value == this._myFilter.TIPO
+        });        
+      }
+    }
+
+    if (this._myFilter.TARGETSESSO) {
+      if (this.listTargetSesso) {
+        myTarget = this.listTargetSesso.find(elItem => {
+          return elItem.value == this._myFilter.TARGETSESSO
+        });        
+      }
+    }
+
+    //Attribuzione Descrizioni
+    nameProp = '_DESCRSPORT';
+    if (mySport) {
+      this._myFilter[nameProp] = mySport.DENOMINAZIONE
+    }
+    else {
+      this._myFilter[nameProp] = 'Tutti'
+    }
+
+    nameProp = '_DESCRCATEGORIAETA';
+    if (myCatEta) {
+      this._myFilter[nameProp] = myCatEta.DESCTOOLTIP
+    }
+    else {
+      this._myFilter[nameProp] = 'Tutte'
+    }
+
+    nameProp = '_DESCRTIPO';
+    if (myTipoCorso) {
+      this._myFilter[nameProp] = myTipoCorso.description
+    }
+    else {
+      this._myFilter[nameProp] = 'Tutti'
+    }
+
+    nameProp = '_DESCRTARGETSESSO';
+    if (myTarget) {
+      this._myFilter[nameProp] = myTarget.description
+    }
+    else {
+      this._myFilter[nameProp] = 'Tutti'
+    }
+  }
+ }
+
+
+
+
+
+
+  /**
+   * Effettuata la scelta del Sesso
+   * @param itemSesso 
+   */
+  onClickChooseSesso(itemSesso?: ValueList) {
+    let nameProp = '_DESCRTARGETSESSO';
+    if (this._myFilter) {
+      if (itemSesso) {
+        this._myFilter.TARGETSESSO = itemSesso.value;
+        this._myFilter[nameProp] = itemSesso.description;
+      }
+      else {
+        this._myFilter.TARGETSESSO = null;
+        this._myFilter[nameProp] = 'Tutti';
+      }
     }
   }
 
-  compareWithFn = (o1, o2) => {
-    return o1 && o2 ? o1 === o2 : o1 === o2;
-  };
+  /**
+   * Effettuata la scelta della Categoria Età
+   * @param itemEta 
+   */
+  onClickChooseCategoriaEta(itemEta?: CategoriaEta) {
+    let nameProp = '_DESCRCATEGORIAETA';
+    if (this._myFilter) {
+      if (itemEta) {
+        this._myFilter.IDCATEGORIEETA = itemEta.ID;
+        this._myFilter[nameProp] = itemEta.DESCTOOLTIP;
+      }
+      else {
+        this._myFilter.IDCATEGORIEETA = null;
+        this._myFilter[nameProp] = 'Tutte';      }
+    }
+  }  
 
-  compareWithSelect = this.compareWithFn;
+  /**
+   * Effettuata la scelta della Attività
+   * @param itemSport 
+   */
+  onClickChooseSport(itemSport?: Sport) {
+    let nameProp = '_DESCRSPORT';
+    if (this._myFilter) {
+      if (itemSport) {
+        this._myFilter.IDSPORT = itemSport.ID;
+        this._myFilter[nameProp] = itemSport.DENOMINAZIONE;
+      }
+      else {
+        this._myFilter.IDSPORT = null;
+        this._myFilter[nameProp] = 'Tutte';      
+      }
+    }
+  }  
 
+  /**
+   * Effettuata la scelta del Sesso
+   * @param itemTipo 
+   */
+  onClickChooseTipologia(itemTipo?: ValueList) {
+    let nameProp = '_DESCRTIPO';
+    if (this._myFilter) {
+      if (itemTipo) {
+        this._myFilter.TIPO = itemTipo.value;
+        this._myFilter[nameProp] = itemTipo.description;
+      }
+      else {
+        this._myFilter.TIPO = null;
+        this._myFilter[nameProp] = 'Tutti';
+      }
+    }
+  }  
 
   /**
    * Chiudo la videata Annullando tutto
@@ -82,9 +248,9 @@ export class CourseListFilterPage implements OnInit, OnDestroy {
    * Chiudo la videata applicando i filtri impostati
    */
   applyFilter() {
-    this.myFilter.DATAFINE = new Date(this.dataFine);
+    this._myFilter.DATAFINE = new Date(this.dataFine);
     this.mdlController.dismiss({
-      'dismissFilter': this.myFilter
+      'dismissFilter': this._myFilter
     });
   }
 
@@ -92,11 +258,27 @@ export class CourseListFilterPage implements OnInit, OnDestroy {
    * Svuota tutti i filtri, tranne la location
    */
   emptyFilter() {
+    let nameProp = '_DESCRTARGETSESSO';
+
     this.dataFine = new Date();
-    this.myFilter.TARGETSESSO = null;
-    this.myFilter.TIPO = null;
-    this.myFilter.IDSPORT = null;
-    this.myFilter.IDCATEGORIEETA = null;
-    this.myFilter.DATAFINE = new Date();
+
+    nameProp = '_DESCRTARGETSESSO';
+    this._myFilter.TARGETSESSO = null;
+    this._myFilter[nameProp] = 'Tutti';
+    
+    nameProp = '_DESCRTIPO';
+    this._myFilter.TIPO = null;
+    this._myFilter[nameProp] = 'Tutti';
+    
+    nameProp = '_DESCRSPORT';
+    this._myFilter.IDSPORT = null;
+    this._myFilter[nameProp] = 'Tutti';
+    
+    
+    nameProp = '_DESCRCATEGORIAETA';
+    this._myFilter.IDCATEGORIEETA = null;
+    this._myFilter[nameProp] = 'Tutte';
+
+    this._myFilter.DATAFINE = new Date();
   }
 }

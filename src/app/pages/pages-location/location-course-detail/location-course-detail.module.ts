@@ -12,8 +12,9 @@ import { CourseDetailCalendarPageModule } from './course-detail-calendar/course-
 
 import { UserVerifyPageModule } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.module';
 import { UserLoginPageModule } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.module'
-import { BookcoursePageModule } from '../../location/course/bookcourse/bookcourse.module';
+
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { LocationCourseSubscribePageModule } from '../location-course-subscribe/location-course-subscribe.module';
 
 @NgModule({
     imports: [
@@ -25,7 +26,7 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
         CourseDetailCalendarPageModule,
         UserLoginPageModule,
         UserVerifyPageModule,
-        BookcoursePageModule,
+        LocationCourseSubscribePageModule,
         SharedComponentsModule
     ],
     declarations: [LocationCourseDetailPage]

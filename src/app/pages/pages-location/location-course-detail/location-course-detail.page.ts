@@ -11,10 +11,11 @@ import { Area } from 'src/app/models/area.model';
 import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
 import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
 import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
-import { BookcoursePage } from '../../location/course/bookcourse/bookcourse.page';
+
 import { TempoCorso, TipoCorso } from 'src/app/models/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
 import { LogApp } from 'src/app/models/log.model';
+import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
 
 @Component({
   selector: 'app-location-course-detail',
@@ -30,7 +31,7 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
   iconColor = 'primary';
   userLogged = false;
   subUserLogged: Subscription;
-  isDesktop: boolean;
+
   docUser: Utente;
   subUser: Subscription;
   
@@ -45,7 +46,7 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
   constructor(
     private startService: StartService,
     private actRouter: ActivatedRoute,
-    private navCtrl: NavController,
+    private navController: NavController,
     private mdlController: ModalController,
     private docStructureService : DocstructureService,
     private loadingController : LoadingController,
@@ -100,61 +101,62 @@ onListenSelectedUser() {
 }
               
   ngOnInit() {
-    //SEMBRA NON FUNZIONARE CORRETTAMENTE
-    this.isDesktop = this.startService.isDesktop;
-    //IMPOSTO DESKTOP FALSE
-    this.isDesktop = false;
+
 
     let idCorso = '';
+    let myElLoading: HTMLIonLoadingElement;
+
+
     this.actRouter.paramMap.subscribe(param => {
+      //Ricerco il parametro courseId
       if (param.has('courseId')) {
         
         //ID Corso
-        idCorso = param.get('courseId')
+        idCorso = param.get('courseId');
 
-        //creo il loading
-
+        
+        //Creazione del Loadin di Caricamento
         this.loadingController.create({
           spinner: "circular",
           message: 'Caricamento',
           backdropDismiss: true
         })
         .then(elLoading => {
+          //Mostro il loading
+          myElLoading = elLoading;
           elLoading.present();
           
-          //faccio la richiesta
-          this.startService.newRequestCorsoById(idCorso)
-          .then((corso:Corso) => {
+          //Effettuo la richiesta del corso
+          return this.startService.newRequestCorsoById(idCorso)
+        })
+        .then((itemCorso: Corso) => {
+          //se ho trovato un corso, lo memorizzo
+          this.myCorso = itemCorso;
+          //ora richiedo la location
+          return this.requestLocationById(this.myCorso.IDLOCATION);
+        })
+        .then((itemLocation: Location)=> {
+          //Spengo il loading
+          myElLoading.dismiss();
+          //Ho tutti i dati necessari
+          this.myLocation = itemLocation;
 
-            if (corso) {
+        })
+        .catch(error => {
+          //Si è verificato un errore
+          //Spengo il loading
+          myElLoading.dismiss();
 
-              //se ho trovato un corso, lo prendo
-              this.myCorso = corso;
+          this.showMessage('Errore nel caricamento delle informazioni del corso');
+          LogApp.consoleLog(error,'error');
+        })
 
-              
-
-              //ora richiedo la location
-              this.requestLocationById(this.myCorso.IDLOCATION);
-            }
-            else{
-              elLoading.dismiss();
-              this.showMessage('Non ho trovato nessun corso');
-            }
-          })
-          .catch(error => {
-            elLoading.dismiss();
-            this.showMessage('Errore di connessione');
-            
-            LogApp.consoleLog(error,'error');
-          })
-        })      
-  
-   
       }
       else {
-        this.navCtrl.navigateRoot(['/']);
+        //Non c'e' il parametro
+        this.onGoToBack();
       }
-    })             
+    })           
   }
 
   ngOnDestroy() {
@@ -171,27 +173,57 @@ onListenSelectedUser() {
     }
   }
 
-  requestLocationById(idLocation: string){
 
-    //preparo il filtro
-    let filterLocation = new Location(true);
-    filterLocation.ID = idLocation;
+  //#region PULSANTE BACK
+  /**
+   * Ritorna un Array con il percorso di ritorno
+   */
+  get backPathArray():string[] {
+    let retPath = ['/','appstart-home','tab-home'];
+
+    return retPath;
+  }
     
-    //faccio la richiesta
-    this.docStructureService.requestNew(filterLocation).then(elLocation => {
-      this.loadingController.dismiss();
-      if (elLocation && elLocation.length != 0){
+  //Ritorna il Path Array Back in formato stringa concatenata
+  get backButtonHref(): string {
+      let myHref = '';
+      myHref = this.backPathArray.join('/').substring(1);
+  
+      return myHref;
+  }
+    
+  /**
+   * Torno alla pagina del home
+   */
+  onGoToBack() {
+        this.navController.navigateBack(this.backPathArray);
+  }
+  
+  //#endregion  
 
-        //se ho trovato una location me la salvo
-        this.myLocation = elLocation[0];
+  /**
+   * Effettuo la richiesta delle informazioni di una location
+   * @param idLocation 
+   */
+  requestLocationById(idLocation: string): Promise<Location>{
+
+    return new Promise<Location>((resolve, reject) => {
+      if (idLocation && idLocation.length != 0) {
+
+        //Effettuo la chiamata
+        this.startService.requestLocationByID(idLocation)
+                         .then(elLocation => {
+                            resolve(elLocation);
+                         })
+                         .catch(error => {
+                          reject(error);
+                         })
       }
-      else{
-        this.showMessage('Non ho trovato la location');
+      else {
+        reject('Location non impostata');
       }
-    }).catch(error => {
-      this.loadingController.dismiss();
-      this.showMessage('Errore di connessione');
     })
+
   }
 
   /* ****** CALENDAR ******** */
@@ -273,7 +305,7 @@ onListenSelectedUser() {
     
             //Posso procedere con la pagina di prenotazione
             this.mdlController.create({
-              component: BookcoursePage,
+              component: LocationCourseSubscribePage,
               componentProps: {
                 params: this.myCorso
               }

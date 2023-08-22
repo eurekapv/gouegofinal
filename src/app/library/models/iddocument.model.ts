@@ -1339,7 +1339,8 @@ import { MyDateTime } from './mydatetime.model';
   export enum OperatorCondition {
     uguale = '',
     minore = '<',
-    maggiore = '>'
+    maggiore = '>',
+    isNull = '!'
   }
 
 

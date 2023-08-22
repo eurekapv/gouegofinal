@@ -9,8 +9,8 @@ import { UserLoginPageModule } from 'src/app/pages/pages-profile/authorization-a
 import { UserVerifyPageModule } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.module';
 import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
 import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
-import { BookcoursePageModule } from '../../location/course/bookcourse/bookcourse.module';
 import { CourseListFilterPageModule } from './course-list-filter/course-list-filter.module';
+import { LocationCourseSubscribePageModule } from '../location-course-subscribe/location-course-subscribe.module';
 
 
 
@@ -22,7 +22,7 @@ import { CourseListFilterPageModule } from './course-list-filter/course-list-fil
         FormsModule,
         IonicModule,
         LocationCourseListPageRoutingModule,
-        BookcoursePageModule,
+        LocationCourseSubscribePageModule,
         CourseListFilterPageModule,
         SharedComponentsModule,
         UserLoginPageModule,

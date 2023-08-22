@@ -9,7 +9,7 @@ import { LocationCampiListPage } from '../location-campi-list/location-campi-lis
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Subscription } from 'rxjs';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { TipoSocieta } from 'src/app/models/valuelist.model';
+import { TipoSocieta, TypeUrlPageLocation } from 'src/app/models/valuelist.model';
 import { ImageModalPage } from '../../image-modal/image-modal.page';
 import SwiperCore, { SwiperOptions, Pagination  } from 'swiper';
 
@@ -80,7 +80,7 @@ export class LocationDetailPage implements OnInit, OnDestroy {
     }
   }
 
-    //#region PULSANTE BACK
+  //#region PULSANTE BACK
   /**
    * Ritorna un Array con il percorso di ritorno
    */
@@ -173,13 +173,14 @@ export class LocationDetailPage implements OnInit, OnDestroy {
 
     switch (btn.functionCod) {
       case 'book':
-        arPath = this.startService.getUrlPageLocation(this.selectedLocation.ID, 'book');
+        arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.LocationBooking, this.selectedLocation.ID);
         //Prenotazioni
         this.navController.navigateForward(arPath);
         break;
       case 'course':
-        // Corsi
-        this.navController.navigateForward(['/','listcourses',this.selectedLocation.ID]);
+        // Lista dei Corsi
+        arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.CourseList, this.selectedLocation.ID);
+        this.navController.navigateForward(arPath);
         break;
     
       default:

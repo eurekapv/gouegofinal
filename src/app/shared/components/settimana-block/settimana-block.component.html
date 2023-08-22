@@ -1,8 +1,11 @@
-<table 
+<table
+  *ngIf="!_asText"
   class="ion-margin-vertical"
   style="width: 100%">
   <tr>
-    <td class="ion-text-center" *ngFor="let giorno of listDays">
+    <td 
+    [ngClass]="getFlagCanShowDay(giorno) == false ? 'ion-hide ion-text-center':'ion-text-center'"
+        *ngFor="let giorno of _listDays">
       <ion-button
         (onClick)="onClickDay(giorno)"
         [color]="getColorDay(giorno)"
@@ -16,3 +19,4 @@
     </td>
   </tr>
 </table>
+<p *ngIf="_asText">{{listText | uppercase}}</p>

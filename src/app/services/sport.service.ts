@@ -5,6 +5,10 @@ import { Sport } from '../models/sport.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { ApicallService } from './apicall.service';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { RequestParams } from '../library/models/requestParams.model';
+import { LogApp } from '../models/log.model';
+import { FilterCondition, OperatorCondition } from '../library/models/iddocument.model';
 
 
 
@@ -35,69 +39,74 @@ export class SportService {
   }
 
 
-  constructor(private apiService: ApicallService) { 
-    this._loaded = false;
+  constructor(private apiService: ApicallService, 
+              private docStructureSrv: DocstructureService) { 
+
+      this._loaded = false;
   }
 
   /**
    * Richiede al server l'elenco delle Attività
    * @param config Parametri configurazione chiamata
    */
-  request(config: StartConfiguration, withLivelli?:boolean) {
-    return new Promise((resolve, reject)=>{
-      let myHeaders = config.getHttpHeaders();
-     
-      const doObject = 'SPORT';
+  request(withLivelli?:boolean,
+          forceReload:boolean = false): Promise<Sport[]> {
 
-      //TODO: Non mi piace molto il modo
-      //Nei Parametri imposto il LivelloAutorizzazione
-      let myParams = new HttpParams().set('LivelloAutorizzazione','0');
-      let myUrl = config.urlBase + '/' + doObject;
-  
-      if (withLivelli) {
-        //Richiedo di caricare anche i livelli
-        myHeaders = myHeaders.append('only-level','-1');
-      }
-  
-      /*Non ho ancora caricato dal server*/
-      if (!this._loaded) {
-        this.apiService
-          .httpGet(myUrl, myHeaders, myParams)
-          .pipe(map(data => {
-            return data.SPORT
-          }))
-          .subscribe(resultData => {
-    
-            //Arrivati dal server
-            this._loaded = true;
+    return new Promise<Sport[]>((resolve, reject)=>{
 
-            if (resultData) {
+      if (!this._loaded || forceReload) {
+        let filterSport = new Sport(true);
 
-              for (let index = 0; index < resultData.length; index++) {
-                const element = resultData[index];
-                let newSport = new Sport();
-                newSport.setJSONProperty(element);
-                this.add2ListSport(newSport);               
-              }
-              resolve(this._listSport);
+        filterSport.ID = '.';
+      
+        this.docStructureSrv.requestNew(filterSport)
+                            .then(listReceived => this.fillLivelli(listReceived, withLivelli))
+                            .then(listReceivedTyped => {
 
-            }
-            else {
-              reject('No data Attività retrieved');
-            }
-            
-          }, error=>{
-            reject(error);
-          });
+                              this._loaded = true;
+                              //Riemetto Observable
+                              this._listSport.next(listReceivedTyped);
+                              //Risolvo la promise
+                              resolve(listReceivedTyped);
+
+                            })
+                            .catch(error => {
+                              LogApp.consoleLog(error);
+                              reject(error);
+                            })
       }
       else {
-        //Già caricati dal server
+        //Ritorno la lista già presente
+        resolve(this._listSport.getValue());
       }
       
     })
 
   }
 
+  /**
+   * Carica dal Server i Livelli se flagOperation = True
+   * Usato nella request
+   * @param listSport Lista Sport di cui caricare i Livelli
+   * @param flagOperation TRUE => Vengono caricati i livelli
+   * @returns 
+   */
+  fillLivelli(listSport: Sport[], flagOperation: boolean): Promise<Sport[]> {
+    return new Promise<Sport[]>((resolve, reject) => {
+      if (listSport && flagOperation) {
+        this.docStructureSrv.loadCollectionMulti(listSport, 'LIVELLO')
+                            .then(listReceived => {                                
+                                resolve(<Sport[]>listReceived);
+                            })
+                            .catch(error => {
+                              reject(error);
+                            })
+      }
+      else {
+        resolve(listSport);
+      }
+    })
+  }
 
   //Aggiunge una attivita alla lista globale
   add2ListSport(objSport: Sport) {

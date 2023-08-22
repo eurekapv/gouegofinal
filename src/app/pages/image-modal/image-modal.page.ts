@@ -14,7 +14,6 @@ export class ImageModalPage implements OnInit {
 
   @Input() set imageUrl(value: string) {
     this._imageUrl = value;
-    console.log(this._imageUrl);
   };
 
   _imageUrl: string = '';

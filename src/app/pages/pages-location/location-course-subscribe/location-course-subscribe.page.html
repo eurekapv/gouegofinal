@@ -209,7 +209,7 @@
                           <!-- IMPORTO PRENOTAZIONI -->
                           <ion-row class="ion-align-items-center">
                             <ion-col size="5" class="ion-text-center left-col">
-                              <h6 class="ion-no-margin ion-text-bold">Totale Iscrizione</h6>
+                              <h6 class="ion-no-margin ion-text-bold">Quota Iscrizione</h6>
                             </ion-col>
                             <ion-col size="7">
                               <h5 class="ion-no-margin ion-text-right ion-text-bold">{{iscrizioneDoc?.TOTALE | currency: "EUR"}}</h5>
@@ -301,13 +301,25 @@
 
                                 <div class="ion-padding" slot="content">
 
-                                  <ion-text *ngIf="paymentType.isRateale()">
-                                    &Egrave; possibile effettuare il pagamento del corso sia in rata unica che in modalit&agrave; <strong>rateale</strong>
-                                    <br/>
-                                    <strong>{{paymentType && paymentType.DESCR.length != 0 ? this.paymentType.DESCR : ''}}</strong>
-                                    <br/>
-                                    Il pagamento rateale &egrave; disponibile solo contattando la struttura <strong>{{locationDoc?.TELEFONO && locationDoc?.TELEFONO.length != 0 ? 'al numero ' + locationDoc?.TELEFONO : ''}}</strong>
-                                  </ion-text>
+                                  <div *ngIf="paymentType.isRateale()">
+
+                                    <ion-text *ngIf="paymentType.isRateale()">
+                                      &Egrave; possibile effettuare il pagamento del corso sia in rata unica che in modalit&agrave; <strong>rateale</strong>
+                                      <br/>
+                                      <strong>{{paymentType && paymentType.DESCR.length != 0 ? this.paymentType.DESCR : ''}}</strong>
+                                      <br/>
+                                      Il pagamento rateale &egrave; disponibile solo contattando la struttura <strong>{{locationDoc?.TELEFONO && locationDoc?.TELEFONO.length != 0 ? 'al numero ' + locationDoc?.TELEFONO : ''}}</strong>
+                                    </ion-text>
+
+                                    <ion-item lines="none">
+                                      <ion-checkbox>Pagamento Rata Unica</ion-checkbox>
+                                    </ion-item>
+
+                                    <ion-item lines="none">
+                                      <ion-checkbox>Pagamento Rateale</ion-checkbox>
+                                    </ion-item>                                    
+
+                                  </div>
 
                                   <ion-text *ngIf="!paymentType.isRateale()">
                                     &Egrave; possibile effettuare il pagamento del corso unicamente attraverso il pagamento anticipato dell'intero importo.
@@ -317,8 +329,6 @@
                                   </ion-text>
 
                                 </div>
-
-
                               </ion-accordion>
                         </ion-accordion-group>
 

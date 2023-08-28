@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController, ModalController, LoadingController, ToastController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { CourseDetailCalendarPage } from './course-detail-calendar/course-detail-calendar.page';
-import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Area } from 'src/app/models/area.model';
 import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
 import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
@@ -29,6 +28,7 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
   subMyCorso: Subscription;
   myLocation: Location = new Location(); 
   iconColor = 'primary';
+  groupColor = 'tertiary';
   userLogged = false;
   subUserLogged: Subscription;
 
@@ -39,8 +39,10 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
   //Gestione Abilitazione Iscrizioni
   listenSelectedArea:Subscription;
   selectedArea: Area;
-  enableIscrizioni:boolean = false;  
+  areaEnableIscrizioni:boolean = false;  //Nell'area è possibile iscriversi ai corsi
   tempoCorso: typeof TempoCorso = TempoCorso;
+  tipoCorso: typeof TipoCorso = TipoCorso;
+  _labelNumeroGiorni = ''; //Etichetta con il numero dei giorni corso per settimana
 
 
   constructor(
@@ -48,7 +50,6 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
     private actRouter: ActivatedRoute,
     private navController: NavController,
     private mdlController: ModalController,
-    private docStructureService : DocstructureService,
     private loadingController : LoadingController,
     private toastController : ToastController
   ) {
@@ -67,21 +68,27 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
  * In ascolto dell'area selezionata, per capire se solo abilitate le iscrizioni
  */
   onListenSelectedArea() {
+
    this.listenSelectedArea = this.startService.areaSelected
-    .subscribe(elArea => {
+                                              .subscribe(elArea => {
 
-      this.selectedArea = elArea;
+                                                this.selectedArea = elArea;
+                                                LogApp.consoleLog('Area selezionata ' + elArea.DENOMINAZIONE,"log");
 
-      //Controllo se nell'area sono abilitate le iscrizioni
-      if (this.selectedArea.APPISCRIZIONI == true) {
-        this.enableIscrizioni = true;
-      }
-      else {
-        this.enableIscrizioni = false;
-      }
-  }, error => {
-    this.enableIscrizioni = false;
-  })
+                                                //Controllo se nell'area sono abilitate le iscrizioni
+                                                if (this.selectedArea.APPISCRIZIONI == true) {
+                                                  this.areaEnableIscrizioni = true;
+                                                  LogApp.consoleLog('Iscrizioni Abilitate', "log");
+                                                }
+                                                else {
+                                                  this.areaEnableIscrizioni = false;
+                                                  LogApp.consoleLog('Iscrizioni Disabilitate','log');
+                                                }
+                                            }, error => {
+                                              this.areaEnableIscrizioni = false;
+                                              LogApp.consoleLog(error, 'error');
+                                              LogApp.consoleLog('Iscrizioni Disabilitate per errore','error');
+                                            });
 }
 
 /**
@@ -100,78 +107,81 @@ onListenSelectedUser() {
     })
 }
               
-  ngOnInit() {
+ngOnInit() {
 
 
-    let idCorso = '';
-    let myElLoading: HTMLIonLoadingElement;
+  let idCorso = '';
+  let myElLoading: HTMLIonLoadingElement;
 
 
-    this.actRouter.paramMap.subscribe(param => {
-      //Ricerco il parametro courseId
-      if (param.has('courseId')) {
+  this.actRouter.paramMap.subscribe(param => {
+    //Ricerco il parametro courseId
+    if (param.has('courseId')) {
+      
+      //ID Corso
+      idCorso = param.get('courseId');
+
+      
+      //Creazione del Loadin di Caricamento
+      this.loadingController.create({
+        spinner: "circular",
+        message: 'Caricamento',
+        backdropDismiss: true
+      })
+      .then(elLoading => {
+        //Mostro il loading
+        myElLoading = elLoading;
+        elLoading.present();
         
-        //ID Corso
-        idCorso = param.get('courseId');
+        //Effettuo la richiesta del corso
+        return this.startService.newRequestCorsoById(idCorso)
+      })
+      .then((itemCorso: Corso) => {
+        //se ho trovato un corso, lo memorizzo
+        this.myCorso = itemCorso;
+        //Imposto l'etichetta per il numero di giornate
+        this._labelNumeroGiorni = this.myCorso.getLabelNumeroGiornateSettimanali();
 
-        
-        //Creazione del Loadin di Caricamento
-        this.loadingController.create({
-          spinner: "circular",
-          message: 'Caricamento',
-          backdropDismiss: true
-        })
-        .then(elLoading => {
-          //Mostro il loading
-          myElLoading = elLoading;
-          elLoading.present();
-          
-          //Effettuo la richiesta del corso
-          return this.startService.newRequestCorsoById(idCorso)
-        })
-        .then((itemCorso: Corso) => {
-          //se ho trovato un corso, lo memorizzo
-          this.myCorso = itemCorso;
-          //ora richiedo la location
-          return this.requestLocationById(this.myCorso.IDLOCATION);
-        })
-        .then((itemLocation: Location)=> {
-          //Spengo il loading
-          myElLoading.dismiss();
-          //Ho tutti i dati necessari
-          this.myLocation = itemLocation;
+        //ora richiedo la location
+        return this.requestLocationById(this.myCorso.IDLOCATION);
+      })
+      .then((itemLocation: Location)=> {
+        //Spengo il loading
+        myElLoading.dismiss();
+        //Ho tutti i dati necessari
+        this.myLocation = itemLocation;
 
-        })
-        .catch(error => {
-          //Si è verificato un errore
-          //Spengo il loading
-          myElLoading.dismiss();
+      })
+      .catch(error => {
+        //Si è verificato un errore
+        //Spengo il loading
+        myElLoading.dismiss();
 
-          this.showMessage('Errore nel caricamento delle informazioni del corso');
-          LogApp.consoleLog(error,'error');
-        })
+        this.showMessage('Errore nel caricamento delle informazioni del corso');
+        LogApp.consoleLog(error,'error');
+      })
 
-      }
-      else {
-        //Non c'e' il parametro
-        this.onGoToBack();
-      }
-    })           
+    }
+    else {
+      //Non c'e' il parametro
+      this.onGoToBack();
+    }
+  })           
+}
+
+ngOnDestroy() {
+  if (this.subMyCorso) {
+    this.subMyCorso.unsubscribe();
   }
 
-  ngOnDestroy() {
-    if (this.subMyCorso) {
-      this.subMyCorso.unsubscribe();
-    }
-
-    if (this.subUserLogged) {
-      this.subUserLogged.unsubscribe();
-    }
-
-    if (this.listenSelectedArea) {
-      this.listenSelectedArea.unsubscribe();
-    }
+  if (this.subUserLogged) {
+    this.subUserLogged.unsubscribe();
   }
+
+  if (this.listenSelectedArea) {
+    this.listenSelectedArea.unsubscribe();
+  }
+}
 
 
   //#region PULSANTE BACK
@@ -263,7 +273,7 @@ onListenSelectedUser() {
   */
   onClickIscrizione() {
 
-    if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+    if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
       
       //Non solo loggato, devo loggarmi
       if (!this.userLogged) {
@@ -357,7 +367,7 @@ onListenSelectedUser() {
     let myClass = 'title';
     if (this.myCorso) {
 
-      if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+      if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
         myClass = 'special';
       }
     }
@@ -373,7 +383,7 @@ onListenSelectedUser() {
     let myClass = 'light';
     if (this.myCorso) {
 
-      if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+      if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
         myClass = 'success';
       }
     }
@@ -385,14 +395,22 @@ onListenSelectedUser() {
    * Indica se mostrare il pulsante delle Iscrizioni
    */
   showIscrizioniButton():boolean {
-    let show = false;
+
+    let showButton = false;
+
     if (this.myCorso) {
-      if (this.enableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
-        show = true;
+
+      LogApp.consoleLog(`Sull'area le iscrizioni sono ${this.areaEnableIscrizioni ? 'abilitate':'disabilitate'}, e per le date di iscrizione corso l'iscrizione è ${this.myCorso.flagIscrizioniAperte() ? 'aperta':'chiusa'}`);
+
+      if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+
+        showButton = true;
       }
     }
 
-    return show;
+    
+
+    return showButton;
   }
 
   /**

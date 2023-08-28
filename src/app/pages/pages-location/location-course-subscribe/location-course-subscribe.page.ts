@@ -69,9 +69,6 @@ export class LocationCourseSubscribePage implements OnInit, OnDestroy {
               private navParams: NavParams,
               private modalCtrl: ModalController,
               private docStructureService : DocstructureService,
-              private loadingController : LoadingController,
-              private toastCtrl : ToastController,
-              private alertCtrl: AlertController,
               private navCtrl: NavController) {
 
               //Chiedo al server se c'e' qualche possibilità di pagamento rateale

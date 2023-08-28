@@ -43,6 +43,8 @@ import { TableEventiComponent } from './table-eventi/table-evento.component';
 import { TableArticoliComponent } from './table-articoli/table-articoli.component';
 import { TableItemArticoloComponent } from './table-item-articolo/table-item-articolo.component';
 import { CardImageComponent } from './card-image/card-image.component';
+import { PipesModule } from '../pipes/pipes.module';
+
 
 @NgModule({
 
@@ -52,7 +54,8 @@ import { CardImageComponent } from './card-image/card-image.component';
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        MaskitoModule
+        MaskitoModule,
+        PipesModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],    
     declarations: [
@@ -88,7 +91,8 @@ import { CardImageComponent } from './card-image/card-image.component';
         TableEventiComponent,
         TableArticoliComponent,
         TableItemArticoloComponent,
-        CardImageComponent
+        CardImageComponent,
+        
     ],
     exports: [
         AdvertisingComponent,

@@ -11,6 +11,7 @@ import { AmbitoNewsPipe } from './ambito-news.pipe';
 import { GiorniPrevistiPipe } from './giorni-previsti.pipe';
 import { ClasseDocumentoPipe } from './classe-documento.pipe';
 import { TipomasterdocumentoPipe } from './tipomasterdocumento.pipe';
+import { SafeHtmlPipe } from './safe-html.pipe';
 
 @NgModule({
     declarations: [LabelGiornoPipe, 
@@ -24,7 +25,8 @@ import { TipomasterdocumentoPipe } from './tipomasterdocumento.pipe';
                    AmbitoNewsPipe, 
                    GiorniPrevistiPipe, 
                    ClasseDocumentoPipe, 
-                   TipomasterdocumentoPipe],
+                   TipomasterdocumentoPipe, 
+                   SafeHtmlPipe],
     imports: [],
     exports: [LabelGiornoPipe, 
               StrutturaCampoPipe, 
@@ -37,7 +39,8 @@ import { TipomasterdocumentoPipe } from './tipomasterdocumento.pipe';
               AmbitoNewsPipe,
               GiorniPrevistiPipe,
               ClasseDocumentoPipe, 
-              TipomasterdocumentoPipe]
+              TipomasterdocumentoPipe,
+              SafeHtmlPipe]
 })
 export class PipesModule{}
 

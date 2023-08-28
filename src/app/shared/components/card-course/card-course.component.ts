@@ -23,10 +23,12 @@ export class CardCourseComponent implements OnInit {
     if (value) {
       this._myTempoCorso = this._myCorso.tempoCorso();
       this._myTempoIscrizioni = this._myCorso.tempoIscrizioni();
+      this._labelSettimanaCorso = this._myCorso.getLabelNumeroGiornateSettimanali();
     }
     else {
       this._myTempoCorso = TempoCorso.IN_CORSO;
       this._myTempoIscrizioni = TempoCorso.PASSATO;
+      this._labelSettimanaCorso = '';
     }
     //Reimposto il flag Iscrizioni
     this.setAdditionalPropUI();
@@ -49,6 +51,7 @@ export class CardCourseComponent implements OnInit {
   _myTempoIscrizioni: TempoCorso = TempoCorso.PASSATO;
   _flagIscrizioni: boolean = false;
   _useIscrizioniColor: boolean = false;
+  _labelSettimanaCorso: string = '';
 
   _version: number = 1; //Versione 1 o 2 del componente
 

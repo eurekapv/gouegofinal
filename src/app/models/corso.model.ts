@@ -56,7 +56,7 @@ export class Corso extends IDDocument {
     /**
     * Ritorna il descrittore della Struttura Campi
     */
-   getDescriptor(): Descriptor {
+    getDescriptor(): Descriptor {
     let objDescriptor = new Descriptor();
     let arString = ['DENOMINAZIONE',
                     'SIGLACALENDARIO',
@@ -112,9 +112,8 @@ export class Corso extends IDDocument {
     
   
     return objDescriptor;
-}    
+    }    
 
-   
 
     /**
      * Imposta le proprietà nell'oggetto
@@ -301,6 +300,55 @@ export class Corso extends IDDocument {
     }
 
     /**
+     * Ritorna il numero di giornate settimanali previste
+     */
+    getNumeroGiornateSettimanali(): number {
+      let count = 0;
+
+      if (this.GIORNIPREVISTI && this.GIORNIPREVISTI.length != 0) {
+        count = this.GIORNIPREVISTI.split(';').length;
+      }
+      
+      return count;
+    }
+
+    /**
+     * Ritorna una etichetta HTML a specificare il numero giornate alla settimana
+     */
+    getLabelNumeroGiornateSettimanali(): string {
+      let numGiorni = this.getNumeroGiornateSettimanali();
+      let labelHtml = '';
+      let myClassText = 'ion-text-bold'
+      let labelTipo = '';
+
+      switch (this.TIPO) {
+        case TipoCorso.corso:
+            labelTipo = 'Il corso'
+          break;
+
+        case TipoCorso.prova:
+            labelTipo = 'La prova'
+          break;
+      
+        default:
+          break;
+      }
+
+      if (numGiorni == 1) {
+        labelHtml = `${labelTipo} si svolge <ion-text class="${myClassText}">1 SOLO GIORNO</ion-text> alla settimana`
+      }
+      else if (numGiorni == 2) {
+        labelHtml = `${labelTipo} &egrave; <ion-text class="${myClassText}">BISETTIMANALE</ion-text>; si svolge 2 giorni a settimana`
+      }
+      else if (numGiorni != 0) {
+        labelHtml = `${labelTipo} si svolge <ion-text class="${myClassText}">${numGiorni} GIORNI</ion-text> alla settimana`
+      }
+
+      return labelHtml;
+
+    }
+
+    /**
      * Serve per capire la situazione temporale del corso rispetto ad oggi
      * FUTURO -> Inizia il DATAINIZIO
      * IN_CORSO -> Termina il DATAFINE
@@ -328,6 +376,12 @@ export class Corso extends IDDocument {
       return value;
     }
 
+    /**
+     * Serve per capire la situazione temporale delle iscrizioni rispetto ad oggi
+     * FUTURO -> Aprono il DATAINIZIO
+     * IN_CORSO -> Entro il DATAFINE
+     * PASSATO -> Sono concluse il DATAFINE
+     */    
     tempoIscrizioni():TempoCorso {
       let adesso = new Date();
       let value:TempoCorso = TempoCorso.PASSATO;
@@ -374,9 +428,10 @@ export class Corso extends IDDocument {
     flagIscrizioniAperte(): boolean {
       let flag: boolean = false;
 
-      if (this.STATODINAMICO == StatoCorso.iscrizioniAperte) {
+      if (this.tempoIscrizioni() == TempoCorso.IN_CORSO) {
         flag = true;
       }
+
 
       return flag;
     }
@@ -456,7 +511,7 @@ export class Corso extends IDDocument {
             const element = this.CORSOPROGRAMMA[index];
             if (element.TESTOHTML && element.TESTOHTML.length != 0) {
               if (txtReturn.length != 0) {
-                txtReturn += '<BR>';
+                txtReturn += '<br/>';
               }
               txtReturn += element.TESTOHTML;
             }

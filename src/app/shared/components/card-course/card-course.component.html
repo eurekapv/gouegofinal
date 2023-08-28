@@ -241,7 +241,9 @@
               <ion-col *ngIf="_myCorso.tempoCorso()==tempoCorso.PASSATO">
                 Il corso si è concluso <ion-text class="ion-text-bold ion-text-danger">{{_myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
               </ion-col>
-          </ion-row>          
+          </ion-row>   
+          
+         
 
           <!-- RIGA CON ORARIO E DURATA-->
           <ion-row 
@@ -266,6 +268,16 @@
             </ion-col>
           </ion-row>
 
+          <ion-row 
+                class="ion-padding-horizontal ion-padding-bottom"
+                *ngIf="_labelSettimanaCorso && _labelSettimanaCorso.length != 0"
+                >
+            <ion-col>
+              <p [innerHTML]="_labelSettimanaCorso | safeHtml"></p>
+            </ion-col>
+          </ion-row>           
+
+
         </ion-grid>
 
 
@@ -278,7 +290,7 @@
         <!-- OVERLAY GIORNATE -->
         <div class="overlay overlay_0" >
           <app-settimana-block
-              colorSelected="light"
+              colorSelected="primary"
               size="auto"
               [showOnlySelected] = "true"
               [listDays]="_myCorso?._SETTIMANA"

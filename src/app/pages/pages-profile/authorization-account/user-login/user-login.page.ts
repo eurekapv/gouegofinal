@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ModalController, LoadingController, ToastController, NavController, AlertController, IonInput } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
@@ -83,9 +83,9 @@ export class UserLoginPage implements OnInit {
 
 
   //varibili formGroup (per usare i reactive forms)
-  formRegister: UntypedFormGroup; 
-  formLogin: UntypedFormGroup;
-  formContact: UntypedFormGroup;
+  formRegister: FormGroup; 
+  formLogin: FormGroup;
+  formContact: FormGroup;
   //Immagine del gruppo sportivo (Icona o Logo)
   urlImage: string = '';
 
@@ -1321,12 +1321,12 @@ export class UserLoginPage implements OnInit {
    * Funzione di creazione della Form di Login
    */
   createLoginForm(){
-    this.formLogin = new UntypedFormGroup({
-      username: new UntypedFormControl(null, {
+    this.formLogin = new FormGroup({
+      username: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),
-      password: new UntypedFormControl(null, {
+      password: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       })
@@ -1351,12 +1351,12 @@ export class UserLoginPage implements OnInit {
 
 
     //form dei contatti (mail e telefono)
-    this.formContact=new UntypedFormGroup({
-      email: new UntypedFormControl(null, {
+    this.formContact=new FormGroup({
+      email: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required, Validators.email]
       }),
-      telephone: new UntypedFormControl(null, {
+      telephone: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required, Validators.pattern(pattTelefono)]
       })
@@ -1370,32 +1370,32 @@ export class UserLoginPage implements OnInit {
   createRegisterForm(){
     let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
     //form di registrazione
-    this.formRegister=new UntypedFormGroup({
-      name: new UntypedFormControl(null, {
+    this.formRegister=new FormGroup({
+      name: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),
-      surname: new UntypedFormControl(null, {
+      surname: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),
-      psw: new UntypedFormControl(null, {
+      psw: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),
-      verifyPsw: new UntypedFormControl(null, {
+      verifyPsw: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),      
-      codFisc: new UntypedFormControl(null,{
+      codFisc: new FormControl(null,{
         updateOn: 'change',
         validators: [Validators.required, Validators.pattern(patternCodice)]
       }),
-      chkPrivacy: new UntypedFormControl(false, {
+      chkPrivacy: new FormControl(false, {
         updateOn: 'change',
         validators: [this.isPolicyLink() ? Validators.requiredTrue: Validators.nullValidator]
       }),
-      chkNewsletter: new UntypedFormControl(true, {
+      chkNewsletter: new FormControl(true, {
         updateOn: 'change',
         validators: []
       })      

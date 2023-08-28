@@ -66,7 +66,7 @@
     "native": "^0.2.0",
     "native-run": "^0.3.0",
     "run": "^1.4.0",
-    "rxjs": "^6.6.0",
+    "rxjs": "^7.5.0",
     "scriptjs": "^2.5.9",
     "sportsfont": "^1.1.1",
     "swiper": "^9.3.1",

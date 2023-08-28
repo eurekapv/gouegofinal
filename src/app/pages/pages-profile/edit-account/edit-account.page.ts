@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Utente } from 'src/app/models/utente.model';
 import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
@@ -20,7 +20,7 @@ import { LogApp } from 'src/app/models/log.model';
 })
 export class EditAccountPage implements OnInit, OnDestroy {
 
-  form: FormGroup; 
+  form: UntypedFormGroup; 
 
   utente:Utente = new Utente;
   utenteListen: Subscription;
@@ -105,56 +105,56 @@ export class EditAccountPage implements OnInit, OnDestroy {
     let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
     
 
-    this.form=new FormGroup({
-      nome:new FormControl(this.utente.NOME, {
+    this.form=new UntypedFormGroup({
+      nome:new UntypedFormControl(this.utente.NOME, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      cognome:new FormControl(this.utente.COGNOME, {
+      cognome:new UntypedFormControl(this.utente.COGNOME, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      sesso:new FormControl(this.utente.SESSO, {
+      sesso:new UntypedFormControl(this.utente.SESSO, {
         updateOn:'change',
         validators: []
       }),
-      provNascita:new FormControl(this.utente.NATOPROV, {
+      provNascita:new UntypedFormControl(this.utente.NATOPROV, {
         updateOn:'change',
         validators: []
       }),
-      comNascita:new FormControl(this.utente.NATOA, {
+      comNascita:new UntypedFormControl(this.utente.NATOA, {
         updateOn:'change',
         validators: []
       }),
-      statoNascita:new FormControl(this.utente.NATOISOSTATO, {
+      statoNascita:new UntypedFormControl(this.utente.NATOISOSTATO, {
         updateOn:'change',
         validators: []
       }),
-      capNascita:new FormControl(this.utente.NATOCAP, {
+      capNascita:new UntypedFormControl(this.utente.NATOCAP, {
         updateOn:'change',
         validators: []
       }),
-      provResidenza:new FormControl(this.utente.PROVINCIA, {
+      provResidenza:new UntypedFormControl(this.utente.PROVINCIA, {
         updateOn:'change',
         validators: []
       }),
-      comResidenza:new FormControl(this.utente.COMUNE, {
+      comResidenza:new UntypedFormControl(this.utente.COMUNE, {
         updateOn:'change',
         validators: []
       }),
-      indResidenza:new FormControl(this.utente.INDIRIZZO, {
+      indResidenza:new UntypedFormControl(this.utente.INDIRIZZO, {
         updateOn:'change',
         validators: []
       }),
-      capResidenza:new FormControl(this.utente.CAP, {
+      capResidenza:new UntypedFormControl(this.utente.CAP, {
         updateOn:'change',
         validators: []
       }),
-      statoResidenza:new FormControl(this.utente.ISOSTATO, {
+      statoResidenza:new UntypedFormControl(this.utente.ISOSTATO, {
         updateOn:'change',
         validators: []
       }),
-      cf:new FormControl(this.utente.CODICEFISCALE, {
+      cf:new UntypedFormControl(this.utente.CODICEFISCALE, {
         updateOn:'change',
         validators: [Validators.pattern(patternCodice)]
       })
@@ -163,7 +163,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
     if(!this.docGruppo.needMobileVerify){
 
       //devo creare il campo mobile solo per mostrarlo
-      let mobile = new FormControl(this.utente.MOBILENUMBER, {
+      let mobile = new UntypedFormControl(this.utente.MOBILENUMBER, {
         updateOn: 'change',
         validators: []
       })
@@ -173,7 +173,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
     if(!this.docGruppo.needEmailVerify){
       //devo creare il campo tel
-      let email = new FormControl(this.utente.EMAIL, {
+      let email = new UntypedFormControl(this.utente.EMAIL, {
         updateOn: 'change',
         validators: [Validators.email]
       })

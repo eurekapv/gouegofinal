@@ -14,6 +14,9 @@ npm install @capacitor-community/file-opener@1.0.4
 ```console
 npm install @capawesome/capacitor-file-picker
 ```
+- Rimosso npm uninstall @ionic-native/status-bar/ngx
+- Rimosso npm uninstall @ionic-native/splash-screen
+
 
 
 

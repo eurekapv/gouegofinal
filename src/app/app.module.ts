@@ -19,7 +19,6 @@ import localeIt from '@angular/common/locales/it';
 
 import { CryptoService } from './library/services/crypto.service';
 
-import { File } from '@ionic-native/file/ngx';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
@@ -40,8 +39,7 @@ registerLocaleData(localeIt,'it');
     providers: [
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
         { provide: LOCALE_ID, useValue: 'it' },
-        CryptoService,
-        File
+        CryptoService
     ],
     bootstrap: [AppComponent]
 })

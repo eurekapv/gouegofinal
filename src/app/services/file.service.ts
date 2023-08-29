@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { File } from '@ionic-native/file/ngx';
 import { Platform } from '@ionic/angular';
 import { LogApp } from '../models/log.model';
 import { FileOpener } from '@capacitor-community/file-opener';
+import { File } from '@awesome-cordova-plugins/file';
 
 
 @Injectable({
@@ -11,7 +11,6 @@ import { FileOpener } from '@capacitor-community/file-opener';
 export class FileService {
 
   constructor(
-    private file: File,
     private platform: Platform
   ) { }
 
@@ -42,10 +41,10 @@ export class FileService {
   openMobile(blob: Blob): void {
 
     let fileName='Documento';         
-    let filePath= this.file.cacheDirectory;      
+    let filePath= File.cacheDirectory;      
     
 
-  this.file.writeFile(filePath, fileName, blob, { replace:true }).then((fileEntry) => {
+    File.writeFile(filePath, fileName, blob, {replace: true}).then((fileEntry) => {
 
     //Utilizzo il nuovo File Opener per aprire i file
     FileOpener.open({filePath: fileEntry.toURL(), contentType: blob.type})

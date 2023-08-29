@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SorgenteFile, TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
-import { Chooser, ChooserResult } from '@ionic-native/chooser/ngx';
 import { ToastController, ModalController, AlertController, AlertButton } from '@ionic/angular';
 import { InvioDocumentazione } from 'src/app/models/documentazione.model';
 import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
 import { LogApp } from 'src/app/models/log.model';
+import { Chooser, ChooserResult } from '@awesome-cordova-plugins/chooser';
 
 
 
@@ -46,7 +46,6 @@ export class UploadComponent implements OnInit {
  
 
   constructor(
-    private chooser : Chooser,
     private toastController : ToastController,
     private modalController : ModalController,
     private alertController: AlertController
@@ -68,24 +67,24 @@ export class UploadComponent implements OnInit {
     if (this.sorgenteFile == SorgenteFile.filesystem) {
 
       //Caricamento con il metodo File
-      this.chooser.getFile()
-      .then(file => {
+      Chooser.getFile()      
+              .then(file => {
 
-        //Questo è il file caricato
-        this.loadedMobileFile = file;
-        this.fileLoaded = true;
-        this.fileNameShow = this.loadedMobileFile.name;
+                //Questo è il file caricato
+                this.loadedMobileFile = file;
+                this.fileLoaded = true;
+                this.fileNameShow = this.loadedMobileFile.name;
 
-      })
-      .catch((error: any) => {
+              })
+              .catch((error: any) => {
 
-        this.loadedMobileFile = null;
-        this.fileLoaded = false;
-        this.fileNameShow = '';
-        
+                this.loadedMobileFile = null;
+                this.fileLoaded = false;
+                this.fileNameShow = '';
+                
 
-        LogApp.consoleLog(error,'error');
-      });
+                LogApp.consoleLog(error,'error');
+              });
 
     }
     else if (this.sorgenteFile == SorgenteFile.fromgallery) {
@@ -325,8 +324,8 @@ export class UploadComponent implements OnInit {
         }
       }
       else if (this.loadedMobileFile) {
-
-        resolve(this.loadedMobileFile.dataURI);
+        
+        resolve(this.loadedMobileFile.path);
 
       }
     })

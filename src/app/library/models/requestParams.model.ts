@@ -112,6 +112,24 @@ export class PostParams {
 
     return jsonReturn;
   }
+
+  /**
+   * Aggiunge all'Array Passato dei Parametri, una nuova chiave / valore
+   * @param collectionParams 
+   * @param key 
+   * @param value 
+   */
+  static addParamsTo(collectionParams: PostParams[], key: string, value: any) {
+    if (collectionParams) {
+      
+      let myParam: PostParams = new PostParams();
+      myParam.key = key;
+      myParam.value = value;
+
+      collectionParams.push(myParam);
+    }
+  }
+
 }
 
 

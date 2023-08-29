@@ -1,3 +1,10 @@
+## Aggiornameno a Ionic 7
+- Sostituzione di tutti gli IonSlides con Swiper
+- Aggiornamento DatePicker
+- Eliminazione Moment.js per Date-Fns (Aggiornamento tutti i riferimenti moment)
+
+
+
 # Per la preparazione dei pacchetti Mobile
 Attenzione: controllare il file capacitor.config.ts ed eventualmente sostituirlo con il file
 corretto presente nella cartella resources\nome società

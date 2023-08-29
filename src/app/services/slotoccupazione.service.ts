@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import * as moment from "moment";
 import { BehaviorSubject } from 'rxjs';
-import { HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-
+import { HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
-
 import { SlotDay } from '../models/imdb/slotday.model';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { Location } from '../models/location.model';
@@ -12,8 +9,10 @@ import { Campo } from '../models/campo.model';
 import { DateSlotLock } from '../models/dateslotlock.model';
 import { SlotTime } from '../models/imdb/slottime.model';
 import { StatoSlot } from '../models/valuelist.model';
-import { MyDateTime } from '../library/models/mydatetime.model';
+import { MyDateTime, TypePeriod } from '../library/models/mydatetime.model';
 import { LogApp } from '../models/log.model';
+import { DocstructureService } from '../library/services/docstructure.service';
+import { PostParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -29,7 +28,8 @@ export class SlotoccupazioneService {
     return this._docOccupazione.asObservable();
   }
 
-  constructor(private apiCall: ApicallService) {
+  constructor(private apiCall: ApicallService, 
+              private docStructureSrv: DocstructureService) {
     this.gapHour = 0;
     this.gapMinutes = 0;
    }
@@ -59,7 +59,7 @@ export class SlotoccupazioneService {
    * @param docCampo Campo richiesto
    * @param dataGiorno Giorno richiesto
    */
-  request(config: StartConfiguration,
+  requestOldVersion(config: StartConfiguration,
           templateSlotDay: SlotDay,
           docLocation: Location, 
           docCampo: Campo, 
@@ -68,7 +68,8 @@ export class SlotoccupazioneService {
 
       let myHeaders = config.getHttpHeaders();
       const doObject = 'CAMPO';
-      const strData = moment(dataGiorno).format('YYYY-MM-DD');
+      //const strData = moment(dataGiorno).format('YYYY-MM-DD');
+      const strData = MyDateTime.formatDateISO(dataGiorno, "date");
       myHeaders = myHeaders.append('X-HTTP-Method-Override','GETDATESLOTLOCK');
       
       if (docLocation && docCampo)  {
@@ -110,6 +111,68 @@ export class SlotoccupazioneService {
 
   
   } 
+
+  /**
+   * Prende in ingresso il template Slot Day, richiede al server i soli dati di occupazione di un determinato campo per un determinato giorno,
+   * sistema il template con le occupazioni e lo riporta come risultato Observable
+   * 
+   * 
+   * @param config Dati configurazione
+   * @param docLocation Location richiesta
+   * @param docCampo Campo richiesto
+   * @param dataGiorno Giorno richiesto
+   */
+  request(config: StartConfiguration,
+          templateSlotDay: SlotDay,
+          docLocation: Location, 
+          docCampo: Campo, 
+          dataGiorno: Date): Promise<void> {
+
+        return new Promise<void>((resolve, reject)=>{
+
+          //const strData = moment(dataGiorno).format('YYYY-MM-DD');
+          const strData = MyDateTime.formatDateISO(dataGiorno, "date");
+
+          let docToCall: Campo = new Campo(true);
+          let arParams: PostParams[] = []; //Collection dei parametri
+          let method = 'GETDATESLOTLOCK';
+
+          if (docLocation && docCampo) {
+            //Preparazione parametri
+            PostParams.addParamsTo(arParams, 'guidArea', docLocation.IDAREAOPERATIVA);
+            PostParams.addParamsTo(arParams, 'guidLocation', docLocation.ID);
+            PostParams.addParamsTo(arParams, 'guidCampo', docCampo.ID);
+            PostParams.addParamsTo(arParams, 'dataGiorno',strData);
+
+            this.docStructureSrv.requestForFunction(docToCall, method, '', arParams)
+                                .then(resultData => {
+
+                                      //Reimposto il Gap dei minuti
+                                      this.setGapMinutes(docLocation.MINUTIPREAVVISOPRENOTAZIONE);
+                                      
+                                      //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
+                                      this.syncResult(resultData, templateSlotDay);
+                                      resolve();                                  
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+          }
+          else {
+
+            //Reimposto lo stesso Slot che mi era stato passato
+            this._docOccupazione.next(templateSlotDay);
+            
+            LogApp.consoleLog('Dati Occupazione: RICHIESTA FAILED');
+            LogApp.consoleLog('Manca' + (!docLocation?'Location':'') + ' ' + (!docCampo?'Campo':''));
+            
+            reject('Richiesta non effettuata');
+            
+          }          
+        })
+
+
+}   
   
   /**
    * 
@@ -119,7 +182,7 @@ export class SlotoccupazioneService {
   private syncResult(resultDataServer: any, templateSlot: SlotDay) {
     //Converto il risultato in un oggetto reale
     let srvResult = new DateSlotLock();
-    let nowMoment: any;
+    let adesso: Date = new Date();
     let isSlotOccupato: boolean;
 
     srvResult.setJSONProperty(resultDataServer);
@@ -147,10 +210,12 @@ export class SlotoccupazioneService {
             if (elSlotTime.STATO !== StatoSlot.chiuso) {
 
               //Ora Attuale
-              nowMoment = moment();
+              adesso = new Date();
+
 
               //Lo Slot è nel passato - lo imposto a chiuso
-              if (moment(elSlotTime.START).isSameOrBefore(nowMoment)) {
+              //if (moment(elSlotTime.START).isSameOrBefore(adesso)) {
+              if (MyDateTime.isSameOrBefore(elSlotTime.START, adesso, 'minute')) {
                   
                 //Lo Slot non è disponibile
                 elSlotTime.STATO = StatoSlot.chiuso;
@@ -169,10 +234,12 @@ export class SlotoccupazioneService {
                   //Sembra libero lo SLOT ma controlliamo se c'e' un GAP di Preavviso
                   if (this.gapHour != 0) {
 
-                    let disponibileDa = nowMoment.add(this.gapHour, 'hours');
+                    //let disponibileDa = adesso.add(this.gapHour, 'hours');
+                    let disponibileDa = MyDateTime.calcola(adesso, this.gapHour, TypePeriod.hours);
 
                     //Essendo dopo il preavviso lo segno come libero
-                    if (moment(elSlotTime.START).isAfter(disponibileDa)) {
+                    //if (moment(elSlotTime.START).isAfter(disponibileDa)) {
+                    if (MyDateTime.isAfter(elSlotTime.START, disponibileDa)) {
                       elSlotTime.STATO = StatoSlot.libero;
                     }
                     else {
@@ -200,69 +267,6 @@ export class SlotoccupazioneService {
 
   }
  
-    /**
-   * 
-   * @param resultDataServer Result in arrivo dal server
-   * @param templateSlot Template Slot in arrivo dalla videata
-   */
-     private syncResultOriginale(resultDataServer: any, templateSlot: SlotDay) {
-      //Converto il risultato in un oggetto reale
-      let srvResult = new DateSlotLock();
-      srvResult.setJSONProperty(resultDataServer);
-  
-  
-      /**Informazioni occupazioni ricevute */
-      if (srvResult.RESULT) {
-        templateSlot._TEMPLATELOCK = false; //Sblocco il template in quanto son arrivati i risultati
-        templateSlot.APERTOCHIUSO = srvResult.APERTOCHIUSO;
-  
-  
-          /** Ciclo sugli Slot Orari */
-          templateSlot.SLOTTIMES.forEach(elSlotTime => {
-            //TUTTO CHIUSO
-            if (!templateSlot.APERTOCHIUSO) {
-              //Giornata Chiusa
-              elSlotTime.STATO = StatoSlot.chiuso;
-            }
-            else {
-              //Giornata Aperta
-              //Lo Slot ha già una impostazione da Template
-              //Nel caso da template sia CHIUSO non lo cambio
-  
-              if (elSlotTime.STATO !== StatoSlot.chiuso) {
-  
-                //ad Adesso applico un gap di Ore
-                //GAP ORE E' un preavviso
-                let adesso = moment().add(this.gapHour, 'hours');
-                 
-                //Se l'inizio dello Slot è superiore ad adesso
-                if (moment(elSlotTime.START).isAfter(adesso))  {
-  
-                  let inSlot = this.slotInServerSlotLock(elSlotTime, srvResult);
-    
-                
-                  if (inSlot) {
-                    //E' tra gli slot occupati
-                    elSlotTime.STATO = StatoSlot.occupato;
-                  }
-                }
-                else {
-                  //Lo Slot non è disponibile
-                  elSlotTime.STATO = StatoSlot.chiuso;
-                }
-  
-              }
-            }
-          });
-  
-        
-      }
-  
-      //Emetto l'evento di cambio
-      this._docOccupazione.next(templateSlot);
-  
-    }
-
   /**
    * Controlla se lo Slot è dentro a quelli Lock arrivati dal server
    * @param docSlot Slot da controllare 

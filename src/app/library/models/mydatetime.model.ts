@@ -7,6 +7,13 @@ export class MyDateTime {
     //#region SIMULAZIONE MOMENT JS
     //Funzioni non native di date-fns e ricreate
 
+    /**
+     * Controlla se Date è uguale o inferiore a dateCompare
+     * @param date Data Primaria
+     * @param dateCompare Data Comparativa
+     * @param type Modalità confronto
+     * @returns 
+     */
     static isSameOrBefore(date: number | Date, dateCompare: number | Date, type:'minute'): boolean {
         let flagResult = false;
 
@@ -20,6 +27,13 @@ export class MyDateTime {
         return flagResult;
     }
 
+    /**
+     * Controlla se Date è uguale o superiore a dateCompare
+     * @param date Data Primaria
+     * @param dateCompare Data Comparativa
+     * @param type Modalità confronto
+     * @returns 
+     */
     static isSameOrAfter(date: number | Date, dateCompare: number | Date, type:'minute'): boolean {
         let flagResult = false;
 
@@ -29,6 +43,20 @@ export class MyDateTime {
                 flagResult = true;
             }
         }
+
+        return flagResult;
+    }    
+
+    /**
+     * Controlla se Date è superiore a dateCompare
+     * @param date Data Primaria
+     * @param dateCompare Data Comparativa
+     * @returns 
+     */
+    static isAfter(date: number | Date, dateCompare: number | Date): boolean {
+        let flagResult = false;
+
+        flagResult = isAfter(date, dateCompare);
 
         return flagResult;
     }    

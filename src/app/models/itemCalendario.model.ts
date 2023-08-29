@@ -59,7 +59,7 @@ export class ItemCalendario{
             paramsItem.badgeIcon = "calendar-outline"
         }
         paramsItem.riga2Text = `${occupazioneElem['_DENOMINAZIONE_Location']} - ${occupazioneElem['_DENOMINAZIONE_Campo']}`;
-        paramsItem.riga3Text = MyDateTime.formatDate(occupazioneElem.DATAINIZIO, 'DD/MM/YYYY');
+        paramsItem.riga3Text = MyDateTime.formatDate(occupazioneElem.DATAINIZIO, 'dd/MM/yyyy');
 
         paramsItem.badgeColor = "primary";
 

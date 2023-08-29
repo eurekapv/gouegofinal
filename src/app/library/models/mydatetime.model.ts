@@ -1,29 +1,78 @@
-import * as moment from "moment";
 import { TipoChiusura } from 'src/app/models/valuelist.model';
 import { TypeDefinition } from './descriptor.model';
+import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addQuarters, addSeconds, addWeeks, addYears, differenceInMinutes, differenceInSeconds, differenceInYears, endOfMonth, endOfWeek, format, formatISO, isAfter, isBefore, isDate, isEqual, isSameDay, isSameMinute, startOfMonth, startOfWeek, subDays, subHours, subMilliseconds, subMinutes, subMonths, subQuarters, subSeconds, subWeeks, subYears } from "date-fns";
 
 export class MyDateTime {
 
-//Formatta una data passata in ISO (Solo la parte data)
-static formatDateISO(data: Date): string {
-    let intMese = data.getMonth() + 1;
-    let intGiorno = data.getDate();
-    let mese = (intMese > 9) ? (intMese + '') : ('0' + intMese);
-    let giorno = (intGiorno > 9) ? (intGiorno + '') : ('0' + intGiorno);
-    let format = [data.getFullYear(), mese, giorno].join('-');
+    //#region SIMULAZIONE MOMENT JS
+    //Funzioni non native di date-fns e ricreate
 
-    return format;
+    static isSameOrBefore(date: number | Date, dateCompare: number | Date, type:'minute'): boolean {
+        let flagResult = false;
+
+        if (type == 'minute') {
+            //Controllo al minuto
+            if (isBefore(date, dateCompare) || isSameMinute(date, dateCompare)) {
+                flagResult = true;
+            }
+        }
+
+        return flagResult;
     }
 
-//Formatta una data passata in ISO (Data e Ora)
-static formatDateTimeISO(data: Date): string {
-    let prefixDate = MyDateTime.formatDateISO(data);
-    let ore = (data.getHours() > 9) ? (data.getHours() + '') : ('0' + data.getHours());
-    let minuti = (data.getMinutes() > 9) ? (data.getMinutes() + '') : ('0' + data.getMinutes());
-    let secondi = (data.getSeconds() > 9) ? (data.getSeconds() + '') : ('0' + data.getSeconds());
-    let final = prefixDate + ' ' + ore + ':' + minuti + ':' + secondi;
+    static isSameOrAfter(date: number | Date, dateCompare: number | Date, type:'minute'): boolean {
+        let flagResult = false;
 
-    return final;
+        if (type == 'minute') {
+            //Controllo al minuto
+            if (isAfter(date, dateCompare) || isSameMinute(date, dateCompare)) {
+                flagResult = true;
+            }
+        }
+
+        return flagResult;
+    }    
+
+
+
+    /**
+     * Simula il comportamento isBetween di Moment (non disponibile nativamente in date-fns)
+     * @param date 
+     * @param from 
+     * @param to 
+     * @param inclusivity 
+     * @returns 
+     */
+    static isBetween = (date: number | Date, from: number | Date, to: number | Date, inclusivity = '()') => {
+        if (!['()', '[]', '(]', '[)'].includes(inclusivity)) {
+            throw new Error('Inclusivity parameter must be one of (), [], (], [)');
+        }
+    
+        const isBeforeEqual = inclusivity[0] === '[',
+            isAfterEqual = inclusivity[1] === ']';
+    
+        return (isBeforeEqual ? (isEqual(from, date) || isBefore(from, date)) : isBefore(from, date)) &&
+            (isAfterEqual ? (isEqual(to, date) || isAfter(to, date)) : isAfter(to, date));
+    };    
+
+    static isDate(value: any): boolean {
+        let flagResult = false;
+        flagResult = isDate(value);
+
+        return flagResult;
+    }
+
+    //#endregion
+
+//Formatta una data passata in ISO (Solo la parte data)
+static formatDateISO(dateValue: Date, formatRepresentation: 'date' | 'time' | 'complete'): string {
+    let isoValue = '';
+
+    if (dateValue) {
+        isoValue = formatISO(dateValue, {representation: formatRepresentation});
+    }
+
+    return isoValue;
 }
 
 //Formatta un orario passata  (Data e Ora)
@@ -45,12 +94,15 @@ static formatTime(data: Date, withSeconds:boolean =false): string {
 
 /**
  * 
- * @param data Data
- * @param format Formattazione di moment.js da applicare
+ * @param dateValue Data
+ * @param format Formattazione da applicare
  */
-static formatDate(data: Date, maskFormat: string): string {
-    //https://momentjs.com/docs/#/displaying/
-    return moment(data).format(maskFormat);
+static formatDate(dateValue: Date, maskFormat: string): string {
+    let dateFormatted = '';
+
+    dateFormatted = format(dateValue, maskFormat);
+
+    return dateFormatted;
 }
 
 
@@ -60,19 +112,15 @@ static formatDate(data: Date, maskFormat: string): string {
 */
 static stringToDateObject(strInput: string): Date {
  //1 - Devo capire cos'è
- let strDate = moment().format('YYYY-MM-DD');
+ let strDate = format(new Date(), 'yyyy-MM-dd');
  let strTime = '00:00:00'
  let timeZone = '+01:00';
  let strComplete = '';
  let dataReturn: Date;
  let arElement: string[];
  
-
-
  arElement = [];
  
-
-
  if (strInput && strInput.length !== 0) {
 
     //Splitto Data, Ora, TimeZone
@@ -95,7 +143,7 @@ static stringToDateObject(strInput: string): Date {
     
     //Non aggiungere il TimeZone perchè non da errori ma l'uso della proprietà data da problemi
     strComplete = `${strDate}T${strTime}`;
-    dataReturn = moment(strComplete).toDate();
+    dataReturn = new Date(strComplete);
 
 
     return dataReturn;
@@ -182,7 +230,7 @@ static changeDateInTime(nuovaData: Date, applyDataOra: Date) {
     let newReturn: Date;
 
     if (nuovaData && applyDataOra) {
-        strDataOra = MyDateTime.formatDateISO(nuovaData);
+        strDataOra = MyDateTime.formatDateISO(nuovaData,"date");
 
         let ore = (applyDataOra.getHours() > 9) ? (applyDataOra.getHours() + '') : ('0' + applyDataOra.getHours());
         let minuti = (applyDataOra.getMinutes() > 9) ? (applyDataOra.getMinutes() + '') : ('0' + applyDataOra.getMinutes());
@@ -191,7 +239,7 @@ static changeDateInTime(nuovaData: Date, applyDataOra: Date) {
         strDataOra = `${strDataOra}T${ore}:${minuti}:${secondi}`;
 
         
-        newReturn = moment(strDataOra).toDate();
+        newReturn = new Date(strDataOra);
     }
 
     return newReturn;
@@ -207,7 +255,7 @@ static changeDateInTime(nuovaData: Date, applyDataOra: Date) {
     let newReturn: Date;
 
     if (dateSource && timeSource) {
-        strDataOra = MyDateTime.formatDateISO(dateSource);
+        strDataOra = MyDateTime.formatDateISO(dateSource,"date");
 
         let ore = (timeSource.getHours() > 9) ? (timeSource.getHours() + '') : ('0' + timeSource.getHours());
         let minuti = (timeSource.getMinutes() > 9) ? (timeSource.getMinutes() + '') : ('0' + timeSource.getMinutes());
@@ -216,7 +264,7 @@ static changeDateInTime(nuovaData: Date, applyDataOra: Date) {
         strDataOra = `${strDataOra}T${ore}:${minuti}:${secondi}`;
 
         
-        newReturn = moment(strDataOra).toDate();
+        newReturn = new Date(strDataOra);
     }
 
     return newReturn;
@@ -236,19 +284,26 @@ static dateTimeInside(startCheck: Date, endCheck: Date, minDateTime:Date, maxDat
 // oppure B) INIZIO IN MEZZO SENZA FINE     --> start >= min && start < max
 // oppure C) FUORI                          --> start <= min && end >= max
 
-    let result = false;
+    let flagResult = false;
+
+    //Simulo il comportament isBetween di Moment
+    if (MyDateTime.isBetween(endCheck, minDateTime, maxDateTime, '(]') || 
+        MyDateTime.isBetween(startCheck, minDateTime, maxDateTime, '[)') ||
+        (MyDateTime.isSameOrBefore(startCheck, minDateTime,'minute') && MyDateTime.isSameOrAfter(endCheck, maxDateTime, 'minute'))) {
+            flagResult = true;
+    }
 
     //Moment consente di decidere [ uguaglianza o ( esclusione di una data
-    if (moment(endCheck).isBetween(minDateTime, maxDateTime,'minute','(]') || 
-        moment(startCheck).isBetween(minDateTime, maxDateTime,'minute','[)') || 
-        ( 
-            moment(startCheck).isSameOrBefore(minDateTime,'minute') && moment(endCheck).isSameOrAfter(maxDateTime,'minute') 
-        )) {
+    // if (moment(endCheck).isBetween(minDateTime, maxDateTime,'minute','(]') || 
+    //     moment(startCheck).isBetween(minDateTime, maxDateTime,'minute','[)') || 
+    //     ( 
+    //         moment(startCheck).isSameOrBefore(minDateTime,'minute') && moment(endCheck).isSameOrAfter(maxDateTime,'minute') 
+    //     )) {
 
-            result = true;
-        }
+    //         result = true;
+    //     }
 
-    return result;
+    return flagResult;
 
 }
 
@@ -256,16 +311,18 @@ static dateTimeInside(startCheck: Date, endCheck: Date, minDateTime:Date, maxDat
  * Calcola il numero di Ore intercorse tra le due date ore
  * @param startDate Data Ora Iniziale (Inferiore)
  * @param endDate Data Ora Finale (Superiore)
+ * @returns Valore Decimale delle Ore
  */
 static durataOre(startDate: Date, endDate: Date): number {
-    let ore = 0;
+    let hourValue = 0;
+    let minValue = 0;
+
     if (startDate && endDate) {
-        let mStart = moment(startDate);
-        let mEnd = moment(endDate);
-        ore = mEnd.diff(mStart, 'hours', true);
+        minValue = differenceInMinutes(startDate, endDate);
+        hourValue = minValue / 60;
     }
 
-    return ore;
+    return hourValue;
 }
 
 
@@ -275,14 +332,13 @@ static durataOre(startDate: Date, endDate: Date): number {
  * @param superiorDate Data Ora Finale (Superiore)
  */
 static durataAnni(inferiorDate: Date, superiorDate: Date): number {
-    let anni = 0;
+    let yearsValue = 0;
+
     if (inferiorDate && superiorDate) {
-        let mStart = moment(inferiorDate);
-        let mEnd = moment(superiorDate);
-        anni = mEnd.diff(mStart, 'years', true);
+        yearsValue = differenceInYears(inferiorDate, superiorDate);
     }
 
-    return anni;
+    return yearsValue;
 }
 
 /**
@@ -291,41 +347,153 @@ static durataAnni(inferiorDate: Date, superiorDate: Date): number {
  * @param date2 
  */
 static durataSecondi(date1: Date, date2: Date): number {
-    let mySec = 0;
+    let secondsValue = 0;
+
     if (date1 && date2) {
-        let m1 = moment(date1);
-        let m2 = moment(date2);
-        mySec = m1.diff(m2, 'seconds',true)
+        secondsValue = differenceInSeconds(date1, date2);
     }
 
-    return mySec;
+    return secondsValue;
 }
 
 /**
  * Aggiungo o sottrae da una data il periodo passato nei parametri
- * @param dateTime Data Ora di partenza
+ * @param startDateTime Data Ora di partenza
  * @param addOrSub Valore numerico positivo per aggiungere, neghativo per sottrarre
  * @param period Periodo da aggiungere o sottrarre
  */
-static calcola(dateTime: Date, addOrSub: number, period:TypePeriod): Date {
+static calcola(startDateTime: Date, addOrSub: number, period:TypePeriod): Date {
     let value: number;
-    let dReturn: Date;
+    let returnDate: Date;
 
-    if (dateTime && period) {
-        let mDate = moment(dateTime); //Oggetto di tipo moment
-        if (addOrSub < 0) {
-            value = addOrSub * -1;
-            mDate.subtract(value, period);
-        }
-        else if (addOrSub > 0) {
-            value = addOrSub;
-            mDate.add(value, period);
-        }
+    if (startDateTime && period) {
 
-        dReturn = mDate.toDate();
+        switch (period) {
+
+            case TypePeriod.years:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addYears(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subYears(startDateTime, value);
+                }
+            break;
+
+            case TypePeriod.quarters:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addQuarters(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subQuarters(startDateTime, value);
+                }
+            break;            
+
+            case TypePeriod.months:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addMonths(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subMonths(startDateTime, value);
+                }
+            break;            
+
+            case TypePeriod.weeks:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addWeeks(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subWeeks(startDateTime, value);
+                }
+            break;            
+
+            case TypePeriod.days:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addDays(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subDays(startDateTime, value);
+                }
+            break;
+
+            case TypePeriod.hours:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addHours(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subHours(startDateTime, value);
+                }
+            break;
+
+            case TypePeriod.minutes:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addMinutes(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subMinutes(startDateTime, value);
+                }
+            break;            
+
+            case TypePeriod.seconds:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addSeconds(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subSeconds(startDateTime, value);
+                }
+            break;
+
+            case TypePeriod.milliseconds:
+                if (addOrSub > 0) {
+                    //Aggiungo
+                    value = addOrSub;
+                    returnDate = addMilliseconds(startDateTime, value);
+                }
+                else {
+                    //Sottraggo
+                    value = addOrSub * -1;
+                    returnDate = subMilliseconds(startDateTime, value);
+                }
+            break;
+
+            default:
+                returnDate = startDateTime;
+                break;
+        }
     }
 
-    return dReturn;
+    return returnDate;
 }
 
 /**
@@ -335,8 +503,9 @@ static calcola(dateTime: Date, addOrSub: number, period:TypePeriod): Date {
  */
 static compareEqualDate(date1: Date, date2: Date): boolean {
     let flagResult = false;
+
     if (date1 && date2) {
-        flagResult = moment(date1).isSame(date2,'day');
+        flagResult = isSameDay(date1, date2);
     }
 
     return flagResult;
@@ -345,13 +514,13 @@ static compareEqualDate(date1: Date, date2: Date): boolean {
 
 /**
  * Torna un valore della Value List TipoChiusura per indicare la festività
- * @param data Data da controllare
+ * @param dateValue Data da controllare
  */
-static getFesta(data: Date): TipoChiusura{
+static getFesta(dateValue: Date): TipoChiusura {
 
     let tipoChiusura: TipoChiusura;
 
-    let meseGiorno: string = moment(data).format('MMDD');
+    let meseGiorno: string = '';
 
     let dataAngelo: Date;
     let maskAngelo: string = '';
@@ -359,52 +528,59 @@ static getFesta(data: Date): TipoChiusura{
     let dataPasqua: Date; 
     let maskPasqua: string =  '';
 
-    dataPasqua = MyDateTime.calcolaPasqua(data.getFullYear());
-    maskPasqua = moment(dataPasqua).format('MMDD');
-    dataAngelo = MyDateTime.calcola(dataPasqua, 1, TypePeriod.days);
-    maskAngelo = moment(dataAngelo).format('MMDD');
-
-    switch (meseGiorno){
-        case '0325':
-          tipoChiusura = TipoChiusura.aprile25
-          break;
-  
-        case '1208':
-            tipoChiusura = TipoChiusura.dicembre8
+    if (dateValue) {
+        //Stringa della data come MeseGiorno
+        meseGiorno = MyDateTime.formatDate(dateValue, 'MMdd');
+        //Richiedo la Datad Pasquale per l'anno
+        dataPasqua = MyDateTime.calcolaPasqua(dateValue.getFullYear());
+        maskPasqua = MyDateTime.formatDate(dataPasqua, 'MMdd');
+        //Data dell'Angelo il giorno seguente
+        dataAngelo = MyDateTime.calcola(dataPasqua, 1, TypePeriod.days);
+        maskAngelo = MyDateTime.formatDate(dataAngelo, 'MMdd');
+    
+        switch (meseGiorno){
+            case '0325':
+              tipoChiusura = TipoChiusura.aprile25
+              break;
+      
+            case '1208':
+                tipoChiusura = TipoChiusura.dicembre8
+                break;
+      
+            case '0815':
+              tipoChiusura = TipoChiusura.ferragosto;
+              break;
+      
+            case '0602':
+              tipoChiusura = TipoChiusura.giugno2;
+              break;
+      
+            case '0501':
+                tipoChiusura = TipoChiusura.maggio1;
             break;
-  
-        case '0815':
-          tipoChiusura = TipoChiusura.ferragosto;
-          break;
-  
-        case '0602':
-          tipoChiusura = TipoChiusura.giugno2;
-          break;
-  
-        case '0501':
-            tipoChiusura = TipoChiusura.maggio1;
-        break;
-        
-        case '1225':
-            tipoChiusura = TipoChiusura.natale;
-        break;
             
-        case '1226':
-            tipoChiusura = TipoChiusura.santoStefano;
-        break;
-            
-        case maskPasqua:
-            tipoChiusura = TipoChiusura.pasquaCattolica;
-        break;
-                  
-        case maskAngelo:
-            tipoChiusura = TipoChiusura.pasquaCattolica;
-        break;
+            case '1225':
+                tipoChiusura = TipoChiusura.natale;
+            break;
+                
+            case '1226':
+                tipoChiusura = TipoChiusura.santoStefano;
+            break;
+                
+            case maskPasqua:
+                tipoChiusura = TipoChiusura.pasquaCattolica;
+            break;
+                      
+            case maskAngelo:
+                tipoChiusura = TipoChiusura.pasquaCattolica;
+            break;
+    
+            default:
+                tipoChiusura = TipoChiusura.nofesta;
+            break;
+          }
 
-        default:
-            tipoChiusura = TipoChiusura.nofesta;
-        break;
-      }
+    }
     return tipoChiusura;
 
 
@@ -478,20 +654,40 @@ static calcolaPasqua(anno: number): Date {
 /**
  * Con la data passata calcola una data di inizio/fine della settimana 
  * o del mese in cui myDate è contenuta
- * @param myDate Data da utilizzare
+ * @param dateValue Data da utilizzare
  * @param based Il calcolo è effettuata per la settimana o il mese
  * @param where Si vuole la data di inizio o fine
  */
-static getStartEndDate(myDate: Date, based:'week'|'month', where:'start'|'end'): Date {
+static getStartEndDate(dateValue: Date, based:'week'|'month', where:'start'|'end'): Date {
     let resultDate: Date;
 
-    if (myDate) {
+    if (dateValue) {
         if (where == 'start') {
-
-            resultDate = moment(myDate).startOf(based).toDate();
+            switch (based) {
+                case 'week':
+                    resultDate = startOfWeek(dateValue);
+                    break;
+                case 'month':
+                    resultDate = startOfMonth(dateValue);
+                    break;                
+            
+                default:
+                    break;
+            }
         }
         else if (where == 'end') {
-            resultDate = moment(myDate).endOf(based).toDate();
+
+            switch (based) {
+                case 'week':
+                    resultDate = endOfWeek(dateValue);
+                    break;
+                case 'month':
+                    resultDate = endOfMonth(dateValue);
+                    break;                
+            
+                default:
+                    break;
+            }
         }
     }
 
@@ -501,12 +697,12 @@ static getStartEndDate(myDate: Date, based:'week'|'month', where:'start'|'end'):
 
 /**
  * Crea una Data senza l'orario
- * @param myDateTime 
+ * @param dateValue 
  */
-static getOnlyDate(myDateTime: Date): Date {
+static getOnlyDate(dateValue: Date): Date {
     let dateResult:Date;
 
-    dateResult = new Date(moment(myDateTime).format('YYYY-MM-DD'));
+    dateResult = new Date(MyDateTime.formatDateISO(dateValue,"date"));
 
     return dateResult;
 }

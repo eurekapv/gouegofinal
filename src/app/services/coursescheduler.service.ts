@@ -195,8 +195,8 @@ export class CourseschedulerService {
   
       let params = {
         'idRef': idRef,
-        'dataInizio': MyDateTime.formatDateISO(dataInizio),
-        'dataFine': MyDateTime.formatDateISO(dataFine)
+        'dataInizio': MyDateTime.formatDateISO(dataInizio,"date"),
+        'dataFine': MyDateTime.formatDateISO(dataFine,"date")
       }
   
       this.docStructureService.requestForFunction(document, methodName, JSON.stringify(params))

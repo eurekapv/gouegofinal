@@ -60,7 +60,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     
-    this.today=MyDateTime.formatDateISO(new Date);
+    this.today=MyDateTime.formatDateISO(new Date(),"date");
 
     this.docGruppo = this.startService.actualStartConfig.gruppo;
     

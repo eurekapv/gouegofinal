@@ -16,6 +16,7 @@ import { StartService } from 'src/app/services/start.service';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Impegno } from 'src/app/models/impegno.model';
 import { DetailValutazionePage } from '../detail-valutazione/detail-valutazione.page';
+import { isAfter, isBefore } from 'date-fns';
 
 //TODO: Pagina della Lista Valutazione da controllare e modificare
 export interface IRangeDate {
@@ -382,14 +383,14 @@ export class ListValutazioniPage implements OnInit {
   getColorIconCorso(elCorso: Corso):string {
     let color = 'primary';
 
-    let today: Date = new Date(MyDateTime.formatDateISO(new Date));
+    let today: Date = new Date(MyDateTime.formatDateISO(new Date(), "date"));
     
     if (elCorso) {
-      if (elCorso.DATAFINE < today) {
+      if (isBefore(elCorso.DATAFINE, today)) {
         //Già concluso
         color='danger';
       }
-      else if (elCorso.DATAINIZIO > today) {
+      else if (isAfter(elCorso.DATAINIZIO,today)) {
         //Futuri
         color = 'warning'
       }

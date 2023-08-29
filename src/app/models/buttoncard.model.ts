@@ -135,7 +135,7 @@ export class ButtonCard {
                     if (element.SETTORE == SettoreAttivita.settoreCorso) {
 
                         newBtn.title = element.DENOMINAZIONE;
-                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
+                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'dd/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
 
                         newBtn.nameicon = 'school-outline';
                         newBtn.sloticon = "start";
@@ -151,7 +151,7 @@ export class ButtonCard {
 
                         
                         newBtn.title = element['_DENOMINAZIONE_Location'];
-                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
+                        newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'dd/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
 
                         newBtn.nameicon = 'calendar-outline';
                         newBtn.sloticon = "start";
@@ -221,7 +221,7 @@ export class ButtonCard {
 
                     newBtn = new ButtonCard();
                     newBtn.title = element['_DENOMINAZIONE_Location'];
-                    newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
+                    newBtn.subtitle = Settimana.getLabel(element.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(element.DATAORAINIZIO,'dd/MM') + ' alle ' + MyDateTime.formatTime(element.DATAORAINIZIO);
 
                     newBtn.nameicon = 'calendar-outline';
                     newBtn.sloticon = "start";

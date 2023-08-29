@@ -76,6 +76,7 @@ export class Utente extends IDDocument {
 
         if (this.NATOIL) {
             if (this.NATOIL < oggi) {
+                
                 num = MyDateTime.durataAnni(this.NATOIL, oggi);
             }
         }

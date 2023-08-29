@@ -214,7 +214,7 @@ export class UserVerifyPage implements OnInit {
     this.listSesso= ValueList.getArray(Sesso);
 
     //il giorno attuale per filtrare la data di nascita in input
-    this.today=this.today=MyDateTime.formatDateISO(new Date);
+    this.today=this.today=MyDateTime.formatDateISO(new Date(), "date");
 
   }
  

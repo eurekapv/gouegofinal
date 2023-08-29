@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import * as moment from "moment";
 import { PickerController } from '@ionic/angular';
 import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
 import { ValueList, Mesi } from 'src/app/models/valuelist.model';
 import { Swiper, SwiperOptions, Navigation } from 'swiper';
 import { LogApp } from 'src/app/models/log.model';
+import { addMonths, subDays } from 'date-fns';
 Swiper.use([Navigation]);
 
 @Component({
@@ -136,12 +136,13 @@ export class CalendarscrollComponent implements OnInit {
   setListDay() {
     let totMonthDays: number = 30; //Numero di giorni del mese
     //Aggiungo 1 mese alla data del 1/X/Y cosi da andare al 1/X+1/YYYY
-    let dtFineMese = moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).add(1, 'M');
-    //Vado alla fine Mese
-    dtFineMese.subtract(1,'day');
+    let dtFineMese = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+    addMonths(dtFineMese, 1);
+    //Vado alla fine Mese precedente
+    subDays(dtFineMese, 1);
 
     //Numero di giorni del mese
-    totMonthDays = dtFineMese.date();
+    totMonthDays = dtFineMese.getDate();
 
     this.listDay = [];
     totMonthDays += 1; //Incremento EndDay per usare la condizione <
@@ -195,14 +196,19 @@ export class CalendarscrollComponent implements OnInit {
         switch (objDay.type) {
 
           case 'next':
-            //Vado al giorno 1 del mese successivo
-            nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).add(1, 'M')).toDate();
+            //Imposto il primo del mese
+            nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+            //e poi vado al giorno 1 del mese successivo
+            addMonths(nextDate,1);
+
             this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
             break;
 
           case 'prev':
             //Vado al giorno ultimo del mese precedente
-            nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).subtract(1, 'days')).toDate();
+            nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+            subDays(nextDate, 1);
+
             this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
             break;
         }
@@ -224,13 +230,15 @@ export class CalendarscrollComponent implements OnInit {
 
         case 'next':
           //Vado al giorno 1 del mese successivo
-          nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).add(1, 'M')).toDate();
+          nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+          addMonths(nextDate, 1);
           this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
           break;
 
         case 'prev':
           //Vado al giorno ultimo del mese precedente
-          nextDate = (moment(new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1)).subtract(1, 'days')).toDate();
+          nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+          subDays(nextDate, 1);
           this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
           break;
       }
@@ -465,11 +473,12 @@ export class CalendarscrollComponent implements OnInit {
    * @param anno Anno
    */
   getMaxDayInMont(meseZeroBase: number, anno: number) {
-    let newDate = moment(new Date(anno, meseZeroBase, 1));
-    newDate.add(1,'month');
-    newDate.subtract(1,'day');
 
-    return newDate.toDate().getDate();
+    let newDate = new Date(anno, meseZeroBase, 1);
+    addMonths(newDate,1);
+    subDays(newDate, 1);
+
+    return newDate.getDate();
   }
 
 }

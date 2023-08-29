@@ -174,11 +174,11 @@ import { MyDateTime } from './mydatetime.model';
         break;
       
         case TypeDefinition.date:
-            strValue = MyDateTime.formatDateISO(value);
+            strValue = MyDateTime.formatDateISO(value, "date");
         break;
 
         case TypeDefinition.dateTime:
-            strValue = MyDateTime.formatDateTimeISO(value);
+            strValue = MyDateTime.formatDateISO(value,"complete");
         break;
 
         case TypeDefinition.time:
@@ -500,14 +500,14 @@ import { MyDateTime } from './mydatetime.model';
     //Formatta una data passata in ISO (Solo la parte data)
     formatDateISO(data: Date) {
       
-      let format = MyDateTime.formatDateISO(data);
+      let format = MyDateTime.formatDateISO(data, "date");
 
       return format;
     }
 
     //Formatta una data passata in ISO (Data e Ora)
     formatDateTimeISO(data: Date) {
-      let final = MyDateTime.formatDateTimeISO(data);
+      let final = MyDateTime.formatDateISO(data,"complete");
       return final;
     }
 

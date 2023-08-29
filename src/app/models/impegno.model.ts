@@ -127,7 +127,7 @@ asButtonCard(): ButtonCard {
     switch (this.SETTORE) {
         case SettoreAttivita.settoreCorso:
             newBtn.title = this.DENOMINAZIONE;
-            newBtn.subtitle = Settimana.getLabel(this.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(this.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(this.DATAORAINIZIO);
+            newBtn.subtitle = Settimana.getLabel(this.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(this.DATAORAINIZIO,'dd/MM') + ' alle ' + MyDateTime.formatTime(this.DATAORAINIZIO);
 
             newBtn.nameicon = 'school-outline';
             newBtn.sloticon = "start";
@@ -140,7 +140,7 @@ asButtonCard(): ButtonCard {
 
         case SettoreAttivita.settorePrenotazione:
             newBtn.title = this['_DENOMINAZIONE_Location'];
-            newBtn.subtitle = Settimana.getLabel(this.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(this.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(this.DATAORAINIZIO);
+            newBtn.subtitle = Settimana.getLabel(this.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(this.DATAORAINIZIO,'dd/MM') + ' alle ' + MyDateTime.formatTime(this.DATAORAINIZIO);
 
             newBtn.nameicon = 'calendar-outline';
             newBtn.sloticon = "start";
@@ -155,7 +155,7 @@ asButtonCard(): ButtonCard {
         case SettoreAttivita.settoreEvento:
         
             newBtn.title = this.DENOMINAZIONE;
-            newBtn.subtitle = Settimana.getLabel(this.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(this.DATAORAINIZIO,'DD/MM') + ' alle ' + MyDateTime.formatTime(this.DATAORAINIZIO);
+            newBtn.subtitle = Settimana.getLabel(this.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(this.DATAORAINIZIO,'dd/MM') + ' alle ' + MyDateTime.formatTime(this.DATAORAINIZIO);
 
             newBtn.nameicon = 'sparkles-outline';
             newBtn.sloticon = "start";

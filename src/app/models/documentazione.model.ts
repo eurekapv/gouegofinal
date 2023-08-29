@@ -1,7 +1,7 @@
+import { isAfter } from 'date-fns';
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
 import { ClasseDocumento } from './tipodocumentazione.model';
-import * as moment from "moment";
 
 export class InvioDocumentazione extends IDDocument{
     TOKENUTENTE: string;
@@ -67,18 +67,20 @@ export class Documentazione extends IDDocument{
      * Torna TRUE se il documento è Valido, FALSE se scaduto
      */
     checkValidita(): boolean {
-        let valid = false;
+        let flagValidita = false;
+        let adesso = new Date();
 
         if (this.VALIDOFINO) {
-            if (moment(this.VALIDOFINO).isAfter()) {
-                valid = true;
+
+            if (isAfter(this.VALIDOFINO, adesso)) {
+                flagValidita = true;
             }
         }
         else {
-            valid = true;
+            flagValidita = true;
         }
 
-        return valid;
+        return flagValidita;
     }
 
     getDescriptor(): Descriptor {

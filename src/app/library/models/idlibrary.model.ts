@@ -1,4 +1,3 @@
-import { isDate } from 'moment';
 import { TypeDefinition } from './descriptor.model';
 import { IDDocument, ParamsExport } from './iddocument.model';
 import { MyDateTime } from './mydatetime.model';
@@ -26,11 +25,11 @@ export class IDLibrary {
           break;
         
           case TypeDefinition.date:
-              strValue = MyDateTime.formatDateISO(value);
+              strValue = MyDateTime.formatDateISO(value, "date");
           break;
   
           case TypeDefinition.dateTime:
-              strValue = MyDateTime.formatDateTimeISO(value);
+              strValue = MyDateTime.formatDateISO(value,"complete");
           break;
   
           case TypeDefinition.time:
@@ -124,8 +123,7 @@ export class IDLibrary {
 
           case "object":
             try {
-              
-              if (isDate(value)) {
+              if (MyDateTime.isDate(value)) {
                 typeVar = TypeDefinition.dateTime
               }
               else if (Array.isArray(value)) {

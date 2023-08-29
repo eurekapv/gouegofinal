@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
-import * as moment from 'moment';
+import { addDays, isBefore } from 'date-fns';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
 import { LogApp } from 'src/app/models/log.model';
@@ -320,20 +320,25 @@ export class DetailPresenzaPage implements OnInit {
    * @returns 
    */
     getColoreCertificato(presenza: CorsoPresenze): string{
-    let today =moment(new Date())
+    let adesso = new Date();
+    let fra7Giorni = addDays(new Date(), 7);
     let color: string;
-    if (presenza.DATACERTIFICATOMEDICO){
+
+    /*E' presente una data Certificato Medico */
+    if (presenza.DATACERTIFICATOMEDICO) {
       
-      let scadenza = moment(presenza.DATACERTIFICATOMEDICO);
-      if (scadenza < today){
+      if (isBefore(presenza.DATACERTIFICATOMEDICO, adesso)) {
+        //Colore Danger per certificato scaduto
         color = 'danger';
       }
-      else if (scadenza < today.add(7, 'days')) {
+      else if (isBefore(presenza.DATACERTIFICATOMEDICO, fra7Giorni)) {
+        //Scade tra 7 giorni
         color = 'warning';
       }
-      else{
+      else {
         color = 'primary';
       }
+
     }
     else{
       color = 'danger';

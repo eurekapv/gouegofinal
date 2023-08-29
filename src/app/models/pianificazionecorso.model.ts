@@ -226,7 +226,7 @@ static getReqForeignKeys(): RequestForeign[] {
     //E' troppo presto
     if (now < this.DATAORAINIZIO){
       strReturn = 'Non è ancora possibile modificare le presenze di questa lezione';
-      strReturn = 'E\' possibile modificare le presenze dal ' + MyDateTime.formatDate(this.DATAORAINIZIO, 'DD/MM/YYYY') + ' dalle ' +  MyDateTime.formatTime(this.DATAORAINIZIO, false);
+      strReturn = 'E\' possibile modificare le presenze dal ' + MyDateTime.formatDate(this.DATAORAINIZIO, 'dd/MM/yyyy') + ' dalle ' +  MyDateTime.formatTime(this.DATAORAINIZIO, false);
     }
     else {
       //In teoria potrei aggiornare le presenze
@@ -240,7 +240,7 @@ static getReqForeignKeys(): RequestForeign[] {
           let scadenza = MyDateTime.calcola(this.DATAORAFINE, gapOre, TypePeriod.hours);
 
           //la converto in stringa
-          let strScadenza =MyDateTime.formatDate(scadenza, 'DD/MM/YY');
+          let strScadenza =MyDateTime.formatDate(scadenza, 'dd/MM/yy');
 
           strReturn = 'Clicca su ogni partecipante per impostare la presenza/assenza, presenze aggiornabili fino al ' + strScadenza;
 

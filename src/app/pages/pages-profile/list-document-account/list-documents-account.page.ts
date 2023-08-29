@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
-import { Chooser } from '@ionic-native/chooser/ngx';
-import { ToastController, ModalController, LoadingController, Platform } from '@ionic/angular';
+import { ModalController, LoadingController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
 import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import {  RequestParams } from 'src/app/library/models/requestParams.model';
@@ -10,8 +9,6 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { Utente } from 'src/app/models/utente.model';
 import { Documentazione, InvioDocumentazione } from 'src/app/models/documentazione.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
-import { File } from '@ionic-native/file/ngx';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FileService } from 'src/app/services/file.service';
 import { LogApp } from 'src/app/models/log.model';
 
@@ -31,14 +28,9 @@ export class ListDocumentsAccountPage implements OnInit {
   listaTipiDocumento : TipoDocumentazione[] = [];
 
   constructor(private startService: StartService,
-              private chooser: Chooser,
-              private toastController: ToastController,
               private modalController: ModalController,
               private docStructureService: DocstructureService,
               private loadingController: LoadingController,
-              private platform: Platform,
-              private file: File,
-              private fileOpener: FileOpener,
               private fileService: FileService
               ) { }
 

@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { LoadingController, NavController } from '@ionic/angular';
 import { MasterDocumento } from 'src/app/models/ricevuta.model';
 import { StartService } from 'src/app/services/start.service';
-import { File } from '@ionic-native/file/ngx';
-import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { Utente } from 'src/app/models/utente.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { LogApp } from 'src/app/models/log.model';
+import { FileService } from 'src/app/services/file.service';
 
 @Component({
   selector: 'app-invoices',
@@ -26,16 +25,11 @@ export class ListInvoicesAccountPage implements OnInit {
   constructor(
     private loadingController: LoadingController,
     private startService: StartService,
-    private file: File,
-    private fileOpener: FileOpener,
-    private toastController: ToastController,
-    private navController: NavController
-    
+    private navController: NavController,
+    private fileService: FileService
+    ) {
 
-
-  ) {
-
-   }
+    }
 
 
   ngOnInit() {
@@ -98,7 +92,7 @@ export class ListInvoicesAccountPage implements OnInit {
         })
         .catch(error => {
           LogApp.consoleLog(error,'error');
-          this.showMessage('Errore di connessione');
+          this.startService.presentAlertMessage(error.message,'Errore di connessione');
           event.target.complete();
         })
       
@@ -117,7 +111,7 @@ export class ListInvoicesAccountPage implements OnInit {
           })
           .catch(error => {
             LogApp.consoleLog(error,'error');
-            this.showMessage('Errore di connessione');
+            this.startService.presentAlertMessage(error.message, 'Errore di connessione');
             elLoading.dismiss();
           })
         })
@@ -131,7 +125,10 @@ export class ListInvoicesAccountPage implements OnInit {
    
   }
 
-  
+  /**
+   * Click Elemento della Lista
+   * @param elemento 
+   */
   onClickElement(elemento: MasterDocumento){
     //creo il loading e lo presento
     this.loadingController.create({
@@ -158,22 +155,20 @@ export class ListInvoicesAccountPage implements OnInit {
                   if(this.startService.isDesktop){
 
                     //apertura per desktop
-                    this.openDesktop(blob);
+                    this.fileService.openDesktop(blob);
                     
                   }
                   else{
 
                     //apertura per mobile
-                    this.openMobile(blob);
-
+                    this.fileService.openMobile(blob);
                   }
                 })
           
         }
-
         else{
           //la richiesta non è andata a buon fine
-          this.showMessage(response.message);
+          this.startService.presentAlertMessage(response.message, 'Scaricamento fallito');
         }
 
       })
@@ -182,71 +177,10 @@ export class ListInvoicesAccountPage implements OnInit {
         //errore di connessione
         elLoading.dismiss();
         LogApp.consoleLog(error,'error');
-        this.showMessage('Errore di connessione');
+        this.startService.presentAlertMessage(error.message,'Errore di connessione');
+
       })
     })
   }
-
-  /**
-   * Scaricamento di un file Blob nella modalità Desktop
-   * @param blob 
-   */
-  openDesktop(blob: Blob){
-
-
-    //per scaricare il file creo via javascript un link fittizio agganciando il percorso del blob, e ne scateno l'evento click
-    let name='File'
-    let url  = window.URL.createObjectURL(blob);
-    let link = document.createElement("a");
-    link.download = name;
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-
-  }
-
-  /**
-   * Apertura del Blob in versione Mobile
-   * @param blob 
-   */
-  openMobile(blob: Blob){
-    let fileName='Documento';         
-    let filePath= this.file.cacheDirectory;      
-    
-
-        this.file.writeFile(filePath, fileName, blob, { replace:true }).then((fileEntry) => {
-
-                  
-          this.fileOpener.open(fileEntry.toURL(), blob.type)
-            .then(() => LogApp.consoleLog('File is opened'))
-            .catch(err => LogApp.consoleLog('Error openening file: ' + err,'error'));
-        })
-          .catch((err) => {
-            LogApp.consoleLog("Error creating file: ",'error');
-            LogApp.consoleLog(err,'error');
-            throw err;  
-          });
-  }
-
-  /**
-   * Visualizzo un messaggio toast
-   * @param messaggio Messaggio da visualizzare
-   */
-  showMessage(messaggio: string){
-    this.toastController.create({
-      message: messaggio,
-      duration: 3000
-    })
-    .then(elToast => {
-      elToast.present();
-    })
-  }
-
-
-
-
-
 
 }

@@ -1,8 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SorgenteFile, TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
 import { Chooser, ChooserResult } from '@ionic-native/chooser/ngx';
-import { ToastController, PickerController, ModalController, AlertController, AlertButton } from '@ionic/angular';
-import { PickerColumnOption } from '@ionic/core';
+import { ToastController, ModalController, AlertController, AlertButton } from '@ionic/angular';
 import { InvioDocumentazione } from 'src/app/models/documentazione.model';
 import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
 import { LogApp } from 'src/app/models/log.model';

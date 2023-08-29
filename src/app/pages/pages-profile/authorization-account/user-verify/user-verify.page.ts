@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
 import { ModalController, LoadingController, ToastController, NavController, AlertController, NavParams } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { StartService } from 'src/app/services/start.service';
@@ -46,10 +46,10 @@ export class UserVerifyPage implements OnInit {
   
  
    //varibili formGroup (per usare i reactive forms)
-   formRegister: FormGroup;
-   formVerifyTel: FormGroup;
-   formVerifyMail: FormGroup;
-   formContact: FormGroup;
+   formRegister: UntypedFormGroup;
+   formVerifyTel: UntypedFormGroup;
+   formVerifyMail: UntypedFormGroup;
+   formContact: UntypedFormGroup;
  
    //Dati
    startConfig:StartConfiguration;
@@ -885,58 +885,58 @@ export class UserVerifyPage implements OnInit {
    createRegisterForm(){
      let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
      //form di registrazione
-     this.formRegister=new FormGroup({
-      nome:new FormControl(this.docUtente.NOME, {
+     this.formRegister=new UntypedFormGroup({
+      nome:new UntypedFormControl(this.docUtente.NOME, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      cognome:new FormControl(this.docUtente.COGNOME, {
+      cognome:new UntypedFormControl(this.docUtente.COGNOME, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      sesso:new FormControl(this.docUtente.SESSO, {
+      sesso:new UntypedFormControl(this.docUtente.SESSO, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      provNascita:new FormControl(this.docUtente.NATOPROV, {
+      provNascita:new UntypedFormControl(this.docUtente.NATOPROV, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      comNascita:new FormControl(this.docUtente.NATOA, {
+      comNascita:new UntypedFormControl(this.docUtente.NATOA, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      statoNascita:new FormControl(this.docUtente.NATOISOSTATO, {
+      statoNascita:new UntypedFormControl(this.docUtente.NATOISOSTATO, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      capNascita:new FormControl(this.docUtente.NATOCAP, {
+      capNascita:new UntypedFormControl(this.docUtente.NATOCAP, {
         updateOn:'change',
         validators: [
           
         ]
       }),
-      provResidenza:new FormControl(this.docUtente.PROVINCIA, {
+      provResidenza:new UntypedFormControl(this.docUtente.PROVINCIA, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      comResidenza:new FormControl(this.docUtente.COMUNE, {
+      comResidenza:new UntypedFormControl(this.docUtente.COMUNE, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      indResidenza:new FormControl(this.docUtente.INDIRIZZO, {
+      indResidenza:new UntypedFormControl(this.docUtente.INDIRIZZO, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      capResidenza:new FormControl(this.docUtente.CAP, {
+      capResidenza:new UntypedFormControl(this.docUtente.CAP, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      statoResidenza:new FormControl(this.docUtente.ISOSTATO, {
+      statoResidenza:new UntypedFormControl(this.docUtente.ISOSTATO, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      cf:new FormControl(this.docUtente.CODICEFISCALE, {
+      cf:new UntypedFormControl(this.docUtente.CODICEFISCALE, {
         updateOn:'change',
         validators: [Validators.required, Validators.pattern(patternCodice)]
       })
@@ -1008,12 +1008,12 @@ export class UserVerifyPage implements OnInit {
   
   
       //form dei contatti (mail e telefono)
-      this.formContact=new FormGroup({
-        email: new FormControl(null, {
+      this.formContact=new UntypedFormGroup({
+        email: new UntypedFormControl(null, {
           updateOn: 'change',
           validators: [Validators.email]
         }),
-        telephone: new FormControl(null, {
+        telephone: new UntypedFormControl(null, {
           updateOn: 'change',
           validators: [Validators.pattern(pattTelefono)]
         })

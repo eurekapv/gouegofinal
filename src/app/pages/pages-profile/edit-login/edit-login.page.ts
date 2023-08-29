@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
 import { Utente } from 'src/app/models/utente.model';
 import { ModalController, IonInput, LoadingController, ToastController } from '@ionic/angular';
 import { StartService } from 'src/app/services/start.service';
@@ -18,7 +18,7 @@ export class EditLoginPage implements OnInit {
   @Input() myUser: Utente;
   @Input() myUrlLogo: string; //Path Logo da utilizzare
   
-  form: FormGroup;
+  form: UntypedFormGroup;
   showActual = false;
   showNew = false;
   showNewRetype = false;
@@ -49,16 +49,16 @@ export class EditLoginPage implements OnInit {
 
   createFormGroup()
   {
-    this.form = new FormGroup({
-      oldPsw: new FormControl(null,{
+    this.form = new UntypedFormGroup({
+      oldPsw: new UntypedFormControl(null,{
         updateOn: 'change',
         validators:[Validators.required]
       }),
-      newPsw1: new FormControl(null,{
+      newPsw1: new UntypedFormControl(null,{
         updateOn: 'change',
         validators:[Validators.required]
       }),
-      newPsw2: new FormControl(null,{
+      newPsw2: new UntypedFormControl(null,{
         updateOn: 'change',
         validators:[Validators.required]
       })

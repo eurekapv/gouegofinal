@@ -5,7 +5,7 @@ import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { Gruppo } from './gruppo.model';
 import { Documentazione } from './documentazione.model';
-import { MasterDocumento } from './ricevuta.model';
+
 
 
 export class Utente extends IDDocument {

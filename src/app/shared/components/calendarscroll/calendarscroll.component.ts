@@ -4,7 +4,7 @@ import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@
 import { ValueList, Mesi } from 'src/app/models/valuelist.model';
 import { Swiper, SwiperOptions, Navigation } from 'swiper';
 import { LogApp } from 'src/app/models/log.model';
-import { addMonths, subDays } from 'date-fns';
+import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
 Swiper.use([Navigation]);
 
 @Component({
@@ -128,6 +128,7 @@ export class CalendarscrollComponent implements OnInit {
   }
 
   ngOnInit() {
+    //Imposto la lista dei giorni da mostrare
     this.setListDay();
   }
 
@@ -135,11 +136,15 @@ export class CalendarscrollComponent implements OnInit {
   /* Ricava tutti i giorni del mese presente in activeDay */
   setListDay() {
     let totMonthDays: number = 30; //Numero di giorni del mese
-    //Aggiungo 1 mese alla data del 1/X/Y cosi da andare al 1/X+1/YYYY
-    let dtFineMese = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
-    addMonths(dtFineMese, 1);
-    //Vado alla fine Mese precedente
-    subDays(dtFineMese, 1);
+
+    let dtFineMese: Date; 
+
+    //Imposto il 1 / Mese / Anno
+    dtFineMese = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+    //Aggiungo 1 mese 
+    dtFineMese = MyDateTime.calcola(dtFineMese, 1, TypePeriod.months);
+    //Sottraggo 1 Giorno per andare alla fine Mese precedente
+    dtFineMese = MyDateTime.calcola(dtFineMese, -1, TypePeriod.days);
 
     //Numero di giorni del mese
     totMonthDays = dtFineMese.getDate();
@@ -199,16 +204,16 @@ export class CalendarscrollComponent implements OnInit {
             //Imposto il primo del mese
             nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
             //e poi vado al giorno 1 del mese successivo
-            addMonths(nextDate,1);
-
+            nextDate = MyDateTime.calcola(nextDate, 1, TypePeriod.months);
+            
             this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
             break;
 
           case 'prev':
             //Vado al giorno ultimo del mese precedente
             nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
-            subDays(nextDate, 1);
-
+            nextDate = MyDateTime.calcola(nextDate, -1, TypePeriod.days);
+            
             this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
             break;
         }
@@ -231,14 +236,16 @@ export class CalendarscrollComponent implements OnInit {
         case 'next':
           //Vado al giorno 1 del mese successivo
           nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
-          addMonths(nextDate, 1);
+          nextDate = MyDateTime.calcola(nextDate, 1, TypePeriod.months);
+
           this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
           break;
 
         case 'prev':
           //Vado al giorno ultimo del mese precedente
           nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
-          subDays(nextDate, 1);
+          nextDate = MyDateTime.calcola(nextDate, -1, TypePeriod.days);
+
           this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
           break;
       }
@@ -469,16 +476,23 @@ export class CalendarscrollComponent implements OnInit {
 
   /**
    * Ritorna il numero del giorno piu' alto del mese
-   * @param meseZeroBase Numero del Mese (o Based)
+   * @param meseZeroBase Numero del Mese (0 Based)
    * @param anno Anno
    */
-  getMaxDayInMont(meseZeroBase: number, anno: number) {
+  getMaxDayInMont(meseZeroBase: number, anno: number): number {
 
-    let newDate = new Date(anno, meseZeroBase, 1);
-    addMonths(newDate,1);
-    subDays(newDate, 1);
+    let temporaryDate = new Date(anno, meseZeroBase, 1);
+    let lastDay = 1;
+    if (meseZeroBase >= 0 && meseZeroBase <= 11 && anno > 1900) {
+      //Creo una Data al 1 del Mese
+      temporaryDate = new Date(anno, meseZeroBase, 1);
+      temporaryDate = MyDateTime.calcola(temporaryDate, 1, TypePeriod.months);
+      temporaryDate = MyDateTime.calcola(temporaryDate, -1, TypePeriod.days);
+      lastDay = temporaryDate.getDate();
+    }
 
-    return newDate.getDate();
+
+    return lastDay;
   }
 
 }

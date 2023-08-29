@@ -61,6 +61,19 @@ export class MyDateTime {
         return flagResult;
     }    
 
+    /**
+     * Controlla se Date è inferiore a dateCompare
+     * @param date Data Primaria
+     * @param dateCompare Data Comparativa
+     * @returns 
+     */
+    static isBefore(date: number | Date, dateCompare: number | Date): boolean {
+        let flagResult = false;
+
+        flagResult = isBefore(date, dateCompare);
+
+        return flagResult;
+    }     
 
 
     /**

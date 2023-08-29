@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LoadingController, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
@@ -16,7 +16,7 @@ import { StartService } from 'src/app/services/start.service';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Impegno } from 'src/app/models/impegno.model';
 import { DetailValutazionePage } from '../detail-valutazione/detail-valutazione.page';
-import { isAfter, isBefore } from 'date-fns';
+
 
 //TODO: Pagina della Lista Valutazione da controllare e modificare
 export interface IRangeDate {
@@ -386,11 +386,11 @@ export class ListValutazioniPage implements OnInit {
     let today: Date = new Date(MyDateTime.formatDateISO(new Date(), "date"));
     
     if (elCorso) {
-      if (isBefore(elCorso.DATAFINE, today)) {
+      if (MyDateTime.isBefore(elCorso.DATAFINE, today)) {
         //Già concluso
         color='danger';
       }
-      else if (isAfter(elCorso.DATAINIZIO,today)) {
+      else if (MyDateTime.isAfter(elCorso.DATAINIZIO,today)) {
         //Futuri
         color = 'warning'
       }

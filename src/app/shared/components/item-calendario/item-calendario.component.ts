@@ -76,7 +76,7 @@ export class ItemCalendarioComponent implements OnInit {
       let color = 'undef';
       let dataitem: Date;
 
-      let today: Date = new Date(MyDateTime.formatDateISO(new Date));
+      let today: Date = new Date(MyDateTime.formatDateISO(new Date(),"date"));
 
       if (elItem && elItem.oraInizio) {
 

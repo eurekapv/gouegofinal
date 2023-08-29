@@ -1,7 +1,6 @@
 import { StatoSlot } from '../valuelist.model';
-import { MyDateTime } from '../../library/models/mydatetime.model';
+import { MyDateTime, TypePeriod } from '../../library/models/mydatetime.model';
 import { IDDocument } from '../../library/models/iddocument.model';
-import { addMinutes, isBefore } from 'date-fns';
 
 
 /**
@@ -46,12 +45,11 @@ export class SlotTime extends IDDocument {
         /** Mentre la data è inferiore o uguale */
         //while (countWrapper.isSameOrBefore(endWrapper)) {
             
-        while (isBefore(countWrapper, endWrapper)) {
+        while (MyDateTime.isBefore(countWrapper, endWrapper)) {
 
             //Al count aggiungo i minuti dello slot
             let endSlotWrapper = countWrapper;
-            addMinutes(endSlotWrapper, minuteSlot);
-            
+            endSlotWrapper = MyDateTime.calcola(endSlotWrapper, minuteSlot, TypePeriod.minutes);
             
             //Creo lo Slot
             let slotBlock = new SlotTime(countWrapper, endSlotWrapper);
@@ -59,9 +57,10 @@ export class SlotTime extends IDDocument {
             //Aggiungo all'array di ritorno
             arSlots.push(slotBlock);
          
+            console.log('Sto creando ' + countWrapper + '...' + endSlotWrapper);
 
             //Aumento il Count dei minuti di slot
-            addMinutes(countWrapper, minuteSlot);
+            countWrapper = MyDateTime.calcola(countWrapper, minuteSlot, TypePeriod.minutes);
 
         }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
-import { addDays, isBefore } from 'date-fns';
+import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
 import { LogApp } from 'src/app/models/log.model';
@@ -283,17 +283,14 @@ export class DetailPresenzaPage implements OnInit {
           elLoading.dismiss();
           if (response.result){
             //è andato tutto bene
-            this.showMessage('Presenze aggiornate')
+            this.startService.presentToastMessage('Presenze aggiornate');
+            //Torno indietro
             this.onGoToBack();
-
           }
-  
           else{
-  
             //errore dal server
             LogApp.consoleLog(response);
-            this.showMessage(response.message);
-  
+            this.startService.presentAlertMessage(response.message);
           }
           
         })
@@ -301,7 +298,7 @@ export class DetailPresenzaPage implements OnInit {
   
           elLoading.dismiss();
           LogApp.consoleLog(error,'error');
-          this.showMessage('Errore di connessione');
+          this.startService.presentToastMessage('Errore di connessione');
         })
       })
       
@@ -320,18 +317,21 @@ export class DetailPresenzaPage implements OnInit {
    * @returns 
    */
     getColoreCertificato(presenza: CorsoPresenze): string{
-    let adesso = new Date();
-    let fra7Giorni = addDays(new Date(), 7);
+    let adesso: Date;
+    let fra7Giorni: Date;
     let color: string;
+
+    adesso = new Date();
+    fra7Giorni = MyDateTime.calcola(adesso, 7 , TypePeriod.days);
 
     /*E' presente una data Certificato Medico */
     if (presenza.DATACERTIFICATOMEDICO) {
       
-      if (isBefore(presenza.DATACERTIFICATOMEDICO, adesso)) {
+      if (MyDateTime.isBefore(presenza.DATACERTIFICATOMEDICO, adesso)) {
         //Colore Danger per certificato scaduto
         color = 'danger';
       }
-      else if (isBefore(presenza.DATACERTIFICATOMEDICO, fra7Giorni)) {
+      else if (MyDateTime.isBefore(presenza.DATACERTIFICATOMEDICO, fra7Giorni)) {
         //Scade tra 7 giorni
         color = 'warning';
       }

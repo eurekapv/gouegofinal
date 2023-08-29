@@ -1,7 +1,7 @@
-import { isAfter } from 'date-fns';
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
 import { ClasseDocumento } from './tipodocumentazione.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
 
 export class InvioDocumentazione extends IDDocument{
     TOKENUTENTE: string;
@@ -70,15 +70,7 @@ export class Documentazione extends IDDocument{
         let flagValidita = false;
         let adesso = new Date();
 
-        if (this.VALIDOFINO) {
-
-            if (isAfter(this.VALIDOFINO, adesso)) {
-                flagValidita = true;
-            }
-        }
-        else {
-            flagValidita = true;
-        }
+        flagValidita = (this.VALIDOFINO && MyDateTime.isAfter(this.VALIDOFINO, adesso)) 
 
         return flagValidita;
     }

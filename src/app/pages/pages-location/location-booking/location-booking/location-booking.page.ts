@@ -84,63 +84,36 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
               private actionSheetController: ActionSheetController,
               ) { 
 
-    //Creo un documento di Pianificazione
-    this.actualPlanning = new PrenotazionePianificazione;
-    
-    LogApp.consoleLog('Constructor Booking Page');
-    LogApp.consoleLog(this.actualPlanning)
-    
-    //Ricavo la piattaforma di esecuzione
-    //in HTML sul content viene usata una direttiva per una animazione diversa della toolbar in Ios
-    this.isOnAppleSystem = this.startService.isOnAppleSystem;
+                //Creo un documento di Pianificazione
+                this.actualPlanning = new PrenotazionePianificazione();
+                
+                LogApp.consoleLog('Constructor Booking Page');
+                LogApp.consoleLog(this.actualPlanning);
+                
+                //Ricavo la piattaforma di esecuzione
+                //in HTML sul content viene usata una direttiva per una animazione diversa della toolbar in Ios
+                this.isOnAppleSystem = this.startService.isOnAppleSystem;
+
+                //Mi sottoscrivo alla ricezione degli Sport sulla Location
+                this.onListenListaSport();
 
   }
+
   
-  
-  /**
-   * Crea l'array con i soli Campi dove è possibile effettuare l'attività selezionata
-   */
-  updateAvailableFields()
-  {
-     if (this.selectedLocation) {
-      if (this.selectedLocation.CAMPO) {
-
-        this.availableFields = this.selectedLocation.CAMPO.filter( el=> {
-          let trovato =false;
-
-          if (this.selectedSport) {
-
-            for (const iterator of el.CAMPOSPORT) {
-              if (iterator.IDSPORT==this.selectedSport.ID)
-              {
-                trovato=true;
-                break;
-              }
-            }
-
-          }
-          
-          return trovato;
-        });
-
-
-      }
-     }
-  }
-
-
   ngOnInit() {
 
+    //Creazione del Loading
     this.loadingController.create({
       message: 'Caricamento',
       spinner: 'circular',
       backdropDismiss: true
 
-    }).then(loading=>{
+    }).then(elLoading=>{
 
         LogApp.consoleLog('Presentazione Loading');
 
-        loading.present()
+        elLoading.present();
+
         this.flagDatiRicevuti = false;
         this.flagPrenotazioneDisponibile = false;
       
@@ -165,8 +138,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
             LogApp.consoleLog('Richiesta al server Sport Praticati nella location ');
             this.startService.requestLocationSport(this.idLocation);
             
-            //Mi sottoscrivo alla ricezione degli Sport
-            this.sottoscrizioneListaSport();
           
             // Chiedo al server Location, Campi e CampiSport (3 Livelli)
             LogApp.consoleLog('Richiesta al server Location, Campi e CampiSport ');
@@ -174,9 +145,9 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
             this.startService.requestLocationByID(this.idLocation, 3)
               .then(()=>{
                   this.flagDatiRicevuti=true;
-                  loading.dismiss();
+                  elLoading.dismiss();
               },()=>{
-                  loading.dismiss();
+                  elLoading.dismiss();
                   this.showMessage('Errore di connessione','toast');
             });
 
@@ -210,6 +181,9 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
           
         }
         else {
+          //Chiudo il loading
+          elLoading.dismiss();
+
           // Dico che non posso prenotare
           this.flagPrenotazioneDisponibile = false;
           this.flagDatiRicevuti = true;
@@ -217,7 +191,10 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
         
       }
       else {
-        //Rimando alla HOME
+        //Chiudo il Loading
+        elLoading.dismiss();
+
+        //Torno alla HOME
         this.onGoToBack();
       }
 
@@ -225,6 +202,43 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 });
     
   }
+  
+  
+  /**
+   * Crea l'array con i soli Campi dove è possibile effettuare l'attività selezionata
+   */
+  updateAvailableFields(): void {
+
+     if (this.selectedLocation) {
+
+      if (this.selectedLocation.CAMPO) {
+
+        //Imposto Array con i campi disponibili
+        this.availableFields = this.selectedLocation.CAMPO.filter( elCampo => {
+
+          let trovato =false;
+
+          if (this.selectedSport) {
+
+            for (const iterator of elCampo.CAMPOSPORT) {
+              if (iterator.IDSPORT==this.selectedSport.ID)
+              {
+                trovato=true;
+                break;
+              }
+            }
+
+          }
+          
+          return trovato;
+        });
+
+
+      }
+     }
+  }
+
+
 
 
   
@@ -376,13 +390,11 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   /**
    * Chiamata per sottoscriversi alla ricezione degli Sport praticati nella location
    */
-  private sottoscrizioneListaSport() {
+  private onListenListaSport() {
 
     //Mi sottoscrivo alla ricezione degli Sport praticati
     this.subListLocationSport = this.startService.listLocationSport
           .subscribe(resultData => {
-
-
 
                 //Popolo Lista degli Sport
                 this.listLocationSport = resultData;
@@ -426,7 +438,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   onRefresh() {
     
     
-
     if (this.selectedSport) {
 
       //this.selectedLocation è la Location, che contiene la Collection dei Campi, con dentro i CampiSport

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { StartService } from 'src/app/services/start.service';
 import { IonInput, AlertButton, NavController } from '@ionic/angular';
 
@@ -12,7 +12,7 @@ import { IonInput, AlertButton, NavController } from '@ionic/angular';
 export class DeleteAccountPage implements OnInit {
 
   retypePassword: string = '';
-  form: UntypedFormGroup;
+  form: FormGroup;
   showActual = false;
   showNew = false;
   showNewRetype = false;
@@ -54,12 +54,12 @@ export class DeleteAccountPage implements OnInit {
    */
   createFormGroup()
   {
-    this.form = new UntypedFormGroup({
-      actualPassword1: new UntypedFormControl(null,{
+    this.form = new FormGroup({
+      actualPassword1: new FormControl(null,{
         updateOn: 'change',
         validators:[Validators.required]
       }),
-      actualPassword2: new UntypedFormControl(null,{
+      actualPassword2: new FormControl(null,{
         updateOn: 'change',
         validators:[Validators.required]
       })

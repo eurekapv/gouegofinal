@@ -3,7 +3,7 @@ import { ModalController, LoadingController, ToastController, IonInput } from '@
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 
-import { UntypedFormControl, Validators, UntypedFormGroup, AbstractControl } from '@angular/forms';
+import { FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 import { RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
 import { Utente } from 'src/app/models/utente.model';
@@ -33,9 +33,9 @@ export class UserPasswordRecoveryPage implements OnInit {
   startConfig : StartConfiguration;
 
   //I 3 formGroups (Mail/telefono, codice di verifica, nuova password)
-  formInputMailTel : UntypedFormGroup;
-  formVerify : UntypedFormGroup;
-  formPsw : UntypedFormGroup;
+  formInputMailTel : FormGroup;
+  formVerify : FormGroup;
+  formPsw : FormGroup;
 
   //oggetti per richiedere e verificare i codici
   docRichiestaCodici : AccountRequestCode= new AccountRequestCode;
@@ -157,9 +157,9 @@ export class UserPasswordRecoveryPage implements OnInit {
    */
   createVerifyForm(){
 
-    this.formVerify=new UntypedFormGroup({
+    this.formVerify=new FormGroup({
 
-      codicemail: new UntypedFormControl(null, {
+      codicemail: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required, 
                     Validators.maxLength(this.codeLength),
@@ -189,8 +189,8 @@ export class UserPasswordRecoveryPage implements OnInit {
       myValidators.push(Validators.pattern(/^(\+\d{1,3}[- ]?)?\d{10}$/))
     }
      
-    this.formInputMailTel=new UntypedFormGroup({
-      contatto: new UntypedFormControl(null, {
+    this.formInputMailTel=new FormGroup({
+      contatto: new FormControl(null, {
         updateOn: 'change',
         validators: myValidators
       })
@@ -202,12 +202,12 @@ export class UserPasswordRecoveryPage implements OnInit {
    * Creazione del form per l'inserimento della password nuova
    */
   createPswForm(){
-    this.formPsw=new UntypedFormGroup({
-      psw: new UntypedFormControl(null, {
+    this.formPsw=new FormGroup({
+      psw: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       }),
-      confirmPsw: new UntypedFormControl(null, {
+      confirmPsw: new FormControl(null, {
         updateOn: 'change',
         validators: [Validators.required]
       })

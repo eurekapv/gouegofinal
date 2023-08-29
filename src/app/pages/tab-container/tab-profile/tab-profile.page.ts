@@ -154,7 +154,7 @@ onClickChangePassword() {
                 let newPsw = objReceived.data.pwd;
                 
                 // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
-                this.startService.saveStorageUtente(this.utenteDoc.WEBLOGIN,newPsw);
+                this.startService.saveUserCredential(this.utenteDoc.WEBLOGIN,newPsw);
               }
     
             }

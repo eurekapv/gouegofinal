@@ -823,7 +823,7 @@ export class UserVerifyPage implements OnInit {
              //LOGIN ACCETTATO
              
              // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
-             this.startService.saveStorageUtente(username,password);
+             this.startService.saveUserCredential(username,password);
            }
        });
      }

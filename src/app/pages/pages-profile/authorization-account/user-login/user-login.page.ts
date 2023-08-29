@@ -521,7 +521,7 @@ export class UserLoginPage implements OnInit {
                   //LOGIN ACCETTATO
                   
                   // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
-                  this.startService.saveStorageUtente(this.formLogin.value.username,this.formLogin.value.password);
+                  this.startService.saveUserCredential(this.formLogin.value.username,this.formLogin.value.password);
 
                   //Resetto la form
                   this.formLogin.reset();
@@ -1271,7 +1271,7 @@ export class UserLoginPage implements OnInit {
             //LOGIN ACCETTATO
             
             // MEMORIZZO LE CREDENZIALI PER UN SUCCESSIVO RECUPERO
-            this.startService.saveStorageUtente(username,password);
+            this.startService.saveUserCredential(username,password);
           }
       });
     }

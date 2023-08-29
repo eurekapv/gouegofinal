@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
-
-import { Storage } from '@ionic/storage';
-
 import { ApicallService } from './apicall.service';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
@@ -51,7 +48,7 @@ import { Area } from '../models/area.model';
 import { MasterDocumento } from '../models/ricevuta.model';
 import { PostResponse } from '../library/models/postResult.model';
 import { DataChiusuraService } from './data-chiusura.service';
-import { DataChiusura } from '../models/datachiusura.model';
+
 
 import { PlatformLocation } from '@angular/common';
 import { Gruppo } from '../models/gruppo.model';
@@ -81,6 +78,8 @@ import { ArticoloService } from './articolo.service';
 import { Articolo } from '../models/articolo.model';
 import { Sport } from '../models/sport.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
+import { KeyStorageService } from './key-storage.service';
+import { GetResult } from '@capacitor/preferences';
 
 @Injectable({
   providedIn: 'root'
@@ -167,7 +166,7 @@ export class StartService {
 
   constructor(private platformService: Platform,
     private apiService: ApicallService,
-    private storageAccess: Storage,
+    private keyStorageService: KeyStorageService,
     private sportService: SportService,
     private categoriaEtaService: CategoriaetaService,
     private corsoService: CourseService,
@@ -564,7 +563,7 @@ export class StartService {
                             });
 
     // 2 - TENTO L'ACCESSO AUTOMATICO
-    this.loadStorageUtente();
+    this.loadUserCredential();
 
   }
 
@@ -1111,57 +1110,68 @@ get actualIdUtente(): string {
   return myId;
 
 }
-/**
- * Memorizza nello storage username e password
- * @param username Username da memorizzare
- * @param pwd Password da memorizzare
- */
-saveStorageUtente(username: string, passwd: string) {
-  let account = new storageUtente(username, passwd);
-  
-  //salvo le informazioni criptate
-  let strAccount = account.saveJSON(true);
-
-  this.storageAccess.set('gouegoser',strAccount);
-  LogApp.consoleLog('Saved credential');
-}
 
 updateClientUtenteData(){
   return this.utenteService.updateClientData();
 }
 
 /**
+ * Memorizza nello storage username e password
+ * @param username Username da memorizzare
+ * @param pwd Password da memorizzare
+ */
+saveUserCredential(username: string, passwd: string): void {
+
+  let objDataAccount = new storageUtente(username, passwd);
+  
+  //salvo le informazioni criptate
+  let strAccount = objDataAccount.saveJSON(true);
+
+  this.keyStorageService.set('gouegoser',strAccount);
+  LogApp.consoleLog('Saved credential');
+}
+
+/**
  * Carica dallo Storage le credenziali utente memorizzate
  * Se il recupero è corretto tenta anche il login
  */
-loadStorageUtente() {
+loadUserCredential() {
   LogApp.consoleLog('Trying autologin');
 
   //Chiedo di caricare l'impostazione
-  this.storageAccess
+  this.keyStorageService
       .get('gouegoser')
-      .then ((val) => {
-        //Credenziali memorizzate
-        if (val) {
-          let savedUser = new storageUtente('','');
-          savedUser.loadJSON(val);
+      .then ((savedValueKey: GetResult) => {
 
-          if (savedUser.loginUser && savedUser.pwdUser) {
-            //Devo tentare di accedere
-            
-            //Faccio la richiesta al server
-            this.userLogin(savedUser.loginUser, savedUser.pwdUser)
-                .then(() => {
-                  LogApp.consoleLog('AutoLogin passed: ');
-                })
-                .catch(error => {
-                  LogApp.consoleLog('AutoLogin failed: ' + error);
-                });
+        try {
+
+          //Credenziali memorizzate
+          if (savedValueKey && savedValueKey.value) {
+  
+            let savedUser = new storageUtente('','');
+            savedUser.loadJSON(savedValueKey.value);
+  
+            if (savedUser.loginUser && savedUser.pwdUser) {
+              //Devo tentare di accedere
+              
+              //Faccio la richiesta al server
+              this.userLogin(savedUser.loginUser, savedUser.pwdUser)
+                  .then(() => {
+                    LogApp.consoleLog('AutoLogin passed: ');
+                  })
+                  .catch(error => {
+                    LogApp.consoleLog('AutoLogin failed: ' + error);
+                  });
+            }
           }
+          
+        } catch (error) {
+          LogApp.consoleLog('Autologin failed ' + error);
         }
       })
       .catch(error => {
         //Failed load Storage
+        LogApp.consoleLog('Autologin failed ' + error);
       });
       
 }
@@ -1185,7 +1195,7 @@ userLogoff(): void {
   this._startConfig.next(myStartConfig);
 
   //Tolgo le credenziali memorizzate dallo storage
-  this.saveStorageUtente('','');
+  this.saveUserCredential('','');
   
 }
 

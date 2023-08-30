@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { ApicallService } from './apicall.service';
+import { LogApp } from '../models/log.model';
 
 
 @Injectable({
@@ -15,20 +16,28 @@ export class DocumentoService {
   ) { }
 
 
-  request(config: StartConfiguration, fileUrl: string) {
+  request(config: StartConfiguration, fileUrl: string):Promise<Blob> {
 
-    console.log(fileUrl);
-        let myHeaders;
-        //Per ora non dichiaro un tipo (funziona lo stesso)
-        //new HttpHeaders({'Content-type':'text/plain'});    
-        fileUrl = this.encodeFilename(fileUrl);
-        
-    
-        let myUrl = config.urlFileServer + '/' + fileUrl;
-        
-        return this.apiCallService
-          .httpGetFile (myUrl, myHeaders)
-          .toPromise<Blob>();
+    return new Promise<Blob>((resolve, reject) => {
+
+      //Per ora non dichiaro un tipo (funziona lo stesso)
+      //new HttpHeaders({'Content-type':'text/plain'});    
+      let myHeaders;
+
+      LogApp.consoleLog(`Richiesta del file ${fileUrl}`);
+      fileUrl = this.encodeFilename(fileUrl);
+          
+      let myUrl = config.urlFileServer + '/' + fileUrl;
+          
+      this.apiCallService
+            .httpGetFile (myUrl, myHeaders)
+            .subscribe(elBlobFile => {
+              resolve(elBlobFile);
+            }, error => {
+              reject(error);
+            })
+            
+    })
 
   }
 

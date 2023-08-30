@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, IonSlides, LoadingController, ToastController, ModalController, ActionSheetController, AlertController} from '@ionic/angular';
+import { NavController, LoadingController, ModalController, ActionSheetController} from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -68,8 +68,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
   availableFields: Campo[]=[]; //un array dei soli campi per lo sport selezionato
 
-  @ViewChild('sliderCampi')sliderCampi: IonSlides;
-  indexCount: number = 0;
+    indexCount: number = 0;
   showExtraToolbar = true;
   isOnAppleSystem = false; //Sta girando su sistemi IOS (Introdotto per animare diversamente la toolbar Hide)
   
@@ -478,30 +477,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     this.getOccupazioni();
   }
 
-  /**
-   * Ha cambiato il campo nello Slide
-   */
-  onDidChangeCampo(e: any) {
-    
-    //Indice Slide è Zero Base
-    this.sliderCampi.getActiveIndex().then((index: number) => {
-      
-      //Ricavo il campo selezionato
-      if (index <= this.availableFields.length) {
-
-        this.selectedCampo = this.availableFields[index];
-        //Richiedo le occupazioni
-        this.getOccupazioni();
-
-      }
-
-      
-    });
-    
-    
-  }
-
-  
+ 
 
   /**
    * E' stata selezionata un'altra data
@@ -864,42 +840,5 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     // return an observable with a user-facing error message
       return throwError('Si sono verificati errori. Riprovare AHIME.');
   };
-
-
-  onClickChangeCampo(){
-    
-    
-    //creo i bottoni
-    let buttons = [];
-    this.availableFields.forEach(element => {
-      let btn = {
-        text: element.DENOMINAZIONE,
-        icon: 'location',
-        handler: () =>{
-          this.selectedCampo = element;
-          this.getOccupazioni();
-          let newPosition = this.availableFields.findIndex(el => {
-            return el.ID == this.selectedCampo.ID
-          })
-          this.sliderCampi.slideTo(newPosition);
-        }
-      }
-
-      buttons.push(btn);
-    });
-
-
-    //ora che ho i bottoni, creo l'actionsheet e lo presento
-    this.actionSheetController.create({
-      header: 'Scegli il campo',
-      buttons: buttons
-    })
-    .then(elActionSheet => {
-      elActionSheet.present();
-    })
-  }
-
-  
-
 
 }

@@ -49,7 +49,6 @@
     "cordova-plugin-screen-orientation": "^3.0.2",
     "cordova-res": "^0.15.3",
     "core-js": "^2.5.4",
-    "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",
     "date-fns": "2.30.0",
     "date-fns-tz": "^1.3.5",
@@ -63,7 +62,7 @@
     "scriptjs": "^2.5.9",
     "sportsfont": "^1.1.1",
     "swiper": "^9.3.1",
-    "tslib": "^2.0.0",
+    "tslib": "^2.6.2",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
@@ -91,7 +90,6 @@
     "karma-jasmine-html-reporter": "~1.7.0",
     "protractor": "~7.0.0",
     "ts-node": "~7.0.0",
-    "tslint": "~6.1.0",
     "typescript": "~4.8.4"
   },
   "description": "An Ionic project"

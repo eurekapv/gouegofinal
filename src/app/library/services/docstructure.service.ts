@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IDDocument, OperatorCondition, FilterCondition, IDRepository } from '../models/iddocument.model';
-import {RequestParams, RequestDecode, RequestForeign, PostParams } from '../models/requestParams.model';
+import { IDDocument, OperatorCondition, FilterCondition } from '../models/iddocument.model';
+import {RequestParams, RequestForeign, PostParams } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
 import { ApicallService } from '../../services/apicall.service';
@@ -12,8 +12,6 @@ import { CacheListElement } from '../models/cachelistelement.model';
 import { Cache } from '../models/cache.model';
 import { LogApp } from 'src/app/models/log.model';
 import { ParamsExport } from '../models/iddocument.model';
-
-
 
 @Injectable({
   providedIn: 'root'

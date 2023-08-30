@@ -20,6 +20,7 @@ npm install @capawesome/capacitor-file-picker
 - Aggiornamento a Angular 14
 - Aggiornamento RXJS 7.5
 - Aggiornamento Ionic 7
+- Installazione npm install tslib
 
 
 

@@ -17,7 +17,9 @@ npm install @capawesome/capacitor-file-picker
 - Rimosso npm uninstall @ionic-native/status-bar/ngx
 - Rimosso npm uninstall @ionic-native/splash-screen
 - Sostituiti i componenti chooser/file con i rispettivi awesome
-
+- Aggiornamento a Angular 14
+- Aggiornamento RXJS 7.5
+- Aggiornamento Ionic 7
 
 
 

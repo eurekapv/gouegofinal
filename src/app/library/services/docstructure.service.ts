@@ -552,8 +552,6 @@ export class DocstructureService {
 
           }
 
-          // In Testata c'e' sempre l'AppId
-          //myHeaders = myHeaders.set('appid',this.myConfig.appId);
 
           if (childLevel != -1) {
             myHeaders = myHeaders.append('child-level', childLevel+'');

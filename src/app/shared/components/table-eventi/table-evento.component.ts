@@ -26,6 +26,7 @@ export class TableEventiComponent implements OnInit {
    * Emetto l'evento di click
    */
   onClickEvento(eventoSelected: Evento) {
+    //Emetto il Click elemento
     this.clickEvento.emit(eventoSelected);
   }
 

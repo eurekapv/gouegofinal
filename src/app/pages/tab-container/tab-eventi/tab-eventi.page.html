@@ -42,10 +42,10 @@
         <!-- LISTA EVENTI -->
         <ion-list *ngIf="selectedView == 'pag-eventi'">
           <ion-list-header>
-            <ion-label>
-              <h1>
-                Prossimi Eventi
-              </h1>
+            <ion-label class="ion-text-wrap">
+              <h2>
+                Prossimi Eventi {{selectedArea ? 'a ' + selectedArea?.DENOMINAZIONE : ''}}
+              </h2>
           </ion-label>
           </ion-list-header>
 
@@ -57,15 +57,19 @@
             </ion-row>
           </ion-grid>
 
-          <app-table-eventi [listEventi]="listEventi"></app-table-eventi>
+          <app-table-eventi 
+                (clickEvento)="onClickEvento($event)"
+                [listEventi]="listEventi">
+          </app-table-eventi>
         </ion-list>
 
+        <!-- LISTA NEWS -->
         <ion-list *ngIf="selectedView == 'pag-news'">
           <ion-list-header>
             <ion-label>
-              <h1>
-                News dal centro
-              </h1>
+              <h2>
+                News {{selectedArea ? 'da ' + selectedArea?.DENOMINAZIONE : ''}}
+              </h2>
             </ion-label>
             <ion-button 
                 *ngIf="numRequestNews != numMaxNews"

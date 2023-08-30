@@ -10,7 +10,7 @@
 
           <ion-chip [color]="colorChip">
             <ion-icon 
-                name="time"></ion-icon>
+                name="time-outline"></ion-icon>
             <ion-label>{{ myApertura.DALLE1 | date:'HH:mm'}} - {{ myApertura.ALLE1 | date:'HH:mm'}}</ion-label>
           </ion-chip>
         </ion-col>
@@ -22,7 +22,7 @@
 
           <ion-chip [color]="colorChip">
             <ion-icon 
-                name="time"></ion-icon>
+                name="time-outline"></ion-icon>
             <ion-label>{{ myApertura.DALLE2 | date:'HH:mm'}} - {{ myApertura.ALLE2 | date:'HH:mm'}}</ion-label>
           </ion-chip>
 
@@ -32,8 +32,8 @@
       <ion-row *ngIf=" myApertura.isAlwaysOpen" class="ion-no-padding">
         <ion-col class="ion-text-center ion-no-padding">
 
-          <ion-chip [color]="colorChip">
-            <ion-label>
+          <ion-chip color="success">
+            <ion-label class="ion-text-bold">
               SEMPRE APERTO
             </ion-label>
           </ion-chip>
@@ -44,8 +44,8 @@
       <ion-row *ngIf="!myApertura.isOpen()" class="ion-no-padding">
         <ion-col class="ion-text-center ion-no-padding">
           <ion-chip color="danger">
-            <ion-label>
-              CHIUSO
+            <ion-label class="ion-text-bold">
+              OGGI CHIUSO
             </ion-label>
           </ion-chip>
         </ion-col>

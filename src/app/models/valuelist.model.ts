@@ -311,13 +311,21 @@ export enum EventoVisibilita {
     eventoNascosto = 20
 }
 
+export enum EventoStato {
+    inserito = 10,
+    inValutazione = 20,
+    confermato = 30,
+    annullato = 80
+}
+
 /**
- * Indica se il corso è previsto nel futuro, in corso o già concluso
+ * Indica un momento temporale
  */
-export enum TempoCorso {
+export enum Tempistica {
     FUTURO   = 'futuro',
     IN_CORSO = 'incorso',
-    PASSATO = 'passato'
+    PASSATO = 'passato',
+    NULL = 'null'
 }
 
 export enum TypeUrlPageLocation {

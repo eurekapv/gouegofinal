@@ -139,7 +139,7 @@ export class ApicallService {
    * @returns 
    */
   private handleError(receivingError: HttpErrorResponse) {
-    console.log(receivingError);
+    
     let errMsg = '';
 
     if (receivingError.error instanceof ErrorEvent) {

@@ -105,15 +105,19 @@
                                                 <h2>Info Centro</h2>
                                               </ion-label>
                                             </ion-item-divider>
+
+                                            <!-- COMUNE -->
+                                            <ion-item *ngIf="selectedLocation.DENOMINAZIONE && selectedLocation.DENOMINAZIONE.length != 0">
+                                              <ion-icon 
+                                                  name="golf-outline" 
+                                                  slot="start" 
+                                                  color="primary"></ion-icon>
+                                              <ion-label>{{selectedLocation.DENOMINAZIONE}}</ion-label>
+                                            </ion-item>
                                     
                                       
                                             <!-- DESCRIZIONE MOB -->
-                                            <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
-                                              <!-- <ion-icon 
-                                                  name="information-circle-outline" 
-                                                  slot="start" 
-                                                  color="primary">
-                                              </ion-icon> -->
+                                            <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB && selectedLocation.DESCRIZIONEMOB.length != 0">
                                       
                                               <ion-label class="ion-text-wrap">
                                                 <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
@@ -125,7 +129,7 @@
                                             <ion-item *ngIf="selectedLocation.getNumCampi() !== 0" button
                                               (click)="onClickOpenCampi()">
                                               <ion-icon 
-                                                  name="medical" 
+                                                  name="medical-outline" 
                                                   slot="start" 
                                                   color="primary">
                                               </ion-icon>
@@ -138,7 +142,7 @@
                                             <!-- COMUNE -->
                                             <ion-item *ngIf="selectedLocation.COMUNE">
                                               <ion-icon 
-                                                  name="home" 
+                                                  name="home-outline" 
                                                   slot="start" 
                                                   color="primary"></ion-icon>
                                               <ion-label>{{selectedLocation.COMUNE}}</ion-label>
@@ -147,7 +151,7 @@
                                             <!-- INDIRIZZO -->
                                             <ion-item *ngIf="selectedLocation.INDIRIZZO">
                                               <ion-icon 
-                                                name="navigate" 
+                                                name="navigate-outline" 
                                                 slot="start" 
                                                 color="primary">
                                               </ion-icon>
@@ -173,7 +177,7 @@
                                     
                                           <ion-item button *ngIf="selectedLocation.TELEFONO" [href]="'tel:'+selectedLocation.TELEFONO">
                                             <ion-icon 
-                                              name="call" 
+                                              name="call-outline" 
                                               slot="start" 
                                               color="primary"></ion-icon>
                                             <ion-label>{{selectedLocation.TELEFONO}}</ion-label>
@@ -181,7 +185,7 @@
                                       
                                           <ion-item button *ngIf="selectedLocation.EMAIL" [href]="'mailto:'+selectedLocation.EMAIL">
                                             <ion-icon 
-                                              name="mail" 
+                                              name="mail-outline" 
                                               slot="start" 
                                               color="primary">
                                             </ion-icon>
@@ -212,8 +216,8 @@
                                   </ion-item-divider>
                         
                                   <app-aperture 
-                                        *ngFor="let apertura of selectedLocation.APERTURALOCATION" 
-                                        [myApertura]="apertura">
+                                        *ngFor="let itemApertura of selectedLocation.APERTURALOCATION" 
+                                        [myApertura]="itemApertura">
                                   </app-aperture>
                         
                                 </ion-item-group>

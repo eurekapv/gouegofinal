@@ -3,7 +3,7 @@ import { DocstructureService } from '../library/services/docstructure.service';
 import { BehaviorSubject } from 'rxjs';
 import { Evento } from '../models/evento.model';
 import { PostParams, RequestForeign, RequestParams } from '../library/models/requestParams.model';
-import { EventoPrivacy, EventoVisibilita } from '../models/valuelist.model';
+import { EventoPrivacy, EventoStato, EventoVisibilita } from '../models/valuelist.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,7 @@ export class EventoService {
       filterDoc.IDAREAOPERATIVA = idArea;
       filterDoc.STATOPRIVACY = EventoPrivacy.eventoPubblico;
       filterDoc.STATOVISIBILITA = EventoVisibilita.eventoPubblicato;
+      filterDoc.STATO = EventoStato.confermato;
       
 
       //Effettuo la richiesta

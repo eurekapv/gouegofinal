@@ -11,7 +11,7 @@ import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account
 import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
 import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
 
-import { TempoCorso, TipoCorso } from 'src/app/models/valuelist.model';
+import { Tempistica, TipoCorso } from 'src/app/models/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
 import { LogApp } from 'src/app/models/log.model';
 import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
@@ -40,7 +40,7 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
   listenSelectedArea:Subscription;
   selectedArea: Area;
   areaEnableIscrizioni:boolean = false;  //Nell'area è possibile iscriversi ai corsi
-  tempoCorso: typeof TempoCorso = TempoCorso;
+  tempoCorso: typeof Tempistica = Tempistica;
   tipoCorso: typeof TipoCorso = TipoCorso;
   _labelNumeroGiorni = ''; //Etichetta con il numero dei giorni corso per settimana
 

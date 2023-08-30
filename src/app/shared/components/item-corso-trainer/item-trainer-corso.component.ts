@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Corso } from 'src/app/models/corso.model';
 import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
-import { TempoCorso, TipoCorso } from 'src/app/models/valuelist.model';
+import { Tempistica, TipoCorso } from 'src/app/models/valuelist.model';
 
 
 @Component({
@@ -65,11 +65,11 @@ export class ItemTrainerCorsoComponent implements OnInit {
    */
   colorItem(): string {
     
-      let tempoCorso: TempoCorso;
+      let tempoCorso: Tempistica;
       let ionColor = 'success';
       
       
-      tempoCorso = TempoCorso.PASSATO;
+      tempoCorso = Tempistica.PASSATO;
 
       switch (this.typeList) {
         case 'corsi':
@@ -88,20 +88,20 @@ export class ItemTrainerCorsoComponent implements OnInit {
           break;
       
         default:
-          tempoCorso = TempoCorso.PASSATO;
+          tempoCorso = Tempistica.PASSATO;
           break;
       }
 
       
       switch (tempoCorso) {
-        case TempoCorso.FUTURO:
+        case Tempistica.FUTURO:
           ionColor = 'warning';
           break;
-        case TempoCorso.IN_CORSO:
+        case Tempistica.IN_CORSO:
           ionColor = 'success';
           break;
 
-        case TempoCorso.PASSATO:
+        case Tempistica.PASSATO:
           ionColor = 'danger';
           break;
       
@@ -120,9 +120,9 @@ export class ItemTrainerCorsoComponent implements OnInit {
    */
   getClassColorColumn():string {
 
-      let tempoCorso: TempoCorso;
+      let tempoCorso: Tempistica;
 
-      tempoCorso = TempoCorso.PASSATO;
+      tempoCorso = Tempistica.PASSATO;
 
       switch (this.typeList) {
         case 'corsi':
@@ -141,7 +141,7 @@ export class ItemTrainerCorsoComponent implements OnInit {
           break;
       
         default:
-          tempoCorso = TempoCorso.PASSATO;
+          tempoCorso = Tempistica.PASSATO;
           break;
       }
  

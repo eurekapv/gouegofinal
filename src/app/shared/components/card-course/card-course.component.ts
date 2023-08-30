@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Corso } from '../../../models/corso.model'
-import { ValueList, TargetSesso, TipoCorso, TempoCorso } from 'src/app/models/valuelist.model';
+import { ValueList, TargetSesso, TipoCorso, Tempistica } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service'
 
 //https://ionicthemes.com/templates/ionic5-full-starter-app/screenshots
@@ -26,8 +26,8 @@ export class CardCourseComponent implements OnInit {
       this._labelSettimanaCorso = this._myCorso.getLabelNumeroGiornateSettimanali();
     }
     else {
-      this._myTempoCorso = TempoCorso.IN_CORSO;
-      this._myTempoIscrizioni = TempoCorso.PASSATO;
+      this._myTempoCorso = Tempistica.IN_CORSO;
+      this._myTempoIscrizioni = Tempistica.PASSATO;
       this._labelSettimanaCorso = '';
     }
     //Reimposto il flag Iscrizioni
@@ -47,8 +47,8 @@ export class CardCourseComponent implements OnInit {
 
 
   _myCorso: Corso = new Corso(true);
-  _myTempoCorso: TempoCorso = TempoCorso.IN_CORSO;
-  _myTempoIscrizioni: TempoCorso = TempoCorso.PASSATO;
+  _myTempoCorso: Tempistica = Tempistica.IN_CORSO;
+  _myTempoIscrizioni: Tempistica = Tempistica.PASSATO;
   _flagIscrizioni: boolean = false;
   _useIscrizioniColor: boolean = false;
   _labelSettimanaCorso: string = '';
@@ -63,7 +63,7 @@ export class CardCourseComponent implements OnInit {
   _footerColor = 'success';
 
   //per usare enum nell'Html
-  tempoCorso: typeof TempoCorso = TempoCorso;
+  tempoCorso: typeof Tempistica = Tempistica;
   tipoCorso: typeof TipoCorso = TipoCorso;
 
 
@@ -88,13 +88,13 @@ export class CardCourseComponent implements OnInit {
  
       //Controllo il tempo del corso
       switch (this._myTempoCorso) {
-        case TempoCorso.FUTURO:
+        case Tempistica.FUTURO:
           colorFooter = 'success';
           break;
-        case TempoCorso.IN_CORSO:
+        case Tempistica.IN_CORSO:
           colorFooter = 'light';
           break;
-        case TempoCorso.PASSATO:
+        case Tempistica.PASSATO:
           colorFooter = 'danger';
           break;
   

@@ -1,4 +1,4 @@
-import { TipoChiusura } from 'src/app/models/valuelist.model';
+import { Tempistica, TipoChiusura } from 'src/app/models/valuelist.model';
 import { TypeDefinition } from './descriptor.model';
 import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addQuarters, addSeconds, addWeeks, addYears, differenceInMinutes, differenceInSeconds, differenceInYears, endOfMonth, endOfWeek, format, formatISO, isAfter, isBefore, isDate, isEqual, isSameDay, isSameMinute, startOfMonth, startOfWeek, subDays, subHours, subMilliseconds, subMinutes, subMonths, subQuarters, subSeconds, subWeeks, subYears } from "date-fns";
 
@@ -102,6 +102,64 @@ export class MyDateTime {
 
         return flagResult;
     }
+
+
+    /**
+     * Serve per capire la situazione temporale rispetto ad oggi con le date passate
+     * Ritorna dove si trova ADESSO rispetto alle date
+     * 
+     * FUTURO -> Inizia il DATAINIZIO
+     * IN_CORSO -> Termina il DATAFINE
+     * PASSATO -> Concluso il DATAFINE
+     */
+    static tempoMomento(inferiorDate: Date, superiorDate: Date):Tempistica {
+        let adesso = new Date();
+        let flagTemporale:Tempistica = Tempistica.PASSATO;
+  
+        
+
+        //Sono presenti entrambi le date
+        if (inferiorDate && superiorDate) {
+            if (MyDateTime.isBetween(adesso, inferiorDate, superiorDate)) {
+                flagTemporale = Tempistica.IN_CORSO;
+            }
+            else if (MyDateTime.isAfter(adesso, superiorDate)) {
+                //E' finito
+                flagTemporale = Tempistica.PASSATO;
+            }
+            else if (MyDateTime.isBefore(adesso, inferiorDate)) {
+                //Deve iniziare
+                flagTemporale = Tempistica.FUTURO;
+            }
+        }
+        else if (inferiorDate && !superiorDate) {
+            //So quando inizia ma non quando finisce
+            if (MyDateTime.isBefore(adesso, inferiorDate)) {
+                //Deve iniziare
+                flagTemporale = Tempistica.FUTURO;
+            }
+            else {
+                flagTemporale = Tempistica.IN_CORSO;
+            }
+        }
+        else if (!inferiorDate && superiorDate) {
+            //Non so l'inizio ma so la fine
+            if (MyDateTime.isAfter(adesso, superiorDate)) {
+                //E' finito
+                flagTemporale = Tempistica.PASSATO;
+            }
+            else {
+                flagTemporale = Tempistica.IN_CORSO;
+            }
+        }
+        else {
+            //Non ho le date
+            flagTemporale = Tempistica.NULL;
+        }
+
+  
+        return flagTemporale;
+      }    
 
     //#endregion
 

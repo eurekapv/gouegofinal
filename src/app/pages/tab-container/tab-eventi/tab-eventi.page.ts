@@ -15,6 +15,7 @@ import { Evento } from 'src/app/models/evento.model';
 export class TabEventiPage implements OnInit, OnDestroy {
 
   constructor(private startService: StartService,
+              private navController: NavController,
               private modalController: ModalController
               ) { 
 
@@ -202,6 +203,19 @@ export class TabEventiPage implements OnInit, OnDestroy {
                      .catch(error => {
                       this.afterRefresh(eventoRefresher);
                      })
+  }
+
+  /**
+   * Effettuato il Click su un evento
+   * @param eventoDoc 
+   */
+  onClickEvento(eventoDoc: Evento) {
+    let arPath: string[];
+    
+    if (eventoDoc) {
+      arPath = this.startService.getUrlPageDetailNewsEventi('evento', eventoDoc.ID);
+      this.navController.navigateForward(arPath);
+    }
   }
   //#endregion
 }

@@ -24,6 +24,7 @@ export class Area extends IDDocument {
     AREAPAYMENTSETTINGS: AreaPaymentSetting[];
     APPSHOW: boolean;
     APPISCRIZIONI: boolean;
+    APPISCRIZIONIEVENTI: boolean;
     APPPRENOTAZIONI: boolean;
     APPGAPOREPRESENZE: number; //Indica per quanto tempo (ore) dal termine di una data di corso, il trainer può inserire/aggiornare le presenze
     APPBUTTONHOME: PositionActionButton; //Dove vuole mostrare i bottoni sulla home
@@ -32,6 +33,7 @@ export class Area extends IDDocument {
     constructor(onlyInstance?:boolean) {
       
       super(onlyInstance);
+
       this.AREALINKS=[];
       this.LOCATIONS = [];
       this.AREAPAYMENTSETTINGS=[];
@@ -40,6 +42,9 @@ export class Area extends IDDocument {
       if (!onlyInstance){
 
         this.APPGAPOREPRESENZE = 0;
+        this.APPISCRIZIONI = false;
+        this.APPISCRIZIONIEVENTI = false;
+        this.APPPRENOTAZIONI = false;
       }
 
     }
@@ -59,7 +64,7 @@ export class Area extends IDDocument {
                       'CONDVENDITACORSI',
                       'CONDVENDPRENOTAZIONI'];
       let arNumber = ['TIPOAREA','APPGAPOREPRESENZE','LATITUDINE','LONGITUDINE','APPBUTTONHOME'];
-      let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI'];
+      let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI','APPISCRIZIONIEVENTI'];
       let arDate = [];
       let arDateTime =[];
       let arTime = [];

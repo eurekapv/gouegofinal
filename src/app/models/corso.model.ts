@@ -1,5 +1,5 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni, ModalitaFruizione, TempoCorso } from '../models/valuelist.model';
+import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni, ModalitaFruizione, Tempistica } from '../models/valuelist.model';
 import { Settimana } from './settimana.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { CorsoProgramma } from './corsoprogramma.model';
@@ -354,9 +354,9 @@ export class Corso extends IDDocument {
      * IN_CORSO -> Termina il DATAFINE
      * PASSATO -> Concluso il DATAFINE
      */
-    tempoCorso():TempoCorso {
+    tempoCorso():Tempistica {
       let adesso = new Date();
-      let value:TempoCorso = TempoCorso.PASSATO;
+      let value:Tempistica = Tempistica.PASSATO;
       let dataOraInizioCorso: Date;
       let dataOraFineCorso: Date;
 
@@ -364,13 +364,13 @@ export class Corso extends IDDocument {
       dataOraFineCorso = MyDateTime.mergeDateAndTime(this.DATAFINE, this.ORAINIZIO);
 
       if (dataOraInizioCorso > adesso) {
-        value = TempoCorso.FUTURO;
+        value = Tempistica.FUTURO;
       }
       else if (dataOraFineCorso > adesso) {
-        value = TempoCorso.IN_CORSO;
+        value = Tempistica.IN_CORSO;
       }
       else {
-        value = TempoCorso.PASSATO;
+        value = Tempistica.PASSATO;
       }
 
       return value;
@@ -382,15 +382,15 @@ export class Corso extends IDDocument {
      * IN_CORSO -> Entro il DATAFINE
      * PASSATO -> Sono concluse il DATAFINE
      */    
-    tempoIscrizioni():TempoCorso {
+    tempoIscrizioni():Tempistica {
       let adesso = new Date();
-      let value:TempoCorso = TempoCorso.PASSATO;
+      let value:Tempistica = Tempistica.PASSATO;
       let dataInizioIscrizioni: Date;
       let dataFineIscrizioni: Date;
 
       if (!this.ISCRIZIONEDAL && !this.ISCRIZIONEAL) {
         //Non ho date di iscrizioni
-        value = TempoCorso.PASSATO;
+        value = Tempistica.PASSATO;
       }
       else {
         if (!this.ISCRIZIONEDAL) {
@@ -408,13 +408,13 @@ export class Corso extends IDDocument {
         }
 
         if (dataInizioIscrizioni > adesso) {
-          value = TempoCorso.FUTURO;
+          value = Tempistica.FUTURO;
         }
         else if (dataFineIscrizioni > adesso) {
-          value = TempoCorso.IN_CORSO;
+          value = Tempistica.IN_CORSO;
         }
         else {
-          value = TempoCorso.PASSATO;
+          value = Tempistica.PASSATO;
         }
 
       }
@@ -428,7 +428,7 @@ export class Corso extends IDDocument {
     flagIscrizioniAperte(): boolean {
       let flag: boolean = false;
 
-      if (this.tempoIscrizioni() == TempoCorso.IN_CORSO) {
+      if (this.tempoIscrizioni() == Tempistica.IN_CORSO) {
         flag = true;
       }
 

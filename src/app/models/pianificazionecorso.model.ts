@@ -4,7 +4,7 @@ import { RequestForeign } from '../library/models/requestParams.model';
 import { CorsoPresenze } from './corsopresenze.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { TypePeriod } from '../library/models/mydatetime.model';
-import { TempoCorso } from './valuelist.model';
+import { Tempistica } from './valuelist.model';
 
 
 export class PianificazioneCorso extends IDDocument {
@@ -168,9 +168,9 @@ static getReqForeignKeys(): RequestForeign[] {
      * PASSATO -> Concluso il DATAFINE
      * 
      */
-     tempoCorso():TempoCorso {
+     tempoCorso():Tempistica {
       let adesso = new Date();
-      let value:TempoCorso = TempoCorso.PASSATO;
+      let value:Tempistica = Tempistica.PASSATO;
       let dataOraInizioCorso: Date;
       let dataOraFineCorso: Date;
 
@@ -178,13 +178,13 @@ static getReqForeignKeys(): RequestForeign[] {
       dataOraFineCorso = this.DATAORAFINE;
 
       if (dataOraInizioCorso > adesso) {
-        value = TempoCorso.FUTURO;
+        value = Tempistica.FUTURO;
       }
       else if (dataOraFineCorso > adesso) {
-        value = TempoCorso.IN_CORSO;
+        value = Tempistica.IN_CORSO;
       }
       else {
-        value = TempoCorso.PASSATO;
+        value = Tempistica.PASSATO;
       }
 
       return value;

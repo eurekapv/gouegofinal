@@ -283,7 +283,7 @@ export class StartService {
           })
           .then(areaDoc => {
             LogApp.consoleLog('* Area selezionata', typeLog);
-            
+
             //Seleziono l'area
             this.areaService.selectAreaByID(areaDoc.ID);
 
@@ -1776,6 +1776,35 @@ requestNewsByID(idNews: string) {
   
   return this.newsEventiService.getNewsById(idNews);
   
+}
+
+/**
+ * Ritorna il path per andare nel dettaglio
+ * @param type 
+ * @param idPrimaryKey 
+ */
+getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
+  
+  let retPath = [];
+  retPath = ['/','appstart-home','tab-eventi'];
+
+  if (idPrimaryKey && idPrimaryKey.length != 0) {
+    switch (type) {
+      case 'news':
+          retPath.push('news-detail');
+          retPath.push(idPrimaryKey);
+        break;
+      case 'evento':
+          retPath.push('evento-detail');
+          retPath.push(idPrimaryKey);
+        break;  
+    
+      default:
+        break;
+    }
+  }
+
+  return retPath;
 }
 
 //#endregion

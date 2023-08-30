@@ -301,6 +301,16 @@ export enum ModalitaFruizione{
     inRemoto = 20
 }
 
+export enum EventoPrivacy {
+    eventoPubblico = 10,
+    eventoPrivato = 20
+}
+
+export enum EventoVisibilita {
+    eventoPubblicato = 10,
+    eventoNascosto = 20
+}
+
 /**
  * Indica se il corso è previsto nel futuro, in corso o già concluso
  */
@@ -484,6 +494,15 @@ export enum RangeSearch {
     mese = 30
 }  
 
+/**
+ * Stato dell'Applicazione 
+ */
+export enum StateApplication {
+    onStarting = 0,
+    started = -1,
+    onError = -2
+
+}
 
 
 

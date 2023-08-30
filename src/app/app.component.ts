@@ -4,6 +4,8 @@ import { StartConfiguration } from './models/start-configuration.model';
 import { StartService } from './services/start.service';
 import { Subscription } from 'rxjs';
 import { register } from 'swiper/element/bundle';
+import { StateApplication } from './models/valuelist.model';
+import { environment } from 'src/environments/environment';
 
 //we need to call Swiper's register function to globally register Swiper's custom elements
 register();
@@ -15,8 +17,14 @@ register();
 })
 export class AppComponent {
 
+  //Stato Attuale dell'Applicazione
+  actaulStateApplication: StateApplication = StateApplication.onStarting;
+  //Per usare enum nell HTML
+  stateApplication: typeof StateApplication = StateApplication;
+  errorMessage: string = '';
+  switchErrorMessage: boolean = false; //True Show / False Hide
+  versioneApp: string = environment.version;
 
-  showSplash = true;
   startConfig: StartConfiguration;
   listenStartConfig: Subscription;
   listenAppReady: Subscription;
@@ -25,39 +33,71 @@ export class AppComponent {
     private platform: Platform,
     private startService: StartService
   ) {
-    this.initializeApp();
+    this.initializeApp();  
+  }
+
+  /**
+   * Ritorna la Caption da mostrare nella card di errore
+   */
+  get captionCardError(): string {
+    let caption = '';
+    caption = 'Gouego';
+
+    if (this.startConfig) {
+      if (this.startConfig.companyName && this.startConfig.companyName.length != 0) {
+        caption = this.startConfig.companyName;
+      }
+    }
+
+    return caption;
   }
 
   initializeApp() {
-    // this.splashScreen.hide(); // Nasconde l'immagine statica
+    
+    //Piattaforma Pronta
     this.platform.ready().then(() => {
-      // this.statusBar.styleDefault();
-
-      this.listenAppReady = this.startService.appReady
-                                  .subscribe(valueReady => {
-                                    if (valueReady) {
-                                      //Ambiente pronto
-                                      //Termino lo Splash
-                                      this.showSplash = false;
-
-                                      //Tolgo la sottoscrizione
-                                      if (this.listenAppReady) {
-                                        this.listenAppReady.unsubscribe();
-                                      }
-                                    }
-                                  });
 
       //Mi Sottoscrivo per ricevere la configurazione
-       this.listenStartConfig = this.startService.startConfig
-                      .subscribe(element => {
-                            //Memorizzo per la visualizzazione del Menu
-                            this.startConfig = element;
-                        });
+      this.listenStartConfig = this.startService.startConfig
+                                        .subscribe(element => {
+                                            //Non so cosa mi serva
+                                              this.startConfig = element;
+                                          });
+      this.onStartApplication();
 
-      // Richiedo l'autorizzazione
-      //this.startService.requestStartAuthorization();
-      this.startService.settingStartStepOne();
-
+      
     });
   }
+  
+  /**
+   * Innesca le procedure per inizializzare l'applicazione
+   */
+  onStartApplication(): void {
+
+    //Eseguo le operazioni per la partenza
+    this.startService.startApplication()
+                     .then(() => {
+                        //L'applicazione è partita
+                        this.actaulStateApplication = StateApplication.started;
+                     })
+                     .catch(error => {
+                        if (typeof error == 'string') {
+                          this.errorMessage = error;
+                        }
+                        else if (error instanceof Error) {
+                          this.errorMessage = error.message;
+                        }
+                        else {
+                          this.errorMessage = '';
+                        }
+                        //Purtroppo sono in errore
+                        this.actaulStateApplication = StateApplication.onError;
+                     })
+  }
+
+  //#region GESTIONE ERRORI
+  onClickSwitchCaptionError(): void {
+    this.switchErrorMessage = !this.switchErrorMessage;
+  }
+  //#endregion
 }

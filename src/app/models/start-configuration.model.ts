@@ -7,12 +7,13 @@ export class StartConfiguration {
     private _ready: boolean; //Indica se la connessione con il server è avvenuta
     private _errorMessage: string; //Errore occorso
 
+    private _prefixDomain: string; //Eventuale Domain Prefix
     private _appId: string;  //Identificatore connessione
     private _urlDomain: string; //Dominio o IP da contattare
     private _urlProtocol: string; //Protocollo usato http o https
     
     private _urlComponent: string; //Parte dell'URL relativa al componente
-    private _urlBase: string; // Url di Base per effettuare la chiamata
+    private _urlBase: string; // Url di Base per effettuare la chiamata (Non esiste il SET)
 
     //Immagini rettangolari utilizzate come Logo
     private _companyUrlLogo: string; // Logo Url company (Impostata in BackEnd)
@@ -31,7 +32,9 @@ export class StartConfiguration {
 
     private _authorizationAppCode: string; //Codice di autorizzazione da inviare
     private _authorizationUserCode: string; //Codice di autorizzazione utente quando loggato da inviare
-        
+    
+    private _startAuthorization: StartAuthorization; //Autorizzazione ricevuta
+
     constructor() {
 
         this._urlComponent = 'COMPGOUEGO';
@@ -61,83 +64,9 @@ export class StartConfiguration {
 
     }
 
-    /**
-     * 
-     * @param prefixDomain Prefisso del dominio es (openbeach,demo, localhost)
-     * @param testingMode 
-     */
-    setUrlLocation() {
-        //Connessione Locale
-        if (environment.connection.mode == ConnectionMode.local) {
 
-            this._urlProtocol = environment.connection.urlLocation.local.urlProtocol;
-            this._urlDomain = environment.connection.urlLocation.local.urlDomain;            
-            this._urlFileServer = environment.connection.urlLocation.local.urlFileServer;
-        }
-        else {
-            this._urlProtocol = environment.connection.urlLocation.production.urlProtocol;
-            this._urlDomain = environment.connection.urlLocation.production.urlDomain;            
-            this._urlFileServer = environment.connection.urlLocation.production.urlFileServer;
-        }
-        //Vecchia modalità senza environment
-        // if (testingMode == true) {
-        //     //Modalità di test
 
-        //     //Modalità in locale
-        //     //Protocollo per forza http
-        //     this._urlProtocol = 'http';
-        //     this._urlDomain = 'localhost/gouegoapi';
-            
-        //     this._urlFileServer = 'localhost/gouego';
-
-        // }
-        // else {
-        //     //Non sono in test perchè voglio collegarmi al server, ma da dentro ionic serve
-        //     this._urlProtocol = 'https';
-        //     //Modalità Server
-        //     this._urlDomain = 'api.gouego.com';            
-        //     this._urlFileServer = 'app.gouego.com/admin';
-            
-
-        // }
-    }
-
-    // Utilizzato al termine di una chiamata di 
-    // Autorizzazione
-    setGruppoAuthorization(responseData: any) {
-        // Inizializzo il Gruppo
-        this._gruppo = new Gruppo();
-        this._gruppo.setJSONProperty(responseData);
-
-        //Ciclo sulle immagini ricevute (se presenti)
-        this._gruppo.PRIVATEIMAGE.forEach(elImage => {
-
-            if (elImage.FILENAMEESTENSIONE) {
-                switch (elImage.TIPO) {
-                    case TipoPrivateImage.icon:
-                        this._companyUrlIcon = `${this._urlProtocol}://${this._urlFileServer}/${elImage.FILENAMEESTENSIONE}`;
-                        break;
-                    case TipoPrivateImage.logo:
-                        this._companyUrlLogo = `${this._urlProtocol}://${this._urlFileServer}/${elImage.FILENAMEESTENSIONE}`;
-                        break;
-                
-                    default:
-                        break;
-                }
-            }
-            
-        });
-
-        
-        if (this._gruppo.DENOMINAZIONE) {
-
-            this._companyName = this._gruppo.DENOMINAZIONE;
-
-        }
-
-        
-
-    }
+    //#region PROPRIETA PUBBLICHE
 
     get gruppo(): Gruppo {
         return this._gruppo;
@@ -176,9 +105,9 @@ export class StartConfiguration {
     set companyUrlLogo(value: string) {
         this._companyUrlLogo = value;
     }
-    //#endregion
+    
 
-    //#region Brand Logo Image
+    
     /**
      * Ritorna Icona Rettangolare Standard
      */
@@ -201,24 +130,6 @@ export class StartConfiguration {
     set companyUrlIcon(value: string) {
         this._companyUrlIcon = value;
     }    
-    //#endregion
-
-    
-
-    /**
-     * Ritorna Logo rettangolare da utilizzare
-     */
-    getUrlLogo() {
-        return (this._companyUrlLogo ? this._companyUrlLogo : this._appUrlLogo)
-    }
-
-    /**
-     * Ritorna una Icona quadrata
-     */
-    getUrlIcon() {
-        return (this._companyUrlIcon ? this._companyUrlIcon : this._appUrlIcon)
-    }
-
     
     get errorMessage() {
         return this._errorMessage;
@@ -252,15 +163,20 @@ export class StartConfiguration {
         this._ready = value;
     }
 
-
-
-    // get set appId
     get appId() {
         return this._appId;
     }
 
     set appId(value: string) {
         this._appId = value;
+    }
+
+    // Prefix Domain
+    public get prefixDomain() {
+        return this._prefixDomain;
+    }
+    public set prefixDomain(value) {
+        this._prefixDomain = value;
     }
 
 
@@ -324,7 +240,115 @@ export class StartConfiguration {
     }
 
     
+    public get startAuthorization() {
+        return this._startAuthorization;
+    }
+    public set startAuthorization(value) {
+        this._startAuthorization = value;
+    }
 
+    //#endregion
+
+
+
+    //#region METODI PUBBLICI
+    /**
+     * 
+     * @param prefixDomain Prefisso del dominio es (openbeach,demo, localhost)
+     * @param testingMode 
+     */
+    setUrlLocation() {
+        //Connessione Locale
+        if (environment.connection.mode == ConnectionMode.local) {
+
+            this._urlProtocol = environment.connection.urlLocation.local.urlProtocol;
+            this._urlDomain = environment.connection.urlLocation.local.urlDomain;            
+            this._urlFileServer = environment.connection.urlLocation.local.urlFileServer;
+        }
+        else {
+            this._urlProtocol = environment.connection.urlLocation.production.urlProtocol;
+            this._urlDomain = environment.connection.urlLocation.production.urlDomain;            
+            this._urlFileServer = environment.connection.urlLocation.production.urlFileServer;
+        }
+
+    }
+    
+    // Utilizzato al termine di una chiamata di 
+    // Autorizzazione
+    /**
+     * Preleva i dati dal documento this.startAuthorization
+     * ed imposta altre proprietà del documento come
+     * CompanyName - companyUrlIcon - companyUrlLogo
+     */
+    setFromAuthorizationGrant(): boolean {
+
+        let flagResult: boolean = true;
+
+        if (this.startAuthorization) {
+
+            //Imposto il codice di Autorizzazione
+            this.authorizationAppCode = this.startAuthorization.authcode;
+
+            if (this.startAuthorization.GRUPPOSPORTIVO) {
+
+                flagResult = true;
+
+                //Imposto il documento del Gruppo
+                this._gruppo = this.startAuthorization.GRUPPOSPORTIVO;
+
+                //Imposto la companyName
+                if (this._gruppo.DENOMINAZIONE && this._gruppo.DENOMINAZIONE.length != 0) {
+                    this._companyName = this._gruppo.DENOMINAZIONE;
+                }            
+
+                //Imposto le immagini del Gruppo
+                if (this._gruppo.PRIVATEIMAGE && this._gruppo.PRIVATEIMAGE.length != 0) {
+
+                    //Ciclo sulle immagini ricevute (se presenti)
+                    this._gruppo.PRIVATEIMAGE.forEach(elImage => {
+            
+                        if (elImage.FILENAMEESTENSIONE) {
+                            switch (elImage.TIPO) {
+                                case TipoPrivateImage.icon:
+                                    this._companyUrlIcon = `${this._urlProtocol}://${this._urlFileServer}/${elImage.FILENAMEESTENSIONE}`;
+                                    break;
+                                case TipoPrivateImage.logo:
+                                    this._companyUrlLogo = `${this._urlProtocol}://${this._urlFileServer}/${elImage.FILENAMEESTENSIONE}`;
+                                    break;
+                            
+                                default:
+                                    break;
+                            }
+                        }
+                        
+                    });
+                }
+            }
+            else {
+                //Non ho i dati del Gruppo Sportivo
+                flagResult = false;
+            }
+
+
+        }
+
+        return flagResult;
+    }
+
+    /**
+     * Ritorna Logo rettangolare da utilizzare
+     */
+    getUrlLogo() {
+        return (this._companyUrlLogo ? this._companyUrlLogo : this._appUrlLogo)
+    }
+    
+    /**
+     * Ritorna una Icona quadrata
+     */
+    getUrlIcon() {
+        return (this._companyUrlIcon ? this._companyUrlIcon : this._appUrlIcon)
+    }
+    
 
     /**
      * Ritorna l'headerHttp da applicare con l'impostazione 
@@ -365,7 +389,7 @@ export class StartConfiguration {
     }
 
     
-
+    //#endregion
 
 }
 

@@ -33,13 +33,13 @@ import { Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
-import { Mansione, RangeSearch, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TypeUrlPageLocation } from 'src/app/models/valuelist.model'
+import { Mansione, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TypeUrlPageLocation } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { OccupazioniService } from './occupazioni.service';
 
 import { DocstructureService } from '../library/services/docstructure.service';
 import { OccupazioneCampi } from '../models/occupazionecampi.model';
-import { RequestParams } from '../library/models/requestParams.model';
+import { PostParams, RequestParams } from '../library/models/requestParams.model';
 import { DocumentoService } from './documento.service';
 import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 import { InvoicesService } from './invoices.service';
@@ -80,6 +80,7 @@ import { Sport } from '../models/sport.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { KeyStorageService } from './key-storage.service';
 import { GetResult } from '@capacitor/preferences';
+import { Authorization } from '../models/authorization.model';
 
 @Injectable({
   providedIn: 'root'
@@ -91,6 +92,8 @@ export class StartService {
 
   /* Valorizzata a TRUE quando l'app è pronta a partire */
   private _appReady = new BehaviorSubject<boolean>(false);
+  private _stateApplication: StateApplication = StateApplication.onStarting;
+
   private listenLocation: Subscription;
   
   //Determina se la connessione sarà a un database locale, o al server
@@ -98,6 +101,17 @@ export class StartService {
 
   private _forceIdAreaOnLogin = ''; //Se impostato è l'area da mantenere a seguito del login (Usata quando nella booking non sono loggatto, e al termine devo rimanere sull'area)
   
+
+  /**
+   * Stato dell'Applicazione
+   */
+  public get stateApplication() {
+    return this._stateApplication;
+  }
+  public set stateApplication(value) {
+    this._stateApplication = value;
+  }
+
   get appReady() {
     return this._appReady.asObservable();
   }
@@ -212,6 +226,106 @@ export class StartService {
 
   //#region FUNZIONI START
 
+  startApplication(): Promise<void> {
+    let typeLog: 'log'|'error'|'warn' = 'warn';
+
+    return new Promise<void>((resolve, reject) => {
+      LogApp.consoleLog('* Start Application', typeLog);
+
+      //Inizio con il recupero della configurazione
+      this.retrieveConfiguration()
+          .then(dataConfig => {
+            LogApp.consoleLog('* Recupero configurazione effettuato',typeLog);
+            //Riemetto Observable
+            this._startConfig.next(dataConfig);
+            //Tento il recupero AppId dal Server (se non fosse presente)
+            return this.retrieveAppIdFromServer(dataConfig);
+          })
+          .then(dataConfig => {
+            LogApp.consoleLog('* Recupero AppId effettuato',typeLog);
+            //Riemetto Observable
+            this._startConfig.next(dataConfig);
+            //Controllo di aver tutto il necessario
+            return this.checkForAuthorizationCall(dataConfig);
+          })
+          .then(dataConfig => {
+            //Non riemetto la configurazione perchè non è cambiata
+            LogApp.consoleLog('* Controllo configurazione effettuato',typeLog);
+
+            //Chiediamo Authorizzazione al Server
+            return this.requestStartAuthorization(dataConfig);
+          })
+          .then(dataConfig => {
+            //Autorizzazione concessa
+            LogApp.consoleLog('* Autorizzazione ricevuta', typeLog);
+            //Riemetto Observable
+            this._startConfig.next(dataConfig);
+            //Sistemo i dati a seguito della concessione dell'autorizzazione
+            return this.onAuthorizationGrant(dataConfig);
+          })
+          .then(dataConfig => {
+
+            LogApp.consoleLog('* Sistemazione Documenti Autorizzazione', typeLog);
+
+            //Riemetto Observable
+            this._startConfig.next(dataConfig);
+
+            //E dopo richiedo le Aree
+            return this.requestAree();
+          })
+          .then(listAree => {
+            //Ricezione delle Aree (Se l'array è vuoto va in catch con la richiesta)
+            //Observable con le Aree viene popolato dalla richiesta
+            LogApp.consoleLog('* Aree Operative ricevute', typeLog);
+
+            //Recupero il documento con la proprietà selected
+            return this.areaService.findFirstDoc(listAree);
+          })
+          .then(areaDoc => {
+            LogApp.consoleLog('* Area selezionata', typeLog);
+            
+            //Seleziono l'area
+            this.areaService.selectAreaByID(areaDoc.ID);
+
+            //Con l'area posso recuperare le Location
+            return this.requestLocation(areaDoc.ID);
+          })
+          .then(listLocations => {
+            //Ricezione delle Location
+            LogApp.consoleLog('* Ricezione Location dell\'area selezionata', typeLog);
+            //Applicazione puo' partire
+            this._stateApplication = StateApplication.started;
+            resolve();
+          })
+          .catch(error => {
+            //Non riesco a collegarmi perchè sono presenti errori
+            LogApp.consoleLog('Inizializzazione Fallita','error');
+            LogApp.consoleLog(error,'error');
+
+            //Applicazione in errore
+            this._stateApplication = StateApplication.onError;
+
+            reject(error);
+          })
+
+    })
+  }
+
+  /**
+   * L'applicazione è partita
+   */
+  onAfterStartApplication(): void {
+      //Adesso ho tutto e posso sottoscrivermi al cambio Area
+      // Mi iscrivo alle modifiche dell'Area Selezionata
+      this.onListenAreaSelezionata();
+
+      this.onRetrieveAdditionalDocument();
+
+      //Tento il login Automatico
+      this.loadUserCredential();
+  }
+
+
   /**
    * PRIMO STEP DI CONFIGURAZIONE
    * 
@@ -225,289 +339,308 @@ export class StartService {
    * 2) prefixDomain -> prefisso letto sull'url
    * 3) myAppId -> Application id da utilizzare (modo automatico o manuale)
    */
-  settingStartStepOne() {
-    let myUrl = '';
-    let myAppId = '';    
-    let arUrl = [];
-    let prefixDomain = '';
+  retrieveConfiguration(): Promise<StartConfiguration> {
 
-
-    //Recupero lo StartConfig, cosi da modificarlo al termine
-    let myConfig = this._startConfig.getValue();
-    let activeId = '';
-
-    //Unico console log da mantenere
-    console.log(`App Version ${environment.version} deployed ${environment.releaseDate}`);
-
-    //Modalità Web
-    if (this.isOnWeb) {
-
-      this._localConnection = (environment.connection.mode == ConnectionMode.local);
-
-      //Connessione al server locale
-      if (this._localConnection) {
-        //Recupero l'activeId
-        activeId = environment.connection.activeId;
-        //Recupero il relativo AppId
-        myAppId = environment.connection.customer[activeId].appId;
-      }
-      else {
-        //Recupero URL del browser
-        myUrl = this.urlLocation.hostname;
-
-        if (myUrl == 'localhost') {
-          //Sono in debug mode ma voglio puntare fuori
+    return new Promise<StartConfiguration>((resolve) => {
+      
+      let myUrl = '';
+      let myAppId = '';    
+      let arUrl = [];
+      let prefixDomain = '';
+    
+      //Recupero lo StartConfig, cosi da modificarlo al termine
+      let myConfig = this._startConfig.getValue();
+      let activeId = '';
+  
+      //Unico console log da mantenere
+      console.log(`App Version ${environment.version} deployed ${environment.releaseDate}`);
+  
+      //Modalità Web
+      if (this.isOnWeb) {
+  
+        this._localConnection = (environment.connection.mode == ConnectionMode.local);
+  
+        //Connessione al server locale
+        if (this._localConnection) {
           //Recupero l'activeId
           activeId = environment.connection.activeId;
           //Recupero il relativo AppId
           myAppId = environment.connection.customer[activeId].appId;
         }
         else {
-          //Prendo URL e lo separo
-          arUrl = myUrl.split('.');
-  
-          if (arUrl.length != 0) {
-            //Prendo il prefisso e sulla base di questo ricavo l'AppID
-            prefixDomain = arUrl[0];
-          }        
-        }
-
-
-      }
-    }
-    else {
-      //MODALITA CAPACITOR
-      
-      //Non è mai in localconnection
-      this._localConnection = false;
-      //Recupero l'activeId
-      activeId = environment.connection.activeId;
-      //Recupero il relativo AppId
-      myAppId = environment.connection.customer[activeId].appId;
-
-      //Sono su capacitor o cordova
-      prefixDomain = '';
-
-    }
-
-    /* VECCHIA VERSIONE SENZA ENVIRONMENT
-    //Modalità Web
-    if (this.isOnWeb) {
-
-        //Qui posso cambiare strategia per puntare localmente
-        //this._localConnection = true;
-        this._localConnection = false;
-
-        if (this._localConnection) {
-          //Modalità di Test metto un AppId di test
-          myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F';
-        }
-        else {
-
           //Recupero URL del browser
           myUrl = this.urlLocation.hostname;
   
-          //Simulazione URL
-          myUrl = 'demo.gouego.com';
-  
-          //Sto aprendo in localhost ma voglio far puntare al server
-          //ancora una volta metto un appId fisso
           if (myUrl == 'localhost') {
-            
-            myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; //Demo AppId
-            //myAppId ='CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach AppId
-            // myAppId = 'FD291600-D873-49CF-A90C-525926CA2CDC'; //Key Element
-
+            //Sono in debug mode ma voglio puntare fuori
+            //Recupero l'activeId
+            activeId = environment.connection.activeId;
+            //Recupero il relativo AppId
+            myAppId = environment.connection.customer[activeId].appId;
           }
           else {
             //Prendo URL e lo separo
             arUrl = myUrl.split('.');
-
+    
             if (arUrl.length != 0) {
-
               //Prendo il prefisso e sulla base di questo ricavo l'AppID
               prefixDomain = arUrl[0];
-
-            }
+            }        
           }
-
+  
+  
         }
-    }
-    else {
+      }
+      else {
+        //MODALITA CAPACITOR
+        
+        //Non è mai in localconnection
+        this._localConnection = false;
+        //Recupero l'activeId
+        activeId = environment.connection.activeId;
+        //Recupero il relativo AppId
+        myAppId = environment.connection.customer[activeId].appId;
+  
+        //Sono su capacitor o cordova
+        prefixDomain = '';
+  
+      }
+    
+      //Imposto gli Url utilizzati nelle chiamate
+      myConfig.setUrlLocation();
 
-      console.log('Capacitor Step');
-      //Non è mai in localconnection
-      this._localConnection = false;
+      myConfig.prefixDomain = prefixDomain;
+      myConfig.appId = myAppId;
 
+      resolve(myConfig);
 
-      //VALORIZZARE L'APP ID PER CAPACITOR
-      //TODO: VALORIZZARE APPID PER INSTALLAZIONE CAPACITOR
-      //myAppId = 'CCBA34A5-24F5-4C22-8485-D891823E3434'; //OpenBeach
-      myAppId = '00F15A91-5395-445C-B7F4-5BA594E55D2F'; //Demo AppId
-      
-      
+      /*
+      //Reimposto Observable
+      this._startConfig.next(myConfig);
+  
+      //Il secondo step si preoccupa di ricavare l'app id se mancante, 
+      //Impostare i dati nell'oggetti startConfiguration
+      //ed iniziare la comunicazione server
+      this.settingStartStepTwo(prefixDomain, myAppId);
+      */
 
-      //Sono su capacitor o cordova
-      prefixDomain = '';
-    }
-    */
-
-    //Imposto gli Url utilizzati nelle chiamate
-    myConfig.setUrlLocation();
-
-    //Reimposto Observable
-    this._startConfig.next(myConfig);
-
-    //Il secondo step si preoccupa di ricavare l'app id se mancante, 
-    //Impostare i dati nell'oggetti startConfiguration
-    //ed iniziare la comunicazione server
-    this.settingStartStepTwo(prefixDomain, myAppId);
+    })
 
   }
 
   /**
    * SECONDO STEP DI CONFIGURAZIONE
    * Il metodo tenta il recupero di un appId se non ne possiede già uno, e se prefixdomain vale qualcosa
+   * effettuando una chiamata al server e passando il prefixDomain
    */
-  settingStartStepTwo(prefixDomain: string, myAppId: string) {
+  retrieveAppIdFromServer(dataConfig: StartConfiguration): Promise<StartConfiguration> {
 
-    let docGruppo = new Gruppo(true);
-    let params = new RequestParams();
+    return new Promise<StartConfiguration>((resolve, reject) => {
+      
+      let docToCall: Gruppo;
+      
+  
+      //Ho la configurazione base
+      if (dataConfig) {
 
-    if (myAppId.length == 0) {
-
-      if (prefixDomain.length != 0) {
-        //Chiedo al server 
-        //Preparo il documento di filtro
-        docGruppo.PREFIXDOMAIN = prefixDomain;
-
-        //Effettuo la chiamata
-        this.docStructureService.requestNew(docGruppo)
-          .then(collGruppo => {
-            //Vediamo appId ricevuto
-            let appIdReceived = '';
-
-            if (collGruppo) {
-
-              let myList: Gruppo[] = collGruppo;
-              let myGruppo: Gruppo; 
-
-              //Se riesco recupero appID
-              if (myList && myList.length != 0) {
-                myGruppo = myList[0];
-                appIdReceived = myGruppo.APPID;
-
-              }  
-            }
-
-            //Step 3 (Se il valore passato è '' siamo in errore)
-            this.settingStartStepThree(appIdReceived);
-          })
-          .catch(error => {
+        //Non ho ancora un AppID
+        if (dataConfig.appId.length == 0) {
+    
+          //Ho un Prefisso di dominio
+          if (dataConfig.prefixDomain.length != 0) {
+            //Provo a chiedere al server
+            //Preparo il documento di filtro
+            docToCall = new Gruppo(true);
+            docToCall.PREFIXDOMAIN = dataConfig.prefixDomain;
             
-            LogApp.consoleLog(error,'error');
+            //Effettuo la chiamata
+            this.docStructureService.requestNew(docToCall)
+              .then(collGruppo => {
+                //Ho ricevuto un risultato
+                if (collGruppo && collGruppo.length != 0) {
+                  
+                  let gruppoDoc: Gruppo = collGruppo[0];
 
-            //Vado allo Step 3 in errore passando stringa vuota
-            this.settingStartStepThree('');
-          })
-
+                  //Ho trovato un AppId da utilizzare
+                  if (gruppoDoc.APPID && gruppoDoc.APPID.length != 0) {
+                    dataConfig.appId = gruppoDoc.APPID;
+                    resolve(dataConfig);
+                  }
+                  else {
+                    //Stranamento non ho dentro un AppId
+                    LogApp.consoleLog('Group without AppId','error');
+                    reject('Group without AppId');
+                  }  
+                }
+                else {
+                  //Non ho ricevuto nulla
+                  LogApp.consoleLog('Call to determinate AppId return empty','error');
+                  reject('Call to determinate AppId return empty');
+                }
+    
+              })
+              .catch(error => {
+                LogApp.consoleLog(error,'error');
+                reject(error);
+              })
+    
+          }
+          else {
+            //Non ho AppId e non ho trovato modo di leggere URL
+            reject('AppId Empty with no domain Prefix');
+          }
+        }
+        else {
+          //Sono già in possesso dell'AppId
+          resolve(dataConfig);
+        }
       }
       else {
-        //Non ho AppId e non ho trovato modo di leggere URL
-
-        //Vado allo Step 3 in errore passando stringa vuota
-        this.settingStartStepThree('');
-
+        reject('Data Configuration failed');
       }
-    }
-    else {
-      //Sono già in possesso dell'AppId
-      this.settingStartStepThree(myAppId);
-    }
+
+    })
   }
 
   /**
-   * Fase finale di Start
-   * Se il valore di myAppID = '', siamo in errore
+   * Effettua un controllo per verificare di essere in possesso dei requisiti per 
+   * richiedere una authorizzazione 
    */
-  settingStartStepThree(myAppId: string) {
+  checkForAuthorizationCall(dataConfig:StartConfiguration): Promise<StartConfiguration> {
 
-    //Recupero lo StartConfig, cosi da modificarlo al termine
-    let myConfig = this._startConfig.getValue();
-
-    myConfig.appId = myAppId;
-    
-    //Reimposto Observable
-    this._startConfig.next(myConfig);
-
-    this.requestStartAuthorization();
-
-  }
-
-
-    /** Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione */
-  requestStartAuthorization() {
-
-      const doObject = 'AUTHORIZATION';
-      const method = 'requestAuthorization';
-
-      const actualStartConfig = this._startConfig.getValue();
-      //Ricavo gli Header da impostare
-      let myHeaders = actualStartConfig.getHttpHeaders();
-      myHeaders = myHeaders.append('X-HTTP-Method-Override', method);
-
-      //Aggiungo i parametri di chiamata
-      let myParams = new HttpParams().set('withimages', '1');
-      myParams = myParams.append('withoptions','1');
-
-      //Url da chiamare
-      let myUrl = actualStartConfig.urlBase + '/' + doObject;
-  
-      LogApp.consoleLog(myUrl);
-      LogApp.consoleLog(JSON.stringify(myHeaders));
-
-      // Effettuo la chiamata per l'autorizzazione
-      this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .subscribe(resultData => {
-
-          let objAuth: StartAuthorization = resultData;
-
-          if (objAuth.result == -1 && objAuth.authcode && objAuth.authcode.length != 0) {
-
-            // Sistemo l'oggetto di configurazione 
-            // ed emetto un evento di Cambio
-            this.onAuthorizationGrant(objAuth);
-
+    return new Promise<StartConfiguration>((resolve, reject) => {
+        if (dataConfig) {
+          if (dataConfig.appId && dataConfig.appId.length != 0) {
+            resolve(dataConfig);
           }
           else {
-            LogApp.consoleLog('Authorization failed','error');
+            reject('AppId UnKnown');
           }
-        },error => {
-          LogApp.consoleLog('Comunication Error','error');
-          LogApp.consoleLog(error,'error');
-        });
+        }
+        else {
+          reject('Data Configuration failed before authorization');
+        }
+    })
+
+  }
+  
+  /**
+   * Effettua la chiamata WebAPI al Server per richiedere l'autorizzazione
+   */
+  requestStartAuthorization(dataConfig: StartConfiguration): Promise<StartConfiguration> {
+
+      return new Promise<StartConfiguration>((resolve, reject) => {
+        
+        const method = 'requestAuthorization';
+        let reqParams: PostParams[] = [];
+        let docToCall: Authorization = new Authorization(true);
+        if (dataConfig) {
+
+          PostParams.addParamsTo(reqParams, 'withimages', '1');
+          PostParams.addParamsTo(reqParams, 'withoptions', '1');
+          
+          //Effettuo la chiamata
+          this.docStructureService.requestForFunction(docToCall, method,'',reqParams)
+                                  .then(resultData => {
+  
+                                    //Imposto il risultato ricevuto
+                                    dataConfig.startAuthorization = resultData;
+
+                                    if (dataConfig.startAuthorization) {
+
+                                      if (dataConfig.startAuthorization.result == -1 && 
+                                          dataConfig.startAuthorization.authcode && 
+                                          dataConfig.startAuthorization.authcode.length != 0) {
+                                            resolve(dataConfig);
+                                      }
+                                      else {
+                                        LogApp.consoleLog('Authorization not allowed','error');
+                                        reject('Authorization not allowed');
+                                      }  
+
+                                    }
+                                    else {
+                                      LogApp.consoleLog('Authorization not received','error');
+                                      reject('Authorization not received');
+                                    }
+
+                                  })
+                                  .catch(error => {
+                                    reject(error);
+                                  })
+        }
+        else {
+          reject('Data Configuration failed after check authorization');
+        }
+      })
+
+
+
+      // const actualStartConfig = this._startConfig.getValue();
+      // //Ricavo gli Header da impostare
+      // let myHeaders = actualStartConfig.getHttpHeaders();
+      // myHeaders = myHeaders.append('X-HTTP-Method-Override', method);
+
+      // //Aggiungo i parametri di chiamata
+      // let myParams = new HttpParams().set('withimages', '1');
+      // myParams = myParams.append('withoptions','1');
+
+      // //Url da chiamare
+      // let myUrl = actualStartConfig.urlBase + '/' + doObject;
+  
+      // LogApp.consoleLog(myUrl);
+      // LogApp.consoleLog(JSON.stringify(myHeaders));
+
+      // // Effettuo la chiamata per l'autorizzazione
+      // this.apiService
+      //   .httpGet(myUrl, myHeaders, myParams)
+      //   .subscribe(resultData => {
+
+      //     let objAuth: StartAuthorization = resultData;
+
+      //     if (objAuth.result == -1 && objAuth.authcode && objAuth.authcode.length != 0) {
+
+      //       // Sistemo l'oggetto di configurazione 
+      //       // ed emetto un evento di Cambio
+      //       this.onAuthorizationGrant(objAuth);
+
+      //     }
+      //     else {
+      //       LogApp.consoleLog('Authorization failed','error');
+      //     }
+      //   },error => {
+      //     LogApp.consoleLog('Comunication Error','error');
+      //     LogApp.consoleLog(error,'error');
+      //   });
         
   
         
     }
 
   //Autorizzazione ricevuta
-  onAuthorizationGrant(objAuth: StartAuthorization) {
+  onAuthorizationGrant(dataConfig: StartConfiguration): Promise<StartConfiguration> {
 
-    let elStartConfig = this._startConfig.getValue();
+    return new Promise<StartConfiguration>((resolve, reject) => {
+      let flagResult: boolean = false;
 
-    //Scrivo in console
-    LogApp.consoleLog('Autorizzazione ricevuta');
+      if (dataConfig) {
+        //Imposto nella configurazione i dati del Gruppo e AuthCode
+        flagResult = dataConfig.setFromAuthorizationGrant();
+        if (flagResult) {
+          resolve(dataConfig);
+        }
+        else {
+          reject('Data Authorization invalid');
+        }
+        
+      }
+      else {
+        reject('Data Configuration failed after authorization grant');
+      }
 
-
-    //Sistemazione del Gruppo nell'oggetto di configurazione
-    elStartConfig.setGruppoAuthorization(objAuth.GRUPPOSPORTIVO);
-    //Sistemazione dell'authorization code da usare
-    elStartConfig.authorizationAppCode = objAuth.authcode;
-
-    //Emetto l'evento di cambio
-    this._startConfig.next(elStartConfig);
+    })
+    
+    /*
 
     //Passo a richiedere le Aree
     this.requestAree();
@@ -516,15 +649,16 @@ export class StartService {
     this.onChangeAreaSelezionata();
 
     //Operazioni ulteriori a seguito dell'autorizzazione
-    this.onAfterAuthorization();
+    this.onRetrieveAdditionalDocument();
+    */
   }    
 
 
 
   /**
-   * Alcune operazioni a seguito dell'autorizzazioni
+   * Effettuo il caricamento di ulteriori dati quali (Chiusure, Sport, Categorie Eta, etcc..)
    */
-  onAfterAuthorization() {
+  onRetrieveAdditionalDocument(): void {
 
     //0- RECUPERO LE CHIUSURE DEL GRUPPO
     this.dataChiusuraService.request()
@@ -595,7 +729,7 @@ export class StartService {
      * Effettua la connessione al server per la richiesta delle Aree
      * e seleziona la prima area disponibile
      */
-    requestAree() {
+    requestAree():Promise<Area[]> {
       const actualStartConfig = this._startConfig.getValue();
 
       return this.areaService.request(actualStartConfig);
@@ -614,42 +748,16 @@ export class StartService {
     /**
      * Metodo per sottoscriversi al cambiamento dell'area selezionata
      */
-    onChangeAreaSelezionata() {
+    onListenAreaSelezionata() {
 
       this.areaService.areaSelected
           .subscribe(newAreaSelected => {
             //Cambiando Area selezionata
             //Devo necessariamente recuperare le Location
-
             //Se il documento è in stato inserted non è ancora arrivato dal server
             if (!newAreaSelected.inserted) {
-              
               //Richiedo al server le Location
               this.requestLocation(newAreaSelected.ID);
-
-              //Chiedo la situazione dell' AppReady
-              let actualAppReady = this._appReady.getValue();
-              if (!actualAppReady) {
-                //Applicazione non ancora pronta
-
-                //Mi sottoscrivo per capire quando posso partire
-                //appena sono arrivate le location
-                this.listenLocation = this.locationService.listLocation
-                      .subscribe(data => {
-                        if (data.length !== 0) {
-                          //App entra in stato pronto
-                          this._appReady.next(true);
-
-
-                          LogApp.consoleLog('Avvio AppReady');
-
-                          //Dopo che l'app è partita in questo contento non 
-                          //mi serve piu sapere lo state Location
-                          this.listenLocation.unsubscribe();
-                        }
-                });
-              }
-
             }
           })
     }

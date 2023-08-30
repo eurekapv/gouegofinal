@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { TipoSocieta, TypeUrlPageLocation } from 'src/app/models/valuelist.model';
 import { ImageModalPage } from '../../image-modal/image-modal.page';
-import SwiperCore, { SwiperOptions, Pagination  } from 'swiper';
+import SwiperCore, { Pagination  } from 'swiper';
 
 SwiperCore.use([Pagination]);
 

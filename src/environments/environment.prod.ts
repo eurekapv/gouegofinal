@@ -32,7 +32,11 @@ export const environment = {
       beachforfun: {
         appId: 'E9682AA1-9E85-4D20-8A86-1A7FDBABF9A8',
         urlId: 'b4fnovara.gouego.com',
-      }
+      },
+      beachfuture: {
+        appId: '240CFBD7-0C9F-4CE1-8996-0513EC7BBDE2',
+        urlId: 'beachfuture.gouego.com',
+      },      
 
     },
     urlLocation: {

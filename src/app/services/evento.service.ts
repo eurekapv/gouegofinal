@@ -3,6 +3,7 @@ import { DocstructureService } from '../library/services/docstructure.service';
 import { BehaviorSubject } from 'rxjs';
 import { Evento } from '../models/evento.model';
 import { PostParams, RequestForeign, RequestParams } from '../library/models/requestParams.model';
+import { EventoPrivacy, EventoVisibilita } from '../models/valuelist.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,9 @@ export class EventoService {
 
       let filterDoc: Evento = new Evento(true);
       filterDoc.IDAREAOPERATIVA = idArea;
+      filterDoc.STATOPRIVACY = EventoPrivacy.eventoPubblico;
+      filterDoc.STATOVISIBILITA = EventoVisibilita.eventoPubblicato;
+      
 
       //Effettuo la richiesta
       this.docStructureService.requestNew(filterDoc)

@@ -21,7 +21,7 @@
                 sizeXl="8" offsetXl="2">
 
                 <ion-grid>
-                  <!-- RIGA BUTTON -->
+                  <!-- RIGA BUTTON SUPERIORE-->
                   <ion-row 
                         class="ion-no-margin ion-align-items-center">
                       <ion-col
@@ -40,171 +40,189 @@
                       </ion-col>
                   </ion-row>  
 
-                  <!-- RIGO GALLERY -->
+                  <!-- RIGA INFERIORE UNICA-->
                   <ion-row>
-                    <!-- GALLERY IMAGES -->
-                    <ion-col 
-                          size="12" 
-                          sizeXs="12" 
-                          sizeSm="12" 
-                          sizeMd="12" 
-                          sizeLg="12" 
-                          sizeXl="12">
+                    <!-- COLONNA UNICA SOTTO -->
+                    <ion-col sizeXs="12" 
+                             sizeSm="12" 
+                             sizeMd="12"
+                             sizeLg="12" 
+                             sizeXl="12" >
 
-                          <ion-card class="ion-no-margin ion-no-padding backcolorcard">
-                            <swiper-container
-                                #swiperGallery 
-                                class="gallery" 
-                                [pagination]="true">
+                      <!-- GRIGLIA SOTTO CHE DIVIDO IN DUE COLONNE -->
+                      <ion-grid>
+                        <ion-row>
+                          <!-- COLONNA INFERIORE SINISTRA (GALLERY E INFO CENTRO)-->
+                          <ion-col 
+                              sizeXs="12" 
+                              sizeSm="12" 
+                              sizeMd="6"
+                              sizeLg="6" 
+                              sizeXl="6">
+                              <!-- QUI METTO LA GALLERY E ALTRO-->
+                              <ion-grid>
+                                  <!-- RIGO GALLERY -->
+                                  <ion-row>
+                                    <!-- GALLERY IMAGES -->
+                                    <ion-col 
+                                          size="12" 
+                                          sizeXs="12" 
+                                          sizeSm="12" 
+                                          sizeMd="12" 
+                                          sizeLg="12" 
+                                          sizeXl="12">
+          
+                                          <ion-card class="ion-no-margin ion-no-padding backcolorcard">
+                                            <swiper-container
+                                                #swiperGallery 
+                                                class="gallery" 
+                                                [pagination]="true">
+                                        
+                                              <swiper-slide 
+                                                  *ngFor="let img of selectedLocation.LOCATIONIMAGE">
+                                                <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
+                                              </swiper-slide>      
+                                            </swiper-container>
+                                        
+                                          </ion-card>
+          
+                                    </ion-col> 
+                                </ion-row> 
+                                <!-- RIGO INFORMAZIONI CENTRO -->
+                                <ion-row>
+                                  <ion-col 
+                                        size="12" 
+                                        sizeXs="12" 
+                                        sizeSm="12" 
+                                        sizeMd="12" 
+                                        sizeLg="12" 
+                                        sizeXl="12">
+                                      <ion-list class="ion-list-margin-bottom">
+                                        <ion-item-group>
+                                    
+                                            <ion-item-divider color="tertiary">
+                                              <ion-label>
+                                                <h2>Info Centro</h2>
+                                              </ion-label>
+                                            </ion-item-divider>
+                                    
+                                      
+                                            <!-- DESCRIZIONE MOB -->
+                                            <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
+                                              <!-- <ion-icon 
+                                                  name="information-circle-outline" 
+                                                  slot="start" 
+                                                  color="primary">
+                                              </ion-icon> -->
+                                      
+                                              <ion-label class="ion-text-wrap">
+                                                <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
+                                              </ion-label>
+                                      
+                                            </ion-item>
+                                      
+                                            <!-- NUMERO CAMPI/AULE -->
+                                            <ion-item *ngIf="selectedLocation.getNumCampi() !== 0" button
+                                              (click)="onClickOpenCampi()">
+                                              <ion-icon 
+                                                  name="medical" 
+                                                  slot="start" 
+                                                  color="primary">
+                                              </ion-icon>
+                                      
+                                              <ion-label>{{ getLabelCampiDisponibili() }}</ion-label>
+                                              <ion-badge color="primary">{{selectedLocation.getNumCampi()}}</ion-badge>
+                                      
+                                            </ion-item>
+                                      
+                                            <!-- COMUNE -->
+                                            <ion-item *ngIf="selectedLocation.COMUNE">
+                                              <ion-icon 
+                                                  name="home" 
+                                                  slot="start" 
+                                                  color="primary"></ion-icon>
+                                              <ion-label>{{selectedLocation.COMUNE}}</ion-label>
+                                            </ion-item>
+                                      
+                                            <!-- INDIRIZZO -->
+                                            <ion-item *ngIf="selectedLocation.INDIRIZZO">
+                                              <ion-icon 
+                                                name="navigate" 
+                                                slot="start" 
+                                                color="primary">
+                                              </ion-icon>
+                                      
+                                              <ion-label>
+                                                {{selectedLocation.INDIRIZZO}}
+                                              </ion-label>
+                                      
+                                            </ion-item>
+                                      
+                                      
+                                          <!-- </div> -->
+                                    
+                                        </ion-item-group>
+                                    
+                                        <!-- CONTATTI TEL E EMAIL -->
+                                        <ion-item-group *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL">
+                                          <ion-item-divider color="tertiary">
+                                            
+                                            <ion-label><h2>Contatti</h2></ion-label>
+                                            
+                                          </ion-item-divider>
+                                    
+                                          <ion-item button *ngIf="selectedLocation.TELEFONO" [href]="'tel:'+selectedLocation.TELEFONO">
+                                            <ion-icon 
+                                              name="call" 
+                                              slot="start" 
+                                              color="primary"></ion-icon>
+                                            <ion-label>{{selectedLocation.TELEFONO}}</ion-label>
+                                          </ion-item>
+                                      
+                                          <ion-item button *ngIf="selectedLocation.EMAIL" [href]="'mailto:'+selectedLocation.EMAIL">
+                                            <ion-icon 
+                                              name="mail" 
+                                              slot="start" 
+                                              color="primary">
+                                            </ion-icon>
+                                            
+                                            <ion-label>{{selectedLocation.EMAIL}}</ion-label>
+                                          </ion-item>
+                                    
+                                        </ion-item-group>
+                                      </ion-list>
+                                  </ion-col>
+                                </ion-row>
+                              </ion-grid>
+                          </ion-col>
+                          <!-- COLONNA INFERIORE DESTRA (ORARI CENTRO)-->
+                          <ion-col 
+                              sizeXs="12" 
+                              sizeSm="12" 
+                              sizeMd="6"
+                              sizeLg="6" 
+                              sizeXl="6">
+                              <!-- ORARI CENTRO -->
+                              <ion-list class="ion-list-margin-bottom">
+                                <ion-item-group id="loc-orari" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
                         
-                              <swiper-slide 
-                                  *ngFor="let img of selectedLocation.LOCATIONIMAGE">
-                                <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
-                              </swiper-slide>      
-                            </swiper-container>
+                                  <ion-item-divider color="tertiary">
+                                    
+                                    <ion-label><h2>Orari Centro</h2></ion-label>
+                                  </ion-item-divider>
                         
-                          </ion-card>
-
-                    </ion-col> 
-                </ion-row>                  
-
-                  <!-- RIGA INFO CENTRO-->
-                  <ion-row>
-                    <!-- INFORMAZIONI CENTRO (SINISTRA)-->
-                    <ion-col 
-                          size="6" 
-                          sizeXs="12" 
-                          sizeSm="12" 
-                          sizeMd="6" 
-                          sizeLg="6" 
-                          sizeXl="6">
-                    
-                        <!-- INFO CENTRO-->
-                        <ion-list class="ion-list-margin-bottom">
-                          <ion-item-group>
-                      
-                              <ion-item-divider color="tertiary">
-                                <ion-label>
-                                  <h2>Info Centro</h2>
-                                </ion-label>
-                              </ion-item-divider>
-                      
+                                  <app-aperture 
+                                        *ngFor="let apertura of selectedLocation.APERTURALOCATION" 
+                                        [myApertura]="apertura">
+                                  </app-aperture>
                         
-                              <!-- DESCRIZIONE MOB -->
-                              <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB">
-                                <ion-icon 
-                                    name="information-circle-outline" 
-                                    slot="start" 
-                                    color="primary">
-                                </ion-icon>
-                        
-                                <ion-label class="ion-text-wrap">
-                                  <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
-                                </ion-label>
-                        
-                              </ion-item>
-                        
-                              <!-- NUMERO CAMPI/AULE -->
-                              <ion-item *ngIf="selectedLocation.getNumCampi() !== 0" button
-                                (click)="onClickOpenCampi()">
-                                <ion-icon 
-                                    name="medical" 
-                                    slot="start" 
-                                    color="primary">
-                                </ion-icon>
-                        
-                                <ion-label>{{ getLabelCampiDisponibili() }}</ion-label>
-                                <ion-badge color="primary">{{selectedLocation.getNumCampi()}}</ion-badge>
-                        
-                              </ion-item>
-                        
-                              <!-- COMUNE -->
-                              <ion-item *ngIf="selectedLocation.COMUNE">
-                                <ion-icon 
-                                    name="home" 
-                                    slot="start" 
-                                    color="primary"></ion-icon>
-                                <ion-label>{{selectedLocation.COMUNE}}</ion-label>
-                              </ion-item>
-                        
-                              <!-- INDIRIZZO -->
-                              <ion-item *ngIf="selectedLocation.INDIRIZZO">
-                                <ion-icon 
-                                  name="navigate" 
-                                  slot="start" 
-                                  color="primary">
-                                </ion-icon>
-                        
-                                <ion-label>
-                                  {{selectedLocation.INDIRIZZO}}
-                                </ion-label>
-                        
-                              </ion-item>
-                        
-                        
-                            <!-- </div> -->
-                      
-                          </ion-item-group>
-                      
-                          <!-- CONTATTI TEL E EMAIL -->
-                          <ion-item-group *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL">
-                            <ion-item-divider color="tertiary">
-                              
-                              <ion-label><h2>Contatti</h2></ion-label>
-                              
-                            </ion-item-divider>
-                      
-                            <ion-item button *ngIf="selectedLocation.TELEFONO" [href]="'tel:'+selectedLocation.TELEFONO">
-                              <ion-icon 
-                                name="call" 
-                                slot="start" 
-                                color="primary"></ion-icon>
-                              <ion-label>{{selectedLocation.TELEFONO}}</ion-label>
-                            </ion-item>
-                        
-                            <ion-item button *ngIf="selectedLocation.EMAIL" [href]="'mailto:'+selectedLocation.EMAIL">
-                              <ion-icon 
-                                name="mail" 
-                                slot="start" 
-                                color="primary">
-                              </ion-icon>
-                              
-                              <ion-label>{{selectedLocation.EMAIL}}</ion-label>
-                            </ion-item>
-                      
-                          </ion-item-group>
-                        </ion-list>
-                  </ion-col>
-
-                    <!-- COLONNA DESTRA ORARI CENTRO -->
-                    <ion-col 
-                      size="6" 
-                      sizeXs="12" 
-                      sizeSm="12" 
-                      sizeMd="6" 
-                      sizeLg="6" 
-                      sizeXl="6">   
-
-                      <ion-list class="ion-list-margin-bottom">
-                          <!-- ORARI CENTRO -->
-                          <ion-item-group id="loc-orari" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
-                  
-                            <ion-item-divider color="tertiary">
-                              
-                              <ion-label><h2>Orari Centro</h2></ion-label>
-                            </ion-item-divider>
-                  
-                            <app-aperture 
-                                  *ngFor="let apertura of selectedLocation.APERTURALOCATION" 
-                                  [myApertura]="apertura">
-                            </app-aperture>
-                  
-                          </ion-item-group>
-                      </ion-list>
+                                </ion-item-group>
+                            </ion-list>
+                          </ion-col>                          
+                        </ion-row>
+                      </ion-grid>
                     </ion-col>
                   </ion-row>
-
-
                 </ion-grid>
       </ion-col>
     </ion-row>  

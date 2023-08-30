@@ -44,6 +44,7 @@ import { ImpegnoCollaboratore } from 'src/app/models/impegno-collaboratore.model
 import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
 import { Evento } from 'src/app/models/evento.model';
 import { TipoEvento } from 'src/app/models/tipo-evento.model';
+import { Authorization } from 'src/app/models/authorization.model';
 
 
 
@@ -55,6 +56,7 @@ export const Structure: any = {
     Area,
     AreaLink,
     AreaPaymentSetting,
+    Authorization,
     Gruppo,
     CampoSport,
     AperturaLocation,
@@ -97,7 +99,8 @@ export const Structure: any = {
     TipoTesseraTemplate,
     Tesseramento,
     Evento,
-    TipoEvento
+    TipoEvento,
+    
 
 }
 

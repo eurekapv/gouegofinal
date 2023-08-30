@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { LogApp } from '../models/log.model';
 
 import { CustomEncriptionService } from './custom-encription.service';
@@ -66,6 +66,7 @@ export class ApicallService {
    * @param reqParams  Parametri
    */
   private _httpGet(url: string, reqHeaders: HttpHeaders, reqParams?: HttpParams) {
+
     LogApp.consoleLog('Chiamata GET a ' + url);
         
     reqHeaders = reqHeaders.append('authsign', this.customEncriptionService.getB64EncryptedSignature());
@@ -90,7 +91,7 @@ export class ApicallService {
                     reqHeaders: HttpHeaders, 
                     reqParams: HttpParams, 
                     reqBody: any
-                    ) {
+                    ):Observable<any> {
 
     reqHeaders = reqHeaders.append('authsign', this.customEncriptionService.getB64EncryptedSignature());
     LogApp.consoleLog('Chiamata POST a ' + url);
@@ -132,26 +133,39 @@ export class ApicallService {
   }
 
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
+  /**
+   * Gestisco l'errore arrivato
+   * @param receivingError 
+   * @returns 
+   */
+  private handleError(receivingError: HttpErrorResponse) {
+    console.log(receivingError);
+    let errMsg = '';
+
+    if (receivingError.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      LogApp.consoleLog('Errore di chiamata:' + error.error.message,'error');
+      errMsg = `Errore di chiamata: ${receivingError.error.message}`;
+      LogApp.consoleLog('Errore di chiamata:' + receivingError.error.message,'error');
     } else {
+
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      LogApp.consoleLog(
-        `Errore Backend Codice ${error.status}, ` +
-        `Body: ${error.error}`,
-        'error'
+      errMsg = `Errore BackEnd\nCodice Errore: ${receivingError.status}\n${receivingError.message}`;
+      if (typeof receivingError.error == 'string') {
+        errMsg += '\n';
+        errMsg += receivingError.error;
+      }
+      else if (typeof receivingError.error == 'object') {
+        errMsg += '\n';
+        errMsg += JSON.stringify(receivingError.error);
+      }
+      
+      LogApp.consoleLog(receivingError,'error');
 
-      );
-
-        LogApp.consoleLog(error.message,'error');
-        LogApp.consoleLog(JSON.stringify(error),'error');
     }
-    // return an observable with a user-facing error message
-    return throwError(
-      'Si sono verificati errori. Riprovare.');
+
+    return throwError(() => new Error(errMsg));
+    
   };
 
 

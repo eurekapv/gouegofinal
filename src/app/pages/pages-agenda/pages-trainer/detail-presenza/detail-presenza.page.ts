@@ -182,7 +182,7 @@ export class DetailPresenzaPage implements OnInit {
       if (this.pianificazioneDoc.NOTETRAINER.length != 0) {
         flagValue = true;
       }
-      console.log('NoteTrainer ' + flagValue);
+      
       return flagValue;
     }
   }

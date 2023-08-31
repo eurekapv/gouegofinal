@@ -47,9 +47,6 @@ export class ArticoloService {
       filterDoc.IDAREAOPERATIVA = idArea;
       filterDoc.FLAGSHOPONLINE = true;
 
-      
-      console.log(config);
-
       if (tipoArticolo) {
         filterDoc.TIPOARTICOLO = tipoArticolo;
       }
@@ -57,7 +54,7 @@ export class ArticoloService {
       this.docStructureService.requestNew(filterDoc)
                               .then(listReceived => this._changePathCoverImage(config, listReceived))
                               .then(listReceived => {
-                                console.log(listReceived)
+
                                 switch (tipoArticolo) {
                                   case TipoArticolo.prodotto:
                                     //Modifico la lista PRODOTTO

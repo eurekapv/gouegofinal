@@ -2,7 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Area } from 'src/app/models/area.model';
+import { EventoPianificazione } from 'src/app/models/evento-pianificazione.model';
 import { Evento } from 'src/app/models/evento.model';
 import { Tempistica } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
@@ -17,6 +19,7 @@ export class EventoDetailPage implements OnInit, OnDestroy {
   constructor(private router: ActivatedRoute,
               private startService: StartService,
               private loadingController: LoadingController,
+              private docStructureSrv: DocstructureService,
               private navController: NavController) { }
 
   idPrimaryKey: string = '';
@@ -92,18 +95,25 @@ export class EventoDetailPage implements OnInit, OnDestroy {
     })
     .then(elLoading => {
       elLoading.present();
-
-      console.log(this.idPrimaryKey);
       
       //Faccio la chiamata
       this.startService.requestEventoById(this.idPrimaryKey,2,true)
                         .then(dataReceived => {
 
-                          elLoading.dismiss();
+                          //Dati ricevuti
                           this.eventoDoc = dataReceived;
+
+                          //Decodifico anche la collection Eventi Pianificazione (solo queste chiavi)
+                          let reqForeign = EventoPianificazione.getReqForeignKeys();
+
+                          return this.docStructureSrv.decodeCollection(this.eventoDoc.EVENTOPIANIFICAZIONE, reqForeign, true);
+
+                        })
+                        .then(() => {
+                          //Chiudo il Loading
+                          elLoading.dismiss();
                           console.log(this.eventoDoc)
                         })
-                        .then()
                         .catch(error => {
                           elLoading.dismiss();
 

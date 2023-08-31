@@ -30,9 +30,7 @@ export class Evento extends IDDocument {
     ISCRIZIONEAL: Date;
     EVENTOPIANIFICAZIONE: EventoPianificazione[];
        
-
-    //TODO: In errore il recupero della collection dagli eventi
-
+    
     constructor(onlyInstance?: boolean){
         super(onlyInstance);
 
@@ -198,4 +196,13 @@ export class Evento extends IDDocument {
   
         return flagPagamento;
       }      
+
+
+      /**
+       * 
+       * @returns TRUE se la collection PIANIFICAZIONE contiene elementi
+       */
+      existCalendario(): boolean {
+        return (this.EVENTOPIANIFICAZIONE && this.EVENTOPIANIFICAZIONE.length != 0);
+      }
 }

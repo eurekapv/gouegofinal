@@ -111,14 +111,10 @@ export class EventoService {
 
       this.docStructureService.requestForFunction(docToCall, method, '', myPostParams)
                               .then(responseData => {
-                                    //Qui controlliamo la risposta
-                                    console.log('Risposta server')
-                                    console.log(responseData);
+
                                     return this._fillFromResponseData(responseData);
                               })
                               .then(eventList => {
-                                console.log('Risposta server decodificata')
-                                console.log(eventList);
 
                                 //Riemetto la lista degli eventi
                                 this._listEventi$.next(eventList);
@@ -164,8 +160,6 @@ export class EventoService {
           this.docStructureService.decodeCollection(eventList, reqForeign, false)
                                   .then(eventListDecoded => {
 
-                                    console.log('Decodificati');
-                                    console.log(eventListDecoded);
                                     resolve(eventListDecoded);
 
                                   })
@@ -209,8 +203,7 @@ export class EventoService {
         //Adesso decodifico le informazioni
         this.docStructureService.decodeCollection(returnList)
                                 .then(returnDecode => {
-                                  console.log('Decodifico');
-                                  console.log(returnDecode);
+
                                   //Riemetto la lista degli eventi
                                   this._listEventi$.next(returnDecode);
                                 })

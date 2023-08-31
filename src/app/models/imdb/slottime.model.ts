@@ -57,7 +57,6 @@ export class SlotTime extends IDDocument {
             //Aggiungo all'array di ritorno
             arSlots.push(slotBlock);
          
-            console.log('Sto creando ' + countWrapper + '...' + endSlotWrapper);
 
             //Aumento il Count dei minuti di slot
             countWrapper = MyDateTime.calcola(countWrapper, minuteSlot, TypePeriod.minutes);

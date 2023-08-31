@@ -1817,7 +1817,7 @@ get listEventi() {
 /**
  * Effettuo la richiesta di un Evento
  * @param idEvento 
- * @param numChild Profondità della richiesta
+ * @param numChild Profondità della richiesta (1 Il solo documento / 2+ Profondita Collection)
  * @param decodeAll Decodifica le chiavi esterne
  * @returns 
  */

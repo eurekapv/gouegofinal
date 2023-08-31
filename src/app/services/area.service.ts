@@ -54,8 +54,7 @@ export class AreaService {
 
         this.docStructure.requestNew(docToCall, reqParams)
                          .then(listReceived => {
-                              console.log(listReceived);
-                              
+                                                            
                               //Non ho ricevuto nulla
                               if (listReceived.length == 0) {
 

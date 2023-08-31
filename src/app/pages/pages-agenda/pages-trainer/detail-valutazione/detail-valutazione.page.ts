@@ -79,8 +79,7 @@ export class DetailValutazionePage implements OnInit {
 
       this.idCorso = data.get('corsoId');
 
-      console.log(this.idCorso);
-      
+            
       //Recupero tutti i documenti necessari 
       this.requestDocs()
             .then(() => {
@@ -137,7 +136,7 @@ export class DetailValutazionePage implements OnInit {
             //Richiedo al server tutti i dati necesssari
             this.docStructureService.requestNew(filterCorso, reqParam)
                                     .then(listCorsi => {
-                                      console.log(listCorsi);
+                                      
                                       return (listCorsi && listCorsi.length != 0 ? listCorsi[0]: null);
                                     })
                                     .then(singleCorso => {

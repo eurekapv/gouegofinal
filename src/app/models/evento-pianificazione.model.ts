@@ -1,5 +1,6 @@
 import { Descriptor, TypeDefinition } from "../library/models/descriptor.model";
 import { IDDocument } from "../library/models/iddocument.model";
+import { RequestForeign } from "../library/models/requestParams.model";
 
 export class EventoPianificazione extends IDDocument{
     IDEVENTO:           string;
@@ -51,4 +52,22 @@ export class EventoPianificazione extends IDDocument{
                             
         return objDescriptor;
     }
+
+    /**
+     * Per richiedere la decodifica dei campi dell'evento
+     * utilizzare questo array di ForeignKey
+     * @returns 
+     */
+    static getReqForeignKeys(): RequestForeign[] {
+        let arRequest: RequestForeign[] = [];
+        let objForeign: RequestForeign;
+    
+        objForeign = new RequestForeign('IDLOCATION');
+        arRequest.push(objForeign);
+    
+        objForeign = new RequestForeign('IDCAMPO');
+        arRequest.push(objForeign);        
+    
+        return arRequest;
+    }    
 }

@@ -219,7 +219,7 @@ export class PrenotazioneService {
 
         this.docStructureService.requestNew(filter, reqParams)
                                 .then(listResult => {
-                                  console.log(listResult);
+
                                   if (listResult && listResult.length != 0) {
                                     return listResult[0];
                                   }

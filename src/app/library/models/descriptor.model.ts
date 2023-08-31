@@ -135,7 +135,7 @@ export class TypeReflector {
     get isForeignKey():boolean {
         let result = false;
   
-        if (this._relFieldDoc) {
+        if (this._relFieldDoc && this._fieldType != TypeDefinition.collection) {
             result = true;
         }
   

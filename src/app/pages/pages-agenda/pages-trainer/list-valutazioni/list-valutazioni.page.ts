@@ -228,7 +228,6 @@ export class ListValutazioniPage implements OnInit {
       let retPath = ['/','appstart-home','tab-agenda','trainer','detail-valutazione',elCorso.ID];
       let strPath = retPath.join('/').substring(1);
       //Vado verso
-      console.log('Vado a ', strPath);
       this.navController.navigateForward(strPath);
     }
   }

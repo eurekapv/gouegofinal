@@ -30,7 +30,6 @@ export class SettimanaBlockComponent implements OnInit {
   @Input() isDesktop: boolean = false;
   @Input() set showOnlySelected(value: boolean) {
     this._showOnlySelected = value;
-    console.log('Modifica ShowOnselected ' + value)
   }
   //Modalità Solo testo dei giorni selezionati separati da ,
   @Input() set asText(value: boolean) {

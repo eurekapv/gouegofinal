@@ -46,6 +46,7 @@
                     <ion-accordion-group>
                       <ion-accordion value="programma-accordion">
                         <ion-item slot="header" color="tertiary">
+                          <ion-icon slot="start" name="document-text-outline"></ion-icon>
                           <ion-label class="ion-text-bold">PROGRAMMA</ion-label>
                         </ion-item>
                         <div class="ion-padding" slot="content">
@@ -56,16 +57,33 @@
               </ion-col>
             </ion-row>
 
-            <ion-row>
+            <ion-row *ngIf="eventoDoc.existCalendario()">
               <!-- CALENDARIO -->
               <ion-col 
                   size="12">
                   <ion-accordion-group>
                     <ion-accordion value="calendar-accordion">
                       <ion-item slot="header" color="tertiary">
+                        <ion-icon slot="start" name="calendar-outline"></ion-icon>
                         <ion-label class="ion-text-bold">CALENDARIO</ion-label>
                       </ion-item>
-                      <div class="ion-padding" slot="content">Qui mostro il calendario</div>
+                      <div class="ion-padding-vertical" slot="content">
+                        <ion-list class="ion-no-margin">
+                          <ion-item 
+                              *ngFor="let item of eventoDoc.EVENTOPIANIFICAZIONE">
+                              <ion-label class="ion-text-wrap">
+                                <h4>{{item['_DENOMINAZIONE_Location']}}</h4>
+                                <p>{{item['_DENOMINAZIONE_Campo']}}</p>
+                              </ion-label>
+                              <ion-label 
+                                    class="ion-text-end"
+                                    slot="end">
+                                <ion-badge color="success">{{item.DATAORAINIZIO | date: "EEE dd/MM/yyyy" | titlecase}}</ion-badge>
+                                <p class="ion-text-bold">{{item.DATAORAINIZIO | date: "HH:mm"}} - {{item.DATAORAFINE | date: "HH:mm"}}</p>
+                              </ion-label>
+                          </ion-item>
+                        </ion-list>
+                      </div>
                     </ion-accordion>
                   </ion-accordion-group>
               </ion-col>

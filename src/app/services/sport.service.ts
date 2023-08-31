@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Sport } from '../models/sport.model';
-import { StartConfiguration } from '../models/start-configuration.model';
 import { ApicallService } from './apicall.service';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { DocstructureService } from '../library/services/docstructure.service';
-import { RequestParams } from '../library/models/requestParams.model';
 import { LogApp } from '../models/log.model';
-import { FilterCondition, OperatorCondition } from '../library/models/iddocument.model';
+import { PostParams, RequestParams } from '../library/models/requestParams.model';
+
 
 
 
@@ -127,46 +125,43 @@ export class SportService {
    * @param config Dati configurazione
    * @param idLocation Location
    */
-  requestLocationSport(config: StartConfiguration, idLocation: string) {
-    return new Promise((resolve, reject)=>{
+  requestLocationSport(idLocation: string): Promise<Sport[]> {
+    return new Promise<Sport[]>((resolve, reject)=>{
       
-        // const myHeaders = new HttpHeaders({'Content-type':'text/plain', 
-        //                   'X-HTTP-Method-Override':'getSportLocation', 
-        //                   'appid':config.appId,
-        //                   'child-level': '1'
-        //                   });
+      let docToCall: Sport;
+      let reqParams: PostParams[] = [];
+      let reqOptions: RequestParams;
+      let method = 'getSportLocation';
 
-      let myHeaders = config.getHttpHeaders();
-      const myParams = new HttpParams().set('idLocation', idLocation);
-      const doObject = 'SPORT';
-      myHeaders = myHeaders.append('X-HTTP-Method-Override','getSportLocation');
-      myHeaders = myHeaders.append('child-level', '1');
+      docToCall = new Sport(true);
+      PostParams.addParamsTo(reqParams, 'idLocation', idLocation);
+      reqOptions = new RequestParams();
+      reqOptions.child_level = 1;
 
-      let myUrl = config.urlBase + '/' + doObject;
+      this.docStructureSrv.requestForFunction(docToCall, method, '',reqParams, reqOptions)
+                          .then(responseObj => {
+                            let resultList: Sport[] = [];
 
-      //Svuoto gli attuali
-      this._listLocationSport.next([]);
+                            if (responseObj && responseObj.hasOwnProperty('SPORT')) {
+                              
+                              //Converto il risultato in documenti tipizzati
+                              resultList = this.docStructureSrv.castCollection(responseObj['SPORT'], docToCall);
 
-      // Effettuo la chiamata
-      return this.apiService
-                .httpGet(myUrl, myHeaders, myParams)
-                .pipe(map(data => {
-                        return data.SPORT
-                      }))
-                .subscribe(resultData => {
+                              //Reimposto la liosta
+                              this._listLocationSport.next(resultList);
+                              resolve(resultList);
+                            }
+                            else {
+                              //Svuoto gli attuali
+                              this._listLocationSport.next([]);
+                              resolve([]);
+                            }
+                          })
+                          .catch(error => {
+                            reject(error);
+                          })
 
-                      resultData?.forEach(element => {
-        
-                        let newSport = new Sport();
-                        newSport.setJSONProperty(element);
-                        this.add2ListLocationSport(newSport);
-                        
-                      });
 
-                      resolve(this._listLocationSport);
-                }, error=>{
-                  reject(error);
-                });
     })
     }
 

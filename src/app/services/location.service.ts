@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take, max } from 'rxjs/operators';
-import { HttpParams } from '@angular/common/http';
-
+import { map, take } from 'rxjs/operators';
 import { Location } from '../models/location.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
@@ -43,122 +41,78 @@ export class LocationService {
                 private docStructureService: DocstructureService
               ) { }
 
-
-
   /**
-   * Recupero delle Location di un'area
-   * @param config Parametri di configurazione
-   * @param idArea Area di riferimento
-   */
-  requestByIdArea(config: StartConfiguration, idArea: string): Promise<Location[]> {
-    return new Promise((resolve, reject)=>{
-      let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
-      const doObject = 'LOCATION';
-      const locVisTutti = LocationAppVisibility.tutti; //Queste sono le location pubbliche
-      
-
-      // Nei parametri imposto l'Area Operativa
-      let myParams = new HttpParams().set('IDAREAOPERATIVA', idArea);
-  
-      //Chiedo solo le location Pubbliche (In teoria qui bisognerà gestire il caso di Location legate a una azienda a cui l'utente è collegato)
-      myParams = myParams.append('APPVISIBILITY', (locVisTutti + ''));
-
-      let myUrl = config.urlBase + '/' + doObject;
-  
-      this.apiService
-          .httpGet(myUrl, myHeaders, myParams)
-          .pipe(map(fullData => {
-            return fullData.LOCATION
-          }))
-          .subscribe(resultData => {
-  
-            //Cancello le Location
-            this._listLocation.next([]);
-  
-            //Inserisco le location
-            this._addMultipleLocation(resultData);
-            resolve(resultData);
-  
-          },error=>{
-            reject(error);
-          });
-      
-    })
-  }
-
-  /**
-   * Richiede un elenco di location con idArea passato, e lo risolve direttamente, senza passare da nessun'altra parte (usa il nuovo docstructure per fare la richiesta)
+   * Richiede un elenco di location con idArea passato, e lo risolve direttamente, 
+   * senza passare da nessun'altra parte (usa il nuovo docstructure per fare la richiesta)
    * @param idArea l'id dell'area
    */
-  newRequestByIdArea(idArea: string): Promise<Location[]>{
+  requestByIdArea(idArea: string): Promise<Location[]>{
 
     return new Promise((resolve, reject) => {
       let myFilter = new Location(true);
       myFilter.IDAREAOPERATIVA = idArea;
+      myFilter.APPVISIBILITY = LocationAppVisibility.tutti;
   
       let myParams = new RequestParams();
       myParams.decode = new RequestDecode();
       myParams.decode.active = true;
   
       this.docStructureService.requestNew(myFilter, myParams)
-      .then(listLocation => {
-        resolve (listLocation);
-      })
-      .catch(error => {
-        reject (error);
-      })
+                              .then(listLocation => {
+                                this._listLocation.next(listLocation);
+                                resolve (listLocation);
+                              })
+                              .catch(error => {
+                                reject (error);
+                              })
 
     })
   }
 
 
-    /** Effettua la richiesta al server di una Location precisa
+  /** 
+   * Effettua la richiesta al server di una Location precisa
    * @param idLocation Location scelta 
    * 
    */
-  requestLocationByID(config: StartConfiguration, idLocation: string, _numLivelli?:number) {
+  requestLocationByID(idLocation: string, childLevel : number = 3) {
     return new Promise<Location>((resolve, reject)=>{
-      let myHeaders = config.getHttpHeaders();
-      //new HttpHeaders({'Content-type':'text/plain'});
-      const doObject = 'LOCATION';
-  
-      if (!_numLivelli) {
-        _numLivelli = 3;
-      }
-  
 
-      myHeaders = myHeaders.set('child-level',_numLivelli + '');
-  
-      // Nei parametri imposto l'Area Operativa
-      let myParams = new HttpParams().set('ID', idLocation);
-  
-      let myUrl = config.urlBase + '/' + doObject;
-  
-        this.apiService
-                    .httpGet(myUrl, myHeaders, myParams)
-                    .pipe(map(fullData => {                
-                      return fullData.LOCATION;
-                    }))
-                    .subscribe(resultData => {
-                      let locReturn: Location;
-                      
-                      if (resultData && resultData.length !== 0) {
-                        
-                        locReturn = new Location();
-                        locReturn.setJSONProperty(resultData[0]);
-                        
-                        //Emetto evento di cambio
-                        this._activeLocation.next(locReturn);
-                        resolve(locReturn);
-                      }     
-                      else
-                      {
-                        reject('location non trovata');
-                      }             
-                    }, error=>{
-                      reject (error);
-                    });      
+      let filterDoc: Location;
+      let reqParams: RequestParams;
+
+      if (idLocation && idLocation.length != 0) {
+
+        filterDoc = new Location(true);
+        filterDoc.ID = idLocation;
+
+        reqParams = new RequestParams();
+        reqParams.child_level = childLevel;
+
+        this.docStructureService.requestNew(filterDoc, reqParams)
+                                .then(listItems => {
+
+                                  if (listItems && listItems.length !== 0) {
+
+                                    //Emetto evento di cambio
+                                    this._activeLocation.next(listItems[0]);
+                                    resolve(listItems[0]);
+
+                                  }     
+                                  else
+                                  {
+                                    reject('location non trovata');
+                                  } 
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+
+      }
+      else {
+        reject('idLocation undefined');
+      }
+           
     })
   }
 
@@ -245,7 +199,7 @@ export class LocationService {
     const doObject = 'CAMPOSPORT';
 
     // Nei parametri imposto il Campo
-    let myParams = new HttpParams().set('IDCAMPO', idCampo);
+    let myParams = this.docStructureService.getHttpParams().set('IDCAMPO', idCampo);
 
     let myUrl = config.urlBase + '/' + doObject;
 

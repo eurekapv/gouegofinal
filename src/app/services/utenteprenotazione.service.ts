@@ -43,7 +43,7 @@ export class UtenteprenotazioneService {
       let myUrl = config.urlBase + '/' + doObject;  
   
       //Nei Parametri imposto l'area richiesta
-      let myParams = new HttpParams().set('IDUTENTE',idUtente);
+      let myParams = this.apiService.getHttpParams().set('IDUTENTE',idUtente);
       myParams = myParams.append('DATAORAINIZIO',filterDateTime);
       myParams = myParams.append('$top', (maxRecord + '') );
   

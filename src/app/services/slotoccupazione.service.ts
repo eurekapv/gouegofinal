@@ -74,7 +74,7 @@ export class SlotoccupazioneService {
       
       if (docLocation && docCampo)  {
         
-        let myParams = new HttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
+        let myParams = this.docStructureSrv.getHttpParams().set('guidArea', docLocation.IDAREAOPERATIVA);
         myParams = myParams.append('guidLocation', docLocation.ID);
         myParams = myParams.append('guidCampo', docCampo.ID);
         myParams = myParams.append('dataGiorno',strData);
@@ -83,18 +83,35 @@ export class SlotoccupazioneService {
     
         this.apiCall
             .httpGet(myUrl,myHeaders,myParams)
-            .subscribe(resultData => {
+            .subscribe({
+              next: (resultData) => {
+                  //Reimposto il Gap dei minuti
+                  this.setGapMinutes(docLocation.MINUTIPREAVVISOPRENOTAZIONE);
+                  
+                  //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
+                  this.syncResult(resultData, templateSlotDay);
+                  resolve();                
+              },
+              error: (err) => {
+                reject(err);
+              }
+            })
+
+
+
+            // .subscribe(resultData => {
   
-              //Reimposto il Gap dei minuti
-              this.setGapMinutes(docLocation.MINUTIPREAVVISOPRENOTAZIONE);
+            //   //Reimposto il Gap dei minuti
+            //   this.setGapMinutes(docLocation.MINUTIPREAVVISOPRENOTAZIONE);
               
-              //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
-              this.syncResult(resultData, templateSlotDay);
-              resolve();
+            //   //Ora cerco di sincronizzare il template del giorno con le occupazioni arrivate
+            //   this.syncResult(resultData, templateSlotDay);
+            //   resolve();
               
-            }, error=>{
-              reject(error);
-            });
+            // }, error=>{
+            //   reject(error);
+            // });
+            
       }
       else {
   

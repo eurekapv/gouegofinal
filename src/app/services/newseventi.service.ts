@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of, from } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
-
-import { ApicallService } from './apicall.service';
-
-import { StartConfiguration } from '../models/start-configuration.model';
+import { BehaviorSubject } from 'rxjs';
 import { NewsEvento } from '../models/newsevento.model';
-import { IDDocument } from '../library/models/iddocument.model';
-import { promise } from 'protractor';
-
-
+import { DocstructureService } from '../library/services/docstructure.service';
+import { PostParams, RequestParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -24,144 +16,104 @@ export class NewseventiService {
     return this._listNews.asObservable();
   }
 
-  constructor(private apiService: ApicallService) { }
-
+  constructor(private docStructure: DocstructureService) { }
 
 
   /**
-   * Aggiunge una news
-   * @param objNews News da aggiungere
-   */
-  addNews(objNews: NewsEvento) {
-    this.listNews
-      .pipe(take(1))
-      .subscribe (collNews => {
-        let findElement = collNews.find(element => {
-          return element.ID == objNews.ID
-        });
-
-        if (!findElement) {
-          this._listNews.next( collNews.concat(objNews));
-        }
-      })
-  }
-  
-
-  /**
-   * Crea il Parametro Filtro per il campo PUBBLICATADAL
-   */
-  getFilterDateTime(): string {
-    let adesso = new Date();
-    let newDoc = new IDDocument();
-    let strAdesso = newDoc.formatDateTimeISO(adesso);
-
-    strAdesso = '<' + strAdesso;
-
-    return strAdesso;
-  }
-
-  /** Recupera una News e la torna Observable, 
-   *
-   * @param config Configurazione
-   * @param idNews News ricercata
-   * */
-  getNewsById(idNews: string) {
-    let news = this._listNews
-                      .getValue()
-                      .find(element => {
-                        return (element.ID == idNews)
-                      });
-
-    return news;
-  }
-
-  /**
-   * Richiede al server la news
-   * @param config Dati configurazione
+   * Richiede al server la singola News per ID
    * @param idNews News da richiedere al server
    */
-  private _requestServerById(config: StartConfiguration, idNews: string) {
-    let myHeaders = config.getHttpHeaders();
-    //new HttpHeaders({'Content-type':'text/plain'});
-    const doObject = 'NEWSEVENTO';
-    
+  public requestById(idNews: string): Promise<NewsEvento> {
 
-    let myUrl = config.urlBase + '/' + doObject;  
+    return new Promise<NewsEvento>((resolve, reject) => 
+    {
+        if (idNews && idNews.length != 0)       {
 
-    //Nei Parametri imposto l'area richiesta
-    let myParams = new HttpParams().set('ID',idNews);
-    
+          let filterDoc = new NewsEvento(true);
+          filterDoc.ID = idNews;
 
-    return this.apiService
-      .httpGet(myUrl, myHeaders, myParams)
-      .pipe(map(data => {
-          
-            let arReturn = [];
-            if (data.NEWSEVENTO) {
-              arReturn = data.NEWSEVENTO;
-            }
+          this.docStructure.requestNew(filterDoc)
+                           .then(listNews => {
 
-            return arReturn;
-          
-      }))
-      .pipe(take(1))
+                              if (listNews && listNews.length != 0) {
+                                resolve(listNews[0]);
+                              }
+                              else {
+                                reject('News not found');
+                              }
+                           })
+                           .catch(error => {
+                            reject(error);
+                           })
+        }
+        else {
+          reject('idNews undefined');
+        }
+    })
 
   }
 
   /**
    * 
    * @param config Parametri di configurazione
-   * @param guidArea GUID Area di riferimento
-   * @param n Numero massimo di elementi
+   * @param idArea GUID Area di riferimento
+   * @param maxItems Numero massimo di elementi
    * @returns Promise<NewsEvento[]>
    */
-  request(config: StartConfiguration, guidArea:string, n:number){
+  request(idArea:string, maxItems:number = 30): Promise<NewsEvento[]>{
     return new Promise<NewsEvento[]>((resolve,reject)=>{
 
-      let myHeaders = config.getHttpHeaders();
+
+      let docToCall: NewsEvento;
+      let method = 'GETNEXTNEWS';
+      let reqPostParams: PostParams[] = [];
+      let reqOptions: RequestParams;
+
       
-      const doObject = 'NEWSEVENTO';
+      
+      if (idArea && idArea.length != 0) {
+        
+        docToCall = new NewsEvento(true);
   
-      myHeaders = myHeaders.append('X-HTTP-Method-Override','GETNEXTNEWS')
-      let myUrl = config.urlBase + '/' + doObject;  
-  
-      //Nei Parametri imposto l'area richiesta
-      let myParams = new HttpParams().set('guidArea',guidArea);
+        //Questi i parametri della richiesta
+        PostParams.addParamsTo(reqPostParams, 'guidArea', idArea);   
+        
+        //Aggiungo il valore di Top
+        reqOptions = new RequestParams();
+        reqOptions.top = maxItems;
+        
+        this.docStructure.requestForFunction(docToCall, method, '', reqPostParams, reqOptions)
+                       .then(postReponse => {
 
-      myParams = myParams.append('$top', n+'');
+                          let listResult: NewsEvento[] = [];
 
-      this.apiService.httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data=>{
-        let arReturn = [];
-        if (data.NEWSEVENTO){
-          arReturn=data.NEWSEVENTO;
-        }
-        return arReturn;
-      }))
-      .subscribe(myListReceived => {
+                          if (postReponse && postReponse.hasOwnProperty('NEWSEVENTO')) {
 
-        let myListNews: NewsEvento[]=[];
+                            //Converto in lista tipizzata
+                            listResult = this.docStructure.castCollection(postReponse['NEWSEVENTO'], docToCall);
+                          }
 
-        for (let index = 0; index < myListReceived.length; index++) {
+                          this._listNews.next(listResult);
+                          resolve(listResult);
+                          
+                       })
+                       .catch(error => {
+                        reject(error);
+                       })        
 
-          const objElement = myListReceived[index];
-          //Creo un nuovo oggetto
-          let newsEvento= new NewsEvento();
-          //Copio le proprietà
-          newsEvento.setJSONProperty(objElement);
-          //Inserisco nell'array
-          myListNews.push(newsEvento);
 
-        }
-        //La Promise ritorna l'elenco news
-        resolve(myListNews);
 
-      }, error=>{
-        reject(error);
-      })
+      }
+      else {
+        reject('idArea undefined');
+      }
+
+
 
     })
   }
+
+
 
 
 

@@ -1,6 +1,4 @@
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { ApicallService } from './apicall.service';
 import { LogApp } from '../models/log.model';
@@ -31,11 +29,20 @@ export class DocumentoService {
           
       this.apiCallService
             .httpGetFile (myUrl, myHeaders)
-            .subscribe(elBlobFile => {
-              resolve(elBlobFile);
-            }, error => {
-              reject(error);
+            .subscribe({
+              next: (elBlobFile) => {
+                resolve(elBlobFile);                
+              },
+              error: (error) => {
+                reject(error);
+              }
+
             })
+            // .subscribe(elBlobFile => {
+            //   resolve(elBlobFile);
+            // }, error => {
+            //   reject(error);
+            // })
             
     })
 

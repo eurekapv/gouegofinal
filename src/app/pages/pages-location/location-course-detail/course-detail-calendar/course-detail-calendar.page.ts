@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams, RequestDecode } from 'src/app/library/models/requestParams.model';
 import { LogApp } from 'src/app/models/log.model';
+import { StartService } from 'src/app/services/start.service';
 
 @Component({
   selector: 'app-course-detail-calendar',
@@ -21,32 +22,22 @@ export class CourseDetailCalendarPage implements OnInit {
 
   constructor(
               private mdlController: ModalController,
-              private docStructureService: DocstructureService,
               private loadingController : LoadingController,
-              private toastController : ToastController) { }
+              private startService: StartService) { }
 
   ngOnInit() {
-    //Sottoscrivo alla ricezione
-    // this.listenCalendarCorso = this.startService.calendarioCorso.subscribe(listCalendar => {
-    //   this.calendarCorso = listCalendar;
 
-    //   this.ricevuti = true;
-      
-      
-    //})
-
-    //Richiedo il corso
-    //this.startService.requestCalendarioCorso(this.myCorso.ID);
+    
 
 
-    //creo il filtro per la richiesta
-    let filter = new PianificazioneCorso(true);
-    filter.IDCORSO=this.myCorso.ID;
+    // //creo il filtro per la richiesta
+    // let filter = new PianificazioneCorso(true);
+    // filter.IDCORSO=this.myCorso.ID;
 
-    //creo i parametri per la richiesta
-    let params = new RequestParams();
-    params.decode = new RequestDecode();
-    params.decode.active = true;
+    // //creo i parametri per la richiesta
+    // let params = new RequestParams();
+    // params.decode = new RequestDecode();
+    // params.decode.active = true;
 
     //creo il loading 
     this.loadingController.create({
@@ -57,18 +48,21 @@ export class CourseDetailCalendarPage implements OnInit {
     .then(elLoading => {
       elLoading.present();
 
-      //richiedo il calendario
-      this.docStructureService.requestNew(filter,params)
+
+      this.startService.requestCalendarioCorso(this.myCorso.ID,true)
       .then(listCalendar => {
         //dismetto il loading e salvo il calendario
         elLoading.dismiss();
+
         this.calendarCorso = listCalendar;
+        console.log(listCalendar)
         
       })
       .catch(error => {
         //dismetto il loading e mostro l'errore
         elLoading.dismiss();
-        this.showMessage('Errore di connessione');
+
+        this.startService.presentToastMessage('Errore di connessione');
         
         LogApp.consoleLog(error,'error');
         
@@ -91,13 +85,5 @@ export class CourseDetailCalendarPage implements OnInit {
     return color;
   }
 
-  showMessage (messaggio : string){
-    this.toastController.create({
-      message: messaggio,
-      duration: 3000
 
-    }).then (elModal => {
-      elModal.present();
-    })
-  }
 }

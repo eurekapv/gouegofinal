@@ -102,7 +102,7 @@ export class TabHomePage implements OnInit, OnDestroy {
                                         this.selectedIdArea = this.selectedArea.ID;
 
                                         //richiedo le location sulla base della nuova area selezionata
-                                        startService.requestLocation(this.selectedIdArea)
+                                        startService.requestLocationByIdArea(this.selectedIdArea)
                                       
                                       });
 

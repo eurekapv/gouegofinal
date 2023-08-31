@@ -8,6 +8,7 @@ export class NewsEvento extends IDDocument {
     SUBTITLE: string;
     SHORTTEXT: string;
     PUBBLICATADAL: Date;
+    PUBBLICATAAL: Date;
     LINKNEWS: string;
     LINKIMAGE: string;
     IDLOCATION: string;
@@ -50,7 +51,7 @@ export class NewsEvento extends IDDocument {
         let arNumberDecimal = [];
         let arBoolean = [];
         let arDate = [];
-        let arDateTime =['PUBBLICATADAL'];
+        let arDateTime =['PUBBLICATADAL','PUBBLICATAAL'];
         let arTime = [];
 
         objDescriptor.className = 'NewsEvento';

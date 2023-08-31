@@ -178,7 +178,9 @@ import { MyDateTime } from './mydatetime.model';
         break;
 
         case TypeDefinition.dateTime:
-            strValue = MyDateTime.formatDateISO(value,"complete");
+            //
+            strValue = MyDateTime.formatDate(value, "yyyy-MM-dd") + ' ' + MyDateTime.formatDate(value, "HH:mm")
+            //strValue = MyDateTime.formatDateISO(value,"complete");
         break;
 
         case TypeDefinition.time:

@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
-
-
-import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { CampoSport } from '../models/camposport.model';
+import { DocstructureService } from '../library/services/docstructure.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,69 +15,33 @@ export class CamposportService {
     return this._listCampiSport.asObservable();
   }
 
-  constructor(private apiService: ApicallService) { }
+  constructor(private docStructureService: DocstructureService) { }
 
   /**
    * Richiede al server l'elenco degli Sport dei Campi
    * @param config Parametri configurazione chiamata
    */
-  request(config: StartConfiguration, 
-          idCampo: string) {
+  request(idCampo: string):Promise<CampoSport[]> {
     return new Promise<CampoSport[]>((resolve, reject)=>{
-      let myHeaders = config.getHttpHeaders();
-      
-      const doObject = 'CAMPOSPORT';
-  
-      
-      //Nei Parametri imposto IDCampo
-      let myParams = new HttpParams().set('IDCAMPO',idCampo);
-      let myUrl = config.urlBase + '/' + doObject;
-  
-      //Elimino i campi presenti
-      this.emptyCampiSport
-  
-      this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-          return data.CATEGORIEETA
-        }))
-        .subscribe(resultData => {
-  
-            for (let index = 0; index < resultData.length; index++) {
-              const element = resultData[index];
 
-              let newCampoSport = new CampoSport();
-              newCampoSport.setJSONProperty(element);
-              this.addCampoSport(newCampoSport);
-              
-            }
+      let filterDoc: CampoSport;
 
-            resolve(this._listCampiSport.getValue());
+      filterDoc = new CampoSport(true);
+      filterDoc.IDCAMPO = idCampo;
 
-           },
-           error=>{
-             reject(error);
-           }
-        )
+      this.docStructureService.requestNew(filterDoc)
+                              .then(listItems => {
+
+                                //Riemetto la lista dei Campi Sport
+                                this._listCampiSport.next(listItems);
+
+                                resolve(listItems);
+
+                              })
+                              .catch(error => {
+                                reject(error);
+                              })
     })
   }
 
-  /**
-   * Aggiunge un oggetto Campo Sport all'Observable
-   * @param objCampoSport Oggetto Campo Sport da aggiungere
-   */
-  addCampoSport(objCampoSport: CampoSport) {
-    this.listCampiSport
-      .pipe(take(1))
-      .subscribe( collCampiSport => {
-        this._listCampiSport.next( collCampiSport.concat(objCampoSport));
-      })
-  }
-
-    /**
-   * Svuota i campi sport presenti
-   */
-  emptyCampiSport() {
-    this._listCampiSport.next([]);
-  }
 }

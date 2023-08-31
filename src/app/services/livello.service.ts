@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take, tap} from 'rxjs/operators';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
-
 import { Livello } from '../models/livello.model';
-import { ApicallService } from './apicall.service';
-import { StartConfiguration } from '../models/start-configuration.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { LogApp } from '../models/log.model';
 
@@ -17,8 +12,7 @@ export class LivelloService {
   private _listLivelli = new BehaviorSubject<Livello[]>([]);
   
 
-  constructor(private apiService: ApicallService,
-              private docService: DocstructureService) { 
+  constructor(private docService: DocstructureService) { 
     
   }
 

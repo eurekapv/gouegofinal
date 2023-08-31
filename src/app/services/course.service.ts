@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 
 import { Corso } from '../models/corso.model';
-import { ApicallService } from './apicall.service';
-import { StartConfiguration } from '../models/start-configuration.model';
 import { FilterCorsi } from '../models/filtercorsi.model';
-import { Sport } from '../models/sport.model';
-import { Livello } from '../models/livello.model';
-import { CategoriaEta } from '../models/categoriaeta.model';
+
 
 import { PostParams, RequestDecode, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
@@ -24,17 +20,13 @@ export class CourseService {
 
   private _listCorsi = new BehaviorSubject<Corso[]>([]);
   private _filterCorsi: FilterCorsi;
-  private _decodeListSport: Sport[];
-  private _decodeListLivelli: Livello[];
-  private _decodeListEta: CategoriaEta[];
   private _selectedCorso = new BehaviorSubject<Corso>(new Corso());
 
   private _listCorsiTrainer = new BehaviorSubject<Corso[]>([]);
 
   
   constructor(
-    private docStructureService: DocstructureService,
-    private apiService: ApicallService
+    private docStructureService: DocstructureService    
   ){
 
   }
@@ -62,17 +54,6 @@ export class CourseService {
     this._filterCorsi = value;
   }
 
-  set decodeListSport(value: Sport[]) {
-    this._decodeListSport = value;
-  }
-
-  set decodeListLivelli(value: Livello[]) {
-    this._decodeListLivelli = value;
-  }
-
-  set decodeListEta(value: CategoriaEta[]) {
-    this._decodeListEta = value;
-  }
 
 
 
@@ -87,67 +68,16 @@ export class CourseService {
   }
 
 
-
   /**
-   * Effettua una chiamata al server per il recupero dei corsi
-   * Utilizzare il documento di Filtro per richiedere dati filtrati
-   * @param config Parametri di configurazione
-   * @param docUser Documento Utente loggato. Se presente i corsi vengono proposti solo quelli validi all'utente
+   * Effettua una chiamata per il recupero di un corso
+   * @param idCorso 
+   * @param numChild (1 Solo il Documento / 2+ Collection Figlie 
+   * @param decodeAll = Decodifica i foreign Key di primo livello)
+   * @returns 
    */
-  requestById (config: StartConfiguration, idCorso: string, numLivelli?:string) {
-    return new Promise<Corso>((resolve, reject)=>{
+  requestById(idCorso: string, numChild = 1, decodeAll = true): Promise<Corso>{
 
-      if (!numLivelli){
-        numLivelli='3';
-      }
-
-      let myHeaders = config.getHttpHeaders();
-      
-      const doObject = 'CORSO';
-      
-  
-
-      myHeaders = myHeaders.set('child-level', numLivelli);
-      let myUrl = config.urlBase + '/' + doObject;  
-  
-      let myParams = new HttpParams().set('ID',idCorso)
-      
-      //Effettuo la chiamata
-      this.apiService
-          .httpGet(myUrl, myHeaders, myParams)
-          .pipe(map(data => {
-            return data.CORSO;
-          }))
-          .subscribe( resultData => {
-
-            if (resultData[0]){
-              let objCorso = new Corso();
-              objCorso.setJSONProperty(resultData[0]);
-              
-              //Decodifico i campi chiave
-              objCorso.lookup('IDSPORT', this._decodeListSport, 'DENOMINAZIONE');
-              
-              //Decodifico i campi chiave
-              objCorso.lookup('IDCATEGORIEETA', this._decodeListEta, 'DESCTOOLTIP');
-              
-              //Decodifico i campi chiave
-              objCorso.lookup('IDLIVELLOENTRATA', this._decodeListLivelli, 'DENOMINAZIONE');
-              
-              resolve(objCorso);     
-            }
-            else
-            {
-              reject('corso non trovato');
-            }
-
-          }, error=>{
-            reject(error);
-          })
-    })
-  }
-
-  newRequestById(idCorso: string){
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<Corso>((resolve, reject) => {
       //preparo il filtro
       let filtroCorso = new Corso(true);
       filtroCorso.ID=idCorso;
@@ -155,7 +85,8 @@ export class CourseService {
       //preparo i parametri per decodificare
       let params = new RequestParams();
       params.decode = new RequestDecode();
-      params.decode.active = true;
+      params.decode.active = decodeAll;
+      params.child_level = numChild;
       
 
 
@@ -282,7 +213,8 @@ export class CourseService {
    * @param filter Oggetto co i filtri da applicare e passare come HttpParams
    */
   getHttpParamsFilter(filter: FilterCorsi): HttpParams {
-    let myParams = new HttpParams().set('IDLOCATION', filter.IDLOCATION);
+
+    let myParams = this.docStructureService.getHttpParams().set('IDLOCATION', filter.IDLOCATION);
     let arProperty = Object.keys(filter); //Prendo tutte le proprieta
 
     // CIclo le proprieta dell'oggetto filter

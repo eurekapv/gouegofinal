@@ -13,6 +13,7 @@ import { Cache } from '../models/cache.model';
 import { LogApp } from 'src/app/models/log.model';
 import { ParamsExport } from '../models/iddocument.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,6 +34,17 @@ export class DocstructureService {
   }
 
   /**
+   * Ritorna un documento VUOTO da popolare con i parametri
+   * Ritorno un documento con un Encoder Specifico 
+   * Lo espongo anche di qua il metodo 
+   */
+  getHttpParams(): HttpParams {
+
+    return this.apiService.getHttpParams();
+
+  }  
+
+  /**
    * Partendo dal servizio Start Service c'e' un subscribe nel costruttore
    * che serve a inviarmi la configurazione ad ogni cambiamento
    * Impostare la configurazione prima delle chiamate
@@ -43,6 +55,29 @@ export class DocstructureService {
     LogApp.consoleLog('New Configuration received');
   }
 
+  /**
+   * Converte la Collection Generica in Tipizzata
+   * @param collection Collection non tipizzata
+   * @param castInto Passare un Documento per specificare la classe su cui tipizzare
+   */
+  castCollection(collection: any[], castInto: IDDocument): any[] {
+    let listResult = [];
+    let objDescriptor: Descriptor;
+
+    if (collection && collection.length != 0 && castInto) {
+      //Vediamo che documento è
+      objDescriptor = castInto.getDescriptor();
+
+      //Ciclo e creo i documenti tipizzati
+      collection.forEach(elItem => {
+        let newClass: any = new DynamicClass(objDescriptor.className);
+        newClass.setJSONProperty(elItem);
+        listResult.push(newClass);
+      });
+    }
+
+    return listResult;
+  }
 
 
   /**
@@ -799,7 +834,9 @@ export class DocstructureService {
           strValue = operatoreSpecial + strValue;
           
           if (myParams == undefined) {
-            myParams = new HttpParams().set(nameProperty, strValue);
+
+            //Chiedo un nuovo documento e lo popolo
+            myParams = this.apiService.getHttpParams().set(nameProperty, strValue);
           }
           else {
             //Aggiungo il parametro
@@ -1185,17 +1222,22 @@ public getRelDocOriginale( docStart: IDDocument,
    * @param method nome del metodo statico da chiamare
    * @param jsonBodyOrDoc body da inviare in formato json o documento
    * @param postParams Array con i parametri da aggiungere nell'url
+   * @param reqOptions Eventuali Opzioni (Per ora funziona solo il Max Elementi)
    */
   public requestForFunction(documentCall: IDDocument, 
                      method: string, 
                      jsonBodyOrDoc?: string | IDDocument,
-                     postParams?: PostParams[] | PostParams
+                     postParams?: PostParams[] | PostParams,
+                     reqOptions?:RequestParams
                      ): Promise<any> { 
 
     return new Promise<any>((resolve,reject) => {
 
       let myHeaders = this.myConfig.getHttpHeaders();
-      let myParams: HttpParams = new HttpParams();
+
+      //Chiedo un documento dei parametri
+      let myParams = this.apiService.getHttpParams();
+      
       let myUrl = '';
       let myJsonBody = '';
       let postBasicType = false;
@@ -1231,6 +1273,8 @@ public getRelDocOriginale( docStart: IDDocument,
           //Sistemo l'header
            myHeaders = myHeaders.append('X-HTTP-Method-Override',method);
 
+
+
            //Controllo dei parametri post
            if (postParams) {
 
@@ -1264,6 +1308,13 @@ public getRelDocOriginale( docStart: IDDocument,
             }
 
           } 
+
+          if (reqOptions) {
+            //Se avessi l'opzione Top la aggiungo
+            if (reqOptions.top) {
+              myParams = myParams.append('$top', reqOptions.top +'');
+            }
+           }          
 
           if (jsonBodyOrDoc) {
             if (typeof jsonBodyOrDoc == "string") {

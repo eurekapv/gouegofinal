@@ -112,7 +112,7 @@ export class PrenotazioneService {
 
 
       // Nei parametri imposto il gruppo Sportivo
-      let myParams = new HttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
+      let myParams = this.docStructureService.getHttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
   
       let myUrl = config.urlBase + '/' + doObject;
   
@@ -166,7 +166,7 @@ export class PrenotazioneService {
     
     myHeaders = myHeaders.append('child-level', numLivelli + '');
     // Nei parametri imposto idPrenotazion richiesto
-    let myParams = new HttpParams().set('ID',idPrenotazione);
+    let myParams = this.docStructureService.getHttpParams().set('ID',idPrenotazione);
 
     let myUrl = config.urlBase + '/' + doObject;
 
@@ -287,7 +287,7 @@ export class PrenotazioneService {
   requestImporto(config: StartConfiguration) {
     let docPrenotazione = this._activePrenotazione.getValue();
 
-    let myParams = new HttpParams();
+    let myParams = this.docStructureService.getHttpParams();
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override','MOBBOOKINGTOTALE');
     myHeaders = myHeaders.append('child-level','999');
@@ -332,7 +332,7 @@ export class PrenotazioneService {
           let docPrenotazione = this._activePrenotazione.getValue();
 
           let myHeaders = config.getHttpHeaders();                                            
-          let myParams = new HttpParams(); 
+          let myParams = this.docStructureService.getHttpParams(); 
           const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
           //Imposto gli header aggiuntivi
           myHeaders = myHeaders.append('X-HTTP-Method-Override','MOBBOOKINGSAVE');
@@ -409,7 +409,7 @@ export class PrenotazioneService {
 
 
         //params
-        let myParams = new HttpParams().set('idPianificazione', idPianificazione);
+        let myParams = this.docStructureService.getHttpParams().set('idPianificazione', idPianificazione);
       
         //abbiamo tutto, faccio la richiesta
         this.apiService

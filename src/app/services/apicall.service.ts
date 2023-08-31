@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { LogApp } from '../models/log.model';
 
 import { CustomEncriptionService } from './custom-encription.service';
+import { CustomHttpParamEncoder } from '../library/models/custom-http-params-encoder.model';
 
 
 @Injectable({
@@ -17,6 +18,16 @@ export class ApicallService {
     private customEncriptionService: CustomEncriptionService
     ) { }
 
+
+    /**
+     * Ritorna un documento VUOTO da popolare con i parametri
+     * Ritorno un documento con un Encoder Specifico 
+     */
+    getHttpParams(): HttpParams {
+
+      return new HttpParams({ encoder: new CustomHttpParamEncoder() })
+
+    }
   
   /**
    * Effettua una chiamata GET verso un server e ritorna un Observable
@@ -73,7 +84,7 @@ export class ApicallService {
     //ritorno la get controllando l'errore
     return this.httpClient.get<any>(url, {
       headers: reqHeaders,
-      params: reqParams
+      params: reqParams,
     })
     .pipe(
       catchError(this.handleError)

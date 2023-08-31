@@ -134,7 +134,7 @@ ngOnInit() {
         elLoading.present();
         
         //Effettuo la richiesta del corso
-        return this.startService.newRequestCorsoById(idCorso)
+        return this.startService.requestCorsoById(idCorso)
       })
       .then((itemCorso: Corso) => {
         //se ho trovato un corso, lo memorizzo
@@ -157,7 +157,7 @@ ngOnInit() {
         //Spengo il loading
         myElLoading.dismiss();
 
-        this.showMessage('Errore nel caricamento delle informazioni del corso');
+        this.startService.presentAlertMessage('Errore nel caricamento delle informazioni del corso');
         LogApp.consoleLog(error,'error');
       })
 
@@ -400,8 +400,6 @@ ngOnDestroy() {
 
     if (this.myCorso) {
 
-      LogApp.consoleLog(`Sull'area le iscrizioni sono ${this.areaEnableIscrizioni ? 'abilitate':'disabilitate'}, e per le date di iscrizione corso l'iscrizione è ${this.myCorso.flagIscrizioniAperte() ? 'aperta':'chiusa'}`);
-
       if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
 
         showButton = true;
@@ -413,14 +411,4 @@ ngOnDestroy() {
     return showButton;
   }
 
-  /**
-   * Mostra un messaggio a video
-   * @param messaggio Messaggio
-   */
-  showMessage(messaggio:string){
-    this.toastController.create({
-      message: messaggio,
-      duration: 3000
-    })
-  }
 }

@@ -81,6 +81,8 @@ import { CategoriaEta } from '../models/categoriaeta.model';
 import { KeyStorageService } from './key-storage.service';
 import { GetResult } from '@capacitor/preferences';
 import { Authorization } from '../models/authorization.model';
+import { Corso } from '../models/corso.model';
+import { NewsEvento } from '../models/newsevento.model';
 
 @Injectable({
   providedIn: 'root'
@@ -288,7 +290,7 @@ export class StartService {
             this.areaService.selectAreaByID(areaDoc.ID);
 
             //Con l'area posso recuperare le Location
-            return this.requestLocation(areaDoc.ID);
+            return this.requestLocationByIdArea(areaDoc.ID);
           })
           .then(listLocations => {
             //Ricezione delle Location
@@ -575,43 +577,6 @@ export class StartService {
       })
 
 
-
-      // const actualStartConfig = this._startConfig.getValue();
-      // //Ricavo gli Header da impostare
-      // let myHeaders = actualStartConfig.getHttpHeaders();
-      // myHeaders = myHeaders.append('X-HTTP-Method-Override', method);
-
-      // //Aggiungo i parametri di chiamata
-      // let myParams = new HttpParams().set('withimages', '1');
-      // myParams = myParams.append('withoptions','1');
-
-      // //Url da chiamare
-      // let myUrl = actualStartConfig.urlBase + '/' + doObject;
-  
-      // LogApp.consoleLog(myUrl);
-      // LogApp.consoleLog(JSON.stringify(myHeaders));
-
-      // // Effettuo la chiamata per l'autorizzazione
-      // this.apiService
-      //   .httpGet(myUrl, myHeaders, myParams)
-      //   .subscribe(resultData => {
-
-      //     let objAuth: StartAuthorization = resultData;
-
-      //     if (objAuth.result == -1 && objAuth.authcode && objAuth.authcode.length != 0) {
-
-      //       // Sistemo l'oggetto di configurazione 
-      //       // ed emetto un evento di Cambio
-      //       this.onAuthorizationGrant(objAuth);
-
-      //     }
-      //     else {
-      //       LogApp.consoleLog('Authorization failed','error');
-      //     }
-      //   },error => {
-      //     LogApp.consoleLog('Comunication Error','error');
-      //     LogApp.consoleLog(error,'error');
-      //   });
         
   
         
@@ -757,7 +722,7 @@ export class StartService {
             //Se il documento è in stato inserted non è ancora arrivato dal server
             if (!newAreaSelected.inserted) {
               //Richiedo al server le Location
-              this.requestLocation(newAreaSelected.ID);
+              this.requestLocationByIdArea(newAreaSelected.ID);
             }
           })
     }
@@ -792,24 +757,22 @@ export class StartService {
    * Richiesta al server di tutte le location dell'area
    * @param idArea Area selezionata
    */
-  requestLocation(idArea: string) {
-    const actualStartConfig = this._startConfig.getValue();
+  requestLocationByIdArea(idArea: string) {
     
-    return this.locationService.requestByIdArea(actualStartConfig, idArea);
+    return this.locationService.requestByIdArea(idArea);
   }
 
-  newRequestLocation(idArea: string){
-    return this.locationService.newRequestByIdArea(idArea);
-  }
+
 
   /** Effettua la richiesta al server di una Location precisa
    * @param idLocation Location scelta 
+   * @param childLevel (Default 3) Profondita richiesta (1 Documento / 2+ Collection Figlie)
    * 
    */
-  requestLocationByID(idLocation: string, _numLivelli?:number):Promise<Location> {
-    const actualStartConfig = this._startConfig.getValue();
+  requestLocationByID(idLocation: string, 
+                      childLevel:number = 3):Promise<Location> {
     
-    return this.locationService.requestLocationByID(actualStartConfig, idLocation, _numLivelli);
+    return this.locationService.requestLocationByID(idLocation, childLevel);
   }
 
   /**
@@ -939,14 +902,14 @@ get listLocationSport() {
 
 /**
  * Richiede al server i dati degli Sport in una location
+ * 
  * @param config Dati configurazione
  * @param idLocation idLocation selezionata
  */
-requestLocationSport(idLocation: string) {
-  const actualStartConfig = this._startConfig.getValue();
-
+requestLocationSport(idLocation: string):Promise<Sport[]> {
+  
   //Effettuo la chiamata
-  return this.sportService.requestLocationSport(actualStartConfig, idLocation);
+  return this.sportService.requestLocationSport(idLocation);
 }
 
 
@@ -1038,16 +1001,16 @@ newFilterCorsi(idLocation: string) {
   return this.corsoService.newFilterCorsi(idLocation);
 }
 
-
-
-requestCorsoById(idCorso: string){
-  const actualStartConfig = this._startConfig.getValue();
-  return this.corsoService.requestById(actualStartConfig, idCorso);
-}
-
-newRequestCorsoById(idcorso: string){
-  return this.corsoService.newRequestById(idcorso);
-}
+  /**
+   * Effettua una chiamata per il recupero di un corso
+   * @param idCorso 
+   * @param numChild (1 Solo il Documento / 2+ Collection Figlie 
+   * @param decodeAll = Decodifica i foreign Key di primo livello)
+   * @returns 
+   */
+  requestCorsoById(idcorso: string, numChild = 1, decodeAll = true): Promise<Corso> {
+    return this.corsoService.requestById(idcorso, numChild, decodeAll);
+  }
 
 /**
  * Effettua la chiamata al server per ottenere i corsi riferiti al trainer
@@ -1079,13 +1042,13 @@ newRequestCorsoById(idcorso: string){
   }
 
   /**
-   * Richiesto il calendario del corso
+   * Effettua la chiamata per il recupero del Calendario Corso
    * @param idCorso Corso richiesto
+   * @param decodeAll Decodifica i campi indispensabili
    */
-  requestCalendarioCorso(idCorso: string) {
-    const actualStartConfig = this._startConfig.getValue();
-
-    return this.corsoCalendarioService.requestCalendario(actualStartConfig, idCorso);
+  requestCalendarioCorso(idCorso: string, decodeAll = true):Promise<PianificazioneCorso[]> {
+    
+    return this.corsoCalendarioService.requestCalendario(idCorso, decodeAll);
   }
 
   requestImpegniTrainerOLD(idRef: string, dataInizio: Date, dataFine?: Date){
@@ -1760,21 +1723,22 @@ get listNews() {
 
 /**
  * Recupera le news relative ad un'area
- * @param guidArea il guid dell'area 
- * @param nElementi il numero di elementi richiesti
+ * @param idArea il guid dell'area 
+ * @param maxItems il numero di elementi richiesti (Defualt = 30)
  */
-requestNews(guidArea: string, nElementi: number){
-  const actualStartConfig= this._startConfig.getValue();
-  return this.newsEventiService.request(actualStartConfig,guidArea,nElementi);
+requestListNews(idArea: string, maxItems: number = 30){
+  
+  return this.newsEventiService.request(idArea,maxItems);
+
 }
 
 /** Effettua la richiesta al servizio di una news
  * @param idNews News scelta 
  * 
  */
-requestNewsByID(idNews: string) {
+requestNewsByID(idNews: string): Promise<NewsEvento> {
   
-  return this.newsEventiService.getNewsById(idNews);
+  return this.newsEventiService.requestById(idNews);
   
 }
 
@@ -1936,7 +1900,7 @@ requestBase64Image(tipo: TipoPrivateImage):Promise<string>{
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override','getBase64PrivateImage');
    
-    let myParams= new HttpParams().set('Tipo', tipo+'');
+    let myParams= this.docStructureService.getHttpParams().set('Tipo', tipo+'');
 
     this.apiService.httpGet(myUrl,myHeaders, myParams)
     .pipe(map(data=>{

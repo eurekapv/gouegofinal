@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { HttpParams } from '@angular/common/http';
+import {take } from 'rxjs/operators';
+
 import { PianificazioneCorso } from '../models/pianificazionecorso.model';
-import { ApicallService } from './apicall.service';
-import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { PostResponse } from '../library/models/postResult.model';
-import { PostParams, RequestDecode, RequestParams } from '../library/models/requestParams.model';
+import { PostParams, RequestParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -21,7 +19,6 @@ export class CourseschedulerService {
   _listImpegniTrainer = new BehaviorSubject<PianificazioneCorso[]>([]);
 
   constructor(
-    private apiService: ApicallService,
     private docStructureService: DocstructureService
     ) { }
 
@@ -83,64 +80,58 @@ export class CourseschedulerService {
     })
   }
 
-    /**
-   * Effettua una chiamata al server per il recupero dei corsi
-   * Utilizzare il documento di Filtro per richiedere dati filtrati
-   * @param config Parametri di configurazione
-   * @param idCorso Corso Richiesto
+
+  /**
+   * Effettua la chiamata per il recupero del Calendario Corso
+   * @param idCorso Corso di riferimento
+   * @param decodeAll Decodifica i campi indispensabili* 
+   * @returns 
    */
-  requestCalendario(config: StartConfiguration, idCorso: string) {
-    return new Promise<void>((resolve, reject)=>{
-      let myHeaders = config.getHttpHeaders();
-      
-      const doObject = 'PIANIFICAZIONECORSO';
-       
-      let myUrl = config.urlBase + '/' + doObject;  
+  requestCalendario(idCorso: string, decodeAll = true):  Promise<PianificazioneCorso[]> {
+    return new Promise<PianificazioneCorso[]>((resolve, reject) => {
+
+      let filterDoc: PianificazioneCorso;
+      let reqParams: RequestParams;
+
+      if(idCorso && idCorso.length != 0) {
+
+        filterDoc = new PianificazioneCorso(true);
+        filterDoc.IDCORSO = idCorso;
   
-      //Nei Parametri imposto il corso richiesto
-      let myParams = new HttpParams().set('IDCORSO',idCorso);
+        reqParams = new RequestParams();
+        reqParams.decode.active = decodeAll;
+        
+        if (decodeAll) {
+          reqParams.decode.addForeignField('IDLOCATION');
+          reqParams.decode.addForeignField('IDCAMPO');
+        }
   
-      //Elimino le schedulazioni presenti
-      this.emptyCalendario();
+        //Effettuo la richiesta
+        this.docStructureService.requestNew(filterDoc, reqParams)
+                                .then(listCalendario => {
   
-      this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-        .pipe(map(data => {
-          return data.PIANIFICAZIONECORSO
-        }))
-        .subscribe( resultData => {
+                                  //Riemetto Observable
+                                  this._calendarioCorso.next(listCalendario);
   
-          
-          
-          if (resultData) {
-            resultData.forEach(element => {
-    
-              let newCorsoCalendario = new PianificazioneCorso();
-              newCorsoCalendario.setJSONProperty(element);
-              LogApp.consoleLog(newCorsoCalendario);
-              this.addCorsoCalendario(newCorsoCalendario);
-              resolve();
-            },
-            error=>{
-              reject(error);
-            });
-          }
-        })
+                                  resolve(listCalendario);
+  
+                                })
+                                .catch(error => {
+                                  //Svuoto il Calendario
+                                  this._calendarioCorso.next([]);
+  
+                                  reject(error);
+                                })
+      }
+      else {
+        reject('idCorso not setting');
+      }      
+
 
     })
   }
 
-  /**
-   * Aggiunge una schedulazione
-   * @param objCorsoScheduler Schedulazione Corso
-   */
-  addCorsoCalendario(objCorsoScheduler: PianificazioneCorso) {
-    this.calendarioCorso
-      .pipe(take(1))
-      .subscribe( collCalendario => {
-        this._calendarioCorso.next( collCalendario.concat(objCorsoScheduler));
-      })
-  }
+
 
   /**
    * Aggiunge una pianificazione alla lista Trainer
@@ -154,13 +145,6 @@ export class CourseschedulerService {
       });
   }
 
-
-  /**
-   * Svuota il calendario presente
-   */
-  emptyCalendario() {
-    this._calendarioCorso.next([]);
-  }
 
   /**
    * Svuotare la lista degli impegni del trainer

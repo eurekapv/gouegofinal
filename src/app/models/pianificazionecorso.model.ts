@@ -114,6 +114,7 @@ export class PianificazioneCorso extends IDDocument {
     objDescriptor.addMultiple(arDate, TypeDefinition.date);
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
+    
     objDescriptor.addCollection('CORSOPRESENZE', 'CorsoPresenze', 'IDPIANIFICAZIONECORSO');
     
     objDescriptor.setRelation('IDAREAOPERATIVA','Area');
@@ -125,7 +126,10 @@ export class PianificazioneCorso extends IDDocument {
     return objDescriptor;
 }    
 
-
+/**
+ * Per richiedere la decodifica dei campi
+ * @returns 
+ */
 static getReqForeignKeys(): RequestForeign[] {
   let arRequest: RequestForeign[] = [];
   let objForeign: RequestForeign;

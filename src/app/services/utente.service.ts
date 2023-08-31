@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Utente } from '../models/utente.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
@@ -11,11 +10,6 @@ import { PostResponse } from '../library/models/postResult.model';
 import { ParamsExport } from '../library/models/iddocument.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { Account } from '../models/account.model';
-import { promise } from 'protractor';
-
-
-
-
 
 
 @Injectable({
@@ -65,7 +59,7 @@ export class UtenteService {
 
 
   constructor(private apiService: ApicallService,
-              private docService: DocstructureService) { }
+              private docStructureService: DocstructureService) { }
 
 
   /**
@@ -104,7 +98,7 @@ export class UtenteService {
             //Disattivo il login utente
             this._utenteLoggato.next(false);
 
-            this.docService.requestForFunction(myAccount,method,jsonBody)
+            this.docStructureService.requestForFunction(myAccount,method,jsonBody)
                           .then((response:PostResponse) => {
                             let myUserAuthCode = '';
 
@@ -200,7 +194,7 @@ export class UtenteService {
       const document = new Account();
 
       //faccio la richiesta
-      this.docService.requestForFunction(document, method)
+      this.docStructureService.requestForFunction(document, method)
       .then(result => {
 
         if(result){
@@ -246,7 +240,7 @@ export class UtenteService {
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
 
-    const myParams = new HttpParams();
+    const myParams = this.docStructureService.getHttpParams();
     let body = '';
 
 
@@ -344,7 +338,7 @@ export class UtenteService {
 
         bodyRequest = `{"docUtente" : ${bodyRequest}}`;        
 
-        this.docService.requestForFunction(new Account(true), metodo, bodyRequest)
+        this.docStructureService.requestForFunction(new Account(true), metodo, bodyRequest)
                        .then((rawResponse: PostResponse) => {
                           if (rawResponse && rawResponse.result) {
                             resolve(rawResponse);
@@ -390,7 +384,7 @@ export class UtenteService {
     //                                    'appid':config.appId
     //                                   });
 
-    const myParams = new HttpParams().set('GUIDUTENTE', actualUtente.ID).append('PWDATTUALE', oldPsw).append('PWDNUOVA',newPsw);
+    const myParams = this.docStructureService.getHttpParams().set('GUIDUTENTE', actualUtente.ID).append('PWDATTUALE', oldPsw).append('PWDNUOVA',newPsw);
     const doObject = 'ACCOUNT';
 
     let myUrl = config.urlBase + '/' + doObject;
@@ -419,7 +413,7 @@ export class UtenteService {
           let myHeaders = config.getHttpHeaders();
           myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
 
-          const myParams = new HttpParams();
+          const myParams = this.docStructureService.getHttpParams();
           const doObject = 'ACCOUNT';
           let bodyRequest = '';
 
@@ -479,7 +473,7 @@ export class UtenteService {
         let myHeaders = config.getHttpHeaders();
         myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
 
-        const myParams = new HttpParams();
+        const myParams = this.docStructureService.getHttpParams();
         const doObject = 'ACCOUNT';
         let bodyRequest = '';
 
@@ -544,7 +538,7 @@ registrationFinalize(config: StartConfiguration,
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
 
-    const myParams = new HttpParams();
+    const myParams = this.docStructureService.getHttpParams();
     const doObject = 'ACCOUNT';
     let bodyRequest = '';
     let bodyUtente = '';
@@ -619,7 +613,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
       let myHeaders = config.getHttpHeaders();
       myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-      const myParams = new HttpParams();
+      const myParams = this.docStructureService.getHttpParams();
       const doObject = 'ACCOUNT';
       let bodyRequest = '';
 
@@ -675,7 +669,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
         let myHeaders = config.getHttpHeaders();
         myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-        const myParams = new HttpParams();
+        const myParams = this.docStructureService.getHttpParams();
         const doObject = 'ACCOUNT';
         let bodyRequest = '';
 
@@ -730,7 +724,7 @@ recoveryFinalize(config: StartConfiguration,
 
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-    const myParams = new HttpParams();
+    const myParams = this.docStructureService.getHttpParams();
     const doObject = 'ACCOUNT';
     let bodyRequest = '';
     let bodyUtente = '';
@@ -808,7 +802,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
     //                       });
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-    const myParams = new HttpParams();
+    const myParams = this.docStructureService.getHttpParams();
     const doObject = 'ACCOUNT';
     let bodyRequest = '';
     let bodyUtente = '';
@@ -872,7 +866,7 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
         let myHeaders = config.getHttpHeaders();
         myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-        const myParams = new HttpParams();
+        const myParams = this.docStructureService.getHttpParams();
         const doObject = 'ACCOUNT';
         let bodyRequest = '';
 

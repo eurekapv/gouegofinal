@@ -153,8 +153,9 @@ export class TabEventiPage implements OnInit, OnDestroy {
     let idArea = (this.selectedArea ? this.selectedArea.ID : '');
 
     //Richiesta delle News
-    this.startService.requestNews(idArea, this.numRequestNews)
+    this.startService.requestListNews(idArea, this.numRequestNews)
         .then(listNews => {
+          console.log(listNews);
             this.listNews = listNews;
             this.afterRefresh(eventoRefresher);
         })
@@ -173,13 +174,14 @@ export class TabEventiPage implements OnInit, OnDestroy {
 
   /**
    * Apre in modalità modale la news
-   * @param news News da leggere
+   * @param newsDoc News da leggere
    */
-  onClickNews(news: NewsEvento, event: any) {
+  onClickNews(newsDoc: NewsEvento, event: any) {
 
+    //Apro la News in Modale
     this.modalController.create({
       component: NewsDetailPage,
-      componentProps: { myNews: news }
+      componentProps: { myNews: newsDoc }
     }).then(modal => {
       modal.present();
     })

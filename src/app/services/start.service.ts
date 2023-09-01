@@ -1544,27 +1544,34 @@ registrationFinalize(docUtente: Utente,
 
 //#region PSW RECOVERY
 
-recoverySendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
-  const actualStartConfig = this._startConfig.getValue();
-  return this.utenteService.recoverySendCodici(actualStartConfig, docRequestCode);
+/**
+ * Viene richiesto al server di inviare al destinatario il Codice di Verifica
+ * @param docRequestCode 
+ * @returns 
+ */
+recoverySendCodice(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+  return this.utenteService.recoverySendCodice(docRequestCode);
 }
 
-recoveryVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
-  const actualStartConfig = this._startConfig.getValue();
-  return this.utenteService.recoveryVerifyCodici(actualStartConfig, docVerifyCode);
+/**
+ * Viene reinviato al server il codice di verifica per confrontarlo con quello memorizzato
+ * @param docVerifyCode 
+ * @returns 
+ */
+recoveryVerifyCodice(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
+  return this.utenteService.recoveryVerifyCodice(docVerifyCode);
 }
 
 
 /**
- * Invia al server la richiesta per la registrazione di un nuovo account
- * @param docUtente Nuovo Utente da registrare
+ * Invia al server la richiesta per completare l'operazione di recovery password
+ * @param docUtente Utente di rierimento
  * @param docRequestCode Documento richiesta codici presentato in precedenza
  */
-recoveryFinalize(docUtente: Utente, 
+recoveryUpdatePassword(docUtente: Utente, 
   docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
-const actualStartConfig = this._startConfig.getValue();
-return this.utenteService.recoveryFinalize(actualStartConfig,docUtente, docRequestCode);
+    return this.utenteService.recoveryUpdatePassword(docUtente, docRequestCode);
 }
 
 

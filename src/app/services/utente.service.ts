@@ -606,101 +606,104 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
    * @param config Dati di configurazione
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
-  recoverySendCodici(config: StartConfiguration,
-                      docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+  recoverySendCodice(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+
       //Viene effettuata una chiamata al server per ottenere
       //l'invio di una mail e/o un SMS contenente codici PIN
-      const metodo = 'recoverySendCodici';
-
-      let myHeaders = config.getHttpHeaders();
-      myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-      const myParams = this.docStructureService.getHttpParams();
-      const doObject = 'ACCOUNT';
-      let bodyRequest = '';
-
-      let myUrl = config.urlBase + '/' + doObject;
 
       return new Promise<AccountOperationResponse>((resolve, reject)=> {
-      if (docRequestCode) {
+          let docToCall: Account;
+          let bodyRequest = '';
+          const method = 'recoverySendCodici';
 
-      //Creo il body da inviare
+          if (docRequestCode) {
 
-      //Questi sono i parametri per l'esportazione
-      let paramExport = new ParamsExport();
-      paramExport.clearDOProperty = true;
-      paramExport.clearPKProperty = true;
-      paramExport.clearPrivateProperty = true;
+              //Documento da chiamare
+              docToCall = new Account(true);
+              //Preparazione Body Chiamata
+              //Questi sono i parametri per l'esportazione
+              let paramExport = new ParamsExport();
+              paramExport.clearDOProperty = true;
+              paramExport.clearPKProperty = true;
+              paramExport.clearPrivateProperty = true;
+              bodyRequest = docRequestCode.exportToJSON(paramExport);
+              bodyRequest = `{"docRequest" : ${bodyRequest}}`;
 
+              this.docStructureService.requestForFunction(docToCall, method, bodyRequest)
+                                      .then(dataReceived => {
+                                        let nameProp = 'recovery';
+                                        if (dataReceived && dataReceived.hasOwnProperty(nameProp)) {
 
-      bodyRequest = docRequestCode.exportToJSON(paramExport);
-
-      bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-      
-
-      //Faccio la chiamata POST
-      this.apiService
-      .httpPost(myUrl, myHeaders, myParams, bodyRequest )
-      .pipe(map(received => {
-          return received.recovery;
-      }))
-      .subscribe((response:AccountOperationResponse) => {
-        resolve(response);
-      }, error => {
-      reject(error);
-      })
-      }
-      else {
-      reject('Dati mancanti per la richiesta');
-      }
+                                          let response: AccountOperationResponse;
+                                          response = new AccountOperationResponse();
+                                          response = dataReceived[nameProp];
+                                          
+                                          resolve(response);
+                                        }
+                                        else {
+                                          reject('Dati ricevuti non corretti');
+                                        }
+                                      })
+                                      .catch(error => {
+                                        reject(error);
+                                      })
+          }
+          else {
+            reject('Dati mancanti per la richiesta');
+          }
 
   });
 
 
 
-}
+  }
+
 
  /**
    * Invia al server una richiesta per verificare i pincode inseriti dall'utente
    * @param config Dati di configurazione
    * @param docVerifyCode Dati da verificare
    */
-  recoveryVerifyCodici(config: StartConfiguration,
-    docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
-        const metodo = 'recoveryVerifyCodici';
-
-        let myHeaders = config.getHttpHeaders();
-        myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-        const myParams = this.docStructureService.getHttpParams();
-        const doObject = 'ACCOUNT';
-        let bodyRequest = '';
-
-        let myUrl = config.urlBase + '/' + doObject;
-
+  recoveryVerifyCodice(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
+        
         return new Promise<AccountOperationResponse>((resolve, reject)=> {
+
+            let docToCall: Account;
+            let bodyRequest = '';
+            const method = 'recoveryVerifyCodici';
+            
             if (docVerifyCode) {
 
-                //Creo il body da inviare
+                //Documento da chiamare
+                docToCall = new Account(true);
 
+                //Creo il body da inviare
                 //Questi sono i parametri per l'esportazione
                 let paramExport = new ParamsExport();
                 paramExport.clearDOProperty = true;
                 paramExport.clearPKProperty = true;
                 paramExport.clearPrivateProperty = true;
-
                 bodyRequest = docVerifyCode.exportToJSON(paramExport);
                 bodyRequest = `{"docRequest" : ${bodyRequest}}`;
 
-                //Faccio la chiamata POST
-                this.apiService
-                .httpPost(myUrl, myHeaders, myParams, bodyRequest )
-                .pipe(map(received => {
-                    return received.recovery;
-                }))
-                .subscribe((response:AccountOperationResponse) => {
-                  resolve(response);
-                }, error => {
-                  reject(error);
-                })
+                this.docStructureService.requestForFunction(docToCall, method, bodyRequest)
+                                        .then(dataReceived => {
+                                          let nameProp = 'recovery';
+                                          if (dataReceived && dataReceived.hasOwnProperty(nameProp)) {
+
+                                            let response: AccountOperationResponse;
+                                            response = new AccountOperationResponse();
+                                            response = dataReceived[nameProp];
+                                            
+                                            resolve(response);
+                                          }
+                                          else {
+                                            reject('Dati ricevuti non corretti');
+                                          }
+                                        })
+                                        .catch(error => {
+                                          reject(error);
+                                        })
             }
             else {
               reject('Dati mancanti per la richiesta');
@@ -710,31 +713,27 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 }
 
 /**
- * Invia al server i dati per completare la registrazione di un account
- * @param config Dati configurazione
+ * Invia al server i dati per completare la procedura di recovery password
  * @param docUtente Utente da registrare
  * @param docRequestCode Documento di Richiesta codici iniziale
  */
-recoveryFinalize(config: StartConfiguration,
-  docUtente: Utente,
-  docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+recoveryUpdatePassword(docUtente: Utente,
+                       docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
-    //Viene inviato al server il documento per chiedere la registrazione utente
-    const metodo = 'recoveryFinalize';
+    //Viene inviato al server il documento per chiedere l'aggiornamento della password 
+    //a seguito di una operazione di recovery
+    
+    return new Promise<AccountOperationResponse>((resolve, reject)=> {
+      let docToCall: Account;
+      let bodyRequest = '';
+      let bodyUtente = '';
+      let bodyFinal = '';
+      const method = 'recoveryFinalize';
 
-
-    let myHeaders = config.getHttpHeaders();
-    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-    const myParams = this.docStructureService.getHttpParams();
-    const doObject = 'ACCOUNT';
-    let bodyRequest = '';
-    let bodyUtente = '';
-    let bodyFinal = '';
-
-    let myUrl = config.urlBase + '/' + doObject;
-
-return new Promise<AccountOperationResponse>((resolve, reject)=> {
   if (docRequestCode && docUtente) {
+
+    //Documento da chiamare
+    docToCall = new Account(true);
 
     //Creo il body da inviare
     //Questi sono i parametri per l'esportazione
@@ -755,20 +754,24 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
     bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
 
-    
+    this.docStructureService.requestForFunction(docToCall, method, bodyFinal)
+                            .then(dataReceived => {
+                              let nameProp = 'recovery';
+                              if (dataReceived && dataReceived.hasOwnProperty(nameProp)) {
 
-    //Faccio la chiamata POST
-    this.apiService
-      .httpPost(myUrl, myHeaders, myParams, bodyFinal)
-      .pipe(map(received => {
-        return received.recovery;
-      }))
-      .subscribe((response:AccountOperationResponse) => {
-
-        resolve(response);
-        }, error => {
-            reject(error);
-        });
+                                let response: AccountOperationResponse;
+                                response = new AccountOperationResponse();
+                                response = dataReceived[nameProp];
+                                
+                                resolve(response);
+                              }
+                              else {
+                                reject('Dati ricevuti non corretti');
+                              }
+                            })
+                            .catch(error => {
+                              reject(error);
+                            })
     }
     else {
       reject('Dati mancanti per la richiesta');

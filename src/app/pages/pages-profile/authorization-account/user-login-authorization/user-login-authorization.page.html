@@ -71,11 +71,11 @@
                                   label="E-mail"
                                   labelPlacement="stacked"
                                   [clearInput]="true"
+                                  helperText="inserisci l'email di registrazione"
+                                  errorText="inserisci un indirizzo email valido"
                                   formControlName = "profileEmail"
                                   type="email">
                             </ion-input>
-                            <div slot="helper">inserisci l'email di registrazione</div>
-                            <div slot="error">inserisci un indirizzo email valido</div>  
                           </ion-item>
 
                           <ion-item
@@ -87,6 +87,8 @@
                                   id="currentpassword" 
                                   label="Password"
                                   labelPlacement="stacked"
+                                  helperText="inserisci la password di accesso"
+                                  errorText="controlla la password inserita"
                                   formControlName = "profilePassword"
                                   type="password">
                               </ion-input>
@@ -99,8 +101,6 @@
                                   slot="end">
                                   <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
                               </ion-button>
-                              <div slot="helper">inserisci la password di accesso</div>
-                            <div slot="error">controlla la password inserita</div>
                           </ion-item>
 
                           <ion-item>
@@ -195,15 +195,15 @@
                                 color = "light"
                                 >
                               <ion-input
-                                    [disabled]="stepRecovery != 'input'"
                                     [label]="labelFormRecovery"
                                     labelPlacement="stacked"
+                                    [helperText]="helperFormRecovery"
+                                    [errorText]="errorFormRecovery"
                                     [clearInput]="true"
                                     formControlName = "profileEmailNumber"
                                     type="email">
-                                </ion-input>
-                                <div slot="helper">{{helperFormRecovery}}</div>
-                                <div slot="error">{{errorFormRecovery}}</div>                
+                                </ion-input>                                
+                                
                           </ion-item>
 
                           <ion-item
@@ -211,9 +211,10 @@
                                 *ngIf="stepRecovery == 'code' || stepRecovery == 'password'"
                                 >
                               <ion-input
-                                    [disabled]="stepRecovery == 'password'"
+                                    
                                     label="Codice di verifica"
                                     labelPlacement="stacked"
+                                    helperText = "Inserisci il codice ricevuto"
                                     [clearInput]="false"
                                     formControlName = "verificationCode"
                                     type="text">
@@ -228,8 +229,6 @@
                                     slot="end">
                                     Reinvia
                                 </ion-button>                                
-                                
-                                <div slot="helper">Inserisci il codice ricevuto</div>
                           </ion-item>
 
                           <ion-item
@@ -241,6 +240,7 @@
                                     id="password1"
                                     label="Nuova Password"
                                     labelPlacement="stacked"
+                                    helperText="inserisci la nuova password"
                                     [clearInput]="false"
                                     formControlName = "password1"
                                     type="password">
@@ -253,7 +253,6 @@
                                     slot="end">
                                     <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
                                 </ion-button>
-                                <div slot="helper">inserisci la nuova password</div>
                          </ion-item>
 
                          <ion-item
@@ -265,6 +264,7 @@
                                     #password2
                                     label="Ripeti Password"
                                     labelPlacement="stacked"
+                                    helperText="ripeti la nuova password"
                                     [clearInput]="false"
                                     formControlName = "password2"
                                     type="password">
@@ -277,7 +277,6 @@
                                     slot="end">
                                     <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
                                 </ion-button>
-                                <div slot="helper">ripeti la nuova password</div>
                           </ion-item>                         
 
                         </ion-list>

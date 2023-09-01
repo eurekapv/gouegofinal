@@ -236,34 +236,95 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
   createFormSecondary() {
     
     this.formPageSecondary = new FormGroup({
-      profileEmailNumber: new FormControl<string>('', {
-        updateOn: 'change',
-        validators: [Validators.required]
-      }),
-      verificationCode: new FormControl<string>('', {
-        updateOn: 'change',
-        validators: [Validators.maxLength(this.verificationCodeLength),
-                     Validators.minLength(this.verificationCodeLength)]
-      }),
-      password1: new FormControl<string>('', {
-        updateOn: 'change',
-        validators: []
-      }),
-      password2: new FormControl<string>('', {
-        updateOn: 'change',
-        validators: []
-      }),
-
-            
+      profileEmailNumber: new FormControl<string>(
+            {
+              value:'', 
+              disabled: false
+            }, 
+            {
+              updateOn: 'change',
+              validators: [Validators.required]
+            }),
+      verificationCode: new FormControl<string>({
+              value:'', 
+              disabled: true
+            },
+            {
+              updateOn: 'change',
+              validators: [Validators.maxLength(this.verificationCodeLength),
+                           Validators.minLength(this.verificationCodeLength)]
+            }),
+      password1: new FormControl<string>({
+                value:'', 
+                disabled: true
+              },
+              {
+                updateOn: 'change',
+                validators: []
+              }),
+      password2: new FormControl<string>({
+                value:'', 
+                disabled: true
+              },
+              {
+                updateOn: 'change',
+                validators: []
+              })
     });
   } 
+
+  /**
+   * Effettua il movimento dello Step di Recovery
+   * e intanto abilita/disabilita le INPUT
+   * @param nextStep 
+   */
+  moveStepRecovery(nextStep: 'input' | 'code' | 'password') {
+
+    this.stepRecovery = nextStep;
+
+    //Reimposto le Abilitazioni Form
+    switch (this.stepRecovery) {
+      case 'input':
+        this.formPageSecondary.get('profileEmailNumber')?.enable();
+        this.formPageSecondary.get('verificationCode')?.disable();
+        this.formPageSecondary.get('password1')?.disable();
+        this.formPageSecondary.get('password2')?.disable();
+
+        break;
+
+      case 'code':
+        this.formPageSecondary.get('profileEmailNumber')?.disable();
+        this.formPageSecondary.get('verificationCode')?.enable();
+        this.formPageSecondary.get('password1')?.disable();
+        this.formPageSecondary.get('password2')?.disable();
+
+        break;
+
+      case 'password':
+        this.formPageSecondary.get('profileEmailNumber')?.disable();
+        this.formPageSecondary.get('verificationCode')?.disable();
+        this.formPageSecondary.get('password1')?.enable();
+        this.formPageSecondary.get('password2')?.enable();
+
+        break;        
+
+
+    
+      default:
+        break;
+    }
+
+  }
 
 
   /**
    * Svuota i valori della form Secondary
    */
   emptyFormSecondary() {
-
+        this.formPageSecondary.get('profileEmailNumber')?.setValue('');
+        this.formPageSecondary.get('verificationCode')?.setValue('');
+        this.formPageSecondary.get('password1')?.setValue('');
+        this.formPageSecondary.get('password2')?.setValue('');
   }
 
 
@@ -452,7 +513,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
               elLoading.present();
 
               //Effettuo la richiesta
-              this.startService.recoverySendCodici(this.docRichiestaCodici)
+              this.startService.recoverySendCodice(this.docRichiestaCodici)
                                .then((risposta: AccountOperationResponse) => {
                                 //Chiudo il Loading
                                 elLoading.dismiss();
@@ -469,7 +530,8 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
                                     this.docRichiestaCodici.IDREFER = risposta.idRefer
   
                                     //Passo allo STEP SUCCESSIVO
-                                    this.stepRecovery = 'code';
+                                    this.moveStepRecovery('code');
+
                                   }
                                   else {
                                     myMessage = '<p>' + risposta.message + '</p>';
@@ -552,7 +614,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
                 elLoading.present();
 
                 //Contattiamo il server
-                this.startService.recoveryVerifyCodici(this.docVerifica)
+                this.startService.recoveryVerifyCodice(this.docVerifica)
                                  .then((risposta: AccountOperationResponse) => {
                                     //Chiusura del loading
                                     elLoading.dismiss();
@@ -568,7 +630,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
                                         this.utenteRecovery.NOMINATIVO = risposta.descrRefer;
 
                                         //Sposto alla sezione successiva
-                                        this.stepRecovery = 'password';
+                                        this.moveStepRecovery('password');
                                       }
                                       else {
                                         this.startService.presentAlertMessage('Spiacente, Il codice inserito non risulta corretto','Verifica fallita');
@@ -621,7 +683,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
               elLoading.present();
 
               //Effettuo la richiesta
-              this.startService.recoveryFinalize(this.utenteRecovery, this.docRichiestaCodici)
+              this.startService.recoveryUpdatePassword(this.utenteRecovery, this.docRichiestaCodici)
                                .then((risposta: AccountOperationResponse) => {
 
                                   elLoading.dismiss();
@@ -629,10 +691,12 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
                                   if (risposta) {
                                     if (risposta.result) {
 
+                                      //Svuoto la form secondaria
+                                      this.emptyFormSecondary();
+
                                       //Mi sposto sulla pagina di Login
                                       this.indexShowForm = 1;
-                                      this.emptyFormSecondary();
-                                      this.stepRecovery = 'input';
+                                      this.moveStepRecovery('input');
 
                                       //Mostro il messaggio
                                       myMessage = '<p><strong>Complimenti</strong>, la password è stata aggiornata correttamente</p>'
@@ -690,7 +754,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
     if (this.indexShowForm == 1) {
       //Passo a modalità Recovery
       this.indexShowForm = 2;
-      this.stepRecovery = 'input';
+      this.moveStepRecovery('input');
     }
     else {
       //Vorrei tornare alla login
@@ -708,7 +772,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
               //Mi sposto sulla prima pagina
               this.indexShowForm = 1;
               //Porto lo step a input
-              this.stepRecovery = 'input';
+              this.moveStepRecovery('input');
             }
           },
           {
@@ -727,7 +791,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
         //Mi sposto sulla prima pagina
         this.indexShowForm = 1;
         //Porto lo step a input
-        this.stepRecovery = 'input';        
+        this.moveStepRecovery('input');
       }
     }
   }  

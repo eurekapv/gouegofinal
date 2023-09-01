@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
-import { ModalController, LoadingController, ToastController, NavController, AlertController, IonInput } from '@ionic/angular';
+import { ModalController, LoadingController, AlertController, IonInput } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
@@ -13,7 +13,6 @@ import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
-import { UserPasswordRecoveryPage } from '../user-password-recovery/user-password-recovery.page';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { LogApp } from 'src/app/models/log.model';
 import { SupportFunc } from 'src/app/library/models/support-func.model';
@@ -549,12 +548,7 @@ export class UserLoginPage implements OnInit {
    * evento scatenato quando l'utente clicca su "reimposta password"
    */
   onClickReimpostaPsw(){
-    this.modalCtrl.create({
-      component:UserPasswordRecoveryPage
-    }).then(elModal=>{
-      elModal.present();
-      this.modalCtrl.dismiss();
-    })
+
   }
 
   //#region GESTIONE PAGINA CONTATTI E CODICI

@@ -135,12 +135,12 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
       if (result) {
         //Controllo dell'utente loggato
-        this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
+        this.subUserLogged = this.startService.flagUtenteIsLoggato$.subscribe(element => {
                 this.userLogged = element;
         });
   
         //Richiedo lo User
-        this.subDocUtente = this.startService.utente.subscribe(element => {
+        this.subDocUtente = this.startService.activeUtenteDoc$.subscribe(element => {
           this.docUtente = element;
         });
   

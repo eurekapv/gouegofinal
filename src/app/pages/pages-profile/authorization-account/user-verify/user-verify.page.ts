@@ -196,7 +196,7 @@ export class UserVerifyPage implements OnInit {
      LogApp.consoleLog('Area di riferimento: ' + this.docArea.ID);
 
      //recupero l'utente
-     this.docUtente=this.startService.actualUtente;
+     this.docUtente=this.startService.activeUtenteDoc;
 
     //recupero il parametro
     this.params = this.navParams.get('params');

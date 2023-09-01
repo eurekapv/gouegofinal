@@ -1310,8 +1310,6 @@ export class UserLoginPage implements OnInit {
       default:
         break;
     }
-
-    
   }    
   
 

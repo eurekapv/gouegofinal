@@ -35,7 +35,7 @@ export class ListInvoicesAccountPage implements OnInit {
   ngOnInit() {
 
     //recupero l'utente
-    this.actualUtente = this.startService.actualUtente;
+    this.actualUtente = this.startService.activeUtenteDoc;
     if (this.actualUtente) {
         //posso recuperare l'elenco delle ricevute 
         this.requestRicevute();

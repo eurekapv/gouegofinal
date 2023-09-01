@@ -17,37 +17,38 @@ import { Account } from '../models/account.model';
 })
 export class UtenteService {
 
-  private _utente = new BehaviorSubject<Utente>(new Utente);
-  private _utenteLoggato = new BehaviorSubject<boolean>(false);
+  private _activeUtenteDoc$ = new BehaviorSubject<Utente>(new Utente);
+  private _flagUtenteIsLoggato$ = new BehaviorSubject<boolean>(false);
   private _idAreaFAV = new BehaviorSubject<string>(''); //Avvisa di cambiare l'Area Operativa
-  private _userPicture = new BehaviorSubject<string>('');
+  private _utenteImmagine$ = new BehaviorSubject<string>('');
 
-  get utente() {
-    return this._utente.asObservable();
+  get activeUtenteDoc$() {
+    return this._activeUtenteDoc$.asObservable();
   }
 
-  get utenteLoggato() {
-    return this._utenteLoggato.asObservable();
+  get activeUtenteDoc() {
+    return this._activeUtenteDoc$.getValue();
   }
 
-  get actualLoggato(){
-    return this._utenteLoggato.getValue();
+  get flagUtenteIsLoggato$() {
+    return this._flagUtenteIsLoggato$.asObservable();
   }
 
-  get actualUtente() {
-    return this._utente.getValue();
+  get flagUtenteIsLoggato(){
+    return this._flagUtenteIsLoggato$.getValue();
   }
 
-  get userPicture():Observable<string> {
-    return this._userPicture.asObservable();
+
+  get utenteImmagine$():Observable<string> {
+    return this._utenteImmagine$.asObservable();
   }
 
   /**
    * Imposta la UserPicture
    * @param value DataUrl image
    */
-  setUserPicture(dataUrl: string) {
-    this._userPicture.next(dataUrl);
+  setUtenteImmagine(dataUrl: string) {
+    this._utenteImmagine$.next(dataUrl);
   }
 
   /**
@@ -96,7 +97,7 @@ export class UtenteService {
 
 
             //Disattivo il login utente
-            this._utenteLoggato.next(false);
+            this._flagUtenteIsLoggato$.next(false);
 
             this.docStructureService.requestForFunction(myAccount,method,jsonBody)
                           .then((response:PostResponse) => {
@@ -124,10 +125,10 @@ export class UtenteService {
                                 myStartConfig.next(startConf);
   
                                 //Emetto Utente
-                                this._utente.next(docUtente);
+                                this._activeUtenteDoc$.next(docUtente);
   
                                 //Emetto il Boolean TRUE di avvenuto accesso
-                                this._utenteLoggato.next(true);
+                                this._flagUtenteIsLoggato$.next(true);
   
                                 //Se devo forzare l'area preferita la imposto
                                 if (forceIdArea && forceIdArea.length !== 0) {
@@ -179,7 +180,7 @@ export class UtenteService {
    */
   logoff() {
 
-    this._utenteLoggato.next(false);
+    this._flagUtenteIsLoggato$.next(false);
   }
 
 
@@ -201,8 +202,8 @@ export class UtenteService {
 
           let newUtente: Utente = new Utente();
           newUtente.setJSONProperty(result);
-          this._utenteLoggato.next(true);
-          this._utente.next(newUtente);
+          this._flagUtenteIsLoggato$.next(true);
+          this._activeUtenteDoc$.next(newUtente);
 
           resolve(newUtente);
         }
@@ -281,7 +282,7 @@ export class UtenteService {
             //l'operazione è andata a buon fine, restituisco l'utente
             docUtente.setJSONProperty(objDocument);
             
-            this._utente.next(docUtente);
+            this._activeUtenteDoc$.next(docUtente);
             resolve(docUtente);
         }
         else {
@@ -314,7 +315,7 @@ export class UtenteService {
    return new Promise<PostResponse>((resolve, reject) => {
 
       const metodo = 'deleteUserProfile';
-      let actualUtente = this._utente.getValue();
+      let actualUtente = this._activeUtenteDoc$.getValue();
       let docUtente: Utente; //Documento da inviare
       let bodyRequest = '';
       
@@ -375,7 +376,7 @@ export class UtenteService {
    * @returns 
    */
   requestChangePassword(config: StartConfiguration, oldPsw:string, newPsw:string) {
-    let actualUtente = this._utente.getValue();
+    let actualUtente = this._activeUtenteDoc$.getValue();
     let myHeaders = config.getHttpHeaders();
     myHeaders = myHeaders.append('X-HTTP-Method-Override','CHANGEPWDMOB');
 

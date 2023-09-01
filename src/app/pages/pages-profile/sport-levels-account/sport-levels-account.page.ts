@@ -29,7 +29,7 @@ export class SportLevelsAccountPage implements OnInit {
                 this.showLogoGruppo = false;
 
                 //Attendo la ricezione dei dati Utente
-                this.utenteListener=this.startService.utente.subscribe(data=>{
+                this.utenteListener=this.startService.activeUtenteDoc$.subscribe(data=>{
                   this.utente=data;
                 });
 

@@ -40,7 +40,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
     ) {
 
       //Chiedo al servizio i dati dell'utente
-      this.utenteListen = this.startService.utente.subscribe(data=>{
+      this.utenteListen = this.startService.activeUtenteDoc$.subscribe(data=>{
           
           //Recupero l'utente
           this.utente = data;

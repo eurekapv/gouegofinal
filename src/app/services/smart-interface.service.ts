@@ -16,16 +16,33 @@ export class SmartInterfaceService {
   * La presentazione del messaggio è a carico del chiamante
   * @param message Messaggio
   */
-  showMessage(myMessage: string, myTitle?: string, myButtons?: (AlertButton | string)[]): Promise<HTMLIonAlertElement> {
+  showMessage(myMessage: string | ErrorEvent | Error, 
+              myTitle?: string, 
+              myButtons?: (AlertButton | string)[]): Promise<HTMLIonAlertElement> {
 
+    let finalMessage = '';
 
     if (!myButtons) {
-      myButtons = ['Ok'];
+      myButtons = ['Conferma'];
     }
+
+    if (myMessage instanceof ErrorEvent) {
+      finalMessage = myMessage.message;
+    }
+    if (myMessage instanceof Error) {
+      finalMessage = myMessage.message;
+    }    
+    else if (typeof myMessage == 'object') {
+      finalMessage = JSON.stringify(myMessage);
+    }
+    else if (typeof myMessage == 'string') {
+      finalMessage = myMessage;
+    }
+
 
     return this.alertController.create({
       header: myTitle,
-      message: myMessage,
+      message: finalMessage,
       buttons: myButtons
     });
 

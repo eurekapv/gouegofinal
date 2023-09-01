@@ -115,7 +115,7 @@ export class TabHomePage implements OnInit, OnDestroy {
                                         })
 
     //Sottoscrivo all'ascolto di un utente loggato
-    this.userLoggedListen = this.startService.utenteLogged
+    this.userLoggedListen = this.startService.flagUtenteIsLoggato$
                                                 .subscribe(element => {
 
                                                     //Recupero l'utente
@@ -125,7 +125,7 @@ export class TabHomePage implements OnInit, OnDestroy {
 
 
     //Sottoscrivo all'ascolto dell'Account
-    this.docUtenteListen = this.startService.utente
+    this.docUtenteListen = this.startService.activeUtenteDoc$
                                                 .subscribe(element => {
 
                                                     this.docUtente = element;

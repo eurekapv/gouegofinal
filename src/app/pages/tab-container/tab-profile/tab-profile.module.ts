@@ -9,6 +9,7 @@ import { TabProfilePageRoutingModule } from './tab-profile-routing.module';
 import { TabProfilePage } from './tab-profile.page';
 import { QRCodeModule } from 'angularx-qrcode';
 import { EditLoginPageModule } from '../../pages-profile/edit-login/edit-login.module';
+import { UserLoginAuthorizationPageModule } from '../../pages-profile/authorization-account/user-login-authorization/user-login-authorization.module';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { EditLoginPageModule } from '../../pages-profile/edit-login/edit-login.m
     IonicModule,
     TabProfilePageRoutingModule,
     QRCodeModule,    
-    EditLoginPageModule
+    EditLoginPageModule,
+    UserLoginAuthorizationPageModule
   ],
   declarations: [TabProfilePage]
 })

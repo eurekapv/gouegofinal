@@ -52,7 +52,7 @@ export class HistoryListPage implements OnInit {
 
   ionViewDidEnter() {
     //Richiesta utente attuale
-    this.subDocUtente = this.startService.utente
+    this.subDocUtente = this.startService.activeUtenteDoc$
                           .subscribe  (elDocUtente => {
                               this.docUtente = elDocUtente;
                               //Utente arrivato

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { HttpParams } from '@angular/common/http';
 import { ApicallService } from './apicall.service';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
@@ -18,7 +17,7 @@ import { NewseventiService } from './newseventi.service';
 import { SlotoccupazioneService } from './slotoccupazione.service';
 
 
-import { StartConfiguration, StartAuthorization } from '../models/start-configuration.model';
+import { StartConfiguration } from '../models/start-configuration.model';
 
 import { Location } from '../models/location.model';
 import { Utente, storageUtente } from '../models/utente.model';
@@ -29,7 +28,7 @@ import { PrenotazionePianificazione } from '../models/prenotazionepianificazione
 import { Prenotazione } from '../models/prenotazione.model';
 import { UtenteprenotazioneService } from './utenteprenotazione.service';
 import { UtenteiscrizioneService } from './utenteiscrizione.service';
-import { Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
@@ -83,6 +82,8 @@ import { GetResult } from '@capacitor/preferences';
 import { Authorization } from '../models/authorization.model';
 import { Corso } from '../models/corso.model';
 import { NewsEvento } from '../models/newsevento.model';
+import { UserLoginAuthorizationPageModule } from '../pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.module';
+import { UserLoginAuthorizationPage } from '../pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.page';
 
 @Injectable({
   providedIn: 'root'
@@ -96,8 +97,7 @@ export class StartService {
   private _appReady = new BehaviorSubject<boolean>(false);
   private _stateApplication: StateApplication = StateApplication.onStarting;
 
-  private listenLocation: Subscription;
-  
+   
   //Determina se la connessione sarà a un database locale, o al server
   private _localConnection = false;
 
@@ -180,7 +180,8 @@ export class StartService {
   }
 
 
-  constructor(private platformService: Platform,
+  constructor(
+    private platformService: Platform,
     private apiService: ApicallService,
     private keyStorageService: KeyStorageService,
     private sportService: SportService,
@@ -215,7 +216,8 @@ export class StartService {
     private impegniService: ImpegnoService,
     private impegniCollaboratoreService: ImpegnoCollaboratoreService,
     private impegniCustodeService: ImpegnoCustodeService,
-    private articoloService: ArticoloService
+    private articoloService: ArticoloService,
+    private modalController: ModalController
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -1148,38 +1150,64 @@ requestForSaveSchedaValutazioneCorso(docScheda: CorsoValutazione):Promise<PostRe
 
 //#region UTENTE
 
-
-get utente() {
-  return this.utenteService.utente;
-}
-
-// Espone se l'utente è loggato 
-get utenteLogged() {
-  return this.utenteService.utenteLoggato;
-}
-
-get actualUtenteLogged() {
-  return this.utenteService.actualLoggato;
+/**
+ * Documento Utente Attivo
+ */
+get activeUtenteDoc$() {
+  return this.utenteService.activeUtenteDoc$;
 }
 
 /**
  * recupera l'utente loggato (non Obs)
  */
-get actualUtente() {
-  return this.utenteService.actualUtente;
+get activeUtenteDoc(): Utente {
+  return this.utenteService.activeUtenteDoc;
 }
+
+/**
+ * Valore Boolean che indica se un utente è connesso
+ * Observable
+ */
+get flagUtenteIsLoggato$():Observable<boolean> {
+  return this.utenteService.flagUtenteIsLoggato$;
+}
+
+
+/**
+ * Valore Boolean che indica se un utente è connesso
+ */
+get flagUtenteIsLoggato(): boolean {
+  return this.utenteService.flagUtenteIsLoggato;
+}
+
+
 
 /**
  * Ritorna ID Utente attualmente loggato
  */
-get actualIdUtente(): string {
+get activeUtenteId(): string {
   let myId: string = '';
-  if (this.utenteService.actualUtente) {
-    myId = this.utenteService.actualUtente.ID;
+  if (this.utenteService.activeUtenteDoc) {
+    myId = this.utenteService.activeUtenteDoc.ID;
   }
 
   return myId;
 
+}
+
+/**
+ * Foto utente presente nel servizio utente
+ */
+get utenteImmagine$():Observable<string> {
+  return this.utenteService.utenteImmagine$;
+}
+
+
+/**
+ * Lista Tessere Utente di tipo Observable
+ */
+get listTessereUtente$() {
+  return this.srvTesseramento.listTessere$;
 }
 
 updateClientUtenteData(){
@@ -1247,6 +1275,26 @@ loadUserCredential() {
       
 }
 
+/**
+ * Richiesta apertura della form di Login
+ * Nella pagine in cui viene effettuata la chiamata aggiungere nel file 
+ * module il riferimento a UserLoginAuthorizationPageModule
+ */
+openFormLogin() {
+
+    //Apro la form di login (se l'utente non è loggato)
+    if (this.flagUtenteIsLoggato == false) {
+
+      this.modalController.create({
+        component: UserLoginAuthorizationPage,
+        cssClass: 'modal-xl-class'
+      })
+      .then(elModal => {
+        elModal.present();
+      })
+
+    }
+}
 
 
 
@@ -1362,12 +1410,7 @@ requestDeleteProfile(actualPassword: string):Promise<PostResponse>  {
 }
 
 
-/**
- * Foto utente presente nel servizio utente
- */
-get userPicture():Observable<string> {
-  return this.utenteService.userPicture;
-}
+
 /**
  * Apre la fotocamera per la foto utente
  */
@@ -1379,10 +1422,10 @@ takePictureUtente():Promise<string> {
 
   return new Promise<string>((resolve, reject) => {
     
-    if (this.utenteLogged) {
+    if (this.flagUtenteIsLoggato$) {
   
       //Identificativo della foto
-      this.utente.subscribe(elutente => {
+      this.activeUtenteDoc$.subscribe(elutente => {
 
         idPhoto = elutente.ID;
     
@@ -1391,7 +1434,7 @@ takePictureUtente():Promise<string> {
                         .then(dataUrl => {
 
                           //Foto memorizzata, la imposto nel servizio utente
-                          this.utenteService.setUserPicture(dataUrl);
+                          this.utenteService.setUtenteImmagine(dataUrl);
                           //Risolvo la Promise
                           resolve(dataUrl);
 
@@ -1411,8 +1454,6 @@ takePictureUtente():Promise<string> {
 
 }
 
-
-
 /**
  * 
  * @returns DataURL con la foto profilo
@@ -1423,9 +1464,9 @@ loadPictureUtente():Promise<string> {
 
   return new Promise<string>((resolve) => {
 
-    if (this.utenteLogged) {
+    if (this.flagUtenteIsLoggato$) {
   
-      this.utente.subscribe(elutente => {
+      this.activeUtenteDoc$.subscribe(elutente => {
         //Identificativo della foto
         idPhoto = elutente.ID;
     
@@ -1435,7 +1476,7 @@ loadPictureUtente():Promise<string> {
                         .then(dataUrl => {
 
                           //Foto memorizzata, la imposto nel servizio utente
-                          this.utenteService.setUserPicture(dataUrl);
+                          this.utenteService.setUtenteImmagine(dataUrl);
 
                           resolve(dataUrl);
                         })
@@ -1453,19 +1494,13 @@ loadPictureUtente():Promise<string> {
   })
 }
 
-/**
- * Lista Tessere Utente di tipo Observable
- */
-get listTessereUtente$() {
-  return this.srvTesseramento.listTessere$;
-}
 
 /**
  * Richiede i Tesseramenti per l'utente loggato
  * @param idUtente 
  */
 requestListTessereUtente():Promise<void> {
-  let idUtente = this.actualIdUtente;
+  let idUtente = this.activeUtenteId;
   return this.srvTesseramento.request(idUtente);
 }
 
@@ -2282,7 +2317,10 @@ getDefaultBreakpoint(actualWidth: number): 'xs' | 'sm' | 'md' | 'lg' | 'xl' {
    * @param myButtons Eventuali Button
    * @returns void
    */
-  presentAlertMessage(myMessage: string, myTitle?: string, myButtons?: (AlertButton | string)[]) {
+  presentAlertMessage(myMessage: string | ErrorEvent, 
+                      myTitle?: string, 
+                      myButtons?: (AlertButton | string)[]) {
+    
     this.srvSmartInterface
       .showMessage(myMessage, myTitle, myButtons)
       .then(elMessage => {

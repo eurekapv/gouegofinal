@@ -87,7 +87,7 @@ export class ListValutazioniPage implements OnInit {
 
   ngOnInit() {
     //recupero l'utente
-    this.utenteDoc = this.startService.actualUtente;
+    this.utenteDoc = this.startService.activeUtenteDoc;
     //Eseguo il refresh dei dati
     this.doRefresh(null);
   }

@@ -117,11 +117,11 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
   onListenUser() {
 
     //Richiedo lo User
-    this.listenDocUser = this.startService.utente.subscribe(element => {
+    this.listenDocUser = this.startService.activeUtenteDoc$.subscribe(element => {
       this.docUser = element;
     });
 
-    this.listenUserLogged = this.startService.utenteLogged.subscribe(flagLogged => {
+    this.listenUserLogged = this.startService.flagUtenteIsLoggato$.subscribe(flagLogged => {
       this.userLogged = flagLogged;
 
       /** Utente Loggato mi sposto su Mio Livello */

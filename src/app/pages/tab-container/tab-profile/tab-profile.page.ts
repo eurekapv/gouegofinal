@@ -58,21 +58,21 @@ export class TabProfilePage implements OnInit, OnDestroy {
   onListenUtente(): void {
 
     //Sottoscrivo all'ascolto dell'Account
-    this.subUtenteDoc = this.startService.utente
+    this.subUtenteDoc = this.startService.activeUtenteDoc$
             .subscribe(element => {
               //Recupero utente
                 this.utenteDoc = element;
             });    
 
     //Sottoscrivo all'ascolto di un utente loggato
-    this.subFlagUserLogged = this.startService.utenteLogged
+    this.subFlagUserLogged = this.startService.flagUtenteIsLoggato$
           .subscribe(element => {
               //Recupero l'utente
               this.flagUserLogged = element;    
           });
 
     //Sottoscrivo alla ricezione della foto
-    this.subPathUtentePic = this.startService.userPicture
+    this.subPathUtentePic = this.startService.utenteImmagine$
         .subscribe(dataUrl => {
             this.pathUtentePic = dataUrl;
     });
@@ -182,19 +182,12 @@ onClickRegistrati():void {
 }
 
 /**
- * Passo alla Login utente
+ * Apertura form per effettuare la login
  */
 onClickAccedi(): void {
-//Apro in modale la form per la login
-this.modalController.create({
-  component: UserLoginPage,
-  componentProps: {
-    'startSection': 'login'
-  }
-})
-.then(elModal => {
-  elModal.present();
-})
+
+  this.startService.openFormLogin();
+
 }
 
 // Chiedo se vuole veramente uscire

@@ -115,13 +115,13 @@ export class LocationCourseSubscribePage implements OnInit, OnDestroy {
  */
 onListenSelectedUser() {
   //Controllo se l'utente è loggato
-  this.listenerUserLogged = this.startService.utenteLogged
+  this.listenerUserLogged = this.startService.flagUtenteIsLoggato$
                             .subscribe(element => {
                                     this.userLogged = element;
                             });
 
   //Sottoscrivo al documento Utente
-  this.listenerUserDoc = this.startService.utente.subscribe(elUser => {
+  this.listenerUserDoc = this.startService.activeUtenteDoc$.subscribe(elUser => {
       this.userDoc = elUser;
       //Riconfiguro il documento di Iscrizione
       this.prepareDocIscrizione(this.corsoDoc, this.userDoc);

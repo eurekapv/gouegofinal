@@ -20,7 +20,7 @@ export class BadgeAccountPage implements OnInit, OnDestroy {
           private startService: StartService) { 
 
             //Ascolto l'utente 
-            this.docActualUtenteListen = this.startService.utente.subscribe(element => {
+            this.docActualUtenteListen = this.startService.activeUtenteDoc$.subscribe(element => {
               this.actualUtente = element;
             });
           }

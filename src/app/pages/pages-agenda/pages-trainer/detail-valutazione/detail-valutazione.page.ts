@@ -468,8 +468,8 @@ export class DetailValutazionePage implements OnInit {
       this.myCorsoValutazione.FLAGBOZZA = false;
     }
 
-    this.myCorsoValutazione.IDUTENTE = this.startService.actualUtente.ID;
-    this.myCorsoValutazione.NOMINATIVO = this.startService.actualUtente.NOMINATIVO;
+    this.myCorsoValutazione.IDUTENTE = this.startService.activeUtenteDoc.ID;
+    this.myCorsoValutazione.NOMINATIVO = this.startService.activeUtenteDoc.NOMINATIVO;
     this.myCorsoValutazione.VOTAZIONEFINALE = this.starIndex;
 
     this.startService.requestForSaveSchedaValutazioneCorso(this.myCorsoValutazione)

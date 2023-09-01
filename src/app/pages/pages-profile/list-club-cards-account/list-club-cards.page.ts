@@ -52,7 +52,7 @@ export class ListClubCardsPage implements OnInit {
 
     this.isDesktop=this.startService.isDesktop;
     this.selectedArea = this.startService.areaSelectedValue;
-    this.actualUtente = this.startService.actualUtente;
+    this.actualUtente = this.startService.activeUtenteDoc;
 
     if (this.actualUtente) {
       //Richiedo tutti i dati che mi servono

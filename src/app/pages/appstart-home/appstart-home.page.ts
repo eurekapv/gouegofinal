@@ -29,7 +29,7 @@ export class AppstartHomePage implements OnInit {
   onListenUtente(): void {
 
     //Sottoscrivo all'ascolto di un utente loggato
-    this.subFlagUserLogged = this.startService.utenteLogged
+    this.subFlagUserLogged = this.startService.flagUtenteIsLoggato$
           .subscribe(element => {
               //Recupero l'utente
               this.flagUserLogged = element;    

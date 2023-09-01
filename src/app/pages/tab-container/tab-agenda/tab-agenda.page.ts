@@ -272,7 +272,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   onListenUtente(): void {
 
     //Sottoscrivo all'ascolto dell'Account
-    this.subUtenteDoc = this.startService.utente
+    this.subUtenteDoc = this.startService.activeUtenteDoc$
             .subscribe(element => {
               //Recupero utente
                 this.utenteDoc = element;
@@ -281,7 +281,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
             });    
 
     //Sottoscrivo all'ascolto di un utente loggato
-    this.subFlagUserLogged = this.startService.utenteLogged
+    this.subFlagUserLogged = this.startService.flagUtenteIsLoggato$
           .subscribe(element => {
               //Recupero l'utente
               this.flagUserLogged = element;    

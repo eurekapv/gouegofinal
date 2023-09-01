@@ -67,7 +67,7 @@ export class ListDocumentsAccountPage implements OnInit {
     reqParams.decode.active = true;
     reqParams.decode.addForeignField('IDTIPODOCUMENTAZIONE');
 
-    if (this.startService.actualUtente) {
+    if (this.startService.activeUtenteDoc) {
 
       this.loadingController.create({
         message: 'Caricamento',
@@ -81,7 +81,7 @@ export class ListDocumentsAccountPage implements OnInit {
         }
 
         //Chiedo all'utente di caricare la collection dei documenti
-        this.docStructureService.loadCollection(this.startService.actualUtente, 'DOCUMENTAZIONI', reqParams)
+        this.docStructureService.loadCollection(this.startService.activeUtenteDoc, 'DOCUMENTAZIONI', reqParams)
         .then(objUtente => {
 
           if (!event){
@@ -198,7 +198,7 @@ export class ListDocumentsAccountPage implements OnInit {
         
   
         //Imposto il token utente
-        docToSend.TOKENUTENTE = this.startService.actualUtente.ID;
+        docToSend.TOKENUTENTE = this.startService.activeUtenteDoc.ID;
   
         //creo il body json
         //Questi sono i parametri per l'esportazione

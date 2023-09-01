@@ -96,13 +96,13 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
  */
 onListenSelectedUser() {
     //Controllo se l'utente è loggato
-    this.subUserLogged = this.startService.utenteLogged.subscribe(element => {
+    this.subUserLogged = this.startService.flagUtenteIsLoggato$.subscribe(element => {
       this.userLogged = element;
     });  
 
 
     //Recupero il documento utente
-    this.subUser = this.startService.utente.subscribe(elUser => {
+    this.subUser = this.startService.activeUtenteDoc$.subscribe(elUser => {
       this.docUser = elUser;
     })
 }

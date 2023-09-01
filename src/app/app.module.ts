@@ -16,13 +16,18 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 registerLocaleData(localeIt,'it');
 
+//innerHTMLTemplatesEnabled: true Consente di indicare Html in componenti come
+//ion-alert, ion-infinite-scroll-content, ion-loading, ion-refresher-content, and ion-toast
+
 @NgModule({
     declarations: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     imports: [BrowserModule,
         FormsModule,
         HttpClientModule,
-        IonicModule.forRoot(),
+        IonicModule.forRoot({
+            innerHTMLTemplatesEnabled: true
+        }),
         AppRoutingModule,
         QRCodeModule,
     ],

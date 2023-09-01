@@ -10,6 +10,7 @@ import { TabProfilePage } from './tab-profile.page';
 import { QRCodeModule } from 'angularx-qrcode';
 import { EditLoginPageModule } from '../../pages-profile/edit-login/edit-login.module';
 import { UserLoginAuthorizationPageModule } from '../../pages-profile/authorization-account/user-login-authorization/user-login-authorization.module';
+import { UserRegistrationPageModule } from '../../pages-profile/authorization-account/user-registration/user-registration.module';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { UserLoginAuthorizationPageModule } from '../../pages-profile/authorizat
     TabProfilePageRoutingModule,
     QRCodeModule,    
     EditLoginPageModule,
-    UserLoginAuthorizationPageModule
+    UserLoginAuthorizationPageModule,
+    UserRegistrationPageModule
   ],
   declarations: [TabProfilePage]
 })

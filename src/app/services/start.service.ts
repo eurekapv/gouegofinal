@@ -82,8 +82,8 @@ import { GetResult } from '@capacitor/preferences';
 import { Authorization } from '../models/authorization.model';
 import { Corso } from '../models/corso.model';
 import { NewsEvento } from '../models/newsevento.model';
-import { UserLoginAuthorizationPageModule } from '../pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.module';
 import { UserLoginAuthorizationPage } from '../pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.page';
+import { UserRegistrationPage } from '../pages/pages-profile/authorization-account/user-registration/user-registration.page';
 
 @Injectable({
   providedIn: 'root'
@@ -1294,6 +1294,27 @@ openFormLogin() {
       })
 
     }
+}
+
+/**
+ * Richiesta apertura della form di Registrazione nuovo Account
+ * Nella pagine in cui viene effettuata la chiamata aggiungere nel file 
+ * module il riferimento a UserRegistrationPageModule
+ */
+openFormRegistration() {
+
+  //Apro la form di login (se l'utente non è loggato)
+  if (this.flagUtenteIsLoggato == false) {
+
+    this.modalController.create({
+      component: UserRegistrationPage,
+      cssClass: 'modal-xl-class'
+    })
+    .then(elModal => {
+      elModal.present();
+    })
+
+  }
 }
 
 

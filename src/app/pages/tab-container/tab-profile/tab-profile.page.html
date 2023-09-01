@@ -53,7 +53,13 @@
                   </ion-row>
 
                   <ion-row>
-                    <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeXl="6" sizeLg="6">
+                    <ion-col 
+                          *ngIf="flagEnableRegistrazioni"
+                          sizeXs="12" 
+                          sizeSm="12" 
+                          sizeMd="6" 
+                          sizeXl="6" 
+                          sizeLg="6">
                       <ion-button
                       (click)="onClickRegistrati()"
                       
@@ -62,7 +68,12 @@
                       >Registrati</ion-button
                     >
                     </ion-col>
-                    <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeXl="6" sizeLg="6">
+                    <ion-col 
+                        sizeXs="12" 
+                        sizeSm="12" 
+                        sizeMd="6" [offsetMd]="flagEnableRegistrazioni ? 0:6"
+                        sizeXl="6" [offsetXl]="flagEnableRegistrazioni ? 0:6"
+                        sizeLg="6" [offsetLg]="flagEnableRegistrazioni ? 0:6">
                       <ion-button
                         (click)="onClickAccedi()"
                       expand="block"

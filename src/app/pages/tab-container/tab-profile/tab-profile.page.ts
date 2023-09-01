@@ -5,6 +5,7 @@ import { Utente } from 'src/app/models/utente.model';
 import { StartService } from 'src/app/services/start.service';
 import { EditLoginPage } from '../../pages-profile/edit-login/edit-login.page';
 import { UserLoginPage } from '../../pages-profile/authorization-account/user-login/user-login.page';
+import { Gruppo } from 'src/app/models/gruppo.model';
 
 @Component({
   selector: 'app-tab-profile',
@@ -33,6 +34,9 @@ export class TabProfilePage implements OnInit, OnDestroy {
   utenteDoc: Utente;
   subUtenteDoc: Subscription;
 
+  gruppoDoc: Gruppo;
+  flagEnableRegistrazioni: boolean = true;
+
   /* Proprietà GET */
   get pictureExist():boolean {
     let flag = false;
@@ -46,6 +50,18 @@ export class TabProfilePage implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.onListenUtente();
+
+    //Recupero il gruupo
+    this.gruppoDoc = this.startService.actualStartConfig.gruppo;
+
+    //Controllo se posso effettuare registrazioni
+    if (this.gruppoDoc.APPFLAGREGISTRAZIONE) {
+      this.flagEnableRegistrazioni = true;
+    }
+    else {
+      this.flagEnableRegistrazioni = false;
+    }
+
   }
 
   ngOnDestroy(): void {
@@ -168,17 +184,7 @@ onClickChangePassword() {
  * Passo alla registrazione dell'utente
  */
 onClickRegistrati():void {
-
-  //Apro in modale la form per la registrazione
-  this.modalController.create({
-    component: UserLoginPage,
-    componentProps: {
-      'startSection': 'register'
-    }
-  })
-  .then(elModal => {
-    elModal.present();
-  })
+  this.startService.openFormRegistration();
 }
 
 /**

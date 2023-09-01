@@ -1,0 +1,270 @@
+<ion-header>
+  <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+          <ion-button 
+                  (click)="closeModal()"
+                  fill="clear">
+              <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+      </ion-buttons>
+      <ion-title>Registrazione</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row 
+        class="ion-align-items-top"
+        >
+        <!-- colonna sinistra -->
+      <ion-col
+          sizeXs="12"
+          sizeSm="12"
+          sizeMd="12"
+          sizeLg="6"
+          sizeXl="6"
+          >
+          <div class="title-image">
+            <img [src]="srcImage" alt="logig-image"/>
+          </div>
+
+      </ion-col>
+
+      <!-- colonna destra -->
+      <ion-col
+          sizeXs="12"
+          sizeSm="12"
+          sizeMd="12"
+          sizeLg="6"
+          sizeXl="6"
+          >
+
+            <!-- GRIGLIA DI INSERIMENTO  -->
+            <ion-grid 
+                class="ion-no-padding ion-no-margin">
+                <ion-row
+                    class="ion-no-padding ion-no-margin">
+                  <ion-col>
+                    <!-- TESTO INFORMATIVO -->
+                    <ion-item lines="none">
+                      <ion-label class="ion-text-wrap">
+                          <p>
+                            Ottima scelta, quella di effettuare la registrazione; poche informazioni per iniziare
+                        </p>
+                      </ion-label>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <!-- FORM INSERIMENTO  -->
+                <ion-row
+                    class="ion-no-padding ion-no-margin">
+                    <ion-col>
+                      <!-- QUI DEVO METTERE LA FORM -->
+                      <form [formGroup]="formPagePrimary">
+
+                        <ion-list lines="none">
+                          <ion-list-header 
+                              *ngIf="stepRegistration != 'input'"
+                              mode="ios">
+                              {{fullNominativo}}
+                          </ion-list-header>
+
+                          <!-- NOME -->
+                          <ion-item
+                              *ngIf="stepRegistration == 'input'"
+                              color = "light"
+                              >
+                            <ion-input
+                                  label="Nome"
+                                  labelPlacement="stacked"
+                                  helperText="inserisci il tuo nome"
+                                  errorText="controlla l\'inserimento del nome"
+                                  [clearInput]="true"
+                                  formControlName = "profileName"
+                                  type="text">
+                              </ion-input>                                                          
+                          </ion-item>
+
+                          <!-- COGNOME -->
+                          <ion-item
+                              *ngIf="stepRegistration == 'input'"
+                              color = "light"
+                              >
+                            <ion-input
+                                  label="Cognome"
+                                  labelPlacement="stacked"
+                                  helperText="inserisci il tuo cognome"
+                                  errorText="controlla l\'inserimento del cognome"
+                                  [clearInput]="true"
+                                  formControlName = "profileSurname"
+                                  type="text">
+                              </ion-input>                                                          
+                          </ion-item>
+
+                          <!-- INDIRIZZO EMAIL -->
+                          <ion-item
+                                color = "light"
+                                >
+                              <ion-input
+                                    label="E-mail"
+                                    labelPlacement="stacked"
+                                    helperText="indirizzo email valido"
+                                    errorText="controlla l'inserimento dell'indirizzo e-mail"
+                                    [clearInput]="true"
+                                    formControlName = "profileEmail"
+                                    type="email">
+                                </ion-input>                                
+                          </ion-item>
+
+                          <!-- NUMERO MOBILE -->                          
+                          <ion-item
+                              color = "light"
+                              >
+                              <ion-input
+                                  label="Numero Mobile"
+                                  labelPlacement="stacked"
+                                  helperText="numero mobile valido"
+                                  errorText="controlla l'inserimento del numero telefonico"
+                                  [clearInput]="true"
+                                  formControlName = "profileMobile"
+                                  type="email">
+                              </ion-input>                                
+                          </ion-item>                          
+  
+                          <!-- CODICE VERIFICA MAIL -->
+                          <ion-item
+                                *ngIf="getFlagshowInput('verificationMailCode')"
+                                color = "light"
+                                >
+                              <ion-input
+                                    label="Codice di verifica E-mail"
+                                    labelPlacement="stacked"
+                                    helperText = "Inserisci il codice ricevuto con il messaggio e-mail"
+                                    [clearInput]="false"
+                                    formControlName = "verificationMailCode"
+                                    type="text">
+                                </ion-input>
+
+                                <ion-button
+                                    color="success"
+                                    fill="clear"
+                                    size="small" 
+                                    slot="end">
+                                    Reinvia
+                                </ion-button>                                
+                            </ion-item>
+
+                            <!-- CODICE VERIFICA SMS -->
+                            <ion-item
+                                *ngIf="getFlagshowInput('verificationSmsCode')"
+                                color = "light"
+                                >
+                                <ion-input
+                                      label="Codice di verifica SMS"
+                                      labelPlacement="stacked"
+                                      helperText = "Inserisci il codice ricevuto con il messaggio sms"
+                                      [clearInput]="false"
+                                      formControlName = "verificationSmsCode"
+                                      type="text">
+                                </ion-input>
+
+                                <ion-button
+                                    color="success"
+                                    fill="clear"
+                                    size="small" 
+                                    slot="end">
+                                    Reinvia
+                                </ion-button>                                
+                            </ion-item>                            
+  
+                            <!-- PASSWORD -->
+                            <ion-item
+                                *ngIf="stepRegistration == 'code'"
+                                color = "light"
+                                
+                                  >
+                                <ion-input
+                                      #password1
+                                      id="password1"
+                                      label="Password"
+                                      labelPlacement="stacked"
+                                      helperText="inserisci la password da utilizzare per l'accesso"
+                                      [clearInput]="false"
+                                      formControlName = "password1"
+                                      type="password">
+                                  </ion-input>
+                                  <ion-button
+                                      (click)="showHideInput('password1',password1)"
+                                      color="success"
+                                      fill="clear"
+                                      size="small" 
+                                      slot="end">
+                                      <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+                                  </ion-button>
+                            </ion-item>
+                            <!-- RIPETI PASSWORD -->
+                            <ion-item
+                              *ngIf="stepRegistration == 'code'"
+                                color = "light"
+                                >
+                                <ion-input
+                                      id="password2"
+                                      #password2
+                                      label="Ripeti Password"
+                                      labelPlacement="stacked"
+                                      helperText="ripeti la password"
+                                      [clearInput]="false"
+                                      formControlName = "password2"
+                                      type="password">
+                                  </ion-input>
+                                  <ion-button
+                                      (click)="showHideInput('password2',password2)"
+                                      color="success"
+                                      fill="clear"
+                                      size="small" 
+                                      slot="end">
+                                      <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+                                  </ion-button>
+                            </ion-item>
+
+                          </ion-list>
+                        </form>
+
+                    </ion-col>
+                </ion-row> 
+                
+                <ion-row
+                    class="ion-no-padding ion-no-margin">
+                  <ion-col>
+                    <ion-button
+                      (click)="onClickActionRegistration()"
+                      color="tertiary"
+                      expand="full"
+                      fill="solid">
+                      {{stepRegistration == 'input' ? 'CONTINUA' : 'REGISTRATI'}}
+                    </ion-button>  
+                  </ion-col>
+              </ion-row>
+
+              <ion-row
+                  class="ion-no-padding ion-margin-top">
+                  <ion-col>
+                  <ion-item
+                      button="true"
+                      detail="true"
+                      lines="none"
+                      >
+                    <ion-label class="ion-text-wrap">
+                      <p class = "ion-text-small">aspetta, sono gi&agrave; registrato</p>
+                    </ion-label>
+                  </ion-item>
+                  </ion-col>
+              </ion-row>              
+
+              </ion-grid>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

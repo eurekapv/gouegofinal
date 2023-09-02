@@ -1536,13 +1536,24 @@ requestListTessereUtente():Promise<void> {
  */
 registrationSendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
-    const actualStartConfig = this._startConfig.getValue();
-    return this.utenteService.registrationSendCodici(actualStartConfig, docRequestCode);
+    return this.utenteService.registrationSendCodici(docRequestCode);
+}
+/**
+ * * Contatta il server per la conclusione della registrazione account
+ *
+ * @param utenteDoc Compilare COGNOME-NOME-EMAIL-NUMEROMOBILE-NEWSLETTER-WEBLOGIN
+ * @param richiestaDoc Documento di Richiesta
+ * @param verificaDoc Documento di Codici Verifica (Il documento deve esserci istanziato senza valori anche quando tipoverifica = no)
+ * @returns 
+ */
+registrationComplete(utenteDoc: Utente, richiestaDoc: AccountRequestCode, verificaDoc: AccountVerifyCode): Promise<AccountOperationResponse> {
+  return this.utenteService.registrationComplete(utenteDoc, richiestaDoc, verificaDoc);
 }
 
 /**
  * Chiama il server inviando i codici inseriti dall'utente per chiederne il controllo
  * @param docVerifyCode Dati per la verifica dei codici inseriti
+ * @deprecated Utilizzare registrationComplete
  */
 registrationVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
   const actualStartConfig = this._startConfig.getValue();
@@ -1553,6 +1564,7 @@ registrationVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperat
  * Invia al server la richiesta per la registrazione di un nuovo account
  * @param docUtente Nuovo Utente da registrare
  * @param docRequestCode Documento richiesta codici presentato in precedenza
+ * @deprecated Utilizzare registrationComplete
  */
 registrationFinalize(docUtente: Utente, 
                      docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {

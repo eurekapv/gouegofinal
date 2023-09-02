@@ -403,26 +403,21 @@ export class UtenteService {
 
   /**
    * Invia al server la richiesta per inviare via Mail/SMS i codici per la registrazione account
-   * @param config Dati di configurazione
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
    */
-  registrationSendCodici(config: StartConfiguration,
-                         docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+  registrationSendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
           //Viene effettuata una chiamata al server per ottenere
           //l'invio di una mail e/o un SMS contenente codici PIN
-          const metodo = 'registrationSendCodici';
-          let myHeaders = config.getHttpHeaders();
-          myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-
-          const myParams = this.docStructureService.getHttpParams();
-          const doObject = 'ACCOUNT';
-          let bodyRequest = '';
-
-          let myUrl = config.urlBase + '/' + doObject;
-
+          
           return new Promise<AccountOperationResponse>((resolve, reject)=> {
-            if (docRequestCode) {
 
+            let bodyRequest = '';
+            let docToCall: Account;
+            const method = 'registrationSendCodici';
+            
+            if (docRequestCode) {
+              
+              docToCall = new Account(true);
               //Creo il body da inviare
 
               //Questi sono i parametri per l'esportazione
@@ -434,39 +429,38 @@ export class UtenteService {
               bodyRequest = docRequestCode.exportToJSON(paramExport);
 
               bodyRequest = `{"docRequest" : ${bodyRequest}}`;
-              
 
-              //Faccio la chiamata POST
-              this.apiService
-                  .httpPost(myUrl, myHeaders, myParams, bodyRequest )
-                  .pipe(map(received => {
-                          return received.activation;
-                  }))
-                  .subscribe((response:AccountOperationResponse) => {
-                      if (response.result) {
-                        resolve(response);
-                      }
-                      else {
-                        reject(response.message);
-                      }
-                  }, error => {
-                  reject(error);
-                  })
+              this.docStructureService.requestForFunction(docToCall, method, bodyRequest)
+                                      .then(dataReceived => {
+                                        let respDoc: AccountOperationResponse;
+
+                                        if (dataReceived.hasOwnProperty('activation')) {
+                                          respDoc = <AccountOperationResponse>dataReceived['activation'];
+                                        }
+                                        else {
+                                          respDoc = new AccountOperationResponse();
+                                          respDoc.result = false;
+                                          respDoc.message = 'Risposta server non corretta'
+                                        }
+
+                                        resolve(respDoc);
+                                      })
+                                      .catch(error => {
+                                        reject(error);
+                                      })
             }
             else {
               reject('Dati mancanti per la richiesta');
             }
 
           });
-
-
-
   }
 
   /**
    * Invia al server una richiesta per verificare i pincode inseriti dall'utente
    * @param config Dati di configurazione
    * @param docVerifyCode Dati da verificare
+   * @deprecated UTILIZZARE registrationComplete
    */
   registrationVerifyCodici(config: StartConfiguration,
     docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
@@ -528,6 +522,7 @@ export class UtenteService {
  * @param config Dati configurazione
  * @param docUtente Utente da registrare
  * @param docRequestCode Documento di Richiesta codici iniziale
+ * @deprecated Utilizzare registrationComplete
  */
 registrationFinalize(config: StartConfiguration,
   docUtente: Utente,
@@ -595,11 +590,73 @@ return new Promise<AccountOperationResponse>((resolve, reject)=> {
 
 }
 
+/**
+ * * Contatta il server per la conclusione della registrazione account
+ *
+ * @param utenteDoc Compilare COGNOME-NOME-EMAIL-NUMEROMOBILE-NEWSLETTER-WEBLOGIN
+ * @param richiestaDoc Documento di Richiesta
+ * @param verificaDoc Documento di Codici Verifica (Il documento deve esserci istanziato senza valori anche quando tipoverifica = no)
+ * @returns 
+ */
+  registrationComplete(utenteDoc: Utente, richiestaDoc: AccountRequestCode, verificaDoc: AccountVerifyCode): Promise<AccountOperationResponse> {
+
+    return new Promise<AccountOperationResponse>((resolve, reject) => {
+        let docToCall: Account;
+        const method = 'registrationComplete';
+        let bodyUser: string = '';
+        let bodyRichiesta: string = '';
+        let bodyVerifica: string = '';
+        let finalBody:string = '';
+
+        
+        
+        if (utenteDoc && richiestaDoc && verificaDoc) {
+
+          docToCall = new Account(true);
+
+          //Questi sono i parametri per l'esportazione
+          let paramExport = new ParamsExport();
+          paramExport.clearDOProperty = true;
+          paramExport.clearPKProperty = true;
+          paramExport.clearPrivateProperty = true;        
+  
+          bodyUser = utenteDoc.exportToJSON(paramExport);
+          bodyRichiesta = richiestaDoc.exportToJSON(paramExport);
+          bodyVerifica = verificaDoc.exportToJSON(paramExport);
+  
+          finalBody = `{"docUser":${bodyUser}, "docRequestCode": ${bodyRichiesta}, "docVerifyCode": ${bodyVerifica}}`;
+
+          this.docStructureService.requestForFunction(docToCall, method, finalBody)
+                                  .then(dataReceived => {
+                                    let respDoc: AccountOperationResponse;
+
+                                    if (dataReceived.hasOwnProperty('activation')) {
+                                      respDoc = <AccountOperationResponse>dataReceived['activation'];
+                                    }
+                                    else {
+                                      respDoc = new AccountOperationResponse();
+                                      respDoc.result = false;
+                                      respDoc.message = 'Risposta server non corretta'
+                                    }
+
+                                    resolve(respDoc);
+                                  })
+                                  .catch(error => {
+                                    reject(error);
+                                  })
+
+        }
+        else {
+          reject('Dati non completi');
+        }
+    })
+  }
+
 
   //#endregion
 
 
-  //#region  FASI RECUPERO PSW
+  //#region  FASI RECOVERY PASSWORD
 
   /**
    * Invia al server la richiesta per inviare via Mail/SMS i codici per la registrazione account

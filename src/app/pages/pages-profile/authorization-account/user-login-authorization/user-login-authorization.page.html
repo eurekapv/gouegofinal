@@ -47,13 +47,36 @@
                   class="ion-no-padding ion-no-margin">
                 <ion-col>
                   <!-- TESTO INFORMATIVO -->
-                  <ion-item lines="none">
+                  <ion-item 
+                        lines="none">
                     <ion-label class="ion-text-wrap">
                         <p>
                         Accedi al tuo profilo per conoscere la programmazione dei corsi, degli eventi, effettuare prenotazioni ed iscrizioni e rimanere in contatto con il nostro centro.
                       </p>
                     </ion-label>
                   </ion-item>
+
+                  <ion-item
+                      (click)="closeModal(true)"
+                      button="true" 
+                      detail="false"
+                      lines="none">
+                      <ion-label 
+                            color="danger"
+                            class="ion-text-wrap">
+                        <p>
+                          se non hai ancora un account, inserisci poche informazioni
+                        </p>
+                      </ion-label>
+                      <ion-button
+                          color="danger"
+                          size="small"
+                          fill="clear"
+                          >
+                        REGISTRATI
+                      </ion-button>
+                  </ion-item>                  
+
                 </ion-col>
               </ion-row>
 
@@ -141,7 +164,7 @@
                   </ion-item>
                 </ion-col>
               </ion-row>
-              
+
             </ion-grid>
 
             <!-- GRIGLIA DI RECUPERO CREDENZIALI -->

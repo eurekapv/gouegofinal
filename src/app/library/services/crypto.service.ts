@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { AccountRequestCode } from 'src/app/models/accountregistration.model';
+import { Utente } from 'src/app/models/utente.model';
 //import { createVerify } from 'crypto'; Se si vuole usare Crypto c'e' questo di Node (https://www.w3schools.com/nodejs/ref_crypto.asp)
 
 @Injectable({
@@ -65,4 +67,42 @@ export class CryptoService {
     return elArray;
   }
 
+
+  /**
+   * Imposta nel documento UtenteDoc e RichiestaDoc la Password per essere inviata
+   * Usata nei metodi di RecoveryPassword / Registration ...
+   * @param utenteDoc 
+   * @param password 
+   */
+  setSendingPasswordForUtenteDoc(richiestaDoc: AccountRequestCode, utenteDoc: Utente, password: string): boolean {
+    let splitPwd:string[] = [];
+    let flagResult: boolean = false;
+    let useCrypter: boolean = false; //Per ora non uso modalità crypt
+
+    if (richiestaDoc && utenteDoc) {
+
+      if (password && password.length != 0) {
+        splitPwd = this.mySplitPassword(password);
+  
+        if (splitPwd) {
+          //Una parte va nel documento di richiesta
+          richiestaDoc.TOKEN = splitPwd[0];
+
+          if (useCrypter) {
+            utenteDoc.INPUTPASSWORD = '';
+            utenteDoc.SHAPASSWORD = splitPwd[1];;
+          }
+          else {
+            
+            utenteDoc.INPUTPASSWORD = splitPwd[1];
+            utenteDoc.SHAPASSWORD = '';
+          }
+        }
+
+      }
+    }
+
+    return flagResult;
+
+  }
 }

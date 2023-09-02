@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { IonInput, LoadingController, ModalController } from '@ionic/angular';
+import { AlertButton, IonInput, LoadingController, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { CryptoService } from 'src/app/library/services/crypto.service';
-import { AccountOperationResponse, AccountRequestCode } from 'src/app/models/accountregistration.model';
+import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 import { Area } from 'src/app/models/area.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { LogApp } from 'src/app/models/log.model';
+import { Utente } from 'src/app/models/utente.model';
 import { RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
@@ -19,6 +20,10 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
 
   formPagePrimary: FormGroup;
   fullNominativo: string = '';
+  fullEmail: string = '';
+  fullMobileNumber: string = '';
+
+  informationText: string = 'Ottima scelta, quella di effettuare la registrazione; poche informazioni per iniziare';
 
   srcImage: string = `assets/profile/user-login-1.png`;
 
@@ -32,12 +37,14 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
 
   //Documento per la richiesta codici
   docRichiestaCodici: AccountRequestCode;
+  docVerificaCodici: AccountVerifyCode;
+  utenteRegistration: Utente;
 
   //Lunghezza del codice di verifica
   verificationCodeLength: number = 5;  
 
   //Step della registrazione
-  stepRegistration: 'input' | 'code'  = 'input';
+  stepRegistration: 'input' | 'code' | 'final'  = 'input';
 
   //Modalità prevista per effettuare la registrazione
   registrationMode: 'none' | 'mail' | 'mobile' | 'all' = 'all'; 
@@ -49,11 +56,15 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
               private loadingController: LoadingController) { }
 
   ngOnInit() {
+
+    this.stepRegistration = 'input';
     this.onListenDoc();
     this.setRegistrationMode()
     this.setImageLogin();
 
     this.createFormPrimary();
+
+    this.setInformationText();
   }
 
   ngOnDestroy() {
@@ -133,6 +144,42 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
 
   }  
 
+  /**
+   * Imposta il messaggio informativo superiore sulla base dello stepRegistrazione e la Modalità
+   */
+  setInformationText() {
+    let myText = '';
+
+    if (this.stepRegistration == 'input') {
+      myText = 'Ottima scelta, quella di effettuare la registrazione; poche informazioni per iniziare';
+    }
+    else if (this.stepRegistration == 'code') {
+      switch (this.registrationMode) {
+        case 'all':
+            myText = 'Inserire i due codici ricevuti via <strong>messaggio E-mail</strong> e <strong>messaggio SMS</strong>, impostare la password desiderata e procedere con la registrazione';
+          break;
+
+        case 'mail': 
+          myText = 'Inserire il codice ricevuto via <strong>messaggio E-mail</strong>, impostare la password desiderata e procedere con la registrazione';
+          break;
+
+        case 'mobile':
+          myText = 'Inserire il codice ricevuto via <strong>messaggio SMS</strong>, impostare la password desiderata e procedere con la registrazione';
+          break;
+
+        case 'none':
+          myText = 'Impostare la password desiderata e procedere con la registrazione';
+          break;
+      
+        default:
+          myText = '';
+          break;
+      }
+    }
+
+    this.informationText = myText;
+  }
+
   //#region CONTROLLI FORM 
 
   /**
@@ -190,7 +237,7 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
                   }),                                
       verificationMailCode: new FormControl<string>({
               value:'', 
-              disabled: true
+              disabled: false
             },
             {
               updateOn: 'change',
@@ -199,7 +246,7 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
             }),
       verificationSmsCode: new FormControl<string>({
               value:'', 
-              disabled: true
+              disabled: false
             },
             {
               updateOn: 'change',
@@ -208,7 +255,7 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
             }),            
       password1: new FormControl<string>({
                 value:'', 
-                disabled: true
+                disabled: false
               },
               {
                 updateOn: 'change',
@@ -216,14 +263,42 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
               }),
       password2: new FormControl<string>({
                 value:'', 
-                disabled: true
+                disabled: false
               },
               {
                 updateOn: 'change',
                 validators: []
-              })
+              }),
+      flagNewsletter: new FormControl<boolean>(
+              {
+                value: false,
+                disabled: false
+              },
+              {
+                updateOn: 'change',
+                validators: []        
+              }),
+      flagConditionReading: new FormControl<boolean>(
+              {
+                value: true,
+                disabled: false
+              },
+              {
+                updateOn: 'change',
+                validators: []
+              })               
     });
   }   
+
+
+  /**
+   * Sposta la visualizzazione allo step specificato
+   * @param nextStep 
+   */
+  moveStepRegistration(nextStep: 'input' | 'code' | 'final') {
+    this.stepRegistration = nextStep;
+    this.setInformationText();
+  }
 
   /**
    * Clic sul pulsante della form Recovery
@@ -242,7 +317,7 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
           break;
 
         case 'code':
-              
+              this.onRegistrationStep2();
             break;
       
         default:
@@ -257,7 +332,12 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
   onValidationRegistration(): boolean {
       let flagValidation = false;
       let tmpValue: string[] = [];
+      let messageCollection: string[] = [];
       let myMessage = '';
+      let tmpCode = '';
+      let tmpPwd1 = '';
+      let tmpPwd2 = '';
+      let tmpFlagCheck = false;
   
       if (!this.areaDoc || !this.gruppoDoc) {
         flagValidation = false;
@@ -308,7 +388,84 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
           break;
     
           case 'code':
+              flagValidation = true;
+
+              //Non ho il documento e invece dovrei averlo
+              if (!this.docRichiestaCodici) {
+                flagValidation = false;
+                myMessage = '<p>Si &egrave; verificato un problema</p>';
+                myMessage += '<p>Chiudere la registrazione e riprovare</p>';
+                
+              }
+              else {
+
+                //Controllo Codice Mail
+                if (this.registrationMode == 'all' || this.registrationMode == 'mail') {
+                  tmpCode = this.formPagePrimary.value.verificationMailCode;
   
+                  if (!tmpCode || tmpCode.length != this.verificationCodeLength) {
+                    flagValidation = false;
+                    messageCollection.push(`Codice ricevuto via E-mail deve essere di ${this.verificationCodeLength} cifre`);
+                  }
+                }
+  
+                //Controllo Codice SMS
+                if (this.registrationMode == 'all' || this.registrationMode == 'mobile') {
+                  tmpCode = this.formPagePrimary.value.verificationSmsCode;
+  
+                  if (!tmpCode || tmpCode.length != this.verificationCodeLength) {
+                    flagValidation = false;
+                    messageCollection.push(`Codice ricevuto via SMS deve essere di ${this.verificationCodeLength} cifre`);
+                  }
+                }              
+  
+                //Controllo Password
+                tmpPwd1 = this.formPagePrimary.value.password1;
+                tmpPwd2 = this.formPagePrimary.value.password2;
+  
+                if (!tmpPwd1 || tmpPwd1.length == 0) {
+                  flagValidation = false;
+                  messageCollection.push('Digitare la password desiderata');
+                }
+  
+                if (!tmpPwd2 || tmpPwd2.length == 0) {
+                  flagValidation = false;
+                  messageCollection.push('Ripetere la password desiderata');
+                }
+  
+                //Ci sono le due password
+                if (flagValidation) {
+  
+                  if (tmpPwd1 != tmpPwd2) {
+                    flagValidation = false;
+                    messageCollection.push('Le due password devono coincidere');
+                  }
+  
+                }
+                
+                //Controllo Check
+                tmpFlagCheck = this.formPagePrimary.value.flagConditionReading;
+  
+                if (!tmpFlagCheck) {
+                  flagValidation = false;
+                  messageCollection.push('Accettare le condizioni di registrazione');
+                }
+  
+                //Composizione Messaggio
+                if (!flagValidation) {
+                  myMessage = '<p>Per proseguire è necessario correggere gli errori:<p>';
+                  myMessage += '<ul>'
+                  for (let index = 0; index < messageCollection.length; index++) {
+                    const itemMessage = messageCollection[index];
+                    myMessage += `<li>${itemMessage}</li>`;
+                  }
+                  myMessage += '</ul>';
+  
+                }
+
+              }
+              
+              
             break;
         
           default:
@@ -326,6 +483,9 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
   }
 
   /**
+   * In questa fase viene preparato un documento di Richiesta Codici, appositamente compilato ed inviato al 
+   * server (se la registrazione richiede una verifica codici)
+   * altrimenti si passa alla fase successiva
    * 
    */
   onRegistrationStep1() {
@@ -358,6 +518,11 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
 
                   if (risposta) {
                     if (risposta.result) {
+                      //Reimposto il Nominativo completo
+                      this.fullNominativo = this.formPagePrimary.value.profileName + ' ' + this.formPagePrimary.value.profileSurname;
+                      this.fullEmail = this.formPagePrimary.value.profileEmail;
+                      this.fullMobileNumber = this.formPagePrimary.value.profileMobile;
+
                       //Risposta corretta con successo
                       this.docRichiestaCodici.IDREFER = risposta.idRefer;
                       //Disattivo i flag
@@ -389,8 +554,8 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
                       this.startService.presentAlertMessage(myMessage, 'Invio Codici');
 
                       //Passo allo Step Successivo
-                      this.stepRegistration = 'code';
-
+                      this.moveStepRegistration('code');
+                      
                     }
                     else {
                       myMessage = '<p>Si sono verificati problemi nell\'invio</p>';
@@ -421,8 +586,92 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
     }
     else {
       //Posso passare subito alla pagina successiva
-      this.stepRegistration = 'code';
+      this.moveStepRegistration('code');
+      
+      myMessage = '<p>Impostare la password desiderata, accettare le condizioni e proseguire con la registrazione<p>';
+      this.startService.presentAlertMessage(myMessage);
     }
+
+  }
+
+  /**
+   * Effettua il secondo Step della registrazione dove viene inviato tutto al server
+   */
+  onRegistrationStep2() {
+    let flagNewsLetter: boolean = false;
+    let myMessage = '';
+
+    flagNewsLetter = this.formPagePrimary.value.flagNewsletter;
+
+    //Il documento con la verifica codici viene inviato sempre (anche in assenza di verifica)
+    this.docVerificaCodici = new AccountVerifyCode();
+    this.docVerificaCodici.IDAREA = this.docRichiestaCodici.IDAREA;
+    this.docVerificaCodici.IDREFER = this.docRichiestaCodici.IDREFER;
+
+
+    if (this.registrationMode == 'all' || this.registrationMode == 'mail') {
+      this.docVerificaCodici.EMAILPINCODE = this.formPagePrimary.value.verificationMailCode;
+    }
+
+    if (this.registrationMode == 'all' || this.registrationMode == 'mobile') {
+      this.docVerificaCodici.SMSPINCODE = this.formPagePrimary.value.verificationSmsCode;
+    }  
+    
+    //Preparazione del documento Utente
+    this.utenteRegistration = new Utente();
+    this.utenteRegistration.NOME = this.formPagePrimary.value.profileName;
+    this.utenteRegistration.COGNOME = this.formPagePrimary.value.profileSurname;
+    this.utenteRegistration.NEWSLETTER = flagNewsLetter;
+    this.utenteRegistration.WEBLOGIN = this.formPagePrimary.value.profileEmail;
+    this.utenteRegistration.EMAIL = this.formPagePrimary.value.profileEmail;
+    this.utenteRegistration.MOBILENUMBER = this.formPagePrimary.value.profileMobile;
+
+    //Composizione della Password
+    this.cryptoService.setSendingPasswordForUtenteDoc(this.docRichiestaCodici, this.utenteRegistration, this.formPagePrimary.value.password1);
+
+    //Posso procedere con la richiesta al server
+    this.loadingController
+        .create({
+          message: 'Attendere, registrazione in corso'
+        })
+        .then(elLoading => {    
+
+            //Mostro il loader
+            elLoading.present();
+
+            //Posso procedere con la richiesta
+            this.startService.registrationComplete(this.utenteRegistration,
+                                                    this.docRichiestaCodici,
+                                                    this.docVerificaCodici)
+                              .then((dataResponse: AccountOperationResponse) => {
+
+                                //Dismetto il loading
+                                elLoading.dismiss();
+                                //Ritorna sempre un documento di risposta
+                                if (dataResponse.result) {
+                                  //Registrazione effettuata con successo
+                                  this.moveStepRegistration('final');
+                                }
+                                else {
+                                  //Si è verificato un problema
+                                  myMessage = '<p>Spiacenti, si è verificato un problema<p>';
+
+                                  if (dataResponse.message && dataResponse.message.length != 0) {
+                                    myMessage += `<p>${dataResponse.message}</p>`
+                                  }
+
+                                  this.startService.presentAlertMessage(myMessage,'Registrazione Fallita');
+                                }
+                              })
+                              .catch(error => {
+                                elLoading.dismiss();
+                                this.startService.presentAlertMessage(error);
+                              })
+
+
+        });
+
+
 
   }
   
@@ -434,7 +683,7 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
 
     //La registrazione non prevede l'invio di codici
     if (this.registrationMode == 'none') {
-
+      //Non imposto nulla
     }
 
     //Preparo il documento per la modalita Mail
@@ -458,6 +707,121 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
       }
     }    
 
+  }
+
+  /**
+   * Richiedo all'utente se effettivamente vuole il Reinvio del codice specificato
+   * @param type 
+   */
+  onRequestReinvioCode(type: 'mail' | 'mobile') {
+    let myMessage: string = '';
+    let arButtons: AlertButton[] = [];
+
+    if (this.stepRegistration == 'code') {
+
+      if (type == 'mail') {
+
+        myMessage = '<p>Desideri che venga inviato un nuovo codice tramite un </p>'
+        myMessage += `<p>messaggio E-mail a <strong>${this.formPagePrimary.value.profileEmail}</strong> ?</p>`;
+
+      }
+      else if (type == 'mobile') {
+
+        myMessage = '<p>Desideri che venga inviato un nuovo codice tramite un </p>'
+        myMessage += `<p>Messaggio SMS al numero <strong>${this.formPagePrimary.value.profileMobile}</strong> ?</p>`;
+
+      }
+      myMessage += '<p>Il precedente codice non sarà piu valido</p>';
+
+      //Preparo i Bottoni
+      arButtons = [{
+        text: 'Si, procedi',
+        handler: () => this.onReinvioCodice(type)
+      },
+      {
+        text: 'No, aspetta',
+        role: "cancel"
+      }]
+
+      //Chiedo ed eventualmente eseguo
+      this.startService.presentAlertMessage(myMessage, 'Reinvio Codice', arButtons);
+    }
+  }
+
+  /**
+   * Effettua il reinvio del codice richiesto
+   * @param type 
+   */
+  onReinvioCodice(type: 'mail' | 'mobile') {
+
+    let myMessage = '';
+
+    if (this.docRichiestaCodici) {
+      //Preparo il documento per il reinvio
+      this.prepareRichiestaCodiciDoc(type);
+
+      //Apro il loading
+      //Qui devo contattare il server
+      this.loadingController
+          .create({
+              message: 'Richiesta Reinvio Codice'
+          })
+          .then(elLoading => {
+
+            //Creo il loading
+            elLoading.present();      
+
+            this.startService
+                .registrationSendCodici(this.docRichiestaCodici)
+                .then((risposta: AccountOperationResponse) => {
+
+                  elLoading.dismiss();
+
+                  if (risposta) {
+                    if (risposta.result) {
+                      //Risposta corretta con successo
+                      this.docRichiestaCodici.IDREFER = risposta.idRefer;
+                      //Disattivo i flag
+                      this.docRichiestaCodici.REQUESTEMAILCODE = false;
+                      this.docRichiestaCodici.REQUESTSMSCODE = false;
+
+                      myMessage = '<p>Il codice &egrave; stato reinviato con successo</p>'
+
+                      this.startService.presentAlertMessage(myMessage, 'Reinvio Codici');
+                      
+                    }
+                    else {
+                      myMessage = '<p>Si sono verificati problemi nell\'invio</p>';
+                      if (risposta.message && risposta.message.length != 0) {
+                          myMessage += `<p>${risposta.message}</p>`
+                      }
+
+                      this.startService.presentAlertMessage(myMessage, 'Invio fallito');
+
+                    }
+                  }
+                  else {
+                        //Qualche problema
+                        myMessage = '<p class="ion-text-bold">Spiacente</p>'
+                        myMessage += '<p>Non ho ricevuto una risposta corretta dal server</p>';
+                        this.startService.presentAlertMessage(myMessage);                    
+                  }
+                })
+                .catch(error => {
+
+                  elLoading.dismiss();
+                  this.startService.presentAlertMessage(error);
+                })
+
+          });      
+    }
+    else {
+      myMessage = '<p>Spiacente, </p>'
+      myMessage += '<p>qualcosa è andato storto</p>';
+      myMessage += '<p>Esci e ripeti la registrazione</p>';
+
+      this.startService.presentAlertMessage(myMessage);
+    }
   }
 
   //#endregion
@@ -490,8 +854,18 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
   /**
   * Chiusura della videata
   */  
-  closeModal(){
-    this.modalCtrl.dismiss();
+  closeModal(openLogin: boolean = false) {
+
+    //Chiudo la Modale 
+    this.modalCtrl.dismiss()
+                  .then(isClosed => {
+                      //Se devo chiudere e aprire il login
+                      if (isClosed && openLogin) {
+                        this.startService.openFormLogin();
+                      }
+                  });
+
+
   }
 
   

@@ -40,19 +40,41 @@
           >
 
             <!-- GRIGLIA DI INSERIMENTO  -->
-            <ion-grid 
+            <ion-grid
+                *ngIf="stepRegistration != 'final'" 
                 class="ion-no-padding ion-no-margin">
                 <ion-row
                     class="ion-no-padding ion-no-margin">
                   <ion-col>
                     <!-- TESTO INFORMATIVO -->
-                    <ion-item lines="none">
-                      <ion-label class="ion-text-wrap">
-                          <p>
-                            Ottima scelta, quella di effettuare la registrazione; poche informazioni per iniziare
+                    <ion-item 
+                        lines="none">
+                      <ion-label 
+                            class="ion-text-wrap">
+                          <p [innerHTML]="informationText | safeHtml">                            
                         </p>
                       </ion-label>
                     </ion-item>
+                    <ion-item
+                      (click)="closeModal(true)"
+                      button="true" 
+                      detail="false"
+                      lines="none">
+                        <ion-label 
+                              color="danger"
+                              class="ion-text-wrap">
+                          <p>
+                            se possiedi un account
+                          </p>
+                        </ion-label>
+                        <ion-button
+                            color="danger"
+                            size="small"
+                            fill="clear"
+                            >
+                          ACCEDI
+                        </ion-button>
+                    </ion-item> 
                   </ion-col>
                 </ion-row>
                 <!-- FORM INSERIMENTO  -->
@@ -68,7 +90,7 @@
                               mode="ios">
                               {{fullNominativo}}
                           </ion-list-header>
-
+                          
                           <!-- NOME -->
                           <ion-item
                               *ngIf="stepRegistration == 'input'"
@@ -103,6 +125,7 @@
 
                           <!-- INDIRIZZO EMAIL -->
                           <ion-item
+                                *ngIf="stepRegistration == 'input'"
                                 color = "light"
                                 >
                               <ion-input
@@ -118,6 +141,7 @@
 
                           <!-- NUMERO MOBILE -->                          
                           <ion-item
+                              *ngIf="stepRegistration == 'input'"
                               color = "light"
                               >
                               <ion-input
@@ -130,7 +154,19 @@
                                   type="email">
                               </ion-input>                                
                           </ion-item>                          
-  
+                          
+                          <!-- EMAIL E NUMERO MOBILE UNITI -->
+                          <ion-item
+                            lines="none"
+                            *ngIf="stepRegistration == 'code'"
+                            >
+                            <ion-label 
+                                  class="ion-text-wrap">
+                              <h4>{{fullEmail}}</h4>
+                              <p class="ion-text-bold">{{fullMobileNumber}}</p>
+                            </ion-label>
+                          </ion-item>
+
                           <!-- CODICE VERIFICA MAIL -->
                           <ion-item
                                 *ngIf="getFlagshowInput('verificationMailCode')"
@@ -146,6 +182,7 @@
                                 </ion-input>
 
                                 <ion-button
+                                    (click)="onRequestReinvioCode('mail')"
                                     color="success"
                                     fill="clear"
                                     size="small" 
@@ -169,6 +206,7 @@
                                 </ion-input>
 
                                 <ion-button
+                                    (click)="onRequestReinvioCode('mobile')"
                                     color="success"
                                     fill="clear"
                                     size="small" 
@@ -227,6 +265,27 @@
                                   </ion-button>
                             </ion-item>
 
+                            <!-- CONDIZIONI REGISTRAZIONI -->
+                            <ion-item
+                                *ngIf="stepRegistration == 'code'"
+                                color = "light"
+                                >
+                              <ion-checkbox 
+                                  justify="end"
+                                  formControlName="flagConditionReading">accetto le condizioni</ion-checkbox>
+                            </ion-item>
+
+                            <!-- NEWSLETTER -->
+                            <ion-item
+                                *ngIf="stepRegistration == 'code'"
+                                color = "light"
+                                >
+                              <ion-checkbox 
+                                  justify="end"
+                                  formControlName="flagNewsletter">voglio ricevere newsletter dal centro</ion-checkbox>
+                            </ion-item>
+
+
                           </ion-list>
                         </form>
 
@@ -245,24 +304,60 @@
                     </ion-button>  
                   </ion-col>
               </ion-row>
+            </ion-grid>
 
+            <!-- GRIGLIA REGISTRAZIONE COMPLETATA -->
+            <ion-grid *ngIf="stepRegistration == 'final'">
+              <ion-row>
+                <ion-col>
+                  <ion-list lines="none">
+                    <ion-list-header>
+                      {{fullNominativo}}
+                    </ion-list-header>
+
+                    <ion-item>
+                      <ion-label class="ion-text-wrap">
+                        <h4>la registrazione si e&grave; conclusa con successo</h4>
+                        <h6>Potrai effettuare il login utilizzando l'email <ion-text class="ion-text-bold">{{fullEmail}}</ion-text> e la <ion-text class="ion-text-bold">password</ion-text> scelta.</h6>                        
+                      </ion-label>
+                    </ion-item>
+      
+                    <ion-item lines="none">
+                        <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                        <ion-label class="ion-text-wrap">scopri i corsi che abbiamo pensato per te</ion-label>
+                    </ion-item>
+        
+                    <ion-item lines="none">
+                        <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                        <ion-label class="ion-text-wrap">organizza un incontro e prenota uno dei nostri campi</ion-label>
+                    </ion-item>
+        
+                    <ion-item lines="none">
+                        <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                        <ion-label class="ion-text-wrap">rimani aggiornato su tutti i nostri eventi</ion-label>
+                    </ion-item>
+
+                    <ion-item lines="none">
+                      <ion-icon slot="start" name="checkmark-outline" color="primary"></ion-icon>
+                      <ion-label class="ion-text-wrap">invia certificati medici e altri documenti in formato digitale</ion-label>
+                  </ion-item>                    
+
+                  </ion-list>
+                </ion-col>
+              </ion-row>
               <ion-row
-                  class="ion-no-padding ion-margin-top">
-                  <ion-col>
-                  <ion-item
-                      button="true"
-                      detail="true"
-                      lines="none"
-                      >
-                    <ion-label class="ion-text-wrap">
-                      <p class = "ion-text-small">aspetta, sono gi&agrave; registrato</p>
-                    </ion-label>
-                  </ion-item>
-                  </ion-col>
-              </ion-row>              
-
-              </ion-grid>
-
+                  class="ion-no-padding ion-no-margin">
+                <ion-col>
+                  <ion-button
+                    (click)="closeModal(true)"
+                    color="tertiary"
+                    expand="full"
+                    fill="solid">
+                    ACCEDI
+                  </ion-button>  
+                </ion-col>
+        </ion-row>
+            </ion-grid>
       </ion-col>
     </ion-row>
   </ion-grid>

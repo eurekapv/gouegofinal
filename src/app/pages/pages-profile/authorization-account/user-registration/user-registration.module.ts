@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { UserRegistrationPageRoutingModule } from './user-registration-routing.module';
 
 import { UserRegistrationPage } from './user-registration.page';
+import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { UserRegistrationPage } from './user-registration.page';
     FormsModule,
     IonicModule,
     UserRegistrationPageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PipesModule
   ],
   declarations: [UserRegistrationPage]
 })

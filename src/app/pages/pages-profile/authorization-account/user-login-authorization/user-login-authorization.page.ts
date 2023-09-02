@@ -822,8 +822,14 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
   /**
   * Chiusura della videata
   */  
-  closeModal(){
-    this.modalCtrl.dismiss();
+  closeModal(openFormRegistration: boolean = false) {
+
+    this.modalCtrl.dismiss()
+                  .then(isClosed => {
+                    if (isClosed && openFormRegistration) {
+                      this.startService.openFormRegistration();
+                    }
+                  });
   }
 
   

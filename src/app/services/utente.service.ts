@@ -368,38 +368,8 @@ export class UtenteService {
      
   }
 
-  /**
-   * Richiesto un cambio password utente
-   * @param config 
-   * @param oldPsw 
-   * @param newPsw 
-   * @returns 
-   */
-  requestChangePassword(config: StartConfiguration, oldPsw:string, newPsw:string) {
-    let actualUtente = this._activeUtenteDoc$.getValue();
-    let myHeaders = config.getHttpHeaders();
-    myHeaders = myHeaders.append('X-HTTP-Method-Override','CHANGEPWDMOB');
-
-    //  new HttpHeaders({'Content-type':'application/json',
-    //                                    'X-HTTP-Method-Override':'CHANGEPWDMOB',
-    //                                    'appid':config.appId
-    //                                   });
-
-    const myParams = this.docStructureService.getHttpParams().set('GUIDUTENTE', actualUtente.ID).append('PWDATTUALE', oldPsw).append('PWDNUOVA',newPsw);
-    const doObject = 'ACCOUNT';
-
-    let myUrl = config.urlBase + '/' + doObject;
-
-
-    // Ritorno la chiamata
-    return this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
-
-  }
-
 
   //#region FASI REGISTRAZIONE
-
 
   /**
    * Invia al server la richiesta per inviare via Mail/SMS i codici per la registrazione account

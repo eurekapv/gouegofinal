@@ -3,7 +3,7 @@ import { AlertButton, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Utente } from 'src/app/models/utente.model';
 import { StartService } from 'src/app/services/start.service';
-import { EditLoginPage } from '../../pages-profile/edit-login/edit-login.page';
+import { UserUpdatePassword } from '../../pages-profile/authorization-account/user-update-password/user-update-password.page';
 import { UserLoginPage } from '../../pages-profile/authorization-account/user-login/user-login.page';
 import { Gruppo } from 'src/app/models/gruppo.model';
 
@@ -149,7 +149,8 @@ onClickChangePassword() {
   //Apro in versione modale la pagina di edit login
   this.modalController
     .create({
-      component: EditLoginPage,
+      component: UserUpdatePassword,
+      cssClass: 'modal-xl-class',
       componentProps: {
         'myUser': this.utenteDoc,
         'myUrlLogo': ''

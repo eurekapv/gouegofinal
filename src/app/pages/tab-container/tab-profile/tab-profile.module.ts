@@ -8,7 +8,7 @@ import { TabProfilePageRoutingModule } from './tab-profile-routing.module';
 
 import { TabProfilePage } from './tab-profile.page';
 import { QRCodeModule } from 'angularx-qrcode';
-import { EditLoginPageModule } from '../../pages-profile/edit-login/edit-login.module';
+import { UserUpdatePasswordModule } from '../../pages-profile/authorization-account/user-update-password/user-update-password.module';
 import { UserLoginAuthorizationPageModule } from '../../pages-profile/authorization-account/user-login-authorization/user-login-authorization.module';
 import { UserRegistrationPageModule } from '../../pages-profile/authorization-account/user-registration/user-registration.module';
 
@@ -20,7 +20,7 @@ import { UserRegistrationPageModule } from '../../pages-profile/authorization-ac
     IonicModule,
     TabProfilePageRoutingModule,
     QRCodeModule,    
-    EditLoginPageModule,
+    UserUpdatePasswordModule,
     UserLoginAuthorizationPageModule,
     UserRegistrationPageModule
   ],

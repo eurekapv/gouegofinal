@@ -337,6 +337,12 @@ export enum TypeUrlPageLocation {
 }
 
 
+export enum OperationAuthUserMobile {
+    requestLogin = 10,
+    requestChangePassword = 20
+}
+
+
 export class ValueList {
 
     value: any;

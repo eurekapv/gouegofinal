@@ -23,7 +23,7 @@ const routes: Routes = [
   },
   {
     path: 'edit-login',
-    loadChildren: () => import('../../pages-profile/edit-login/edit-login.module').then( m => m.EditLoginPageModule)
+    loadChildren: () => import('../../pages-profile/authorization-account/user-update-password/user-update-password.module').then( m => m.UserUpdatePasswordModule)
   },
   {
     path: 'invoices',

@@ -84,6 +84,7 @@ import { Corso } from '../models/corso.model';
 import { NewsEvento } from '../models/newsevento.model';
 import { UserLoginAuthorizationPage } from '../pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.page';
 import { UserRegistrationPage } from '../pages/pages-profile/authorization-account/user-registration/user-registration.page';
+import { AuthUserMobileService } from './auth-user-mobile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -181,6 +182,7 @@ export class StartService {
 
 
   constructor(
+    private authUserService: AuthUserMobileService,
     private platformService: Platform,
     private apiService: ApicallService,
     private keyStorageService: KeyStorageService,
@@ -1390,18 +1392,18 @@ updateUtente(docUtenteUpdate: Utente) {
   return this.utenteService.requestUpdate(actualStartConfig, docUtenteUpdate);
 }
 
-/**
- * Effettua la richiesta al server per il cambio della password
- * Ritorna un Observable
- * con {RESULT: 0/1, MESSAGE:''}
- * @param oldPsw Password Attuale
- * @param newPsw Nuova Password
- */
-requestChangePassword(oldPsw:string, newPsw:string) {
-  const actualStartConfig = this._startConfig.getValue();
 
-  return this.utenteService.requestChangePassword(actualStartConfig, oldPsw, newPsw);
+/**
+   * Effettua la richiesta per la modifica della password
+   * @param idUtente 
+   * @param oldPassword 
+   * @param newPassword 
+   * @returns 
+   */
+onRequestChangePassword(idUtente: string, oldPassword: string, newPassword: string): Promise<PostResponse> {
+  return this.authUserService.onRequestChangePassword(idUtente,oldPassword, newPassword);
 }
+
 
 /**
  * Richiesta la cancellazione del profilo

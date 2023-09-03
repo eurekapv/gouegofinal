@@ -5,7 +5,7 @@ import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { Gruppo } from './gruppo.model';
 import { Documentazione } from './documentazione.model';
-import { MasterDocumento } from './ricevuta.model';
+
 
 
 export class Utente extends IDDocument {
@@ -476,49 +476,44 @@ export class Utente extends IDDocument {
 
 }
 
-export class storageUtente {
-    loginUser: string;
-    pwdUser: string;
-    cripted: boolean;
+export class StorageUtente {
+    userLogin: string;
+    userPassword: string;
+    crypted: boolean;
 
-    constructor(user: string, pwd: string) {
-        this.loginUser = user;
-        this.pwdUser = pwd;
-        this.cripted = false;
+    constructor() {
+        this.crypted = false;
     }
 
     /**
-     * Salvo in Stringa JSON l'oggetto
+     * Imposta le credenziali dentro all'oggetto
+     * Non passare valori Criptati ma solo il FLAG che indica come dovranno essere trattati in seguito
+     * cryptedMode = TRUE => Verranno criptati in fase di salvataggio
+     * @param user 
+     * @param pwd 
+     * @param cryptedMode 
      */
-    saveJSON(crypt?: boolean): string {
-        let strReturn = '';
-        let myObj = new storageUtente(this.loginUser, this.pwdUser);
-
-        if (crypt) {
-            //Qui devo criptare utente e password
-            myObj.cripted = true;
-
-        }
-
-        strReturn = JSON.stringify(myObj);
-
-        return strReturn;
+    setCredential(user: string,pwd: string,cryptedMode: boolean) {
+        this.userLogin = user;
+        this.userPassword = pwd;
+        this.crypted = cryptedMode;
     }
 
-    loadJSON(stringaJSON: string) {
-        let myObj = new storageUtente('','');
-        myObj = JSON.parse(stringaJSON);
+    /**
+     * 
+     * @returns TRUE se i campi userLogin e userPassword sono compilati
+     */
+    containCredentials(): boolean {
+        let flagExist = false;
 
-        if (myObj) {
-            if (myObj.cripted) {
-                //Devo decriptare username e password
+        if (this.userLogin && this.userLogin.length != 0 &&
+            this.userPassword && this.userPassword.length != 0) {
+                flagExist = true;
             }
-
-            this.loginUser = myObj.loginUser;
-            this.pwdUser = myObj.pwdUser;
-            this.cripted = myObj.cripted;
-        }
+            
+        return flagExist;
     }
+
 
 }
 

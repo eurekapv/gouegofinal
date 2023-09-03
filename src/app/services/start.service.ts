@@ -20,7 +20,7 @@ import { SlotoccupazioneService } from './slotoccupazione.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 
 import { Location } from '../models/location.model';
-import { Utente, storageUtente } from '../models/utente.model';
+import { Utente, StorageUtente } from '../models/utente.model';
 import { LogApp } from '../models/log.model';
 import { SlotDay } from '../models/imdb/slotday.model';
 import { Campo } from '../models/campo.model';
@@ -1218,18 +1218,26 @@ updateClientUtenteData(){
 
 /**
  * Memorizza nello storage username e password
- * @param username Username da memorizzare
+ * @param userLogin Username da memorizzare
  * @param pwd Password da memorizzare
  */
-saveUserCredential(username: string, passwd: string): void {
+saveUserCredential(userLogin: string, passwordLogin: string): void {
 
-  let objDataAccount = new storageUtente(username, passwd);
+  let utenteStorageDoc = new StorageUtente();
   
-  //salvo le informazioni criptate
-  let strAccount = objDataAccount.saveJSON(true);
+  utenteStorageDoc.userLogin = userLogin;
+  utenteStorageDoc.userPassword = passwordLogin;
+  utenteStorageDoc.crypted = true;
 
-  this.keyStorageService.set('gouegoser',strAccount);
-  LogApp.consoleLog('Saved credential');
+  //Richiedo il salvataggio
+  this.keyStorageService.saveCredential(utenteStorageDoc)
+                        .then(() => {
+                          LogApp.consoleLog('Credential saved');
+                        })
+                        .catch(error => {
+                          LogApp.consoleLog('Credential saved error','error');
+                          LogApp.consoleLog(error,'error');
+                        })
 }
 
 /**
@@ -1240,41 +1248,19 @@ loadUserCredential() {
   LogApp.consoleLog('Trying autologin');
 
   //Chiedo di caricare l'impostazione
-  this.keyStorageService
-      .get('gouegoser')
-      .then ((savedValueKey: GetResult) => {
-
-        try {
-
-          //Credenziali memorizzate
-          if (savedValueKey && savedValueKey.value) {
-  
-            let savedUser = new storageUtente('','');
-            savedUser.loadJSON(savedValueKey.value);
-  
-            if (savedUser.loginUser && savedUser.pwdUser) {
-              //Devo tentare di accedere
-              
-              //Faccio la richiesta al server
-              this.userLogin(savedUser.loginUser, savedUser.pwdUser)
-                  .then(() => {
-                    LogApp.consoleLog('AutoLogin passed: ');
-                  })
-                  .catch(error => {
-                    LogApp.consoleLog('AutoLogin failed: ' + error);
-                  });
-            }
-          }
-          
-        } catch (error) {
-          LogApp.consoleLog('Autologin failed ' + error);
-        }
-      })
-      .catch(error => {
-        //Failed load Storage
-        LogApp.consoleLog('Autologin failed ' + error);
-      });
-      
+  this.keyStorageService.loadCredential()
+                        .then((userStorage: StorageUtente) => {
+                          if (userStorage.containCredentials()) {
+                            //Tento AutoLogin
+                            this.userLogin(userStorage.userLogin, userStorage.userPassword)
+                                .then(() => {
+                                  LogApp.consoleLog('AutoLogin passed: ');
+                                })
+                                .catch(error => {
+                                  LogApp.consoleLog('AutoLogin failed: ' + error);
+                                });
+                          }
+                        })      
 }
 
 /**

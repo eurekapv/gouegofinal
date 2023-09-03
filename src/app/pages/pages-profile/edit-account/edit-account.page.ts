@@ -20,7 +20,7 @@ import { LogApp } from 'src/app/models/log.model';
 })
 export class EditAccountPage implements OnInit, OnDestroy {
 
-  form: UntypedFormGroup; 
+  formPagePrimary: UntypedFormGroup; 
 
   utente:Utente = new Utente;
   utenteListen: Subscription;
@@ -105,7 +105,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
     let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
     
 
-    this.form=new UntypedFormGroup({
+    this.formPagePrimary=new UntypedFormGroup({
       nome:new UntypedFormControl(this.utente.NOME, {
         updateOn:'change',
         validators: [Validators.required]
@@ -168,7 +168,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
         validators: []
       })
 
-      this.form.addControl('mobile', mobile)
+      this.formPagePrimary.addControl('mobile', mobile)
     } 
 
     if(!this.docGruppo.needEmailVerify){
@@ -177,7 +177,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
         updateOn: 'change',
         validators: [Validators.email]
       })
-      this.form.addControl('email', email)
+      this.formPagePrimary.addControl('email', email)
     }
   }
 
@@ -187,31 +187,31 @@ export class EditAccountPage implements OnInit, OnDestroy {
   onSubmit()
   {
     
-    if (this.form.valid)
+    if (this.formPagePrimary.valid)
     {
 
-      this.utente.NOME=this.form.value.nome;
-      this.utente.COGNOME=this.form.value.cognome;
-      this.utente.SESSO=this.form.value.sesso;
-      this.utente.CODICEFISCALE=this.form.value.cf;
+      this.utente.NOME=this.formPagePrimary.value.nome;
+      this.utente.COGNOME=this.formPagePrimary.value.cognome;
+      this.utente.SESSO=this.formPagePrimary.value.sesso;
+      this.utente.CODICEFISCALE=this.formPagePrimary.value.cf;
 
-      this.utente.INDIRIZZO=this.form.value.indResidenza;
-      this.utente.COMUNE=this.form.value.comResidenza;
-      this.utente.CAP=this.form.value.capResidenza;
-      this.utente.PROVINCIA=this.form.value.provResidenza;
-      this.utente.ISOSTATO=this.form.value.statoResidenza;    
+      this.utente.INDIRIZZO=this.formPagePrimary.value.indResidenza;
+      this.utente.COMUNE=this.formPagePrimary.value.comResidenza;
+      this.utente.CAP=this.formPagePrimary.value.capResidenza;
+      this.utente.PROVINCIA=this.formPagePrimary.value.provResidenza;
+      this.utente.ISOSTATO=this.formPagePrimary.value.statoResidenza;    
 
-      this.utente.NATOA=this.form.value.comNascita;
-      this.utente.NATOCAP=this.form.value.capNascita;
-      this.utente.NATOPROV=this.form.value.provNascita;
-      this.utente.NATOISOSTATO=this.form.value.statoNascita;
+      this.utente.NATOA=this.formPagePrimary.value.comNascita;
+      this.utente.NATOCAP=this.formPagePrimary.value.capNascita;
+      this.utente.NATOPROV=this.formPagePrimary.value.provNascita;
+      this.utente.NATOISOSTATO=this.formPagePrimary.value.statoNascita;
       
       //EMAIL E NUMERO DI TELEFONO LI MODIFICO SOLO SE NON DEVONO ESSERE VERIFICATI, ALTRIMENTI VERRA' CHIAMATA LA VIDEATA APPOSITA
       if(!this.docGruppo.needEmailVerify){
-        this.utente.EMAIL = this.form.value.email;
+        this.utente.EMAIL = this.formPagePrimary.value.email;
       }
       if(!this.docGruppo.needMobileVerify){
-        this.utente.MOBILENUMBER = this.form.value.mobile;
+        this.utente.MOBILENUMBER = this.formPagePrimary.value.mobile;
       }
 
 
@@ -257,7 +257,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
   onCfChange(){
 
     //se il cf cambia, quando l'utente esce dalla casella, provo a validarlo e riempire gli altri campi
-    let codFiscString: string = this.form.value.cf;
+    let codFiscString: string = this.formPagePrimary.value.cf;
 
     if (codFiscString!=null&&codFiscString!=undefined){
       
@@ -277,20 +277,20 @@ export class EditAccountPage implements OnInit, OnDestroy {
 
           //aggiorno i campi del form
 
-          this.form.get('comNascita').setValue(this.utente.NATOA);
-          this.form.get('provNascita').setValue(this.utente.NATOPROV);
-          this.form.get('sesso').setValue(this.utente.SESSO);
-          this.form.get('statoNascita').setValue(this.utente.NATOISOSTATO);
-          this.form.get('capNascita').setValue(this.utente.NATOCAP);
+          this.formPagePrimary.get('comNascita').setValue(this.utente.NATOA);
+          this.formPagePrimary.get('provNascita').setValue(this.utente.NATOPROV);
+          this.formPagePrimary.get('sesso').setValue(this.utente.SESSO);
+          this.formPagePrimary.get('statoNascita').setValue(this.utente.NATOISOSTATO);
+          this.formPagePrimary.get('capNascita').setValue(this.utente.NATOCAP);
 
           //setto il campo cf come valido
-          this.form.controls['cf'].setErrors(null);
+          this.formPagePrimary.controls['cf'].setErrors(null);
 
   
         }).catch(err => {
 
           //qui in teoria il cf non ha passato neppure il check base, segno il campo come non valido
-          this.form.controls['cf'].setErrors({'incorrect':true});
+          this.formPagePrimary.controls['cf'].setErrors({'incorrect':true});
           LogApp.consoleLog(err,'error');
         })
       }

@@ -54,3 +54,5 @@ import 'zone.js';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+import * as buffer from 'buffer';
+(window as any).Buffer = buffer;

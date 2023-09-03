@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { createCipheriv, createDecipheriv } from 'crypto';
 import { AccountRequestCode } from 'src/app/models/accountregistration.model';
 import { Utente } from 'src/app/models/utente.model';
+import { Buffer } from 'buffer';
 //import { createVerify } from 'crypto'; Se si vuole usare Crypto c'e' questo di Node (https://www.w3schools.com/nodejs/ref_crypto.asp)
 
 @Injectable({
@@ -118,6 +119,7 @@ export class CryptoService {
    * @returns 
    */
   encrypt(text: string): string {
+    //Purtroppo Buffer-Xor contiene un errore e va tutto in errore non si puo usare new Buffer ma Buffer.alloc(length)
 
     const cipher = createCipheriv('aes-256-cbc',Buffer.from(this.encryption_key), Buffer.from(this.initialization_vector))
     var crypted = cipher.update(text, 'utf8', 'hex')

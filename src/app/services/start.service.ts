@@ -321,14 +321,17 @@ export class StartService {
    * L'applicazione è partita
    */
   onAfterStartApplication(): void {
+
       //Adesso ho tutto e posso sottoscrivermi al cambio Area
       // Mi iscrivo alle modifiche dell'Area Selezionata
       this.onListenAreaSelezionata();
 
-      this.onRetrieveAdditionalDocument();
-
       //Tento il login Automatico
       this.loadUserCredential();
+
+      //Carico altri documenti
+      this.onRetrieveAdditionalDocument();
+
   }
 
 
@@ -609,17 +612,7 @@ export class StartService {
 
     })
     
-    /*
 
-    //Passo a richiedere le Aree
-    this.requestAree();
-
-    // Mi iscrivo alle modifiche dell'Area Selezionata
-    this.onChangeAreaSelezionata();
-
-    //Operazioni ulteriori a seguito dell'autorizzazione
-    this.onRetrieveAdditionalDocument();
-    */
   }    
 
 
@@ -664,9 +657,6 @@ export class StartService {
                             .catch(error => {
                               LogApp.consoleLog(error,'error');
                             });
-
-    // 2 - TENTO L'ACCESSO AUTOMATICO
-    this.loadUserCredential();
 
   }
 
@@ -1227,7 +1217,7 @@ saveUserCredential(userLogin: string, passwordLogin: string): void {
   
   utenteStorageDoc.userLogin = userLogin;
   utenteStorageDoc.userPassword = passwordLogin;
-  utenteStorageDoc.crypted = true;
+  utenteStorageDoc.crypted = false;
 
   //Richiedo il salvataggio
   this.keyStorageService.saveCredential(utenteStorageDoc)
@@ -1239,6 +1229,7 @@ saveUserCredential(userLogin: string, passwordLogin: string): void {
                           LogApp.consoleLog(error,'error');
                         })
 }
+
 
 /**
  * Carica dallo Storage le credenziali utente memorizzate

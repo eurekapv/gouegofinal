@@ -79,6 +79,8 @@ export class AppComponent {
                      .then(() => {
                         //L'applicazione è partita
                         this.actaulStateApplication = StateApplication.started;
+                        //Eseguo altre operazioni 
+                        this.startService.onAfterStartApplication();
                      })
                      .catch(error => {
                         if (typeof error == 'string') {

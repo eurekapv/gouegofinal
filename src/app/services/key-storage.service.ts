@@ -1,4 +1,4 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { GetResult, Preferences } from '@capacitor/preferences';
 import { StorageUtente } from '../models/utente.model';
 import { CryptoService } from '../library/services/crypto.service';
@@ -78,7 +78,8 @@ export class KeyStorageService {
           .then((elResult:GetResult) => {
 
             if (elResult && elResult.value) {
-              utenteStorageDoc = JSON.parse(elResult.value);
+              
+              utenteStorageDoc.setFromObjString(elResult.value);
 
               if (utenteStorageDoc.crypted) {
                 //Decripto il contenuto

@@ -514,6 +514,39 @@ export class StorageUtente {
         return flagExist;
     }
 
+    /**
+     * Imposta il documento con una stringa da parse
+     * @param value 
+     */
+    setFromObjString(value: string) {
+        let objData = {};
+        let nameProp = '';
+
+        if (value && value.length != 0) {
+            try {
+                objData = JSON.parse(value);
+                if (objData) {
+
+                    nameProp = 'userLogin';
+                    if (objData.hasOwnProperty(nameProp)) {
+                        this.userLogin = objData[nameProp];
+                    }
+
+                    nameProp = 'userPassword';
+                    if (objData.hasOwnProperty(nameProp)) {
+                        this.userPassword = objData[nameProp];
+                    }
+
+                    nameProp = 'crypted';
+                    if (objData.hasOwnProperty(nameProp)) {
+                        this.crypted = objData[nameProp];
+                    }
+                }
+            } catch (error) {
+                
+            }
+        }
+    }
 
 }
 

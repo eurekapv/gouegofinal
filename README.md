@@ -23,6 +23,11 @@ npm install @capawesome/capacitor-file-picker
 - Installazione npm install tslib
 
 Per Crypto => https://stackoverflow.com/questions/67572355/webpack-5-angular-polyfill-for-node-js-crypto-js
+Aggiornati i types node alla versione 16
+```console
+npm i @types/node@16.11.7
+```
+
 
 
 

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { createCipheriv, createDecipheriv } from 'crypto';
 import { AccountRequestCode } from 'src/app/models/accountregistration.model';
 import { Utente } from 'src/app/models/utente.model';
 //import { createVerify } from 'crypto'; Se si vuole usare Crypto c'e' questo di Node (https://www.w3schools.com/nodejs/ref_crypto.asp)
@@ -7,6 +8,9 @@ import { Utente } from 'src/app/models/utente.model';
   providedIn: 'root'
 }) 
 export class CryptoService {
+
+  encryption_key = "byz9VFNtbRQM0yBODcCb1lrUtVVH3D3x"; // Must be 32 characters
+  initialization_vector = "X05IGQ5qdBnIqAWD"; // Must be 16 characters
 
   constructor() { }
   
@@ -104,5 +108,32 @@ export class CryptoService {
 
     return flagResult;
 
+  }
+
+
+
+  /**
+   * Esegue Encrypt di una stringa
+   * @param text 
+   * @returns 
+   */
+  encrypt(text: string): string {
+
+    const cipher = createCipheriv('aes-256-cbc',Buffer.from(this.encryption_key), Buffer.from(this.initialization_vector))
+    var crypted = cipher.update(text, 'utf8', 'hex')
+    crypted += cipher.final('hex')
+    return crypted;
+  }
+
+  /**
+   * Esegue il Decrypt di una stringa
+   * @param text 
+   * @returns 
+   */
+  decrypt(text: string): string {
+    const decipher = createDecipheriv('aes-256-cbc',Buffer.from(this.encryption_key), Buffer.from(this.initialization_vector))
+    let dec = decipher.update(text, 'hex', 'utf8')
+    dec += decipher.final('utf8')
+    return dec;
   }
 }

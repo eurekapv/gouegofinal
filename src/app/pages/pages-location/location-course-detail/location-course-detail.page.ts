@@ -7,9 +7,7 @@ import { NavController, ModalController, LoadingController, ToastController } fr
 import { Location } from 'src/app/models/location.model';
 import { CourseDetailCalendarPage } from './course-detail-calendar/course-detail-calendar.page';
 import { Area } from 'src/app/models/area.model';
-import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
-import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
-import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
+import {Utente } from 'src/app/models/utente.model';
 
 import { Tempistica, TipoCorso } from 'src/app/models/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
@@ -281,53 +279,29 @@ ngOnDestroy() {
         //Prima di aprire la pagina di login
         //impostare nel servizio Start forceIdArea = 
         this.startService.setIdAreaForcedForLogin();
-        
-        //Ora preparo e creo la pagina di Login
-        this.mdlController.create({
-          component:UserLoginPage
-        })
-          .then(modal=>{
-            modal.present();
-          });
+
+        this.startService.openFormLogin();
   
       }
       else {
-  
-        let paramsVerifica : ParamsVerifica;
-        if (this.docUser) {
-          
-          //Recupero i parametri di verifica
-          paramsVerifica = this.docUser.getParamsVerifica(this.startService.actualStartConfig.gruppo)
-    
-          if (paramsVerifica){
-            //se ci sono parametri, significa che devo chiamare la pagina di verifica
-            this.mdlController.create({
-              component: UserVerifyPage,
-              componentProps:{
-                params: paramsVerifica
-              } 
-            })
-            .then(elModal => {
-              elModal.present();
-            })
-          }
-          else{
-    
-            //Posso procedere con la pagina di prenotazione
-            this.mdlController.create({
-              component: LocationCourseSubscribePage,
-              componentProps: {
-                params: this.myCorso
-              }
-            })
-            .then(elModal => {
-              elModal.present();
-            })
-    
-          }
-  
-        }
-  
+
+        //Controllo se avessi bisogno altri dati utente non impostati
+        this.startService.onVerificationUserData()
+                         .then(needVerification => {
+                          if (needVerification == false) {
+                                //Posso procedere con la pagina di prenotazione
+                                this.mdlController.create({
+                                  component: LocationCourseSubscribePage,
+                                  componentProps: {
+                                    params: this.myCorso
+                                  }
+                                })
+                                .then(elModal => {
+                                  elModal.present();
+                                })
+                          }
+                         })
+                                               
         
       }
       

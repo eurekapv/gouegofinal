@@ -20,7 +20,7 @@ import { SlotoccupazioneService } from './slotoccupazione.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 
 import { Location } from '../models/location.model';
-import { Utente, StorageUtente } from '../models/utente.model';
+import { Utente,  } from '../models/utente.model';
 import { LogApp } from '../models/log.model';
 import { SlotDay } from '../models/imdb/slotday.model';
 import { Campo } from '../models/campo.model';
@@ -32,7 +32,7 @@ import { ModalController, Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
-import { Mansione, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TypeUrlPageLocation } from 'src/app/models/valuelist.model'
+import { Mansione, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
 import { OccupazioniService } from './occupazioni.service';
 
@@ -78,13 +78,14 @@ import { Articolo } from '../models/articolo.model';
 import { Sport } from '../models/sport.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
 import { KeyStorageService } from './key-storage.service';
-import { GetResult } from '@capacitor/preferences';
 import { Authorization } from '../models/authorization.model';
 import { Corso } from '../models/corso.model';
 import { NewsEvento } from '../models/newsevento.model';
 import { UserLoginAuthorizationPage } from '../pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.page';
 import { UserRegistrationPage } from '../pages/pages-profile/authorization-account/user-registration/user-registration.page';
 import { AuthUserMobileService } from './auth-user-mobile.service';
+import { UserDataVerificationPage } from '../pages/pages-profile/authorization-account/user-data-verification/user-data-verification.page';
+import { StorageUtente } from '../models/stogare-utente.model';
 
 @Injectable({
   providedIn: 'root'
@@ -1202,6 +1203,51 @@ get listTessereUtente$() {
   return this.srvTesseramento.listTessere$;
 }
 
+
+/**
+ * Il metodo controlla se fosse necessario effettuare una verifica dei dati Utente
+ * In tal caso apre la form UserDataVerificationPage
+ * Quando si richiama questo metodo, includere nei Moduli della pagina il modulo
+ * UserDataVerificationPageModule
+ * 
+ * Ritorna TRUE => Verifica necessaria / FALSE => Verifica non necessaria
+ */
+onVerificationUserData(): Promise<boolean> {
+
+  return new Promise<boolean>((resolve) => {
+    
+    let myStartConfig = this._startConfig.getValue();
+  
+    this.utenteService.needDataVerification(myStartConfig)
+                      .then(resultData => {
+                        if (resultData.tipoVerifica == TipoVerificaAccount.noverifica && 
+                            resultData.updateDocUtente == false) {
+                              resolve(false);
+                            }
+                            else {
+                              //Apro la Modale di verifica
+                              this.modalController.create({
+                                component: UserDataVerificationPage,
+                                cssClass: 'modal-xl-class',
+                                componentProps: {
+                                  verificationData: resultData
+                                }
+                              })
+                              .then(elModal => {
+                                //Apro la modale
+                                elModal.present();
+                              })
+
+                              resolve(true);
+
+                            }
+                      })
+                      .catch(error => {
+                        LogApp.consoleLog(error,'error');
+                      })
+  })
+}
+
 updateClientUtenteData(){
   return this.utenteService.updateClientData();
 }
@@ -1589,11 +1635,27 @@ recoveryUpdatePassword(docUtente: Utente,
 
 //#endregion
 
-//#region VALIDATION CONTATTI
+//#region DATA USER VERIFICATION
 
-validationSendCodici(docRequestCode: AccountRequestCode, docUtente: Utente):Promise<AccountOperationResponse> {
-  const actualStartConfig = this._startConfig.getValue();
-  return this.utenteService.validationSendCodici(actualStartConfig, docUtente, docRequestCode );
+/**
+ * Richiesta per l'invio di Codici SMS / Mail per effettuare la 
+ * verifica dei dati Utente
+ * @param docRequestCode Valorizzare Obbligatoriamente USE / IDUTENTE / IDAREA 
+ * @returns 
+ */
+verificationSendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+  return this.utenteService.onUserVerificationSendCodici(docRequestCode );
+}
+
+/**
+ * 
+ * @param docRequestCode 
+ * @param docUtente 
+ * @deprecated
+ * @returns 
+ */
+validationSendCodici(docRequestCode: AccountRequestCode, docUtente: Utente):Promise<AccountOperationResponse> {  
+  return this.utenteService.validationSendCodici(docUtente, docRequestCode );
 }
 
 validationVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {

@@ -45,6 +45,10 @@ export class DtinputComponent implements OnInit {
     this._label = value;
   }
 
+  @Input() set labelPlacement(value:string) {
+    this._labelPlacement = value;
+  }
+
   /**
    * Classe applicata al testo con la data formattata
    * per impostare l'allineamento
@@ -131,6 +135,7 @@ export class DtinputComponent implements OnInit {
   _iconColor: string = '';
   _iconSlot: string = '';
   _label: string = '';
+  _labelPlacement: string = 'fixed';
   _slotText: string = '';
   _title: string = '';
   _maskFormat: string;

@@ -18,3 +18,11 @@ div.info{
         }
     }
 }
+
+ion-input {
+    &.input-disabled {
+        color: var(--ion-color-secondary, #4d5969) !important;
+        opacity: 1 !important;
+        font-weight: bold !important;
+    }
+}

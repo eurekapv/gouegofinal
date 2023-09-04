@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { GetResult, Preferences } from '@capacitor/preferences';
-import { StorageUtente } from '../models/utente.model';
+
 import { CryptoService } from '../library/services/crypto.service';
+import { StorageUtente } from '../models/stogare-utente.model';
 
 
 @Injectable({

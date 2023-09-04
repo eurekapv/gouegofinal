@@ -1,13 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Utente } from 'src/app/models/utente.model';
 import { ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { NavController, LoadingController, ModalController } from '@ionic/angular';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
-import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page'
-import { TipoVerificaAccount } from 'src/app/models/valuelist.model'
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { LogApp } from 'src/app/models/log.model';
 
@@ -20,7 +18,7 @@ import { LogApp } from 'src/app/models/log.model';
 })
 export class EditAccountPage implements OnInit, OnDestroy {
 
-  formPagePrimary: UntypedFormGroup; 
+  formPagePrimary: FormGroup; 
 
   utente:Utente = new Utente;
   utenteListen: Subscription;
@@ -105,80 +103,101 @@ export class EditAccountPage implements OnInit, OnDestroy {
     let patternCodice = '^[A-Za-z]{6}[0-9]{2}[A-Za-z]{1}[0-9]{2}[A-Za-z]{1}[0-9]{3}[A-Za-z]{1}';
     
 
-    this.formPagePrimary=new UntypedFormGroup({
-      nome:new UntypedFormControl(this.utente.NOME, {
+    this.formPagePrimary=new FormGroup({
+      nome:new FormControl<string>(
+          {
+            value:this.utente.NOME,
+            disabled: false}, {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      cognome:new UntypedFormControl(this.utente.COGNOME, {
+      cognome:new FormControl<string>(
+        {
+          value: this.utente.COGNOME,
+          disabled: false
+        }, 
+        {
         updateOn:'change',
         validators: [Validators.required]
       }),
-      sesso:new UntypedFormControl(this.utente.SESSO, {
+      sesso:new FormControl<number>({
+        value: this.utente.SESSO,
+        disabled: false
+        }, {
         updateOn:'change',
         validators: []
       }),
-      provNascita:new UntypedFormControl(this.utente.NATOPROV, {
+      provNascita:new FormControl<string>({
+        value: this.utente.NATOPROV,
+        disabled: false
+        }, {
         updateOn:'change',
         validators: []
       }),
-      comNascita:new UntypedFormControl(this.utente.NATOA, {
+      comNascita:new FormControl<string>({
+        value: this.utente.NATOA,
+        disabled: false
+        }, {
         updateOn:'change',
         validators: []
       }),
-      statoNascita:new UntypedFormControl(this.utente.NATOISOSTATO, {
+      statoNascita:new FormControl<string>({
+        value: this.utente.NATOISOSTATO,
+        disabled: false}
+        , {
         updateOn:'change',
         validators: []
       }),
-      capNascita:new UntypedFormControl(this.utente.NATOCAP, {
+      capNascita:new FormControl<string>({
+        value: this.utente.NATOCAP,
+        disabled: false
+        }, {
         updateOn:'change',
         validators: []
       }),
-      provResidenza:new UntypedFormControl(this.utente.PROVINCIA, {
+      provResidenza:new FormControl<string>({
+        value: this.utente.PROVINCIA,
+        disabled: false
+      }, {
         updateOn:'change',
         validators: []
       }),
-      comResidenza:new UntypedFormControl(this.utente.COMUNE, {
+      comResidenza:new FormControl<string>({
+        value: this.utente.COMUNE,
+        disabled: false
+      }, {
         updateOn:'change',
         validators: []
       }),
-      indResidenza:new UntypedFormControl(this.utente.INDIRIZZO, {
+      indResidenza:new FormControl<string>({
+        value: this.utente.INDIRIZZO,
+        disabled: false
+      },{
         updateOn:'change',
         validators: []
       }),
-      capResidenza:new UntypedFormControl(this.utente.CAP, {
+      capResidenza:new FormControl<string>({
+        value: this.utente.CAP,
+        disabled: false
+      },{
         updateOn:'change',
         validators: []
       }),
-      statoResidenza:new UntypedFormControl(this.utente.ISOSTATO, {
+      statoResidenza:new FormControl<string>({
+        value: this.utente.ISOSTATO,
+        disabled: false}
+        , {
         updateOn:'change',
         validators: []
       }),
-      cf:new UntypedFormControl(this.utente.CODICEFISCALE, {
+      cf:new FormControl<string>({
+        value: this.utente.CODICEFISCALE,
+        disabled: false}
+        , {
         updateOn:'change',
         validators: [Validators.pattern(patternCodice)]
       })
     })
-
-    if(!this.docGruppo.needMobileVerify){
-
-      //devo creare il campo mobile solo per mostrarlo
-      let mobile = new UntypedFormControl(this.utente.MOBILENUMBER, {
-        updateOn: 'change',
-        validators: []
-      })
-
-      this.formPagePrimary.addControl('mobile', mobile)
-    } 
-
-    if(!this.docGruppo.needEmailVerify){
-      //devo creare il campo tel
-      let email = new UntypedFormControl(this.utente.EMAIL, {
-        updateOn: 'change',
-        validators: [Validators.email]
-      })
-      this.formPagePrimary.addControl('email', email)
-    }
   }
 
   /**
@@ -206,14 +225,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
       this.utente.NATOPROV=this.formPagePrimary.value.provNascita;
       this.utente.NATOISOSTATO=this.formPagePrimary.value.statoNascita;
       
-      //EMAIL E NUMERO DI TELEFONO LI MODIFICO SOLO SE NON DEVONO ESSERE VERIFICATI, ALTRIMENTI VERRA' CHIAMATA LA VIDEATA APPOSITA
-      if(!this.docGruppo.needEmailVerify){
-        this.utente.EMAIL = this.formPagePrimary.value.email;
-      }
-      if(!this.docGruppo.needMobileVerify){
-        this.utente.MOBILENUMBER = this.formPagePrimary.value.mobile;
-      }
-
 
       //USO IL LOADING CONTROLLER 
       this.loadingController
@@ -259,7 +270,7 @@ export class EditAccountPage implements OnInit, OnDestroy {
     //se il cf cambia, quando l'utente esce dalla casella, provo a validarlo e riempire gli altri campi
     let codFiscString: string = this.formPagePrimary.value.cf;
 
-    if (codFiscString!=null&&codFiscString!=undefined){
+    if (codFiscString!=null && codFiscString!=undefined){
       
       if (codFiscString.length != 0){
   
@@ -297,38 +308,6 @@ export class EditAccountPage implements OnInit, OnDestroy {
     }
   }
   
-
-  validateTel(){
-    this.modalController.create({
-      component: UserVerifyPage,
-      componentProps: {
-        params : {
-          tipoVerifica : TipoVerificaAccount.verificasms,
-          updateDocUtente : false
-        }
-      }
-    })
-    .then(elModal => {
-      elModal.present();
-    })
-  }
-
-  validateEmail(){
-
-    this.modalController.create({
-      component: UserVerifyPage,
-      componentProps: {
-        params : {
-          tipoVerifica : TipoVerificaAccount.verificaemail,
-          updateDocUtente : false
-        }
-      }
-    })
-    .then(elModal => {
-      elModal.present();
-    })
-  }
-
 }
 
 

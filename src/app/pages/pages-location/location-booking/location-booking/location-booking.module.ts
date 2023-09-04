@@ -4,9 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { LocationBookingPageRoutingModule } from './location-booking-routing.module';
 import { LocationBookingPage } from './location-booking.page';
 import{ LocationBookingFinalizePageModule } from '../location-booking-finalize/location-booking-finalize.module'
-import { UserVerifyPageModule } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.module'
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { UserLoginPageModule } from '../../../pages-profile/authorization-account/user-login/user-login.module'
+import { UserDataVerificationPageModule } from 'src/app/pages/pages-profile/authorization-account/user-data-verification/user-data-verification.module';
 
 @NgModule({
     imports: [
@@ -14,9 +13,9 @@ import { UserLoginPageModule } from '../../../pages-profile/authorization-accoun
         IonicModule,
         LocationBookingPageRoutingModule,
         LocationBookingFinalizePageModule,
-        UserVerifyPageModule,
+        UserDataVerificationPageModule,
         SharedComponentsModule,
-        UserLoginPageModule
+        
     ],
     declarations: [LocationBookingPage]
 })

@@ -43,17 +43,26 @@
                        <ion-label>Come ti chiami ?</ion-label>
                      </ion-item-divider>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Nome</ion-label>
-                       <ion-input formControlName="nome"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                            label="Nome"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento del nome"
+                            [clearInput]="true"
+                            formControlName="nome"></ion-input>
                      </ion-item>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Cognome</ion-label>
-                       <ion-input formControlName="cognome"></ion-input>
+                     <ion-item lines="none">
+                       
+                       <ion-input 
+                            label="Cognome"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento del cognome"
+                            [clearInput]="true"
+                            formControlName="cognome"></ion-input>
                      </ion-item>
              
-                     <ion-item>
+                     <ion-item lines="none">
                        <ion-label slot="start" position="fixed">Sesso</ion-label>
                        <ion-select formControlName="sesso" interface="popover">
                          <ion-select-option 
@@ -64,9 +73,13 @@
                        </ion-select>
                      </ion-item>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Cod. fiscale</ion-label>
-                       <ion-input (ionBlur)="onCfChange()" formControlName="cf"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                          label="Cod. fiscale"
+                          labelPlacement="fixed"
+                          errorText="controlla l\'inserimento del Cod. fiscale"
+                          [clearInput]="true"
+                          (ionBlur)="onCfChange()" formControlName="cf"></ion-input>
                      </ion-item >
                    </ion-item-group>
              
@@ -82,29 +95,49 @@
                        <ion-label>Dove vivi ?</ion-label>
                      </ion-item-divider>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Indirizzo</ion-label>
-                       <ion-input formControlName="indResidenza"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                            label="Indirizzo"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento dell'indirizzo"
+                            [clearInput]="true"
+                            formControlName="indResidenza"></ion-input>
                      </ion-item>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Comune</ion-label>
-                       <ion-input formControlName="comResidenza"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                            label="Comune"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento del comune"
+                            [clearInput]="true"
+                            formControlName="comResidenza"></ion-input>
                      </ion-item>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Cap</ion-label>
-                       <ion-input type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                            label="CAP"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento del CAP"
+                            [clearInput]="true"
+                            type="tel" inputmode="tel" maxlength="5" formControlName="capResidenza"></ion-input>
                      </ion-item>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Provincia</ion-label>
-                       <ion-input formControlName="provResidenza"></ion-input>          
+                     <ion-item lines="none">
+                       <ion-input 
+                            label="Provincia"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento della provincia"
+                            [clearInput]="true"
+                            formControlName="provResidenza"></ion-input>          
                      </ion-item>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Stato</ion-label>
-                       <ion-input formControlName="statoResidenza"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                          label="Stato"
+                          labelPlacement="fixed"
+                          errorText="controlla l\'inserimento dello stato"
+                          [clearInput]="true"
+                          formControlName="statoResidenza"></ion-input>
                      </ion-item>        
                    </ion-item-group>
              
@@ -127,27 +160,44 @@
                      </app-dtinput>
              
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Comune</ion-label>
-                       <ion-input formControlName="comNascita"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                          label="Comune"
+                          labelPlacement="fixed"
+                          errorText="controlla l\'inserimento del comune di nascita"
+                          [clearInput]="true"
+                          formControlName="comNascita"></ion-input>
                      </ion-item>
              
                      <!-- CAP NON VISUALIZZATA -->
-                     <ion-item *ngIf="showCapNascita">
-                       <ion-label slot="start" position="fixed">Cap</ion-label>
-                        <ion-input formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>  
+                     <ion-item 
+                          lines="none"
+                          *ngIf="showCapNascita">
+                        <ion-input 
+                            label="CAP"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento del CAP"
+                            [clearInput]="true"
+                            formControlName="capNascita" type="tel" inputmode="tel" maxlength="5"></ion-input>  
                      </ion-item>
              
-                     <ion-item>
-                       
-                         <ion-label slot="start" position="fixed">Provincia</ion-label>
-                         <ion-input formControlName="provNascita"></ion-input>
+                     <ion-item lines="none">
+                         <ion-input 
+                            label="Provincia"
+                            labelPlacement="fixed"
+                            errorText="controlla l\'inserimento della provincia"
+                            [clearInput]="true"
+                            formControlName="provNascita"></ion-input>
                        
                      </ion-item>
              
-                     <ion-item>
-                       <ion-label slot="start" position="fixed">Stato</ion-label>
-                       <ion-input formControlName="statoNascita"></ion-input>
+                     <ion-item lines="none">
+                       <ion-input 
+                          label="Stato"
+                          labelPlacement="fixed"
+                          errorText="controlla l\'inserimento dello Stato"
+                          [clearInput]="true"
+                          formControlName="statoNascita"></ion-input>
                      </ion-item> 
              
                    </ion-item-group>
@@ -165,31 +215,25 @@
                        <ion-label>Cellulare e Email</ion-label>
                      </ion-item-divider>
              
-                     <!-- VERIFICA CELLULARE NECESSARIA -->
-                     <ion-item *ngIf="docGruppo.needMobileVerify" button (click)="validateTel()">
+                     <!-- NUMERO MOBILE  -->
+                     <ion-item 
+                          lines="none" 
+                          button = "false"
+                          detail="false"
+                          >
                        <ion-label>{{utente.MOBILENUMBER ? utente.MOBILENUMBER : 'Non definito'}}</ion-label>
                        <ion-badge color="success">{{utente.getLabelVerificaMobile()}}</ion-badge>
                      </ion-item>
              
-                     <!-- VERIFICA MAIL NECESSARIA -->
-                     <ion-item *ngIf="docGruppo.needEmailVerify" button (click)="validateEmail()">
+                     <!-- E-MAIL -->
+                     <ion-item 
+                            lines="none"
+                            button = "false"
+                            detail="false"
+                            >
                        <ion-label>{{utente.EMAIL ? utente.EMAIL:'Non definita'}}</ion-label>
                        <ion-badge color="success">{{utente.getLabelVerificaMail()}}</ion-badge>
-                     </ion-item>
-             
-                     <!-- VERIFICA CELLULARE NON NECESSARIA -->
-                     <ion-item *ngIf="!docGruppo.needMobileVerify">
-                       <ion-label slot="start" position="fixed">Cellulare</ion-label>
-                       <ion-input formControlName="mobile"></ion-input>
-                     </ion-item>
-             
-                     <!-- VERIFICA MAIL NON NECESSARIA -->
-                     <ion-item *ngIf="!docGruppo.needEmailVerify">
-                       <ion-label slot="start" position="fixed">E-Mail</ion-label>
-                       <ion-input formControlName="email"></ion-input>
-                     </ion-item>
-             
-             
+                     </ion-item>            
                    </ion-item-group>
                  </ion-list>
                </form>

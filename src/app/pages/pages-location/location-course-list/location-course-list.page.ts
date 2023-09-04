@@ -1,21 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ParamsVerifica, Utente } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente.model';
 import { SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/valuelist.model';
-import { ModalController, NavController, LoadingController, ToastController, Gesture, GestureController } from '@ionic/angular';
+import { ModalController, NavController, LoadingController, ToastController, GestureController } from '@ionic/angular';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 import { Area } from 'src/app/models/area.model';
-import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page';
-import { UserVerifyPage } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.page';
+
 
 import { LogApp } from 'src/app/models/log.model';
 import { Corso } from 'src/app/models/corso.model';
 import { StartService } from 'src/app/services/start.service';
 
-import { CourseDetailCalendarPage } from '../location-course-detail/course-detail-calendar/course-detail-calendar.page';
+
 
 import { CourseListFilterPage } from './course-list-filter/course-list-filter.page';
 import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
@@ -372,54 +371,28 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
           //impostare nel servizio Start forceIdArea = 
           this.startService.setIdAreaForcedForLogin();
           
-          //Ora preparo e creo la pagina di Login
-          this.mdlController.create({
-            component:UserLoginPage
-          })
-            .then(modal=>{
-              modal.present();
-            });
+          this.startService.openFormLogin();
     
         }
         else {
-    
-          let paramsVerifica : ParamsVerifica;
-          if (this.docUser) {
-            
-            //Recupero i parametri di verifica
-            paramsVerifica = this.docUser.getParamsVerifica(this.startService.actualStartConfig.gruppo)
-      
-            if (paramsVerifica){
-              //se ci sono parametri, significa che devo chiamare la pagina di verifica
-              this.mdlController.create({
-                component: UserVerifyPage,
-                componentProps:{
-                  params: paramsVerifica
-                } 
-              })
-              .then(elModal => {
-                elModal.present();
-              })
-            }
-            else {
-      
-              //Posso procedere con la pagina di prenotazione
-              this.mdlController.create({
-                component: LocationCourseSubscribePage,
-                cssClass: 'modal-xl-class',
-                componentProps: {
-                  params: selectedCorso
-                }
-              })
-              .then(elModal => {
-                elModal.present();
-              })
-      
-            }
-    
-          }
-    
-          
+
+        //Controllo se avessi bisogno altri dati utente non impostati
+        this.startService.onVerificationUserData()
+                          .then(needVerification => {
+                          if (needVerification == false) {
+                                //Posso procedere con la pagina di prenotazione
+                                this.mdlController.create({
+                                  component: LocationCourseSubscribePage,
+                                  cssClass: 'modal-xl-class',
+                                  componentProps: {
+                                    params: selectedCorso
+                                  }
+                                })
+                                .then(elModal => {
+                                  elModal.present();
+                                })
+                          }
+                          }) 
         }
 
       }

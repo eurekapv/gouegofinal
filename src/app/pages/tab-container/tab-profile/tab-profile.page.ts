@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { Utente } from 'src/app/models/utente.model';
 import { StartService } from 'src/app/services/start.service';
 import { UserUpdatePassword } from '../../pages-profile/authorization-account/user-update-password/user-update-password.page';
-import { UserLoginPage } from '../../pages-profile/authorization-account/user-login/user-login.page';
 import { Gruppo } from 'src/app/models/gruppo.model';
 
 @Component({

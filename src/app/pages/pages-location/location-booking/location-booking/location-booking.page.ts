@@ -6,7 +6,7 @@ import { Location } from 'src/app/models/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Campo } from 'src/app/models/campo.model';
-import { Utente, ParamsVerifica } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente.model';
 import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
 import { SlotDay } from 'src/app/models/imdb/slotday.model';
 import { SlotTime } from 'src/app/models/imdb/slottime.model';
@@ -15,12 +15,8 @@ import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LocationBookingFinalizePage } from '../location-booking-finalize/location-booking-finalize.page';
 import { Sport } from 'src/app/models/sport.model';
-import { UserLoginPage } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.page'
-import { UserVerifyPage } from '../../../pages-profile/authorization-account/user-verify/user-verify.page';
 import { StatoSlot } from 'src/app/models/valuelist.model';
 import { LogApp } from 'src/app/models/log.model';
-
-
 
 
 @Component({
@@ -80,7 +76,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
               private navController: NavController,
               private loadingController: LoadingController,
               private modalCtrl: ModalController,
-              private actionSheetController: ActionSheetController,
               ) { 
 
                 //Creo un documento di Pianificazione
@@ -129,7 +124,8 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
           //Location sulla barra
           this.idLocation = param.get('locationId');
           
-          if (this.idLocation) {
+          //Location Id Presente
+          if (this.idLocation && this.idLocation.length != 0) {
 
             LogApp.consoleLog('locationId: ' + this.idLocation);
             
@@ -141,6 +137,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
             // Chiedo al server Location, Campi e CampiSport (3 Livelli)
             LogApp.consoleLog('Richiesta al server Location, Campi e CampiSport ');
 
+            //Richiedo la Location di riferimento
             this.startService.requestLocationByID(this.idLocation, 3)
               .then(()=>{
                   this.flagDatiRicevuti=true;
@@ -437,7 +434,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   onRefresh() {
     
     
-    if (this.selectedSport) {
+    if (this.selectedSport && this.selectedLocation) {
 
       //this.selectedLocation è la Location, che contiene la Collection dei Campi, con dentro i CampiSport
       this.availableFields = this.selectedLocation.getAvalaibleFields(this.selectedSport.ID);
@@ -670,38 +667,21 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
       //impostare nel servizio Start forceIdArea = 
       this.startService.setIdAreaForcedForLogin();
       
-      //Ora preparo e creo la pagina di Login
-      this.modalCtrl.create({
-        component:UserLoginPage
-      })
-        .then(modal=>{
-          modal.present();
-        });
+      //Apro la videata di Login
+      this.startService.openFormLogin();
 
     }
     else {
 
-      let paramsVerifica : ParamsVerifica;
-      paramsVerifica = this.docUtente.getParamsVerifica(this.startService.actualStartConfig.gruppo)
-      if (paramsVerifica){
-        //se ci sono parametri, significa che devo chiamare la pagina di verifica
-        this.modalCtrl.create({
-          component: UserVerifyPage,
-          componentProps:{
-            params: paramsVerifica
-          } 
-        })
-        .then(elModal => {
-          elModal.present();
-        })
-      }
-      else{
-        //sono loggato e l'account è completo; posso prenotare
-        this.execPrenotazione(docPianificazione);
-
-      }
-
-      
+      //Controllo se serve aggiornare dei dati (il metodo apre la form di verifica se necessario)
+      this.startService.onVerificationUserData()
+                      .then(flagNeed => {
+                        if (flagNeed == false) {
+                          //Proseguo senza problemi
+                          //sono loggato e l'account è completo; posso prenotare
+                          this.execPrenotazione(docPianificazione);
+                        }
+                      })      
     }
     
 

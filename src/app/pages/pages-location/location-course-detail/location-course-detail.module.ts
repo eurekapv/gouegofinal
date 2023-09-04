@@ -9,10 +9,6 @@ import { LocationCourseDetailPageRoutingModule } from './location-course-detail-
 import { LocationCourseDetailPage } from './location-course-detail.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 import { CourseDetailCalendarPageModule } from './course-detail-calendar/course-detail-calendar.module';
-
-import { UserVerifyPageModule } from 'src/app/pages/pages-profile/authorization-account/user-verify/user-verify.module';
-import { UserLoginPageModule } from 'src/app/pages/pages-profile/authorization-account/user-login/user-login.module'
-
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 import { LocationCourseSubscribePageModule } from '../location-course-subscribe/location-course-subscribe.module';
 
@@ -24,8 +20,6 @@ import { LocationCourseSubscribePageModule } from '../location-course-subscribe/
         FormsModule,
         PipesModule,
         CourseDetailCalendarPageModule,
-        UserLoginPageModule,
-        UserVerifyPageModule,
         LocationCourseSubscribePageModule,
         SharedComponentsModule
     ],

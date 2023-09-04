@@ -5,10 +5,11 @@ import { Subscription } from 'rxjs';
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/accountregistration.model';
 import { Area } from 'src/app/models/area.model';
+import { AreaLink } from 'src/app/models/arealink.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { LogApp } from 'src/app/models/log.model';
 import { Utente } from 'src/app/models/utente.model';
-import { RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
+import { PageType, RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
   fullMobileNumber: string = '';
 
   informationText: string = 'Ottima scelta, quella di effettuare la registrazione; poche informazioni per iniziare';
+  linkPolicy: string = '';
 
   srcImage: string = `assets/profile/user-login-1.png`;
 
@@ -104,14 +106,27 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
     this.subListenArea = this.startService.areaSelected
                                           .subscribe({
                                             next: (dataArea) => {
+                                              let dataLink: AreaLink;
+
                                               this.areaDoc = dataArea;
+
+                                              if (dataArea) {
+                                                //Recupero il Link Policy Privacy
+                                                dataLink = this.areaDoc.findAreaLinkByPageType(PageType.policyPrivacy);
+                                                if (dataLink && dataLink.REFERURL && dataLink.REFERURL.length != 0) {
+                                                  this.linkPolicy = dataLink.REFERURL;
+                                                }
+                                                else {
+                                                  this.linkPolicy = '';
+                                                }
+                                              }
                                             },
                                             error: (dataError) =>{
                                               LogApp.consoleLog(dataError, 'error');
                                             }
                                           })
   }  
-
+  
   /**
    * Imposta la modalità prevista di recupero credenziali
    */
@@ -867,7 +882,6 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
 
 
   }
-
   
   /**
    * Switch per mostrare o nascondere la password
@@ -892,5 +906,16 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
         break;
     }
   }
+
+   //Apre il link delle Policy se presente
+   openPolicyLink() {
+    
+    if (this.linkPolicy && this.linkPolicy.length != 0) {
+       this.startService.openLink(this.linkPolicy);
+    }
+
+    
+  }
+
   //#endregion
 }

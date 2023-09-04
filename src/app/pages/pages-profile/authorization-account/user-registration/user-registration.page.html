@@ -265,6 +265,30 @@
                                   </ion-button>
                             </ion-item>
 
+                            <ion-item
+                                *ngIf="stepRegistration == 'code' && linkPolicy.length != 0"
+                                (click)="openPolicyLink()"
+                                color = "light"
+                                button="true" 
+                                detail="false"
+                                lines="none">
+
+                                  <ion-label 
+                                        class="ion-text-wrap">
+                                    <p class="ion-text-small">
+                                      leggi le condizioni di registrazione
+                                    </p>
+                                  </ion-label>
+
+                                <ion-button
+                                    color="success"
+                                    
+                                    fill="clear"
+                                    size="small"
+                                    slot="end"
+                                >LEGGI</ion-button>
+                            </ion-item>                             
+
                             <!-- CONDIZIONI REGISTRAZIONI -->
                             <ion-item
                                 *ngIf="stepRegistration == 'code'"
@@ -272,8 +296,11 @@
                                 >
                               <ion-checkbox 
                                   justify="end"
-                                  formControlName="flagConditionReading">accetto le condizioni</ion-checkbox>
+                                  formControlName="flagConditionReading">{{linkPolicy.length != 0 ? 'condizioni lette ed accettate' : 'accetto le condizioni'}} </ion-checkbox>
                             </ion-item>
+
+                           
+
 
                             <!-- NEWSLETTER -->
                             <ion-item

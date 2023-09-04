@@ -4,7 +4,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { TabHomePage } from './tab-home.page';
 
-import { UserLoginPageModule } from '../../pages-profile/authorization-account/user-login/user-login.module';
 import { NewsdetailPageModule } from '../../pages-eventi/news-detail/news-detail.module'
 import { TabHomePageRoutingModule } from './tab-home-routing.module'
 import { SharedComponentsModule } from '../../../shared/components/shared-components.module';
@@ -18,7 +17,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
         TabHomePageRoutingModule,
         SharedComponentsModule,
         NewsdetailPageModule,
-        UserLoginPageModule,
         AllegatilistPageModule,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA], 

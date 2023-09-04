@@ -1,10 +1,10 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { Mansione, Sesso, TargetSesso, TipoVerificaAccount } from './valuelist.model';
+import { Mansione, Sesso, TargetSesso } from './valuelist.model';
 import { UtenteLivello } from './utentelivello.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
-import { Gruppo } from './gruppo.model';
 import { Documentazione } from './documentazione.model';
+
 
 
 
@@ -335,111 +335,6 @@ export class Utente extends IDDocument {
     }
 
 
-    get anagraficaOk() {
-        let error = false;
-        if (!(
-            this.COGNOME
-            &&this.NOME
-            &&this.INDIRIZZO
-            &&this.CAP
-            &&this.COMUNE
-            &&this.PROVINCIA
-            &&this.ISOSTATO
-            &&this.SESSO
-            &&this.NATOIL
-            &&this.NATOA
-            //&&this.NATOCAP
-            &&this.NATOPROV
-            &&this.NATOISOSTATO
-            &&this.CODICEFISCALE
-        )){
-            error = true;
-        }
-        if (
-            !error 
-            &&this.NOME != ''
-            &&this.INDIRIZZO!= ''
-            &&this.CAP!= ''
-            &&this.COMUNE!= ''
-            &&this.PROVINCIA!= ''
-            &&this.ISOSTATO!= ''
-            &&this.NATOA!= ''
-            //&&this.NATOCAP!= ''
-            &&this.NATOPROV!= ''
-            &&this.NATOISOSTATO!= ''
-            &&this.CODICEFISCALE!= ''
-        )
-
-        return !error;
-    }
-
-
-    /**
-     * la funzione restituisce i parametri da passare alla verifyPage, per eseguire tutte le verifiche ancora necessarie
-     * secondo quanto richiesto dal docGruppo. se non ci sono verifiche necessarie, restituisce undefined
-     * @param docGruppo il gruppo sportivo per il quale eseguire l'operazione
-     */
-    getParamsVerifica(docGruppo : Gruppo) : ParamsVerifica{
-        let needVerifyMail: boolean = false;
-        let needVerifyTel: boolean = false;
-        let needUpdateProfile: boolean = false;
-
-        if (docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemail || docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms){
-            //il gruppo richiede la verifica della mail
-
-            if (!this.VERIFICATAMAIL){
-                //non ho verificato la mail, devo farlo
-                needVerifyMail=true;
-            }
-            
-        }
-        if (docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificasms || docGruppo.APPTIPOVERIFICA == TipoVerificaAccount.verificaemailsms){
-            //il gruppo richiede la verifica del telefono
-
-            if (!this.VERIFICATAMOBILE){
-                //non ho verificato il telefono, devo farlo
-                needVerifyTel=true;
-            }
-            
-        }
-
-        if (!this.anagraficaOk){
-
-            //devo aggiornare l'anagrafica
-            needUpdateProfile = true;
-        }
-
-        //ora creo i parametri
-        let params = undefined;
-
-        if (needVerifyMail || needVerifyTel || needUpdateProfile){
-
-            //se c'è qualcosa da fare, istanzio params e lo valorizzo
-            params = new ParamsVerifica();
-            if (needVerifyMail && needVerifyTel){
-                //devo verificare sia mail che telefono
-                params.tipoVerifica = TipoVerificaAccount.verificaemailsms
-            }
-            else if (needVerifyMail){
-                //devo verificare solo la mail
-                params.tipoVerifica = TipoVerificaAccount.verificaemail;
-            }
-            else if (needVerifyTel){
-                //devo verificare solo il tel
-                params.tipoVerifica = TipoVerificaAccount.verificasms;
-            }
-            else{
-                //non devo verificare niente
-                params.tipoVerifica = TipoVerificaAccount.noverifica
-            }
-            //segno nei params se aggionare o meno l'anagrafica
-            params.updateDocUtente = needUpdateProfile;
-        }
-        
-        //ritorno i parametri. se non c'è nulla da verificare, params sarà UNDEFINED    
-        return params;
-    }
-
     get isTrainer(){
         let isTrainer: boolean =false;
         if(this.LISTMANSIONI && this.LISTMANSIONI.length > 0){
@@ -476,82 +371,3 @@ export class Utente extends IDDocument {
 
 }
 
-export class StorageUtente {
-    userLogin: string;
-    userPassword: string;
-    crypted: boolean;
-
-    constructor() {
-        this.crypted = false;
-    }
-
-    /**
-     * Imposta le credenziali dentro all'oggetto
-     * Non passare valori Criptati ma solo il FLAG che indica come dovranno essere trattati in seguito
-     * cryptedMode = TRUE => Verranno criptati in fase di salvataggio
-     * @param user 
-     * @param pwd 
-     * @param cryptedMode 
-     */
-    setCredential(user: string,pwd: string,cryptedMode: boolean) {
-        this.userLogin = user;
-        this.userPassword = pwd;
-        this.crypted = cryptedMode;
-    }
-
-    /**
-     * 
-     * @returns TRUE se i campi userLogin e userPassword sono compilati
-     */
-    containCredentials(): boolean {
-        let flagExist = false;
-
-        if (this.userLogin && this.userLogin.length != 0 &&
-            this.userPassword && this.userPassword.length != 0) {
-                flagExist = true;
-            }
-            
-        return flagExist;
-    }
-
-    /**
-     * Imposta il documento con una stringa da parse
-     * @param value 
-     */
-    setFromObjString(value: string) {
-        let objData = {};
-        let nameProp = '';
-
-        if (value && value.length != 0) {
-            try {
-                objData = JSON.parse(value);
-                if (objData) {
-
-                    nameProp = 'userLogin';
-                    if (objData.hasOwnProperty(nameProp)) {
-                        this.userLogin = objData[nameProp];
-                    }
-
-                    nameProp = 'userPassword';
-                    if (objData.hasOwnProperty(nameProp)) {
-                        this.userPassword = objData[nameProp];
-                    }
-
-                    nameProp = 'crypted';
-                    if (objData.hasOwnProperty(nameProp)) {
-                        this.crypted = objData[nameProp];
-                    }
-                }
-            } catch (error) {
-                
-            }
-        }
-    }
-
-}
-
-export class ParamsVerifica{
-
-    tipoVerifica : TipoVerificaAccount;
-    updateDocUtente : boolean;
-}

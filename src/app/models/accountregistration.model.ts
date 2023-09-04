@@ -13,6 +13,7 @@ export class AccountRequestCode extends IDDocument {
     REQUESTSMSCODE: boolean;
     TELEPHONE: string;
     TOKEN: string;
+    IDUTENTE: string;
 
     constructor() {
 
@@ -31,7 +32,8 @@ export class AccountRequestCode extends IDDocument {
                         'IDREFER',
                         'EMAIL',
                         'TELEPHONE',
-                        'TOKEN'
+                        'TOKEN',
+                        'IDUTENTE'
                         ];
         let arNumber = ['USE'];
         let arBoolean = ['REQUESTEMAILCODE', 'REQUESTSMSCODE'];

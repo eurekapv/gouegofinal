@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Utente } from '../models/utente.model';
 import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
@@ -10,6 +9,10 @@ import { PostResponse } from '../library/models/postResult.model';
 import { ParamsExport } from '../library/models/iddocument.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { Account } from '../models/account.model';
+import { TipoVerificaAccount } from '../models/valuelist.model';
+import { Gruppo } from '../models/gruppo.model';
+import { ParamsVerificaAccount } from '../models/params-verifica-account.model';
+import { Utente } from '../models/utente.model';
 
 
 @Injectable({
@@ -17,7 +20,7 @@ import { Account } from '../models/account.model';
 })
 export class UtenteService {
 
-  private _activeUtenteDoc$ = new BehaviorSubject<Utente>(new Utente);
+  private _activeUtenteDoc$ = new BehaviorSubject<Utente>(new Utente());
   private _flagUtenteIsLoggato$ = new BehaviorSubject<boolean>(false);
   private _idAreaFAV = new BehaviorSubject<string>(''); //Avvisa di cambiare l'Area Operativa
   private _utenteImmagine$ = new BehaviorSubject<string>('');
@@ -814,72 +817,190 @@ recoveryUpdatePassword(docUtente: Utente,
 
   //#endregion
 
-  //#region VERIFICA CONTATTI
+  //#region FASI VERIFICATION
+
+  /**
+   * Effettua il controllo sull'utente attivo 
+   * se ha bisogno di verificare qualche dato
+   * @param config 
+   * @returns 
+   */
+  needDataVerification(config: StartConfiguration): Promise<ParamsVerificaAccount> {
+
+    return new Promise<ParamsVerificaAccount>((resolve) => {
+      
+      let dataReturn: ParamsVerificaAccount;
+      let gruppoDoc: Gruppo;
+      
+      dataReturn = new ParamsVerificaAccount();
+      dataReturn.tipoVerifica = TipoVerificaAccount.noverifica;
+      dataReturn.updateDocUtente = false;
+  
+      //Recupero del Gruppo
+      gruppoDoc = config.gruppo;
+  
+      if (this.activeUtenteDoc && gruppoDoc) {
+        switch (gruppoDoc.APPTIPOVERIFICA) {
+          case TipoVerificaAccount.verificaemail:
+              if (this.activeUtenteDoc.VERIFICATAMAIL == false) {
+                dataReturn.tipoVerifica = TipoVerificaAccount.verificaemail
+              }
+            break;
+  
+          case TipoVerificaAccount.verificasms:
+            if (this.activeUtenteDoc.VERIFICATAMOBILE == false) {
+              dataReturn.tipoVerifica = TipoVerificaAccount.verificasms
+            }
+          break;
+  
+          case TipoVerificaAccount.verificaemailsms:
+            //Non è verificato nulla
+            if (this.activeUtenteDoc.VERIFICATAMOBILE == false &&
+                this.activeUtenteDoc.VERIFICATAMAIL == false) {
+              dataReturn.tipoVerifica = TipoVerificaAccount.verificaemailsms
+            }
+            else if (this.activeUtenteDoc.VERIFICATAMAIL == false) {
+              dataReturn.tipoVerifica = TipoVerificaAccount.verificaemail
+            }
+            else if (this.activeUtenteDoc.VERIFICATAMOBILE == false) {
+              dataReturn.tipoVerifica = TipoVerificaAccount.verificasms
+            }
+          break;
+  
+          default:
+            break;
+        }
+  
+        if (!this.activeUtenteDoc.COMUNE || this.activeUtenteDoc.COMUNE.length == 0) {
+          dataReturn.updateDocUtente = true;
+        }
+  
+      }
+
+      resolve(dataReturn);
+    })
+  }
+  //#endregion
+
+  //#region VERIFICA DATI ACCOUNT UTENTE
+
+  /**
+   * Richiede al server di Inviare Codici per la verifica dei Dati Utente (Utente già registrato)
+   * @param docRequestCode 
+   */
+  onUserVerificationSendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+    return new Promise<AccountOperationResponse>((resolve, reject) => {
+      let docToCall: Account;
+      let bodyRequest = '';
+      const method = 'userVerificationSendCodici';
+      
+      if (docRequestCode) {
+
+          //Documento da chiamare
+          docToCall = new Account(true);
+
+          //Creo il body da inviare
+          //Questi sono i parametri per l'esportazione
+          let paramExport = new ParamsExport();
+          paramExport.clearDOProperty = true;
+          paramExport.clearPKProperty = true;
+          paramExport.clearPrivateProperty = true;
+          bodyRequest = docRequestCode.exportToJSON(paramExport);
+          bodyRequest = `{"docRequest" : ${bodyRequest}}`;   
+          
+          this.docStructureService.requestForFunction(docToCall, method, bodyRequest)
+                                  .then(dataReceived => {
+                                    let nameProp = 'verification';
+                                    
+                                    if (dataReceived && dataReceived.hasOwnProperty(nameProp)) {
+
+                                      let response: AccountOperationResponse;
+                                      response = new AccountOperationResponse();
+                                      response = dataReceived[nameProp];
+                                      
+                                      resolve(response);
+                                    }
+                                    else {
+                                      reject('Dati ricevuti non corretti');
+                                    }
+                                  })
+                                  .catch(error => {
+                                    reject(error);
+                                  })            
+          
+      }
+      else {
+        reject('Dati insufficienti per la richiesta');
+      }
+    });
+  }
 
   /**
    * Invia al server la richiesta per inviare via Mail/SMS i codici per la procedura di verifica dei contatti
    * @param config Dati di configurazione
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta
+   * @deprecated
    */
-  validationSendCodici(config: StartConfiguration,
-    docUtente:Utente,
-    docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
-    //Viene effettuata una chiamata al server per ottenere
-    //l'invio di una mail e/o un SMS contenente codici PIN
-    const metodo = 'validationSendCodici';
-    // const myHeaders = new HttpHeaders({'Content-type':'application/json',
-    //                         'X-HTTP-Method-Override': metodo,
-    //                         'appid':config.appId
-    //                       });
-    let myHeaders = config.getHttpHeaders();
-    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
-    const myParams = this.docStructureService.getHttpParams();
-    const doObject = 'ACCOUNT';
-    let bodyRequest = '';
-    let bodyUtente = '';
-    let bodyFinal = '';
+  validationSendCodici(docUtente:Utente,
+                       docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
 
-    let myUrl = config.urlBase + '/' + doObject;
 
-    return new Promise<AccountOperationResponse>((resolve, reject)=> {
-    if (docRequestCode) {
+      return new Promise<AccountOperationResponse>((resolve, reject)=> {
+        let docToCall: Account;
+        const method = 'validationSendCodici';
+        let bodyRequest = '';
+        let bodyUtente = '';
+        let bodyFinal = '';
 
-    //Questi sono i parametri per l'esportazione
-    let paramReqExport = new ParamsExport();
-    paramReqExport.clearDOProperty = true;
-    paramReqExport.clearPKProperty = true;
-    paramReqExport.clearPrivateProperty = true;
+        docToCall = new Account(true);
+        //Preparazione Body
 
-    //Creo il body da inviare
-    bodyRequest = docRequestCode.exportToJSON(paramReqExport);
+        if (docRequestCode && docUtente) {
 
-    //Questi sono i parametri per l'esportazione
-    let paramUteExport = new ParamsExport();
-    paramUteExport.clearDOProperty = true;
-    paramUteExport.clearPKProperty = false;
-    paramUteExport.clearPrivateProperty = true;
+            //Questi sono i parametri per l'esportazione RequestDoc
+            let paramReqExport = new ParamsExport();
+            paramReqExport.clearDOProperty = true;
+            paramReqExport.clearPKProperty = true;
+            paramReqExport.clearPrivateProperty = true;
 
-    bodyUtente = docUtente.exportToJSON(paramUteExport);
+            //Creo il body da inviare
+            bodyRequest = docRequestCode.exportToJSON(paramReqExport);
 
-    bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
+            //Questi sono i parametri per l'esportazione Utente
+            let paramUteExport = new ParamsExport();
+            paramUteExport.clearDOProperty = true;
+            paramUteExport.clearPKProperty = false;
+            paramUteExport.clearPrivateProperty = true;
 
-    //Faccio la chiamata POST
-    this.apiService
-    .httpPost(myUrl, myHeaders, myParams, bodyFinal )
-    .pipe(map(received => {
-        return received.validation;
-    }))
-    .subscribe((response:AccountOperationResponse) => {
-      resolve(response);
-    }, error => {
-      reject(error);
+            bodyUtente = docUtente.exportToJSON(paramUteExport);
+
+            bodyFinal = `{"docRequest" : ${bodyRequest}, "docUtente": ${bodyUtente}}`;
+
+            this.docStructureService.requestForFunction(docToCall, method, bodyFinal)
+                                    .then(dataReceived => {
+                                      let nameProp = 'validation';
+                                      if (dataReceived && dataReceived.hasOwnProperty(nameProp)) {
+
+                                        let response: AccountOperationResponse;
+                                        response = new AccountOperationResponse();
+                                        response = dataReceived[nameProp];
+                                        
+                                        resolve(response);
+                                      }
+                                      else {
+                                        reject('Dati ricevuti non corretti');
+                                      }
+                                    })
+                                    .catch(error => {
+                                      reject(error);
+                                    })                                  
+
+
+        }
+        else {
+          reject('Dati insufficienti per la richiesta');
+        }        
     })
-    }
-    else {
-      reject('Dati mancanti per la richiesta');
-    }
-
-    });
 
   }
 
@@ -889,6 +1010,7 @@ recoveryUpdatePassword(docUtente: Utente,
    * Invia al server una richiesta per verificare i pincode inseriti dall'utente
    * @param config Dati di configurazione
    * @param docVerifyCode Dati da verificare
+   * @deprecated
    */
   validationVerifyCodici(config: StartConfiguration,
                          docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {

@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
-import { ModalController, LoadingController, ToastController, NavController, AlertController, NavParams } from '@ionic/angular';
+import { Component, OnInit} from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { ModalController, LoadingController, ToastController, AlertController, NavParams } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { StartService } from 'src/app/services/start.service';
-import { Utente, ParamsVerifica } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente.model';
 import { Gruppo } from 'src/app/models/gruppo.model';
 import { TipoVerificaAccount, PageType, RequestPincodeUse, ValueList, Sesso } from 'src/app/models/valuelist.model';
 import { Area } from 'src/app/models/area.model';
@@ -14,6 +14,7 @@ import { CryptoService } from 'src/app/library/services/crypto.service';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { PostResponse } from 'src/app/library/models/postResult.model';
 import { LogApp } from 'src/app/models/log.model';
+import { ParamsVerificaAccount } from 'src/app/models/params-verifica-account.model';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class UserVerifyPage implements OnInit {
     //se mostrare l'input cap nascita
     showInputCapNascita = false
     //l'oggetto ricevuto come parametro all'apertura della videata in modale
-    params : ParamsVerifica = new ParamsVerifica;
+    params : ParamsVerificaAccount = new ParamsVerificaAccount();
 
    //per utilizzare l'enum nell'html
    pageState: typeof PageState=PageState;
@@ -76,7 +77,7 @@ export class UserVerifyPage implements OnInit {
    //lista delle decodifiche del sesso
    listSesso : ValueList[]=[];
    //
-   today: string;
+   todayISO: string;
 
 
     /**
@@ -214,7 +215,7 @@ export class UserVerifyPage implements OnInit {
     this.listSesso= ValueList.getArray(Sesso);
 
     //il giorno attuale per filtrare la data di nascita in input
-    this.today=this.today=MyDateTime.formatDateISO(new Date(), "date");
+    this.todayISO=MyDateTime.formatDateISO(new Date(), "date");
 
   }
  
@@ -1084,18 +1085,6 @@ export class UserVerifyPage implements OnInit {
    clearInputPinCode() {
       this.codeVerificationMail = '';
       this.codeVerificationSms = '';
-
-    //  for (let index = 1; index <= 5; index++) {
-       
-    //    this.formVerifyMail.get('c' + index).setValue("");
-    
-    //  }
-
-    //  for (let index = 6; index <= 10; index++) {
-       
-    //   this.formVerifyTel.get('c' + index).setValue("");
-   
-    // }
    }
  
  

@@ -148,7 +148,6 @@
                               <ion-input
                                   label="Numero Mobile"
                                   labelPlacement="stacked"
-                                  helperText="numero mobile valido"
                                   errorText="controlla l'inserimento del numero telefonico"
                                   [clearInput]="true"
                                   formControlName = 'profileMobile'
@@ -340,6 +339,7 @@
                     class="ion-no-padding ion-no-margin">
                   <ion-col>
                     <ion-button
+                      (click)="onSubmitData()"
                       color="tertiary"
                       expand="full"
                       fill="solid">

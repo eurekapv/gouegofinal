@@ -310,7 +310,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
           disabled: false
         }, {
           updateOn:'change',
-          validators: []
+          validators: [Validators.required]
         }),
         provResidenza:new FormControl<string>({
           value: this.utenteVerification.PROVINCIA,
@@ -373,12 +373,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
     //Dovrei avere la MAIL verificata
     if (toVerify) {
       if (this.utenteVerification && this.formPagePrimary) {
-        //Non ho ancora un valore
-        if (!valueCompare || valueCompare.length == 0) {
-          flagShow = false;
-        }
-        //La Mail presente nella form è diversa da quella precedente
-        else if (this.utenteVerification.EMAIL != valueCompare) {
+        if (this.utenteVerification.EMAIL != valueCompare) {
           //Devo verificare
           flagShow = true;
         }
@@ -420,10 +415,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
     //Dovrei avere la MOBILE verificata
     if (toVerify) {
       if (this.utenteVerification && this.formPagePrimary) {
-        if (!valueCompare || valueCompare.length == 0) {
-          flagShow = false;
-        }
-        else if (this.utenteVerification.MOBILENUMBER != valueCompare) {
+        if (this.utenteVerification.MOBILENUMBER != valueCompare) {
           //Il numero Mobile presente nella form è diversa da quella precedente
           //Devo verificare
           flagShow = true;
@@ -538,21 +530,32 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
   onRequestReinvioCode(type: 'mail' | 'mobile') {
     let myMessage: string = '';
     let arButtons: AlertButton[] = [];
+    let valueContact = '';
 
+    //Per inviare devo avere la mail o il mobile number
+    valueContact = (type == 'mail' ? this.formPagePrimary.value.profileEmail : this.formPagePrimary.value.profileMobile);
+
+    if (!valueContact || valueContact.length == 0) {
+
+        myMessage = (type == 'mail' ? 'Specificare una e-mail valida' : 'Specificare un numero mobile valido');
+        this.startService.presentAlertMessage(myMessage);
+    }
+    else {
+      //Posso chiedere se vuole inviare
       if (type == 'mail') {
-
+  
         myMessage = '<p>Desideri che venga inviato un nuovo codice tramite un </p>'
         myMessage += `<p>messaggio E-mail a <strong>${this.formPagePrimary.value.profileEmail}</strong> ?</p>`;
-
+  
       }
       else if (type == 'mobile') {
-
+  
         myMessage = '<p>Desideri che venga inviato un nuovo codice tramite un </p>'
         myMessage += `<p>Messaggio SMS al numero <strong>${this.formPagePrimary.value.profileMobile}</strong> ?</p>`;
-
+  
       }
       
-
+  
       //Preparo i Bottoni
       arButtons = [{
         text: 'Si, procedi',
@@ -562,9 +565,11 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
         text: 'No, aspetta',
         role: "cancel"
       }]
-
+  
       //Chiedo ed eventualmente eseguo
       this.startService.presentAlertMessage(myMessage, 'Invio Codice', arButtons);
+    }
+
     
   }
 
@@ -643,6 +648,88 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
       this.startService.presentAlertMessage(myMessage);
     }
   }  
+
+
+  onSubmitData() {
+    let flagValidation = false;
+
+    flagValidation = this.onValidationData();
+
+
+  }
+  
+  /**
+   * Valida le Informazioni dell'Utente
+   */
+  onValidationData(): boolean {
+    let flagValidation = false;
+    let codeValue = '';
+    let arMessage: string[] = [];
+    let myMessage = '';
+
+    //I dati sono validi
+    if (this.formPagePrimary.valid) {
+      flagValidation = true;
+
+      //Serve il Codice Mail
+      if (this.flagShowMailCode) {
+        codeValue = this.formPagePrimary.value.verificationMailCode;
+        //Non l'ha impostato
+        if (!codeValue || codeValue.length == 0) {
+          flagValidation = false;
+          arMessage.push('Indicare il Codice ricevuto <strong>via mail</strong>');
+        }
+      }
+
+      //Serve il Codice SMS
+      if (this.flagShowSmsCode) {
+        codeValue = this.formPagePrimary.value.verificationSmsCode;
+        //Non l'ha impostato
+        if (!codeValue || codeValue.length == 0) {
+          flagValidation = false;
+          arMessage.push('Indicare il Codice ricevuto <strong>via SMS</strong>');
+        }
+      }      
+
+      if (!flagValidation) {
+
+        if (arMessage.length == 0) {
+          myMessage = '<p>Controllare il seguente errore:<p>';
+          myMessage += `<p>${arMessage[0]}<p>`;
+        }
+        else {
+          myMessage = '<p>Controllare i seguenti errori:<p>';
+          for (let index = 0; index < arMessage.length; index++) {
+            const elMessage = arMessage[index];
+            myMessage += `<p>${elMessage}<p>`;
+          }
+        }
+      }
+
+    }
+    else {
+      //Form non valida
+      flagValidation = false;
+      myMessage = 'Controllare le informazioni mancanti o errate';
+      let nameFields = ['profileName', 'profileSurname', 'profileEmail', 'profileMobile', 'comResidenza'];
+
+      nameFields.forEach(elField => {
+
+        if (this.formPagePrimary.get(elField).hasError) {
+  
+          this.formPagePrimary.get(elField).markAsTouched();
+        }
+      })
+
+    }
+
+    if (!flagValidation) {
+      this.startService.presentAlertMessage(myMessage);
+    }
+
+    return flagValidation;
+
+  }
     //#endregion
 
 

@@ -936,6 +936,61 @@ recoveryUpdatePassword(docUtente: Utente,
   }
 
   /**
+   * Richiede al server l'aggiornamento dei dati a seguito di una verifica (se necessario vengono controllati anche i codici)
+   * @param docVerifyCode 
+   */
+  onUserVerificationFinalize(docVerifyCode: AccountVerifyCode, docUtente: Utente):Promise<AccountOperationResponse> {
+      return new Promise<AccountOperationResponse>((resolve, reject) => {
+        let docToCall: Account;
+        let bodyRequest = '';
+        let bodyUtente = '';
+        let bodyFinal = '';
+        const method = 'userVerificationFinalize';
+        
+        if (docVerifyCode && docUtente) {
+  
+            //Documento da chiamare
+            docToCall = new Account(true);
+  
+            //Creo il body da inviare
+            //Questi sono i parametri per l'esportazione
+            let paramExport = new ParamsExport();
+            paramExport.clearDOProperty = true;
+            paramExport.clearPKProperty = true;
+            paramExport.clearPrivateProperty = true;
+            bodyRequest = docVerifyCode.exportToJSON(paramExport);
+            bodyUtente = docUtente.exportToJSON(paramExport);
+
+            bodyFinal = `{"docRequest" : ${bodyRequest},"docUtente" : ${bodyUtente} }`;   
+            
+            this.docStructureService.requestForFunction(docToCall, method, bodyFinal)
+                                    .then(dataReceived => {
+                                      let nameProp = 'verification';
+                                      
+                                      if (dataReceived && dataReceived.hasOwnProperty(nameProp)) {
+  
+                                        let response: AccountOperationResponse;
+                                        response = new AccountOperationResponse();
+                                        response = dataReceived[nameProp];
+                                        
+                                        resolve(response);
+                                      }
+                                      else {
+                                        reject('Dati ricevuti non corretti');
+                                      }
+                                    })
+                                    .catch(error => {
+                                      reject(error);
+                                    })            
+            
+        }
+        else {
+          reject('Dati insufficienti per la richiesta');
+        }
+      });
+    }
+
+  /**
    * Invia al server la richiesta per inviare via Mail/SMS i codici per la procedura di verifica dei contatti
    * @param config Dati di configurazione
    * @param docRequestCode Documento con le informazioni da inviare al server per effettuare la richiesta

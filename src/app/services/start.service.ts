@@ -1643,9 +1643,19 @@ recoveryUpdatePassword(docUtente: Utente,
  * @param docRequestCode Valorizzare Obbligatoriamente USE / IDUTENTE / IDAREA 
  * @returns 
  */
-verificationSendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
+userVerificationSendCodici(docRequestCode: AccountRequestCode):Promise<AccountOperationResponse> {
   return this.utenteService.onUserVerificationSendCodici(docRequestCode );
 }
+
+/**
+ * Effettua l'aggiornamento dei dati Utente a seguito di una verifica
+ * @param docVerify 
+ * @param docUtente 
+ */
+userVerificationFinalize(docVerify: AccountVerifyCode, docUtente: Utente): Promise<AccountOperationResponse> {
+  return this.utenteService.onUserVerificationFinalize(docVerify, docUtente);
+}
+
 
 /**
  * 
@@ -1658,6 +1668,12 @@ validationSendCodici(docRequestCode: AccountRequestCode, docUtente: Utente):Prom
   return this.utenteService.validationSendCodici(docUtente, docRequestCode );
 }
 
+/**
+ * 
+ * @param docVerifyCode 
+ * @returns 
+ * @deprecated
+ */
 validationVerifyCodici(docVerifyCode: AccountVerifyCode):Promise<AccountOperationResponse> {
   const actualStartConfig = this._startConfig.getValue();
   return this.utenteService.validationVerifyCodici(actualStartConfig, docVerifyCode);

@@ -597,7 +597,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
             elLoading.present();      
 
             this.startService
-                .verificationSendCodici(this.docRichiestaCodici)
+                .userVerificationSendCodici(this.docRichiestaCodici)
                 .then((risposta: AccountOperationResponse) => {
 
                   elLoading.dismiss();
@@ -650,10 +650,72 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
   }  
 
 
+  /**
+   * Conferma dei dati e salvataggio
+   */
   onSubmitData() {
     let flagValidation = false;
+    let myMessage = '';
 
+    //Effettuo la validazione dei dati
     flagValidation = this.onValidationData();
+
+    //Preparo i documenti da inviare
+    if (flagValidation) {
+      this.prepareDataSubmit();
+
+      //Apro il loading
+      //Qui devo contattare il server
+      this.loadingController
+          .create({
+              message: 'Aggiornamento Dati'
+          })
+          .then(elLoading => {
+  
+            //Creo il loading
+            elLoading.present();  
+  
+            this.startService.userVerificationFinalize(this.docVerificaCodici, this.utenteVerification)
+                            .then((risposta: AccountOperationResponse) => {
+  
+                              elLoading.dismiss();
+  
+                              if (risposta) {
+                                if (risposta.result) {
+  
+                                  myMessage = '<p>Dati aggiornati correttamente</p>';    
+                                  myMessage += '<p>&Egrave; possibile proseguire con l\'operazione che si stava effettuando'
+                                  //Qui possiamo chiudere la videata e dare il messaggio finale
+                                  this.closeModal(myMessage, 'Aggiornamento');
+                                  
+                                }
+                                else {
+                                  myMessage = '<p>Si sono verificati problemi nell\'operazione di aggiornamento</p>';
+
+                                  if (risposta.message && risposta.message.length != 0) {
+                                      myMessage += `<p>${risposta.message}</p>`
+                                  }
+  
+                                  this.startService.presentAlertMessage(myMessage, 'Aggiorn. fallito');
+  
+                                }
+                              }
+                              else {
+                                    //Qualche problema
+                                    myMessage = '<p class="ion-text-bold">Spiacente</p>'
+                                    myMessage += '<p>Non ho ricevuto una risposta corretta dal server</p>';
+                                    this.startService.presentAlertMessage(myMessage);                    
+                              }
+                            })
+                            .catch(error => {
+  
+                              elLoading.dismiss();
+                              this.startService.presentAlertMessage(error);
+                            })                          
+          })
+
+    }
+
 
 
   }
@@ -730,6 +792,40 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
     return flagValidation;
 
   }
+
+  /**
+   * Prepara i documenti da inviare nella fase Submit
+   */
+  prepareDataSubmit(): void {
+
+    //Creazione documento per la verifica
+    this.docVerificaCodici = new AccountVerifyCode();
+    this.docVerificaCodici.IDAREA = this.areaDoc.ID;
+    this.docVerificaCodici.IDREFER = this.docRichiestaCodici.IDREFER;
+    
+    if (this.flagShowMailCode) {
+        this.docVerificaCodici.EMAILPINCODE = this.formPagePrimary.value.verificationMailCode;
+    }
+
+    if (this.flagShowSmsCode) {
+      this.docVerificaCodici.SMSPINCODE = this.formPagePrimary.value.verificationSmsCode;
+    }
+
+    //Aggiorno i dati dell'utente
+    this.utenteVerification.COGNOME = this.formPagePrimary.value.profileSurname;
+    this.utenteVerification.NOME = this.formPagePrimary.value.profileName;
+    this.utenteVerification.EMAIL = this.formPagePrimary.value.profileEmail;
+    this.utenteVerification.MOBILENUMBER = this.formPagePrimary.value.profileMobile;
+    this.utenteVerification.CODICEFISCALE = this.formPagePrimary.value.codiceFiscale;
+    this.utenteVerification.SESSO = this.formPagePrimary.value.sesso;
+    this.utenteVerification.INDIRIZZO = this.formPagePrimary.value.indResidenza;
+    this.utenteVerification.CAP = this.formPagePrimary.value.capResidenza;
+    this.utenteVerification.COMUNE = this.formPagePrimary.value.comResidenza;
+    this.utenteVerification.PROVINCIA = this.formPagePrimary.value.provResidenza;
+    this.utenteVerification.ISOSTATO = this.formPagePrimary.value.statoResidenza;
+    //La Data di Nascita è collegata direttamente in interfaccia
+    
+  }
     //#endregion
 
 
@@ -772,16 +868,18 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
 
 
   /**
-  * Chiusura della videata
+  * Chiusura della videata con messaggio eventualmente visualizzato
+  * @param message Messaggio da mostrare
+  * @param title Titolo Form
   */  
-  closeModal(openLogin: boolean = false) {
+  closeModal(message?: string, title?: string) {
 
     //Chiudo la Modale 
     this.modalCtrl.dismiss()
                   .then(isClosed => {
                       //Se devo chiudere e aprire il login
-                      if (isClosed && openLogin) {
-                        this.startService.openFormLogin();
+                      if (isClosed && message && message.length != 0) {
+                        this.startService.presentAlertMessage(message, title);
                       }
                   });
 

@@ -348,14 +348,21 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
   onAfterSavePrenotazione()
   {
     this.showMessage('Prenotazione confermata');
-    //1) Chiudere la modale
-    this.closeModal();
-    //2) Andare alla History sulla scheda
-    let identifier = this.docPianificazione.getIdentifier();
-    let arPath = this.startService.getUrlPageHistoryPersonal('book',identifier);
-    //Adesso mi sposto
-    this.navController.navigateRoot(arPath);
 
+    //1) Chiudere la modale
+    this.modalCtrl.dismiss()
+                  .then(isClosed => {
+                    if (isClosed) {
+
+                      //2) Andare alla History sulla scheda
+                      let identifier = this.docPianificazione.getIdentifier();
+                      let arPath = this.startService.getUrlPageHistoryPersonal('book',identifier);
+                      //Adesso mi sposto
+                      this.navController.navigateBack(arPath);
+
+                    }
+                  })
+    
   }
 
 

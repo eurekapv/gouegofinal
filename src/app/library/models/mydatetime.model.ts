@@ -417,7 +417,8 @@ static durataOre(startDate: Date, endDate: Date): number {
     let minValue = 0;
 
     if (startDate && endDate) {
-        minValue = differenceInMinutes(startDate, endDate);
+        //Inverto i parametri altrimenti mi ritorna un numero negativo
+        minValue = differenceInMinutes(endDate,startDate);
         hourValue = minValue / 60;
     }
 
@@ -426,7 +427,7 @@ static durataOre(startDate: Date, endDate: Date): number {
 
 
 /**
- * Calcola il numero di Ore intercorse tra le due date ore
+ * Calcola il numero di Anni intercorse tra le due date ore
  * @param inferiorDate Data Ora Iniziale (Inferiore)
  * @param superiorDate Data Ora Finale (Superiore)
  */
@@ -434,7 +435,8 @@ static durataAnni(inferiorDate: Date, superiorDate: Date): number {
     let yearsValue = 0;
 
     if (inferiorDate && superiorDate) {
-        yearsValue = differenceInYears(inferiorDate, superiorDate);
+        //Inverto i parametri altrimenti mi ritorna un numero negativo
+        yearsValue = differenceInYears(superiorDate, inferiorDate);
     }
 
     return yearsValue;
@@ -449,7 +451,7 @@ static durataSecondi(date1: Date, date2: Date): number {
     let secondsValue = 0;
 
     if (date1 && date2) {
-        secondsValue = differenceInSeconds(date1, date2);
+        secondsValue = differenceInSeconds(date2, date1);
     }
 
     return secondsValue;

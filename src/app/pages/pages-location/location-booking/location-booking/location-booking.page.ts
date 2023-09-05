@@ -53,6 +53,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   
   //Prenotazione Attiva
   activePrenotazione: Prenotazione;
+
   //Singola Data Pianificata
   actualPlanning: PrenotazionePianificazione = new PrenotazionePianificazione(); //E' la pianificazione attuale che l'utente vorrebbe prenotare
   
@@ -586,6 +587,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
       else {
         //Cambio il Planning attuale visualizzato
         this.actualPlanning = this.actualSlotDay.changeSelectionSlotTime(slotClicked);
+        console.log(this.actualPlanning);
       }
       
     }

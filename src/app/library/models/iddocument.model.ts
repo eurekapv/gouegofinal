@@ -388,7 +388,7 @@ import { MyDateTime } from './mydatetime.model';
 
                   case TypeDefinition.dateTime:
                     //Campo di tipo DATAORA
-                    row += '\"' + this.formatDateTimeISO(_this[elNameProperty]) + '\"' ;
+                    row += '\"' + this.formatDateTimeISO(_this[elNameProperty], paramExport.dateTimeIndeFormat) + '\"' ;
                     break;
                   case TypeDefinition.char:
                     let valore = _this[elNameProperty];
@@ -539,8 +539,36 @@ import { MyDateTime } from './mydatetime.model';
     }
 
     //Formatta una data passata in ISO (Data e Ora)
-    formatDateTimeISO(data: Date) {
+    formatDateTimeISO(data: Date, indeFormat: boolean = true) {
       let final = MyDateTime.formatDateISO(data,"complete");
+
+      if (indeFormat) {
+        final = this.convertISODateTimeForInde(final);
+      }
+
+      return final;
+    }
+
+    /**
+     * Converte una stringa ISO Date Time nel formato INDE
+     * che è YYYY-MM-DD HH:NN:SS
+     * @param isoDateTime 
+     */
+      convertISODateTimeForInde(isoDateTime: string): string {
+        let final: string = '';
+        let posPlus: number = -1;
+
+        final = isoDateTime;
+
+        if (final && final.length != 0) {
+          //In Inde non c'è il T che separa Data e Ora
+          final = final.replace('T',' ');
+          posPlus = final.indexOf('+');
+          if (posPlus != -1) {
+            final = final.substring(0,posPlus);
+          }
+        }
+
       return final;
     }
 
@@ -1107,6 +1135,7 @@ import { MyDateTime } from './mydatetime.model';
   }
 
   export class ParamsExport {
+    dateTimeIndeFormat: boolean; //Esporta i Date Date Time nel formato INDE (YYYY-MM-DD HH:NN:SS)
     clearDOProperty: boolean; //Non esporta le proprietà do_inserted, do_deleted
     clearPKProperty: boolean; //Non esporta la chiave primaria 
     clearPrivateProperty: boolean; //Non esporta le proprietà private identificate da _ 
@@ -1125,6 +1154,8 @@ import { MyDateTime } from './mydatetime.model';
       this.clearPKProperty = false;
       this.clearPrivateProperty = false;
       this.clearNullValue = false;
+      //Esporta nel formato DateTime INDE
+      this.dateTimeIndeFormat = true;
     }
   }
 

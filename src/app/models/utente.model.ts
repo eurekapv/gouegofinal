@@ -59,10 +59,12 @@ export class Utente extends IDDocument {
             this.DOCUMENTAZIONI = [];
             this.PROFILAZIONEESTERNA = false;
             this.PROFILAZIONEINTERNA = false;
+
+            this.VERIFICATAMAIL = false;
+            this.VERIFICATAMOBILE = false;
+ 
         }
 
-        this.VERIFICATAMAIL = false;
-        this.VERIFICATAMOBILE = false;
     }
 
 

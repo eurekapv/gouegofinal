@@ -13,6 +13,7 @@ import { TipoVerificaAccount } from '../models/valuelist.model';
 import { Gruppo } from '../models/gruppo.model';
 import { ParamsVerificaAccount } from '../models/params-verifica-account.model';
 import { Utente } from '../models/utente.model';
+import { RequestParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -47,23 +48,87 @@ export class UtenteService {
   }
 
   /**
+   * Area Favorita dall'utente
+   */
+  get idAreaFAV() {
+    return this._idAreaFAV.asObservable();
+  }  
+
+
+
+
+
+
+  constructor(private apiService: ApicallService,
+              private docStructureService: DocstructureService) { }
+
+
+  /**
+   * Carica il documento Utente partendo dal ID
+   * @param idUtente 
+   */
+   request(idUtente: string, numChild: number = 1, decodeAll: boolean=false): Promise<Utente> {
+
+    return new Promise<Utente>((resolve, reject) => {
+
+      if (idUtente && idUtente.length != 0)   {
+        let filterDoc: Utente;
+        let reqParams: RequestParams;
+
+        filterDoc = new Utente(true);
+        filterDoc.ID = idUtente;
+
+        reqParams = new RequestParams();
+        reqParams.child_level = numChild;
+        reqParams.decode.active = decodeAll;
+        
+        this.docStructureService.requestNew(filterDoc, reqParams)
+                                .then(listItems => {
+                                  if (listItems && listItems.length == 1) {
+                                    resolve(listItems[0]);
+                                  }
+                                  else {
+                                    reject('Document not found');
+                                  }
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+      }
+      else {
+        reject('IdUtente unknown');
+      }
+    })
+   }
+    
+
+   /** 
+    * Se presente un ActiveUtenteDoc richiede un refresh dal Server
+    * e riemette Observable
+    */
+   refreshActiveUtenteDoc(): void {
+      let filterDoc = this._activeUtenteDoc$.getValue();
+
+      if (filterDoc && filterDoc.ID) {
+        //Richiedo al server il documento
+        this.request(filterDoc.ID, 2)
+            .then(dataReceived => {
+              //Riemetto il documento
+              this._activeUtenteDoc$.next(dataReceived);
+            })
+            .catch(error => {
+              LogApp.consoleLog(error, "error");
+            })
+      }
+   }
+
+   /**
    * Imposta la UserPicture
    * @param value DataUrl image
    */
   setUtenteImmagine(dataUrl: string) {
     this._utenteImmagine$.next(dataUrl);
   }
-
-  /**
-   * Area Favorita dall'utente
-   */
-  get idAreaFAV() {
-    return this._idAreaFAV.asObservable();
-  }
-
-
-  constructor(private apiService: ApicallService,
-              private docStructureService: DocstructureService) { }
 
 
   /**
@@ -817,7 +882,7 @@ recoveryUpdatePassword(docUtente: Utente,
 
   //#endregion
 
-  //#region FASI VERIFICATION
+  //#region VERIFICA DATI ACCOUNT UTENTE
 
   /**
    * Effettua il controllo sull'utente attivo 
@@ -880,9 +945,6 @@ recoveryUpdatePassword(docUtente: Utente,
       resolve(dataReturn);
     })
   }
-  //#endregion
-
-  //#region VERIFICA DATI ACCOUNT UTENTE
 
   /**
    * Richiede al server di Inviare Codici per la verifica dei Dati Utente (Utente già registrato)
@@ -956,12 +1018,14 @@ recoveryUpdatePassword(docUtente: Utente,
             //Questi sono i parametri per l'esportazione
             let paramExport = new ParamsExport();
             paramExport.clearDOProperty = true;
-            paramExport.clearPKProperty = true;
             paramExport.clearPrivateProperty = true;
+            paramExport.clearPKProperty = false;
+            paramExport.numLivelli = 1;
+
             bodyRequest = docVerifyCode.exportToJSON(paramExport);
             bodyUtente = docUtente.exportToJSON(paramExport);
 
-            bodyFinal = `{"docRequest" : ${bodyRequest},"docUtente" : ${bodyUtente} }`;   
+            bodyFinal = `{"docVerify" : ${bodyRequest},"docUtente" : ${bodyUtente} }`;   
             
             this.docStructureService.requestForFunction(docToCall, method, bodyFinal)
                                     .then(dataReceived => {

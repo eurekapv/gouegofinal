@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgModuleFactory, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertButton, IonInput, LoadingController, ModalController, NavParams } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -119,6 +119,8 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
                                                 //Con l'arrivo utente posso eseguire il fill
                                                 //dei dati
                                                 this.utenteVerification = dataUser;
+                                                
+
                                                 //Compilo la form
                                                 this.createFormPagePrimary();
 
@@ -227,7 +229,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
         profileName:new FormControl<string>(
             {
               value:this.utenteVerification.NOME,
-              disabled: false,
+              disabled: false, 
             }, {
           updateOn:'change',
           validators: [Validators.required]
@@ -256,8 +258,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
           },
           {
             updateOn: 'change',
-            validators: [Validators.maxLength(this.verificationCodeLength),
-                         Validators.minLength(this.verificationCodeLength)]
+            validators: [Validators.maxLength(this.verificationCodeLength), Validators.minLength(0)]
           }),             
         profileMobile: new FormControl<string>(
             {
@@ -274,8 +275,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
             },
             {
               updateOn: 'change',
-              validators: [Validators.maxLength(this.verificationCodeLength),
-                           Validators.minLength(this.verificationCodeLength)]
+              validators: []
             }),             
         codiceFiscale:new FormControl<string>({
               value: this.utenteVerification.CODICEFISCALE,
@@ -477,7 +477,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
           })
         }
       }
-    }
+  }
 
     //#endregion
 
@@ -728,70 +728,91 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
     let codeValue = '';
     let arMessage: string[] = [];
     let myMessage = '';
+    let listFieldsError: string[] = [];
+    let labelField: string = '';
 
-    //I dati sono validi
-    if (this.formPagePrimary.valid) {
-      flagValidation = true;
+    flagValidation = true;
 
-      //Serve il Codice Mail
-      if (this.flagShowMailCode) {
-        codeValue = this.formPagePrimary.value.verificationMailCode;
-        //Non l'ha impostato
-        if (!codeValue || codeValue.length == 0) {
+    //Controllo di tutti i campi presenti nel FORM
+    for(const nameField in this.formPagePrimary.controls) {
+
+        const control = this.formPagePrimary.get(nameField);
+        
+        if (control.valid == false && control.status != 'DISABLED') {
+          
+          console.log(control)
           flagValidation = false;
-          arMessage.push('Indicare il Codice ricevuto <strong>via mail</strong>');
-        }
-      }
-
-      //Serve il Codice SMS
-      if (this.flagShowSmsCode) {
-        codeValue = this.formPagePrimary.value.verificationSmsCode;
-        //Non l'ha impostato
-        if (!codeValue || codeValue.length == 0) {
-          flagValidation = false;
-          arMessage.push('Indicare il Codice ricevuto <strong>via SMS</strong>');
-        }
-      }      
-
-      if (!flagValidation) {
-
-        if (arMessage.length == 0) {
-          myMessage = '<p>Controllare il seguente errore:<p>';
-          myMessage += `<p>${arMessage[0]}<p>`;
-        }
-        else {
-          myMessage = '<p>Controllare i seguenti errori:<p>';
-          for (let index = 0; index < arMessage.length; index++) {
-            const elMessage = arMessage[index];
-            myMessage += `<p>${elMessage}<p>`;
+          //Questo Elemento non è valido
+          //Lo Marchio come toccato
+          control.markAsTouched();
+          //Recupero Etichetta DOM
+          const selector = `[formControlName=${nameField}]`;
+          const domItem = document.querySelector(selector);
+          if (domItem) {
+            labelField = domItem.getAttribute('label');
+            if (!labelField || labelField.length == 0) {
+              labelField = nameField;
+            }
           }
+          else {
+            labelField = nameField;
+          }
+          
+          listFieldsError.push(labelField);
         }
+
+        LogApp.consoleLog(`${nameField} => Modificato [${control.dirty ? 'X' : ' '}] - Toccato [${control.touched ? 'X' : ' '}] - Valido [${control.valid ? 'X' : ' '}]`,'log');
+        if (control.errors) {
+          LogApp.consoleLog(control.errors,"warn");
+        }
+        
+    }    
+
+    //Controlli EXTRA FORM
+
+    //Serve il Codice Mail
+    if (this.flagShowMailCode) {
+      codeValue = this.formPagePrimary.value.verificationMailCode;
+      //Non l'ha impostato
+      if (!codeValue || codeValue.length == 0) {
+        flagValidation = false;
+        listFieldsError.push('Codice ricevuto <strong>via mail</strong>');
       }
-
     }
-    else {
-      //Form non valida
-      flagValidation = false;
-      myMessage = 'Controllare le informazioni mancanti o errate';
-      let nameFields = ['profileName', 'profileSurname', 'profileEmail', 'profileMobile', 'comResidenza'];
 
-      nameFields.forEach(elField => {
-
-        if (this.formPagePrimary.get(elField).hasError) {
-  
-          this.formPagePrimary.get(elField).markAsTouched();
-        }
-      })
-
-    }
+    //Serve il Codice SMS
+    if (this.flagShowSmsCode) {
+      codeValue = this.formPagePrimary.value.verificationSmsCode;
+      //Non l'ha impostato
+      if (!codeValue || codeValue.length == 0) {
+        flagValidation = false;
+        listFieldsError.push('Codice ricevuto <strong>via SMS</strong>');
+      }
+    }      
 
     if (!flagValidation) {
-      this.startService.presentAlertMessage(myMessage);
+
+      myMessage = '<p>Controllare le informazioni mancanti o errate</p>';
+
+      if (listFieldsError.length != 0) {
+        myMessage += '<ul>';
+        
+        listFieldsError.forEach(elLabel => {
+          myMessage+= `<li>${elLabel}</li>`;
+        })
+
+        myMessage += '</ul>';
+      }
+      
+      this.startService.presentAlertMessage(myMessage, 'Errore');
+
     }
 
     return flagValidation;
 
   }
+
+
 
   /**
    * Prepara i documenti da inviare nella fase Submit
@@ -801,7 +822,12 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
     //Creazione documento per la verifica
     this.docVerificaCodici = new AccountVerifyCode();
     this.docVerificaCodici.IDAREA = this.areaDoc.ID;
-    this.docVerificaCodici.IDREFER = this.docRichiestaCodici.IDREFER;
+    if (this.docRichiestaCodici.IDREFER && this.docRichiestaCodici.IDREFER.length != 0) {
+      this.docVerificaCodici.IDREFER = this.docRichiestaCodici.IDREFER;
+    }
+    else {
+      this.docVerificaCodici.IDREFER = '';
+    }
     
     if (this.flagShowMailCode) {
         this.docVerificaCodici.EMAILPINCODE = this.formPagePrimary.value.verificationMailCode;
@@ -874,12 +900,20 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
   */  
   closeModal(message?: string, title?: string) {
 
+    //In chiusura modale chiedo di riscaricare il documento utente
+
     //Chiudo la Modale 
     this.modalCtrl.dismiss()
                   .then(isClosed => {
                       //Se devo chiudere e aprire il login
                       if (isClosed && message && message.length != 0) {
-                        this.startService.presentAlertMessage(message, title);
+                        //Chiedo di ricaricare utente
+                        this.startService.refreshActiveUtenteDoc();
+
+                        if (message && message.length != 0) {
+                          this.startService.presentAlertMessage(message, title);
+                        }
+                        
                       }
                   });
 

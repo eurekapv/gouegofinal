@@ -219,6 +219,7 @@ import { MyDateTime } from './mydatetime.model';
      *  clearDOProperty Non esporta le proprietà tipiche del documento (selected, do_insert etc)
      *  clearPKProperty Non esporta la Chiave primaria
      *  clearPrivateProperty Non esporta le proprietà private
+     *  clearNullValue Non esporta le proprietà con valori nulli
      *  onlyModified Esporta solo le proprietà diverse dalle original
      *  numLivelli Numero livelli da esportare
      */
@@ -228,7 +229,7 @@ import { MyDateTime } from './mydatetime.model';
       //Chiedo il Descrittore della classe
       let objDescriptor = _this.getDescriptor();
       let strJSON = '';
-      let doProperty = ['do_updated',' do_loaded','do_inserted','do_deleted','selected'];
+      let doProperty = ['do_updated','do_loaded','do_inserted','do_deleted','selected'];
       let propExclud = [];
       let row = '';
       let skipAll = false;
@@ -258,133 +259,163 @@ import { MyDateTime } from './mydatetime.model';
       if (!skipAll) {
         
         //Ciclo sulle proprietà
-        arProperty.forEach(element => {
+        arProperty.forEach(elNameProperty => {
           
           let useElement = true;
           
+          //#region CONTROLLO SE ESPORTARE
+
           //Se devo togliere le proprietà private le elimino
-          if (paramExport.clearPrivateProperty && element.startsWith('_')) {
-            
+          if (paramExport.clearPrivateProperty && elNameProperty.startsWith('_')) {
             useElement = false;
-          
           }
   
           //Controlliamo se il valore è diverso dal valore original
-          if (paramExport.onlyPropertyModified) {
-            //Chiave primaria devo passarla anche se non modificata
-            if (element != this.getPrimaryKey('name')) {
-              //Controllo se la proprietà risulta modificata o no
-              if (_this.propertyIsModified(element) == false) {
+          if (useElement) {
+            if (paramExport.onlyPropertyModified) {
+              //Chiave primaria devo passarla anche se non modificata
+              if (elNameProperty != this.getPrimaryKey('name')) {
+                //Controllo se la proprietà risulta modificata o no
+                if (_this.propertyIsModified(elNameProperty) == false) {
+                  useElement = false;
+                }
+              }
+            }
+          }
+
+          //Controllo se la proprietà è tra quelle da escludere
+          if (useElement) {
+            if (propExclud.length !== 0) {
+              if (propExclud.includes(elNameProperty)) {
+                useElement = false;
+              }
+            }            
+          }
+
+          //Controllo per NULL VALUE
+          if (useElement) {
+            //Vuole che non esporti i valori NULL o UNDEFINED
+            if (paramExport.clearNullValue) {
+              if (_this[elNameProperty]===undefined || _this[elNameProperty]===null) {
                 useElement = false;
               }
             }
           }
+
+          //#endregion
+
+
   
           if (useElement) {
   
             //Inizio la riga con l'elemento
-            row = '\"' + element + '\"' + ':';
+            row = '\"' + elNameProperty + '\"' + ':';
     
             //Proprietà di tipo Array
-            if (Array.isArray(_this[element]) == true) {
-              //Qui gestisco l'Array
-              let arElements = _this[element];
-              let strArray = '';
-              let strElArray = '';
-              
-              //Ciclo sugli elementi
-              for (let index = 0; index < arElements.length; index++) {
-                let element: IDDocument;
-                 element = arElements[index];
-                 strElArray = element.exportToJSON(paramExport);
+            if (Array.isArray(_this[elNameProperty]) == true) {
+              //Se vuole tutti i livelli, oppure se numLivelli - 1 è positivo
+              //Esempio se chiedo 1 Livello => 1 - 1 > 0 FALSE
+              //Ad ogni giro dentro a questo IF diminuisco il valore dei numLivelli
+              if (paramExport.numLivelli == 999 || paramExport.numLivelli - 1 > 0) {
 
-                 if (strElArray && strElArray.trim().length != 0) {
-                   if (strArray.length !== 0) {
-                      strArray += ', '
+                //Qui gestisco l'Array
+                let arElements = _this[elNameProperty];
+                let strArray = '';
+                let strElArray = '';
+                
+                //Ciclo sugli elementi
+                for (let index = 0; index < arElements.length; index++) {
+                  let element: IDDocument;
+                   element = arElements[index];
+                   let subParamExport = {...paramExport};
+                   if (paramExport.numLivelli != 999) {
+                    subParamExport.numLivelli = paramExport.numLivelli - 1;
                    }
-                   strArray += strElArray;
-                 }
+
+                   strElArray = element.exportToJSON(subParamExport);
+  
+                   if (strElArray && strElArray.trim().length != 0) {
+                     if (strArray.length !== 0) {
+                        strArray += ', '
+                     }
+                     strArray += strElArray;
+                   }
+                }
+      
+                row += '[' + strArray + ']';
+      
+                if (strJSON.length !== 0) {
+                  strJSON += ', ';
+                }
+      
+                strJSON += row;
+
               }
-    
-              row += '[' + strArray + ']';
-    
+            }
+            else {
+              //Proprietà NON ARRAY
+
+              //Chiedo il Tipo del Campo con il descriptor
+              let tipoCampo = objDescriptor.getType(elNameProperty);
+
+              if (tipoCampo !== TypeDefinition.undefined && 
+                  _this[elNameProperty] !== undefined && 
+                  _this[elNameProperty] !== null) {
+
+                switch (tipoCampo) {
+
+                  case TypeDefinition.boolean:
+                    row += _this[elNameProperty];
+                    break;
+                
+                  case TypeDefinition.number:
+                    row += _this[elNameProperty]; 
+                    break;
+
+                  case TypeDefinition.numberDecimal:
+                    row += _this[elNameProperty]; 
+                    break;
+
+                  case TypeDefinition.time:
+                    //E' un orario
+                    row += '\"' + this.formatDateTimeISO(_this[elNameProperty]) + '\"';
+                    break;
+
+                  case TypeDefinition.date:
+                    //E' una data
+                    row += '\"' + this.formatDateISO(_this[elNameProperty]) + '\"';
+                    break;
+
+                  case TypeDefinition.dateTime:
+                    //Campo di tipo DATAORA
+                    row += '\"' + this.formatDateTimeISO(_this[elNameProperty]) + '\"' ;
+                    break;
+                  case TypeDefinition.char:
+                    let valore = _this[elNameProperty];
+                    //Se la stringa contenesse all'interno simboli di " devono essere esportati come \"
+                    //Esempio: "ciao";"tuo" => \"ciao\";\"tuo\"
+                    valore = valore.replace(/"/g, "\\\"");
+                    row += '\"' + valore + '\"';
+                    
+                    break;
+
+                  default:
+                    row += _this[elNameProperty];
+                    break;
+                }
+
+              } 
+              else {
+                row += 'null';
+              }   
+              
+              
               if (strJSON.length !== 0) {
                 strJSON += ', ';
               }
-    
+
               strJSON += row;
-            }
-            else {
-              let skip = false;
-              //Vuole eliminare le proprietà DO e private e/o le chiavi primarie
-              if (propExclud.length !== 0) {
-                if (propExclud.includes(element)) {
-                  skip = true;
-                }
-              }
-    
-              //Proseguo con l'esportazione
-              if (!skip) {
-    
-                  //Chiedo il Tipo del Campo con il descriptor
-                  let tipoCampo = objDescriptor.getType(element);
-    
-                  if (tipoCampo !== TypeDefinition.undefined && (_this[element]!== undefined)) {
-    
-                    switch (tipoCampo) {
-    
-                      case TypeDefinition.boolean:
-                        row += _this[element];
-                        break;
-                    
-                      case TypeDefinition.number:
-                        row += _this[element]; 
-                        break;
-    
-                      case TypeDefinition.numberDecimal:
-                        row += _this[element]; 
-                        break;
-    
-                      case TypeDefinition.time:
-                        //E' un orario
-                        row += '\"' + this.formatDateTimeISO(_this[element]) + '\"';
-                        break;
-    
-                      case TypeDefinition.date:
-                        //E' una data
-                        row += '\"' + this.formatDateISO(_this[element]) + '\"';
-                        break;
-    
-                      case TypeDefinition.dateTime:
-                        //Campo di tipo DATAORA
-                        row += '\"' + this.formatDateTimeISO(_this[element]) + '\"' ;
-                        break;
-                      case TypeDefinition.char:
-                        let valore = _this[element];
-                        //Se la stringa contenesse all'interno simboli di " devono essere esportati come \"
-                        //Esempio: "ciao";"tuo" => \"ciao\";\"tuo\"
-                        valore = valore.replace(/"/g, "\\\"");
-                        row += '\"' + valore + '\"';
-                        
-                        break;
-    
-                      default:
-                        row += _this[element];
-                        break;
-                    }
-    
-                  } 
-                  else {
-                    row += 'null';
-                  }   
-                  
-                  
-                  if (strJSON.length !== 0) {
-                    strJSON += ', ';
-                  }
-    
-                  strJSON += row;
-              }
+
     
             }
   
@@ -1079,6 +1110,7 @@ import { MyDateTime } from './mydatetime.model';
     clearDOProperty: boolean; //Non esporta le proprietà do_inserted, do_deleted
     clearPKProperty: boolean; //Non esporta la chiave primaria 
     clearPrivateProperty: boolean; //Non esporta le proprietà private identificate da _ 
+    clearNullValue: boolean; //Non esporta i campi con valori NULL
     onlyDocModified: boolean; //Esporta solo i documenti modificati
     onlyPropertyModified: boolean;     //Esporta solo le proprietà modificate oppure tutte
     numLivelli: number; //Numero livello di esportazione
@@ -1092,6 +1124,7 @@ import { MyDateTime } from './mydatetime.model';
       this.clearDOProperty = false;
       this.clearPKProperty = false;
       this.clearPrivateProperty = false;
+      this.clearNullValue = false;
     }
   }
 

@@ -1165,14 +1165,12 @@ get flagUtenteIsLoggato$():Observable<boolean> {
   return this.utenteService.flagUtenteIsLoggato$;
 }
 
-
 /**
  * Valore Boolean che indica se un utente è connesso
  */
 get flagUtenteIsLoggato(): boolean {
   return this.utenteService.flagUtenteIsLoggato;
 }
-
 
 
 /**
@@ -1203,6 +1201,13 @@ get listTessereUtente$() {
   return this.srvTesseramento.listTessere$;
 }
 
+/**
+ * Esegue un refresh del documento activeUtenteDoc
+ * ricaricandolo dal server
+ */
+refreshActiveUtenteDoc(): void {
+  this.utenteService.refreshActiveUtenteDoc();
+}
 
 /**
  * Il metodo controlla se fosse necessario effettuare una verifica dei dati Utente
@@ -1341,8 +1346,6 @@ openFormRegistration() {
 
   }
 }
-
-
 
 /**
  * Disconnessione utente richiesta

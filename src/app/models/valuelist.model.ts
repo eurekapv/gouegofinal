@@ -233,8 +233,8 @@ export enum PaymentMode {
 
 export enum TipoScadenza {
     scadenzaImmediata = 10,
-    rateIdentiche = 20,
-    ratePercentuali = 30
+    aGiorniDallaData = 20,
+    scadeenzeDefinite = 30
 }
 
 export enum AzioneTesseramento {

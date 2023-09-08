@@ -175,7 +175,7 @@ export class PaymentPage implements OnInit{
     this.modalController.dismiss(this.paymentData);
   }
 
-
+  
   /**
    * Metodo da richiamare quando si vuole concludere il pagamento 
    * positivamente

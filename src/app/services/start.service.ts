@@ -15,8 +15,6 @@ import { CourseschedulerService } from './coursescheduler.service';
 import { PrenotazioneService } from './prenotazione.service';
 import { NewseventiService } from './newseventi.service';
 import { SlotoccupazioneService } from './slotoccupazione.service';
-
-
 import { StartConfiguration } from '../models/start-configuration.model';
 
 import { Location } from '../models/location.model';
@@ -55,7 +53,7 @@ import { CorsoallegatoService } from './corsoallegato.service';
 
 import { CorsoAllegato } from '../models/corsoallegato.model';
 import { IscrizionecorsoService } from './iscrizionecorso.service';
-import { IscrizioneCorso } from '../models/iscrizionecorso.model';
+import { IscrizioneCorso } from '../models/iscrizione-corso.model';
 import { CorsoValutazioneService } from './corso-valutazione.service';
 import { CorsoValutazione } from '../models/corsovalutazione.model';
 import { Livello } from '../models/livello.model';
@@ -86,6 +84,8 @@ import { UserRegistrationPage } from '../pages/pages-profile/authorization-accou
 import { AuthUserMobileService } from './auth-user-mobile.service';
 import { UserDataVerificationPage } from '../pages/pages-profile/authorization-account/user-data-verification/user-data-verification.page';
 import { StorageUtente } from '../models/stogare-utente.model';
+import { TipoPagamentoService } from './tipo-pagamento.service';
+import { TipoPagamento } from '../models/tipopagamento.model';
 
 @Injectable({
   providedIn: 'root'
@@ -220,7 +220,8 @@ export class StartService {
     private impegniCollaboratoreService: ImpegnoCollaboratoreService,
     private impegniCustodeService: ImpegnoCustodeService,
     private articoloService: ArticoloService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private tipoPagamentoService: TipoPagamentoService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -1099,12 +1100,14 @@ getPostiDisponibiliCorso(idCorso: string):Promise<PostResponse> {
 }
 
 /**
- * Si richiede il calcolo del totale di una iscrizione Corso
- * @param docIscrizione 
- * @returns 
+ * In caso di errori server va in reject, altrimenti torna un documento
+ * Iscrizione Corso compilato (anche nelle righe IscrizioneIncasso)
+ * @param paramsDocIscrizione Documento a cui vengono compilati
+ * DataIscrizione, IdCorso, IdUtente, IdTipoPagamento
  */
-requestCalcoloTotaleIscrizioneCorso(docIscrizione: IscrizioneCorso):Promise<IscrizioneCorso> {
-  return this.iscrizioneCorsoService.requestTotaleIscrizione(docIscrizione);
+onRequestIscrizioneDocFor(paramsDocIscrizione: IscrizioneCorso):Promise<IscrizioneCorso> {
+  
+  return this.iscrizioneCorsoService.onRequestIscrizioneDocFor(paramsDocIscrizione);
 }
 
 /**
@@ -1112,8 +1115,8 @@ requestCalcoloTotaleIscrizioneCorso(docIscrizione: IscrizioneCorso):Promise<Iscr
  * @param docIscrizione Documento Iscrizione da creare
  */
 requestSaveIscrizioneCorso(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
-  return this.iscrizioneCorsoService.requestSaveIscrizione(docIscrizione);
-}
+  return this.iscrizioneCorsoService.onRequestIscrizioneDocSave(docIscrizione);
+} 
 //#endregion
 
 
@@ -1908,6 +1911,19 @@ getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
 
 //#endregion
 
+//#region TIPI PAGAMENTI
+
+/**
+ * Effettua la richiesta per la lista dei Tipi Pagamenti
+ * @param numChild Default = 1
+ * @param decodeAll Default = FALSE
+ * @returns 
+ */
+requestListTipiPagamenti(numChild:number = 1, decodeAll: boolean = false): Promise<TipoPagamento[]> {
+  return this.tipoPagamentoService.request(numChild, decodeAll);
+}
+//#endregion
+
 //#region EVENTI
 get listEventi() {
   return this.eventoService.listEventi$;
@@ -2283,14 +2299,16 @@ get listImpegniCustode$() {
  * @param numMaxRequest   numero massimo di elementi
  * @returns 
  */
-requestImpegniCustode(idArea: string,
-                      periodAnalize: RangeSearch,
+requestImpegniCustode(periodAnalize: RangeSearch,
                       periodDate: Date,
+                      idArea: string,
+                      idLocation?: string,
                       numMaxRequest: number = 10): Promise<void> {
 
-  return this.impegniCustodeService.request(idArea,
-                                            periodAnalize,
+  return this.impegniCustodeService.request(periodAnalize,
                                             periodDate,
+                                            idArea,
+                                            idLocation,
                                             numMaxRequest);
 }
 

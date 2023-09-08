@@ -7,6 +7,8 @@ import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { ImpegnoCollaboratore } from 'src/app/models/impegno-collaboratore.model';
 import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
 import { Impegno } from 'src/app/models/impegno.model';
+import { Location } from 'src/app/models/location.model';
+import { LogApp } from 'src/app/models/log.model';
 import { Utente } from 'src/app/models/utente.model';
 import { RangeSearch, SettoreAttivita } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
@@ -22,6 +24,9 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   constructor(private startService: StartService,
               private navController: NavController,
               private modalController: ModalController) { 
+
+    //Crea il record Tutte le Location (se ne arrivano altre verranno impostate)
+    this.setListLocation();
 
     this.prepareCardImpegniPersonali();
     //Preparo la card in caso di assenza Impegni Trainer
@@ -39,6 +44,13 @@ export class TabAgendaPage implements OnInit, OnDestroy {
 
   selectedArea: Area;
   selectedAreaListen: Subscription;
+
+  //Location
+  listLocationListen: Subscription;
+  listLocation: Location[] = [];
+  selectedLocation: Location;
+  idSelectedLocation: string = '';
+  id_location_tutte: string = 'idtutte';
   
   //Identificativo Utente Loggato
   flagUserLogged: boolean = false;
@@ -243,6 +255,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.onListenArea();
+    this.onListenLocation();
     this.onListenUtente();
     this.onListenImpegniPersonali();
     this.onListenImpegniTrainer();
@@ -264,6 +277,58 @@ export class TabAgendaPage implements OnInit, OnDestroy {
                         //Richiesta Custode
                         this.requestListImpegniCustode();
                     });                  
+  }
+
+  /**
+   * Ascolto le location
+   */
+  onListenLocation(): void {
+    // QUI POSSO AGGANCIARE EVENTI ALL'ARRIVO DELLE LOCATIONS
+    // Sottoscrivo alla ricezione delle Locations
+    this.listLocationListen = this.startService.listLocation
+                                        .subscribe({
+                                          next: (dataRecevied) => {
+                                            //Imposto la lista location e
+                                            //il Documento di selezione 
+                                            this.setListLocation(dataRecevied);
+
+                                          },
+                                          error: (errLog) => {
+                                            LogApp.consoleLog(errLog);
+                                          }
+                                        })    
+  }
+
+  /**
+   * Definisce e imposta la Lista delle Location
+   * @param dataReceived Lista eventuale di altre location
+   */
+  setListLocation(dataReceived?:Location[]): void {
+    let locationDoc: Location;
+
+    //Svuoto la precedente
+    this.listLocation = [];
+
+    //Creo un documento per tutte
+    locationDoc = new Location(true);
+    locationDoc.ID = this.id_location_tutte;
+    locationDoc.DENOMINAZIONE = 'Tutte le location';
+    this.listLocation.push(locationDoc);
+
+    if (dataReceived) {
+
+      //Ciclo e imposto le altre
+      dataReceived.forEach(elRecevied => {
+        //Elenco Location
+        this.listLocation.push(elRecevied);
+      });  
+
+    }
+
+    //Imposto la Location selezionata
+    this.selectedLocation = locationDoc;
+    this.idSelectedLocation = locationDoc.ID;
+    
   }
 
   /**
@@ -335,6 +400,10 @@ export class TabAgendaPage implements OnInit, OnDestroy {
     if (this.selectedAreaListen) {
       this.selectedAreaListen.unsubscribe();
     }
+
+    if (this.listLocationListen) {
+      this.listLocationListen.unsubscribe();
+    }    
 
     if (this.subFlagUserLogged) {
       this.subFlagUserLogged.unsubscribe();
@@ -539,10 +608,16 @@ export class TabAgendaPage implements OnInit, OnDestroy {
    */
   requestListImpegniCustode() {
     let idArea = (this.selectedArea ? this.selectedArea.ID : '');
+    let idLocation = '';
 
-    this.startService.requestImpegniCustode(idArea,
-                                            this.searchCustodePeriodo, 
+    if (this.idSelectedLocation != this.id_location_tutte) {
+      idLocation = this.idSelectedLocation;
+    }
+
+    this.startService.requestImpegniCustode(this.searchCustodePeriodo, 
                                             this.searchCustodeDate,
+                                            idArea, 
+                                            idLocation,
                                             this.numRequestImpegniCustodeTop);
   }
 
@@ -554,6 +629,24 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   onChangePeriodoCustode(valuePeriod: RangeSearch) {
     this.searchCustodePeriodo = valuePeriod;
     this.requestListImpegniCustode();
+  }
+
+  /**
+   * Cambiata la Location sul Custode
+   * @param idLocation 
+   */
+  onChangeLocationCustode(idLocation: string) {
+
+    if (idLocation && idLocation.length != 0) {
+      this.idSelectedLocation = idLocation;
+
+      this.selectedLocation = this.listLocation.find(itemLocation => {
+        return itemLocation.ID == idLocation
+      });
+
+      //Chiedo il recupero Impegni
+      this.requestListImpegniCustode();
+    }
   }
 
 

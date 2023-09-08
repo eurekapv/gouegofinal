@@ -385,7 +385,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
                                   component: LocationCourseSubscribePage,
                                   cssClass: 'modal-xl-class',
                                   componentProps: {
-                                    params: selectedCorso
+                                    idCorso: selectedCorso.ID
                                   }
                                 })
                                 .then(elModal => {

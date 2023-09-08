@@ -11,43 +11,45 @@
 </ion-header>
 
 <ion-content>
-  <div style="background-color:#EFF1F8">
-
-    <ion-grid class="griglia-principale">
-
-      <!-- PULSANTE SUPERIORE -->
-        <!-- CONTROLLO PER POSTI DISPONIBILI -->
-        <ion-row>
-          <ion-col>
-            <ion-button 
-                [color]="flagPostiDisponibili ? 'success':'danger'" 
-                expand="block" 
-                class="full-buttons"
-              (click)="onClickButtonHeader()">
-              <ion-icon 
-                  slot="end" 
-                  [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
-              </ion-icon>
-  
-  
-              <h6 class="ion-text-wrap">{{txtPostiDisponibili}}</h6>
-            </ion-button>
-  
-          </ion-col>
-        </ion-row>      
-
+  <div 
+      *ngIf="loadingComplete"
+      style="background-color:#EFF1F8">
         <!-- GRID CON LE INFORMAZIONI CORSO-->
       <ion-grid>
         <ion-row>
-          <!-- COLONNA RELATIVA ALLE INFORMAZIONI DI ISCRIZIONE CORSO-->
+          <!-- COLONNA RELATIVA ALLE INFORMAZIONI DI ISCRIZIONE CORSO POSTI DISPONIBILI -->
           <ion-col size="12" size-xl= "6" size-sm="12">
             
             <ion-grid id="info-corso">
+
+              <ion-row
+                    class="ion-no-padding ion-no-margin"
+                      >
+                <ion-col>
+                  <ion-button 
+                      [color]="flagPostiDisponibili ? 'success':'danger'" 
+                      expand="block" 
+                      class="full-buttons"
+                      (click)="onClickButtonHeader()">
+                      <ion-icon 
+                        slot="end" 
+                        [name]="flagPostiDisponibili ? 'thumbs-up-outline':'ban-outline'">
+                      </ion-icon>
+                      <h6 class="ion-text-wrap">
+                        {{txtPostiDisponibili}}
+                      </h6>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
         
               <!-- CARD INFORMAZIONI CORSO -->
-              <ion-row id="row-info-corso">
+              <ion-row 
+                    class="ion-no-padding ion-no-margin"
+                    id="row-info-corso">
                 <ion-col>
-                  <ion-card>
+                  <ion-card
+                      class="ion-no-padding ion-no-margin"
+                      >
                     <ion-card-content class="ion-no-padding">
         
                       <ion-item lines="none">
@@ -194,15 +196,16 @@
             <!-- FINE INFO CORSO-->
           </ion-col>
 
-          <!-- PORZIONE DESTRA Scheda Importo -->
+          <!-- PORZIONE DESTRA ISCRIZIONE (IMPORTO E MODALITA) -->
           <ion-col  size="12" size-xl= "6" size-sm="12">
+
             <!--GRIGLIA CON TOTALE E PAGAMENTO-->
             <ion-grid>
 
-              <!-- RIGA CON CARD DEL TOTALE -->
+              <!-- RIGA CON CARD -->
               <ion-row>
                 <ion-col>
-                  <ion-card>
+                  <ion-card class="ion-no-padding ion-no-margin">
                     <!-- TESTATA CON IMPORTO -->
                     <ion-card-header>
                       <ion-grid>
@@ -211,7 +214,8 @@
                             <ion-col size="5" class="ion-text-center left-col">
                               <h6 class="ion-no-margin ion-text-bold">Quota Iscrizione</h6>
                             </ion-col>
-                            <ion-col size="7">
+                            <ion-col 
+                                size="7">
                               <h5 class="ion-no-margin ion-text-right ion-text-bold">{{iscrizioneDoc?.TOTALE | currency: "EUR"}}</h5>
                             </ion-col>
                           </ion-row>
@@ -220,21 +224,111 @@
 
                     <ion-card-content class="ion-padding-horizontal">
 
-                      <ion-grid>
-
-                        <!-- CONDIZIONI DI VENDITA -->
-                        <ion-row 
-                            class="ion-padding-vertical"
-                            (click)="onClickCondizioniVendita()">
-                          <ion-col size="9">
-                              <small>procedendo con l'iscrizione si accettano le condizioni di vendita</small>
-                          </ion-col>
-                          <ion-col size="3" class="ion-text-right">
-                            <ion-badge color="success"><small>LEGGI</small></ion-badge>
+                      <!-- GRIGLIA PER FORMULA DI PAGAMENTO -->
+                      <ion-grid *ngIf="corsoDoc?.isAPagamento()"
+                            class="ion-no-padding ion-no-margin">
+                           
+                        <!-- QUI VIENE SEMPRE MOSTRATO COME VERRA EFFETTUATO L'INCASSO -->
+                        <!-- RATA UNICA / PIU RATE -->
+                        <ion-row
+                              class="ion-no-padding ion-no-margin"
+                             >
+                          <ion-col>
+                            <ion-item
+                                lines="none"
+                                >
+                                <ion-label class="ion-text-wrap">
+                                  <p class="ion-text-bold">
+                                        Il corso verr&agrave; saldato con formula
+                                  </p>
+                                </ion-label>
+                                <ion-button 
+                                      fill = "outline"
+                                      color = "danger"
+                                      size = "small"
+                                      detail = "false"
+                                      button = "false"
+                                      slot = "end">
+                                      {{labelInfoSelectedTipoPagamento}}
+                                </ion-button>
+                            </ion-item>                             
                           </ion-col>
                         </ion-row>
 
-                        <!-- ANNOTAZIONI IMPORTO-->
+                        <!-- IN CASO DI RATEALE-->
+                        <ion-list *ngIf="selectedTipoPagamento.isRateale() && iscrizioneDoc?.ISCRIZIONEINCASSO.length != 0"
+                                  class="ion-no-padding ion-no-margin">
+                          <ion-item *ngFor="let itemIncasso of iscrizioneDoc?.ISCRIZIONEINCASSO">
+                            <ion-label>
+                              {{itemIncasso.DATASCADENZA | date:'dd/MM/yyyy'}}
+                            </ion-label>
+                            <ion-button
+                                slot="end"
+                                size="small"
+                                fill="clear"
+                                >
+                                {{itemIncasso.IMPORTO | currency : 'EUR'}}
+                            </ion-button>
+                          </ion-item>
+                        </ion-list>
+
+                        <!-- SE CI SONO ALTRE MODALITA DI PAGAMENTO  CONSENTO LA SCELTA -->
+                        <ion-row *ngIf="listTipiPagamento.length > 1"
+                            class="ion-padding-vertical ion-no-margin"
+                            >
+                          <ion-col>
+                            <ion-accordion-group 
+                                  >
+                                  <ion-accordion value="modosaldo">
+                                    <ion-item slot="header" color="light">
+                                      <ion-label 
+                                            class="ion-text-wrap">
+                                        <p class="ion-text-small ion-text-bold">Scegli una formula differente</p>
+                                      </ion-label>
+                                    </ion-item>
+    
+                                    <!-- LISTA CON LA SCELTA -->
+                                    <div class="ion-padding" slot="content">
+                                      <ion-list lines="none">
+    
+                                        <ion-radio-group
+                                            (ngModelChange)="onChangeTipoPagamento($event)"
+                                            [(ngModel)]="idSelectedTipoPagamento">
+                                            <ion-item
+                                                *ngFor="let itemPayment of listTipiPagamento">
+                                              <ion-radio [value]="itemPayment.ID">
+                                                <h6>{{itemPayment.DESCR}}</h6>
+                                                <p class="ion-text-danger ion-text-small">
+                                                    {{itemPayment.getLabelForScadenza()}}
+                                                </p>
+                                              </ion-radio>
+                                            </ion-item>
+                                       </ion-radio-group>
+          
+                                      </ion-list>
+                                    </div>
+                                  </ion-accordion>
+                            </ion-accordion-group>                            
+                           
+                          </ion-col>
+                        </ion-row>
+                        <!-- CONTATTARE LA STRUTTURA-->
+                        <ion-row 
+                              class="ion-no-padding ion-no-margin">
+                          <ion-col>
+                            <ion-label>
+                              <p class="ion-text-small">
+                                Per qualsiasi problematica, o per richiedere particolari condizioni di pagamento rateale 
+                                contattare la struttura <strong>{{locationDoc?.TELEFONO && locationDoc?.TELEFONO.length != 0 ? 'al numero ' + locationDoc?.TELEFONO : ''}}</strong>
+                              </p>
+                            </ion-label>
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
+
+                      <ion-grid>
+
+                        <!-- ANNOTAZIONI IMPORTO TESSERAMENTI -->
                         <ion-row *ngIf="showGroupTesseramenti">
                           <ion-col>
                             <ion-accordion-group>
@@ -282,57 +376,59 @@
                           </ion-col>
                         </ion-row>
           
-                        <app-payment-mode
-                          *ngIf="corsoDoc?.isAPagamento()" 
-                          [iconMode]="true"
-                          [arPayment]="myListPayment"
-                          (onPaymentModeChoosed)="onPaymentModeSelected($event)">
-                        </app-payment-mode>
+                        <!-- SCELTA COME PAGARE -->
+                        <ion-row *ngIf="corsoDoc?.isAPagamento()" 
+                            class="ion-no-padding ion-no-margin">
+                          <ion-col>
+                            <app-payment-mode
+                              [iconMode]="true"
+                              [arPayment]="myListModePayment"
+                              (onPaymentModeChoosed)="onPaymentModeSelected($event)">
+                            </app-payment-mode>
+                          </ion-col>
+                        </ion-row>
 
-                        <!-- INFO PAGAMENTO RATEALE -->
-                        <ion-accordion-group 
-                              class="ion-margin-vertical" 
-                              *ngIf="corsoDoc?.isAPagamento()">
-                              <ion-accordion value="notes">
-                                <ion-item slot="header" color="light">
-                                  <ion-icon slot="start" name="help-circle-outline"></ion-icon>
-                                  <ion-label class="ion-text-wrap">Pagamento rateale</ion-label>
-                                </ion-item>
+                        <!-- LEGGI CONDIZIONI DI VENDITA -->
+                        <ion-row 
+                            class="ion-padding-top"
+                            >
+                            <ion-col>
+                              <ion-item 
+                                  (click)="onClickCondizioniVendita()"
+                                  lines="none"
+                                  detail="true"
+                                  button="true"
+                                  >
+                                <ion-label class="ion-text-wrap">
+                                  <p class="ion-text-bold"><small>prima di continuare &egrave; necessario leggere ed accettare le condizioni di vendita</small></p>
+                                </ion-label>
+                              </ion-item>
+                            </ion-col>
+                        </ion-row>
 
-                                <div class="ion-padding" slot="content">
+                        <!-- FLAG CONDIZIONI VENDITA -->
+                        <ion-row class="ion-no-padding ion-no-margin">
+                            <ion-col
+                            sizeXs="6" offsetXs="6"
+                            sizeSm="6" offsetSm="6"
+                            sizeMd="6" offsetMd="6"
+                            sizeLg="6" offsetLg="6"
+                            sizeXl="6" offsetXl="6">
+                              
+                            <ion-button
+                                expand="block"
+                                (click)="onClickChangeFlagCondizioni()"
+                                size = "small"
+                                fill="outline"
+                                [color]="flagCondizioni ? 'success' : 'danger'"
+                                >
+                                <ion-icon *ngIf="flagCondizioni" name="checkmark-outline" slot="start"></ion-icon>
+                                {{flagCondizioni ? 'ACCETTO' : 'NON ACCETTO'}}
+                            </ion-button>
 
-                                  <div *ngIf="paymentType.isRateale()">
-
-                                    <ion-text *ngIf="paymentType.isRateale()">
-                                      &Egrave; possibile effettuare il pagamento del corso sia in rata unica che in modalit&agrave; <strong>rateale</strong>
-                                      <br/>
-                                      <strong>{{paymentType && paymentType.DESCR.length != 0 ? this.paymentType.DESCR : ''}}</strong>
-                                      <br/>
-                                      Il pagamento rateale &egrave; disponibile solo contattando la struttura <strong>{{locationDoc?.TELEFONO && locationDoc?.TELEFONO.length != 0 ? 'al numero ' + locationDoc?.TELEFONO : ''}}</strong>
-                                    </ion-text>
-
-                                    <ion-item lines="none">
-                                      <ion-checkbox>Pagamento Rata Unica</ion-checkbox>
-                                    </ion-item>
-
-                                    <ion-item lines="none">
-                                      <ion-checkbox>Pagamento Rateale</ion-checkbox>
-                                    </ion-item>                                    
-
-                                  </div>
-
-                                  <ion-text *ngIf="!paymentType.isRateale()">
-                                    &Egrave; possibile effettuare il pagamento del corso unicamente attraverso il pagamento anticipato dell'intero importo.
-                                    <br/>
-                                    Contattare la struttura telefonicamente <strong>{{locationDoc?.TELEFONO && locationDoc?.TELEFONO.length != 0 ? 'al numero ' + locationDoc?.TELEFONO : ''}}</strong>
-                                    per concordare altre modalità di pagamento.
-                                  </ion-text>
-
-                                </div>
-                              </ion-accordion>
-                        </ion-accordion-group>
-
-          
+                            </ion-col>
+                          </ion-row>                   
+         
                       </ion-grid>
                     </ion-card-content>
                   </ion-card>
@@ -346,8 +442,6 @@
 
         </ion-row>
       </ion-grid>
-    </ion-grid>
-
   </div>
 
 </ion-content>

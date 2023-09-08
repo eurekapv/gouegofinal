@@ -104,17 +104,23 @@
                           <ion-grid class="ion-padding-horizontal">
                             <!-- CORSO -->
                             <ion-row *ngIf="myCorso.TIPO == tipoCorso.corso" >
+
+                              <!-- FUTURO -->
                               <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.FUTURO">
                                 <h6 class="ion-text-wrap ion-text-secondary">
-                                  Il corso &egrave; effettuato da <ion-text class="ion-text-bold">{{myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy'|titlecase}}</ion-text> fino a
+                                  Il corso sar&agrave; effettuato da <ion-text class="ion-text-bold">{{myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy'|titlecase}}</ion-text> fino a
                                   <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
                                 </h6>
                               </ion-col>
+
+                              <!-- IN CORSO -->
                               <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.IN_CORSO">
                                 <h6 class="ion-text-wrap ion-text-secondary">
-                                  Il corso sar&agrave; effettuato fino a <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
+                                  Il corso &egrave; in esecuzione e si concluder&agrave; <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
                                 </h6>
                               </ion-col>
+
+                              <!-- CONCLUSO -->
                               <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.PASSATO">
                                 <h6 class="ion-text-wrap ion-text-secondary">
                                   Il corso si &egrave; concluso  <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
@@ -124,17 +130,21 @@
 
                             <!-- PROVA -->
                             <ion-row *ngIf="myCorso.TIPO == tipoCorso.prova" >
+
+                              <!-- FUTURO -->
                               <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.FUTURO">
                                 <h6 class="ion-text-wrap ion-text-secondary">
-                                  La prova &egrave; effettuata da <ion-text class="ion-text-bold">{{myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy'|titlecase}}</ion-text> fino a
+                                  La prova sar&agrave; effettuata da <ion-text class="ion-text-bold">{{myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy'|titlecase}}</ion-text> fino a
                                   <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
                                 </h6>
                               </ion-col>
+
                               <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.IN_CORSO">
                                 <h6 class="ion-text-wrap ion-text-secondary">
-                                  La prova sar&agrave; effettuata fino a <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
+                                  La prova &egrave; in esecuzione e si concluder&agrave; <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
                                 </h6>
                               </ion-col>
+                              
                               <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.PASSATO">
                                 <h6 class="ion-text-wrap ion-text-secondary">
                                   La prova si &egrave; conclusa <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>

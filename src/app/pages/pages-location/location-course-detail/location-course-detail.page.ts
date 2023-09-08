@@ -22,7 +22,7 @@ import { LocationCourseSubscribePage } from '../location-course-subscribe/locati
 
 export class LocationCourseDetailPage implements OnInit, OnDestroy {
 
-  myCorso: Corso = new Corso();
+  myCorso: Corso = new Corso(true);
   subMyCorso: Subscription;
   myLocation: Location = new Location(); 
   iconColor = 'primary';
@@ -49,7 +49,6 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
     private navController: NavController,
     private mdlController: ModalController,
     private loadingController : LoadingController,
-    private toastController : ToastController
   ) {
     
     //Ascolto cambiamenti dell'Area per l'abilitazione delle iscrizioni
@@ -270,6 +269,7 @@ ngOnDestroy() {
   * Evento Click sul pulsante di Iscrizione
   */
   onClickIscrizione() {
+    let myIdCorso = '';
 
     if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
       
@@ -284,23 +284,34 @@ ngOnDestroy() {
   
       }
       else {
+        //Questo è il corso di interesse
+        myIdCorso = this.myCorso.ID;
 
-        //Controllo se avessi bisogno altri dati utente non impostati
-        this.startService.onVerificationUserData()
-                         .then(needVerification => {
-                          if (needVerification == false) {
-                                //Posso procedere con la pagina di prenotazione
-                                this.mdlController.create({
-                                  component: LocationCourseSubscribePage,
-                                  componentProps: {
-                                    params: this.myCorso
-                                  }
-                                })
-                                .then(elModal => {
-                                  elModal.present();
-                                })
-                          }
-                         })
+        if (myIdCorso && myIdCorso.length != 0) {
+
+          //Controllo se avessi bisogno altri dati utente non impostati
+          this.startService.onVerificationUserData()
+                           .then(needVerification => {
+                            if (needVerification == false) {
+                                  //Posso procedere con la pagina di prenotazione
+                                  this.mdlController.create({
+                                    component: LocationCourseSubscribePage,
+                                    cssClass: 'modal-xl-class',
+                                    componentProps: {
+                                      idCorso: myIdCorso
+                                    }
+                                  })
+                                  .then(elModal => {
+                                    elModal.present();
+                                  })
+                            }
+                           })
+
+        }
+        else {
+          this.startService.presentAlertMessage('Si è verificato un problema, torna alla lista e riprova');
+        }
+
                                                
         
       }

@@ -46,6 +46,8 @@ import { Evento } from 'src/app/models/evento.model';
 import { TipoEvento } from 'src/app/models/tipo-evento.model';
 import { Authorization } from 'src/app/models/authorization.model';
 import { EventoPianificazione } from 'src/app/models/evento-pianificazione.model';
+import { TipoPagamentoScadenza } from 'src/app/models/tipo-pagamento-scadenza.model';
+import { IscrizioneIncasso } from 'src/app/models/iscrizione-incasso.model';
 
 
 
@@ -96,12 +98,14 @@ export const Structure: any = {
     DataChiusura,
     CorsoAllegato,
     TipoPagamento,
+    TipoPagamentoScadenza,
     TipoTessera,
     TipoTesseraTemplate,
     Tesseramento,
     Evento,
     EventoPianificazione,
     TipoEvento,
+    IscrizioneIncasso,
     
 
 }

@@ -29,10 +29,11 @@ export class ImpegnoCustodeService {
    * @param numMaxRequest 
    * @returns 
    */
-  request(idArea: string,
-          periodAnalize: RangeSearch,
-          periodDate: Date,
-          numMaxRequest: number = 10): Promise<void> {
+  request(  periodAnalize: RangeSearch,
+            periodDate: Date,
+            idArea: string,
+            idLocation?: string,
+            numMaxRequest: number = 10): Promise<void> {
 
     return new Promise<void>((resolve, reject) => {
 
@@ -48,6 +49,11 @@ export class ImpegnoCustodeService {
         reqParam.orderBy = 'asc';
   
         filterImpegno.IDAREAOPERATIVA = idArea;
+        
+        if (idLocation && idLocation.length != 0) {
+          filterImpegno.IDLOCATION = idLocation;
+        }
+
         this.fillDateRequestFilter(filterImpegno, periodAnalize, periodDate);
   
         //Procedo con la richiesta
@@ -131,9 +137,7 @@ export class ImpegnoCustodeService {
     if (filterImpegno && periodAnalize && periodDate) {
       switch (periodAnalize) {
         case RangeSearch.giorno:
-            filterImpegno.DATAORAINIZIO = periodDate;
-            //Applico una condizione per la dataorainizio
-            filterImpegno.addFilterCondition(OperatorCondition.uguale, 'DATAORAINIZIO');
+            filterImpegno.DATAINIZIO = periodDate;
           break;
 
         case RangeSearch.settimana:

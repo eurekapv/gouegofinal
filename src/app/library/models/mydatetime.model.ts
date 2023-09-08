@@ -244,6 +244,7 @@ static stringToDateObject(strInput: string): Date {
     strComplete = `${strDate}T${strTime}`;
     dataReturn = new Date(strComplete);
 
+      
 
     return dataReturn;
  }

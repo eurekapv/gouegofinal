@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PostResponse } from '../library/models/postResult.model';
 import { PostParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
-import { IscrizioneCorso } from '../models/iscrizionecorso.model';
+import { IscrizioneCorso } from '../models/iscrizione-corso.model';
 
 
 @Injectable({
@@ -66,7 +66,8 @@ export class IscrizionecorsoService {
    * Chiama il server e richiede l'importo per una iscrizione del corso
    * Al minimo deve essere valorizzato IDCorso, IDUtente
    * @param docIscrizione Iscrizione Corso
-   * @returns PostResponse 
+   * @returns Iscrizione Corso
+   * @deprecated Usare la versione requestTotale
    */
   requestTotaleIscrizione(docIscrizione: IscrizioneCorso):Promise<IscrizioneCorso> {
 
@@ -102,6 +103,54 @@ export class IscrizionecorsoService {
     })
   }  
 
+  /**
+   * In caso di errori server va in reject
+   * @param paramsDocIscrizione Documento a cui vengono compilati
+   * DataIscrizione, IdCorso, IdUtente, IdTipoPagamento
+   */
+  onRequestIscrizioneDocFor(paramsDocIscrizione: IscrizioneCorso):Promise<IscrizioneCorso> {
+    return new Promise<IscrizioneCorso>((resolve, reject) => {
+      let myPostParams : PostParams = new PostParams();
+      const method = 'onRequestIscrizioneDocFor';
+      
+      if (paramsDocIscrizione) {
+        myPostParams.key = 'sampleIscrizione';
+        myPostParams.value = paramsDocIscrizione;
+
+        this.docStructureService.requestForFunction(paramsDocIscrizione,method,paramsDocIscrizione,myPostParams)
+                        .then((data: PostResponse) => {
+
+                          let elIscrizione: IscrizioneCorso;
+
+                          if (data && data.result) {
+                            //Iscrizione ricevuta
+                            elIscrizione = new IscrizioneCorso();
+  
+                            if (data.document) {
+                              elIscrizione.setJSONProperty(data.document);
+                            }
+
+                            resolve(elIscrizione);
+
+                          }
+                          else {
+                            reject('Calcolo totale fallito');
+                          }
+
+                        })
+                        .catch(error => {
+                          reject(error)
+                        })
+
+
+      }
+      else {
+        reject('Errore preparazione documenti');
+      }
+
+    })
+  }
+
 
   /**
    * Chiama il server e richiede una nuova iscrizione corso
@@ -111,18 +160,18 @@ export class IscrizionecorsoService {
    * @param docIscrizione Iscrizione Corso
    * @returns PostResponse 
    */
-  requestSaveIscrizione(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
+  onRequestIscrizioneDocSave(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
     return new Promise<PostResponse>((resolve, reject) => {
       let myPostParams : PostParams = new PostParams();
       let myReturn: PostResponse;
-
+      let method = 'onRequestIscrizioneDocSave';
 
 
       if (docIscrizione) {
-        myPostParams.key = 'docIscrizione';
+        myPostParams.key = 'receivedDoc';
         myPostParams.value = docIscrizione;
 
-        this.docStructureService.requestForFunction(docIscrizione,'mobBookingSave',docIscrizione,myPostParams)
+        this.docStructureService.requestForFunction(docIscrizione, method ,docIscrizione,myPostParams)
                         .then((risposta: PostResponse) => {
                           resolve(risposta);
                         })

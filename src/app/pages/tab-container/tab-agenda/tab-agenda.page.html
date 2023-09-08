@@ -7,7 +7,7 @@
     </ion-buttons>
         
     <ion-title>
-      Agenda
+      {{selectedArea ? selectedArea.DENOMINAZIONE : 'Agenda'}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -17,7 +17,9 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
+  <ion-grid
+      class="ion-margin-bottom"
+      >
     <ion-row>
       <ion-col sizeXs="12" 
                sizeSm="12" 
@@ -195,6 +197,42 @@
                     </app-dtinput>
                     </ion-col>
 
+                  </ion-row>
+                  <!-- SE AVESSI PIU LOCATION MOSTRO UNA SCELTA -->
+                    <!-- metto maggiore 2 perchè c'e Tutte + 1 Location sempre presente -->
+                  <ion-row 
+                      *ngIf="listLocation && listLocation.length > 2"
+                      class="ion-no-margin">
+                      <ion-col>
+                        <ion-accordion-group>
+                          <ion-accordion value = "location">
+  
+                            <ion-item slot="header" color="light">
+                              <ion-label 
+                                    class="ion-text-wrap">
+                                <p class="ion-text-small ion-text-bold">{{selectedLocation.DENOMINAZIONE}}</p>
+                              </ion-label>
+                            </ion-item>
+                            <div class="ion-padding" slot="content">
+                              <ion-list lines="none">
+      
+                                <ion-radio-group
+                                    (ngModelChange)="onChangeLocationCustode($event)"
+                                    [(ngModel)]="idSelectedLocation">
+                                    <ion-item
+                                        *ngFor="let itemLocation of listLocation">
+                                      <ion-radio [value]="itemLocation.ID">
+                                        <h6>{{itemLocation.DENOMINAZIONE}}</h6>
+                                      </ion-radio>
+                                    </ion-item>
+                               </ion-radio-group>
+  
+                              </ion-list>
+                            </div>
+  
+                          </ion-accordion>
+                        </ion-accordion-group>
+                      </ion-col>
                   </ion-row>
                 </ion-grid>
             </ion-card>

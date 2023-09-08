@@ -115,6 +115,30 @@
                                 {{myIscrizione.amountPayment | currency : 'EUR'}}
                             </ion-badge>
                           </ion-item>
+
+                          <!-- SITUAZIONE DEL PAGAMENTO-->
+                          <ion-list *ngIf="myCorso.isAPagamento() && listSituazionePagamenti.length != 0">
+                            <ion-list-header mode="ios">Scadenze</ion-list-header>
+                            <ion-item 
+                                *ngFor="let itemScadenza of listSituazionePagamenti">
+                                <ion-label *ngIf="itemScadenza.requestPayment()">
+                                  <h5>{{itemScadenza.DATASCADENZA | date:'dd/MM/yyyy'}}</h5>
+                                  <p class="ion-text-bold ion-text-danger">da versare</p>
+                                </ion-label>
+                                <ion-label *ngIf="itemScadenza.requestPayment()== false">
+                                  <p class="ion-text-bold ion-text-primary">effettuato il {{itemScadenza.DATAOPERAZIONE | date:'dd/MM/yyyy'}}</p>
+                                </ion-label>                                
+
+                                <ion-button 
+                                    expand="full"
+                                    fill="clear"
+                                    [color]="itemScadenza.requestPayment() ? 'danger': 'success'"
+                                    size="small"
+                                    slot="end">
+                                    {{itemScadenza.IMPORTO | currency: 'EUR'}}
+                                </ion-button>
+                            </ion-item>
+                          </ion-list>
                         </ion-card>
 
                       </ion-col>
@@ -129,7 +153,8 @@
                               (click)="onClickExpandCorsoProgramma()"
                               *ngIf="myCorso?.existProgrammaCorso()">
                     
-                            <ion-label 
+                            <ion-label
+                                class="ion-text-wrap" 
                                 [ngClass]="getClassLabelProgramma()">
                               <span style="font-size:small;" [innerHTML]="myCorso.getFullProgrammaHTML()"></span>
                             </ion-label>

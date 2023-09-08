@@ -1,8 +1,11 @@
 import { Descriptor, TypeDefinition } from "../library/models/descriptor.model";
 import { IDDocument } from "../library/models/iddocument.model";
 import { IscrizioneTesseramento } from "./iscrizione-tesseramento";
-import { IscrizioneIncasso } from "./iscrizioneincasso.model";
-import { Sesso, StatoIscrizione, TipoPrezzo } from "./valuelist.model";
+import { IscrizioneIncasso } from "./iscrizione-incasso.model";
+import { PaymentChannel, Sesso, StatoIscrizione, TipoPrezzo, TipoRigoIncasso, ZOrderIncasso } from "./valuelist.model";
+import { MyDateTime } from "../library/models/mydatetime.model";
+import { TotaleScadenze } from "../shared/interfaces/interfaces";
+import { PaymentProcess } from "./payment-process.model";
 
 export class IscrizioneCorso extends IDDocument {
 
@@ -197,6 +200,97 @@ export class IscrizioneCorso extends IDDocument {
 
         return existIscrizioneIncasso;
     }  
+
+
+    /**
+     * Somma le Scadenze che devono essere incassate alla data passata
+     * @param dateRequest 
+     */
+    sumScadenzeFor(dateRequest: Date): TotaleScadenze {
+      let sumValue: number = 0;
+      let numRate: number = 0;
+      let objResult: TotaleScadenze;
+
+      if (dateRequest && this.ISCRIZIONEINCASSO && this.ISCRIZIONEINCASSO.length != 0) {
+        for (let index = 0; index < this.ISCRIZIONEINCASSO.length; index++) {
+          const rowIncasso = this.ISCRIZIONEINCASSO[index];
+
+          if (rowIncasso.TIPORIGO == TipoRigoIncasso.scadenza && 
+              MyDateTime.isSameOrBefore(rowIncasso.DATASCADENZA, dateRequest, "minute")) {
+                sumValue += rowIncasso.IMPORTO;
+                numRate++;
+              }
+          
+        }
+      }
+
+      objResult = {totale: sumValue, numeroRate: numRate};
+
+      return objResult;
+    }
+
+    /**
+     Imposta i righi delle Scadenze che devono essere incassate alla data passata
+     come Incassati
+     * @param dateRequest 
+     * @param resultPayment 
+     */
+    setScadenzePayedFor(dateRequest: Date, resultPayment: PaymentProcess): void {
+      if (dateRequest && this.ISCRIZIONEINCASSO && this.ISCRIZIONEINCASSO.length != 0) {
+
+        for (let index = 0; index < this.ISCRIZIONEINCASSO.length; index++) {
+          const rowIncasso = this.ISCRIZIONEINCASSO[index];
+
+          if (rowIncasso.TIPORIGO == TipoRigoIncasso.scadenza && 
+              MyDateTime.isSameOrBefore(rowIncasso.DATASCADENZA, dateRequest, "minute")) {
+                rowIncasso.IDTRANSACTION = '';
+                if (resultPayment.idElectronicResult && resultPayment.idElectronicResult.length != 0) {
+                  rowIncasso.IDORDER = resultPayment.idElectronicResult;
+                }
+                else {
+                  rowIncasso.IDORDER = 'UNKNOW';
+                }
+                rowIncasso.MODALITA = resultPayment.channelPayment;
+                rowIncasso.TIPORIGO = TipoRigoIncasso.incassato;
+                rowIncasso.ZORDER = ZOrderIncasso.incassato;
+                rowIncasso.DATAOPERAZIONE = dateRequest;
+              }
+          
+        }
+
+        //Ricalcolo Residuo Incassato
+        this.recalcResiduoIncassato();
+    }
+    }
+
+    /**
+     * Effettua un ricalcolo dei valori Incassato / Residuo sulla base delle righe
+     */
+    recalcResiduoIncassato() {
+      let valueIncassato = 0;
+
+      if (this.TOTALE != 0) {
+
+        if (this.ISCRIZIONEINCASSO && this.ISCRIZIONEINCASSO.length != 0) {
+            this.ISCRIZIONEINCASSO.forEach(item => {
+              if (item.TIPORIGO == TipoRigoIncasso.incassato || 
+                  item.TIPORIGO == TipoRigoIncasso.abbuono || 
+                  item.TIPORIGO == TipoRigoIncasso.perdita) {
+                    valueIncassato += item.IMPORTO;
+              }
+              else if (item.TIPORIGO == TipoRigoIncasso.scadenza && item.DATAOPERAZIONE) {
+                //E' una scadenza con la data operazione (quindi ha pagato)
+                valueIncassato += item.IMPORTO;
+              }
+            })
+        }
+
+        this.INCASSATO = valueIncassato;
+        this.RESIDUO = this.TOTALE - valueIncassato;
+      }
+
+
+    }
     
     
     /**

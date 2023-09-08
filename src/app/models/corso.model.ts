@@ -352,7 +352,7 @@ export class Corso extends IDDocument {
      * Serve per capire la situazione temporale del corso rispetto ad oggi
      * FUTURO -> Inizia il DATAINIZIO
      * IN_CORSO -> Termina il DATAFINE
-     * PASSATO -> Concluso il DATAFINE
+     * PASSATO -> Concluso il DATAFINE + 1
      */
     tempoCorso():Tempistica {
       let adesso = new Date();
@@ -363,6 +363,7 @@ export class Corso extends IDDocument {
       dataOraInizioCorso = MyDateTime.mergeDateAndTime(this.DATAINIZIO, this.ORAINIZIO);
       dataOraFineCorso = MyDateTime.mergeDateAndTime(this.DATAFINE, this.ORAINIZIO);
 
+      
       if (dataOraInizioCorso > adesso) {
         value = Tempistica.FUTURO;
       }

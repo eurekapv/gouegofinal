@@ -41,7 +41,7 @@ export class IscrizioneIncasso extends IDDocument {
         let arDecimal = ['IMPORTO'
                         ];
         let arBoolean = [];
-        let arDate = ['DATAOPERAZIONE'];
+        let arDate = ['DATAOPERAZIONE','DATASCADENZA'];
         let arDateTime =[];
         let arTime = [];
     
@@ -75,5 +75,18 @@ export class IscrizioneIncasso extends IDDocument {
 
         this.setOriginal();
 
-    }     
+    } 
+    
+    /**
+     * Torna TRUE se il rigo deve ancora essere incassato
+     */
+    requestPayment(): boolean {
+        let flagRequest: boolean = false;
+
+        if (this.TIPORIGO == TipoRigoIncasso.scadenza && !this.DATAOPERAZIONE) {
+            flagRequest = true;
+        }
+
+        return flagRequest;
+    }
 }

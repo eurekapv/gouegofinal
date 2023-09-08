@@ -32,7 +32,7 @@ export class ArticoloTaglieMisura extends IDDocument{
         objDescriptor.addMultiple(arTime, TypeDefinition.time);
         
     
-        objDescriptor.setRelation('IDARTICOLO','Articolo');
+        objDescriptor.setRelation('IDARTICOLO','Articolo', 'ID');
     
         
         return objDescriptor;

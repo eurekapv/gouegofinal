@@ -14,6 +14,7 @@ import { StatoIscrizione, StatoPagamento } from 'src/app/models/valuelist.model'
 import { StartService } from 'src/app/services/start.service';
 import { CourseDetailCalendarPage } from '../../pages-location/location-course-detail/course-detail-calendar/course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
+import { IscrizioneIncasso } from 'src/app/models/iscrizione-incasso.model';
 
 @Component({
   selector: 'app-history-course',
@@ -27,6 +28,7 @@ export class HistoryCoursePage implements OnInit {
   subDocUtente: Subscription;
 
   myIscrizione: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
+  listSituazionePagamenti: IscrizioneIncasso[] = []; //Situazione dei pagamenti
 
   myCorso:Corso= new Corso();
 
@@ -99,6 +101,13 @@ export class HistoryCoursePage implements OnInit {
                                 return this.requestLocation(this.myIscrizione);
                               })
                               .then(() => {
+                                //Richiedo anche la situazione degli Incassi dell'Iscrizione
+                                return this.requestIcassiIscrizione(idIscrizione);
+                              })
+                              .then(dataPagamenti => {
+                                //Imposto i dati del pagamento
+                                this.listSituazionePagamenti = dataPagamenti;
+
                                 //Chiudo il loading
                                 elLoading.dismiss();
                               })
@@ -148,6 +157,7 @@ export class HistoryCoursePage implements OnInit {
 
       if (myIdIscrizione && myIdIscrizione.length != 0) {
 
+        //E' un Documento UtenteIscrizione che richiedo
         this.startService.requestIscrizioneById(myIdIscrizione)
           .then(elItemIscrizione => {
 
@@ -232,6 +242,39 @@ export class HistoryCoursePage implements OnInit {
       else {
         reject('Iscrizione non definita');
       }
+    })
+  }
+
+  /**
+   * Richiede una Lista di IscrizioneIncassi per avere la situazione dei pagamenti
+   * @param myIdIscrizione 
+   * @returns 
+   */
+  requestIcassiIscrizione(myIdIscrizione:string): Promise<IscrizioneIncasso[]> {
+    return new Promise<IscrizioneIncasso[]>((resolve, reject) => {
+
+      let filter: IscrizioneIncasso;
+
+      
+      if (myIdIscrizione && myIdIscrizione.length != 0) {
+        
+        filter = new IscrizioneIncasso(true);
+        filter.IDISCRIZIONECORSO = myIdIscrizione;
+
+        this.docstructrureService.requestNew(filter)
+                                 .then(dataReceived => {
+
+                                    resolve(<IscrizioneIncasso[]>dataReceived);
+
+                                 })
+                                 .catch(error => {
+                                  reject(error);
+                                 })
+      }
+      else {
+        reject('Nessuna Iscrizione presente');
+      }
+      
     })
   }
   //#endregion

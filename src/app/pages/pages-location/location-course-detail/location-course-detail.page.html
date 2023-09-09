@@ -195,8 +195,10 @@
                   <ion-list class="ion-no-padding">
                     
 
-                    <!-- INFO ISCRIZIONI -->
-                    <ion-item-group class="ion-padding-bottom"
+                    <!-- INFO ISCRIZIONI SE NON SONO ISCRITTO -->
+                    <ion-item-group
+                          *ngIf="!activeIscrizione"
+                          class="ion-padding-bottom"
                         >
                       <ion-item-divider [color]="groupColor">
                         <ion-label>
@@ -312,19 +314,80 @@
                       </ion-item>
 
                    
-
                       <!-- BUTTON PER L'ISCRIZIONE -->
                       <ion-button
                           *ngIf="showIscrizioniButton()"
-                          (click)="onClickIscrizione()" 
+                          (click)="onClickIscrivitiAdesso()" 
                           color="success"
                           expand="full"
                           slot="end">
                           <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
                           ISCRIVITI ADESSO
-                      </ion-button>                       
-
+                      </ion-button>                        
                     </ion-item-group>
+
+                    <!-- ISCRIZIONE PRESENTE -->
+                    <ion-item-group
+                          *ngIf="activeIscrizione"
+                          class="ion-padding-bottom"
+                        >
+                      <ion-item-divider [color]="groupColor">
+                        <ion-label>
+                          <h2>Iscrizione</h2>
+                        </ion-label>
+                      </ion-item-divider>
+
+                      <ion-list lines="none">
+                      <!-- SEGNALA CHE PER QUESTO CORSO SI E' GIA ISCRITTI -->
+                      <ion-item>
+                          <ion-label class="ion-text-wrap">
+                              <h5>
+                              Risulti iscritto a {{myCorso.TIPO == tipoCorso.corso ? 'questo corso':'questa prova'}} da {{activeIscrizione.DATAISCRIZIONE | date: 'EEEE dd/MM/yyyy'}}
+                            </h5>
+                          </ion-label>
+                          <ion-button
+                              color="success"
+                              slot="end"
+                              size="small"
+                              expand="block"
+                              >
+                            ISCRITTO
+                          </ion-button>
+                      </ion-item>
+
+                      <!-- QUOTA ISCRIZIONE -->
+                      <ion-item
+                          >
+                        <ion-label 
+                            class="ion-text-wrap">
+                          <h5 class="ion-text-bold">Quota Iscrizione</h5>
+                        </ion-label>
+                        <ion-badge
+                            *ngIf="myCorso.isAPagamento()"
+                            color="success"
+                            slot="end">
+                            {{activeIscrizione.TOTALE | currency:"EUR"}}
+                        </ion-badge>         
+                        <ion-badge
+                            *ngIf="myCorso.isAPagamento()==false" 
+                            color="success"
+                            slot="end">
+                            GRATUITA
+                          </ion-badge>                                       
+                      </ion-item>
+
+                      <ion-button
+                            (click)="onClickVisualizzaIscrizione()"
+                            size="small"
+                            expand="block"
+                            color="success"
+                            >
+                        VISUALIZZA ISCRIZIONE
+                        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                      </ion-button>
+
+                      </ion-list>
+                    </ion-item-group>                    
         
                     <!-- ADATTO A -->
                     <ion-item-group class="ion-padding-bottom">

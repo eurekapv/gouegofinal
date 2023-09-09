@@ -1117,6 +1117,29 @@ onRequestIscrizioneDocFor(paramsDocIscrizione: IscrizioneCorso):Promise<Iscrizio
 requestSaveIscrizioneCorso(docIscrizione: IscrizioneCorso):Promise<PostResponse> {
   return this.iscrizioneCorsoService.onRequestIscrizioneDocSave(docIscrizione);
 } 
+
+/**
+ * Ricerca una Iscrizione Corso per Chiave Primaria
+ * (Reject se non trovata)
+ * @param idPrimary Chiave Primaria
+ * @param childLevel Default = 1 
+ * @param decodeAll Default FALSE - Decodifica la ricezione
+ */
+requestIscrizioneCorsoById(idPrimary: string, childLevel: number = 1, decodeAll:boolean = false): Promise<IscrizioneCorso> {
+  return this.iscrizioneCorsoService.requestById(idPrimary, childLevel, decodeAll);
+}
+
+
+/**
+ * Effettua il caricamento dei dati filtrati
+ * @param filterDoc Filtro con i campi per la ricerca
+ * @param childLevel 
+ * @param decodeAll 
+ * @returns 
+ */
+requestIscrizioneCorsoByFilter(filterDoc: IscrizioneCorso, childLevel: number = 1, decodeAll:boolean = false): Promise<IscrizioneCorso[]> {
+  return this.iscrizioneCorsoService.requestByFilter(filterDoc, childLevel, decodeAll);
+}
 //#endregion
 
 

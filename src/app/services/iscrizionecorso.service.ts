@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PostResponse } from '../library/models/postResult.model';
-import { PostParams } from '../library/models/requestParams.model';
+import { PostParams, RequestParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { IscrizioneCorso } from '../models/iscrizione-corso.model';
 
@@ -12,10 +12,7 @@ export class IscrizionecorsoService {
 
   constructor(private docStructureService: DocstructureService
               ) { }
-
-
-  
-
+ 
   /**
    * Contatta il server per conoscere se sono ancora 
    * disponibili posti per l'iscrizione a un corso
@@ -194,4 +191,78 @@ export class IscrizionecorsoService {
     })
   }
 
+  /**
+   * Ricerca una Iscrizione Corso per Chiave Primaria
+   * (Reject se non trovata)
+   * @param idPrimary Chiave Primaria
+   * @param childLevel Default = 1 
+   * @param decodeAll Default FALSE - Decodifica la ricezione
+   */
+  requestById(idPrimary: string, childLevel: number = 1, decodeAll:boolean = false): Promise<IscrizioneCorso> {
+    let filterDoc: IscrizioneCorso;
+    let reqParams: RequestParams;
+
+    return new Promise<IscrizioneCorso>((resolve, reject) => {
+        if (idPrimary && idPrimary.length != 0) {
+
+          filterDoc = new IscrizioneCorso(true);
+          filterDoc.ID = idPrimary;
+
+          reqParams = new RequestParams();
+          reqParams.child_level = childLevel;
+          reqParams.decode.active = decodeAll;
+
+          this.docStructureService.requestNew(filterDoc, reqParams)
+                                  .then(listReceived => {
+                                    if (!listReceived || listReceived.length == 0) {
+                                      reject('Iscrizione non trovata');
+                                    }
+                                    else {
+                                      resolve(listReceived[0]);
+                                    }
+                                  })
+                                  .catch(error => {
+                                    reject(error);
+                                  })                                  
+
+        }
+        else {
+          reject('Id Primary undefined');
+        }
+    })
+  }
+
+
+  /**
+   * Effettua il caricamento dei dati filtrati
+   * @param filterDoc Filtro con i campi per la ricerca
+   * @param childLevel 
+   * @param decodeAll 
+   * @returns 
+   */
+  requestByFilter(filterDoc: IscrizioneCorso, childLevel: number = 1, decodeAll:boolean = false): Promise<IscrizioneCorso[]> {
+
+    let reqParams: RequestParams;
+
+    return new Promise<IscrizioneCorso[]>((resolve, reject) => {
+        if (filterDoc) {
+          
+          reqParams = new RequestParams();
+          reqParams.child_level = childLevel;
+          reqParams.decode.active = decodeAll;
+
+          this.docStructureService.requestNew(filterDoc, reqParams)
+                                  .then(listReceived => {
+                                    resolve(listReceived);
+                                  })
+                                  .catch(error => {
+                                    reject(error);
+                                  })
+
+        }
+        else {
+          reject('FilterDoc undefined');
+        }
+    })
+  }  
 }

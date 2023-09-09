@@ -48,6 +48,7 @@ import { Authorization } from 'src/app/models/authorization.model';
 import { EventoPianificazione } from 'src/app/models/evento-pianificazione.model';
 import { TipoPagamentoScadenza } from 'src/app/models/tipo-pagamento-scadenza.model';
 import { IscrizioneIncasso } from 'src/app/models/iscrizione-incasso.model';
+import { IscrizioneCorso } from 'src/app/models/iscrizione-corso.model';
 
 
 
@@ -105,6 +106,7 @@ export const Structure: any = {
     Evento,
     EventoPianificazione,
     TipoEvento,
+    IscrizioneCorso,
     IscrizioneIncasso,
     
 

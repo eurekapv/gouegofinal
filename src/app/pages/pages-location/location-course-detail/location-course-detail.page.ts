@@ -3,7 +3,7 @@ import { Corso } from 'src/app/models/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, ModalController, LoadingController, ToastController } from '@ionic/angular';
+import { NavController, ModalController, LoadingController } from '@ionic/angular';
 import { Location } from 'src/app/models/location.model';
 import { CourseDetailCalendarPage } from './course-detail-calendar/course-detail-calendar.page';
 import { Area } from 'src/app/models/area.model';
@@ -13,6 +13,7 @@ import { Tempistica, TipoCorso } from 'src/app/models/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
 import { LogApp } from 'src/app/models/log.model';
 import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
+import { IscrizioneCorso } from 'src/app/models/iscrizione-corso.model';
 
 @Component({
   selector: 'app-location-course-detail',
@@ -29,6 +30,7 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
   groupColor = 'tertiary';
   userLogged = false;
   subUserLogged: Subscription;
+  activeIscrizione: IscrizioneCorso; //Se presente indica che l'utente è già Iscritto
 
   docUser: Utente;
   subUser: Subscription;
@@ -67,25 +69,28 @@ export class LocationCourseDetailPage implements OnInit, OnDestroy {
   onListenSelectedArea() {
 
    this.listenSelectedArea = this.startService.areaSelected
-                                              .subscribe(elArea => {
-
-                                                this.selectedArea = elArea;
-                                                LogApp.consoleLog('Area selezionata ' + elArea.DENOMINAZIONE,"log");
-
-                                                //Controllo se nell'area sono abilitate le iscrizioni
-                                                if (this.selectedArea.APPISCRIZIONI == true) {
-                                                  this.areaEnableIscrizioni = true;
-                                                  LogApp.consoleLog('Iscrizioni Abilitate', "log");
-                                                }
-                                                else {
-                                                  this.areaEnableIscrizioni = false;
-                                                  LogApp.consoleLog('Iscrizioni Disabilitate','log');
-                                                }
-                                            }, error => {
-                                              this.areaEnableIscrizioni = false;
-                                              LogApp.consoleLog(error, 'error');
-                                              LogApp.consoleLog('Iscrizioni Disabilitate per errore','error');
-                                            });
+                                              .subscribe({
+                                                    next: (elArea) => {
+    
+                                                    this.selectedArea = elArea;
+                                                    LogApp.consoleLog('Area selezionata ' + elArea.DENOMINAZIONE,"log");
+    
+                                                    //Controllo se nell'area sono abilitate le iscrizioni
+                                                    if (this.selectedArea.APPISCRIZIONI == true) {
+                                                      this.areaEnableIscrizioni = true;
+                                                      LogApp.consoleLog('Iscrizioni Abilitate', "log");
+                                                    }
+                                                    else {
+                                                      this.areaEnableIscrizioni = false;
+                                                      LogApp.consoleLog('Iscrizioni Disabilitate','log');
+                                                    }
+                                                    },
+                                                    error: (error) => {
+                                                      this.areaEnableIscrizioni = false;
+                                                      LogApp.consoleLog(error, 'error');
+                                                      LogApp.consoleLog('Iscrizioni Disabilitate per errore','error');
+                                                    }
+                                                  });
 }
 
 /**
@@ -101,6 +106,8 @@ onListenSelectedUser() {
     //Recupero il documento utente
     this.subUser = this.startService.activeUtenteDoc$.subscribe(elUser => {
       this.docUser = elUser;
+      //Recupero una eventuale Iscrizione Corso
+      this.retrieveIscrizioneCorso();
     })
 }
               
@@ -147,6 +154,9 @@ ngOnInit() {
         myElLoading.dismiss();
         //Ho tutti i dati necessari
         this.myLocation = itemLocation;
+
+        //Recupero una eventuale Iscrizione Corso
+        this.retrieveIscrizioneCorso();
 
       })
       .catch(error => {
@@ -233,6 +243,39 @@ ngOnDestroy() {
 
   }
 
+
+  /**
+   * Tenta il caricamento di una iscrizione corso se presente
+   */
+  retrieveIscrizioneCorso(): void {
+    //Recupero anche una eventuale Iscrizione a questo corso
+    let filterDoc:IscrizioneCorso;
+    
+    //Se ho il corso e l'utente provo a chiedere
+    if (this.myCorso && this.docUser) {
+
+      filterDoc = new IscrizioneCorso(true);
+
+      filterDoc.IDCORSO = this.myCorso.ID;
+      filterDoc.IDUTENTE = this.docUser.ID;
+
+      this.startService.requestIscrizioneCorsoByFilter(filterDoc)
+                       .then(listReceived => {
+                        if (listReceived && listReceived.length != 0) {
+                          this.activeIscrizione = listReceived[0];
+                        }
+                        else {
+                          this.activeIscrizione = null;
+                        }
+                       })
+                       .catch(error => {
+                        this.activeIscrizione = null;
+                        LogApp.consoleLog(error,'error');
+                       })
+
+    }
+  }
+
   /* ****** CALENDAR ******** */
   onClickCardCalendar() {
     /* Apro in modale il calendario */
@@ -268,7 +311,7 @@ ngOnDestroy() {
   /**
   * Evento Click sul pulsante di Iscrizione
   */
-  onClickIscrizione() {
+  onClickIscrivitiAdesso() {
     let myIdCorso = '';
 
     if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
@@ -318,6 +361,22 @@ ngOnDestroy() {
       
     }
 
+  }
+
+  /**
+   * Vuole vedere l'iscrizione presente
+   */
+  onClickVisualizzaIscrizione() {
+    let arPath = [];
+
+    //Devo chiedere il percorso a History
+    if (this.activeIscrizione) {
+        arPath = this.startService.getUrlPageHistoryPersonal("course",this.activeIscrizione.ID);
+
+        if (arPath && arPath.length) {
+          this.navController.navigateForward(arPath);
+        }
+    }
   }
 
   /**
@@ -385,7 +444,10 @@ ngOnDestroy() {
 
     if (this.myCorso) {
 
-      if (this.areaEnableIscrizioni && this.myCorso.flagIscrizioniAperte()) {
+      //Iscrizioni Abilitate sull'Area, Aperte per il corso e non ancora Iscritto
+      if (this.areaEnableIscrizioni && 
+          this.myCorso.flagIscrizioniAperte() && 
+          !this.activeIscrizione) {
 
         showButton = true;
       }

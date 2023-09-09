@@ -44,6 +44,7 @@ import { TableArticoliComponent } from './table-articoli/table-articoli.componen
 import { TableItemArticoloComponent } from './table-item-articolo/table-item-articolo.component';
 import { CardImageComponent } from './card-image/card-image.component';
 import { PipesModule } from '../pipes/pipes.module';
+import { DurataChooserComponent } from './durata-chooser/durata-chooser.component';
 
 
 @NgModule({
@@ -92,6 +93,7 @@ import { PipesModule } from '../pipes/pipes.module';
         TableArticoliComponent,
         TableItemArticoloComponent,
         CardImageComponent,
+        DurataChooserComponent
         
     ],
     exports: [
@@ -127,7 +129,8 @@ import { PipesModule } from '../pipes/pipes.module';
         TableEventiComponent,
         TableArticoliComponent,
         TableItemArticoloComponent,
-        CardImageComponent
+        CardImageComponent,
+        DurataChooserComponent
     ]
 })
 export class SharedComponentsModule {}

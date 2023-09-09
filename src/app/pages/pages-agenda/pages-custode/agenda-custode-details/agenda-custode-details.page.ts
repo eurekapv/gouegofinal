@@ -40,10 +40,13 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   Tiposettore: typeof SettoreAttivita = SettoreAttivita;
 
   subParaMap: Subscription;
-  lockedForm = true; //Specifica se il pannello è bloccato per le modifiche
+  lockedFormPartecipanti = true; //Specifica se il pannello è bloccato per le modifiche
+  lockedFormDurata = true; //Specifica se il pannello è bloccato per le modifiche
 
   incassoAttuale: number;
   originalResiduo = true; //E' presente in origine un residuo da incassare
+  
+  modeIncasso: 'nessuno' |'completo' | 'parziale' = 'completo'; //Come si effettua l'incasso della prenotazione
 
   myToday: Date = new Date();
 
@@ -125,6 +128,12 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     })
   }
 
+  ngOnDestroy(): void {
+    if (this.subParaMap) {
+      this.subParaMap.unsubscribe();
+    }
+  }  
+
   //#region PULSANTE BACK
   /**
    * Ritorna un Array con il percorso di ritorno
@@ -153,6 +162,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   //#endregion
 
   //#region RICHIESTA DOCUMENTI
+
   /**
    * Effettua la richiesta dei documenti necessari
    */
@@ -297,10 +307,9 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     })
   }
 
-  //#ewndregion
+  //#endregion
 
-  //#region GESTIONE ABILITAIZONE MODIFICHE
-
+  //#region GESTIONE MODIFICHE
   
   /**
    * Verifica se possibile modificare i dati
@@ -318,9 +327,19 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   /**
    * Utente richiede il blocco/sblocco dei dati
    */
-  onClickLockButton() {
+  onClickLockButton(where:'partecipanti'|'durata') {
     if (this.canEditData) {
-      this.lockedForm = !this.lockedForm;
+      switch (where) {
+        case 'partecipanti':
+          this.lockedFormPartecipanti = !this.lockedFormPartecipanti;
+          break;
+          case 'durata':
+          this.lockedFormDurata = !this.lockedFormDurata;
+          break;
+      
+        default:
+          break;
+      }
     }
   }
 
@@ -360,28 +379,42 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     }
   }
   
-  
-  
-  
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this.subParaMap.unsubscribe();
-  }
 
-  getIcon (idSport){
-    return this.startService.getSportIcon(idSport);
-  }
-
+  /**
+   * Modifica del numero di giocatori
+   * @param nPlayer 
+   */
   onChangedNumPlayer(nPlayer: number)
   {
     //Memorizzo il numero Partecipanti
     this.pianificazioneDoc.NUMPARTECIPANTI=nPlayer;
 
+    //Devo richiedere il ricalcolo 
 
-    // this.calcolaTotale();
   }
 
+  /**
+   * Modifica della durata
+   * @param durata 
+   */
+  onChangeDurata(durata: number) {
+
+     //Memorizzo il numero Partecipanti
+     this.pianificazioneDoc.DURATAORE = durata;
+
+     //Devo chiamare il server per eseguire un ricalcolo
+
+
+  }
+
+  /**
+   * Effettua una chiamata al server per il ricalcolo
+   */
+  onRequestRicalcoloTotale() {
+
+  }
+
+  //#endregion
  
   //#region VALORE INCASSO
   /**

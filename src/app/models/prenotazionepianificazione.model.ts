@@ -2,6 +2,7 @@ import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { PaymentChannel, StatoPrenotazione } from './valuelist.model';
 import { RequestForeign } from '../library/models/requestParams.model';
+import { MyDateTime } from '../library/models/mydatetime.model';
 
 export class PrenotazionePianificazione extends IDDocument {
     IDPRENOTAZIONE: string;
@@ -132,5 +133,28 @@ export class PrenotazionePianificazione extends IDDocument {
         let identifier = '';        
         identifier = this.IDPRENOTAZIONE + '-' + this.ID;
         return identifier;
-    }        
+    }
+    
+    
+    /**
+     * Ritorna una stringa a indicare la durata
+     */
+    getLabelDurata(): string {
+        let labelReturn: string = '';
+
+        labelReturn = MyDateTime.getLabelDurata(this.DURATAORE);
+
+        return labelReturn;
+    }
+
+    /**
+     * Ritorna TRUE se è presente un Residuo
+     */
+    paymentRequested(): boolean {
+        let flagReturn = false;
+
+        flagReturn = (this.RESIDUO != 0)
+        
+        return flagReturn;
+    }
 }

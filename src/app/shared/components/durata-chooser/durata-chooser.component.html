@@ -1,0 +1,25 @@
+<ion-grid
+    class="ion-no-padding ion-no-margin">
+  <ion-row 
+        class="ion-padding">
+    <ion-col
+        class="ion-padding" 
+        *ngFor="let item of arDurate"
+        size="6"
+        sizeSm="6"
+        sizeXs="6"
+        sizeMd="6"
+        sizeXl="4"
+        sizeLg="4">
+        <ion-button
+            (click)="onChooseItem(item)"
+            [color]="_color"
+            [size]="_size"
+            expand="block"
+            [fill]="item.durata == _activeDurata ? 'solid':'outline'"
+            >
+            {{item.text}}
+        </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

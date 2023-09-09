@@ -16,6 +16,7 @@
     <ion-label *ngIf="!selectedPaymentMode">Scegli metodo di pagamento</ion-label>
   </ion-item>
 </div>
+
 <!-- MODALITA A ICONE-->
 <div *ngIf="_iconMode && arPaymentModeList.length != 0">
 
@@ -27,7 +28,7 @@
         [class]="getModeIconClassColumn(recItem)"
         (click)="onChangePaymentSelection(recItem)"
         [size]="modeIconSizeColumn">
-        <!-- Riga Icona-->
+      <!-- Riga Icona-->
       <ion-row class="row-icon">
         <ion-col size="12">
           <ion-icon [name]="recItem.itemIcon">

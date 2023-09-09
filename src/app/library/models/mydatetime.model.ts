@@ -810,6 +810,55 @@ static getOnlyDate(dateValue: Date): Date {
 }
 
 
+    /**
+     * Ritorna una stringa a indicare la durata partendo da un valore
+     * decimal di Ore
+     * @param durataOre Ore Decimali
+     * @param shortSymbol Usa simboli H e m al posto di ore e minuti
+     */
+    static getLabelDurata(durataOre: number, shortSymbol: boolean = false): string {
+        let labelReturn: string = '';
+        if (durataOre == 0) {
+            labelReturn = 'Nessuna ora';
+        }
+        else {
+            //Trasformo in minuti
+            let ore = Math.trunc(durataOre);
+            let minuti = (durataOre - Math.trunc(durataOre)) * 60;
+
+            if (ore != 0) {
+                if (shortSymbol) {
+                    labelReturn = `${ore} h.`
+                }
+                else {
+                    labelReturn = `${ore} ${ore == 1 ? 'ora' : 'ore'}`
+                }
+            }
+
+            if (minuti != 0) {
+                if (shortSymbol) {
+                    if (labelReturn.length != 0) {
+                        labelReturn += ' ';
+                    }
+    
+                    labelReturn = `${minuti} m.`
+
+                }
+                else {
+                    if (labelReturn.length != 0) {
+                        labelReturn += ' e ';
+                    }
+    
+                    labelReturn = `${minuti} ${minuti == 1 ? 'minuto' : 'minuti'}`
+                }
+            }
+
+        }
+
+        return labelReturn;
+    }
+
+
 
 }
 

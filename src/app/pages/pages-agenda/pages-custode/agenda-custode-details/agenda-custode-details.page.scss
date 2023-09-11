@@ -103,6 +103,8 @@ div.div-header{
     }
 }
 
+/* NUOVE REGOLE */
+
 ion-segment.modo-incasso {
     --background: white !important;
     --color-checked: black !important;
@@ -112,3 +114,8 @@ ion-segment.modo-incasso {
 .segment-button-checked.md::part(native) {
     color: black;
 }
+
+ion-input.input-price .native-input.sc-ion-input-ios {
+    font-size: xx-large;
+}
+    

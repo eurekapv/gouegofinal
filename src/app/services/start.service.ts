@@ -1800,7 +1800,9 @@ requestPrenotazioneById$(idPrenotazione: string,
    * @param decodeAll Decodifica le chiavi esterne
    * @returns 
    */
-  requestPrenotazioneById(idPrenotazione: string, numChild = 0, decodeAll = false): Promise<Prenotazione> {
+  requestPrenotazioneById(idPrenotazione: string, 
+                          numChild = 0, 
+                          decodeAll = false): Promise<Prenotazione> {
     return this.prenotazioniService.requestPrenotazioneById(idPrenotazione, numChild, decodeAll);
   }
 
@@ -1818,6 +1820,24 @@ requestDeletePianificazione(idPianificazione){
   return this.prenotazioniService.requestDelete(idPianificazione, actualStartConfig);
 
 }
+
+  /* ************************* */
+  /*   CUSTODE PIANIFICAZIONE  */
+  /* ************************* */
+
+  /**
+   * Richiede l'aggiornamento del totale di una pianificazione
+   * E' possibile modificare DURATA / NUM PARTECIPANTI
+   * @param samplePianificazione 
+   * @returns 
+   */
+  onRequestCustodePianificazioneChange(samplePianificazione: PrenotazionePianificazione): Promise<Prenotazione> {
+    return this.prenotazioniService.requestCustodePianificazioneChange(samplePianificazione);
+  }
+
+  onRequestCustodePianificazioneSave(samplePianificazione: PrenotazionePianificazione): Promise<Prenotazione> {
+    return this.prenotazioniService.requestCustodePianificazioneSave(samplePianificazione);
+  }
 
 //#endregion
 

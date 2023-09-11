@@ -64,279 +64,550 @@
         </div>               
       </ion-col>
       </ion-row>
-  </ion-grid>
 
-  <!-- BUTTON PER MODIFICARE I DATI -->
-  <div *ngIf="loadingComplete && !loadingError && settoreRefer == Tiposettore.settorePrenotazione">
-    <ion-grid>
-      <ion-row>
-        <ion-col sizeXs="12" 
-                 sizeSm="12" 
-                 sizeMd="6" offsetMd="3"
-                 sizeLg="6" offsetLg="3"
-                 sizeXl="6" offsetXl="3">
-          <ion-button
-              (click)="onClickConferma()"
-              expand="full"
-              shape="fill"
-              color="success"
-                 >
-                <ion-icon name="checkmark-outline" slot="start"></ion-icon>
-                Conferma prenotazione
-             </ion-button>                 
-      </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-
-  <!-- GRID RELATIVA A PRENOTAZIONI -->
-  <ion-grid *ngIf="loadingComplete && !loadingError && settoreRefer == Tiposettore.settorePrenotazione">
-    <ion-row>
-      <!-- COLONNA PRIMARIA-->
-      <ion-col sizeXs="12" 
+      <!-- RIFERIMENTI PRENOTAZIONE -->
+      <ion-row
+          *ngIf="loadingComplete && !loadingError && settoreRefer == Tiposettore.settorePrenotazione">
+          <ion-col sizeXs="12" 
                sizeSm="12" 
-               sizeMd="6" 
-               sizeLg="6" 
-               sizeXl="6" 
-               >
-        <ion-grid class="ion-no-margin ion-no-padding">
+               sizeMd="6" offsetMd="3"
+               sizeLg="6" offsetLg="3"
+               sizeXl="6" offsetXl="3">
 
-          <!-- NUM PARTECIPANTI-->
-          <ion-row>
-            <ion-col>
-              <ion-list mode="ios">
-                <ion-list-header>
-                  Quanti partecipano
-                </ion-list-header>
+            <ion-grid>
+              <!-- TAB VISUALIZZAZIONE -->
+              <ion-row>
+                  <ion-col>
+                    <ion-segment 
+                        mode="md"
+                        [(ngModel)]="activePageView"
+                        >
+                      <ion-segment-button 
+                          value = "page-info"
+                          >
+                          <ion-label>Dettagli</ion-label>
+                      </ion-segment-button>
+                      <ion-segment-button 
+                          value = "page-conferma"
+                          >
+                          <ion-label>Conferma</ion-label>
+                          
+                      </ion-segment-button>                      
+                    </ion-segment>
+                  </ion-col>
+              </ion-row>
 
+              <!-- PORZIONE RELATIVA A PAGE INFO-->
+              <ion-row
+                  *ngIf="activePageView == 'page-info'"
+                  class="ion-no-margin ion-no-padding">
+                  <ion-col>
+                    <!-- griglia informativa -->
+                    <ion-grid 
+                        class="ion-no-margin ion-no-padding">
 
-
-                <!-- PANNELLO BLOCCATO (NUM PARTECIPANTI)-->
-                <ion-item
-                    detail="false"
-                    button="true"
-                    (click)="onClickLockButton('partecipanti')"
-                    lines="none"
-                    *ngIf="lockedFormPartecipanti">
-                  <ion-icon
-                      slot="start"
-                      size="large" 
-                      name ="person-circle-outline" 
-                      color="primary" 
-                  ></ion-icon>
-                  <ion-label>
-                    <h2>{{pianificazioneDoc.NUMPARTECIPANTI}} {{pianificazioneDoc.NUMPARTECIPANTI > 1? 'Giocatori':'Giocatore'}}</h2>
-                  </ion-label>
-                  <ion-button
-                      *ngIf="canEditData"
-                      size="small"
-                      color="danger"
-                      >
-                    MODIFICA
-                  </ion-button>
-                </ion-item>
-
-                <!-- PANNELLO NON BLOCCATO -->
-                <ion-item lines="none" *ngIf="!lockedFormPartecipanti">
-                  <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-                  <ion-label class="ion-text-wrap">
-                    modifica il numero dei partecipanti per ricalcolare l'importo
-                  </ion-label>
-                  <ion-button
-                    (click)="onClickLockButton('partecipanti')"
-                    slot="end"
-                    size="small"
-                    color="success"
-                    >
-                    FATTO
-                  </ion-button>
-                </ion-item>                
-
-                <app-player-number 
-                    *ngIf="!lockedFormPartecipanti"
-                    [numPlayer]="pianificazioneDoc.NUMPARTECIPANTI"
-                    (changeNumPlayer)="onChangedNumPlayer($event)">
-                </app-player-number>                               
-              </ion-list>
-
-
-
-            </ion-col>
-          </ion-row>
-
-          <!-- DURATA ORE -->
-          <ion-row>
-            <ion-col>
-              <ion-list mode="ios">
-                <ion-list-header>
-                  Durata
-                </ion-list-header>
-
-                <!-- PANNELLO BLOCCATO (DURATA)-->
-                <ion-item
-                    detail="false"
-                    button="true"
-                    (click)="onClickLockButton('durata')"
-                    lines="none"
-                    *ngIf="lockedFormDurata">
-                  <ion-icon
-                      slot="start"
-                      size="large" 
-                      name ="time-outline" 
-                      color="primary" 
-                  ></ion-icon>
-                  <ion-label>
-                    <h2>{{pianificazioneDoc.getLabelDurata()}}</h2>
-                  </ion-label>
-                  <ion-button
-                      slot="end"
-                      size="small"
-                      color="danger"
-                      >
-                    MODIFICA
-                  </ion-button>
-                </ion-item>
-
-                <!-- PANNELLO NON BLOCCATO -->
-                <ion-item 
-                    lines="none" 
-                    *ngIf="!lockedFormDurata">
-                  <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-                  <ion-label 
-                      class="ion-text-wrap">modifica la durata per ricalcolare l'importo
-                  </ion-label>
-                  <ion-button
-                      (click)="onClickLockButton('durata')"
-                      slot="end"
-                      size="small"
-                      color="success"
-                      >
-                    FATTO
-                  </ion-button>
-                </ion-item>   
-                
-                <app-durata-chooser
-                        (click)="onChangeDurata($event)"
-                        [activeDurata]="pianificazioneDoc.DURATAORE"  
-                        size=""
-                        color="success"
-                        *ngIf="!lockedFormDurata">
-                </app-durata-chooser>                            
-              </ion-list>
-
-
-
-            </ion-col>
-          </ion-row>
-
-        </ion-grid>
-      </ion-col>
-      <!-- COLONNA DESTRA CON IMPORTI -->
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="6" 
-               sizeLg="6" 
-               sizeXl="6" 
-               >
-        <!-- RIGA CON CARD DEL TOTALE -->
-        <ion-list 
-              line="none">
-          <ion-list-header mode="ios">
-            Importo Prenotazione 
-          </ion-list-header>
-
-          <ion-grid>
-            <!-- IMPORTO PRENOTAZIONI -->
-            <ion-row class="ion-align-items-center">
-              <ion-col size="5" class="ion-text-center left-col">
-                <h4 class="ion-no-margin ion-text-bold">Totale</h4>
-              </ion-col>
-              <ion-col size="7">
-                <h4 
-                  class="ion-no-margin ion-text-right ion-text-bold">
-                  {{pianificazioneDoc?.TOTALE | currency: "EUR"}}
-                </h4>
-              </ion-col>
-            </ion-row>
-
-            <!-- INCASSATO -->
-            <ion-row class="ion-align-items-center">
-              <ion-col size="5" class="ion-text-center left-col">
-                <h4 class="ion-no-margin ion-text-bold">Incassato</h4>
-              </ion-col>
-              <ion-col size="7">
-                <h4 
-                  class="ion-no-margin ion-text-right ion-text-bold">
-                  {{pianificazioneDoc?.INCASSATO | currency: "EUR"}}
-                </h4>
-              </ion-col>
-            </ion-row>
-
-            <!-- IMPORTO RESIDUO DA INCASSARE -->
-            <ion-row 
-                *ngIf="pianificazioneDoc?.RESIDUO != 0"
-                class="ion-align-items-center danger-price">
-              <ion-col size="5" class="ion-text-center left-col">
-                <h6 class="ion-no-margin ion-text-bold">da incassare</h6>
-              </ion-col>
-              <ion-col size="7">
-                <h5 
-                    class="ion-no-margin ion-text-right ion-text-bold">
-                    {{pianificazioneDoc?.RESIDUO | currency: "EUR"}}
-                </h5>
-              </ion-col>
-            </ion-row> 
-
-            <ion-item lines="none" 
-                *ngIf="pianificazioneDoc?.paymentRequested()">
-              <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                Indicare se si incassa il residuo, totalmente, in parte o per nulla
-              </ion-label>
-            </ion-item>            
-
-            <!-- SCELTA DI COME SI INCASSA -->
-            <ion-row 
-                *ngIf="pianificazioneDoc?.paymentRequested()"
-                class="ion-no-margin ion-no-padding">
-              <ion-col>
-                <ion-segment 
-                      mode="ios"
-                      class="modo-incasso" 
-                      [(ngModel)]="modeIncasso"
-                      >
-                  <ion-segment-button value="nessuno">
-                    <ion-label>Nessuno</ion-label>
-                  </ion-segment-button>                      
-                  <ion-segment-button value="completo">
-                    <ion-label>Completo</ion-label>
-                  </ion-segment-button>
-                  <ion-segment-button value="parziale">
-                    <ion-label>Parziale</ion-label>
-                  </ion-segment-button>
-                </ion-segment>
-              </ion-col>
-            </ion-row>
-
+                      <!-- NUM PARTECIPANTI-->
+                      <ion-row>
+                        <ion-col>
+                          <ion-list mode="ios">
+                            <ion-list-header>
+                              Quanti partecipano
+                            </ion-list-header>
+                            <!-- PANNELLO BLOCCATO (NUM PARTECIPANTI)-->
+                            <ion-item
+                                detail="false"
+                                button="true"
+                                (click)="onClickLockButton('partecipanti')"
+                                lines="none"
+                                *ngIf="lockedFormPartecipanti">
+                              <ion-icon
+                                  slot="start"
+                                  size="large" 
+                                  name ="person-circle-outline" 
+                                  color="primary" 
+                              ></ion-icon>
+                              <ion-label>
+                                <h2>{{pianificazioneDoc.NUMPARTECIPANTI}} {{pianificazioneDoc.NUMPARTECIPANTI > 1? 'Giocatori':'Giocatore'}}</h2>
+                              </ion-label>
+                              <ion-button
+                                  *ngIf="canEditDataPrenotazione"
+                                  size="small"
+                                  color="danger"
+                                  >
+                                MODIFICA
+                              </ion-button>
+                            </ion-item>
             
+                            <!-- PANNELLO NON BLOCCATO (INFO NUM PARTECIPANTI)-->
+                            <ion-item lines="none" *ngIf="!lockedFormPartecipanti">
+                              <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+                              <ion-label class="ion-text-wrap">
+                                modifica il numero dei partecipanti per ricalcolare l'importo
+                              </ion-label>
+                              <ion-button
+                                (click)="onClickLockButton('partecipanti')"
+                                slot="end"
+                                size="small"
+                                color="success"
+                                >
+                                FATTO
+                              </ion-button>
+                            </ion-item>                
+            
+                            <!-- PANNELLO NON BLOCCATO (INPUT NUM PARTECIPANTI)-->
+                            <app-player-number 
+                                *ngIf="!lockedFormPartecipanti"
+                                [numPlayer]="pianificazioneDoc.NUMPARTECIPANTI"
+                                (changeNumPlayer)="onChangedNumPlayer($event)">
+                            </app-player-number>                               
+                          </ion-list>
+                        </ion-col>
+                      </ion-row>
+            
+                      <!-- DURATA ORE -->
+                      <ion-row>
+                        <ion-col>
+                          <ion-list 
+                                lines="none"
+                                mode="ios">
+                            <ion-list-header>
+                              Per quanto tempo
+                            </ion-list-header>
+            
+                            <!-- PANNELLO BLOCCATO (DURATA)-->
+                            <ion-item
+                                detail="false"
+                                button="true"
+                                (click)="onClickLockButton('durata')"
+                                *ngIf="lockedFormDurata">
+                              <ion-icon
+                                  slot="start"
+                                  size="large" 
+                                  name ="time-outline" 
+                                  color="primary" 
+                              ></ion-icon>
+                              <ion-label>
+                                <h2>{{pianificazioneDoc.getLabelDurata()}}</h2>
+                              </ion-label>
+                              <ion-button
+                                  *ngIf="canEditDataPrenotazione"
+                                  slot="end"
+                                  size="small"
+                                  color="danger"
+                                  >
+                                MODIFICA
+                              </ion-button>
+                            </ion-item>
+            
+                            <!-- PANNELLO NON BLOCCATO (INFO DURATA)-->
+                            <ion-item 
+                                *ngIf="!lockedFormDurata">
+                              <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+                              <ion-label 
+                                  class="ion-text-wrap">modifica la durata per ricalcolare l'importo
+                              </ion-label>
+                              <ion-button
+                                  (click)="onClickLockButton('durata')"
+                                  slot="end"
+                                  size="small"
+                                  color="success"
+                                  >
+                                FATTO
+                              </ion-button>
+                            </ion-item>   
+                            
+                            <!-- PANNELLO NON BLOCCATO (INPUT DURATA)-->                
+                            <app-durata-chooser
+                                    (changeDurata)="onChangeDurata($event)"
+                                    [activeDurata]="pianificazioneDoc.DURATAORE"  
+                                    size=""
+                                    color="success"
+                                    *ngIf="!lockedFormDurata">
+                            </app-durata-chooser>                            
+                          </ion-list>
+                        </ion-col>
+                      </ion-row>
+            
+                      <!-- RIGA CON CARD DEL TOTALE -->
+                      <ion-row 
+                            class="ion-no-margin ion-no-padding">
+                        <ion-col class="ion-no-margin ion-no-padding">
+                          <ion-list 
+                              lines="none">
+                            <ion-list-header mode="ios">
+                            Importo Data  
+                            </ion-list-header>
+                            <ion-item
+                            detail="false"
+                            button="false"
+                            lines="none"
+                        >
+                            <ion-icon 
+                                slot="start"
+                                size="large" 
+                                name="layers-outline"></ion-icon>
+                            <ion-label>
+                              <h2>Totale</h2>
+                            </ion-label>
+                            <ion-label
+                                  class="ion-text-wrap ion-text-right"
+                                  slot="end"
+                                  >
+                              <h4 class="ion-text-large ion-text-bold">{{pianificazioneDoc?.TOTALE | currency: "EUR"}}</h4>
+                            </ion-label>
+                        </ion-item>                            
+                          </ion-list>
+                        </ion-col>
+                      </ion-row>
+
+                      <!-- VALORE GIA' INCASSATO  -->
+                      <ion-row class="ion-no-margin ion-no-padding">
+                        <ion-col class="ion-no-margin ion-no-padding">
+                          <ion-item
+                              detail="false"
+                              button="false"
+                              lines="none"
+                          >
+                              <ion-icon 
+                                  slot="start"
+                                  size="large" 
+                                  name="wallet-outline"></ion-icon>
+                              <ion-label>
+                                <h2>Incassato</h2>
+                              </ion-label>
+                              <ion-label
+                                    class="ion-text-wrap ion-text-right"
+                                    slot="end"
+                                    >
+                                <h4 class="ion-text-large ion-text-bold">{{pianificazioneDoc?.INCASSATO | currency: "EUR"}}</h4>
+                              </ion-label>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+
+                      <!-- IMPORTO RESIDUO DA INCASSARE -->            
+                      <ion-row *ngIf="pianificazioneDoc?.RESIDUO > 0"
+                            class="ion-no-margin ion-no-padding">
+                        <ion-col class="ion-no-margin ion-no-padding">
+                          <ion-item
+                              color="danger"
+                              detail="false"
+                              button="false"
+                              lines="none"
+                          >
+                              <ion-icon 
+                                  slot="start"
+                                  size="large" 
+                                  name="cash-outline"></ion-icon>
+                              <ion-label>
+                                <h2>Da Incassare</h2>
+                              </ion-label>
+                              <ion-label
+                                    class="ion-text-wrap ion-text-right"
+                                    slot="end"
+                                    >
+                                <h4 class="ion-text-large ion-text-bold">{{pianificazioneDoc?.RESIDUO | currency: "EUR"}}</h4>
+                              </ion-label>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>   
+
+                      <!-- IMPORTO RESIDUO DA RIMBORSARE -->            
+                      <ion-row *ngIf="pianificazioneDoc?.RESIDUO < 0"
+                        class="ion-no-margin ion-no-padding">
+                      <ion-col class="ion-no-margin ion-no-padding">
+                      <ion-item
+                          color="success"
+                          detail="false"
+                          button="false"
+                          lines="none"
+                      >
+                          <ion-icon 
+                              slot="start"
+                              size="large" 
+                              name="cash-outline"></ion-icon>
+                          <ion-label>
+                            <h2>Da Rimborsare</h2>
+                          </ion-label>
+                          <ion-label
+                                class="ion-text-wrap ion-text-right"
+                                slot="end"
+                                >
+                            <h4 class="ion-text-large ion-text-bold">{{pianificazioneDoc?.RESIDUO | currency: "EUR"}}</h4>
+                          </ion-label>
+                      </ion-item>
+                      </ion-col>
+                      </ion-row>                         
+
+                      <!-- INCASSATO TOTALMENTE -->
+                      <ion-row *ngIf="pianificazioneDoc?.RESIDUO == 0"
+                            class="ion-no-margin ion-no-padding">
+                        <ion-col class="ion-no-margin ion-no-padding">
+                        <ion-button 
+                            expand="block"
+                            fill="outline"
+                            color="success"
+                            size="large">
+                              INCASSATO TOTALMENTE
+                        </ion-button>
+                        </ion-col>
+                      </ion-row>    
+                      
+                      <!-- DATE MULTIPLE -->
+                      <ion-row 
+                            *ngIf="prenotazioneDoc.getNumeroDatePianificate() > 1"> 
+                        <ion-col>
+                          <ion-item>
+                              <ion-label class="ion-text-wrap">
+                                La prenotazione &egrave; parte di una prenotazione multipla composta da {{prenotazioneDoc.getNumeroDatePianificate()}} date pianificate
+                              </ion-label>
+                          </ion-item>
+                          <ion-item>
+                            <ion-label class="ion-text-wrap">
+                              Totale generale
+                            </ion-label>
+                            <ion-label
+                                class="ion-text-wrap ion-text-right"
+                                slot="end"
+                                >
+                              <h5 class="ion-text-large">{{prenotazioneDoc?.TOTALE | currency: "EUR"}}</h5>
+                            </ion-label>                            
+                          </ion-item>
+                          <ion-item>
+                            <ion-label class="ion-text-wrap">
+                              Residuo generale
+                            </ion-label>
+                            <ion-label
+                                class="ion-text-wrap ion-text-right"
+                                slot="end"
+                                >
+                              <h5 class="ion-text-large">{{prenotazioneDoc?.TOTALE | currency: "EUR"}}</h5>
+                            </ion-label>                            
+                          </ion-item>                          
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>                    
+                  </ion-col>
+              </ion-row>
+
+              <!-- PORZIONE RELATIVA A PAGE CONFERMA-->
+              <ion-row
+                  *ngIf="activePageView == 'page-conferma'"
+                  class="ion-no-margin ion-no-padding">
+                  <ion-col>
+                      <!-- GRIGLIA CONFERMA -->
+                      <ion-grid 
+                            class="ion-no-margin ion-no-padding">
+
+                        <!-- RIGA PULSANTE CONFERMA -->
+                        <ion-row 
+                            *ngIf="canEditDataPrenotazione"
+                            class="ion-margin-top">
+                            <ion-col class="ion-margin-horizontal">
+                              <ion-button
+                                (click)="onClickConferma()"
+                                expand="full"
+                                shape="fill"
+                                color="success"
+                                  >
+                                  <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+                                  Conferma prenotazione
+                              </ion-button>                 
+                            </ion-col>
+                        </ion-row>
+
+                        <!-- RIGA CON GESTIONE DELL'INCASSO -->
+                        <ion-row 
+                              class="ion-no-margin">
+                          <ion-col class="ion-no-margin">     
+                                <ion-list
+                                      class="ion-margin-top"
+                                      *ngIf="pianificazioneDoc?.paymentRequested()"
+                                      lines="none">
+                                  <ion-list-header 
+                                        class="ion-margin-bottom"
+                                        mode="ios">
+                                    Gestione Incasso 
+                                  </ion-list-header>
+
+                                  <!-- INFORMATIVA INCASSO -->
+                                  <ion-grid 
+                                      class="ion-no-margin ion-no-padding"> 
+
+                                    <!-- INFORMATIVA INCASSO -->
+                                    <ion-row class="ion-no-margin ion-no-padding">
+                                      <ion-col class="ion-no-margin ion-no-padding">            
+                                          <ion-item 
+                                              >
+                                            <ion-icon 
+                                                slot="start" 
+                                                name="information-circle-outline">
+                                            </ion-icon>
+                                            <ion-label class="ion-text-wrap">
+                                              Indicare se l'importo residuo viene incassato totalmente, in parte o eventualmente non venga incassato
+                                            </ion-label>
+                                          </ion-item>
+                                      </ion-col>
+                                    </ion-row> 
+
+                                      <!-- IMPORTO RESIDUO DA INCASSARE -->            
+                                      <ion-row *ngIf="pianificazioneDoc?.RESIDUO > 0"
+                                            class="ion-no-margin ion-no-padding">
+                                        <ion-col class="ion-no-margin ion-no-padding">
+                                          <ion-item
+                                              color="danger"
+                                              detail="false"
+                                              button="false"
+                                              lines="none"
+                                          >
+                                              <ion-icon 
+                                                  slot="start"
+                                                  size="large" 
+                                                  name="money-outline"></ion-icon>
+                                              <ion-label>
+                                                <h2>Da Incassare</h2>
+                                              </ion-label>
+                                              <ion-label
+                                                    class="ion-text-wrap ion-text-right"
+                                                    slot="end"
+                                                    >
+                                                <h4 class="ion-text-large ion-text-bold">{{pianificazioneDoc?.RESIDUO | currency: "EUR"}}</h4>
+                                              </ion-label>
+                                          </ion-item>
+                                        </ion-col>
+                                      </ion-row>                                       
+
+                                    <!-- SCELTA DI COME SI INCASSA -->
+                                    <ion-row 
+                                        *ngIf="pianificazioneDoc?.paymentRequested()"
+                                        class="ion-no-margin ion-padding-top">
+                                      <ion-col>
+                                        <ion-segment 
+                                              mode="ios"
+                                              class="modo-incasso" 
+                                              (ionChange)="onChangeSegmentModoIncasso()"
+                                              [(ngModel)]="modeIncasso"
+                                              >
+                                          <ion-segment-button value="nessuno">
+                                            <ion-label>Nessuno</ion-label>
+                                          </ion-segment-button>                      
+                                          <ion-segment-button value="completo">
+                                            <ion-label>Completo</ion-label>
+                                          </ion-segment-button>
+                                          <ion-segment-button value="parziale">
+                                            <ion-label>Parziale</ion-label>
+                                          </ion-segment-button>
+                                        </ion-segment>
+                                      </ion-col>
+                                    </ion-row>
+                                              
+                                    <!-- VISUALIZZAZIONE IMPORTO IN INCASSO COMPLETO/NESSUNO/ input PARZIALE-->
+                                    <ion-row
+                                        class="ion-margin-bottom ion-no-padding">
+                                        <ion-col>
+                                          <ion-item *ngIf="modeIncasso != 'parziale'">
+                                            <ion-label
+                                                class="ion-text-wrap"
+                                                >
+                                                <h5 class="ion-no-margin ion-text-bold">Adesso Incasso</h5>
+                                            </ion-label>
+                          
+                                            <ion-label
+                                                  *ngIf="modeIncasso == 'completo'"
+                                                  class="ion-text-right ion-text-wrap"
+                                                  slot="end">
+                                                  <h4 class="ion-text-bold">
+                                                    {{pianificazioneDoc?.RESIDUO | currency: "EUR"}}
+                                                  </h4>
+                                            </ion-label>
+
+                                            <ion-button
+                                                expand="full"
+                                                slot="end"
+                                                *ngIf="modeIncasso == 'nessuno'"
+                                                size="small"
+                                                color="danger">
+                                                NULLA
+                                            </ion-button>
+
+                                            
+                                          </ion-item>
+                                      
+
+                                          <!-- INPUT INCASSO -->
+                                          <ion-item *ngIf="modeIncasso == 'parziale'"
+                                              color="light"
+                                              class="ion-margin-vertical" 
+                                              >
+                                            <ion-input
+                                                #inputprice
+                                                class="ion-text-right input-price"
+                                                size="large"
+                                                inputmode = "number"
+                                                [(ngModel)]="inputIncassoAttuale"                    
+                                                aria-label="Adesso Incasso" 
+                                                type="number" 
+                                                placeholder="digita l'importo">
+                                            </ion-input>
+                                            <ion-icon name="logo-euro" slot="end"></ion-icon>
+
+                                          </ion-item>
+                                        </ion-col>
+                                    </ion-row>            
+                                  </ion-grid>
+                                </ion-list>                            
+                          </ion-col>
+                        </ion-row>                   
+
+                        <!-- RIGA ANNOTAZIONI -->
+                        <ion-row 
+                            class="ion-margin-top">
+                          <ion-col> 
+
+                            <ion-list
+                                lines="none">
+                              <ion-list-header mode="ios">
+                                Annotazioni
+                              </ion-list-header>
+                              <ion-grid 
+                                  class="ion-margin-horizontal"
+                                  >
+                                <!-- INPUT ANNOTAZIONI -->
+                                <ion-row 
+                                      >
+                                  <ion-col>
+                                      <ion-textarea
+                                        [autoGrow]="true"
+                                        aria-label="annotazioni"
+                                        [counter]="true"
+                                        maxlength="1000"
+                                        helperText="annotazioni"
+                                        placeholder="inserisci annotazioni per la segreteria"
+                                        >
+                                      </ion-textarea>                  
+                                  </ion-col>    
+                                </ion-row>
+                                </ion-grid>
+                              </ion-list>
+
+                          </ion-col>
+                        </ion-row>
 
 
-            <!-- NULLA DA INCASSARE -->
-            <ion-row 
-                *ngIf="pianificazioneDoc?.RESIDUO == 0"
-                class="ion-align-items-center success-price">
-              <ion-col size="12" class="ion-text-center left-col">
-                <h6 class="ion-no-margin ion-text-bold">INCASSATO COMPLETAMENTE</h6>
-              </ion-col>
-            </ion-row>     
+
+                      </ion-grid>
+                  </ion-col>
+              </ion-row>              
+            </ion-grid>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+</ion-content>
+
+          
 
 
-          </ion-grid>
-        </ion-list>
-      
 
 
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
 

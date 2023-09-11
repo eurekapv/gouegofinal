@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertButton, AlertController, IonInput, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { SupportFunc } from 'src/app/library/models/support-func.model';
 import { Corso } from 'src/app/models/corso.model';
 import { Evento } from 'src/app/models/evento.model';
 import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
@@ -13,6 +14,7 @@ import { SettoreAttivita } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 
+
 @Component({
   selector: 'app-agenda-custode-details',
   templateUrl: './agenda-custode-details.page.html',
@@ -20,6 +22,8 @@ import { StartService } from 'src/app/services/start.service';
 })
 export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
+  @ViewChild('inputprice') inputPrice: IonInput;
+  
   //Segnala un errore di caricamento dei dati
   loadingError = false;
   messageError: string = '';
@@ -43,10 +47,12 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   lockedFormPartecipanti = true; //Specifica se il pannello è bloccato per le modifiche
   lockedFormDurata = true; //Specifica se il pannello è bloccato per le modifiche
 
-  incassoAttuale: number;
-  originalResiduo = true; //E' presente in origine un residuo da incassare
+  inputIncassoAttuale: number;
+  inputAnnotazioni: string;
+  
   
   modeIncasso: 'nessuno' |'completo' | 'parziale' = 'completo'; //Come si effettua l'incasso della prenotazione
+  activePageView: 'page-info' | 'page-conferma' = 'page-info';
 
   myToday: Date = new Date();
 
@@ -155,10 +161,50 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   /**
    * Torno alla pagina del profilo
    */
-  onGoToBack() {
-        this.navController.navigateBack(this.backPathArray);
+  onGoToBack(message?: string) {
+        this.navController.navigateBack(this.backPathArray)
+                          .then(isFinish => {
+                            if (isFinish) {
+
+                              if (message && message.length != 0) {
+                                this.startService.presentAlertMessage(message);
+                              }
+
+                            }
+                          });
   }
   
+  //#endregion
+  //#region METHOD INTERFACE
+
+  /**
+   * Cambio del Modo di Incasso
+   * Aggiungo all'INPUT NATIVE 
+   * un FontSize xx-large
+   */
+  onChangeSegmentModoIncasso() {
+
+    console.log('Qua');
+    if (this.modeIncasso == 'parziale') {
+
+      setTimeout(()=> {
+
+        if (this.inputPrice) {
+          
+          this.inputPrice.getInputElement()
+                         .then(htmlItem => {
+                            if (htmlItem) {
+                              htmlItem.style.fontSize = 'xx-large';
+                            }
+                         })
+          
+        }
+
+      }, 250);
+      
+    }
+    
+  }
   //#endregion
 
   //#region RICHIESTA DOCUMENTI
@@ -203,9 +249,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
                                 this.settoreRefer = SettoreAttivita.settorePrenotazione;
                                 this.pianificazioneDoc = referDoc;
                                 this.captionHeader = 'Prenotazione';
-                                //Incasso del Custode
-                                this.pianificazioneDoc._INCASSOCUSTODE = this.pianificazioneDoc.RESIDUO;
-                                this.originalResiduo = (this.pianificazioneDoc.RESIDUO != 0);
+                                
                               }
                               else if (referDoc instanceof Evento) {
                                 //Settore di riferimento
@@ -223,7 +267,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
                               if (referDoc instanceof PrenotazionePianificazione) {
                                 LogApp.consoleLog('Caricamento prenotazione');
                                 //Carico anche la prenotazione
-                                return this.startService.requestPrenotazioneById(referDoc.IDPRENOTAZIONE)
+                                return this.startService.requestPrenotazioneById(referDoc.IDPRENOTAZIONE,2)
                               }
                               else {
                                 return;
@@ -241,6 +285,9 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
                             return;
                            })
                            .then(() => {
+                            console.log(this.prenotazioneDoc);
+                            console.log(this.pianificazioneDoc);
+
                             //Creo di aver fatto tutti i caricamenti richiesti
                             resolve();
                            })
@@ -315,20 +362,17 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
    * Verifica se possibile modificare i dati
    * @returns 
    */
-  get canEditData(): boolean {
-    if(this.prenotazioneDoc.DATA  <= this.myToday){
-      return true;
-    }
-    else{
-      return false;
-    }
+  get canEditDataPrenotazione(): boolean {
+
+    return true;
+    
   }
 
   /**
    * Utente richiede il blocco/sblocco dei dati
    */
   onClickLockButton(where:'partecipanti'|'durata') {
-    if (this.canEditData) {
+    if (this.canEditDataPrenotazione) {
       switch (where) {
         case 'partecipanti':
           this.lockedFormPartecipanti = !this.lockedFormPartecipanti;
@@ -343,40 +387,142 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     }
   }
 
+
+  /**
+   * Valido i dati per continuare
+   * @returns 
+   */
+  onValidationConferma(): boolean {
+    let flagValue = false;
+    let message = '';
+    let residuoStr = '';
+
+    flagValue = true;
+
+
+    if (this.prenotazioneDoc && this.pianificazioneDoc) {
+
+      //C'e' un residuo da incassare
+      if (this.pianificazioneDoc.paymentRequested()) {
+
+        switch (this.modeIncasso) {
+          case 'completo':
+              this.pianificazioneDoc.INCASSOCUSTODE = this.pianificazioneDoc.RESIDUO;
+            break;
+          case 'parziale':
+
+            if (!this.inputIncassoAttuale || this.inputIncassoAttuale == 0) {
+              flagValue = false;
+
+              residuoStr = SupportFunc.formatNumeric(this.pianificazioneDoc.RESIDUO);
+              message = `<p>Indicare l'importo ricevuto dal cliente</p>`
+            }
+            else if (this.inputIncassoAttuale > this.pianificazioneDoc.RESIDUO){
+              flagValue = false;
+              residuoStr = SupportFunc.formatNumeric(this.pianificazioneDoc.RESIDUO);
+              message = `<p>L\'importo da incassare deve essere al massimo <strong>${residuoStr}</strong> Eur.</p>`
+            }
+            else {
+              this.pianificazioneDoc.INCASSOCUSTODE = this.inputIncassoAttuale;
+            }
+
+            break;
+          case 'nessuno':
+              this.pianificazioneDoc.INCASSOCUSTODE = 0;
+            break;
+        
+          default:
+            break;
+        }
+      }
+    }
+    else {
+      flagValue = false;
+      message = '<p>Si sono verificati errori</p>';
+      message += '<p>Ricaricare la prenotazione per proseguire</p>'
+    }
+
+    if (!flagValue) {
+      this.startService.presentAlertMessage(message);
+    }
+
+    return flagValue;
+  }
   /**
    * Utente ha effettuato il click per confermare i dati
    */
   onClickConferma(){
+    let flagValidation = false;
+    let message = '';
+    let valueStr = '';
+    let arButtons: AlertButton[] = [];
 
-    let alertOptions = {
-      header: 'Sei sicuro',
-      message: 'Una volta confermato l\'importo, non potrai più modificarlo',
-      buttons: [
-        {
-          text: 'Conferma',
-          handler: ()=> {this.onSubmitData()}
-        },
-        {
-          text: 'Annulla',
-          role: 'cancel'
+    flagValidation = this.onValidationConferma();
+
+    if (flagValidation) {
+
+      if (this.pianificazioneDoc.paymentRequested()) {
+
+        //Ho incassato
+        if (this.pianificazioneDoc.INCASSOCUSTODE != 0) {
+          valueStr = SupportFunc.formatNumeric(this.pianificazioneDoc.INCASSOCUSTODE);
+          message = `<p>Confermi la prenotazione e dichiari di aver incassato</p>`;
+          message += `<p class="ion-text-bold ion-text-large">${valueStr} €</p>`
+          message += '<p>dal cliente</p>'
         }
-      ]
-    }
-    this.alertController.create(alertOptions)
-    .then(elAlert => {
-      elAlert.present()
-    })
+        else {
+          message = `<p>Confermi la prenotazione e dichiari di</p>`
+          message += `<p class="ion-text-bold ion-text-large">NON AVER INCASSATO NULLA</p>`
+          message += `<p>dal cliente</p>`
+        }
+      }
+      else {
+        message = 'Confermi che il cliente si &grave presentato ed ha usufruito della struttura ?'
+      }
 
+      //Preparo i Bottoni
+      arButtons = [{
+        text: 'CONFERMO',
+        handler: ()=> {this.onSubmitData()}
+      },
+      {
+        text: 'ANNULLA',
+        role: 'cancel'
+      }]
+
+      //Faccio la domanda
+      this.startService.presentAlertMessage(message, 'Conferma',arButtons);
+    }
     
   }
 
+  /**
+   * Aggiornamento dei dati sul server
+   */
   onSubmitData(){
-    if(this.canEditData){
-      //TODO inviare il docpianificazione a gouego
-      
-      this.navController.pop();
+    this.startService.showLoadingMessage('Salvataggio in corso...')
+                     .then(elLoading => {
 
-    }
+                        elLoading.present();
+
+                        this.startService.onRequestCustodePianificazioneSave(this.pianificazioneDoc)
+                                         .then(elPrenotazione => {
+
+                                            elLoading.dismiss();
+
+                                            //Qui è andato tutto bene
+                                            let myMessage = 'Aggiornamento effettuato con successo';
+
+                                            //Posso chiudere la videata e tornare indietro
+                                            this.onGoToBack(myMessage);
+
+                                         })
+                                         .catch(error => {
+                                            elLoading.dismiss();
+
+                                            this.startService.presentAlertMessage(error, 'Errore occorso');
+                                         })
+                     })
   }
   
 
@@ -390,52 +536,66 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     this.pianificazioneDoc.NUMPARTECIPANTI=nPlayer;
 
     //Devo richiedere il ricalcolo 
-
+    this.onRequestRicalcoloTotalePianificazione();
   }
 
   /**
    * Modifica della durata
    * @param durata 
    */
-  onChangeDurata(durata: number) {
+  onChangeDurata(valueDurata: number) {
 
-     //Memorizzo il numero Partecipanti
-     this.pianificazioneDoc.DURATAORE = durata;
+    if (valueDurata != this.pianificazioneDoc.DURATAORE) {
 
-     //Devo chiamare il server per eseguire un ricalcolo
+      //Memorizzo il numero Partecipanti
+      this.pianificazioneDoc.DURATAORE = valueDurata;
+ 
+      //Devo chiamare il server per eseguire un ricalcolo
+     this.onRequestRicalcoloTotalePianificazione();
 
+    }
+    
 
   }
 
   /**
    * Effettua una chiamata al server per il ricalcolo
    */
-  onRequestRicalcoloTotale() {
+  onRequestRicalcoloTotalePianificazione() {
+    this.startService.showLoadingMessage('Attendere ricalcolo')
+                     .then(elLoading => {
+                        //Mostro il loading
+                        elLoading.present();
 
+                        this.startService.onRequestCustodePianificazioneChange(this.pianificazioneDoc)
+                                         .then(elPrenotazione => {
+                                            //Chiudo il loading
+                                            elLoading.dismiss();
+
+                                            this.prenotazioneDoc = elPrenotazione;
+
+                                            //Imposto la pianificazione
+                                            this.pianificazioneDoc = this.prenotazioneDoc.PRENOTAZIONEPIANIFICAZIONE.find(elPianificazione => {
+                                              return elPianificazione.ID == this.idPianificazione
+                                            });
+
+                                            console.log(this.pianificazioneDoc);
+                                            console.log(this.prenotazioneDoc);
+
+                                            this.startService.presentToastMessage('Ricalcolo effettuato');
+                                          
+                                         })
+                                         .catch(error => {
+                                            //Chiudo il loading
+                                            elLoading.dismiss();
+                                            this.startService.presentAlertMessage(error);
+                                         })
+                     })
   }
 
   //#endregion
  
-  //#region VALORE INCASSO
-  /**
-   * Flag per decidere se mostrare l'input importo incassato
-   */
-  get flagInputValoreIncasso(){
-    //Mostro l'input del prezzo se originariamente era previsto un residuo da incassare
-    let flag = false;
-    if (this.originalResiduo) {
-      flag = true;
-    }
-    return flag;
-  }
 
-  dismissInputPrezzo(value:number){
-    if(value){
-      this.pianificazioneDoc._INCASSOCUSTODE = value;
-    }
-  }
-
-  //#endregion
 
 
 

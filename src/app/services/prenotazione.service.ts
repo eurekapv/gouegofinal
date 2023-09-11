@@ -14,7 +14,7 @@ import { SportService } from './sport.service';
 import { ParamsExport } from '../library/models/iddocument.model';
 import { PostResponse } from '../library/models/postResult.model';
 import { DocstructureService } from '../library/services/docstructure.service';
-import { RequestParams } from '../library/models/requestParams.model';
+import { PostParams, RequestParams } from '../library/models/requestParams.model';
 
 @Injectable({
   providedIn: 'root'
@@ -433,4 +433,116 @@ export class PrenotazioneService {
       })
 
     }
+
+    /**
+     * Richiede l'aggiornamento del totale di una pianificazione
+     * E' possibile modificare DURATA / NUM PARTECIPANTI
+     * @param samplePianificazione 
+     * @returns 
+     */
+    requestCustodePianificazioneChange(samplePianificazione: PrenotazionePianificazione): Promise<Prenotazione> {
+      return new Promise<Prenotazione>((resolve, reject) => {
+          let method = 'onRequestPianificazioneChange';
+          let docToCall: Prenotazione;
+          let myPostParams: PostParams;
+
+          if (samplePianificazione) {
+            docToCall = new Prenotazione(true);
+
+            myPostParams = new PostParams();
+            myPostParams.key = 'samplePianificazione';
+            myPostParams.value = samplePianificazione;
+
+            this.docStructureService.requestForFunction(docToCall, method, null, myPostParams)
+                                    .then((data: PostResponse) => {
+
+                                      let elPrenotazione: Prenotazione;
+
+                                      if (data) {
+                                        if (data.result) {
+
+                                          //Pianificazione ricevuta
+                                          elPrenotazione = new Prenotazione();
+  
+                                          if (data.document) {
+                                            elPrenotazione.setJSONProperty(data.document);
+                                          }
+  
+                                          resolve(elPrenotazione);
+                                        }
+                                        else {
+                                          reject(data.message);
+                                        }
+                                      }
+                                      else {
+                                        reject('Calcolo totale fallito');
+                                      }
+
+                                    })
+                                    .catch(error => {
+                                      reject(error)
+                                    })
+            
+          }
+          else {
+            reject('Pianificazione non definita');
+          }
+      })
+    }
+
+    /**
+     * Richiede il salvataggio della Pianificazione (con eventualmente un incasso)
+     * E' possibile modificare DURATA / NUM PARTECIPANTI / INCASSO CUSTODE
+     * @param samplePianificazione 
+     * @returns 
+     */
+    requestCustodePianificazioneSave(samplePianificazione: PrenotazionePianificazione): Promise<Prenotazione> {
+      return new Promise<Prenotazione>((resolve, reject) => {
+          let method = 'onRequestPianificazioneSave';
+          let docToCall: Prenotazione;
+          let myPostParams: PostParams;
+
+          if (samplePianificazione) {
+            docToCall = new Prenotazione(true);
+
+            myPostParams = new PostParams();
+            myPostParams.key = 'samplePianificazione';
+            myPostParams.value = samplePianificazione;
+
+            this.docStructureService.requestForFunction(docToCall, method, null, myPostParams)
+                                    .then((data: PostResponse) => {
+
+                                      let elPrenotazione: Prenotazione;
+
+                                      if (data) {
+                                        if (data.result) {
+
+                                          //Pianificazione ricevuta
+                                          elPrenotazione = new Prenotazione();
+  
+                                          if (data.document) {
+                                            elPrenotazione.setJSONProperty(data.document);
+                                          }
+  
+                                          resolve(elPrenotazione);
+                                        }
+                                        else {
+                                          reject(data.message);
+                                        }
+                                      }
+                                      else {
+                                        reject('Salvataggio fallito');
+                                      }
+
+                                    })
+                                    .catch(error => {
+                                      reject(error)
+                                    })
+            
+          }
+          else {
+            reject('Pianificazione non definita');
+          }
+      })
+    }    
 }

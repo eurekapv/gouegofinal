@@ -25,10 +25,9 @@ export class PrenotazionePianificazione extends IDDocument {
     TOTALE: number;
     GUIDSERIE: string;
     PROGRESSIVO: string;
-    // IDTRANSACTION: string;
-    // CHANNELPAYMENT: PaymentChannel;
 
-    _INCASSOCUSTODE: number;
+    //Proprieta Transient per inviare l'incasso custode
+    INCASSOCUSTODE: number;
 
     constructor(onlyInstance?:boolean) {
         super(onlyInstance);
@@ -65,7 +64,7 @@ export class PrenotazionePianificazione extends IDDocument {
                         'IDCAMPO',
                         'GUIDSERIE',
                         'PROGRESSIVO'];
-        let arNumber = ['ANNO','NUMPARTECIPANTI'];
+        let arNumber = ['ANNO','NUMPARTECIPANTI','INCASSOCUSTODE'];
         let arNumberDecimal = ['DURATAORE',
                                'IMPONIBILE',
                                'INCASSATO',

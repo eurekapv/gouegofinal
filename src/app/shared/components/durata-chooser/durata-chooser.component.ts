@@ -30,7 +30,7 @@ export class DurataChooserComponent implements OnInit {
     this._size = value;
   }  
 
-  @Output() click = new EventEmitter<number>();
+  @Output() changeDurata = new EventEmitter<Number>();
 
   _color: string = 'primary';
   _size: string = '';
@@ -98,7 +98,7 @@ export class DurataChooserComponent implements OnInit {
   onChooseItem(item: IDurataChooser): void {
     if (item) {
       this._activeDurata = item.durata;
-      this.click.emit(item.durata);
+      this.changeDurata.emit(item.durata);
     }
   }
 }

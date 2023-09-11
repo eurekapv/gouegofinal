@@ -818,13 +818,15 @@ static getOnlyDate(dateValue: Date): Date {
      */
     static getLabelDurata(durataOre: number, shortSymbol: boolean = false): string {
         let labelReturn: string = '';
+        
+
         if (durataOre == 0) {
             labelReturn = 'Nessuna ora';
         }
         else {
             //Trasformo in minuti
             let ore = Math.trunc(durataOre);
-            let minuti = (durataOre - Math.trunc(durataOre)) * 60;
+            let minuti = (durataOre - ore) * 60;
 
             if (ore != 0) {
                 if (shortSymbol) {
@@ -841,7 +843,7 @@ static getOnlyDate(dateValue: Date): Date {
                         labelReturn += ' ';
                     }
     
-                    labelReturn = `${minuti} m.`
+                    labelReturn += `${minuti} m.`
 
                 }
                 else {
@@ -849,7 +851,7 @@ static getOnlyDate(dateValue: Date): Date {
                         labelReturn += ' e ';
                     }
     
-                    labelReturn = `${minuti} ${minuti == 1 ? 'minuto' : 'minuti'}`
+                    labelReturn += `${minuti} ${minuti == 1 ? 'minuto' : 'minuti'}`
                 }
             }
 

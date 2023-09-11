@@ -298,6 +298,19 @@ export class Prenotazione extends IDDocument {
       }
 
 
+      /**
+       * Numero Date Pianificate
+       * @returns 
+       */
+      getNumeroDatePianificate(): number {
+        let numDate: number = 0;
+
+        if (this.PRENOTAZIONEPIANIFICAZIONE) {
+            numDate = this.PRENOTAZIONEPIANIFICAZIONE.length;
+        }
+
+        return numDate;
+      }
       
     
 }

@@ -8,4 +8,19 @@ export class SupportFunc {
         htmlText = `<p>${text}</p>`;
         return htmlText
     }
+
+    /**
+     * Formatta un valore numerico contabile
+     * @param value 
+     * @returns 
+     */
+    static formatNumeric(value: number): string {
+        let valueStr: string = '';
+
+        if (value != null && value != undefined) {
+            valueStr = (value).toLocaleString('it-IT', {minimumFractionDigits: 2});
+        }
+
+        return valueStr;
+    }
 }

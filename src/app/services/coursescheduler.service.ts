@@ -8,6 +8,7 @@ import { DocstructureService } from '../library/services/docstructure.service';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { PostResponse } from '../library/models/post-response.model';
 import { PostParams, RequestParams } from '../library/models/requestParams.model';
+import { CorsoPresenze } from '../models/corsopresenze.model';
 
 
 @Injectable({
@@ -339,6 +340,35 @@ export class CourseschedulerService {
         })
 
     return elem;
+  }
+
+  /**
+   * Richiede al server elenco delle Presenze
+   * @param idPianificazione 
+   */
+  requestPresenze(idPianificazione: string): Promise<CorsoPresenze[]> {
+    return new Promise<CorsoPresenze[]>((resolve, reject) => {
+
+      if (idPianificazione && idPianificazione.length != 0) {
+
+        let filterDoc: CorsoPresenze;
+        filterDoc = new CorsoPresenze(true);
+
+        filterDoc.IDPIANIFICAZIONECORSO = idPianificazione;
+
+        this.docStructureService.requestNew(filterDoc)
+                                .then(listReceived => {
+                                  resolve(listReceived);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+
+      }
+      else {
+        reject('idPianificazione non impostato')
+      }
+    })
   }
 
   /**

@@ -86,6 +86,7 @@ import { UserDataVerificationPage } from '../pages/pages-profile/authorization-a
 import { StorageUtente } from '../models/stogare-utente.model';
 import { TipoPagamentoService } from './tipo-pagamento.service';
 import { TipoPagamento } from '../models/tipopagamento.model';
+import { CorsoPresenze } from '../models/corsopresenze.model';
 
 @Injectable({
   providedIn: 'root'
@@ -1058,6 +1059,14 @@ newFilterCorsi(idLocation: string) {
   getPianificazioneTrainerById(idPianificazione: string){
     return this.corsoCalendarioService.getPianificazioneTrainerById(idPianificazione);
   }
+
+  /**
+   * Richiede al server l'elenco delle Presenze per la data di corso pianificata
+   * @param idPianificazione 
+   */
+  requestPresenzeDataCorso(idPianificazione: string): Promise<CorsoPresenze[]> {
+      return this.corsoCalendarioService.requestPresenze(idPianificazione);
+  }   
 
   insertPresenzeIntoPianificazione(docPianificazione: PianificazioneCorso){
     return this.corsoCalendarioService.insertPresenze(docPianificazione);

@@ -1,9 +1,10 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertButton, AlertController, IonInput, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertButton,  IonInput, LoadingController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { SupportFunc } from 'src/app/library/models/support-func.model';
 import { Corso } from 'src/app/models/corso.model';
+import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
 import { Evento } from 'src/app/models/evento.model';
 import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
 import { LogApp } from 'src/app/models/log.model';
@@ -38,6 +39,8 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   prenotazioneDoc: Prenotazione;
   pianificazioneDoc: PrenotazionePianificazione;
   corsoDoc: Corso;
+  listIscrittiCorso: CorsoPresenze[];
+
   eventoDoc: Evento;
   captionHeader: string = 'Agenda';
   iconHeader: string = 'calendar'
@@ -61,7 +64,6 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     private navController: NavController,
     private startService: StartService,
     private loadingController: LoadingController,
-    private alertController: AlertController
   ) { 
     
   }
@@ -261,28 +263,8 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
                               return referDoc;
                            })
                            .then(referDoc => {
-                            LogApp.consoleLog('Caricamento documenti aggiuntivi');
-
-                              //Se necessario carico altri documenti
-                              if (referDoc instanceof PrenotazionePianificazione) {
-                                LogApp.consoleLog('Caricamento prenotazione');
-                                //Carico anche la prenotazione
-                                return this.startService.requestPrenotazioneById(referDoc.IDPRENOTAZIONE,2)
-                              }
-                              else {
-                                return;
-                              }
-                              
-                           })
-                           .then(docSingle => {
-                            //Se c'e' un documento - dovrebbe essere la prenotazione
-                            if (docSingle) {
-                              if (docSingle instanceof Prenotazione) {
-                                this.prenotazioneDoc = docSingle;
-                              }
-                            }
-
-                            return;
+                              LogApp.consoleLog('Caricamento documenti aggiuntivi');
+                              return this.additionalLoading();
                            })
                            .then(() => {
                             console.log(this.prenotazioneDoc);
@@ -300,6 +282,49 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
         }
     })
 
+  }
+
+  /**
+   * Caricamento Documenti Addizionali a seconda del settore Refer
+   * @returns 
+   */
+  additionalLoading(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (this.settoreRefer == SettoreAttivita.settorePrenotazione) {
+        //Richiedo la Prenotazione
+        this.startService.requestPrenotazioneById(this.pianificazioneDoc.IDPRENOTAZIONE,2)
+                         .then(dataReceived => {
+                           if (dataReceived) {
+                             this.prenotazioneDoc = dataReceived;
+                             resolve();
+                           }
+                           else {
+                            reject('Prenotazione non trovata');
+                           }
+                         })
+                         .catch(error => {
+                            reject(error);
+                         })
+      }
+      else if (this.settoreRefer == SettoreAttivita.settoreCorso) {
+        //Richiedo la lista Presenze per la data
+        this.startService.requestPresenzeDataCorso(this.idPianificazione)
+                         .then(listReceived => {
+                            this.listIscrittiCorso = listReceived;
+                            resolve();
+                         })
+                         .catch(error => {
+                            //Resolve lo stesso
+                            LogApp.consoleLog(error);
+                            this.listIscrittiCorso = [];
+                            resolve();
+                         })
+      }
+      else if (this.settoreRefer == SettoreAttivita.settoreEvento) {
+        resolve();
+      }
+      }
+    )
   }
 
   /**

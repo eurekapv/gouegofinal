@@ -11,10 +11,13 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "buildprod": "ionic build --prod --aot --outputHashing=all",
+    "iosbuildprod": "sudo ionic build --prod --aot --outputHashing=all",
     "toAndroid": "npx cap sync android",
     "toIos": "npx cap sync ios",
     "opAndroid": "npx cap open android",
-    "opIos": "npx cap open ios"
+    "opIos": "npx cap open ios",
+    "update-android": "ionic build --prod --aot --outputHashing=all && npx cap sync && ionic cap open android",
+    "update-ios": "sudo ionic build --prod --aot --outputHashing=all && sudo npx cap sync ios && npx cap open ios"
   },
   "private": true,
   "dependencies": {

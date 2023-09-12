@@ -13,7 +13,7 @@ import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 import { LogApp } from 'src/app/models/log.model';
 import { SupportFunc } from 'src/app/library/models/support-func.model';
 

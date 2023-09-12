@@ -43,7 +43,7 @@ import { InvoicesService } from './invoices.service';
 import { PosizioneService } from './posizione.service';
 import { Area } from '../models/area.model';
 import { MasterDocumento } from '../models/ricevuta.model';
-import { PostResponse } from '../library/models/postResult.model';
+import { PostResponse } from '../library/models/post-response.model';
 import { DataChiusuraService } from './data-chiusura.service';
 
 

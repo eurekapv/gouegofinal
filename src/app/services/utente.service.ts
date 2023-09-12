@@ -5,7 +5,7 @@ import { ApicallService } from './apicall.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 import { LogApp } from '../models/log.model';
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
-import { PostResponse } from '../library/models/postResult.model';
+import { PostResponse } from '../library/models/post-response.model';
 import { ParamsExport } from '../library/models/iddocument.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { Account } from '../models/account.model';

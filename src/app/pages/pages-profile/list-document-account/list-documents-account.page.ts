@@ -8,7 +8,7 @@ import { OperatorCondition, ParamsExport } from 'src/app/library/models/iddocume
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Utente } from 'src/app/models/utente.model';
 import { Documentazione, InvioDocumentazione } from 'src/app/models/documentazione.model';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 import { FileService } from 'src/app/services/file.service';
 import { LogApp } from 'src/app/models/log.model';
 

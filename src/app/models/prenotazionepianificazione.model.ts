@@ -25,6 +25,7 @@ export class PrenotazionePianificazione extends IDDocument {
     TOTALE: number;
     GUIDSERIE: string;
     PROGRESSIVO: string;
+    NOTES: string;
 
     //Proprieta Transient per inviare l'incasso custode
     INCASSOCUSTODE: number;
@@ -63,7 +64,8 @@ export class PrenotazionePianificazione extends IDDocument {
                         'IDSPORT',
                         'IDCAMPO',
                         'GUIDSERIE',
-                        'PROGRESSIVO'];
+                        'PROGRESSIVO',
+                        'NOTES'];
         let arNumber = ['ANNO','NUMPARTECIPANTI','INCASSOCUSTODE'];
         let arNumberDecimal = ['DURATAORE',
                                'IMPONIBILE',

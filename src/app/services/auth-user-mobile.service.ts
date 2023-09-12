@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DocstructureService } from '../library/services/docstructure.service';
-import { PostResponse } from '../library/models/postResult.model';
+import { PostResponse } from '../library/models/post-response.model';
 import { Account } from '../models/account.model';
 import { AuthUserMobile } from '../library/models/auth-user-mobile.model';
 import { OperationAuthUserMobile } from '../models/valuelist.model';

@@ -6,7 +6,7 @@ import { PianificazioneCorso } from '../models/pianificazionecorso.model';
 import { LogApp } from '../models/log.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { MyDateTime } from '../library/models/mydatetime.model';
-import { PostResponse } from '../library/models/postResult.model';
+import { PostResponse } from '../library/models/post-response.model';
 import { PostParams, RequestParams } from '../library/models/requestParams.model';
 
 

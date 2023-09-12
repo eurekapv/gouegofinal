@@ -389,7 +389,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
 
   /**
-   * Valido i dati per continuare
+   * Valido i dati per continuare, ed imposto il valore di IncassoCustode
    * @returns 
    */
   onValidationConferma(): boolean {
@@ -461,14 +461,24 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
     if (flagValidation) {
 
+      //Imposto le Note eventuali
+      this.pianificazioneDoc.NOTES = this.inputAnnotazioni;
+
       if (this.pianificazioneDoc.paymentRequested()) {
 
         //Ho incassato
         if (this.pianificazioneDoc.INCASSOCUSTODE != 0) {
           valueStr = SupportFunc.formatNumeric(this.pianificazioneDoc.INCASSOCUSTODE);
-          message = `<p>Confermi la prenotazione e dichiari di aver incassato</p>`;
-          message += `<p class="ion-text-bold ion-text-large">${valueStr} €</p>`
-          message += '<p>dal cliente</p>'
+          if (this.pianificazioneDoc.INCASSOCUSTODE > 0) {
+            message = `<p>Confermi la prenotazione e dichiari di aver incassato</p>`;
+            message += `<p class="ion-text-bold ion-text-large">${valueStr} €</p>`
+            message += '<p>dal cliente</p>'
+          }
+          else {
+            message = `<p>Confermi la prenotazione e dichiari di aver restituito</p>`;
+            message += `<p class="ion-text-bold ion-text-large">${valueStr} €</p>`
+            message += '<p>al cliente</p>'
+          }
         }
         else {
           message = `<p>Confermi la prenotazione e dichiari di</p>`
@@ -477,7 +487,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
         }
       }
       else {
-        message = 'Confermi che il cliente si &grave presentato ed ha usufruito della struttura ?'
+        message = 'Confermi che il cliente si &egrave presentato ed ha usufruito della struttura ?'
       }
 
       //Preparo i Bottoni

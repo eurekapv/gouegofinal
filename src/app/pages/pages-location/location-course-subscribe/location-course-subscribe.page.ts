@@ -13,7 +13,7 @@ import { StartService } from 'src/app/services/start.service';
 import { AreaLink } from 'src/app/models/arealink.model';
 import { Settimana } from 'src/app/models/settimana.model';
 import { Utente } from 'src/app/models/utente.model';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 import { IscrizioneCorso } from 'src/app/models/iscrizione-corso.model';
 import { IscrizioneIncasso } from 'src/app/models/iscrizione-incasso.model';
 import { TipoPagamento } from 'src/app/models/tipopagamento.model';

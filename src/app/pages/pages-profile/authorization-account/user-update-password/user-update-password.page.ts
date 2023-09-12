@@ -4,7 +4,7 @@ import { Utente } from 'src/app/models/utente.model';
 import { ModalController, IonInput, LoadingController, ToastController } from '@ionic/angular';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 
 
 

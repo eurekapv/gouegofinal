@@ -12,7 +12,7 @@ import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 import { LogApp } from 'src/app/models/log.model';
 import { ParamsVerificaAccount } from 'src/app/models/params-verifica-account.model';
 

@@ -3,7 +3,7 @@ import { LoadingController, NavController } from '@ionic/angular';
 import { MasterDocumento } from 'src/app/models/ricevuta.model';
 import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 import { LogApp } from 'src/app/models/log.model';
 import { FileService } from 'src/app/services/file.service';
 

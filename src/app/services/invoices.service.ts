@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { PostResponse } from '../library/models/postResult.model';
+import { PostResponse } from '../library/models/post-response.model';
 import { PostParams } from '../library/models/requestParams.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { MasterDocumento } from '../models/ricevuta.model';

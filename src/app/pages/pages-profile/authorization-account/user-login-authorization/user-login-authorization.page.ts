@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertButton, IonInput, LoadingController, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { PostResponse } from 'src/app/library/models/postResult.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 import { SupportFunc } from 'src/app/library/models/support-func.model';
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/accountregistration.model';

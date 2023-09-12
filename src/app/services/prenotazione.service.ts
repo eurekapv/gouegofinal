@@ -12,7 +12,7 @@ import { StartConfiguration } from '../models/start-configuration.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 import { SportService } from './sport.service';
 import { ParamsExport } from '../library/models/iddocument.model';
-import { PostResponse } from '../library/models/postResult.model';
+import { PostResponse } from '../library/models/post-response.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { PostParams, RequestParams } from '../library/models/requestParams.model';
 
@@ -527,7 +527,17 @@ export class PrenotazioneService {
                                           resolve(elPrenotazione);
                                         }
                                         else {
-                                          reject(data.message);
+
+                                          let retMessage = data.message;
+
+                                          if (!retMessage || retMessage.length == 0) {
+                                            retMessage = '<p>Server ha risposto in modo errato</p>';
+                                          }
+                                          if (data.developerMessage && data.developerMessage.length != 0) {
+                                            retMessage += `<p>${data.developerMessage}</p>`;
+                                          }
+
+                                          reject(retMessage);
                                         }
                                       }
                                       else {

@@ -3,7 +3,6 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
     "appId": "com.b4fnovara",
     "appName": "Beach For Fun",
-    "bundledWebRuntime": false,
     "webDir": "www",
     "backgroundColor": "#ffffffff",
     "android": {

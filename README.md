@@ -32,6 +32,9 @@ npm i @types/node@16.11.7
 
 
 # Per la preparazione dei pacchetti Mobile
+Prima della compilazione controllare il file src\theme\variables.scss
+in fondo la variabile --ion-safe-area differente tra IOS e Android
+
 Attenzione: controllare il file capacitor.config.ts ed eventualmente sostituirlo con il file
 corretto presente nella cartella resources\nome società
 Nel file capacitor.config.ts è presente il nome della cartella ios/android da utilizzare

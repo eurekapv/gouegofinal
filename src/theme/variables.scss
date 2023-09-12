@@ -85,7 +85,10 @@
 
 
     --base-border-radius: (-6px);
-    --ion-safe-area-bottom: 25px;
+    /*Versione IOS */
+    /*--ion-safe-area-bottom: 25px;*/
+    /*Versione Android */
+    --ion-safe-area-bottom: 0px;
     
   }
 

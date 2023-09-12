@@ -1,7 +1,7 @@
 {
   "name": "gouego",
-  "version": "1.0.0",
-  "author": "Cavallini Pietro - Andrea Cuppini",
+  "version": "2.0.0",
+  "author": "AlchimistiLab",
   "homepage": "https://www.gouego.com",
   "scripts": {
     "ng": "ng",

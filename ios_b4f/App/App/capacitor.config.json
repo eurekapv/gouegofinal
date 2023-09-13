@@ -1,7 +1,6 @@
 {
 	"appId": "com.b4fnovara",
 	"appName": "Beach For Fun",
-	"bundledWebRuntime": false,
 	"webDir": "www",
 	"backgroundColor": "#ffffffff",
 	"android": {

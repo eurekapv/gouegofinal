@@ -11,16 +11,8 @@
     <param name="onload" value="true"/>
   </feature>
 
-  <feature name="FileOpener2">
-    <param name="ios-package" value="FileOpener2"/>
-  </feature>
-
   <feature name="CDVOrientation">
     <param name="ios-package" value="CDVOrientation"/>
-  </feature>
-
-  <feature name="Device">
-    <param name="ios-package" value="CDVDevice"/>
   </feature>
 
   

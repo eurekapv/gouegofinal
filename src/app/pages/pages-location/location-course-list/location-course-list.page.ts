@@ -39,6 +39,9 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
 
   listCorsi: Corso[] = [];
   listCorsiMioLivello: Corso[] = [];
+  loadingCorsiComplete: boolean = false;
+  loadingCorsiError: boolean = false;
+
 
   docUser: Utente; //Informazioni utente loggato
   listenDocUser: Subscription;
@@ -68,9 +71,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
               private mdlController: ModalController,
               private navController: NavController,
               private loadingCtrl: LoadingController,
-              private toastCtrl: ToastController,
               private docStructureService: DocstructureService,
-              private gestureCtrl: GestureController
               ) { 
     
 
@@ -93,9 +94,8 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
    * In ascolto dell'area selezionata, per capire se solo abilitate le iscrizioni
    */
   onListenSelectedArea() {
-    this.listenSelectedArea = this.startService.areaSelected
-      .subscribe(elArea => {
-
+    this.listenSelectedArea = this.startService.areaSelected.subscribe({
+      next: (elArea)=> {
         this.selectedArea = elArea;
 
         //Controllo se nell'area sono abilitate le iscrizioni
@@ -105,9 +105,11 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
         else {
           this.enableIscrizioni = false;
         }
-    }, error => {
-      this.enableIscrizioni = false;
-    })
+      },
+      error: (error)=> {
+        this.enableIscrizioni = false;
+      }
+    });
   }
 
   /**
@@ -170,14 +172,17 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
    */
   requestCorsi() {
     //quando faccio una richiesta di corsi, l'id location è sempre presente
+
+    this.loadingCorsiComplete = false;
+    this.loadingCorsiError = false;
     
     this.loadingCtrl.create({
       spinner: 'circular',
       message: 'Caricamento',
       backdropDismiss: true
-    }).then(loading=>{
+    }).then(elLoading=>{
 
-      loading.present();        
+      elLoading.present();        
       
       //Richiesta di decodifica
       let params = new RequestParams();
@@ -188,7 +193,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
           .then(data => {
               
               //Chiudo il loading
-              loading.dismiss();
+              elLoading.dismiss();
 
               //recupero la lista dei corsi
               this.listCorsi = data;
@@ -196,15 +201,19 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
               //Preparo i dati per il mio livello (se utente loggato)
               this.prepareForMioLivello();
 
+              this.loadingCorsiComplete = true;
+
       })
       .catch(error => {
         
         //Chiudo il loading
-        loading.dismiss();
+        elLoading.dismiss();
 
         this.showMessage('Errore caricamento corsi','','toast');
         
         LogApp.consoleLog(error,'error');
+
+        this.loadingCorsiError = true;
       })
     })
           

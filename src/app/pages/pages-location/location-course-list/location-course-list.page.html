@@ -77,66 +77,91 @@
                sizeXl="8" offsetXl="2">
                <!-- VISUALIZZAZIONE TUTTI -->
                <div *ngIf="statoPagina==PageState.TUTTI">
-                <!-- DATI PRESENTI -->
-                 <ion-grid *ngIf="listCorsi.length !== 0">
-                   <ion-row >
-                     <ion-col *ngFor="let itemCorso of listCorsi" 
-                               sizeXs="12" 
-                               sizeSm="12"  
-                               sizeMd="12"
-                               [sizeLg]="listVersion==2 ? 6: 12"
-                               [sizeXl]="listVersion==2 ? 6: 12"
-                               >
-               
-                           <app-card-course 
-                             [version]="listVersion"
-                             [myCorso]="itemCorso" 
-                             [useIscrizioniColor]="enableIscrizioni"
-                             (clickDetail)="onClickCardDetail($event)"
-                             (clickIscrizione)="onClickIscrizione($event)">
-                           </app-card-course>
-               
-                     </ion-col>
-                   </ion-row>
-                 </ion-grid>
-                 <!-- DATI NON PRESENTI -->
-                  <app-card-image
-                      *ngIf="listCorsi.length === 0"
+                  <!-- CARICATI E NON IN ERRORE -->
+                  <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
+                    <!-- DATI PRESENTI -->
+                    <ion-grid *ngIf="listCorsi.length !== 0">
+                      <ion-row >
+                        <ion-col *ngFor="let itemCorso of listCorsi" 
+                                  sizeXs="12" 
+                                  sizeSm="12"  
+                                  sizeMd="12"
+                                  [sizeLg]="listVersion==2 ? 6: 12"
+                                  [sizeXl]="listVersion==2 ? 6: 12"
+                                  >
+                  
+                              <app-card-course 
+                                [version]="listVersion"
+                                [myCorso]="itemCorso" 
+                                [useIscrizioniColor]="enableIscrizioni"
+                                (clickDetail)="onClickCardDetail($event)"
+                                (clickIscrizione)="onClickIscrizione($event)">
+                              </app-card-course>
+                  
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                    <!-- DATI NON PRESENTI -->
+                      <app-card-image
+                          *ngIf="listCorsi.length === 0"
+                          src="assets/boysplaying_small.png"
+                          title="Guardando in archivio"
+                          subtitle="Non ho trovato nessun corso con i criteri impostati"
+                          >
+                      </app-card-image> 
+                  </div>
+                  <!-- CARICATI E IN ERRORE -->
+                  <div *ngIf="loadingCorsiComplete && loadingCorsiError">
+                    <app-card-image
                       src="assets/boysplaying_small.png"
-                      title="Guardando in archivio"
-                      subtitle="Non ho trovato nessun corso con i criteri impostati"
+                      title="Ops, spiacente"
+                      subtitle="Si, &egrave; verificato un errore nel recupero"
                       >
-                  </app-card-image> 
+                    </app-card-image> 
+                  </div>                  
                </div>
                <div *ngIf="statoPagina==PageState.MIEI">
-                <!-- DATI PRESENTI -->
-                <ion-grid *ngIf="listCorsiMioLivello.length !== 0">
-                  <ion-row >
-                    <ion-col *ngFor="let corso of listCorsiMioLivello" 
-                          sizeXs="12" 
-                          sizeSm="12"  
-                          sizeMd="12"
-                          [sizeLg]="listVersion==2 ? 6: 12"
-                          [sizeXl]="listVersion==2 ? 6: 12"
-                              >
-                          <app-card-course 
-                              [version]="listVersion"
-                              [myCorso]="corso" 
-                              [useIscrizioniColor]="enableIscrizioni"
-                              (clickDetail)="onClickCardDetail($event)"
-                              (clickIscrizione)="onClickIscrizione($event)">
-                          </app-card-course>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-                 <!-- DATI NON PRESENTI -->
-                 <app-card-image
-                    *ngIf="listCorsiMioLivello.length === 0"
-                    src="assets/boysplaying_small.png"
-                    title="Guardando in archivio"
-                    subtitle="Non ho trovato nessun corso disponibile"
-                  >
-                  </app-card-image>                 
+                  <!-- CARICATI E NON IN ERRORE -->
+                  <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
+                    <!-- DATI PRESENTI -->
+                    <ion-grid *ngIf="listCorsiMioLivello.length !== 0">
+                      <ion-row >
+                        <ion-col *ngFor="let corso of listCorsiMioLivello" 
+                              sizeXs="12" 
+                              sizeSm="12"  
+                              sizeMd="12"
+                              [sizeLg]="listVersion==2 ? 6: 12"
+                              [sizeXl]="listVersion==2 ? 6: 12"
+                                  >
+                              <app-card-course 
+                                  [version]="listVersion"
+                                  [myCorso]="corso" 
+                                  [useIscrizioniColor]="enableIscrizioni"
+                                  (clickDetail)="onClickCardDetail($event)"
+                                  (clickIscrizione)="onClickIscrizione($event)">
+                              </app-card-course>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                    <!-- DATI NON PRESENTI -->
+                    <app-card-image
+                        *ngIf="listCorsiMioLivello.length === 0"
+                        src="assets/boysplaying_small.png"
+                        title="Guardando in archivio"
+                        subtitle="Non ho trovato nessun corso disponibile"
+                      >
+                    </app-card-image>  
+                  </div>
+                  
+                  <!-- CARICATI E IN ERRORE -->
+                  <div *ngIf="loadingCorsiComplete && loadingCorsiError">
+                    <app-card-image
+                      src="assets/boysplaying_small.png"
+                      title="Ops, spiacente"
+                      subtitle="Si, &egrave; verificato un errore nel recupero"
+                      >
+                    </app-card-image> 
+                  </div>                                  
                </div>
       </ion-col>
     </ion-row>

@@ -25,7 +25,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini o barcode</string>
+	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini nel proprio profilo utente od eventualmente leggere barcode relativi alle prenotazioni</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Consenti sempre geolocalizzazione per indicarti le location vicine ?</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -35,7 +35,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini o barcode</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini o barcode</string>
+	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini nel proprio profilo utente</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

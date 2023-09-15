@@ -37,6 +37,12 @@ export class HistoryListPage implements OnInit {
   listUtenteCorsi: UtenteIscrizione[];
   subListUtenteIscrizioni: Subscription;
 
+  loadingCorsiComplete: boolean = false;
+  loadingCorsiError: boolean = false;
+  loadingPrenotazioniComplete: boolean = false;
+  loadingPrenotazioniError: boolean = false;
+
+
   showTabs: boolean = true;
 
 
@@ -78,6 +84,9 @@ export class HistoryListPage implements OnInit {
         })
         .then(loading=>{
 
+          this.loadingPrenotazioniError = false;
+          this.loadingPrenotazioniComplete = false;
+
           loading.present();
 
           //Creo il documento di filtro
@@ -90,12 +99,19 @@ export class HistoryListPage implements OnInit {
                       this.listUtentePrenotazione=list;
                       //Dismetto il loading
                       loading.dismiss();
+
+                      this.loadingPrenotazioniComplete = true;
+
               })
               .catch(error=>{
                  //Dismetto il loading 
                 loading.dismiss();
                 LogApp.consoleLog(error,'error');
                 this.showMessage('Errore nel caricamento');
+
+                this.loadingPrenotazioniComplete = true;
+                this.loadingPrenotazioniError = true;
+                
               });
 
         });
@@ -114,9 +130,12 @@ export class HistoryListPage implements OnInit {
             spinner: 'circular',
             message: 'Caricamento',
             backdropDismiss: true
-          }).then(loading=>{
+          }).then(elLoading=>{
   
-              loading.present();
+            this.loadingCorsiComplete = false;
+            this.loadingCorsiError = false;
+
+              elLoading.present();
               //creo il documento di filtro
               let filterUtenteIscrizioni= new UtenteIscrizione(true);
               filterUtenteIscrizioni.IDUTENTE=this.docUtente.ID
@@ -124,13 +143,17 @@ export class HistoryListPage implements OnInit {
               this.docstructureService.requestNew(filterUtenteIscrizioni)
                     .then(list=>{
                           this.listUtenteCorsi=list;
-                          loading.dismiss();
+                          elLoading.dismiss();
+                          this.loadingCorsiComplete = true;
                     })
                     .catch(error=>{
-                          loading.dismiss();
+                          elLoading.dismiss();
                           
                           LogApp.consoleLog(error,'error');
                           this.showMessage('Errore nel caricamento');
+
+                          this.loadingCorsiComplete = true;
+                          this.loadingCorsiError = true;
                     });
   
            });

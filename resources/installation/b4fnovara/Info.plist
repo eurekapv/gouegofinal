@@ -25,17 +25,17 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini nel proprio profilo utente od eventualmente leggere barcode relativi alle prenotazioni</string>
+	<string>L'applicazione richiede accesso alla fotocamera per consentirti di aggiungere una tua immagine di profilo e per la lettura barcode di una prenotazione</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
+	<string>Consenti sempre geolocalizzazione per indicarti le location vicine ?</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
+	<string>Consenti geolocalizzazione per mostrarti la location più vicina ?</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To Record Audio With Video</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>L'applicazione richiede accesso alla libreria foto per importare immagini nel proprio profilo</string>
+	<string>L'applicazione richiede accesso alla libreria foto per consentirti di aggiungere una tua immagine profilo </string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini nel proprio profilo utente</string>
+	<string>L'applicazione richiede accesso alla libreria foto per consentirti di aggiungere una tua immagine profilo</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

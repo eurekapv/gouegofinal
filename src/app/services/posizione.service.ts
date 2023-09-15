@@ -15,7 +15,10 @@ export class PosizioneService {
    * La funzione restituisce una promise con la posizione attuale
    */
   getCurrentPosition(): Promise<Position>{
-    return Geolocation.getCurrentPosition();
+    let posOpt: PositionOptions = {
+      enableHighAccuracy: false
+    }
+    return Geolocation.getCurrentPosition(posOpt);
     
   }
 

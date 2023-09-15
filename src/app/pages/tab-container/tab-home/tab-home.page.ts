@@ -4,7 +4,7 @@ import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/area.model';
 import { Location } from 'src/app/models/location.model';
-import { ActionSheetController, NavController, ModalController, ToastController } from '@ionic/angular';
+import { ActionSheetController, NavController, ModalController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
 import { TypeUrlPageLocation } from 'src/app/models/valuelist.model';
 

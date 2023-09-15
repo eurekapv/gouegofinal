@@ -37,6 +37,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   
   impegnoDoc: ImpegnoCustode;
   prenotazioneDoc: Prenotazione;
+  customerMobile: string = ''; //Numero rilevato sulla prenotazione
   pianificazioneDoc: PrenotazionePianificazione;
   corsoDoc: Corso;
   listIscrittiCorso: CorsoPresenze[];
@@ -142,6 +143,19 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
     }
   }  
 
+  /**
+   * Torna se possibile effettuare una chiamata
+   */
+  get canCallCustomer(): boolean {
+    let flag = true;
+
+    if (this.startService.isOnBrowser && this.customerMobile && this.customerMobile.length) {
+      flag = false;
+    }
+
+    return flag;
+  }
+
   //#region PULSANTE BACK
   /**
    * Ritorna un Array con il percorso di ritorno
@@ -177,8 +191,13 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   }
   
   //#endregion
+  
+  
   //#region METHOD INTERFACE
 
+  onClickCallCustomer(): void {
+
+  }
   /**
    * Cambio del Modo di Incasso
    * Aggiungo all'INPUT NATIVE 
@@ -296,6 +315,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
                          .then(dataReceived => {
                            if (dataReceived) {
                              this.prenotazioneDoc = dataReceived;
+                             this.customerMobile = this.prenotazioneDoc ? this.prenotazioneDoc.MOBILENUMBER : '';
                              resolve();
                            }
                            else {

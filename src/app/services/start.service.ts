@@ -134,11 +134,12 @@ export class StartService {
     return !this.platformService.is('hybrid');
   }
 
-  //Ritorna se l'applicazione sta girando dentro al web, quindi non in capacitor o cordova
-  get isOnWeb() {
-    let result = true;
-    if (this.platformService.is("cordova") || this.platformService.is("capacitor")) {
-      result = false;
+  //Ritorna se l'applicazione sta girando dentro a un browser, quindi non in capacitor
+  get isOnBrowser() {
+    let result = false;
+    
+    if (this.platformService.is("mobileweb") || this.platformService.is("desktop")) {
+      result = true;
     }
 
     return result;
@@ -368,7 +369,7 @@ export class StartService {
       console.log(`App Version ${environment.version} deployed ${environment.releaseDate}`);
   
       //Modalità Web
-      if (this.isOnWeb) {
+      if (this.isOnBrowser) {
   
         this._localConnection = (environment.connection.mode == ConnectionMode.local);
   

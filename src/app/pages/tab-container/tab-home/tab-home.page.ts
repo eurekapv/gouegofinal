@@ -72,14 +72,20 @@ export class TabHomePage implements OnInit, OnDestroy {
         //quando le aree sono arrivate, se non sono loggato seleziono la più vicina
         if (!this.userLogged) {
 
-          //Cerco di selezionare l'area piu' vicina
-          this.startService.getNearestArea(this.listAree)
-                                    .then(nearestArea => {
+          //Aspetto 1 secondo a richiedere l'area piu vicina
+          setTimeout(() => {
 
-                                      //trovata l'area, posso passarne l'id al metodo selectarea
-                                      this.startService.selectAreaByID(nearestArea.ID);
+            //Cerco di selezionare l'area piu' vicina
+            this.startService.getNearestArea(this.listAree)
+                                      .then(nearestArea => {
+  
+                                        //trovata l'area, posso passarne l'id al metodo selectarea
+                                        this.startService.selectAreaByID(nearestArea.ID);
+  
+                                      })
 
-                                    })
+          }, 1500);
+
         }
       });
 

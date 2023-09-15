@@ -42,26 +42,88 @@
                sizeMd="12" 
                sizeLg="6" offsetLg="3"
                sizeXl="6" offsetXl="3">
-        <div
+        <!-- SETTORE PRENOTAZIONE -->
+        <div *ngIf="settoreRefer == Tiposettore.settorePrenotazione"
             class="ion-no-padding div-header" >
 
-            <ion-item lines="none" color="light">
+            <ion-item
+                lines="none" 
+                color="light">
               <ion-icon slot="start" [name]="iconHeader" color="primary">
               </ion-icon>
               <ion-label class="ion-text-wrap">
                 <h2>{{impegnoDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
-                <h2><span>{{impegnoDoc.DATAORAINIZIO | date: 'H.mm'}} - {{impegnoDoc.DATAORAFINE | date: 'H.mm'}}&nbsp;</span>
-                  <ion-chip *ngIf="settoreRefer == Tiposettore.settorePrenotazione" color="danger">
-                    {{pianificazioneDoc?.DURATAORE}} {{pianificazioneDoc?.DURATAORE==1? 'Ora':'Ore'}}
-                  </ion-chip>
-                </h2>
+                <h2 class="ion-text-bold">{{impegnoDoc.DATAORAINIZIO | date: 'H.mm'}} - {{impegnoDoc.DATAORAFINE | date: 'H.mm'}}</h2>
+              </ion-label>
+              <ion-chip
+                  slot="end" 
+                  color="danger">
+                {{pianificazioneDoc?.DURATAORE}} {{pianificazioneDoc?.DURATAORE==1? 'Ora':'Ore'}}
+              </ion-chip>
+
+            </ion-item>
+
+            <ion-item lines="none" color="light">
+              <ion-icon slot="start" name="person-circle-outline" color="primary">
+              </ion-icon>
+              <ion-label class="ion-text-wrap">
                 <h1>{{impegnoDoc.DENOMINAZIONE}}</h1>
+                <h2 *ngIf="customerMobile && customerMobile.length != 0">{{customerMobile}}</h2>
+              </ion-label>
+              <ion-button
+                  [href]="'tel:' + customerMobile"  
+                  color="success"
+                  slot="end"
+                  *ngIf="canCallCustomer">
+              CHIAMA
+          </ion-button>
+
+            </ion-item>
+
+            <ion-item lines="none" color="light">
+              <ion-icon slot="start" name="location-outline" color="primary">
+              </ion-icon>
+              <ion-label class="ion-text-wrap">
                 <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONELOCATION | titlecase)}}</p>
                 <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONECAMPO | titlecase)}}</p>
                 <p class="ion-text-bold">{{impegnoDoc.DENOMINAZIONESPORT}}</p>
               </ion-label>
             </ion-item>
-        </div>               
+        </div>    
+
+        <!-- SETTORE CORSO -->
+        <div *ngIf="settoreRefer == Tiposettore.settoreCorso"
+        class="ion-no-padding div-header" >
+          <ion-item lines="none" color="light">
+            <ion-icon slot="start" [name]="iconHeader" color="primary">
+            </ion-icon>
+            <ion-label class="ion-text-wrap">
+              <h2>{{impegnoDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
+              <h2 class="ion-text-bold">{{impegnoDoc.DATAORAINIZIO | date: 'H.mm'}} - {{impegnoDoc.DATAORAFINE | date: 'H.mm'}}</h2>
+              <h1>{{impegnoDoc.DENOMINAZIONE}}</h1>
+              <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONELOCATION | titlecase)}}</p>
+              <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONECAMPO | titlecase)}}</p>
+              <p class="ion-text-bold">{{impegnoDoc.DENOMINAZIONESPORT}}</p>
+            </ion-label>
+            </ion-item>
+        </div>
+
+        <!-- SETTORE EVENTO -->
+        <div *ngIf="settoreRefer == Tiposettore.settoreEvento"
+          class="ion-no-padding div-header" >
+            <ion-item lines="none" color="light">
+              <ion-icon slot="start" [name]="iconHeader" color="primary">
+              </ion-icon>
+              <ion-label class="ion-text-wrap">
+                <h2>{{impegnoDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
+                <h2 class="ion-text-bold">{{impegnoDoc.DATAORAINIZIO | date: 'H.mm'}} - {{impegnoDoc.DATAORAFINE | date: 'H.mm'}}</h2>
+                <h1>{{impegnoDoc.DENOMINAZIONE}}</h1>
+                <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONELOCATION | titlecase)}}</p>
+                <p class="ion-text-bold">{{(impegnoDoc.DENOMINAZIONECAMPO | titlecase)}}</p>
+                <p class="ion-text-bold">{{impegnoDoc.DENOMINAZIONESPORT}}</p>
+              </ion-label>
+              </ion-item>
+        </div> 
       </ion-col>
       </ion-row>
 
@@ -287,7 +349,7 @@
 
                       <!-- IMPORTO RESIDUO DA INCASSARE -->            
                       <ion-row *ngIf="pianificazioneDoc?.RESIDUO > 0"
-                            class="ion-no-margin ion-no-padding">
+                            class="ion-margin-bottom ion-no-padding">
                         <ion-col class="ion-no-margin ion-no-padding">
                           <ion-item
                               color="danger"
@@ -314,7 +376,7 @@
 
                       <!-- IMPORTO RESIDUO DA RIMBORSARE -->            
                       <ion-row *ngIf="pianificazioneDoc?.RESIDUO < 0"
-                        class="ion-no-margin ion-no-padding">
+                        class="ion-margin-bottom ion-no-padding">
                       <ion-col class="ion-no-margin ion-no-padding">
                       <ion-item
                           color="success"
@@ -341,7 +403,7 @@
 
                       <!-- INCASSATO TOTALMENTE -->
                       <ion-row *ngIf="pianificazioneDoc?.RESIDUO == 0"
-                            class="ion-no-margin ion-no-padding">
+                            class="ion-margin-bottom ion-no-padding">
                         <ion-col class="ion-no-margin ion-no-padding">
                         <ion-button 
                             expand="block"
@@ -355,6 +417,7 @@
                       
                       <!-- DATE MULTIPLE -->
                       <ion-row 
+                            class="ion-margin-bottom"
                             *ngIf="prenotazioneDoc.getNumeroDatePianificate() > 1"> 
                         <ion-col>
                           <ion-item>
@@ -561,7 +624,7 @@
 
                         <!-- RIGA ANNOTAZIONI -->
                         <ion-row 
-                            class="ion-margin-top">
+                            class="ion-margin">
                           <ion-col> 
 
                             <ion-list

@@ -35,7 +35,7 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
 
-  //#region SCANSIONE QRCODE STANZA
+  //#region SCANSIONE QRCODE
 
   /**
    * Controlla la presenza dei permessi della camera, e in caso negativo apre 

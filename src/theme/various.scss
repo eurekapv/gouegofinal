@@ -1,5 +1,9 @@
-body {
-  /*height: calc(100% - var(--ion-safe-area-bottom));*/
+/* Questa regola è anche su appstart-home e sposta la tab a sinistra */
+/* In questo caso arrotondo la toolbar superiore */
+@media screen and (min-aspect-ratio: 5/4) {
+  ion-toolbar {
+    border-radius: 25px 25px 0px 0px;
+  }
 }
 
 img {

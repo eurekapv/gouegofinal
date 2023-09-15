@@ -1,3 +1,14 @@
-<p>
-  qr-code-scanner works!
-</p>
+<ion-content [style.--background]="scanActive ? '#00000000' : '#fff'">
+  <ion-row class="scanner-buttons" [hidden]="!scanActive">
+    <ion-col class="ion-no-padding">
+      <ion-button 
+          expand="full" (click)="stopScanner()">
+        Stop
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <div class="scan-box"  [hidden]="!scanActive">
+
+  </div>
+</ion-content>

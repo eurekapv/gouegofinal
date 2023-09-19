@@ -796,6 +796,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
       //Apro la modale per lo scanner
       this.modalController.create({
         component: QrCodeScannerComponent,
+        
       })
       .then(elModal => {
         elModal.present();

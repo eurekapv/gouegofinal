@@ -10,6 +10,10 @@ import { StartService } from 'src/app/services/start.service';
 })
 export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  /*
+    Per il corretto funzionamento è necessario cercare e copiare le regole css scanner-active
+    presenti in global.scss e app.component.scss
+  */
   constructor(private mdlController: ModalController, 
               private srvAgora: StartService) { }
 
@@ -161,6 +165,7 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
     const ionRouter: HTMLIonRouterOutletElement = document.querySelector('ion-router-outlet');
 
     let nameClass = 'qrscanner';
+    nameClass = 'scanner-active';
     if (!show) {
 
       document?.body?.classList?.add(nameClass);  

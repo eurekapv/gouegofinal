@@ -2,8 +2,10 @@
   <ion-row class="scanner-buttons" [hidden]="!scanActive">
     <ion-col class="ion-no-padding">
       <ion-button 
-          expand="full" (click)="stopScanner()">
-        Stop
+          color="danger"
+          expand="full" 
+          (click)="stopScanner()">
+        Annulla
       </ion-button>
     </ion-col>
   </ion-row>

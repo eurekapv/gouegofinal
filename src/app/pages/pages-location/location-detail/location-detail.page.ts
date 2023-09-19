@@ -155,7 +155,7 @@ export class LocationDetailPage implements OnInit, OnDestroy {
       modal.onWillDismiss()
       .then(() => {
         //quando la modale si chiude, riblocco lo schermo in verticale
-        window.screen.orientation.lock("portrait");
+        //window.screen.orientation.lock("portrait");
       })
     });
 

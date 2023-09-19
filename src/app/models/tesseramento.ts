@@ -1,5 +1,6 @@
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
+import { AreaApplicazioneTessera, ValueList } from './valuelist.model';
 
 export class Tesseramento extends IDDocument{
 
@@ -14,6 +15,7 @@ export class Tesseramento extends IDDocument{
     DATASCADENZA: Date;
     IDMASTERDOCUMENTO: string;
     ANNULLATA: number;
+    LISTAREAAPPLICAZIONE: string;
 
     constructor(onlyInstance?: boolean){
         super(onlyInstance);
@@ -21,7 +23,7 @@ export class Tesseramento extends IDDocument{
 
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
-        let arString = ['IDUTENTE', 'IDTIPOTESSERA', 'IDAREAOPERATIVA', 'CODICE','IDMASTERDOCUMENTO'];
+        let arString = ['IDUTENTE', 'IDTIPOTESSERA', 'IDAREAOPERATIVA', 'CODICE','IDMASTERDOCUMENTO', 'LISTAREAAPPLICAZIONE'];
         let arNumber = ['NUMERO','DURATAMESI'];
         let arBoolean = ['FLAGCLUB','ANNULLATA'];
         let arDate = ['DATAEMISSIONE','DATASCADENZA'];
@@ -57,6 +59,46 @@ export class Tesseramento extends IDDocument{
         }
 
         return valid;
+    }
+
+    /**
+     * Decodifica la list Area Applicazione
+     * @param prefixText
+     */
+    decodeListAreaApplicazione(prefixText?: string): string {
+        let valueStr : string = '';
+
+        if (!this.LISTAREAAPPLICAZIONE || this.LISTAREAAPPLICAZIONE.length == 0) {
+            valueStr = 'qualsiasi attività';
+        }
+        else {
+
+            if (this.LISTAREAAPPLICAZIONE.includes(AreaApplicazioneTessera.tesseraCorsi.toString())) {
+                valueStr = 'Corsi';
+            }
+    
+            if (this.LISTAREAAPPLICAZIONE.includes(AreaApplicazioneTessera.tesseraPrenotazioni.toString())) {
+                if (valueStr.length != 0) {
+                    valueStr += ', '
+                }
+    
+                valueStr += 'Prenotazioni';
+            }
+    
+            if (this.LISTAREAAPPLICAZIONE.includes(AreaApplicazioneTessera.tesseraEventi.toString())) {
+                if (valueStr.length != 0) {
+                    valueStr += ', '
+                }
+    
+                valueStr += 'Eventi';
+            }        
+        }
+
+        if (prefixText && prefixText.length != 0) {
+            valueStr = `${prefixText} ${valueStr}`;
+        }
+
+        return valueStr;
     }
 }
 

@@ -1,9 +1,17 @@
 <ion-header>
   <ion-toolbar color="primary" mode="md">
-    <ion-buttons slot="secondary">
-      <ion-button>
+    <ion-buttons 
+        slot="secondary">
+      <ion-button *ngIf="selectedView == 'personal'">
         <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
       </ion-button>
+      <ion-button 
+          *ngIf="selectedView != 'personal'"
+          (click)="goToListCustomer()"
+          color="success">
+        Clienti
+        <ion-icon slot="end" name="people-outline"></ion-icon>
+      </ion-button>      
     </ion-buttons>
         
     <ion-title>
@@ -69,6 +77,17 @@
               </app-button-card>
             </div>
 
+              <ion-button
+                  size="small" 
+                  fill="outline"
+                  expand="block"
+                  color="success"
+                  (click)="onClickGoToPersonalHistoryList()">
+                  <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
+                  Mostra Storico
+              </ion-button>            
+           
+
             <!-- SE SONO PRESENTI IMPEGNI LI ELENCO -->
             <div *ngIf="listImpegni && listImpegni.length != 0">
               <app-impegni 
@@ -76,17 +95,16 @@
                   [impegnoDoc]="item"
                   *ngFor="let item of listImpegni">
               </app-impegni>
-            </div>
 
-            <ion-item
-                  (click)="onClickGoToPersonalHistoryList()"
-                  class="mostra-tutto" 
-                  button="true"
-                  detail="true"
-                  >
-              <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
-              <ion-label>mostra tutto</ion-label>
-            </ion-item>
+              <!-- INFINITE SCROLL -->
+              <ion-infinite-scroll
+                  *ngIf="numRequestImpegniTop != 0"
+                  threshold="100px"
+                  (ionInfinite)="onActivateInfiniteScrollImpegni($event)"
+                >
+                <ion-infinite-scroll-content loading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
+              </ion-infinite-scroll>
+            </div>
           </div>
 
           <!-- SEGMENTO TRAINER -->
@@ -104,8 +122,8 @@
                   <ion-row>
                     <ion-col *ngFor="let item of searchListPeriodi">
                         <ion-button
-                          (click) ="onChangePeriodoTrainer(item.value)"
-                          [color] = "item.value==searchTrainerPeriodo ? 'success':'light'"
+                          (click)="onChangePeriodoTrainer(item.value)"
+                          [color]="item.value==searchTrainerPeriodo ? 'success':'light'"
                           expand="full">
                           {{item.title}}
                         </ion-button>
@@ -124,7 +142,7 @@
                         maskFormat="dddd dd/MM/yyyy"
                         [calendarMode]="searchTrainerCalendarMode"
                         [(actualDate)]="searchTrainerDate"
-                        (actualDateChange)="requestListImpegniTrainer()"
+                        (actualDateChange)="onChangeDataPeriodoTrainer()"
                     >
                     </app-dtinput>
                     </ion-col>
@@ -150,6 +168,15 @@
                     (OnClickItem)="onClickImpegnoTrainer(item)" 
                     *ngFor="let item of listImpegniTrainer">
                 </app-impegni-collaboratori>
+
+                  <!-- INFINITE SCROLL -->
+                  <ion-infinite-scroll
+                      *ngIf="numRequestImpegniTrainerTop != 0"
+                      threshold="100px"
+                      (ionInfinite)="onActivateInfiniteScrollImpegniTrainer($event)"
+                      >
+                      <ion-infinite-scroll-content oading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
+                  </ion-infinite-scroll>                
               </div>
 
 
@@ -172,8 +199,8 @@
                   <ion-row>
                     <ion-col *ngFor="let item of searchListPeriodi">
                         <ion-button
-                          (click) ="onChangePeriodoCustode(item.value)"
-                          [color] = "item.value==searchCustodePeriodo ? 'success':'light'"
+                          (click)="onChangePeriodoCustode(item.value)"
+                          [color]="item.value==searchCustodePeriodo ? 'success':'light'"
                           expand="full">
                           {{item.title}}
                         </ion-button>
@@ -192,7 +219,7 @@
                         maskFormat="dddd dd/MM/yyyy"
                         [calendarMode]="searchCustodeCalendarMode"
                         [(actualDate)]="searchCustodeDate"
-                        (actualDateChange)="requestListImpegniCustode()"
+                        (actualDateChange)="onChangeDataPeriodoCustode()"
                     >
                     </app-dtinput>
                     </ion-col>
@@ -254,6 +281,15 @@
                     (OnClickItem)="onClickImpegnoCustode(item)" 
                     *ngFor="let item of listImpegniCustode">
                 </app-impegni-custodi>
+
+                  <!-- INFINITE SCROLL -->
+                  <ion-infinite-scroll
+                      *ngIf="numRequestImpegniCustodeTop != 0"
+                      threshold="100px"
+                      (ionInfinite)="onActivateInfiniteScrollImpegniCustode($event)"
+                      >
+                      <ion-infinite-scroll-content oading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
+                  </ion-infinite-scroll>                  
               </div>
 
 

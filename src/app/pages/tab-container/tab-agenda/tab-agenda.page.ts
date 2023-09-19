@@ -66,16 +66,19 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   nextImpegno: Impegno = null;
   nextImpegnoCard: ButtonCard = null;
   subNextImpegno: Subscription;
+  eventImpegniIonInfinit: any; //Eventuale evento IonInfinity
 
   //Lista Impegni Trainer
   listImpegniTrainer: ImpegnoCollaboratore[] = [];
   sublistImpegniTrainer: Subscription;
   emptyImpegnoTrainerCard: ButtonCard = null;
+  eventImpegniTrainerIonInfinit: any; //Eventuale evento IonInfinity
 
   //Lista Impegni Custode
   listImpegniCustode: ImpegnoCustode[] = [];
   sublistImpegniCustode: Subscription;
   emptyImpegnoCustodeCard: ButtonCard = null;
+  eventImpegniCustodeIonInfinit: any; //Eventuale evento IonInfinity
   
 
   selectedView: 'personal' | 'trainer' | 'custode' = 'personal';
@@ -365,6 +368,10 @@ export class TabAgendaPage implements OnInit, OnDestroy {
                                               this.listImpegni = dataList;
                                               //Gestione dell'eventuale refresher
                                               this.onAfterRefresh();
+                                              //Gestione del IonInifiteScroll
+                                              if (this.eventImpegniIonInfinit && this.eventImpegniIonInfinit.target) {
+                                                this.eventImpegniIonInfinit.target.complete();
+                                              }
                                            });
 
     this.subNextImpegno = this.startService.nextImpegnoPersonale$
@@ -383,6 +390,10 @@ export class TabAgendaPage implements OnInit, OnDestroy {
                                         this.listImpegniTrainer = dataList;
                                         //Gestione dell'eventuale refresher
                                         this.onAfterRefresh();
+                                        //Gestione del IonInifiteScroll
+                                        if (this.eventImpegniTrainerIonInfinit && this.eventImpegniTrainerIonInfinit.target) {
+                                          this.eventImpegniTrainerIonInfinit.target.complete();
+                                        }                                        
                                      })
   }
 
@@ -393,6 +404,11 @@ export class TabAgendaPage implements OnInit, OnDestroy {
                                         this.listImpegniCustode = dataList;
                                         //Gestione dell'eventuale refresher
                                         this.onAfterRefresh();
+
+                                        //Gestione del IonInifiteScroll
+                                        if (this.eventImpegniCustodeIonInfinit && this.eventImpegniCustodeIonInfinit.target) {
+                                          this.eventImpegniCustodeIonInfinit.target.complete();
+                                        }                                        
                                      })
   }  
 
@@ -538,6 +554,33 @@ export class TabAgendaPage implements OnInit, OnDestroy {
     this.startService.requestImpegniPersonali(idUtente, this.futureRequestImpegni, this.numRequestImpegniTop);
   }
 
+  /**
+   * Scroll della videata relativi agli Impegni Personali
+   * @param ev 
+   */
+  onActivateInfiniteScrollImpegni(ev: any) {
+
+    switch (this.numRequestImpegniTop) {
+      case 10:
+          this.numRequestImpegniTop = 50;
+        break;
+      case 50:
+        this.numRequestImpegniTop = 100;
+        break;
+      case 100:
+        this.numRequestImpegniTop = 0;
+        break;
+    
+      default:
+        break;
+    }
+
+    this.eventImpegniIonInfinit = ev;
+
+    //Faccio la richiesta
+    this.requestListImpegniPersonali();
+  }
+
   
   //#endregion
 
@@ -573,13 +616,54 @@ export class TabAgendaPage implements OnInit, OnDestroy {
                                             this.numRequestImpegniTrainerTop);
   }
 
+  
+  /**
+   * Scroll della videata relativi agli Impegni Trainer
+   * @param ev 
+   */
+  onActivateInfiniteScrollImpegniTrainer(ev: any) {
+
+    switch (this.numRequestImpegniTrainerTop) {
+      case 10:
+        this.numRequestImpegniTrainerTop = 50;
+        break;
+      case 50:
+        this.numRequestImpegniTrainerTop = 100;
+        break;
+      case 100:
+        this.numRequestImpegniTrainerTop = 0;
+        break;
+    
+      default:
+        break;
+    }
+
+    this.eventImpegniTrainerIonInfinit = ev;
+
+    //Faccio la richiesta
+    this.requestListImpegniTrainer();
+  }
+
 
   /**
    * 
    * @param valuePeriod Modifica del periodo di ricerca trainer
    */
   onChangePeriodoTrainer(valuePeriod: RangeSearch) {
+    //Reimposto 10 Elementi
+    this.numRequestImpegniTrainerTop = 10;
+
     this.searchTrainerPeriodo = valuePeriod;
+    this.requestListImpegniTrainer();
+  }
+
+  /**
+   * Cambia la Data Filtro per il trainer
+   */
+  onChangeDataPeriodoTrainer(): void {
+    //Reimposto 10 Elementi
+    this.numRequestImpegniTrainerTop = 10;
+    //Faccio la richiesta
     this.requestListImpegniTrainer();
   }
 
@@ -621,21 +705,64 @@ export class TabAgendaPage implements OnInit, OnDestroy {
                                             this.numRequestImpegniCustodeTop);
   }
 
+  /**
+   * Scroll della videata relativi agli Impegni Custode
+   * @param ev 
+   */
+  onActivateInfiniteScrollImpegniCustode(ev: any) {
+
+    switch (this.numRequestImpegniCustodeTop) {
+      case 10:
+        this.numRequestImpegniCustodeTop = 50;
+        break;
+      case 50:
+        this.numRequestImpegniCustodeTop = 100;
+        break;
+      case 100:
+        this.numRequestImpegniCustodeTop = 0;
+        break;
+    
+      default:
+        break;
+    }
+
+
+    this.eventImpegniCustodeIonInfinit = ev;
+
+    //Faccio la richiesta
+    this.requestListImpegniCustode();
+  }  
+
 
   /**
    * 
    * @param valuePeriod Modifica del periodo di ricerca custode
    */
   onChangePeriodoCustode(valuePeriod: RangeSearch) {
+    //Reimposto il valore a 10
+    this.numRequestImpegniCustodeTop = 10;
     this.searchCustodePeriodo = valuePeriod;
     this.requestListImpegniCustode();
   }
+
+  /**
+   * Cambia la Data Filtro per il custode
+   */
+  onChangeDataPeriodoCustode(): void {
+    //Reimposto 10 Elementi
+    this.numRequestImpegniCustodeTop = 10;
+    //Faccio la richiesta
+    this.requestListImpegniCustode();
+  }  
 
   /**
    * Cambiata la Location sul Custode
    * @param idLocation 
    */
   onChangeLocationCustode(idLocation: string) {
+
+    //Reimposto il valore a 10
+    this.numRequestImpegniCustodeTop = 10;
 
     if (idLocation && idLocation.length != 0) {
       this.idSelectedLocation = idLocation;
@@ -675,15 +802,42 @@ export class TabAgendaPage implements OnInit, OnDestroy {
         return elModal.onDidDismiss();
       })
       .then(objReturn => {
+
         if (objReturn && objReturn.data) {
 
           if (objReturn.data.qrcodeData && objReturn.data.qrcodeData.length != 0) {
-            let idPianificazione = objReturn.data.qrcodeData;
-            //Pianificazione Corso / Evento / Prenotazione
-            this.goToDetailCustode(idPianificazione);
+
+            //Eseguo il redirect con il QrCode
+            this.redirectWithQrCode(objReturn.data.qrcodeData);
+            
           }
         }
       })
+    }
+  }
+
+  /**
+   * Porta la navigazione alla pagina corretta
+   * @param qrCodeData 
+   */
+  redirectWithQrCode(qrCodeData: string): void {
+
+    //Esistono 2 tipologie di QrCode
+    //Inizia con USR-XXXXXX riferito a un utente
+    //Normale GUID si riferisce a Pianificazione Corso / Evento / Prenotazione
+
+    if (qrCodeData && qrCodeData.length != 0) {
+
+      if (qrCodeData.startsWith('USR-')) {
+        //Tipologia Scheda Utente
+        qrCodeData = qrCodeData.substring(4);
+        this.goToDetailCustomer(qrCodeData);
+      }
+      else {
+        //Non contiene nessun prefisso
+        //Pianificazione Corso / Evento / Prenotazione 
+        this.goToDetailCustode(qrCodeData);
+      }
     }
   }
 
@@ -699,6 +853,29 @@ export class TabAgendaPage implements OnInit, OnDestroy {
       this.navController.navigateForward(pathNavigate);
     }
   }
+
+  /**
+   * Va alla pagina con i dettagli del cliente
+   * @param idCustomer Cliente di riferimento
+   */
+  goToDetailCustomer(idCustomer: string) {
+    let pathNavigate = [];
+    
+    if (idCustomer && idCustomer.length != 0) {
+      pathNavigate = this.startService.getUrlPageCustomer('detail',idCustomer);
+      this.navController.navigateForward(pathNavigate);
+    }
+  }
+
+  /**
+   * Vado alla lista dei Clienti
+   */
+  goToListCustomer() {
+    let pathNavigate = [];
+    
+    pathNavigate = this.startService.getUrlPageCustomer('list');
+    this.navController.navigateForward(pathNavigate);
+  }  
 
   
   //#endregion

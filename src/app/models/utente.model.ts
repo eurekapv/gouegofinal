@@ -6,8 +6,6 @@ import { MyDateTime } from '../library/models/mydatetime.model';
 import { Documentazione } from './documentazione.model';
 
 
-
-
 export class Utente extends IDDocument {
     COGNOME: string;
     NOME: string;

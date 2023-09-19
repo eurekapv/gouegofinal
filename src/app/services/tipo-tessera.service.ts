@@ -21,9 +21,9 @@ export class TipoTesseraService {
    * Effettua la richiesta per l'elenco della tipologie di tessere
    * @returns 
    */
-  request(): Promise<void> {
+  request(): Promise<TipoTessera[]> {
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<TipoTessera[]>((resolve, reject) => {
       let params: RequestParams = new RequestParams();
       let filterDoc: TipoTessera = new TipoTessera(true);
       filterDoc.LivelloAutorizzazione = 0;
@@ -41,7 +41,7 @@ export class TipoTesseraService {
               }
 
               //Chiamata conclusa
-              resolve();
+              resolve(listReceived);
           })
           .catch(error => {
             //errore di connessione

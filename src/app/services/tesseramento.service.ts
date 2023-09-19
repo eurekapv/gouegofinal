@@ -17,6 +17,8 @@ export class TesseramentoService {
 
   /**
    * Effettua la richiesta per l'elenco delle Tessere Utente
+   * il risultato è nell'Observable del servizio
+   * Indicato per l'utente attivo
    * @param {string} idUtente Utente
    * @returns 
    */
@@ -40,6 +42,35 @@ export class TesseramentoService {
 
               //Chiamata conclusa
               resolve();
+          })
+          .catch(error => {
+            //errore di connessione
+            reject (error);
+          })
+    })
+  }  
+
+
+  
+  /**
+   * Effettua la richiesta per l'elenco delle Tessere Utente
+   * il risultato viene ritornato dalla Promise
+   * @param {string} idUtente Utente
+   * @returns 
+   */
+  requestNow(idUtente: string): Promise<Tesseramento[]> {
+
+    return new Promise<Tesseramento[]>((resolve, reject) => {
+
+      let filterDoc: Tesseramento = new Tesseramento(true);
+      filterDoc.ANNULLATA = 0;
+      filterDoc.IDUTENTE = idUtente;
+
+      //Effettuo la richiesta
+      this.docStructureService.requestNew(filterDoc)
+          .then(listReceived => {
+              //Chiamata conclusa
+              resolve(listReceived);
           })
           .catch(error => {
             //errore di connessione

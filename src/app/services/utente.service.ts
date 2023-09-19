@@ -13,7 +13,7 @@ import { TipoVerificaAccount } from '../models/valuelist.model';
 import { Gruppo } from '../models/gruppo.model';
 import { ParamsVerificaAccount } from '../models/params-verifica-account.model';
 import { Utente } from '../models/utente.model';
-import { RequestParams } from '../library/models/requestParams.model';
+import { PostParams, RequestParams } from '../library/models/requestParams.model';
 
 
 @Injectable({
@@ -53,11 +53,6 @@ export class UtenteService {
   get idAreaFAV() {
     return this._idAreaFAV.asObservable();
   }  
-
-
-
-
-
 
   constructor(private apiService: ApicallService,
               private docStructureService: DocstructureService) { }
@@ -100,8 +95,40 @@ export class UtenteService {
       }
     })
    }
-    
 
+   /**
+    * Richiesto il caricamento della collection per nome
+    * @param masterDoc 
+    * @param nameCollection 
+    */
+   requestLoadCollection(masterDoc: Utente, nameCollection: string): Promise<Utente> {
+     return new Promise<Utente>((resolve, reject) => {
+        let reqParams: RequestParams;
+
+        if (masterDoc) {
+          if (nameCollection && nameCollection.length != 0) {
+              reqParams = new RequestParams();
+              reqParams.decode.active = true;
+
+              //Chiedo il caricamento della collection
+              this.docStructureService.loadCollection(masterDoc, nameCollection, reqParams)
+                                      .then(docLoaded => {
+                                        resolve(<Utente>docLoaded);
+                                      })
+                                      .catch(error => {
+                                        reject(error);
+                                      })
+          }
+          else {
+            reject('Collection undefined');
+          }
+        }
+        else {
+          reject('Document undefined');
+        }
+     })
+   }
+    
    /** 
     * Se presente un ActiveUtenteDoc richiede un refresh dal Server
     * e riemette Observable
@@ -435,6 +462,49 @@ export class UtenteService {
     
      
   }
+
+  //#region RICHIESTE ELENCHI
+  /**
+   * Richiede un elenco di utenti per filterkeyword nominativo
+   * @param filterKeyword 
+   * @param numMaxRequest 
+   * @returns 
+   */
+  requestListUtenti(filterKeyword: string, numMaxRequest: number = 0): Promise<Utente[]> {
+
+    return new Promise<Utente[]>((resolve, reject) => {
+      const metodo = 'getListFor';
+      let docToApply: Utente;
+      let listPostParams: PostParams[] = [];
+
+      if (filterKeyword && filterKeyword.length != 0) {
+
+        docToApply = new Utente(true);
+        PostParams.addParamsTo(listPostParams, 'filterKeyword', filterKeyword);
+        PostParams.addParamsTo(listPostParams, 'numMaxElement', numMaxRequest);
+
+        this.docStructureService.requestForFunction(docToApply, metodo, null, listPostParams)
+                                .then(dataReceived => {
+                                  let listUtenti: Utente[] = [];
+
+                                  if (dataReceived && dataReceived.hasOwnProperty('UTENTE')) {
+                                    listUtenti = this.docStructureService.castCollection(dataReceived['UTENTE'], new Utente(true));
+                                  }
+                                  console.log(listUtenti)
+                                  resolve(listUtenti);
+
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+
+      }
+      else {
+        resolve([]);
+      }
+    })
+  }
+  //#endregion
 
 
   //#region FASI REGISTRAZIONE

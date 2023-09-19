@@ -46,6 +46,18 @@ export class TabProfilePage implements OnInit, OnDestroy {
     return flag;
   }
 
+  /**
+   * Il QrCode Utente ha davanti la sigla USR
+   */
+  get qrCodeDataUser():string {
+    let qrCode: string = '';
+    if (this.utenteDoc) {
+      qrCode = `USR-${this.utenteDoc.ID}`;
+    }
+
+    return qrCode;
+  }
+
   
   ngOnInit(): void {
     this.onListenUtente();

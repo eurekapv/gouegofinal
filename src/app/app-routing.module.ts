@@ -5,14 +5,9 @@ const routes: Routes = [
   { 
     path: '', 
     loadChildren: () => import('./pages/appstart-home/appstart-home.module').then( m => m.AppstartHomePageModule)
-  },   {
-    path: 'user-registration',
-    loadChildren: () => import('./pages/pages-profile/authorization-account/user-registration/user-registration.module').then( m => m.UserRegistrationPageModule)
-  },
-  {
-    path: 'user-data-verification',
-    loadChildren: () => import('./pages/pages-profile/authorization-account/user-data-verification/user-data-verification.module').then( m => m.UserDataVerificationPageModule)
-  },
+  },   
+  
+
   
 
 ];

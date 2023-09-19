@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Elenco Clienti</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+    <!-- GRID QUANDO E' FALLITO IL CARICAMENTO DEI DATI-->
+    <ion-grid>
+      <ion-row>
+        <ion-col sizeXs="12" 
+                sizeSm="12" 
+                sizeMd="12" 
+                sizeLg="8" offsetLg="2"
+                sizeXl="6" offsetXl="3">
+
+                <!-- AREA FILTER SEARCH BAR -->
+                <ion-grid class="ion-no-padding ion-no-margin">
+                  <ion-row>
+                      <ion-col>
+                        <ion-searchbar
+                            [debounce]="1000" 
+                            (ionInput)="handleInput($event)" 
+                            show-cancel-button="always"
+                            show-clear-button="never"
+                            cancel-button-text="Cancella"
+                            search-icon="search-outline"
+                            placeholder="inserisci parte del nominativo">
+                        </ion-searchbar>
+                      </ion-col>
+                  </ion-row>
+
+                  <!-- TROPPO POCHI CARATTERI-->
+                  <ion-row 
+                      class="ion-margin-horizontal"
+                      *ngIf="filterKeywords.length < 3">
+                    <ion-col>
+                      <app-button-card
+                          [myButtonCard] = "helpCard"
+                          smallVersion="true"
+                          class="small-button-card">
+                      </app-button-card>
+                    </ion-col>
+                  </ion-row>
+
+                  <div *ngIf="loadingComplete">
+
+                    <!-- non ci sono utenti anche con il filtro inserito-->
+                    <ion-row *ngIf="listUtenti.length == 0 && filterKeywords.length > 2">
+                      <ion-col>
+                        <app-button-card
+                            [myButtonCard] = "noResultCard"
+                            smallVersion="true"
+                            class="small-button-card">
+                        </app-button-card>
+                      </ion-col>
+                    </ion-row>
+
+                    <!-- SONO PRESENTI UTENTI -->
+                    <ion-row *ngIf="listUtenti.length != 0">
+                      <ion-col>
+                        <ion-list>
+                          <ion-item 
+                                (click)="onClickItem(item)"
+                                button="true"
+                                detail="true"
+                                *ngFor="let item of listUtenti">
+                            <ion-icon slot="start" name="people-outline"></ion-icon>
+                            <ion-label class="ion-text-wrap">
+                              <h2>{{item.NOMINATIVO}}</h2>
+                              <p>{{item.EMAIL}}</p>
+                              <ion-chip 
+                                    *ngIf="item.MOBILENUMBER && item.MOBILENUMBER.length != 0"
+                                    color="success">
+                                    {{item.MOBILENUMBER}}
+                              </ion-chip>
+                            </ion-label>
+                          </ion-item>
+                        </ion-list>
+  
+                        <!-- INFINITE SCROLL -->
+                        <ion-infinite-scroll
+                            *ngIf="numRequestUtentiTop != 0"
+                            threshold="100px"
+                            (ionInfinite)="onActivateInfiniteScrollUtenti($event)"
+                            >
+                            <ion-infinite-scroll-content oading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
+                        </ion-infinite-scroll> 
+  
+                      </ion-col>
+                    </ion-row>
+                  </div>
+
+
+                </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+</ion-content>

@@ -254,6 +254,12 @@ export enum AutomatismoApplicazioneTessera {
     gratuita = -1
 }
 
+export enum AreaApplicazioneTessera {
+    tesseraCorsi = 10,
+    tesseraPrenotazioni = 20,
+    tesseraEventi = 30
+}
+
 //Stati possibili a seguito di una richiesta pagamento Paypal
 /*
 The possible values are:

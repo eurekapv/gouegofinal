@@ -35,7 +35,15 @@ const routes: Routes = [
   {
     path: 'history-course/:historyId',
     loadChildren: () => import('../../pages-history/history-course/history-course.module').then( m => m.HistoryCoursePageModule)
-  }
+  },
+  {
+    path: 'customer/customer-detail/:customerId',
+    loadChildren: () => import('../../pages-customer/customer-detail/customer-detail.module').then( m => m.CustomerDetailPageModule)
+  },  
+  {
+    path: 'customer/customer-list',
+    loadChildren: () => import('../../pages-customer/customer-list/customer-list.module').then( m => m.CustomerListPageModule)
+  },
 
 
 ];

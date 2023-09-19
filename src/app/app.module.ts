@@ -14,6 +14,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 
 
+
 registerLocaleData(localeIt,'it');
 
 //innerHTMLTemplatesEnabled: true Consente di indicare Html in componenti come

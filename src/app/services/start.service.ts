@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { ApicallService } from './apicall.service';
 import { SportService } from './sport.service';
 import { CategoriaetaService } from './categoriaeta.service';
@@ -87,6 +87,7 @@ import { StorageUtente } from '../models/stogare-utente.model';
 import { TipoPagamentoService } from './tipo-pagamento.service';
 import { TipoPagamento } from '../models/tipopagamento.model';
 import { CorsoPresenze } from '../models/corsopresenze.model';
+import { Tesseramento } from '../models/tesseramento';
 
 @Injectable({
   providedIn: 'root'
@@ -1246,6 +1247,34 @@ refreshActiveUtenteDoc(): void {
 }
 
 /**
+ * Effettua la richiesta di un utente qualsiasi (non utente Attivo)
+ * @param idUtente 
+ */
+requestUtenteBy(idUtente: string, numChild: number = 1, decodeAll: boolean=false): Promise<Utente> {
+  return this.utenteService.request(idUtente, numChild, decodeAll);
+}
+
+/**
+ * Richiede il caricamento di una collection del documento Utente per nameCollection
+ * @param masterDoc 
+ * @param nameCollection 
+ * @returns 
+ */
+requestUtenteLoadCollection(masterDoc: Utente, nameCollection: string): Promise<Utente> {
+  return this.utenteService.requestLoadCollection(masterDoc, nameCollection);
+}
+
+
+/**
+ * Richiede l'elenco dei clienti sulla base di una chiave di ricerca
+ * @param filterKeyword 
+ * @param numMaxRequest 
+ */
+requestListUtentiBy(filterKeyword: string, numMaxRequest: number = 0): Promise<Utente[]> {
+  return this.utenteService.requestListUtenti(filterKeyword, numMaxRequest);
+}
+
+/**
  * Il metodo controlla se fosse necessario effettuare una verifica dei dati Utente
  * In tal caso apre la form UserDataVerificationPage
  * Quando si richiama questo metodo, includere nei Moduli della pagina il modulo
@@ -1587,6 +1616,15 @@ loadPictureUtente():Promise<string> {
 requestListTessereUtente():Promise<void> {
   let idUtente = this.activeUtenteId;
   return this.srvTesseramento.request(idUtente);
+}
+
+/**
+ * Richiede i Tesseramenti per l'utente passato
+ * (non per l'utente attivo e non popola Observable)
+ * @param idUtente 
+ */
+requestListTessereFor(idUtente: string):Promise<Tesseramento[]> {
+  return this.srvTesseramento.requestNow(idUtente);
 }
 
 
@@ -2230,9 +2268,36 @@ get listTipoTessere$():BehaviorSubject<TipoTessera[]> {
 
 /**
  * Effettua la richiesta per la lista delle tipo tessere previste
+ * Ritorna il valore come Array e come Observable
+ * listTipoTessere$
  */
-requestListTipoTessere(): Promise<void> {
+requestListTipoTessere(): Promise<TipoTessera[]> {
   return this.srvTipoTessere.request();
+}
+//#endregion
+
+//#region CUSTOMER
+/**
+ * 
+ * @param type Quale pagina vuole visualizzare
+ * @param primaryKey Chiave primaria
+ * @returns 
+ */
+getUrlPageCustomer(type: 'list' | 'detail', primaryKey?:string): string[] {
+  let retPath = [];
+  switch (type) {
+    case 'list':
+      retPath = ['/','appstart-home','tab-agenda','customer','customer-list'];
+      break;
+
+    case 'detail':
+      retPath = ['/','appstart-home','tab-agenda','customer','customer-detail',primaryKey];
+      break;      
+  
+    default:
+      break;
+  }
+  return retPath;
 }
 //#endregion
 

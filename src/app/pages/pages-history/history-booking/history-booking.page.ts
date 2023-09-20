@@ -6,9 +6,9 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Area } from 'src/app/models/area.model';
 import { PageType } from 'src/app/models/valuelist.model'
-import { RequestParams } from 'src/app/library/models/requestParams.model';
+
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
-import { LogApp } from 'src/app/models/log.model';
+
 import { Swiper, SwiperOptions, Navigation, Pagination } from 'swiper';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { Subscription } from 'rxjs';
@@ -30,11 +30,7 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
                 private router: ActivatedRoute,
                 private navCtr: NavController,
                 private startService: StartService,
-                private toastCtr: ToastController,
-                private docStructureService: DocstructureService,
                 private loadingController: LoadingController,
-                private docstructrureService: DocstructureService,
-                private alertController: AlertController
             ) { }
 
   myPrenotazione: Prenotazione = new Prenotazione();

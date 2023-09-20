@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
 import { Utente } from 'src/app/models/utente.model';
 import { StartService } from 'src/app/services/start.service';
+import { QrCodeScannerComponent } from 'src/app/shared/components/qr-code-scanner/qr-code-scanner.component';
 
 @Component({
   selector: 'app-customer-list',
@@ -20,10 +21,16 @@ export class CustomerListPage implements OnInit {
   helpCard: ButtonCard = new ButtonCard();
   noResultCard: ButtonCard = new ButtonCard();
 
+  platformDesktop = false;
+
   constructor(private navController: NavController,
-              private startService: StartService,) { 
+              private startService: StartService,
+              private modalController: ModalController) { 
 
                 this.createCardInfo();
+
+                //Controllo se sono in versione Desktop
+                this.platformDesktop = this.startService.isDesktop;
             }
 
   ngOnInit() {
@@ -88,6 +95,69 @@ export class CustomerListPage implements OnInit {
     this.noResultCard.sloticon = 'start'
 
   }
+
+  /**
+   * Click per la lettura di un QrCode Custode
+   */
+  onClickQrCode() {
+    if (!this.platformDesktop) {
+      //Apro la modale per lo scanner
+      this.modalController.create({
+        component: QrCodeScannerComponent,
+        
+      })
+      .then(elModal => {
+        elModal.present();
+        return elModal.onDidDismiss();
+      })
+      .then(objReturn => {
+
+        if (objReturn && objReturn.data) {
+
+          if (objReturn.data.qrcodeData && objReturn.data.qrcodeData.length != 0) {
+
+            //Eseguo il redirect con il QrCode
+            this.redirectWithQrCode(objReturn.data.qrcodeData);
+            
+          }
+        }
+      })
+    }
+  }
+
+    /**
+   * Porta la navigazione alla pagina corretta
+   * @param qrCodeData 
+   */
+    redirectWithQrCode(qrCodeData: string): void {
+
+      //Esistono 2 tipologie di QrCode
+      //Inizia con USR-XXXXXX riferito a un utente
+      //Normale GUID si riferisce a Pianificazione Corso / Evento / Prenotazione
+  
+      if (qrCodeData && qrCodeData.length != 0) {
+  
+        if (qrCodeData.startsWith('USR-')) {
+          //Tipologia Scheda Utente
+          qrCodeData = qrCodeData.substring(4);
+          this.goToDetailCustomer(qrCodeData);
+        }
+
+      }
+    }
+
+  /**
+   * Va alla pagina con i dettagli del cliente
+   * @param idCustomer Cliente di riferimento
+   */
+  goToDetailCustomer(idCustomer: string) {
+    let pathNavigate = [];
+    
+    if (idCustomer && idCustomer.length != 0) {
+      pathNavigate = this.startService.getUrlPageCustomer('detail',idCustomer);
+      this.navController.navigateForward(pathNavigate);
+    }
+  }    
   //#endregion
 
 

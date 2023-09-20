@@ -13,7 +13,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-    <!-- GRID QUANDO E' FALLITO IL CARICAMENTO DEI DATI-->
+    <!-- GRID GENERAL-->
     <ion-grid>
       <ion-row>
         <ion-col sizeXs="12" 
@@ -22,11 +22,13 @@
                 sizeLg="8" offsetLg="2"
                 sizeXl="6" offsetXl="3">
 
-                <!-- AREA FILTER SEARCH BAR -->
+                <!-- GRID ELEMENTI -->
                 <ion-grid class="ion-no-padding ion-no-margin">
+                  <!-- RIGA SEARCH BAR -->
                   <ion-row>
                       <ion-col>
                         <ion-searchbar
+                            mode="ios"
                             [debounce]="1000" 
                             (ionInput)="handleInput($event)" 
                             show-cancel-button="always"
@@ -36,6 +38,24 @@
                             placeholder="inserisci parte del nominativo">
                         </ion-searchbar>
                       </ion-col>
+                  </ion-row>
+
+                  <!-- BOTTONE PER SCANSIONE -->
+                  <ion-row 
+                      *ngIf="!platformDesktop"
+                      class="ion-margin-horizontal"
+                      >
+                    <ion-col>
+                      <ion-button 
+                          (click)="onClickQrCode()"
+                          color="success"
+                          expand="block"
+                          fill="outline"
+                          >
+                        <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+                        Scansiona Badge Accesso
+                      </ion-button>
+                    </ion-col>
                   </ion-row>
 
                   <!-- TROPPO POCHI CARATTERI-->

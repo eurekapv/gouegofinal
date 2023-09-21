@@ -157,15 +157,19 @@ export class PostParams {
    */
   export class RequestDecode {
     active?: boolean;   //TRUE: si richiede la decodifica alla ricezione degli elementi
+    childDoc?: boolean; //Decodifico anche i figli di primo livello
     useCache: boolean;
     foreignFields?: RequestForeign[]; 
+    listCollectionName: string[]; //Lista delle sole collection da decodificare
     //Se non passato vengono decodificati tutti i campi di foreign key con le describeRowFiels,
     //altrimenti è possibile specificare le foreignKey da decodificare
    
     constructor() {
         this.active = false;
+        this.childDoc = false;
         this.foreignFields = [];
         this.useCache = true;
+        this.listCollectionName = [];
     }
 
     /**
@@ -184,6 +188,18 @@ export class PostParams {
         return docForeign;
     }
 
+    /**
+     * Aggiunge all'elenco il nome della collection da decodificare
+     * Passando i nomi delle collection non effettua la decodifica su tutte le collection
+     * @param nameCollection 
+     */
+    addCollectionToDecoding(nameCollection: string) {
+      if (nameCollection && nameCollection.length != 0) {
+        if (this.listCollectionName.findIndex(item => item == nameCollection) == -1) {
+          this.listCollectionName.push(nameCollection);
+        }
+      }
+    }
   }
  
   /**

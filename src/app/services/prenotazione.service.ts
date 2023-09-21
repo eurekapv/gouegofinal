@@ -15,6 +15,7 @@ import { ParamsExport } from '../library/models/iddocument.model';
 import { PostResponse } from '../library/models/post-response.model';
 import { DocstructureService } from '../library/services/docstructure.service';
 import { PostParams, RequestParams } from '../library/models/requestParams.model';
+import { Descriptor } from '../library/models/descriptor.model';
 
 @Injectable({
   providedIn: 'root'
@@ -204,9 +205,15 @@ export class PrenotazioneService {
    * @param idPrenotazione 
    * @param numChild Profondità della richiesta
    * @param decodeAll Decodifica le chiavi esterne
+   * @param decodeChildDoc Decodifica anche i documento di secondo livello
+   * @param listNameCollectionDecode Array con i nomi delle Collection da decodificare
    * @returns 
    */
-  requestPrenotazioneById(idPrenotazione: string, numChild = 0, decodeAll = false): Promise<Prenotazione> {
+  requestPrenotazioneById(idPrenotazione: string, 
+                          numChild = 0, 
+                          decodeAll = false,
+                          decodeChildDoc = false,
+                          listNameCollectionDecode?:string[]): Promise<Prenotazione> {
     return new Promise<Prenotazione>((resolve, reject) => {
 
       if (idPrenotazione && idPrenotazione.length != 0) {
@@ -216,6 +223,9 @@ export class PrenotazioneService {
         let reqParams = new RequestParams();
         reqParams.child_level = numChild;
         reqParams.decode.active = decodeAll;
+        reqParams.decode.childDoc = decodeChildDoc;
+        reqParams.decode.listCollectionName = listNameCollectionDecode;
+        
 
         this.docStructureService.requestNew(filter, reqParams)
                                 .then(listResult => {
@@ -240,6 +250,8 @@ export class PrenotazioneService {
       }
     })
   }
+
+
   
   
   /**

@@ -63,6 +63,7 @@ export class ImpegnoService {
                                     
                                     //Imposto la nuova lista
                                     this._listImpegni$.next(dataList);
+
                                     return this.nextImpegnoFromList(dataList);
                                 })
                                 .then(nextImpegno => {
@@ -99,12 +100,17 @@ export class ImpegnoService {
   
       if (dataList && dataList.length != 0) {
         for (let index = 0; index < dataList.length; index++) {
-          const element = dataList[index];
-          let myGap = MyDateTime.durataSecondi(element.DATAORAINIZIO,new Date());
           
-          if (myGap > gapMin) {
+          const element = dataList[index];
+          let gapItem = MyDateTime.durataSecondi(new Date(),element.DATAORAINIZIO);
+
+          if (index == 0) {
+            gapMin = gapItem;
             nextImpegno = element;
-            gapMin = myGap;
+          }
+          else if (gapItem < gapMin) {
+            nextImpegno = element;
+            gapMin = gapItem;
           }
         }
       }

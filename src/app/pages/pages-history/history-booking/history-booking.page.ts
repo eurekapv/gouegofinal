@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 //per lo share via browser
 import { Share } from '@capacitor/share';
 import { DocstructureService } from 'src/app/library/services/docstructure.service'
@@ -12,11 +12,12 @@ import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
 import { Swiper, SwiperOptions, Navigation, Pagination } from 'swiper';
 import { Prenotazione } from 'src/app/models/prenotazione.model';
 import { Subscription } from 'rxjs';
-import { AlertButton, AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertButton, IonAccordionGroup, LoadingController, NavController } from '@ionic/angular';
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
 import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
+import { LogApp } from 'src/app/models/log.model';
 Swiper.use([Navigation, Pagination]);
 
 @Component({
@@ -34,6 +35,9 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
             ) { }
 
   myPrenotazione: Prenotazione = new Prenotazione();
+  activePianificazione: PrenotazionePianificazione = new PrenotazionePianificazione();
+  indexPianificazione: number = 0;
+  loadingComplete: boolean = false;
 
   startConfig:StartConfiguration;
   subStartConfig:Subscription;
@@ -42,6 +46,8 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
   idPianificazione: string;
   historyId: string;
   myArea:Area;
+
+  @ViewChild('accordiondate', { static: true }) accordionGroup: IonAccordionGroup;
 
   //i metodi di pagamento possibili
   arPayments : AreaPaymentSetting[] = [];
@@ -90,6 +96,7 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
                       .then(() => {
                         this.loadingController.dismiss();
                         //Recupero avvenuto correttamente
+                        this.loadingComplete = true;
 
                       })
                       .catch(error => {
@@ -100,12 +107,12 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
                       })
                 }
                 else {
-                  this.showMessage('Informazioni prenotazioni errate');
+                  this.showMessage('Informazioni prenotazione errate');
                   this.onGoToBack();
                 }
               }
               else {
-                this.showMessage('Informazioni prenotazioni errate');
+                this.showMessage('Informazioni prenotazione errate');
                 this.onGoToBack();
               }
             });
@@ -118,6 +125,18 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
       this.subStartConfig.unsubscribe();
     }
   }  
+
+  /**
+   * Ritorna il numero di date pianificate per la prenotazione
+   */
+  get numDatePianificate(): number {
+    let numDate: number = 0;
+    if (this.myPrenotazione && this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE) {
+      numDate = this.myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length;
+    }
+
+    return numDate;
+  }
 
   //#region RICHIESTE
     /**
@@ -146,12 +165,19 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
             this.idPrenotazione = myIdPrenotazione;
             this.idPianificazione = myIdPianificazione;
 
-            
-            this.startService.requestPrenotazioneById(this.idPrenotazione, 2, true)
+            //Richiedo prima 
+            this.startService.requestPrenotazioneById(this.idPrenotazione, 2, true, true)
                              .then(elPrenotazione => {
                                 //Prenotazione recuperata
                                 this.myPrenotazione = elPrenotazione;
-                                return this.startService.requestAreaById(elPrenotazione.IDAREAOPERATIVA);
+                                LogApp.consoleLog('Prenotazione trovata');
+                                LogApp.consoleLog(this.myPrenotazione);
+                                //Imposto la Pianificazione attiva
+                                return this.setActivePianificazione(this.myPrenotazione, this.idPianificazione);
+                              })
+                              .then(() => {
+                                //Richiedo l'Area di riferimento
+                                return this.startService.requestAreaById(this.myPrenotazione.IDAREAOPERATIVA);
                              })
                              .then(elArea => {
                                 this.myArea = elArea;
@@ -171,6 +197,56 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
       })
   
   
+    }
+
+    /**
+     * Imposta il documento myPianificazione sulla base del parametro
+     * Ritorna una Prenotazione (utile per la request Iniziale)
+     * @param idPianificazione 
+     */
+    setActivePianificazione(prenotazioneDoc:Prenotazione, idPianificazione: string): Promise<Prenotazione> {
+      return new Promise<Prenotazione>((resolve, reject) => {
+
+        let indexFind = 0;
+        if (prenotazioneDoc && idPianificazione.length != 0) {
+          if (prenotazioneDoc.PRENOTAZIONEPIANIFICAZIONE && prenotazioneDoc.PRENOTAZIONEPIANIFICAZIONE.length != 0) {
+            
+            //Controlliamo se presente
+            indexFind = prenotazioneDoc.PRENOTAZIONEPIANIFICAZIONE.findIndex(itemData => {
+              return itemData.ID == idPianificazione;
+            })
+
+            if (indexFind != -1) {
+              this.idPianificazione = idPianificazione;
+              this.activePianificazione = prenotazioneDoc.PRENOTAZIONEPIANIFICAZIONE[indexFind];
+              this.indexPianificazione = indexFind + 1;
+              resolve(prenotazioneDoc);
+            }
+            else {
+              reject('Pianificazione non trovata');
+            }
+          }
+          else {
+            reject('Date pianificate non presenti');
+          }
+        }
+        else {
+          reject('Prenotazione non presente');
+        }
+      })
+    }
+
+    /**
+     * Cambiamento della Pianificazione da mostrare
+     * @param idPianificazione 
+     */
+    onChangeActivePianificazione(idPianificazione: string) {
+      this.setActivePianificazione(this.myPrenotazione, idPianificazione)
+          .then(() => {
+            //Chiudo l'accordion
+            const nativeEl = this.accordionGroup;
+            
+          })
     }
 
   /**
@@ -319,9 +395,11 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
           }
         ]
 
-        myMessage = 'Stai effettuando la cancellazione della data del ' + MyDateTime.formatDate(docPianificazione.DATAORAINIZIO, 'dd/MM/yyyy');
-        myMessage = myMessage + '\n';
-        myMessage = myMessage + 'Vuoi proseguire ?';
+        myMessage = '<p>Stai tentando la cancellazione della data del </p>';
+        myMessage += `<p class="ion-text-bold">${MyDateTime.formatDate(docPianificazione.DATAORAINIZIO, 'dd/MM/yyyy')}</p>`;
+        myMessage += `<p class="ion-text-bold">alle ore ${MyDateTime.formatDate(docPianificazione.DATAORAINIZIO, 'HH:mm')}</p>`;
+        myMessage += `<p>Contatto il centro per verificare se l'operazione è possibile</p>`;
+        myMessage += '<p class="ion-text-bold">Vuoi proseguire ?</p>';
 
         //Mostro la domanda
         this.startService.presentAlertMessage(myMessage, 'Sei sicuro ?', alertButton);

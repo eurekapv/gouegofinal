@@ -64,8 +64,10 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   listImpegni: Impegno[] = [];
   subListImpegni: Subscription;
   nextImpegno: Impegno = null;
-  nextImpegnoCard: ButtonCard = null;
   subNextImpegno: Subscription;
+  nextImpegnoCard: ButtonCard = null;
+  noImpegnoCard: ButtonCard = null;
+
   eventImpegniIonInfinit: any; //Eventuale evento IonInfinity
 
   //Lista Impegni Trainer
@@ -267,6 +269,12 @@ export class TabAgendaPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.onUnscribeAll();
+  }
+
+  ionViewDidEnter() {
+    this.requestListImpegniTrainer();
+    this.requestListImpegniPersonali();
+    this.requestListImpegniCustode();
   }
 
   /**
@@ -538,10 +546,14 @@ export class TabAgendaPage implements OnInit, OnDestroy {
    */
   prepareCardImpegniPersonali() {
     if (this.nextImpegno) {
+      //Impegno presente
       this.nextImpegnoCard = this.nextImpegno.asButtonCard();
+      this.noImpegnoCard = null;
+      console.log(this.nextImpegnoCard);
     }
     else {
-      this.nextImpegnoCard = Impegno.asEmptyButtonCard();
+      this.nextImpegnoCard = null;
+      this.noImpegnoCard = Impegno.asEmptyButtonCard();
     }
   }
 

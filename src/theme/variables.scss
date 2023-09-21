@@ -68,7 +68,14 @@
     --ion-color-extralight-contrast: #000000;
     --ion-color-extralight-contrast-rgb: 0,0,0;
     --ion-color-extralight-shade: #d7d8da;
-    --ion-color-extralight-tint: #f5f6f9;   
+    --ion-color-extralight-tint: #f5f6f9; 
+    
+    --ion-color-dark: #000000;
+    --ion-color-dark-rgb: 0,0,0;
+    --ion-color-dark-contrast: #ffffff;
+    --ion-color-dark-contrast-rgb: 0,0,0;
+    --ion-color-dark-shade: #000000e0;
+    --ion-color-dark-tint: #000000e0;    
 
     --ion-segment-color: #54dc98;
     --ion-segment-contrast: #192333;
@@ -82,6 +89,8 @@
     --ion-tab-color: white;
     --ion-tab-selected-background: #54dc98;
     --ion-tab-selected-color: #192333;
+
+    --ion-color-label: #070c40;
 
 
     --base-border-radius: (-6px);

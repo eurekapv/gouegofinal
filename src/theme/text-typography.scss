@@ -26,8 +26,16 @@
     color: var(--ion-color-medium) !important;
 }
 
+.ion-text-dark {
+    color: var(--ion-color-dark) !important;
+}
+
 .ion-text-extralight {
     color: var(--ion-color-extralight) !important;
+}
+
+.ion-text-color-label {
+    color: var(--ion-color-label) !important;
 }
 
 .ion-text-22 {
@@ -56,6 +64,12 @@
 
 .ion-text-x-large {
     font-size: x-large !important;
+} 
+
+.ion-text-bold {
+    font-weight: 700 !important;
 }
 
-
+.ion-text-right {
+    text-align: right;
+}

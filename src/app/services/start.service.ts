@@ -1846,12 +1846,16 @@ requestPrenotazioneById$(idPrenotazione: string,
    * @param idPrenotazione 
    * @param numChild Profondità della richiesta
    * @param decodeAll Decodifica le chiavi esterne
+   * @param decodeChildDoc Decodifica anche i documento di secondo livello
+   * @param listNameCollectionDecode Array con i nomi delle Collection da decodificare* 
    * @returns 
    */
   requestPrenotazioneById(idPrenotazione: string, 
                           numChild = 0, 
-                          decodeAll = false): Promise<Prenotazione> {
-    return this.prenotazioniService.requestPrenotazioneById(idPrenotazione, numChild, decodeAll);
+                          decodeAll = false,
+                          decodeChildDoc = false,
+                          listNameCollectionDecode?:string[]): Promise<Prenotazione> {
+    return this.prenotazioniService.requestPrenotazioneById(idPrenotazione, numChild, decodeAll, decodeChildDoc, listNameCollectionDecode);
   }
 
 /**

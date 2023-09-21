@@ -354,7 +354,29 @@ export class  Descriptor{
     });
 
     return collFind;
-  }      
+  }    
+  
+  /**
+   * Torna un Array con i nomi delle collection del documento
+   */
+  getListCollection(): string[] {
+
+    let listNameCollection: string[] = [];
+    let listCollection: TypeReflector[] = [];
+
+    if (this.fields) {
+
+      listCollection = this.fields.filter(item => {
+        return (item.fieldType == TypeDefinition.collection)
+      });
+
+      //Trasformo in un elenco di 
+      listNameCollection = listCollection.map(item => item.fieldName);
+
+    }
+
+    return listNameCollection;
+  }
 
   
   /**

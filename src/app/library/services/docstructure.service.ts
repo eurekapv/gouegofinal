@@ -84,8 +84,13 @@ export class DocstructureService {
    * Decodifica tutte le Foreign Key presenti, eccetto quelle passate nell'array di esclusione
    * @param doc Documento da decodificare
    * @param fieldsExclude Campi di ForeignKeys da non decodificare
+   * @param decodeThisCollectionName Elenco delle Collection da Decodificare (per non farle tutte)
    */
-  decodeAll(doc:IDDocument, useCache:boolean=true, fieldsExclude?:string[]){
+  decodeAll(doc:IDDocument, 
+            useCache:boolean=true, 
+            fieldsExclude?:string[],
+            decodeChild: boolean = false,
+            decodeThisCollectionName?: string[]): Promise<void>{
     
     return new Promise<void>((resolve, reject)=>{       
 
@@ -109,25 +114,66 @@ export class DocstructureService {
 
           if (use) {
             //Richiedo la decodifica del campo
-            executePromise.push(_this.decode(doc, element.fieldName, useCache));
+            executePromise.push(_this.decodeField(doc, element.fieldName, useCache));
           }
           
         }
 
+
         //Ho dei campi che devo decodificare con le Promise
         if (executePromise.length !== 0) {
 
-          Promise.all(executePromise).then(() => {
-            resolve();
-          })
-          .catch(err => {
-            reject(err);
-          });
+          //Devo decodificare anche la collection Figlia
+          if (decodeChild) {
+
+            //Eseguo le decodifiche dei campi del documento principale
+            Promise.all(executePromise)
+                    .then(() => {
+                      //Decodifico le collection interne
+                      return this.decodeChildCollections(doc,useCache, decodeThisCollectionName);
+                    })
+                    .then(() => {
+                      resolve();
+                    })
+                    .catch(err => {
+                      reject(err);
+                    });
+
+          }
+          else {
+            //Decodifico solo i doc di primo livello
+            //Eseguo le decodifiche dei campi del documento principale
+            Promise.all(executePromise)
+                    .then(() => {
+                      resolve();
+                    })
+                    .catch(err => {
+                      reject(err);
+                    });            
+          }
 
         }
         else {
-          //Non ho nulla da decodificare e va bene cosi
-          resolve();
+
+          if (decodeChild) {
+
+            //Non ho nulla da decodificare come campi principali
+            //Decodifico le collection del documento
+            this.decodeChildCollections(doc,useCache, decodeThisCollectionName)
+                .then(() => {
+                  console.log('Decodifica conclusa')
+                  console.log(doc);
+  
+                  resolve();
+                })
+                .catch(error => {
+                  reject(error);
+                })
+
+          }
+          else {
+            resolve();
+          }
         }
 
       }
@@ -142,11 +188,112 @@ export class DocstructureService {
 
 
   /**
-   * 
+   * Decodifica le collection figlie
+   * @param doc Documento da analizzare
+   * @param useCache 
+   * @returns 
+   */
+  decodeChildCollections(doc:IDDocument, 
+                         useCache:boolean=true,
+                         decodeThisCollectionName?: string[]): Promise<IDDocument> {
+    return new Promise<IDDocument>((resolve, reject) => {
+      //Controlliamo anche le Collection del Documento
+      let descrObj: Descriptor;
+      let listNameCollection: string[];
+      let arPromise: Promise<any|void>[] = [];
+      let pthis = this;
+
+
+      if (doc) {
+        LogApp.consoleLog('Richiesta decodifica per le collection del documento');
+        LogApp.consoleLog(doc);
+
+        //Descrittore del documento
+        descrObj = doc.getDescriptor();
+
+        //Elenco delle Collection
+        listNameCollection = descrObj.getListCollection();
+
+        
+        if (listNameCollection.length == 0) {
+          LogApp.consoleLog('Il descrittore non riporta collection per il documento');
+          LogApp.consoleLog(doc);
+
+          resolve(doc);
+        }
+        else {
+          LogApp.consoleLog('La struttura documento contiene le collection: ');
+          LogApp.consoleLog(listNameCollection);
+
+          //Creo la lista di Promise
+          listNameCollection.forEach(nameCollection => {
+  
+            let flagDecoding = false;
+  
+            //Mi ha detto cosa decodificare
+            if (decodeThisCollectionName && decodeThisCollectionName.length != 0) {
+              flagDecoding = decodeThisCollectionName.includes(nameCollection);
+            }
+            else {
+              //Decodifico tutte le collection
+              flagDecoding = true;
+            }
+  
+            if (flagDecoding) {
+              //Chiedo la collection
+              let myColl = doc.getCollection(nameCollection);
+  
+              
+              if (myColl && myColl.length != 0) {
+  
+                LogApp.consoleLog('Decodifica per la collection ' + nameCollection);
+                LogApp.consoleLog(myColl);
+    
+                //Creo l'elenco delle Promise
+                arPromise.push(pthis.decodeCollection(myColl, null, useCache));
+              }
+              else {
+                LogApp.consoleLog(`La collection da decodificare ${nameCollection} non contiene documenti`);
+              }
+            }
+            else {
+              LogApp.consoleLog(`Collection ${nameCollection} da non decodificare`);
+            }
+  
+          });
+
+
+          //Ho operazioni da eseguire
+          if (arPromise && arPromise.length != 0) {
+  
+            Promise.allSettled(arPromise)
+                  .then(() => {
+                    resolve(doc);
+                  })
+                  .catch(errors => {
+                    reject(errors)
+                  })
+          }
+          else {
+            resolve(doc);
+          }
+
+        }
+
+      }
+      else {
+        resolve(doc);
+      }
+    })
+  }
+
+
+  /**
+   * Decodifica un campo del documento
    * @param doc Documento
    * @param fieldDecode Nome del campo da cui parte la decodifica
    */
-  decode(doc:IDDocument, 
+  decodeField(doc:IDDocument, 
          fieldDecode: string, 
          useCache:boolean=true, 
          newDecodeField?:string[]) {
@@ -533,9 +680,11 @@ export class DocstructureService {
       let childLevel = -1;
       let orderBy: string = '';
       let nElem = 0;
-      let requestAndDecode = false;
+      let requestAndDecode = false; //Richiedi e Decodifica i documento di primo livello
+      let decodeChildDoc = false; //Anche i documenti di secondo livello
       let useDecodeCache = true;
       let foreignFields: RequestForeign[];
+      let listNameCollectionDecode: string[] = []; //Nomi eventuali delle collection da decodificare
       
       if (!filterDocument) {
         reject('Documento filtro non presente');
@@ -574,7 +723,15 @@ export class DocstructureService {
 
               //Devo decodificare
               if (params.decode.active) {
+                //Come devo comportarmi con la decodifica
                 requestAndDecode = true;
+                decodeChildDoc = params.decode.childDoc;
+
+                //Eventuale Collection List da decodificare
+                if (params.decode.listCollectionName) {
+                  listNameCollectionDecode = params.decode.listCollectionName;
+                }
+
 
                 if (params.decode.foreignFields) {
                   foreignFields = params.decode.foreignFields;
@@ -618,44 +775,58 @@ export class DocstructureService {
               .pipe(map(fullData => {
                 return fullData[objDescriptor.classWebApiName]
               }))
-              .subscribe (resultData => {
+              .subscribe({
+                next: (resultData)=> {
 
-                let listElement: IDDocument[] = [];
-
-                if (resultData){
-
-                  resultData.forEach(elData => {
+                  let listElement: IDDocument[] = [];
+    
+                  if (resultData){
+    
+                    resultData.forEach(elData => {
+                      
+                      let newClass: any = new DynamicClass(objDescriptor.className);
+                      newClass.setJSONProperty(elData);
+                      listElement.push(newClass);
+                    });
                     
-                    let newClass: any = new DynamicClass(objDescriptor.className);
-                    newClass.setJSONProperty(elData);
-                    listElement.push(newClass);
-                  });
-                  
+    
+                  }
+    
+                  //Se non devo decodificare posso fare qui il resolve
+                  if (!requestAndDecode) {
+                    resolve(listElement);
+                  }
+                  else if (listElement.length !== 0) {
+    
+                    //Decodifico la collection di documenti (ed eventualmente i figli)
+                    this.decodeCollection(listElement, 
+                                          foreignFields, 
+                                          useDecodeCache,
+                                          decodeChildDoc,
+                                          listNameCollectionDecode
+                                          )
+                        .then(() => {
+                          LogApp.consoleLog('Conclusa la decodifica della lista Elementi');
+                          LogApp.consoleLog(listElement);
+                          resolve(listElement);
+                        })
+                        .catch(errMessage => {
+                          LogApp.consoleLog('Conclusa con errori la decodifica della lista Elementi',"error")
+                          LogApp.consoleLog(errMessage);
+                          reject(errMessage);
+                        });
+                  }
+                  else {
+                    LogApp.consoleLog('Conclusa la decodifica della lista Elementi')
+                    resolve(listElement);
+                  }
+                },
+                error: (error) => {
 
+                  reject(error);
                 }
-
-                //Se non devo decodificare posso fare qui il resolve
-                if (!requestAndDecode) {
-                  resolve(listElement);
-                }
-                else if (listElement.length !== 0) {
-
-                  //Decodifico la collection
-                  this.decodeCollection(listElement, foreignFields, useDecodeCache)
-                      .then(() => {
-                        resolve(listElement);
-                      })
-                      .catch(errMessage => {
-                        reject(errMessage);
-                      });
-                }
-                else {
-                  resolve(listElement);
-                }
-
-              }, error => {
-                reject(error);
               });
+              
 
           }
           
@@ -672,11 +843,15 @@ export class DocstructureService {
    * @param collection 
    * @param foreignFields 
    * @param useCache 
+   * @param decodeChildDoc Indica se devo decodificare anche le collection figlie
+   * @param listCollectionChild Indicare i nomi delle sole collection da decodificare
    * @returns 
    */
   public decodeCollection(collection: IDDocument[], 
                           foreignFields?:RequestForeign[],
-                          useCache:boolean = true): Promise<any> {
+                          useCache:boolean = true,
+                          decodeChildDoc: boolean = false,
+                          listCollectionChild?: string[]): Promise<any> {
     
     //Devo decodificare l'intera collection di dati
     //Versione 1: foreignField non presente
@@ -703,7 +878,7 @@ export class DocstructureService {
             for (let iField = 0; iField < foreignFields.length; iField++) {
               const elForeign = foreignFields[iField];
 
-              let exPromise = this.decode(doc, elForeign.nameField, useCache, elForeign.describeFields);
+              let exPromise = this.decodeField(doc, elForeign.nameField, useCache, elForeign.describeFields);
               //Aggiunta all'Array
               executePromise.push(exPromise);
             }
@@ -719,7 +894,7 @@ export class DocstructureService {
             const doc = collection[index];
 
             //Creo la Promise di decodifica
-            let exPromise = this.decodeAll(doc, useCache);
+            let exPromise = this.decodeAll(doc, useCache, null, decodeChildDoc, listCollectionChild);
             
             //Aggiunta all'Array
             executePromise.push(exPromise);

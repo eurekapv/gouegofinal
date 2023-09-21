@@ -1,34 +1,40 @@
-<ion-card [ngClass]="{'card-small-version': smallVersion, 'card-home-custode': homeCustodeVersion}">
-  <ion-item 
-      [button]="_iconLink" 
-      (click)="onClickElement(_buttonCard)" 
-      lines="none"
-      [detail] = "_iconLink"
-      [disabled] = "_disabled"
-      >
-
-    <ion-icon 
-        [slot]="_slotIcon" 
-        [name]="_nameIcon" 
-        [color]="_color"></ion-icon>
-
-    <ion-label *ngIf="!smallVersion">
-      <h2 class="ion-text-wrap">
-        {{ _title }}
-      </h2>
-      <h3 class="ion-text-wrap">
-        {{ _subtitle }}
-      </h3>
-    </ion-label>
-
-    <ion-label *ngIf="smallVersion">
-      <h3 class="ion-text-wrap">
-        {{ _title }}
-      </h3>
-      <p class="ion-text-wrap">
-        {{ _subtitle }}
-      </p>
-    </ion-label>
-
-  </ion-item>
+<ion-card 
+    [class]="_smallVersion ? 'card-small-version':''">
+      <ion-item 
+          [button]="_iconLink" 
+          (click)="onClickElement(_buttonCard)" 
+          lines="none"
+          [detail] = "_iconLink"
+          [disabled] = "_disabled"
+          >
+    
+        <ion-icon 
+            [slot]="_slotIcon" 
+            [name]="_nameIcon" 
+            [color]="_color"></ion-icon>
+    
+        <ion-label 
+              *ngIf="_smallVersion == false">
+          <h2 class="ion-text-wrap">
+            {{ _title }}
+          </h2>
+          <h3 class="ion-text-wrap ion-text-bold ion-text-color-label">
+            {{ _subtitle }}
+          </h3>
+          <p *ngIf="_text && _text.length != 0"
+              class="ion-text-wrap ion-text-color-label">
+            {{_text}}
+          </p>
+        </ion-label>
+    
+        <ion-label *ngIf="_smallVersion">
+          <h3 class="ion-text-wrap">
+            {{ _title }}
+          </h3>
+          <p class="ion-text-wrap ion-text-bold">
+            {{ _subtitle }}
+          </p>
+        </ion-label>
+    
+      </ion-item>
 </ion-card>

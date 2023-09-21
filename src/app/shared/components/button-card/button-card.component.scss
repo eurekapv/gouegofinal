@@ -1,14 +1,13 @@
+ion-card {
+    
+    margin: 16px 5px 16px 5px;
 
-
-.card-small-version {
-    margin: 8px 0px 8px 0px;
-    width: 100%;
+    &.card-small-version {
+        margin: 8px 4px 8px 4px;
+    }
 }
 
-.card-home-custode{
-    width: 100%;
-    margin: 0px;
-}
+
 
 p{
     font-size: 12px;

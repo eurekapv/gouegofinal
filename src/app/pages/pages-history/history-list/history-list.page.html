@@ -72,8 +72,9 @@
                             [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
                         </ion-icon>
   
-                        <ion-label class="ion-text-wrap">
-                          <p>{{corso.DATAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}
+                        <ion-label 
+                              class="ion-text-wrap">
+                          <p class="ion-text-color-label">{{corso.DATAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}
                             <br/>
                             {{corso.DATAFINE | date : 'EEEE dd/MM/yyyy' | titlecase}}
                           </p>
@@ -130,9 +131,9 @@
                           </ion-icon>
                           
 
-                          <ion-label>
-                            <p>{{prenotazione.DATAORAINIZIO | date : 'dd/MM/yyyy'}}</p>
-                            <h1>{{prenotazione.DATAORAINIZIO | date: 'EEEE'|titlecase}} ore {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}</h1>
+                          <ion-label class="ion-text-wrap">
+                            <p class="ion-text-color-label">{{prenotazione.DATAORAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}</p>
+                            <h1>Ore {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}</h1>
                             <h3>{{prenotazione.COMUNELOCATION|titlecase}} 
                               <span>{{( (prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION) ? ', ':'')}}</span> 
                               <span>{{prenotazione.INDIRIZZOLOCATION|titlecase}}</span>

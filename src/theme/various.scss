@@ -30,13 +30,7 @@ ion-row.row-img {
     text-align: center;
 }
 
-.ion-text-bold {
-    font-weight: 700 !important;
-}
 
-.ion-text-right {
-    text-align: right;
-}
 
 
 
@@ -73,3 +67,8 @@ ion-row.row-img {
     border-radius: 20px;
   }
   /* Fine Stili Segment */
+
+  /* SPECIAL PADDING */
+  .ion-only-padding-vertical {
+    padding: 16px 0px 16px 0px;
+  }

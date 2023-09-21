@@ -27,7 +27,8 @@ registerLocaleData(localeIt,'it');
         FormsModule,
         HttpClientModule,
         IonicModule.forRoot({
-            innerHTMLTemplatesEnabled: true
+            innerHTMLTemplatesEnabled: true,
+            backButtonText: 'Indietro'
         }),
         AppRoutingModule,
         QRCodeModule,

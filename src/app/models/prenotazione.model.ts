@@ -229,6 +229,8 @@ export class Prenotazione extends IDDocument {
 
         objDescriptor.setRelation('IDAREAOPERATIVA','Area');
         objDescriptor.setRelation('IDUTENTE','Utente');
+        objDescriptor.addCollection('PRENOTAZIONEPIANIFICAZIONE', 'PrenotazionePianificazione', 'IDPRENOTAZIONE')
+        objDescriptor.addCollection('PRENOTATESSERAMENTO', 'PrenotaTesseramento', 'IDPRENOTAZIONE')
         
         
         return objDescriptor;

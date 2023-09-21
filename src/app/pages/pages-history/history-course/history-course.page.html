@@ -61,21 +61,22 @@
                     </ion-row>
 
                     <ion-row>
-                      <ion-col size="12" size-xl= "6" size-sm="12">
+                      <ion-col size="12" sizeXl= "6" sizeSm="12">
 
                         <!-- CARD SCHEDA ISCRIZIONE -->
                         <ion-card>
-                          <ion-item>
+                          <ion-item lines="none">
                             <ion-label class="ion-text-wrap">
                               <h2>{{myCorso.DENOMINAZIONE}}</h2>
-                              <p>{{myCorso['_DENOMINAZIONE_Sport']}}</p>
+                              <p class="ion-text-bold">{{myCorso['_DENOMINAZIONE_Sport']}}</p>
                             </ion-label>
                             <ion-chip color="primary">
                               <i class="icon-sport"><span [innerHTML]="getIcon(myCorso)"></span></i> 
                             </ion-chip>
                           </ion-item>
 
-                          <ion-item>
+                          <ion-item 
+                              lines="none">
                             <ion-label class="ion-text-wrap">Iscrizione effettuata il {{myIscrizione.DATAISCRIZIONE|date:'dd/MM/yy' }}</ion-label>
                             <ion-badge 
                                 slot="end"
@@ -85,7 +86,9 @@
                           </ion-item>
 
 
-                          <ion-item *ngIf="myCorso.isAPagamento()">
+                          <ion-item 
+                              lines="none"
+                              *ngIf="myCorso.isAPagamento()">
                             <ion-label>
                               Totale
                             </ion-label>
@@ -94,7 +97,9 @@
                             </ion-label>
                           </ion-item>
 
-                          <ion-item *ngIf="myCorso.isAPagamento()==false">
+                          <ion-item 
+                              *ngIf="myCorso.isAPagamento()==false"
+                              lines="none">
                             <ion-label>
                               Totale
                             </ion-label>
@@ -102,6 +107,7 @@
                           </ion-item>
 
                           <ion-item 
+                              lines="none"
                               *ngIf="myCorso.isAPagamento()"
                               [color]="myIscrizione.amountPayment == 0 ? 'success' : 'danger'">
                             <ion-label 
@@ -117,7 +123,8 @@
                           </ion-item>
 
                           <!-- SITUAZIONE DEL PAGAMENTO-->
-                          <ion-list *ngIf="myCorso.isAPagamento() && listSituazionePagamenti.length != 0">
+                          <ion-list 
+                              *ngIf="myCorso.isAPagamento() && listSituazionePagamenti.length != 0">
                             <ion-list-header mode="ios">Scadenze</ion-list-header>
                             <ion-item 
                                 *ngFor="let itemScadenza of listSituazionePagamenti">
@@ -144,7 +151,8 @@
                       </ion-col>
 
                       <!-- NOME CORSO E ALTRE INFO -->     
-                      <ion-col size="12" size-xl= "6" size-sm="12">
+                      <ion-col 
+                          size="12" sizeXl= "6" sizeSm="12">
                         <ion-list lines="none">
                           <ion-list-header mode="ios">Dettagli corso</ion-list-header>
 

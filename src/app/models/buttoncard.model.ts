@@ -4,7 +4,6 @@ import { Settimana } from './settimana.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { OccupazioneCampi } from './occupazionecampi.model';
 import { PianificazioneCorso } from './pianificazionecorso.model';
-import { pipe } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
 export class ButtonHomeParams {
@@ -16,6 +15,7 @@ export class ButtonHomeParams {
 export class ButtonCard {
     title: string;
     subtitle: string;
+    text: string;
     nameicon: string;
     sloticon: string;
     color: string;

@@ -209,6 +209,23 @@ import { MyDateTime } from './mydatetime.model';
     }
 
 
+    /**
+     * Ritorna una collection per nome
+     * @param nameCollection 
+     */
+    getCollection(nameCollection: string): IDDocument[] {
+      let retCollection: IDDocument[];
+
+      if (this.hasOwnProperty(nameCollection)) {
+        retCollection = this[nameCollection];
+      }
+      else {
+        retCollection = [];
+      }
+
+      return retCollection;
+    }
+
 
 
     /**

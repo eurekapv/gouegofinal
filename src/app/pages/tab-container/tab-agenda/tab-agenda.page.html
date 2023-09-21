@@ -2,9 +2,14 @@
   <ion-toolbar color="primary" mode="md">
     <ion-buttons 
         slot="secondary">
-      <ion-button *ngIf="selectedView == 'personal'">
-        <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
-      </ion-button>
+      <ion-button 
+          *ngIf="selectedView == 'personal'"
+          (click)="onClickGoToPersonalHistoryList()"
+          color="success">
+        Storico
+        <ion-icon slot="end" name="calendar-number-outline"></ion-icon>
+      </ion-button>    
+
       <ion-button 
           *ngIf="selectedView != 'personal'"
           (click)="goToListCustomer()"
@@ -68,25 +73,26 @@
           <div *ngIf="selectedView == 'personal'">
 
             <!-- BUTTON CARD CON IL PRIMO IMPEGNO-->
-            <div>
+            <ion-list *ngIf="listImpegni && listImpegni.length != 0">
+              <ion-list-header mode="ios">Prossimo impegno</ion-list-header>
               <app-button-card
                   (clickElement)="onClickImpegnoPersonale(nextImpegno)"
                   [myButtonCard] = "nextImpegnoCard"
-                  smallVersion="false"
-                  class="small-button-card">
+                  [smallVersion]="false"
+                  >
+              </app-button-card>
+            </ion-list>
+
+            <!-- NON SONO PRESENTI IMPEGNI -->
+            <div *ngIf="listImpegni && listImpegni.length == 0">
+              <app-button-card
+                  (clickElement)="onClickImpegnoPersonale(nextImpegno)"
+                  [myButtonCard] = "noImpegnoCard"
+                  [smallVersion]="true"
+                  >
               </app-button-card>
             </div>
-
-              <ion-button
-                  
-                  fill="outline"
-                  expand="block"
-                  color="success"
-                  (click)="onClickGoToPersonalHistoryList()">
-                  <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
-                  Mostra Storico
-              </ion-button>            
-           
+            
 
             <!-- SE SONO PRESENTI IMPEGNI LI ELENCO -->
             <div *ngIf="listImpegni && listImpegni.length != 0">
@@ -105,6 +111,8 @@
                 <ion-infinite-scroll-content loading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
               </ion-infinite-scroll>
             </div>
+
+
           </div>
 
           <!-- SEGMENTO TRAINER -->
@@ -115,7 +123,8 @@
               Valutazioni fine corsi
             </ion-button>
             <!-- AREA FILTRO -->
-            <ion-card 
+            <ion-card  
+                class="ion-margin-horizontal"
                 color="light"
                 class="filter">
                 <ion-grid>
@@ -185,14 +194,15 @@
           <!-- SEGMENTO CUSTODE -->
           <div *ngIf="selectedView == 'custode'">
             <ion-button 
-                *ngIf="!platformDesktop"
+                *ngIf="platformDesktop"
                 expand="full"
                 (click)="onClickQrCodeCustode()">
-                <ion-icon slot="start" name="qrcode"></ion-icon>
+                <ion-icon slot="start" name="qr-code-outline"></ion-icon>
                 Scansiona Codice
             </ion-button>
             <!-- AREA FILTRO -->
             <ion-card 
+                class="ion-margin-horizontal"
                 color="light"
                 class="filter">
                 <ion-grid>

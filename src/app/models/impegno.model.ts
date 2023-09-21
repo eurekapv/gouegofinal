@@ -128,7 +128,7 @@ asButtonCard(): ButtonCard {
         case SettoreAttivita.settoreCorso:
             newBtn.title = this.DENOMINAZIONE;
             newBtn.subtitle = Settimana.getLabel(this.DATAORAINIZIO.getDay()) + ' ' + MyDateTime.formatDate(this.DATAORAINIZIO,'dd/MM') + ' alle ' + MyDateTime.formatTime(this.DATAORAINIZIO);
-
+            newBtn.text = this['_DENOMINAZIONE_Location'];
             newBtn.nameicon = 'school-outline';
             newBtn.sloticon = "start";
             newBtn.color = "primary";

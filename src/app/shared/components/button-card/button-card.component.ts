@@ -19,11 +19,16 @@ export class ButtonCardComponent implements OnInit {
       this._color = value.color;
       this._title = value.title;
       this._subtitle = value.subtitle;
-
+      this._text = value.text;
     }
   }
-  @Input() smallVersion = false; //Small Version usa H2 e P invece di H1 e H3
-  @Input() homeCustodeVersion;
+
+   //Small Version usa H2 e P invece di H1 e H3
+  _smallVersion = false;
+  @Input() set smallVersion(value: boolean) {
+    this._smallVersion = value;
+  }
+
 
 
   _buttonCard: ButtonCard = new ButtonCard();
@@ -69,6 +74,12 @@ export class ButtonCardComponent implements OnInit {
     this._subtitle = value;
     this._buttonCard.subtitle = value;
   }
+
+  _text: string = '';
+  @Input() set text(value: string) {
+    this._text = value;
+    this._buttonCard.text = value;
+  }  
 
   @Output() clickElement = new EventEmitter<ButtonCard>();
   

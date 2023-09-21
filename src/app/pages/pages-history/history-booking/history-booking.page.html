@@ -8,112 +8,225 @@
 </ion-header>
 
 <ion-content>
-<div>
 
-  <swiper-container 
-      init = "false"
-      appSwiper [config]="sliderOpts">
-      <swiper-slide 
-          *ngFor="let docPianificazione of myPrenotazione.PRENOTAZIONEPIANIFICAZIONE; index as i">
-          <div style="width: 100%;" >
-            <div class="ion-text-center div-qr" mode="md">
-                <h6>ID: {{docPianificazione.PROGRESSIVO}}</h6>
-                <qrcode [qrdata]="docPianificazione.ID"></qrcode>
-                <p>
-                  <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-                  Presenta il Qr-code o l'ID prenotazione all'ingresso
-                </p>
-            </div>
-        
-            <div class="ion-text-center div-btns">
-              <ion-button layout="icon-top" fill="clear" size="large" (click)="onClickTrash(docPianificazione)">
-                <ion-icon name="trash-outline"></ion-icon>
-              </ion-button>
-              <ion-button *ngIf="docPianificazione && docPianificazione['_EMAIL_Location']" fill="clear" size="large" href="{{'mailto:'+docPianificazione['_EMAIL_Location']+'?subject=Prenotazione numero '+docPianificazione.PROGRESSIVO}}">
-                <ion-icon name="mail-outline"></ion-icon>
-              </ion-button>
-              <ion-button  fill="clear" size="large" (click)="onShare(docPianificazione)">
-                <ion-icon name="share-social-outline"></ion-icon>
-              </ion-button>
-            </div>
-        
-            <ion-list lines="none">
-              <ion-item lines="full" *ngIf="myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length>1">
-                <ion-icon *ngIf="i!=0" color="primary" class="no-margin-vertical" slot="start" name="chevron-back"></ion-icon>
-                <ion-label class="no-margin-vertical">DATA {{i+1}} DI {{myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length}}</ion-label>
-                <ion-icon *ngIf="i<myPrenotazione.PRENOTAZIONEPIANIFICAZIONE.length-1" color="primary" class="no-margin-vertical" slot="end" name="chevron-forward"></ion-icon>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h2>{{docPianificazione['_DENOMINAZIONE_Sport']}}</h2>
-                </ion-label>
-                <ion-chip color="primary">
-                  <i class="icon-sport"><span [innerHTML]="getIcon(docPianificazione.IDSPORT)"></span></i> 
-                </ion-chip>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h2>{{docPianificazione.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'|titlecase}}</h2>
-                  <p style="font-weight: 700;">dalle {{docPianificazione.DATAORAINIZIO | date : 'HH:mm'}} alle {{docPianificazione.DATAORAFINE | date : 'HH:mm'}} </p>
-                </ion-label>
-                <ion-chip color="primary">
-                  {{docPianificazione.DURATAORE}} {{docPianificazione.DURATAORE==1? 'Ora':'Ore'}} 
-                </ion-chip>
-              </ion-item>
-              <ion-item>
-                <ion-label>
-                  <h2>{{docPianificazione['_DENOMINAZIONE_Campo']}}</h2>
-                  <p>{{docPianificazione['_COMUNE_Location']|titlecase}}</p>
-                  <p>{{docPianificazione['_INDIRIZZO_Location']|titlecase}}</p>
-                </ion-label>
-                <ion-chip color="primary">
-                  {{docPianificazione.NUMPARTECIPANTI}}
-                  <ion-icon name="person"></ion-icon>
-                </ion-chip>
-              </ion-item>
-            </ion-list>
-          </div>
-      </swiper-slide>
-  </swiper-container>
 
-  <!-- DETTAGLI PAGAMENTO -->
-  <ion-list>
-    <ion-list-header>
-      PAGAMENTO
-    </ion-list-header>
 
-    <ion-item lines="full">
-      <ion-label slot="start">
-        Importo
-      </ion-label>
-      <ion-label style="text-align: right;">
-        {{myPrenotazione.TOTALE | currency : 'EUR'}}
-      </ion-label>
-    </ion-item>
-    <ion-item lines="full"  *ngIf="myPrenotazione.TOTALE!=myPrenotazione.INCASSATO">
-      <ion-label slot="start">
-        Pagato
-      </ion-label>
-      <ion-label style="text-align: right;">
-        {{myPrenotazione.INCASSATO | currency : 'EUR'}}
-      </ion-label>
-    </ion-item>
-    <ion-item lines="full">
-      <ion-label slot="start">
-        Residuo
-      </ion-label>
-      <ion-label style="text-align: right;">
-        {{myPrenotazione.RESIDUO | currency : 'EUR'}}
-      </ion-label>
-    </ion-item>
+  <ion-grid 
+      *ngIf="loadingComplete"
+      >
+    <ion-row
+        class="ion-no-margin"
+        >
+        <ion-col sizeXs="12" 
+                  sizeSm="12" 
+                  sizeMd="10" offsetMd="1"
+                  sizeLg="8" offsetLg="2"
+                  sizeXl="8" offsetXl="2">
+          <ion-grid>
 
-  </ion-list>
+            <ion-row *ngIf="numDatePianificate > 1"
+                  class="ion-no-margin ion-no-padding"
+                  >
+              <ion-col>
+                <ion-accordion-group 
+                    #accordiondate
+                    class="ion-no-padding" 
+                    >
+                  <ion-accordion>
+                    <ion-item slot="header" color="warning">
+                      <ion-label>Data {{indexPianificazione}} di {{numDatePianificate}} pianificate</ion-label>
+                      <ion-icon slot="start" name="calendar-outline"></ion-icon>
+                    </ion-item>   
+                    <!-- CONTENT ACCORDION -->
+                    <div class="ion-padding" slot="content">
+                      <ion-list lines="none">
+      
+                        <ion-radio-group
+                            (ngModelChange)="onChangeActivePianificazione($event)"
+                            [(ngModel)]="idPianificazione">
+                            <ion-item
+                                *ngFor="let itemDate of myPrenotazione?.PRENOTAZIONEPIANIFICAZIONE">
+                              <ion-radio [value]="itemDate.ID">
+                                <h6>{{itemDate.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy'}} alle {{itemDate.DATAORAINIZIO | date: 'HH:mm'}}</h6>
+                              </ion-radio>
+                            </ion-item>
+                       </ion-radio-group>
 
-  </div>
+                      </ion-list>
+                    </div>               
+                  </ion-accordion>
+                </ion-accordion-group>
+              </ion-col>
+            </ion-row>
+
+            <!-- QR CODE -->
+            <ion-row class="ion-no-margin">
+              <ion-col size="12" size-xl= "12" size-sm="12">
+                  <!-- PORZIONE INFO QRCODE-->
+                  <div 
+                      class="ion-text-center div-qr" 
+                      mode="md">
+                    <h6>ID: {{activePianificazione.PROGRESSIVO}}</h6>
+                      <qrcode [qrdata]="activePianificazione.ID" 
+                              [allowEmptyString]="true">
+                      </qrcode>
+                    <p>
+                      <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+                      Presenta il Qr-code o l'ID prenotazione all'ingresso
+                    </p>
+                  </div> 
+              </ion-col>
+            </ion-row>
+
+            <!-- RIGO BUTTON -->
+            <ion-row 
+                class="ion-no-margin ion-text-center">
+              <ion-col 
+                  size="6">
+                  <ion-button 
+                      expand="block"
+                      color="danger"
+                      fill="outline" 
+                      (click)="onClickTrash(activePianificazione)">
+                    Elimina
+                    <ion-icon slot="start" name="trash-outline"></ion-icon>
+                  </ion-button>
+              </ion-col>
+              <ion-col 
+                  size="6">
+
+                  <ion-button 
+                      expand="block"
+                      color="primary"
+                      fill="outline" 
+                      (click)="onShare(activePianificazione)">
+                    Condividi
+                    <ion-icon slot="start" name="share-social-outline"></ion-icon>
+                  </ion-button>
+
+              </ion-col>
+            </ion-row>
+
+            <!-- DETTAGLI PRENOTAZIONE -->
+            <ion-row class="ion-no-margin">
+
+              <!-- SCHEDA DETTAGLIO-->
+              <ion-col size="12" sizeXl= "6" sizeSm="12">
+                <!-- CARD SCHEDA -->
+                <ion-card 
+                    class="ion-no-margin">
+                  <!-- SPORT DI RIFERIMENTO -->
+                  <ion-item 
+                        lines="none">
+                    <ion-label class="ion-text-wrap">
+                      <h2>{{activePianificazione['_DENOMINAZIONE_Sport']}}</h2>
+                    </ion-label>
+                  </ion-item>
+
+                  <!-- DATA E DURATA -->
+                  <ion-item
+                      lines="none">
+                    <ion-label class="ion-text-wrap">
+                      <h2>{{activePianificazione.DATAORAINIZIO| date : 'EEEE dd/LL/yyyy'|titlecase}}</h2>
+                      <p class="ion-text-bold ion-text-primary">dalle {{activePianificazione.DATAORAINIZIO | date : 'HH:mm'}} alle {{activePianificazione.DATAORAFINE | date : 'HH:mm'}} </p>
+                    </ion-label>
+                    <ion-chip color="danger">
+                      {{activePianificazione.DURATAORE}} {{activePianificazione.DURATAORE==1? 'Ora':'Ore'}} 
+                      <ion-icon name="time-outline"></ion-icon>
+                    </ion-chip>
+                  </ion-item>
+
+                  <!-- LOCATION E CAMPO -->
+                  <ion-item
+                      lines="none">
+                    <ion-label class="ion-text-wrap">
+                      <h2>{{activePianificazione['_DENOMINAZIONE_Campo']}}</h2>
+                      <p class="ion-text-bold ion-text-primary">{{activePianificazione['_DENOMINAZIONE_Location']|titlecase}}</p>
+                    </ion-label>
+                    <ion-chip color="danger">
+                      {{activePianificazione.NUMPARTECIPANTI}}
+                      <ion-icon name="person-outline"></ion-icon>
+                    </ion-chip>
+                  </ion-item>                  
+                </ion-card>
+              </ion-col>
+
+              <!-- CARD PAGAMENTO -->
+              <ion-col size="12" sizeXl= "6" sizeSm="12">
+                <ion-card 
+                    class="ion-no-margin">
+                    <ion-card-header>
+                      <ion-card-title mode="md" color="primary">Situazione Pagamento</ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content
+                        class="ion-only-padding-vertical">
+                        
+                          <!-- IMPORTO PRENOTAZIONE -->
+                          <ion-item 
+                              lines="none">
+                            <ion-label 
+                                class="ion-text-wrap">
+                              Importo Prenotazione
+                            </ion-label>
+    
+                            <ion-label 
+                                slot="end"
+                                class="ion-text-end"
+                                >
+                              {{activePianificazione.TOTALE | currency : 'EUR'}}
+                            </ion-label>
+                          </ion-item>
+                        
+                          <!-- TUTTO PAGATO -->
+                          <ion-item
+                                *ngIf="activePianificazione.paymentRequested() == false"
+                                class="ion-text-center" 
+                                lines="none">
+                                <ion-badge color="success">PAGAMENTO COMPLETATO</ion-badge>
+                          </ion-item>
+
+                          <!-- IMPORTO PAGATO SE PRESENTE -->
+                          <ion-item
+                                *ngIf="activePianificazione.paymentRequested() == true && activePianificazione?.INCASSATO != 0" 
+                                lines="none">
+                                <ion-label 
+                                    class="ion-text-wrap">
+                                  Pagamento Effettuato
+                          </ion-label>
+    
+                            <ion-label 
+                                slot="end"
+                                class="ion-text-end"
+                                >
+                              {{activePianificazione?.INCASSATO | currency : 'EUR'}}
+                            </ion-label>                                
+                          </ion-item>
+
+                          <!-- IMPORTO PAGATO SE PRESENTE -->
+                          <ion-item
+                                color="danger"
+                                *ngIf="activePianificazione.paymentRequested() == true"
+                                lines="none">
+                                <ion-label 
+                                    class="ion-text-wrap">
+                                  Residuo da pagare
+                          </ion-label>
+    
+                            <ion-label 
+                                slot="end"
+                                class="ion-text-end"
+                                >
+                              {{activePianificazione?.RESIDUO | currency : 'EUR'}}
+                            </ion-label>                                
+                          </ion-item>                          
+                    </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+
+          </ion-grid>
+        </ion-col>
+      </ion-row>
+  </ion-grid>
 </ion-content>
 
-<ion-footer>
-  <ion-button expand="block" [disabled]="true" color="tertiary">
-    {{myPrenotazione.getCaptionStatePayment(false)}}
-  </ion-button>
-</ion-footer>

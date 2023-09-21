@@ -11,7 +11,7 @@
 <ion-label 
 
     class="ion-text-wrap">
-  <p *ngIf="_impegnoDoc.DATAORAINIZIO">
+  <p class="ion-text-bold ion-text-primary" *ngIf="_impegnoDoc.DATAORAINIZIO">
     {{_impegnoDoc.DATAORAINIZIO| date : 'EEEE dd/MM/yyyy' | titlecase}}
     <span *ngIf="_impegnoDoc.compareEqualDate() == false"> fino a {{_impegnoDoc?.DATAORAFINE| date : 'EEEE dd/MM/yyyy' | titlecase}}</span>
   </p>
@@ -23,7 +23,7 @@
 
 <ion-chip 
   [color]="iconColor">
-  {{_impegnoDoc.DATAORAINIZIO | date: 'HH:mm'}}
+  <span class="ion-text-bold">{{_impegnoDoc.DATAORAINIZIO | date: 'HH:mm'}}</span>
   <ion-icon name="time-outline"></ion-icon>
 </ion-chip>
 

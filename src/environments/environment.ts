@@ -55,6 +55,28 @@ export const environment = {
         urlDomain: 'api.gouego.com',
         urlFileServer: 'app.gouego.com/admin'
       }
+    },
+    adMob: {
+      openbeach: {
+        ios: {
+          appId: 'ca-app-pub-8830190853167330~3634380910',
+          bannerId: 'ca-app-pub-8830190853167330/5268431757'
+        },
+        md: {
+          appId: 'ca-app-pub-8830190853167330~6657249636',
+          bannerId: 'ca-app-pub-8830190853167330/4665796524'
+        }
+      },
+      b4fnovara: {
+        ios: {
+          appId: '',
+          bannerId: ''
+        },
+        md: {
+          appId: '',
+          bannerId: ''
+        }
+      }
     }
   }
 };

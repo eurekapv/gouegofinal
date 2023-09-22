@@ -36,4 +36,32 @@ export class BadgeAccountPage implements OnInit, OnDestroy {
     }
   }  
 
+
+  //#region GESTIONE BACK
+  /**
+   * Ritorna un Array con il percorso di ritorno
+   */
+  get backPathArray():string[] {
+    let retPath = ['/','appstart-home','tab-profile'];
+
+    return retPath;
+  }
+
+  //Ritorna il Path Array Back in formato stringa concatenata
+  get backButtonHref(): string {
+    let myHref = '';
+    myHref = this.backPathArray.join('/').substring(1);
+
+    return myHref;
+  }
+
+  /**
+   * Torno alla pagina del profilo
+   */
+  onGoToBack() {
+    this.navController.navigateBack(this.backPathArray);
+  }   
+
+  //#endregion  
+
 }

@@ -32,10 +32,10 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
   settoreRefer: SettoreAttivita; //Settore di riferimento
 
-
-  idPianificazione: string;
-  
+  //Dati di partenza per il caricamento delle informazioni
+  idImpegnoCustode: string; //ID Impegno Custode
   impegnoDoc: ImpegnoCustode;
+
   prenotazioneDoc: Prenotazione;
   customerMobile: string = ''; //Numero rilevato sulla prenotazione
   pianificazioneDoc: PrenotazionePianificazione;
@@ -70,7 +70,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    let paramKey = 'pianificazioneId';
+    let paramKey = 'impegoCustodeId';
     this.loadingError = false;
     this.loadingComplete = false;
     this.messageError = '';
@@ -80,7 +80,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
       if (paramsData.has(paramKey)) {
         //Recupero idPianificazione  
-        this.idPianificazione = paramsData.get(paramKey);
+        this.idImpegnoCustode = paramsData.get(paramKey);
 
         //Procedo con il caricamento        
         this.loadingController.create({
@@ -236,9 +236,9 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
   requestDocs():Promise<void> {
 
     return new Promise<void>((resolve, reject) => {
-        if (this.idPianificazione && this.idPianificazione.length != 0) {
+        if (this.idImpegnoCustode && this.idImpegnoCustode.length != 0) {
           //Inizio con la richiesta del documento di Impegno Custode
-          this.startService.requestImpegnoCustodeById(this.idPianificazione)          
+          this.startService.requestImpegnoCustodeById(this.idImpegnoCustode)          
                            .then(elImpegno => {
                               if (elImpegno) {
                                 this.impegnoDoc = elImpegno;
@@ -328,7 +328,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
       }
       else if (this.settoreRefer == SettoreAttivita.settoreCorso) {
         //Richiedo la lista Presenze per la data
-        this.startService.requestPresenzeDataCorso(this.idPianificazione)
+        this.startService.requestPresenzeDataCorso(this.idImpegnoCustode)
                          .then(listReceived => {
                             this.listIscrittiCorso = listReceived;
                             resolve();
@@ -631,7 +631,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
 
                                             //Imposto la pianificazione
                                             this.pianificazioneDoc = this.prenotazioneDoc.PRENOTAZIONEPIANIFICAZIONE.find(elPianificazione => {
-                                              return elPianificazione.ID == this.idPianificazione
+                                              return elPianificazione.ID == this.idImpegnoCustode
                                             });
 
                                             console.log(this.pianificazioneDoc);

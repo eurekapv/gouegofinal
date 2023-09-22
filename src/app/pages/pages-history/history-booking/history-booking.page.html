@@ -67,7 +67,7 @@
                       class="ion-text-center div-qr" 
                       mode="md">
                     <h6>ID: {{activePianificazione.PROGRESSIVO}}</h6>
-                      <qrcode [qrdata]="activePianificazione.ID" 
+                      <qrcode [qrdata]="qrCodeActivePianificazione" 
                               [allowEmptyString]="true">
                       </qrcode>
                     <p>

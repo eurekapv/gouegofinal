@@ -289,20 +289,5 @@ export class CustomerDetailPage implements OnInit, OnDestroy {
   //#endregion
 
   
-  //#region METHOD INTERFACE
-
-  /**
-   * Ritorna TRUE FALSE ad indicare se necessario mostrare un qrcode
-   * @param myTessera Tessera di riferimento
-   */
-  flagShowQRCode(myTessera: Tesseramento): boolean {
-    let flag: boolean = false;
-    if (myTessera && myTessera.CODICE && myTessera.CODICE.length != 0) {
-      flag = true;
-    }
-
-    return flag;
-  }
-  //#endregion
 
 }

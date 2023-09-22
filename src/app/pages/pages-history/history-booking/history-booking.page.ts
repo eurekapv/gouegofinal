@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 //per lo share via browser
 import { Share } from '@capacitor/share';
-import { DocstructureService } from 'src/app/library/services/docstructure.service'
 
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Area } from 'src/app/models/area.model';
@@ -36,6 +35,8 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
 
   myPrenotazione: Prenotazione = new Prenotazione();
   activePianificazione: PrenotazionePianificazione = new PrenotazionePianificazione();
+  qrCodeActivePianificazione: string = '';
+
   indexPianificazione: number = 0;
   loadingComplete: boolean = false;
 
@@ -217,8 +218,11 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
             })
 
             if (indexFind != -1) {
+              //Memorizzo le informazioni
               this.idPianificazione = idPianificazione;
               this.activePianificazione = prenotazioneDoc.PRENOTAZIONEPIANIFICAZIONE[indexFind];
+              this.qrCodeActivePianificazione = this.activePianificazione.getQrCode();
+
               this.indexPianificazione = indexFind + 1;
               resolve(prenotazioneDoc);
             }

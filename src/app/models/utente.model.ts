@@ -1,9 +1,10 @@
 import { IDDocument } from '../library/models/iddocument.model';
-import { Mansione, Sesso, TargetSesso } from './valuelist.model';
+import { Mansione, Sesso, SettoreQrCode, TargetSesso } from './valuelist.model';
 import { UtenteLivello } from './utentelivello.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
 import { Documentazione } from './documentazione.model';
+import { GeneratorQrcode } from './imdb/generator-qrcode.model';
 
 
 export class Utente extends IDDocument {
@@ -368,6 +369,24 @@ export class Utente extends IDDocument {
         return isCustode;
     }
 
+
+      /**
+       * Ritorna il QRCODE della Data Pianificata
+       */
+      getQrCode(): string {
+        let myQrCode: string = '';
+        let flagCreation: boolean;
+        let objQrCode: GeneratorQrcode;
+
+        objQrCode = new GeneratorQrcode();
+        objQrCode.tipo = SettoreQrCode.qrCodeUtente;
+        objQrCode.keyOne = this.ID;        
+        flagCreation = objQrCode.setQrCodeFor();
+
+        myQrCode = objQrCode.qrCode;
+
+        return myQrCode;
+      }      
 
 }
 

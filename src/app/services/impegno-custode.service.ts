@@ -126,6 +126,51 @@ export class ImpegnoCustodeService {
     })
   }
 
+
+  /**
+ * Ritorna Impegno Custode dal IDRef
+ * @param idRef 
+ */
+  requestByIdRef(idRef: string, numChild = 0, decodeAll=false): Promise<ImpegnoCustode> {
+    return new Promise<ImpegnoCustode>((resolve, reject) => {
+
+      if (idRef && idRef.length != 0) {
+        let filterImpegno = new ImpegnoCustode(true);
+        let reqParam = new RequestParams();
+  
+        //Imposto i parametri di richiesta
+        reqParam.child_level = numChild;
+        reqParam.decode.active = decodeAll;
+  
+        filterImpegno.IDREF = idRef;          
+
+        //Procedo con la richiesta
+        this.docStructureService.requestNew(filterImpegno, reqParam)
+                                .then(dataList => {
+                                  if (dataList && dataList.length != 0) {
+                                    return dataList[0];
+                                  }
+                                  else {
+                                    reject('Impegno non trovato');
+                                  }
+                                  
+                                })
+                                .then(singleDoc => {
+                                  resolve(singleDoc);
+                                })
+                                .catch(error => {
+                                  LogApp.consoleLog(error,'error');
+                                  reject(error);
+                                })
+
+
+      }
+      else {
+        reject('idRef non definito');
+      }
+  })  
+  }
+
   /**
    * Riempie i dati di DATAORAINIZIO / DATAORA FINE con le informazioni passate nei parametri
    * @param filterImpegno 

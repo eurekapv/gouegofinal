@@ -1,8 +1,9 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import { PaymentChannel, StatoPrenotazione } from './valuelist.model';
+import { PaymentChannel, SettoreQrCode, StatoPrenotazione } from './valuelist.model';
 import { RequestForeign } from '../library/models/requestParams.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
+import { GeneratorQrcode } from './imdb/generator-qrcode.model';
 
 export class PrenotazionePianificazione extends IDDocument {
     IDPRENOTAZIONE: string;
@@ -158,4 +159,23 @@ export class PrenotazionePianificazione extends IDDocument {
         
         return flagReturn;
     }
+
+      /**
+       * Ritorna il QRCODE della Data Pianificata
+       */
+      getQrCode(): string {
+        let myQrCode: string = '';
+        let flagCreation: boolean;
+        let objQrCode: GeneratorQrcode;
+
+        objQrCode = new GeneratorQrcode();
+        objQrCode.tipo = SettoreQrCode.qrCodePrenotazione;
+        objQrCode.keyOne = this.IDPRENOTAZIONE;
+        objQrCode.keyTwo = this.ID;
+        flagCreation = objQrCode.setQrCodeFor();
+
+        myQrCode = objQrCode.qrCode;
+
+        return myQrCode;
+      }    
 }

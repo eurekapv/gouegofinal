@@ -194,12 +194,42 @@
           <!-- SEGMENTO CUSTODE -->
           <div *ngIf="selectedView == 'custode'">
             <ion-button 
-                *ngIf="platformDesktop"
+                *ngIf="!platformDesktop"
                 expand="full"
                 (click)="onClickQrCodeCustode()">
                 <ion-icon slot="start" name="qr-code-outline"></ion-icon>
                 Scansiona Codice
             </ion-button>
+
+            <!-- UTILIZZATO IN TEST PER INSERIRE MANUALMENTE QRCODE-->
+            <!-- <ion-grid class="ion-no-margin ion-no-padding">
+              <ion-row 
+                  *ngIf="platformDesktop && developerMode"
+                  class="ion-no-margin ion-no-padding">
+                <ion-col size="8">
+                  <ion-searchbar
+                      mode="ios"
+                      [debounce]="1000" 
+                      [(ngModel)]="inputManualCode"
+                      show-cancel-button="never"
+                      show-clear-button="never"
+                      search-icon="search-outline"
+                      placeholder="inserisci codice a barre">
+                  </ion-searchbar>
+                </ion-col>
+                <ion-col size="4">
+                  <ion-button
+                    (click)="onClickSearchManualCode()"
+                    fill="outline"
+                    >
+                    Cerca
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid> -->
+
+
+            
             <!-- AREA FILTRO -->
             <ion-card 
                 class="ion-margin-horizontal"

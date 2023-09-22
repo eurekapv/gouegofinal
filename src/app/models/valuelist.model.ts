@@ -260,6 +260,14 @@ export enum AreaApplicazioneTessera {
     tesseraEventi = 30
 }
 
+export enum SettoreQrCode {
+    qrCodeCorso = 'CRS',
+    qrCodePrenotazione = 'PRN',
+    qrCodeEvento = 'EVE',
+    qrCodeUtente = 'USR',
+    qrCodeTessera = 'TSR'
+}
+
 //Stati possibili a seguito di una richiesta pagamento Paypal
 /*
 The possible values are:

@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AlertButton, ModalController } from '@ionic/angular';
+import { AlertButton, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Utente } from 'src/app/models/utente.model';
 import { StartService } from 'src/app/services/start.service';
 import { UserUpdatePassword } from '../../pages-profile/authorization-account/user-update-password/user-update-password.page';
 import { Gruppo } from 'src/app/models/gruppo.model';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-tab-profile',
@@ -14,7 +16,8 @@ import { Gruppo } from 'src/app/models/gruppo.model';
 export class TabProfilePage implements OnInit, OnDestroy {
 
   constructor(private startService: StartService,
-              private modalController: ModalController) { 
+              private modalController: ModalController,
+              private navController: NavController) { 
       //Array di immagini da mostrare in assenza di login
       this.setSpecialPicture();
   }
@@ -32,9 +35,11 @@ export class TabProfilePage implements OnInit, OnDestroy {
   //Utente Loggato
   utenteDoc: Utente;
   subUtenteDoc: Subscription;
+  qrCodeDataUser:string = '';
 
   gruppoDoc: Gruppo;
   flagEnableRegistrazioni: boolean = true;
+  numVersion = environment.version;
 
   /* Proprietà GET */
   get pictureExist():boolean {
@@ -46,17 +51,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
     return flag;
   }
 
-  /**
-   * Il QrCode Utente ha davanti la sigla USR
-   */
-  get qrCodeDataUser():string {
-    let qrCode: string = '';
-    if (this.utenteDoc) {
-      qrCode = `USR-${this.utenteDoc.ID}`;
-    }
 
-    return qrCode;
-  }
 
   
   ngOnInit(): void {
@@ -89,6 +84,13 @@ export class TabProfilePage implements OnInit, OnDestroy {
             .subscribe(element => {
               //Recupero utente
                 this.utenteDoc = element;
+
+                if (this.utenteDoc) {
+                  this.qrCodeDataUser = this.utenteDoc.getQrCode();
+                }
+                else {
+                  this.qrCodeDataUser = '';
+                }
             });    
 
     //Sottoscrivo all'ascolto di un utente loggato
@@ -206,6 +208,17 @@ onClickAccedi(): void {
 
   this.startService.openFormLogin();
 
+}
+
+/**
+ * Vuole vedere solo il Badge
+ */
+onClickBadge(): void {
+  let navPath = ['/','appstart-home','tab-profile', 'badge-account'];
+
+  this.navController.navigateForward(navPath);
+  
+  
 }
 
 // Chiedo se vuole veramente uscire

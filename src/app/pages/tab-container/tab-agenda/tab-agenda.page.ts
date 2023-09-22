@@ -4,15 +4,17 @@ import { Subscription } from 'rxjs';
 import { ModesCalendar } from 'src/app/library/models/mydatetime.model';
 import { Area } from 'src/app/models/area.model';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { GeneratorQrcode } from 'src/app/models/imdb/generator-qrcode.model';
 import { ImpegnoCollaboratore } from 'src/app/models/impegno-collaboratore.model';
 import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
 import { Impegno } from 'src/app/models/impegno.model';
 import { Location } from 'src/app/models/location.model';
 import { LogApp } from 'src/app/models/log.model';
 import { Utente } from 'src/app/models/utente.model';
-import { RangeSearch, SettoreAttivita } from 'src/app/models/valuelist.model';
+import { RangeSearch, SettoreAttivita, SettoreQrCode } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { QrCodeScannerComponent } from 'src/app/shared/components/qr-code-scanner/qr-code-scanner.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-tab-agenda',
@@ -39,6 +41,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   }
 
   platformDesktop = false;
+  developerMode = !environment.production;
   flagOnRefresh: boolean = false;
   refresherEvent: any; //Evento di refresh
 
@@ -81,7 +84,8 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   sublistImpegniCustode: Subscription;
   emptyImpegnoCustodeCard: ButtonCard = null;
   eventImpegniCustodeIonInfinit: any; //Eventuale evento IonInfinity
-  
+  inputManualCode: string = '';
+
 
   selectedView: 'personal' | 'trainer' | 'custode' = 'personal';
 
@@ -236,6 +240,24 @@ export class TabAgendaPage implements OnInit, OnDestroy {
     }
 
     return myLabel;
+  }
+
+  /**
+   * Codice inserito nella parte custode
+   * @param event 
+   */
+  handleInputCodeCustode(event) {
+    const query = event.target.value.toLowerCase();
+    
+  }
+
+  /**
+   * Inserimento manuale del codice barcode custode
+   */
+  onClickSearchManualCode() {
+    if (this.inputManualCode && this.inputManualCode.length != 0) {
+      this.redirectWithQrCode(this.inputManualCode);
+    }
   }
   //#endregion  
 
@@ -796,7 +818,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   onClickImpegnoCustode(impegnoDoc:ImpegnoCustode): void {
 
     if (impegnoDoc) {
-      this.goToDetailCustode(impegnoDoc.ID);
+      this.goToAgendaDetailCustode(impegnoDoc.ID);
     }
   }
 
@@ -820,6 +842,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
 
           if (objReturn.data.qrcodeData && objReturn.data.qrcodeData.length != 0) {
 
+            
             //Eseguo il redirect con il QrCode
             this.redirectWithQrCode(objReturn.data.qrcodeData);
             
@@ -835,30 +858,66 @@ export class TabAgendaPage implements OnInit, OnDestroy {
    */
   redirectWithQrCode(qrCodeData: string): void {
 
-    //Esistono 2 tipologie di QrCode
-    //Inizia con USR-XXXXXX riferito a un utente
-    //Normale GUID si riferisce a Pianificazione Corso / Evento / Prenotazione
+    let objQrCode: GeneratorQrcode;
+    let flagDecode = false;
+    let routingFlag = false;
 
     if (qrCodeData && qrCodeData.length != 0) {
+      
+      //Controlliamo il QrCode
+      objQrCode =  new GeneratorQrcode();
+      objQrCode.qrCode = qrCodeData;
+      flagDecode = objQrCode.splitQrCode();
 
-      if (qrCodeData.startsWith('USR-')) {
-        //Tipologia Scheda Utente
-        qrCodeData = qrCodeData.substring(4);
-        this.goToDetailCustomer(qrCodeData);
+      if (flagDecode) {
+
+        switch (objQrCode.tipo) {
+          
+          case SettoreQrCode.qrCodeUtente:
+            //Sembra una decodifica corretta per un Badge Utente
+            this.goToDetailCustomer(objQrCode.keyOne);
+            routingFlag = true;
+            break;
+
+          case SettoreQrCode.qrCodePrenotazione:
+              //Questa è una prenotazione
+              //Id Impegno = Id Pianificazione
+              this.goToAgendaDetailCustode(objQrCode.keyTwo);
+              routingFlag = true;
+            break;
+
+          case SettoreQrCode.qrCodeCorso:
+              //Questa è Iscrizione a un Corso 
+              //Mostro la scheda di Iscrizione del corso
+              this.goToIscrizioneCorsoCustode(objQrCode.keyOne);
+              routingFlag = true;
+            break;
+
+          case SettoreQrCode.qrCodeEvento:
+              //Questa è Iscrizione all'Evento
+
+            break;
+        
+          default:
+            break;
+        }
       }
-      else {
-        //Non contiene nessun prefisso
-        //Pianificazione Corso / Evento / Prenotazione 
-        this.goToDetailCustode(qrCodeData);
+
+
+      if(!routingFlag) {
+
+        this.startService.presentAlertMessage('QrCode non riconosciuto');
+        
       }
-    }
+      
+    }    
   }
 
   /**
    * Va alla pagina del dettaglio informativo per il custode
    * @param idPianificazione (Pianificazione Corso/Prenotazione/Evento)
    */
-  goToDetailCustode(idPianificazione: string) {
+  goToAgendaDetailCustode(idPianificazione: string) {
     let pathNavigate = [];
     
     if (idPianificazione && idPianificazione.length != 0) {
@@ -866,6 +925,21 @@ export class TabAgendaPage implements OnInit, OnDestroy {
       this.navController.navigateForward(pathNavigate);
     }
   }
+
+  
+  /**
+   * Visualizza la Scheda di Iscrizione Corso di un utente
+   * @param idIscrizione 
+   */
+  goToIscrizioneCorsoCustode(idIscrizione: string) {
+    let pathNavigate = [];
+    
+    if (idIscrizione && idIscrizione.length != 0) {
+      pathNavigate = ['/','appstart-home','tab-agenda','custode','iscrizione-corso-custode',idIscrizione];
+      this.navController.navigateForward(pathNavigate);
+    }
+  }
+
 
   /**
    * Va alla pagina con i dettagli del cliente

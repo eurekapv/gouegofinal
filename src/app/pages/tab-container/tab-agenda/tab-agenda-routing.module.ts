@@ -21,8 +21,12 @@ const routes: Routes = [
     loadChildren: () => import('../../pages-agenda/pages-trainer/list-valutazioni/list-valutazioni.module').then( m => m.ListValutazioniPageModule)
   },
   {
-    path: 'custode/detail-occupazione/:pianificazioneId',
+    path: 'custode/detail-occupazione/:impegoCustodeId',
     loadChildren: () => import('../../pages-agenda/pages-custode/agenda-custode-details/agenda-custode-details.module').then( m => m.AgendaCustodeDetailsPageModule)
+  },
+  {
+    path: 'custode/iscrizione-corso-custode/:iscrizioneId',
+    loadChildren: () => import('../../pages-agenda/pages-custode/iscrizione-corso-custode/iscrizione-corso-custode.module').then( m => m.IscrizioneCorsoCustodePageModule)
   },
   {
     path: 'history-list',

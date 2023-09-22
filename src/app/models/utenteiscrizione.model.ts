@@ -1,6 +1,7 @@
 import { IDDocument } from '../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../library/models/descriptor.model';
-import {  StatoPagamento, TipoCorso } from '../models/valuelist.model';
+import {  SettoreQrCode, StatoPagamento, TipoCorso } from '../models/valuelist.model';
+import { GeneratorQrcode } from './imdb/generator-qrcode.model';
 
 export class UtenteIscrizione extends IDDocument {
 
@@ -165,4 +166,24 @@ export class UtenteIscrizione extends IDDocument {
 
         return myStato;
       }
+
+
+      /**
+       * Ritorna il QRCODE dell'Iscrizione
+       */
+      getQrCode(): string {
+        let myQrCode: string = '';
+        let flagCreation: boolean;
+        let objQrCode: GeneratorQrcode;
+
+        objQrCode = new GeneratorQrcode();
+        objQrCode.tipo = SettoreQrCode.qrCodeCorso;
+        objQrCode.keyOne = this.ID;
+        flagCreation = objQrCode.setQrCodeFor();
+
+        myQrCode = objQrCode.qrCode;
+
+        return myQrCode;
+      }
+
 }

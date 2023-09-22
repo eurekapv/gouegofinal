@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { GeneratorQrcode } from 'src/app/models/imdb/generator-qrcode.model';
 import { Utente } from 'src/app/models/utente.model';
+import { SettoreQrCode } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { QrCodeScannerComponent } from 'src/app/shared/components/qr-code-scanner/qr-code-scanner.component';
 
@@ -97,7 +99,7 @@ export class CustomerListPage implements OnInit {
   }
 
   /**
-   * Click per la lettura di un QrCode Custode
+   * Click per la lettura di un QrCode Cliente
    */
   onClickQrCode() {
     if (!this.platformDesktop) {
@@ -131,18 +133,24 @@ export class CustomerListPage implements OnInit {
    */
     redirectWithQrCode(qrCodeData: string): void {
 
-      //Esistono 2 tipologie di QrCode
-      //Inizia con USR-XXXXXX riferito a un utente
-      //Normale GUID si riferisce a Pianificazione Corso / Evento / Prenotazione
-  
-      if (qrCodeData && qrCodeData.length != 0) {
-  
-        if (qrCodeData.startsWith('USR-')) {
-          //Tipologia Scheda Utente
-          qrCodeData = qrCodeData.substring(4);
-          this.goToDetailCustomer(qrCodeData);
-        }
+      let objQrCode: GeneratorQrcode;
+      let flagDecode = false;
 
+      if (qrCodeData && qrCodeData.length != 0) {
+        
+        //Controlliamo il QrCode
+        objQrCode =  new GeneratorQrcode();
+        objQrCode.qrCode = qrCodeData;
+        flagDecode = objQrCode.splitQrCode();
+
+        //Sembra una decodifica corretta per un Badge Utente
+        if (flagDecode && objQrCode.tipo == SettoreQrCode.qrCodeUtente) {
+          this.goToDetailCustomer(objQrCode.keyOne);
+        }
+        else {
+          this.startService.presentAlertMessage('QrCode non conforme');
+        }
+        
       }
     }
 

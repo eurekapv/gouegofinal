@@ -3,6 +3,11 @@
     <ion-title>
       Profilo
     </ion-title>
+    <ion-buttons 
+          color="light"
+          slot="end">
+      <ion-button>Vers. {{numVersion}} </ion-button>
+    </ion-buttons>    
   </ion-toolbar>
 </ion-header>
 
@@ -229,8 +234,19 @@
                 <ion-card-subtitle>utilizza il badge per accedere al centro o presentandolo in reception per agevolare il riconoscimento.</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content>
-                <qrcode [qrdata]="qrCodeDataUser" scale="6"></qrcode>
+                <qrcode 
+                    [qrdata]="qrCodeDataUser" scale="6">
+                </qrcode>
               </ion-card-content>
+              <ion-footer class="ion-text-end">
+                <ion-button
+                    (click)="onClickBadge()"
+                    fill="clear"
+                    size="small">
+                    Ingrandisci
+                  <ion-icon slot="end" name="open-outline"></ion-icon>
+                </ion-button>
+              </ion-footer>
             </ion-card>
         </ion-col>
       </ion-row>

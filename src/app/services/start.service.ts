@@ -811,47 +811,6 @@ export class StartService {
     return this.locationService.getTemplateSlotWeek(docLocation);
 
   }
-  
-  /**
-  * Nel caso debba navigare verso una location utilizzare questo metodo per 
-  * avere il percorso corretto
-  * 
-  * Url pagina per andare verso una location
-  * @param where Cosa si desidera effettuare con la location
-  * @param idLocation Location di riferimento
-  */
-  getUrlPageLocation(where: TypeUrlPageLocation, 
-                     idPrimaryKey: string, 
-                     ): string[] {
-      let retPath = ['/','appstart-home','tab-home','location'];
-
-      switch (where) {
-        case TypeUrlPageLocation.LocationDetail:
-          retPath.push('detail');
-          retPath.push(idPrimaryKey);
-          break;
-
-        case TypeUrlPageLocation.LocationBooking:
-          retPath.push('booking');
-          retPath.push(idPrimaryKey);
-          break;  
-                
-        case TypeUrlPageLocation.CourseList:
-          retPath.push('courselist');
-          retPath.push(idPrimaryKey);          
-          break;
-
-        case TypeUrlPageLocation.CourseDetail:
-          retPath.push('coursedetail');
-          retPath.push(idPrimaryKey);          
-          break;          
-      
-        default:
-          break;
-      }
-  
-      return retPath;
-  }
 
   //#endregion
 
@@ -1891,6 +1850,36 @@ requestDeletePianificazione(idPianificazione){
     return this.prenotazioniService.requestCustodePianificazioneSave(samplePianificazione);
   }
 
+  /**
+   * Effettua la validazione QrCode
+   * @param qrCode 
+   */
+  validateQrCode(qrCode: string): boolean  {
+
+    let flag: boolean = false;
+    let tmpCode: string = '';
+
+    if (qrCode && qrCode.length != 0) {
+
+      //Badge utente
+      if (qrCode.startsWith('USR-')) {
+
+        //Inizia con USR potrebbe essere corretto
+        tmpCode = qrCode.replace('USR-','');
+
+        if (tmpCode.trim().length != 36) {
+          flag = true;          
+        }
+      }
+      else {
+        //Puo' Essere un 'PRE-GUIDPrenotazione-GuidPianificazione' => Prenotazione
+        //Oppure un 'CRS-Id'
+      }
+    }
+
+    return flag;
+  }
+
 //#endregion
 
 //#region UTENTEPRENOTAZIONI
@@ -1906,10 +1895,6 @@ requestUtentePrenotazioni(idUtente: string) {
   //Richiedo i dati al servizio
   return this.utentePrenotazioneService.request(actualStartConfig, idUtente);
 }
-
-
-
-
 
 /**
  * Lista Prenotazioni di tipo Observable
@@ -1973,35 +1958,6 @@ requestNewsByID(idNews: string): Promise<NewsEvento> {
   
   return this.newsEventiService.requestById(idNews);
   
-}
-
-/**
- * Ritorna il path per andare nel dettaglio
- * @param type 
- * @param idPrimaryKey 
- */
-getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
-  
-  let retPath = [];
-  retPath = ['/','appstart-home','tab-eventi'];
-
-  if (idPrimaryKey && idPrimaryKey.length != 0) {
-    switch (type) {
-      case 'news':
-          retPath.push('news-detail');
-          retPath.push(idPrimaryKey);
-        break;
-      case 'evento':
-          retPath.push('evento-detail');
-          retPath.push(idPrimaryKey);
-        break;  
-    
-      default:
-        break;
-    }
-  }
-
-  return retPath;
 }
 
 //#endregion
@@ -2106,12 +2062,6 @@ requestSlotOccupazioni(templateSlotDay: SlotDay,
   return this.slotOccupazioneService.request(actualStartConfig, templateSlotDay, docLocation, docCampo, dataGiorno);
 
 }
-
-//#endregion
-
-//#region PAGAMENTI
-
-
 
 //#endregion
 
@@ -2280,62 +2230,9 @@ requestListTipoTessere(): Promise<TipoTessera[]> {
 }
 //#endregion
 
-//#region CUSTOMER
-/**
- * 
- * @param type Quale pagina vuole visualizzare
- * @param primaryKey Chiave primaria
- * @returns 
- */
-getUrlPageCustomer(type: 'list' | 'detail', primaryKey?:string): string[] {
-  let retPath = [];
-  switch (type) {
-    case 'list':
-      retPath = ['/','appstart-home','tab-agenda','customer','customer-list'];
-      break;
-
-    case 'detail':
-      retPath = ['/','appstart-home','tab-agenda','customer','customer-detail',primaryKey];
-      break;      
-  
-    default:
-      break;
-  }
-  return retPath;
-}
-//#endregion
 
 //#region IMPEGNI
 
-/**
- * Ritorna URL per accedere a History
- * list / course / book
- * In caso di Corso o Book passando la primary key manda alla pagina dettaglio
- * @param type 
- * @returns 
- */
-getUrlPageHistoryPersonal(type: 'list' | 'course' | 'book', primaryKey?:string): string[] {
-  let retPath = [];
-  switch (type) {
-    case 'list':
-      retPath = ['/','appstart-home','tab-agenda','history-list'];
-      break;
-    case 'book':
-      if (primaryKey && primaryKey.length != 0) {        
-        retPath = ['/','appstart-home','tab-agenda','history-booking', primaryKey];
-      }
-      break;
-
-    case 'course':
-        if (primaryKey && primaryKey.length != 0) {
-          retPath = ['/','appstart-home','tab-agenda','history-course', primaryKey];
-        }
-        break;  
-    default:
-      break;
-  }
-  return retPath;
-}
 
 /**
  * Per ottenere la lista Impegni Personali
@@ -2445,8 +2342,15 @@ requestImpegniCustode(periodAnalize: RangeSearch,
     return this.impegniCustodeService.requestById(idImpegno, numChild, decodeAll);
   }
 
-//#endregion
+  /**
+   * Ritorna Impegno Custode dal IDRef
+   * @param idRef 
+   */
+  requestImpegnoCustodeByIdRef(idRef: string, numChild = 0, decodeAll=false): Promise<ImpegnoCustode> {
+    return this.impegniCustodeService.requestByIdRef(idRef, numChild, decodeAll);
+  }
 
+//#endregion
 
 //#region VARIE
 /**
@@ -2490,7 +2394,149 @@ getDefaultBreakpoint(actualWidth: number): 'xs' | 'sm' | 'md' | 'lg' | 'xl' {
 
 //#endregion
 
-  //#region SMART INTERFACE PROMISE
+
+//#region COMPOSE URL ROUTING PAGE
+
+/**
+ * 
+ * @param type Quale pagina vuole visualizzare
+ * @param primaryKey Chiave primaria
+ * @returns 
+ */
+getUrlPageCustomer(type: 'list' | 'detail', primaryKey?:string): string[] {
+  let retPath = [];
+  switch (type) {
+    case 'list':
+      retPath = ['/','appstart-home','tab-agenda','customer','customer-list'];
+      break;
+
+    case 'detail':
+      retPath = ['/','appstart-home','tab-agenda','customer','customer-detail',primaryKey];
+      break;      
+  
+    default:
+      break;
+  }
+  return retPath;
+}
+
+
+/**
+ * 
+ * @returns Array Routing per la pagina agenda
+ */
+getUrlPageAgenda(): string[] {
+  let retPath = [];
+
+  retPath = ['/','appstart-home','tab-agenda'];
+  return retPath;
+}
+
+/**
+ * Ritorna URL per accedere a History
+ * list / course / book
+ * In caso di Corso o Book passando la primary key manda alla pagina dettaglio
+ * @param type 
+ * @returns 
+ */
+getUrlPageHistoryPersonal(type: 'list' | 'course' | 'book', primaryKey?:string): string[] {
+  let retPath = [];
+  switch (type) {
+    case 'list':
+      retPath = ['/','appstart-home','tab-agenda','history-list'];
+      break;
+    case 'book':
+      if (primaryKey && primaryKey.length != 0) {        
+        retPath = ['/','appstart-home','tab-agenda','history-booking', primaryKey];
+      }
+      break;
+
+    case 'course':
+        if (primaryKey && primaryKey.length != 0) {
+          retPath = ['/','appstart-home','tab-agenda','history-course', primaryKey];
+        }
+        break;  
+    default:
+      break;
+  }
+  return retPath;
+}
+
+/**
+ * Ritorna il path per andare nel dettaglio
+ * @param type 
+ * @param idPrimaryKey 
+ */
+getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
+  
+  let retPath = [];
+  retPath = ['/','appstart-home','tab-eventi'];
+
+  if (idPrimaryKey && idPrimaryKey.length != 0) {
+    switch (type) {
+      case 'news':
+          retPath.push('news-detail');
+          retPath.push(idPrimaryKey);
+        break;
+      case 'evento':
+          retPath.push('evento-detail');
+          retPath.push(idPrimaryKey);
+        break;  
+    
+      default:
+        break;
+    }
+  }
+
+  return retPath;
+}
+
+  
+  /**
+  * Nel caso debba navigare verso una location utilizzare questo metodo per 
+  * avere il percorso corretto
+  * 
+  * Url pagina per andare verso una location
+  * @param where Cosa si desidera effettuare con la location
+  * @param idLocation Location di riferimento
+  */
+  getUrlPageLocation(where: TypeUrlPageLocation, 
+                     idPrimaryKey: string, 
+                     ): string[] {
+      let retPath = ['/','appstart-home','tab-home','location'];
+
+      switch (where) {
+        case TypeUrlPageLocation.LocationDetail:
+          retPath.push('detail');
+          retPath.push(idPrimaryKey);
+          break;
+
+        case TypeUrlPageLocation.LocationBooking:
+          retPath.push('booking');
+          retPath.push(idPrimaryKey);
+          break;  
+                
+        case TypeUrlPageLocation.CourseList:
+          retPath.push('courselist');
+          retPath.push(idPrimaryKey);          
+          break;
+
+        case TypeUrlPageLocation.CourseDetail:
+          retPath.push('coursedetail');
+          retPath.push(idPrimaryKey);          
+          break;          
+      
+        default:
+          break;
+      }
+  
+      return retPath;
+  }
+
+
+//#endregion
+
+//#region SMART INTERFACE PROMISE
 
   //Le funzioni showMessage, showLoading, showToastingMessage ritornano
   //la Promise di creazione che bisogna intercettare e presentare
@@ -2546,27 +2592,28 @@ getDefaultBreakpoint(actualWidth: number): 'xs' | 'sm' | 'md' | 'lg' | 'xl' {
 
   //#endregion
 
-  //#region SMART INTERFACE PRESENT
+//#region SMART INTERFACE PRESENT
   //I seguenti metodi non tornano una Promise ma presentano subito l'elemento
 
-  /**
-   * Crea e presenta un semplice messaggio con l'uso dell'AlertController
-   *
-   * @param myMessage Messaggio
-   * @param myTitle Titolo
-   * @param myButtons Eventuali Button
-   * @returns void
-   */
-  presentAlertMessage(myMessage: string | ErrorEvent, 
-                      myTitle?: string, 
-                      myButtons?: (AlertButton | string)[]) {
-    
-    this.srvSmartInterface
+/**
+ * Crea e presenta un semplice messaggio con l'uso dell'AlertController
+ *
+ * @param myMessage Messaggio
+ * @param myTitle Titolo
+ * @param myButtons Eventuali Button
+ * @returns void
+ */
+presentAlertMessage(myMessage: string | ErrorEvent, 
+                    myTitle?: string, 
+                    myButtons?: (AlertButton | string)[]) {
+  
+  this.srvSmartInterface
       .showMessage(myMessage, myTitle, myButtons)
       .then(elMessage => {
         elMessage.present();
       })
-  }
+
+}
 
   /**
    * Crea e presenta un Toast contenente un messaggio con l'uso del ToastController

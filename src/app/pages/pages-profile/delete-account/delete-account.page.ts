@@ -24,6 +24,7 @@ export class DeleteAccountPage implements OnInit {
     this.createFormGroup();
   }
 
+  //#region GESTIONE BACK
   /**
    * Ritorna un Array con il percorso di ritorno
    */
@@ -48,6 +49,7 @@ export class DeleteAccountPage implements OnInit {
     this.navController.navigateBack(this.backPathArray);
   }   
 
+  //#endregion
   
   /**
    * Creo la form con le due password

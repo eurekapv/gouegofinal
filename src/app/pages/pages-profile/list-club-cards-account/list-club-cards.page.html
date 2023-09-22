@@ -84,7 +84,7 @@
         
                                     </ion-col>
                                     <ion-col size = "6" size-xs="12" size-sm="12">
-                                      <qrcode [qrdata]="itemTessera.CODICE" [colorLight]="itemTessera.isValid() ? '#9fd18b':'#df413a'"></qrcode>
+                                      <qrcode [qrdata]="itemTessera.getQrCode()" [colorLight]="itemTessera.isValid() ? '#9fd18b':'#df413a'"></qrcode>
                                     </ion-col>                            
                                     
                                     

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/account"></ion-back-button>
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
     <ion-title>Badge</ion-title>
   </ion-toolbar> 
@@ -9,40 +9,54 @@
 
 <ion-content>
 
-  <div class="info" >
-    <ion-item color="light" lines="none">
-      <ion-label>
-        <p class="ion-text-wrap">
-          <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-          utilizza il badge per accedere al centro o presentandolo in reception per agevolare il riconoscimento
-      </ion-label>
-    </ion-item>
-  </div> 
-
-
-  <ion-grid>
+  
+  <ion-grid *ngIf="actualUtente">
     <ion-row>
-      <ion-col size-xs="12" size-sm="12" size-md="6" size-lg="4" size-xl="4">
+      <ion-col sizeXs="12" 
+      sizeSm="12" 
+      sizeMd="12" 
+      sizeLg="6" offsetLg="3"
+      sizeXl="6" offsetXl="3">
+      
+      <ion-grid class="ion-no-margin ion-no-padding">
+        <ion-row class="ion-no-margin ion-no-padding">
+          <ion-col>
+            
+            <ion-item color="light" lines="none">
+              <ion-label>
+                <p class="ion-text-wrap">
+                  <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+                  utilizza il badge per accedere al centro o presentandolo in reception per agevolare il riconoscimento
+              </ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-no-margin ion-no-padding">
+          <ion-col>
+            <ion-card color="light">
+              <ion-card-header>
+                <ion-card-title>{{actualUtente.NOMINATIVO}}</ion-card-title>
+                <ion-card-subtitle *ngIf="actualUtente.NATOIL">
+                  <ion-item color="light" lines="none">
+                    <ion-label>
+                      Data di Nascita {{actualUtente.NATOIL | date : 'dd/MM/yyyy'}}
+                    </ion-label>
+                    <ion-badge color="success">
+                      {{actualUtente.getEtaAsInteger()}} anni
+                    </ion-badge>
+                  </ion-item>
+                </ion-card-subtitle>
+              </ion-card-header>
+            
+              <ion-card-content>
+                <qrcode [qrdata]="actualUtente.getQrCode()" scale="6"></qrcode>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
         
-        <ion-card color="light">
-          <ion-card-header>
-            <ion-card-title>{{actualUtente.NOMINATIVO}}</ion-card-title>
-            <ion-card-subtitle *ngIf="actualUtente.NATOIL">
-              <ion-item color="light" lines="none">
-                <ion-label>
-                  {{actualUtente.NATOIL | date : 'dd/MM/yyyy'}}
-                </ion-label>
-                <ion-badge>
-                  {{actualUtente.getEtaAsInteger()}}
-                </ion-badge>
-              </ion-item>
-            </ion-card-subtitle>
-          </ion-card-header>
-        
-          <ion-card-content>
-            <qrcode [qrdata]="actualUtente.ID" scale="6"></qrcode>
-          </ion-card-content>
-        </ion-card>
 
       </ion-col>
     </ion-row>

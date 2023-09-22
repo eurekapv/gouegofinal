@@ -160,8 +160,7 @@
                                 </ion-item>
 
                                 <qrcode 
-                                    *ngIf="flagShowQRCode(itemTessera)"
-                                    [qrdata]="itemTessera.CODICE" 
+                                    [qrdata]="itemTessera.getQrCode()" 
                                     [colorLight]="'FFFFFF'">
                                 </qrcode>                                    
             

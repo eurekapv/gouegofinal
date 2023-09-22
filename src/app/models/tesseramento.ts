@@ -1,6 +1,7 @@
 import { Descriptor, TypeDefinition } from '../library/models/descriptor.model';
 import { IDDocument } from '../library/models/iddocument.model';
-import { AreaApplicazioneTessera, ValueList } from './valuelist.model';
+import { GeneratorQrcode } from './imdb/generator-qrcode.model';
+import { AreaApplicazioneTessera, SettoreQrCode, ValueList } from './valuelist.model';
 
 export class Tesseramento extends IDDocument{
 
@@ -100,5 +101,24 @@ export class Tesseramento extends IDDocument{
 
         return valueStr;
     }
+
+    /**
+    * Ritorna il QRCODE della Tessera
+    */
+    getQrCode(): string {
+        let myQrCode: string = '';
+        let flagCreation: boolean;
+        let objQrCode: GeneratorQrcode;
+
+        objQrCode = new GeneratorQrcode();
+        objQrCode.tipo = SettoreQrCode.qrCodeTessera;
+        objQrCode.keyOne = this.ID;
+
+        flagCreation = objQrCode.setQrCodeFor();
+
+        myQrCode = objQrCode.qrCode;
+
+        return myQrCode;
+      }    
 }
 

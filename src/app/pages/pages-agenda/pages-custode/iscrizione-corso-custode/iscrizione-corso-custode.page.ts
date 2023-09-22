@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
@@ -12,21 +12,19 @@ import { Location } from 'src/app/models/location.model';
 import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
 import { StatoIscrizione, StatoPagamento } from 'src/app/models/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
-import { CourseDetailCalendarPage } from '../../pages-location/location-course-detail/course-detail-calendar/course-detail-calendar.page';
-import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 import { IscrizioneIncasso } from 'src/app/models/iscrizione-incasso.model';
 
+
 @Component({
-  selector: 'app-history-course',
-  templateUrl: './history-course.page.html',
-  styleUrls: ['./history-course.page.scss'],
+  selector: 'app-iscrizione-corso-custode',
+  templateUrl: './iscrizione-corso-custode.page.html',
+  styleUrls: ['./iscrizione-corso-custode.page.scss'],
 })
-export class HistoryCoursePage implements OnInit {
+export class IscrizioneCorsoCustodePage implements OnInit {
 
   StatoPagamento : typeof StatoPagamento=StatoPagamento;
   docUtente: Utente;
-  subDocUtente: Subscription;
-
+  
   myIscrizione: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
   listSituazionePagamenti: IscrizioneIncasso[] = []; //Situazione dei pagamenti
 
@@ -83,11 +81,12 @@ export class HistoryCoursePage implements OnInit {
             
             //recupero l'id dell'iscrizione
             this.activatedRoute.paramMap.subscribe(paramsRouting => {
-                    if(paramsRouting.has('historyId')) {
+                    if(paramsRouting.has('iscrizioneId')) {
                       //se ho l'id dell'iscrizione, faccio la richiesta al server
-                      let idIscrizione = paramsRouting.get('historyId');
+                      let idIscrizione = paramsRouting.get('iscrizioneId');
                       
                       if (idIscrizione.length != 0) {
+
                           //Chiedo il documento della Iscrizione
                           this.requestIscrizione(idIscrizione)
                               .then(elItemIscrizione => {
@@ -106,6 +105,13 @@ export class HistoryCoursePage implements OnInit {
                               .then(dataPagamenti => {
                                 //Imposto i dati del pagamento
                                 this.listSituazionePagamenti = dataPagamenti;
+
+                                //Richiedo il documento Utente
+                                return this.startService.requestUtenteBy(this.myIscrizione.IDUTENTE);
+                              })
+                              .then(utenteDoc => {
+                                
+                                this.docUtente = utenteDoc;
 
                                 //Chiudo il loading
                                 elLoading.dismiss();
@@ -303,38 +309,9 @@ export class HistoryCoursePage implements OnInit {
   //#endregion
 
   //#region METODI CLICK
-  /**
- * Apertura del Calendario Corso in Modale
- */
-  onClickCalendar() {
-    /* Apro in modale il calendario */
-    this.modalController
-        .create({
-          component: CourseDetailCalendarPage,
-          componentProps: {
-            'myCorso': this.myCorso
-          }
-        })
-        .then(formModal => {
-          formModal.present();
-        });
 
-  }
 
-  /**
-   * Click per gli allegati
-   */
-  onClickAllegati(): void {
-    this.modalController.create({
-      component: AllegatilistPage,
-      componentProps:{
-        'myCorso' : this.myCorso
-      }
-    })
-    .then(elModal => {
-      elModal.present();
-    })
-  }  
+
 
   /**
    * Click sull'item contenente il Programma di corso
@@ -361,8 +338,7 @@ export class HistoryCoursePage implements OnInit {
    * Ritorna un Array con il percorso di ritorno
    */
   get backPathArray():string[] {
-    let retPath = this.startService.getUrlPageHistoryPersonal('list');
-
+    let retPath = this.startService.getUrlPageAgenda();
     return retPath;
   }
     
@@ -397,4 +373,5 @@ export class HistoryCoursePage implements OnInit {
       this.startService.presentToastMessage(message);
     }
   }
+
 }

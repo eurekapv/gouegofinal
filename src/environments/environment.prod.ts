@@ -7,7 +7,7 @@ export enum ConnectionMode {
 export const environment = {
   production: true,
   appSignature: '2316854354984354687654684698',
-  version: "2.0.2",
+  version: "2.0.5",
   releaseDate: '2023-09-19',
   options: {
     debugMode: 'off' as DebugMode, //off, minimal, full

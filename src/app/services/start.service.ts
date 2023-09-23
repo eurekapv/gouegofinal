@@ -88,6 +88,7 @@ import { TipoPagamentoService } from './tipo-pagamento.service';
 import { TipoPagamento } from '../models/tipopagamento.model';
 import { CorsoPresenze } from '../models/corsopresenze.model';
 import { Tesseramento } from '../models/tesseramento';
+import { AdvertisingService } from '../library/services/advertising.service';
 
 @Injectable({
   providedIn: 'root'
@@ -224,7 +225,8 @@ export class StartService {
     private impegniCustodeService: ImpegnoCustodeService,
     private articoloService: ArticoloService,
     private modalController: ModalController,
-    private tipoPagamentoService: TipoPagamentoService
+    private tipoPagamentoService: TipoPagamentoService,
+    private advertisingService: AdvertisingService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -2533,6 +2535,18 @@ getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
       return retPath;
   }
 
+
+//#endregion
+
+//#region ADVERTISING
+
+get activeAdvertisingConfig$() {
+  return this.advertisingService.activeAdvertisingConfig$;
+}
+
+get activeAdvertisingConfig() {
+  return this.activeAdvertisingConfig;
+}
 
 //#endregion
 

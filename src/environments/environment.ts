@@ -23,25 +23,73 @@ export const environment = {
     activeId: 'demo',
     customer: {
       openbeach: {
+        name: 'openbeach',
         appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
         urlId: 'openbeach.gouego.com',
+        admob: {
+          ios: {
+            enable: true,
+            appId: 'ca-app-pub-8830190853167330~3634380910',
+            bannerId: ['ca-app-pub-8830190853167330/5268431757']
+          },
+          md: {
+            enable: true,
+            appId: 'ca-app-pub-8830190853167330~6657249636',
+            bannerId: ['ca-app-pub-8830190853167330/4665796524']  
+          }
+        }
       },
       demo: {
+        name: 'demo',
         appId: '00F15A91-5395-445C-B7F4-5BA594E55D2F',
         urlId: 'demo.gouego.com',
+        admob: {
+          ios: {
+            enable: false,
+            appId: '',
+            bannerId: []
+          },
+          md: {
+            enable: false,
+            appId: '',
+            bannerId: []
+          }          
+        }        
       },
       beachforfun: {
+        name: 'beachforfun',
         appId: 'E9682AA1-9E85-4D20-8A86-1A7FDBABF9A8',
         urlId: 'b4fnovara.gouego.com',
+        admob: {
+          ios: {
+            enable: true,
+            appId: 'ca-app-pub-8830190853167330~3997396892',
+            bannerId: ['ca-app-pub-8830190853167330/9728521131']
+          },
+          md: {
+            enable: true,
+            appId: 'ca-app-pub-8830190853167330~9873621671',
+            bannerId: ['ca-app-pub-8830190853167330/6876757393']  
+          }
+        }
       },
       beachfuture: {
+        name: 'beachforfun',
         appId: '240CFBD7-0C9F-4CE1-8996-0513EC7BBDE2',
         urlId: 'beachfuture.gouego.com',
+        admob: {
+          ios: {
+            enable: false,
+            appId: '',
+            bannerId: []
+          },
+          md: {
+            enable: false,
+            appId: '',
+            bannerId: []  
+          }
+        }        
       },
-      localbeachforfun: {
-        appId: '5842FD55-5FCF-4907-A55A-69BE55CD3E07',
-        urlId: 'b4fnovara.gouego.com',
-      }
 
     },
     urlLocation: {
@@ -54,28 +102,6 @@ export const environment = {
         urlProtocol: 'https',
         urlDomain: 'api.gouego.com',
         urlFileServer: 'app.gouego.com/admin'
-      }
-    },
-    adMob: {
-      openbeach: {
-        ios: {
-          appId: 'ca-app-pub-8830190853167330~3634380910',
-          bannerId: 'ca-app-pub-8830190853167330/5268431757'
-        },
-        md: {
-          appId: 'ca-app-pub-8830190853167330~6657249636',
-          bannerId: 'ca-app-pub-8830190853167330/4665796524'
-        }
-      },
-      b4fnovara: {
-        ios: {
-          appId: '',
-          bannerId: ''
-        },
-        md: {
-          appId: '',
-          bannerId: ''
-        }
       }
     }
   }

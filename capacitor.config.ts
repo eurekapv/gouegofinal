@@ -1,15 +1,16 @@
 import { CapacitorConfig } from '@capacitor/cli';
-
+//Attenzione che appId è diverso per Android -> com.gouego e IOS -> com.gouego.openbeach
+//Credo sia utile solo la prima volta
 const config: CapacitorConfig = {
-    "appId": "com.b4fnovara",
-    "appName": "Beach For Fun",
+    "appId": "com.gouego.openbeach",
+    "appName": "Open Beach",
     "webDir": "www",
     "backgroundColor": "#ffffffff",
     "android": {
-      "path": "application_build/beachforfun/android"
+      "path": 'application_build/openbeach/android'
     },
     "ios": {
-      "path": "application_build/beachforfun/ios",
+      "path": "application_build/openbeach/ios",
       "cordovaLinkerFlags": [
         "-ObjC"
       ]

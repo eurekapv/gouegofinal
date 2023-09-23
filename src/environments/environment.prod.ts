@@ -3,7 +3,6 @@ export enum ConnectionMode {
   external = 'external'
 }
 
-
 export const environment = {
   production: true,
   appSignature: '2316854354984354687654684698',
@@ -19,7 +18,7 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor',
-    activeId: 'beachforfun',
+    activeId: 'openbeach',
     customer: {
       openbeach: {
         name: 'openbeach',

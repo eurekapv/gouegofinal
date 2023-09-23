@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Data } from '@angular/router';
+
 import { BehaviorSubject } from 'rxjs';
-import { resolve } from 'url';
+
 import { OperatorCondition } from '../library/models/iddocument.model';
 import { MyDateTime } from '../library/models/mydatetime.model';
-import { RequestParams } from '../library/models/requestParams.model';
+
 import { DocstructureService } from '../library/services/docstructure.service';
-import { Area } from '../models/area.model';
-import { Campo } from '../models/campo.model';
+
 import { DataChiusura } from '../models/datachiusura.model';
-import { Gruppo } from '../models/gruppo.model';
-import { Location } from '../models/location.model';
 import { AttivitaChiusura, TipoChiusura } from '../models/valuelist.model';
 import { LogApp } from '../models/log.model';
 

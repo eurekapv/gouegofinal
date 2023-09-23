@@ -1,10 +1,8 @@
 import { SlotTime } from './slottime.model';
 import { PrenotazionePianificazione } from '../prenotazionepianificazione.model';
 import { MyDateTime, TypePeriod } from '../../library/models/mydatetime.model';
-import { LogApp } from '../log.model';
 import { StatoSlot } from '../valuelist.model';
-import { SlottimeComponent } from 'src/app/shared/components/slottime/slottime.component';
-import { element } from 'protractor';
+
 
 export class SlotDay {
     WEEKDAY:    number;

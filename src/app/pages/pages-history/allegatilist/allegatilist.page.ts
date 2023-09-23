@@ -1,8 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
-import { element } from 'protractor';
-import { RequestDecode, RequestParams } from 'src/app/library/models/requestParams.model';
-import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Corso } from 'src/app/models/corso.model';
 import { CorsoAllegato } from 'src/app/models/corsoallegato.model';
 import { LogApp } from 'src/app/models/log.model';

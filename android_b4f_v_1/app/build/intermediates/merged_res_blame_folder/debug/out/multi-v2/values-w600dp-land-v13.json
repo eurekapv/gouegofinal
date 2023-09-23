@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.b4fnovara.app-mergeDebugResources-31:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\e9db548a71d276ec305ac395dffb3cd4\\transformed\\material-1.8.0\\res\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "54",
+                        "endOffsets": "105"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -29,7 +29,7 @@ export class ImpegnoCustodeService {
    * @param numMaxRequest 
    * @returns 
    */
-  request(  periodAnalize: RangeSearch,
+  request(periodAnalize: RangeSearch,
             periodDate: Date,
             idArea: string,
             idLocation?: string,

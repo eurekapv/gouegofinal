@@ -2548,6 +2548,15 @@ get activeAdvertisingConfig() {
   return this.activeAdvertisingConfig;
 }
 
+
+/**
+ * Imposta se l'advertising è stato inizializzato
+ * @param flag TRUE / FALSE
+ */
+setInitializedAdvertising(flag: boolean): void {
+  this.advertisingService.setInitialized(flag);
+}
+
 //#endregion
 
 //#region SMART INTERFACE PROMISE

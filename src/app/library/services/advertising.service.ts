@@ -31,6 +31,8 @@ export class AdvertisingService {
     return this._activeAdvertisingConfig$.getValue();
   }
 
+  
+
 
   constructor(private platform: Platform) { 
     this.initConfig();
@@ -59,7 +61,17 @@ export class AdvertisingService {
 
   }
 
+  /**
+   * Imposta se l'advertising è stato inizializzato
+   * @param flag TRUE / FALSE
+   */
+  setInitialized(flag: boolean): void {
+    let myAdvertis = this._activeAdvertisingConfig$.getValue();
 
+    myAdvertis.initialized = flag;
+
+    this._activeAdvertisingConfig$.next(myAdvertis);
+  }
 
 
 }

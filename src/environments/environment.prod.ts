@@ -1,3 +1,5 @@
+import packageJson  from '../../package.json';
+
 export enum ConnectionMode {
   local = 'local',
   external = 'external'
@@ -5,8 +7,9 @@ export enum ConnectionMode {
 
 export const environment = {
   production: true,
-  appSignature: '2316854354984354687654684698',
-  version: "2.0.5",
+  appSignature: packageJson.appSignature,
+  version: packageJson.version,
+  advertisingTestMode: packageJson.advertisingTestMode,
   releaseDate: '2023-09-19',
   options: {
     debugMode: 'off' as DebugMode, //off, minimal, full

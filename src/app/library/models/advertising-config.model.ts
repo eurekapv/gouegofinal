@@ -29,16 +29,15 @@ export class AdvertisingConfig {
 
                 //Configurazione Android
                 this.androidConfig = {
+                    enable: true,
+                    initialized: false,
                     appId: cfgCustomer.admob.md.appId,
                     bannerId: cfgCustomer.admob.md.bannerId,
                 }
             }
             else {
-                //Configurazione Android
-                this.androidConfig = {
-                    appId: '',
-                    bannerId: [],
-                }                
+                //Configurazione Android non abilitata
+                this.androidConfig = this.getEmptyIAdvertisingConfig();               
             }
 
 
@@ -47,41 +46,53 @@ export class AdvertisingConfig {
 
                 //Configurazione Ios Abilitata
                 this.iosConfig = {
+                    enable: true,
+                    initialized: false,
                     appId: cfgCustomer.admob.ios.appId,
                     bannerId: cfgCustomer.admob.ios.bannerId,
                 }
             }
             else {
                 //Configurazione Ios Non abilitata
-                this.iosConfig = {
-                    appId: '',
-                    bannerId: [],
-                }                
+                this.iosConfig = this.getEmptyIAdvertisingConfig();               
             }
 
         }
         else {
 
             //Configurazione Android non abilitata
-            this.androidConfig = {
-                appId: '',
-                bannerId: [],
-            }   
+            this.androidConfig = this.getEmptyIAdvertisingConfig();
             
             //Configurazione Ios Non abilitata
-            this.iosConfig = {
-                appId: '',
-                bannerId: [],
-            }             
+            this.iosConfig = this.getEmptyIAdvertisingConfig();
         }
 
+    }
+
+    /**
+     * Crea un oggetto vuoto
+     * @returns 
+     */
+    getEmptyIAdvertisingConfig(): IAdvertisingConfig {
+        let adv: IAdvertisingConfig = {
+            enable: false,
+                initialized: false,
+                appId: '',
+                bannerId: [],
+                interstitialId: []
+        }
+
+        return adv;
     }
 
 }
 
 export interface IAdvertisingConfig {
+    enable?: boolean,
+    initialized?: boolean,
     appId?: string,
     bannerId?: string[];
+    interstitialId?: string[];
 }
 
 export interface IEnvironmentCustomer {

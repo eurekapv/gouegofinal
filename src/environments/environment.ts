@@ -1,6 +1,5 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+import packageJson  from '../../package.json';
+
 export enum ConnectionMode {
   local = 'local',
   external = 'external'
@@ -8,7 +7,9 @@ export enum ConnectionMode {
 
 export const environment = {
   production: false,
-  version: "2.0.5",
+  appSignature: packageJson.appSignature,
+  version: packageJson.version,
+  advertisingTestMode: packageJson.advertisingTestMode,
   releaseDate: '2023-09-15',
   options: {
     debugMode: 'full' as DebugMode, //off, minimal, full
@@ -20,7 +21,7 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'beachforfun',
+    activeId: 'openbeach',
     customer: {
       openbeach: {
         name: 'openbeach',
@@ -30,12 +31,14 @@ export const environment = {
           ios: {
             enable: true,
             appId: 'ca-app-pub-8830190853167330~3634380910',
-            bannerId: ['ca-app-pub-8830190853167330/5268431757']
+            bannerId: ['ca-app-pub-8830190853167330/5268431757'],
+            interstitialId: []
           },
           md: {
             enable: true,
             appId: 'ca-app-pub-8830190853167330~6657249636',
-            bannerId: ['ca-app-pub-8830190853167330/4665796524']  
+            bannerId: ['ca-app-pub-8830190853167330/4665796524'],
+            interstitialId: []
           }
         }
       },
@@ -47,12 +50,14 @@ export const environment = {
           ios: {
             enable: false,
             appId: '',
-            bannerId: []
+            bannerId: [],
+            interstitialId: []
           },
           md: {
             enable: false,
             appId: '',
-            bannerId: []
+            bannerId: [],
+            interstitialId: []
           }          
         }        
       },
@@ -64,12 +69,14 @@ export const environment = {
           ios: {
             enable: true,
             appId: 'ca-app-pub-8830190853167330~3997396892',
-            bannerId: ['ca-app-pub-8830190853167330/9728521131']
+            bannerId: ['ca-app-pub-8830190853167330/9728521131'],
+            interstitialId: []
           },
           md: {
             enable: true,
             appId: 'ca-app-pub-8830190853167330~9873621671',
-            bannerId: ['ca-app-pub-8830190853167330/6876757393']  
+            bannerId: ['ca-app-pub-8830190853167330/6876757393'],
+            interstitialId: []  
           }
         }
       },
@@ -81,12 +88,14 @@ export const environment = {
           ios: {
             enable: false,
             appId: '',
-            bannerId: []
+            bannerId: [],
+            interstitialId: []
           },
           md: {
             enable: false,
             appId: '',
-            bannerId: []  
+            bannerId: [],
+            interstitialId: []  
           }
         }        
       },

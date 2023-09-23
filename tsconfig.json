@@ -23,7 +23,9 @@
     "paths":{
       "crypto":["node_modules/crypto-browserify"],
       "stream":["node_modules/stream-browserify"]
-    }
+    },
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
   },
   "allowedCommonJsDependencies": ["crypto"],
   "angularCompilerOptions": {

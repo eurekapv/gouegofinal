@@ -6,10 +6,10 @@ const config: CapacitorConfig = {
     "webDir": "www",
     "backgroundColor": "#ffffffff",
     "android": {
-      "path": "android_b4f"
+      "path": "application_build/beachforfun/android"
     },
     "ios": {
-      "path": "ios_b4f",
+      "path": "application_build/beachforfun/ios",
       "cordovaLinkerFlags": [
         "-ObjC"
       ]

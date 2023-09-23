@@ -7,10 +7,10 @@ const config: CapacitorConfig = {
     "webDir": "www",
     "backgroundColor": "#ffffffff",
     "android": {
-      "path": 'android_ob'
+      "path": 'application_build/openbeach/android'
     },
     "ios": {
-      "path": "ios_ob",
+      "path": "application_build/openbeach/ios",
       "cordovaLinkerFlags": [
         "-ObjC"
       ]

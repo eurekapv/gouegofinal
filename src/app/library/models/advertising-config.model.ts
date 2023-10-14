@@ -1,3 +1,4 @@
+import { LogApp } from "src/app/models/log.model";
 import { environment } from "src/environments/environment";
 
 /* Classe per la configurazione dei messaggi pubblicitari 
@@ -9,15 +10,29 @@ export class AdvertisingConfig {
     iosConfig: IAdvertisingConfig;
 
 
+    /**
+     * Imposta la configurazione per l'app attiva
+     * @param activeIdApp 
+     */
     setFor(activeIdApp: string) {
 
         let objListCustomer = environment.connection.customer;
         let cfgCustomer: IEnvironmentCustomer;
+        let androidBannerMargin: number = 61 + 2;  //61 è alta la Tab Bar (lascio 2 in piu);
+        let iosBannerMargin: number = 75 + 2; //75 è alta la Tab Bar (lascio 2 in piu);
         
-        if (activeIdApp && activeIdApp.length == 0) {
+        if (activeIdApp && activeIdApp.length != 0) {
+            LogApp.consoleLog('Environment List Customer');
+            LogApp.consoleLog(objListCustomer);
 
             if (objListCustomer.hasOwnProperty(activeIdApp)) {
+
                 cfgCustomer = objListCustomer[activeIdApp];
+                LogApp.consoleLog(`activeIdApp: ${activeIdApp} found`);
+                LogApp.consoleLog(cfgCustomer);
+            }
+            else {
+                LogApp.consoleLog(`activeIdApp: ${activeIdApp} not found`);
             }
 
         }
@@ -33,6 +48,8 @@ export class AdvertisingConfig {
                     initialized: false,
                     appId: cfgCustomer.admob.md.appId,
                     bannerId: cfgCustomer.admob.md.bannerId,
+                    bannerMarginBottom: androidBannerMargin,
+                    personalizeAds: environment.advertisingPersonalized
                 }
             }
             else {
@@ -50,6 +67,8 @@ export class AdvertisingConfig {
                     initialized: false,
                     appId: cfgCustomer.admob.ios.appId,
                     bannerId: cfgCustomer.admob.ios.bannerId,
+                    bannerMarginBottom: iosBannerMargin,
+                    personalizeAds: environment.advertisingPersonalized
                 }
             }
             else {
@@ -79,7 +98,9 @@ export class AdvertisingConfig {
                 initialized: false,
                 appId: '',
                 bannerId: [],
-                interstitialId: []
+                bannerMarginBottom: 0,
+                interstitialId: [],
+                personalizeAds: false
         }
 
         return adv;
@@ -92,7 +113,9 @@ export interface IAdvertisingConfig {
     initialized?: boolean,
     appId?: string,
     bannerId?: string[];
+    bannerMarginBottom?: number,
     interstitialId?: string[];
+    personalizeAds?: boolean;
 }
 
 export interface IEnvironmentCustomer {

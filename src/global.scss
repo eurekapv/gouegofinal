@@ -154,6 +154,7 @@ div[scrollX=true] {
       color: #3880ff;
     }
 
+    /* Importante per funzionamento QrScanCode */
     body.scanner-active {
       --background: transparent;
       --ion-background-color: transparent;

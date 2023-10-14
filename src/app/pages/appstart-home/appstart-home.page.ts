@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
+import { IonTabBar } from '@ionic/angular';
 
 @Component({
   selector: 'app-appstart-home',

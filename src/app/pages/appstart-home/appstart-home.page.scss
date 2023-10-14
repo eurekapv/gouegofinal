@@ -4,7 +4,20 @@ ion-tabs{
         box-shadow: 0px 0px 6px 2px var(--ion-tab-shadow);
         border-style: none;
         --my-border-radius: calc(var(--base-border-radius) + 15pt);
-        border-radius: var(--my-border-radius) var(--my-border-radius) 0 0 ;
+        border-radius: var(--my-border-radius) var(--my-border-radius) 0 0;
+
+        //Safe Area Bottom
+        //Versione Web
+        padding-bottom: 5px !important;
+
+        &.md {
+            //Versione Android
+            padding-bottom: 5px !important;
+        }
+        &.ios {
+            //Versione IOS
+            padding-bottom: var(--ion-safe-area-bottom) !important;
+        }
 
 
         ion-tab-button {

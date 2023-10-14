@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, ModalController, NavController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';

@@ -9,7 +9,8 @@ export const environment = {
   production: false,
   appSignature: packageJson.appSignature,
   version: packageJson.version,
-  advertisingTestMode: packageJson.advertisingTestMode,
+  advertisingTestMode: true,
+  advertisingPersonalized: false,
   releaseDate: '2023-09-15',
   options: {
     debugMode: 'full' as DebugMode, //off, minimal, full
@@ -81,7 +82,7 @@ export const environment = {
         }
       },
       beachfuture: {
-        name: 'beachforfun',
+        name: 'beachfuture',
         appId: '240CFBD7-0C9F-4CE1-8996-0513EC7BBDE2',
         urlId: 'beachfuture.gouego.com',
         admob: {

@@ -4,6 +4,7 @@ import { ModesCalendar } from 'src/app/library/models/mydatetime.model';
 import { LogApp } from 'src/app/models/log.model';
 //import { format, utcToZonedTime } from 'date-fns-tz';
 
+//Esempi di IonDateTime: https://toexpert.dev/ionic-6-datetime-picker-examples/
 
 @Component({
   selector: 'app-dtinput',

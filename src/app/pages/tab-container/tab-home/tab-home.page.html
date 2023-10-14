@@ -66,7 +66,7 @@
                           </ion-label> 
                       </ion-item>
                       
-                      <ion-grid>
+                      <ion-grid class="grid-locations">
                         <ion-row
                               class="ion-justify-content-center">
                           <ion-col 
@@ -91,47 +91,6 @@
                           </ion-col>
                         </ion-row>
                       </ion-grid>
-                      
-                       <!-- LOCATION -->
-                      <!-- <div id="div-content">
-                    
-                        
-                        <ion-grid *ngIf="listLocation.length===1" >
-                          <ion-row>
-                            <ion-col sizeXs="12" sizeSm="6"  offsetSm="3" sizeLg="4" offsetLg="4">
-                    
-                              <app-centri 
-                                  [area]="selectedArea"
-                                  [location]="listLocation[0]"
-                                  [showActionButton]="true"
-                                  [centerCard]="true"
-                                  (clickPrenota)="onClickPrenota($event)"
-                                  (clickCorsi)="onClickCorsi($event)"              
-                                  (clickLocation)="onClickLocation($event)"
-                                  [myStartConfig]="startConfig">
-                                  
-                              </app-centri>
-                    
-                            </ion-col>
-                          </ion-row>
-                        </ion-grid>
-                      
-                        
-                        <div scrollX="true" *ngIf="listLocation.length>1">
-                            <app-centri 
-                              *ngFor="let locationItem of listLocation"
-                                  [area]="selectedArea"
-                                  [location]="locationItem"
-                                  [showActionButton]="true"
-                                  (clickPrenota)="onClickPrenota($event)"
-                                  (clickCorsi)="onClickCorsi($event)"
-                                  (clickLocation)="onClickLocation($event)"
-                                  [myStartConfig]="startConfig">
-                              
-                            </app-centri>    
-                        </div>
-                    
-                      </div> -->
                 </div>
       </ion-col>
     </ion-row>

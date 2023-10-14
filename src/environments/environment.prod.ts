@@ -10,9 +10,10 @@ export const environment = {
   appSignature: packageJson.appSignature,
   version: packageJson.version,
   advertisingTestMode: packageJson.advertisingTestMode,
-  releaseDate: '2023-09-19',
+  advertisingPersonalized: packageJson.advertisingPersonalized,
+  releaseDate: '2023-09-25',
   options: {
-    debugMode: 'off' as DebugMode, //off, minimal, full
+    debugMode: 'full' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
   },  
   externalUrl: {

@@ -3,6 +3,7 @@
   "version": "2.0.5",
   "appSignature": "2316854354984354687654684698",
   "advertisingTestMode": true,
+  "advertisingPersonalized": false,
   "author": "AlchimistiLab",
   "homepage": "https://www.gouego.com",
   "scripts": {
@@ -18,8 +19,11 @@
     "toIos": "npx cap sync ios",
     "opAndroid": "npx cap open android",
     "opIos": "npx cap open ios",
-    "update-android": "ionic build --prod --aot --outputHashing=all && npx cap sync && ionic cap open android",
-    "update-ios": "sudo ionic build --prod --aot --outputHashing=all && sudo npx cap sync ios && npx cap open ios"
+    "update-android": "ionic build --prod --aot --outputHashing=all && npx cap sync android && ionic cap open android",
+    "update-ios": "sudo ionic build --prod --aot --outputHashing=all && sudo npx cap sync ios && npx cap open ios",
+    "live-android": "ionic build --prod --aot --outputHashing=all && ionic cap run android --livereload --external",
+    "live-ios": "ionic build --prod --aot --outputHashing=all && ionic cap run ios --livereload --external",
+    "dev-android": "chrome://inspect"
   },
   "private": true,
   "dependencies": {

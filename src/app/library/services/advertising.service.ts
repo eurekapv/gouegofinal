@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { AdvertisingConfig, IAdvertisingConfig } from '../models/advertising-config.model';
 import { Platform } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
+import { LogApp } from 'src/app/models/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -46,14 +47,19 @@ export class AdvertisingService {
 
     let configDoc = new AdvertisingConfig();
     configDoc.setFor(environment.connection.activeId);
+    LogApp.consoleLog(`Caricamento Documento Advertising per activeId = ${environment.connection.activeId}`);
+    LogApp.consoleLog(configDoc);
 
     if (this.platform.is('android')) {
+      LogApp.consoleLog('Advertising Android Platform');
       this._activeAdvertisingConfig$.next(configDoc.androidConfig);
     }
     else if (this.platform.is('ios')) {
+      LogApp.consoleLog('Advertising Ios Platform');
       this._activeAdvertisingConfig$.next(configDoc.iosConfig);
     }
     else {
+      LogApp.consoleLog('Advertising Web Platform');
       this._activeAdvertisingConfig$.next(configDoc.webConfig);
     }
 

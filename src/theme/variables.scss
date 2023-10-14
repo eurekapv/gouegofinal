@@ -94,10 +94,10 @@
 
 
     --base-border-radius: (-6px);
-    /*Versione IOS */
+
+    /* Controlla AppStart-home.page.css li c'e la variante per Android/Ios/Web per la safe-area*/
     --ion-safe-area-bottom: 25px;
-    /*Versione Android */
-    /*--ion-safe-area-bottom: 0px;*/
+
     
   }
 

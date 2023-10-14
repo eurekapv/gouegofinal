@@ -47,6 +47,14 @@ ion-content{
     --background: var(--ion-color-light);
 }
 
+ion-grid {
+    &.grid-locations {
+
+        //Lascio più padding per la presenza del banner che è di 60px
+        padding-bottom: 75px;
+    }
+}
+
 
 
 

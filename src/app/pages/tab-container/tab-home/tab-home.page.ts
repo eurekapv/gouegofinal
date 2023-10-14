@@ -8,7 +8,7 @@ import { NavController, ModalController } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente.model';
 import { TypeUrlPageLocation } from 'src/app/models/valuelist.model';
 import { IAdvertisingConfig } from 'src/app/library/models/advertising-config.model';
-import { AdMob, AdMobRewardItem, AdOptions, BannerAdOptions, BannerAdPosition, BannerAdSize, RewardAdOptions, RewardAdPluginEvents } from '@capacitor-community/admob';
+import { AdMob, AdMobBannerSize, AdMobError, AdMobRewardItem, AdOptions, AdmobConsentStatus, BannerAdOptions, BannerAdPluginEvents, BannerAdPosition, BannerAdSize, RewardAdOptions, RewardAdPluginEvents } from '@capacitor-community/admob';
 import { TrackingAuthorizationStatusInterface } from '@capacitor-community/admob/dist/esm/shared/tracking-authorization-status.interface';
 import { environment } from 'src/environments/environment';
 import { LogApp } from 'src/app/models/log.model';
@@ -43,10 +43,10 @@ export class TabHomePage implements OnInit, OnDestroy {
 
   listLocationListen: Subscription;
 
-  activeAdvertising: IAdvertisingConfig;
+  activeAdvertisingConfig: IAdvertisingConfig;
   listeActiveAdvertising: Subscription;
   advertisingTestMode: boolean = true; //Modalità Pubblicitaria
-
+  
 
   // L'area viene recuperata dal subscribe
   selectedIdArea : string;
@@ -64,19 +64,27 @@ export class TabHomePage implements OnInit, OnDestroy {
     //Mi sottoscrivo per la preparazione dell'Advertising
     this.listeActiveAdvertising = this.startService.activeAdvertisingConfig$.subscribe(elAdvertising => {
 
-        this.activeAdvertising = elAdvertising;
+        this.activeAdvertisingConfig = elAdvertising;
+        console.log('Advertising Attiva')
+        console.log(this.activeAdvertisingConfig);
 
         //Posso inizializzare Advertising
-        if (this.activeAdvertising && this.activeAdvertising.enable) {
-          if (this.activeAdvertising.initialized == false) {
+        if (this.activeAdvertisingConfig && this.activeAdvertisingConfig.enable) {
+          console.log('Advertising Abilitato')
+          
+          if (this.activeAdvertisingConfig.initialized == false) {
+
+            console.log('Start InitAdvertising')
 
             //Posso inizializzare Advertising
             this.initAdvertising();
 
+            console.log('Fine InitAdvertising')
+
           }
         }
         else {
-          LogApp.consoleLog('Advertising non inizializzato');
+          LogApp.consoleLog('Advertising non abilitato');
         }
 
     })
@@ -171,8 +179,15 @@ export class TabHomePage implements OnInit, OnDestroy {
 
 //#region Eventi Ionic
 
+/**
+ * Accedo alla pagina
+ */
   ionViewDidEnter() {
+    this.switchAdvertising(true);
+  }
 
+  ionViewWillLeave() {
+    this.switchAdvertising(false);
   }
 
   ngOnInit() {
@@ -323,7 +338,11 @@ export class TabHomePage implements OnInit, OnDestroy {
     AdMob.trackingAuthorizationStatus()
          .then((result: TrackingAuthorizationStatusInterface) => {
             if (result.status === 'notDetermined') {
-              console.log('Show Information for first load');
+              //Annunci personalizzati - Imposto il consenso
+              if (environment.advertisingPersonalized) {
+                this.showAdvertisingConsent();
+              }
+              LogApp.consoleLog('Informativa Advertising non mostrata');
             }
 
             AdMob.initialize({
@@ -331,20 +350,70 @@ export class TabHomePage implements OnInit, OnDestroy {
               initializeForTesting: this.advertisingTestMode
             })
             .then(() => {
+              LogApp.consoleLog('Advertising inizializzato');
               //Componente Inizializzato
-              this.activeAdvertising.initialized = true;
+              this.activeAdvertisingConfig.initialized = true;
               this.startService.setInitializedAdvertising(true);
+
+              //Aggiungo i listener
+              this.addAdvertisingListening();
+
               //Posso procedere con la visualizzazione di un banner
               this.showAdvertisingBanner();
+
             })
             .catch(error => {
-              LogApp.consoleLog(error);
+              LogApp.consoleLog(error, 'error');
               //Componente Non Inizializzato
-              this.activeAdvertising.initialized = false;
+              this.activeAdvertisingConfig.initialized = false;
               this.startService.setInitializedAdvertising(false);
             })
 
          })
+  }
+
+  /**
+   * Aggiungo alcuni listner sulle operazioni
+   */
+  addAdvertisingListening() {
+
+    //Fallito caricamento banner
+    AdMob.addListener(BannerAdPluginEvents.FailedToLoad, (info: AdMobError ) => {
+      LogApp.consoleLog('Errore caricamento Banner', 'error');
+      LogApp.consoleLog(info, 'error');
+    })
+
+    AdMob.addListener(BannerAdPluginEvents.SizeChanged, (info:AdMobBannerSize) => {
+      LogApp.consoleLog(`Cambio dimensione banner Width: ${info.width} x Height: ${info.height}`);
+    })
+  }
+
+  /**
+   * Se necessario mostra il consenso agli advertising
+   */
+  async showAdvertisingConsent() {
+    const consentInfo = await AdMob.requestConsentInfo();
+  
+    if (consentInfo.isConsentFormAvailable && consentInfo.status === AdmobConsentStatus.REQUIRED) {
+      const {status} = await AdMob.showConsentForm();
+    }
+  }
+
+  /**
+   * Effettua lo Switch del Banner
+   * @param requestShow 
+   */
+  switchAdvertising(requestShow:boolean) {
+    if (this.activeAdvertisingConfig.enable && 
+      this.activeAdvertisingConfig.initialized) {
+        // if (requestShow == false) {
+        //   //Nascondo il Banner
+        //   AdMob.hideBanner();
+        // }
+        // else {
+        //   AdMob.resumeBanner();
+        // }
+      }
   }
 
   /**
@@ -353,27 +422,36 @@ export class TabHomePage implements OnInit, OnDestroy {
   showAdvertisingBanner() {
 
     //In modalità Test non imposto nessun idAnnuncio
-    let idAnnuncio = this.advertisingTestMode ? '' : this.activeAdvertising.bannerId[0];
+    let idAnnuncio = this.advertisingTestMode ? '' : this.activeAdvertisingConfig.bannerId[0];
 
     const options: BannerAdOptions = {
       adId: idAnnuncio,
       adSize: BannerAdSize.ADAPTIVE_BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
-      margin: 50,
+      margin: this.activeAdvertisingConfig.bannerMarginBottom,
       isTesting: this.advertisingTestMode,
-      npa: true //Non-Personalized Ads
+      npa: !this.activeAdvertisingConfig.personalizeAds //Non-Personalized Ads
     }
 
-    AdMob.showBanner(options);
+
+
+    AdMob.showBanner(options)
+         .then(() => {
+            LogApp.consoleLog('Banner visualizzato')
+         })
+         .catch(error => {
+          LogApp.consoleLog(error,'error');
+         })
+
   }
 
   showAdvertisingInterstitial() {
     //In modalità Test non imposto nessun idAnnuncio
-    let idAnnuncio = this.advertisingTestMode ? '' : this.activeAdvertising.bannerId[0];
+    let idAnnuncio = this.advertisingTestMode ? '' : this.activeAdvertisingConfig.bannerId[0];
     const options: AdOptions = {
       adId: idAnnuncio,
       isTesting: this.advertisingTestMode,
-      npa: true
+      npa: !this.activeAdvertisingConfig.personalizeAds //Non-Personalized Ads
     }
 
     //Preparo e mostro il video

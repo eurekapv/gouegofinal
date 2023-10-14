@@ -12,3 +12,5 @@ C:\Users\HP\My Projects\Github Projects\gouegofinal\resources\certificates\andro
 KeyAlias
 beachforfunapp 
 MarioPonzio24
+C:\Users\HP\My Projects\Github Projects\gouegofinal\resources\certificates\android\Encrypted_B4F
+

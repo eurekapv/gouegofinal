@@ -11,7 +11,7 @@ export const environment = {
   version: packageJson.version,
   advertisingTestMode: packageJson.advertisingTestMode,
   advertisingPersonalized: packageJson.advertisingPersonalized,
-  releaseDate: '2023-09-25',
+  releaseDate: '2023-10-14',
   options: {
     debugMode: 'full' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
@@ -22,7 +22,7 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor',
-    activeId: 'openbeach',
+    activeId: 'beachforfun',
     customer: {
       openbeach: {
         name: 'openbeach',

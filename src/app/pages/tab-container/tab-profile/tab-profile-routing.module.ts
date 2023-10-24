@@ -41,6 +41,10 @@ const routes: Routes = [
     path: 'badge-account',
     loadChildren: () => import('../../pages-profile/badge-account/badge-account.module').then( m => m.BadgeAccountPageModule)
   },
+  {
+    path: 'developer-page',
+    loadChildren: () => import('../../developer/developer.module').then( m => m.DeveloperPageModule)
+  }
 ];
 
 @NgModule({

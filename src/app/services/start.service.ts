@@ -89,6 +89,7 @@ import { TipoPagamento } from '../models/tipopagamento.model';
 import { CorsoPresenze } from '../models/corsopresenze.model';
 import { Tesseramento } from '../models/tesseramento';
 import { AdvertisingService } from '../library/services/advertising.service';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -2674,6 +2675,7 @@ presentAlertMessage(myMessage: string | ErrorEvent,
 
 
   //#endregion
+
 
 
 

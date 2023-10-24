@@ -22,6 +22,8 @@ export class TabProfilePage implements OnInit, OnDestroy {
       this.setSpecialPicture();
   }
 
+  developerMode = !environment.production;
+
   specialPicture: string[]; //Immagini mostrate nella card di registrazione
 
   //Path foto profilo
@@ -234,6 +236,17 @@ requestLogout() {
                                         'Logout', 
                                         listButtons);
 
+}
+
+/**
+ * Vado alla pagina developer
+ */
+onClickDeveloperMode(): void {
+  let navPath = ['/','appstart-home','tab-profile', 'developer-page'];
+
+  this.navController.navigateForward(navPath);
+  
+  
 }
 
 }

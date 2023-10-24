@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Developer Page</ion-title>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="!developerMode">
+    <ion-row>
+      <ion-col sizeXs="12" 
+      sizeSm="12" 
+      sizeMd="12" 
+      sizeLg="6" offsetLg="3"
+      sizeXl="6" offsetXl="3">
+        <ion-item
+          lines="none">
+          <ion-label>
+            Operazioni non disponibili
+          </ion-label>
+        </ion-item>
+    </ion-col>
+    </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6" sizeXl="6">
+          <!-- <ion-list>
+            <ion-list-header mode="ios">
+              Funzioni ISI SEMENTI
+            </ion-list-header>
+            <ion-item 
+                (click)="onClickItem('login')"
+                button="true">
+              <ion-label class="ion-text-wrap">
+                <h2>Login</h2>
+              </ion-label>
+            </ion-item>
+
+          </ion-list> -->
+
+
+        </ion-col>  
+      </ion-row>  
+      </ion-grid>
+</ion-content>

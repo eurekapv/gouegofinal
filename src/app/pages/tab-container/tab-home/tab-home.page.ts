@@ -404,16 +404,26 @@ export class TabHomePage implements OnInit, OnDestroy {
    * @param requestShow 
    */
   switchAdvertising(requestShow:boolean) {
-    if (this.activeAdvertisingConfig.enable && 
-      this.activeAdvertisingConfig.initialized) {
-        // if (requestShow == false) {
-        //   //Nascondo il Banner
-        //   AdMob.hideBanner();
-        // }
-        // else {
-        //   AdMob.resumeBanner();
-        // }
+
+    setTimeout(()=>{
+
+      if (this.activeAdvertisingConfig) {
+  
+        if (this.activeAdvertisingConfig.enable && 
+          this.activeAdvertisingConfig.initialized) {
+            if (requestShow == false) {
+              if (AdMob.hideBanner)
+              //Nascondo il Banner
+              AdMob.hideBanner();
+            }
+            else {
+              AdMob.resumeBanner();
+            }
+          }
+  
       }
+
+    }, 500)
   }
 
   /**

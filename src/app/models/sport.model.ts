@@ -33,7 +33,7 @@ export class Sport extends IDDocument {
     let arDate = ['DATACANC'];
     let arDateTime =[];
     let arTime = [];
-    let arCollection = ['LIVELLO'];
+    
 
     objDescriptor.className = 'Sport';
     objDescriptor.doRemote = true;
@@ -47,7 +47,6 @@ export class Sport extends IDDocument {
     objDescriptor.addMultiple(arDate, TypeDefinition.date);
     objDescriptor.addMultiple(arDateTime, TypeDefinition.dateTime);
     objDescriptor.addMultiple(arTime, TypeDefinition.time);
-    //objDescriptor.addMultiple(arCollection, TypeDefinition.collection);
     objDescriptor.addCollection('LIVELLO','Livello', 'IDSPORT');
     
     return objDescriptor;

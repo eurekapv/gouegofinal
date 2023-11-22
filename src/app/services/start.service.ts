@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { ApicallService } from './apicall.service';
-import { SportService } from './sport.service';
-import { CategoriaetaService } from './categoriaeta.service';
-import { CourseService } from './course.service';
+import { map } from 'rxjs/operators';
+import { ApicallService } from './zsupport/apicall.service';
+import { SportService } from './archivi/sport.service';
+import { CategoriaetaService } from './archivi/categoriaeta.service';
+import { CourseService } from './corso/course.service';
 import { FilterCorsi } from '../models/filtercorsi.model';
-import { UtenteService } from './utente.service';
-import { LivelloService } from './livello.service';
-import { AreaService } from './area.service';
-import { LocationService } from './location.service';
-import { CourseschedulerService } from './coursescheduler.service';
+import { UtenteService } from './utente/utente.service';
+import { LivelloService } from './archivi/livello.service';
+import { AreaService } from './struttura/area.service';
+import { LocationService } from './struttura/location.service';
+import { CourseschedulerService } from './corso/coursescheduler.service';
 
-import { PrenotazioneService } from './prenotazione.service';
-import { NewseventiService } from './newseventi.service';
-import { SlotoccupazioneService } from './slotoccupazione.service';
+import { PrenotazioneService } from './prenotazioni/prenotazione.service';
+import { NewseventiService } from './evento/newseventi.service';
+import { SlotoccupazioneService } from './prenotazioni/slotoccupazione.service';
 import { StartConfiguration } from '../models/start-configuration.model';
 
 import { Location } from '../models/location.model';
@@ -24,72 +24,71 @@ import { SlotDay } from '../models/imdb/slotday.model';
 import { Campo } from '../models/campo.model';
 import { PrenotazionePianificazione } from '../models/prenotazionepianificazione.model';
 import { Prenotazione } from '../models/prenotazione.model';
-import { UtenteprenotazioneService } from './utenteprenotazione.service';
-import { UtenteiscrizioneService } from './utenteiscrizione.service';
+import { UtenteprenotazioneService } from './utente/utenteprenotazione.service';
+import { UtenteiscrizioneService } from './utente/utenteiscrizione.service';
 import { ModalController, Platform } from '@ionic/angular';
 
-import { CodicefiscaleService } from './codicefiscale.service';
+import { CodicefiscaleService } from './archivi/codicefiscale.service';
 import { CodiceFiscale } from '../models/codicefiscale.model';
 import { Mansione, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/accountregistration.model';
-import { OccupazioniService } from './occupazioni.service';
+import { OccupazioniService } from './struttura/occupazioni.service';
 
 import { DocstructureService } from '../library/services/docstructure.service';
 import { OccupazioneCampi } from '../models/occupazionecampi.model';
 import { PostParams, RequestParams } from '../library/models/requestParams.model';
-import { DocumentoService } from './documento.service';
 import { PianificazioneCorso } from '../models/pianificazionecorso.model';
-import { InvoicesService } from './invoices.service';
-import { PosizioneService } from './posizione.service';
+import { InvoicesService } from './utente/invoices.service';
+import { PosizioneService } from './struttura/posizione.service';
 import { Area } from '../models/area.model';
 import { MasterDocumento } from '../models/ricevuta.model';
 import { PostResponse } from '../library/models/post-response.model';
-import { DataChiusuraService } from './data-chiusura.service';
+import { DataChiusuraService } from './archivi/data-chiusura.service';
 
 
 import { PlatformLocation } from '@angular/common';
 import { Gruppo } from '../models/gruppo.model';
-import { CorsoallegatoService } from './corsoallegato.service';
+import { CorsoallegatoService } from './corso/corsoallegato.service';
 
 import { CorsoAllegato } from '../models/corsoallegato.model';
-import { IscrizionecorsoService } from './iscrizionecorso.service';
+import { IscrizionecorsoService } from './corso/iscrizionecorso.service';
 import { IscrizioneCorso } from '../models/iscrizione-corso.model';
-import { CorsoValutazioneService } from './corso-valutazione.service';
+import { CorsoValutazioneService } from './corso/corso-valutazione.service';
 import { CorsoValutazione } from '../models/corsovalutazione.model';
 import { Livello } from '../models/livello.model';
-import { PhotoService, PhotoType } from './photo.service';
-import { SmartInterfaceService } from './smart-interface.service';
+import { PhotoService, PhotoType } from './zsupport/photo.service';
+import { SmartInterfaceService } from './zsupport/smart-interface.service';
 import { AlertButton, SpinnerTypes } from "@ionic/core";
 import { Browser } from '@capacitor/browser';
 import { ConnectionMode, environment } from 'src/environments/environment';
-import { TipoTesseraService } from './tipo-tessera.service';
+import { TipoTesseraService } from './archivi/tipo-tessera.service';
 import { TipoTessera } from '../models/tipo-tessera';
-import { TesseramentoService } from './tesseramento.service';
-import { EventoService } from './evento.service';
-import { ImpegnoService } from './impegno.service';
-import { ImpegnoCollaboratoreService } from './impegno-collaboratore.service';
-import { ImpegnoCustodeService } from './impegno-custode.service';
+import { TesseramentoService } from './utente/tesseramento.service';
+import { EventoService } from './evento/evento.service';
+import { ImpegnoService } from './utente/impegno.service';
+import { ImpegnoCollaboratoreService } from './utente/impegno-collaboratore.service';
+import { ImpegnoCustodeService } from './utente/impegno-custode.service';
 import { Evento } from '../models/evento.model';
 import { ImpegnoCustode } from '../models/impegno-custode.model';
-import { ArticoloService } from './articolo.service';
+import { ArticoloService } from './shop/articolo.service';
 import { Articolo } from '../models/articolo.model';
 import { Sport } from '../models/sport.model';
 import { CategoriaEta } from '../models/categoriaeta.model';
-import { KeyStorageService } from './key-storage.service';
+import { KeyStorageService } from './zsupport/key-storage.service';
 import { Authorization } from '../models/authorization.model';
 import { Corso } from '../models/corso.model';
 import { NewsEvento } from '../models/newsevento.model';
 import { UserLoginAuthorizationPage } from '../pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.page';
 import { UserRegistrationPage } from '../pages/pages-profile/authorization-account/user-registration/user-registration.page';
-import { AuthUserMobileService } from './auth-user-mobile.service';
+import { AuthUserMobileService } from './zsupport/auth-user-mobile.service';
 import { UserDataVerificationPage } from '../pages/pages-profile/authorization-account/user-data-verification/user-data-verification.page';
 import { StorageUtente } from '../models/stogare-utente.model';
-import { TipoPagamentoService } from './tipo-pagamento.service';
+import { TipoPagamentoService } from './archivi/tipo-pagamento.service';
 import { TipoPagamento } from '../models/tipopagamento.model';
 import { CorsoPresenze } from '../models/corsopresenze.model';
 import { Tesseramento } from '../models/tesseramento';
 import { AdvertisingService } from '../library/services/advertising.service';
-import { HttpHeaders } from '@angular/common/http';
+import { FileService } from './zsupport/file.service';
 
 @Injectable({
   providedIn: 'root'
@@ -208,7 +207,6 @@ export class StartService {
     private codFiscService: CodicefiscaleService,
     private occupazioniService: OccupazioniService,
     private docStructureService: DocstructureService,
-    private documentoService: DocumentoService,
     private invoicesService: InvoicesService,
     private posizioneService: PosizioneService,
     private dataChiusuraService: DataChiusuraService,
@@ -227,7 +225,8 @@ export class StartService {
     private articoloService: ArticoloService,
     private modalController: ModalController,
     private tipoPagamentoService: TipoPagamentoService,
-    private advertisingService: AdvertisingService
+    private advertisingService: AdvertisingService,
+    private fileService: FileService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -2141,9 +2140,9 @@ requestOccupazioneById(idOccupazione: string, getRelReservation = false){
 //#endregion
 
 
-//#region DOCUMENTO
-requestDocumento(urlDocumento: string){
-  return this.documentoService.request(this.actualStartConfig, urlDocumento);
+//#region FILE SERVICE
+requestDocumento(urlDocumento: string) {
+  return this.fileService.downloadFile(this.actualStartConfig, urlDocumento);
 }
 
 //#endregion

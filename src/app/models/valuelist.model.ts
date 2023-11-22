@@ -268,6 +268,23 @@ export enum SettoreQrCode {
     qrCodeTessera = 'TSR'
 }
 
+export enum TipoRigoDetailCarrello {
+    prodotti = 10,
+    Tessere = 11,
+    Descrizione = 20
+}
+
+export enum StatoRigoDetailCarrello  {
+    nonEvaso = 10,
+    evaso = 20
+}
+
+export enum StatoCarrello  {
+    nonEvaso = 10,
+    evaso = 20,
+    evasoParzialmente = 30
+}
+
 //Stati possibili a seguito di una richiesta pagamento Paypal
 /*
 The possible values are:

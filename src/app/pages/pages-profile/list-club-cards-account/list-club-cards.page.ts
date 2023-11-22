@@ -8,7 +8,7 @@ import { IonAccordionGroup, LoadingController, NavController } from '@ionic/angu
 import { Tesseramento } from 'src/app/models/tesseramento';
 import { TipoTesseraTemplate } from 'src/app/models/tipo-tessera-template';
 import { LogApp } from 'src/app/models/log.model';
-import { FileService } from 'src/app/services/file.service';
+import { FileService } from 'src/app/services/zsupport/file.service';
 
 @Component({
   selector: 'app-club-cards',

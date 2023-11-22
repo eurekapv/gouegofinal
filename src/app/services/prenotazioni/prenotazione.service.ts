@@ -1,0 +1,570 @@
+import { Injectable, ɵConsole } from '@angular/core';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
+
+import { ApicallService } from '../zsupport/apicall.service';
+import { Prenotazione } from '../../models/prenotazione.model';
+import { Utente } from '../../models/utente.model';
+import { LogApp } from '../../models/log.model';
+import { Campo } from '../../models/campo.model';
+import { StartConfiguration } from '../../models/start-configuration.model';
+import { PrenotazionePianificazione } from '../../models/prenotazionepianificazione.model';
+import { SportService } from '../archivi/sport.service';
+import { ParamsExport } from '../../library/models/iddocument.model';
+import { PostResponse } from '../../library/models/post-response.model';
+import { DocstructureService } from '../../library/services/docstructure.service';
+import { PostParams, RequestParams } from '../../library/models/requestParams.model';
+import { Descriptor } from '../../library/models/descriptor.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PrenotazioneService {
+
+
+  private _listPrenotazioni = new BehaviorSubject<Prenotazione[]>([]);
+  private _activePrenotazione = new BehaviorSubject<Prenotazione>(new Prenotazione());
+  private _selectedCampo: Campo;
+
+  constructor(private apiService: ApicallService, 
+              private sportService: SportService,
+              private docStructureService: DocstructureService) { }
+
+  /** Prenotazione */
+  get activePrenotazione() {
+    return this._activePrenotazione.asObservable();
+  }
+
+  get listPrenotazioni() {
+    return this._listPrenotazioni.asObservable();
+  }
+
+  //Memorizzo il campo selezionato
+  set selectedCampo(value: Campo) {
+    this._selectedCampo = value;
+  }
+
+  get selectedCampo() {
+    return this._selectedCampo;
+  }
+
+  // Imposta come attiva la Prenotazione passata
+  setActivePrenotazione(value: Prenotazione) {
+    this._activePrenotazione.next(value);
+  }
+
+  
+  /**
+   * Inizializza la prenotazione con l'AREA
+   * @param idArea Area Operativa
+   */
+  initActivePrenotazione(idArea: string) {
+    this.activePrenotazione
+      .pipe(take(1))
+      .subscribe( elPrenotazione => {
+        elPrenotazione = new Prenotazione();
+        elPrenotazione.initNewPrenotazione(idArea);
+
+        this._activePrenotazione.next(elPrenotazione);
+      });
+      
+  }
+
+  /**
+   * Imposta la Pianificazione Singola
+   * @param docPianificazione Pianificazione da impostare
+   */
+  setPianificazioneSingola(docPianificazione: PrenotazionePianificazione) {
+    this.activePrenotazione
+      .pipe(take(1))
+      .subscribe( elPrenotazione => {
+          elPrenotazione.setPianificazioneSingola(docPianificazione);
+          this._activePrenotazione.next(elPrenotazione);
+      });
+  }
+
+  /**
+   * 
+   */
+  setIDUtenteActivePrenotazione(docUtente: Utente) {
+    this.activePrenotazione
+    .pipe(take(1))
+    .subscribe( elPrenotazione => {
+        elPrenotazione.setUtente(docUtente.ID, docUtente.NOMINATIVO);
+
+        this._activePrenotazione.next(elPrenotazione);
+    });
+  }
+
+
+
+  /**
+   * Richiesta elenco Prenotazioni
+   * @param config Parametri di configurazione
+   * @param idUtente idUtente
+   */
+  request(config: StartConfiguration) {
+    return new Promise((resolve, reject)=>{
+      let myHeaders = config.getHttpHeaders();
+      //new HttpHeaders({'Content-type':'text/plain'});
+      const doObject = 'PRENOTAZIONE';
+      
+
+
+      // Nei parametri imposto il gruppo Sportivo
+      let myParams = this.docStructureService.getHttpParams().set('IDGRUPPOSPORTIVO',config.gruppo.ID);
+  
+      let myUrl = config.urlBase + '/' + doObject;
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(map(fullData => {
+          return fullData.PRENOTAZIONE
+        }))
+        .subscribe( resultData => {
+  
+          for (let index = 0; index < resultData.length; index++) {
+            const element = resultData[index];
+
+            let docPrenotazione = new Prenotazione();
+            docPrenotazione.setJSONProperty(element);
+            this.add2ListPrenotazioni(docPrenotazione);
+          }
+
+          resolve(this._listPrenotazioni.getValue());
+
+        }, error=>{
+          reject (error);
+        });
+    })
+  }
+
+  //Aggiunge una attivita alla lista globale
+  add2ListPrenotazioni(objPrenotazione: Prenotazione) {
+
+    let listSport = this.sportService.actualListSport;
+
+    this.listPrenotazioni
+      .pipe(take(1))
+      .subscribe( collLocation => {
+        this._listPrenotazioni.next( collLocation.concat(objPrenotazione));
+      });
+    
+  }
+
+
+  /**
+   * Richiede una prenotazione al server (Versione OBSERVABLE)
+   * @param config Dati configurazione
+   * @param idPrenotazione IdPrenotazione 
+   */
+  requestById$(config: StartConfiguration, idPrenotazione: string, numLivelli: number) {
+    //let myHeaders = new HttpHeaders({'Content-type':'text/plain'}).append('child-level', numLivelli + '');
+    let myHeaders = config.getHttpHeaders();
+    const doObject = 'PRENOTAZIONE';
+    
+    
+    myHeaders = myHeaders.append('child-level', numLivelli + '');
+    // Nei parametri imposto idPrenotazion richiesto
+    let myParams = this.docStructureService.getHttpParams().set('ID',idPrenotazione);
+
+    let myUrl = config.urlBase + '/' + doObject;
+
+    return this.apiService
+      .httpGet(myUrl, myHeaders, myParams)
+      .pipe(map(fullData => {
+
+        let docPrenotazione: Prenotazione;
+
+        if (fullData) {
+          if (fullData.hasOwnProperty('PRENOTAZIONE')) {
+            let collPrenotazioni = fullData.PRENOTAZIONE;
+            if (collPrenotazioni.length !== 0) {
+
+              let listSport = this.sportService.actualListSport;
+              docPrenotazione = new Prenotazione();
+              docPrenotazione.setJSONProperty(collPrenotazioni[0]);
+
+              
+              docPrenotazione.PRENOTAZIONEPIANIFICAZIONE.forEach(elPianificazione => {
+                  elPianificazione.lookup('IDSPORT', listSport, "DENOMINAZIONE");
+              });
+
+            }
+          }
+        }
+        return docPrenotazione;
+      }));
+  }
+
+
+  /**
+   * Effettua una chiamata al server per il recupero della prenotazione
+   * NUOVA MODALITA
+   * @param idPrenotazione 
+   * @param numChild Profondità della richiesta
+   * @param decodeAll Decodifica le chiavi esterne
+   * @param decodeChildDoc Decodifica anche i documento di secondo livello
+   * @param listNameCollectionDecode Array con i nomi delle Collection da decodificare
+   * @returns 
+   */
+  requestPrenotazioneById(idPrenotazione: string, 
+                          numChild = 0, 
+                          decodeAll = false,
+                          decodeChildDoc = false,
+                          listNameCollectionDecode?:string[]): Promise<Prenotazione> {
+    return new Promise<Prenotazione>((resolve, reject) => {
+
+      if (idPrenotazione && idPrenotazione.length != 0) {
+        let filter = new Prenotazione(true);
+        filter.ID = idPrenotazione;
+
+        let reqParams = new RequestParams();
+        reqParams.child_level = numChild;
+        reqParams.decode.active = decodeAll;
+        reqParams.decode.childDoc = decodeChildDoc;
+        reqParams.decode.listCollectionName = listNameCollectionDecode;
+        
+
+        this.docStructureService.requestNew(filter, reqParams)
+                                .then(listResult => {
+
+                                  if (listResult && listResult.length != 0) {
+                                    return listResult[0];
+                                  }
+                                  else {
+                                    reject('Documento non trovato');
+                                  }
+                                })
+                                .then(singleDoc => {
+                                  resolve(singleDoc);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+        
+      }
+      else {
+        reject('idPrenotazione non definito');
+      }
+    })
+  }
+
+
+  
+  
+  /**
+   * Effettua una chiamata al server per il recupero della pianificazione
+   * @param idPianificazione 
+   * @returns 
+   */
+  requestPianificazioneById(idPianificazione: string): Promise<PrenotazionePianificazione> {
+    return new Promise<PrenotazionePianificazione>((resolve, reject) => {
+
+      if (idPianificazione && idPianificazione.length != 0) {
+        let filter = new PrenotazionePianificazione(true);
+        filter.ID = idPianificazione;
+
+        this.docStructureService.requestNew(filter)
+                                .then(listResult => {
+                                  if (listResult && listResult.length != 0) {
+                                    return listResult[0];
+                                  }
+                                  else {
+                                    reject('Documento non trovato');
+                                  }
+                                })
+                                .then(singleDoc => {
+                                  resolve(singleDoc);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+        
+      }
+      else {
+        reject('idPianificazione non definito');
+      }
+    })
+  }
+
+
+  /**
+   * Richiesta al Server il calcolo dell'importo
+   * Metodo Statico: MOBBOOKINGTOTALE
+   * Body contiene il JSON del documento
+   * @param config Parametri di Configurazione
+   */
+  requestImporto(config: StartConfiguration) {
+    let docPrenotazione = this._activePrenotazione.getValue();
+
+    let myParams = this.docStructureService.getHttpParams();
+    let myHeaders = config.getHttpHeaders();
+    myHeaders = myHeaders.append('X-HTTP-Method-Override','MOBBOOKINGTOTALE');
+    myHeaders = myHeaders.append('child-level','999');
+
+    const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
+
+    const doObject = 'PRENOTAZIONE';
+    let myUrl = config.urlBase + '/' + doObject;
+
+    //Questi sono i parametri per l'esportazione
+    let paramExport = new ParamsExport();
+    paramExport.clearDOProperty = false;
+    paramExport.clearPKProperty = false;
+    paramExport.clearPrivateProperty = true;
+    
+    //Creo il JSON del documento , eliminando le proprietà private (clear = true) ed inviando le proprietà do e le chiavi primarie(clear = false)
+    let myBodyJSON = docPrenotazione.exportToJSON(paramExport);
+
+    //Il parametro inviato nel body deve essere strutturato cosi
+    // { "nomeParametro" : { oggetto exportato JSON } }
+    let myBody = '{' + '\"' + paramName + '\"' + ':' + myBodyJSON + '}';
+
+   
+
+    return this.apiService
+          .httpPost(myUrl,myHeaders, myParams, myBody)
+          .pipe(map(fullData => {
+            //fulldata è già l'oggetto Prenotazione
+            return fullData;
+          }));
+
+    }
+
+
+    /**
+     * Ritorna una Promise per salvare il documento
+     * @param config Configurazione
+     */
+    requestSave(config: StartConfiguration): Promise<Prenotazione> {
+
+      return new Promise((resolve, reject)=>{
+          let docPrenotazione = this._activePrenotazione.getValue();
+
+          let myHeaders = config.getHttpHeaders();                                            
+          let myParams = this.docStructureService.getHttpParams(); 
+          const paramName = 'docPrenotazione'; //Nome del parametro in entrata della funzione WebApi
+          //Imposto gli header aggiuntivi
+          myHeaders = myHeaders.append('X-HTTP-Method-Override','MOBBOOKINGSAVE');
+          myHeaders = myHeaders.append('child-level','999');
+          //Quali proprietà non voglio esportare
+          const noExportDO = false;
+          const noExportPK = true;
+          const noExportPrivate = true;
+          const doObject = 'PRENOTAZIONE';
+          let myUrl = config.urlBase + '/' + doObject;
+
+          //Questi sono i parametri per l'esportazione
+          let paramExport = new ParamsExport();
+          paramExport.clearDOProperty = false;
+          paramExport.clearPKProperty = true;
+          paramExport.clearPrivateProperty = true;
+          
+          //Creo il JSON del documento , eliminando le proprietà do e private (true) e le chiavi primarie(true)
+          
+          let myBodyJSON = docPrenotazione.exportToJSON(paramExport);
+          //Il parametro inviato nel body deve essere strutturato cosi
+          
+          let myBody = '{' + '\"' + paramName + '\"' + ':' + myBodyJSON + '}';
+      
+          //Chiamo per il salvataggio                      
+          this.apiService
+                .httpPost(myUrl,myHeaders, myParams, myBody)
+                .subscribe(elPrenotazione => {
+
+                  let receivedPrenotazione = Prenotazione.getPrenotazioneFromJson(elPrenotazione);
+                  
+                  if (receivedPrenotazione.ISVALID == true) {
+                    resolve(receivedPrenotazione);
+                  }
+                  else {
+                    let errMessage = '';
+                    if (receivedPrenotazione.MSGINVALID && receivedPrenotazione.MSGINVALID.length != 0) {
+                      errMessage = receivedPrenotazione.MSGINVALID;
+                    }
+                    else {
+                      errMessage = 'Salvataggio Fallito';
+                    }
+
+                    reject(errMessage);
+                  }
+
+                }, error => {
+                  
+                  LogApp.consoleLog(error,'error');
+                  let errMessage = 'Errore di connessione';
+                  reject(errMessage);
+                  
+                });
+
+      });
+
+      }
+
+    
+    /**
+     * Richiede al server la cancellazione di una pianificazione
+     * @param idPianificazione 
+     */
+    requestDelete(idPianificazione: string, config: StartConfiguration): Promise<PostResponse>{
+
+      return new Promise<PostResponse>((resolve, reject) => {
+        const method: string = 'MOBBOOKINGDELETE';
+        const doObject = 'PRENOTAZIONE';
+        const myUrl = config.urlBase + '/' + doObject;
+
+        //headers
+        let myHeaders = config.getHttpHeaders();
+        myHeaders = myHeaders.append('X-HTTP-Method-Override', method);
+
+
+        //params
+        let myParams = this.docStructureService.getHttpParams().set('idPianificazione', idPianificazione);
+      
+        //abbiamo tutto, faccio la richiesta
+        this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .subscribe(data => {
+          //creo l'oggetto con la risposta
+          let response = new PostResponse();
+          response.setFromResponse(data);
+          resolve(response);
+
+        },
+        err => {
+          //creo comunque un postResponse fittizio
+          let response = new PostResponse();
+          response.result = false
+          response.message = "Connessione non riuscita";
+          reject(response);
+        })
+        
+
+      })
+
+    }
+
+    /**
+     * Richiede l'aggiornamento del totale di una pianificazione
+     * E' possibile modificare DURATA / NUM PARTECIPANTI
+     * @param samplePianificazione 
+     * @returns 
+     */
+    requestCustodePianificazioneChange(samplePianificazione: PrenotazionePianificazione): Promise<Prenotazione> {
+      return new Promise<Prenotazione>((resolve, reject) => {
+          let method = 'onRequestPianificazioneChange';
+          let docToCall: Prenotazione;
+          let myPostParams: PostParams;
+
+          if (samplePianificazione) {
+            docToCall = new Prenotazione(true);
+
+            myPostParams = new PostParams();
+            myPostParams.key = 'samplePianificazione';
+            myPostParams.value = samplePianificazione;
+
+            this.docStructureService.requestForFunction(docToCall, method, null, myPostParams)
+                                    .then((data: PostResponse) => {
+
+                                      let elPrenotazione: Prenotazione;
+
+                                      if (data) {
+                                        if (data.result) {
+
+                                          //Pianificazione ricevuta
+                                          elPrenotazione = new Prenotazione();
+  
+                                          if (data.document) {
+                                            elPrenotazione.setJSONProperty(data.document);
+                                          }
+  
+                                          resolve(elPrenotazione);
+                                        }
+                                        else {
+                                          reject(data.message);
+                                        }
+                                      }
+                                      else {
+                                        reject('Calcolo totale fallito');
+                                      }
+
+                                    })
+                                    .catch(error => {
+                                      reject(error)
+                                    })
+            
+          }
+          else {
+            reject('Pianificazione non definita');
+          }
+      })
+    }
+
+    /**
+     * Richiede il salvataggio della Pianificazione (con eventualmente un incasso)
+     * E' possibile modificare DURATA / NUM PARTECIPANTI / INCASSO CUSTODE
+     * @param samplePianificazione 
+     * @returns 
+     */
+    requestCustodePianificazioneSave(samplePianificazione: PrenotazionePianificazione): Promise<Prenotazione> {
+      return new Promise<Prenotazione>((resolve, reject) => {
+          let method = 'onRequestPianificazioneSave';
+          let docToCall: Prenotazione;
+          let myPostParams: PostParams;
+
+          if (samplePianificazione) {
+            docToCall = new Prenotazione(true);
+
+            myPostParams = new PostParams();
+            myPostParams.key = 'samplePianificazione';
+            myPostParams.value = samplePianificazione;
+
+            this.docStructureService.requestForFunction(docToCall, method, null, myPostParams)
+                                    .then((data: PostResponse) => {
+
+                                      let elPrenotazione: Prenotazione;
+
+                                      if (data) {
+                                        if (data.result) {
+
+                                          //Pianificazione ricevuta
+                                          elPrenotazione = new Prenotazione();
+  
+                                          if (data.document) {
+                                            elPrenotazione.setJSONProperty(data.document);
+                                          }
+  
+                                          resolve(elPrenotazione);
+                                        }
+                                        else {
+
+                                          let retMessage = data.message;
+
+                                          if (!retMessage || retMessage.length == 0) {
+                                            retMessage = '<p>Server ha risposto in modo errato</p>';
+                                          }
+                                          if (data.developerMessage && data.developerMessage.length != 0) {
+                                            retMessage += `<p>${data.developerMessage}</p>`;
+                                          }
+
+                                          reject(retMessage);
+                                        }
+                                      }
+                                      else {
+                                        reject('Salvataggio fallito');
+                                      }
+
+                                    })
+                                    .catch(error => {
+                                      reject(error)
+                                    })
+            
+          }
+          else {
+            reject('Pianificazione non definita');
+          }
+      })
+    }    
+}

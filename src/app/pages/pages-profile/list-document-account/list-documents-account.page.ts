@@ -9,7 +9,7 @@ import { DocstructureService } from 'src/app/library/services/docstructure.servi
 import { Utente } from 'src/app/models/utente.model';
 import { Documentazione, InvioDocumentazione } from 'src/app/models/documentazione.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
-import { FileService } from 'src/app/services/file.service';
+import { FileService } from 'src/app/services/zsupport/file.service';
 import { LogApp } from 'src/app/models/log.model';
 
 

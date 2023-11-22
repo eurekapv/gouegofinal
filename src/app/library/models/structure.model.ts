@@ -49,6 +49,9 @@ import { EventoPianificazione } from 'src/app/models/evento-pianificazione.model
 import { TipoPagamentoScadenza } from 'src/app/models/tipo-pagamento-scadenza.model';
 import { IscrizioneIncasso } from 'src/app/models/iscrizione-incasso.model';
 import { IscrizioneCorso } from 'src/app/models/iscrizione-corso.model';
+import { ShopCarrello } from 'src/app/models/shop-carrelli/shop-carrello.model';
+import { DetailCarrello } from 'src/app/models/shop-carrelli/detail-carrello.model';
+import { RiepilogoCarrello } from 'src/app/models/shop-carrelli/riepilogo-carrello.model';
 
 
 
@@ -108,7 +111,9 @@ export const Structure: any = {
     TipoEvento,
     IscrizioneCorso,
     IscrizioneIncasso,
-    
+    ShopCarrello,
+    DetailCarrello,
+    RiepilogoCarrello
 
 }
 

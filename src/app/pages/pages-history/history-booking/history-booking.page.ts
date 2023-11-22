@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 //per lo share via browser
-import { Share } from '@capacitor/share';
+import { Share, ShareOptions } from '@capacitor/share';
 
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Area } from 'src/app/models/area.model';
@@ -362,7 +362,7 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
               Share.share({
                 title: oggetto,
                 text: messaggio,
-                url: webUrlArea
+                url: webUrlArea,
               });
               
             }

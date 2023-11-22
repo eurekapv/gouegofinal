@@ -5,7 +5,7 @@ import { StartService } from 'src/app/services/start.service';
 import { Utente } from 'src/app/models/utente.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
 import { LogApp } from 'src/app/models/log.model';
-import { FileService } from 'src/app/services/file.service';
+import { FileService } from 'src/app/services/zsupport/file.service';
 
 @Component({
   selector: 'app-invoices',

@@ -3,7 +3,7 @@ import { IDDocument, OperatorCondition, FilterCondition } from '../models/iddocu
 import {RequestParams, RequestForeign, PostParams } from '../models/requestParams.model';
 import { DynamicClass } from '../models/structure.model';
 
-import { ApicallService } from '../../services/apicall.service';
+import { ApicallService } from '../../services/zsupport/apicall.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { HttpParams } from '@angular/common/http';
 import { Descriptor, TypeReflector } from '../models/descriptor.model';

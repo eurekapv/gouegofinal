@@ -296,7 +296,7 @@ export class  Descriptor{
   /**
    * Aggiunge una collection alla struttura
    * @param collectionName Nome Collection
-   * @param relDoc Riferimento ai documenti contenuti nella collection
+   * @param relDoc Nome Classe Documenti contenuti nella Collection
    * @param relFieldName Nome campo nel documento di riferimento che crea il legame
    */
   addCollection(collectionName: string, relDoc:string, relFieldName: string) {

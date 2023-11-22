@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Language } from 'src/app/models/valuelist.model';
-import { Settimana } from 'src/app/models/settimana.model';
-import { LogApp } from 'src/app/models/log.model';
+import { Language } from 'src/app/models/zsupport/valuelist.model';
+import { Settimana } from 'src/app/models/zsupport/settimana.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 @Pipe({
   name: 'giorniPrevisti'

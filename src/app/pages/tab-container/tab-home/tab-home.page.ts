@@ -2,16 +2,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
-import { Area } from 'src/app/models/area.model';
-import { Location } from 'src/app/models/location.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { Location } from 'src/app/models/struttura/location.model';
 import { NavController, ModalController } from '@ionic/angular';
-import { Utente } from 'src/app/models/utente.model';
-import { TypeUrlPageLocation } from 'src/app/models/valuelist.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 import { IAdvertisingConfig } from 'src/app/library/models/advertising-config.model';
 import { AdMob, AdMobBannerSize, AdMobError, AdMobRewardItem, AdOptions, AdmobConsentStatus, BannerAdOptions, BannerAdPluginEvents, BannerAdPosition, BannerAdSize, RewardAdOptions, RewardAdPluginEvents } from '@capacitor-community/admob';
 import { TrackingAuthorizationStatusInterface } from '@capacitor-community/admob/dist/esm/shared/tracking-authorization-status.interface';
 import { environment } from 'src/environments/environment';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 
 

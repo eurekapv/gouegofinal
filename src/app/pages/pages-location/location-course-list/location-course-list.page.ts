@@ -1,17 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Utente } from 'src/app/models/utente.model';
-import { SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/valuelist.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 import { ModalController, NavController, LoadingController, ToastController, GestureController } from '@ionic/angular';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
-import { Area } from 'src/app/models/area.model';
+import { Area } from 'src/app/models/struttura/area.model';
 
 
-import { LogApp } from 'src/app/models/log.model';
-import { Corso } from 'src/app/models/corso.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { Corso } from 'src/app/models/corso/corso.model';
 import { StartService } from 'src/app/services/start.service';
 
 

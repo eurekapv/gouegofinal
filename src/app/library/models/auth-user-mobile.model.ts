@@ -1,4 +1,4 @@
-import { OperationAuthUserMobile } from "src/app/models/valuelist.model";
+import { OperationAuthUserMobile } from "src/app/models/zsupport/valuelist.model";
 import { IDDocument } from "./iddocument.model";
 import { Descriptor, TypeDefinition } from "./descriptor.model";
 

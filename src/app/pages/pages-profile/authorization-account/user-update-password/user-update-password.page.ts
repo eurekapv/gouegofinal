@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Validators, AbstractControl, FormGroup, FormControl } from '@angular/forms';
-import { Utente } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { ModalController, IonInput, LoadingController, ToastController } from '@ionic/angular';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';

@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { Utente } from 'src/app/models/utente.model';
-import { ValueList, Sesso } from 'src/app/models/valuelist.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { ValueList, Sesso } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { NavController, LoadingController, ModalController } from '@ionic/angular';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
-import { Gruppo } from 'src/app/models/gruppo.model';
-import { LogApp } from 'src/app/models/log.model';
+import { Gruppo } from 'src/app/models/struttura/gruppo.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 
 

@@ -1,5 +1,5 @@
 import { SlotDay } from './slotday.model';
-import { ValueList, Giorni } from '../valuelist.model';
+import { ValueList, Giorni } from '../zsupport/valuelist.model';
 
 export class SlotWeek {
     IDAREAOPERATIVA: string;

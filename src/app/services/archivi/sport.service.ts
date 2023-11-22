@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { Sport } from '../../models/sport.model';
+import { Sport } from '../../models/archivi/sport.model';
 import { ApicallService } from '../zsupport/apicall.service';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { PostParams, RequestParams } from '../../library/models/requestParams.model';
 
 

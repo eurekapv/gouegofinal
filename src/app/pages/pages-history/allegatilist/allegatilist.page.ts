@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
-import { Corso } from 'src/app/models/corso.model';
-import { CorsoAllegato } from 'src/app/models/corsoallegato.model';
-import { LogApp } from 'src/app/models/log.model';
+import { Corso } from 'src/app/models/corso/corso.model';
+import { CorsoAllegato } from 'src/app/models/corso/corsoallegato.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { FileService } from 'src/app/services/zsupport/file.service';
 import { StartService } from 'src/app/services/start.service';
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PostResponse } from '../../library/models/post-response.model';
 import { PostParams, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { IscrizioneCorso } from '../../models/iscrizione-corso.model';
+import { IscrizioneCorso } from '../../models/corso/iscrizione-corso.model';
 
 
 @Injectable({

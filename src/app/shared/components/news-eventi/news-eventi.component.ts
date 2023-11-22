@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NewsEvento } from 'src/app/models/newsevento.model';
+import { NewsEvento } from 'src/app/models/evento/newsevento.model';
 
 
 @Component({

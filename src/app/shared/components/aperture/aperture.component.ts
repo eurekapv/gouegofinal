@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AperturaLocation } from '../../../models/aperturalocation.model';
+import { AperturaLocation } from '../../../models/struttura/aperturalocation.model';
 
 
 @Component({

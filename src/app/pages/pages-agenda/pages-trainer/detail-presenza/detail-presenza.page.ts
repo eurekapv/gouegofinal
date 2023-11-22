@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
-import { Corso } from 'src/app/models/corso.model';
-import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
-import { LogApp } from 'src/app/models/log.model';
-import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
-import { StatoIscrizione, TipoSocieta } from 'src/app/models/valuelist.model';
+import { Corso } from 'src/app/models/corso/corso.model';
+import { CorsoPresenze } from 'src/app/models/corso/corsopresenze.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
+import { StatoIscrizione, TipoSocieta } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({

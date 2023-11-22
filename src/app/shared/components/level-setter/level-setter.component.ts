@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { CorsoValutazioneLivello } from 'src/app/models/corsovalutazionelivello.model';
-import { Livello } from 'src/app/models/livello.model';
+import { CorsoValutazioneLivello } from 'src/app/models/corso/corsovalutazionelivello.model';
+import { Livello } from 'src/app/models/archivi/livello.model';
 
 @Component({
   selector: 'app-level-setter',

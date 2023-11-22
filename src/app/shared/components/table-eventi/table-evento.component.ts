@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Evento } from 'src/app/models/evento.model';
+import { Evento } from 'src/app/models/evento/evento.model';
 
 @Component({
   selector: 'app-table-eventi',

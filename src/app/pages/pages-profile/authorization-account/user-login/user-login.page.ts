@@ -4,17 +4,17 @@ import { ModalController, LoadingController, AlertController, IonInput } from '@
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
-import { Utente } from 'src/app/models/utente.model';
-import { Gruppo } from 'src/app/models/gruppo.model';
-import { TipoVerificaAccount, PageType, RequestPincodeUse } from 'src/app/models/valuelist.model';
-import { Area } from 'src/app/models/area.model';
-import { AreaLink } from 'src/app/models/arealink.model';
-import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { Gruppo } from 'src/app/models/struttura/gruppo.model';
+import { TipoVerificaAccount, PageType, RequestPincodeUse } from 'src/app/models/zsupport/valuelist.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { AreaLink } from 'src/app/models/struttura/arealink.model';
+import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/utente/accountregistration.model';
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
-import { CodiceFiscale } from 'src/app/models/codicefiscale.model';
+import { CodiceFiscale } from 'src/app/models/zsupport/codicefiscale.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { SupportFunc } from 'src/app/library/models/support-func.model';
 
 

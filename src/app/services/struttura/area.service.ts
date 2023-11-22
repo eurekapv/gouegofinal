@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Area } from '../../models/area.model';
+import { Area } from '../../models/struttura/area.model';
 import { StartConfiguration } from '../../models/start-configuration.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { RequestParams } from '../../library/models/requestParams.model';

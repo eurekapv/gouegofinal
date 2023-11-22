@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { StartConfiguration } from '../../models/start-configuration.model';
-import { CampoSport } from '../../models/camposport.model';
+import { CampoSport } from '../../models/struttura/camposport.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 
 @Injectable({

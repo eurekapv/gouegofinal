@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CodiceFiscale } from '../../models/codicefiscale.model';
+import { CodiceFiscale } from '../../models/zsupport/codicefiscale.model';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from '../zsupport/apicall.service';
 

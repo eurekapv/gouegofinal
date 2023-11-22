@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ValueList, SettoreAttivita } from '../../models/valuelist.model';
+import { ValueList, SettoreAttivita } from '../../models/zsupport/valuelist.model';
 
 @Pipe({
   name: 'settoreAttivita'

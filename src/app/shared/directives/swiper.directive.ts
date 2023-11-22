@@ -1,5 +1,5 @@
 import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { SwiperOptions } from 'swiper';
 
 @Directive({

@@ -3,20 +3,20 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Share, ShareOptions } from '@capacitor/share';
 
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { Area } from 'src/app/models/area.model';
-import { PageType } from 'src/app/models/valuelist.model'
+import { Area } from 'src/app/models/struttura/area.model';
+import { PageType } from 'src/app/models/zsupport/valuelist.model'
 
-import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 
 import { Swiper, SwiperOptions, Navigation, Pagination } from 'swiper';
-import { Prenotazione } from 'src/app/models/prenotazione.model';
+import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
 import { Subscription } from 'rxjs';
 import { AlertButton, IonAccordionGroup, LoadingController, NavController } from '@ionic/angular';
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
-import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
+import { PrenotazionePianificazione } from 'src/app/models/prenotazioni/prenotazionepianificazione.model';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 Swiper.use([Navigation, Pagination]);
 
 @Component({

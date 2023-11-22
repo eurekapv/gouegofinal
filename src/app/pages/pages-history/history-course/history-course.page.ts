@@ -4,17 +4,17 @@ import { LoadingController, ModalController, NavController, ToastController } fr
 import { Subscription } from 'rxjs';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
-import { Corso } from 'src/app/models/corso.model';
-import { LogApp } from 'src/app/models/log.model';
-import { Utente } from 'src/app/models/utente.model';
-import { Location } from 'src/app/models/location.model';
-import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
-import { StatoIscrizione, StatoPagamento } from 'src/app/models/valuelist.model';
+import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
+import { Corso } from 'src/app/models/corso/corso.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { Location } from 'src/app/models/struttura/location.model';
+import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
+import { StatoIscrizione, StatoPagamento } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { CourseDetailCalendarPage } from '../../pages-location/location-course-detail/course-detail-calendar/course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
-import { IscrizioneIncasso } from 'src/app/models/iscrizione-incasso.model';
+import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
 
 @Component({
   selector: 'app-history-course',

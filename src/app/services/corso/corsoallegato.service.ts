@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RequestDecode, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { CorsoAllegato } from '../../models/corsoallegato.model';
+import { CorsoAllegato } from '../../models/corso/corsoallegato.model';
 
 @Injectable({
   providedIn: 'root'

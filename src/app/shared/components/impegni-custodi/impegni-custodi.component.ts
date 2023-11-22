@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
-import { SettoreAttivita } from 'src/app/models/valuelist.model';
+import { ImpegnoCustode } from 'src/app/models/utente/impegno-custode.model';
+import { SettoreAttivita } from 'src/app/models/zsupport/valuelist.model';
 
 @Component({
   selector: 'app-impegni-custodi',

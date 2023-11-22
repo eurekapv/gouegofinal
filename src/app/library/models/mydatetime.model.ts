@@ -1,4 +1,4 @@
-import { Tempistica, TipoChiusura } from 'src/app/models/valuelist.model';
+import { Tempistica, TipoChiusura } from 'src/app/models/zsupport/valuelist.model';
 import { TypeDefinition } from './descriptor.model';
 import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addQuarters, addSeconds, addWeeks, addYears, differenceInMinutes, differenceInSeconds, differenceInYears, endOfMonth, endOfWeek, format, formatISO, isAfter, isBefore, isDate, isEqual, isSameDay, isSameMinute, startOfMonth, startOfWeek, subDays, subHours, subMilliseconds, subMinutes, subMonths, subQuarters, subSeconds, subWeeks, subYears } from "date-fns";
 

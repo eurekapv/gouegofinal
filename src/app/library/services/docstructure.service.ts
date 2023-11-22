@@ -10,7 +10,7 @@ import { Descriptor, TypeReflector } from '../models/descriptor.model';
 import { map } from 'rxjs/operators';
 import { CacheListElement } from '../models/cachelistelement.model';
 import { Cache } from '../models/cache.model';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { ParamsExport } from '../models/iddocument.model';
 
 

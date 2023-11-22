@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { Sport } from 'src/app/models/sport.model';
+import { Sport } from 'src/app/models/archivi/sport.model';
 import { Swiper } from 'swiper';
 
 

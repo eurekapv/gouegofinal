@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Corso } from 'src/app/models/corso.model';
+import { Corso } from 'src/app/models/corso/corso.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ModalController, LoadingController } from '@ionic/angular';
-import { Location } from 'src/app/models/location.model';
+import { Location } from 'src/app/models/struttura/location.model';
 import { CourseDetailCalendarPage } from './course-detail-calendar/course-detail-calendar.page';
-import { Area } from 'src/app/models/area.model';
-import {Utente } from 'src/app/models/utente.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import {Utente } from 'src/app/models/utente/utente.model';
 
-import { Tempistica, TipoCorso } from 'src/app/models/valuelist.model';
+import { Tempistica, TipoCorso } from 'src/app/models/zsupport/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
-import { IscrizioneCorso } from 'src/app/models/iscrizione-corso.model';
+import { IscrizioneCorso } from 'src/app/models/corso/iscrizione-corso.model';
 
 @Component({
   selector: 'app-location-course-detail',

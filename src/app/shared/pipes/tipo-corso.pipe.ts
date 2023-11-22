@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ValueList, TipoCorso } from '../../models/valuelist.model';
+import { ValueList, TipoCorso } from '../../models/zsupport/valuelist.model';
 
 
 @Pipe({

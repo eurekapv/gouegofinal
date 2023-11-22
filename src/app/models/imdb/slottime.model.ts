@@ -1,4 +1,4 @@
-import { StatoSlot } from '../valuelist.model';
+import { StatoSlot } from '../zsupport/valuelist.model';
 import { MyDateTime, TypePeriod } from '../../library/models/mydatetime.model';
 import { IDDocument } from '../../library/models/iddocument.model';
 

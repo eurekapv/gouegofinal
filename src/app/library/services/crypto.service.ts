@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createCipheriv, createDecipheriv } from 'crypto';
-import { AccountRequestCode } from 'src/app/models/accountregistration.model';
-import { Utente } from 'src/app/models/utente.model';
+import { AccountRequestCode } from 'src/app/models/utente/accountregistration.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { Buffer } from 'buffer';
 //import { createVerify } from 'crypto'; Se si vuole usare Crypto c'e' questo di Node (https://www.w3schools.com/nodejs/ref_crypto.asp)
 

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
-import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { ButtonCard } from 'src/app/models/zsupport/buttoncard.model';
 import { GeneratorQrcode } from 'src/app/models/imdb/generator-qrcode.model';
-import { Utente } from 'src/app/models/utente.model';
-import { SettoreQrCode } from 'src/app/models/valuelist.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { SettoreQrCode } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { QrCodeScannerComponent } from 'src/app/shared/components/qr-code-scanner/qr-code-scanner.component';
 

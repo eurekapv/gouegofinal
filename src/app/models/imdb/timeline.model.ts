@@ -1,5 +1,5 @@
 import { Time } from '@angular/common';
-import { StatoSlot } from '../valuelist.model';
+import { StatoSlot } from '../zsupport/valuelist.model';
 
 
 export class Timeline {

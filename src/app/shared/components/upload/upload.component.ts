@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SorgenteFile, TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
+import { SorgenteFile, TipoDocumentazione } from 'src/app/models/archivi/tipodocumentazione.model';
 import { ToastController, ModalController, AlertController, AlertButton } from '@ionic/angular';
-import { InvioDocumentazione } from 'src/app/models/documentazione.model';
+import { InvioDocumentazione } from 'src/app/models/utente/documentazione.model';
 import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Chooser, ChooserResult } from '@awesome-cordova-plugins/chooser';
 
 

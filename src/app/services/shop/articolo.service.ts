@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { BehaviorSubject } from 'rxjs';
-import { Articolo } from '../../models/articolo.model';
-import { TipoArticolo } from '../../models/valuelist.model';
-import { LogApp } from '../../models/log.model';
+import { Articolo } from '../../models/shop/articolo.model';
+import { TipoArticolo } from '../../models/zsupport/valuelist.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { RequestParams } from '../../library/models/requestParams.model';
 import { StartConfiguration } from '../../models/start-configuration.model';
 

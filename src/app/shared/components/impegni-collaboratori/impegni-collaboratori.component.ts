@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ImpegnoCollaboratore } from 'src/app/models/impegno-collaboratore.model';
-import { SettoreAttivita } from 'src/app/models/valuelist.model';
+import { ImpegnoCollaboratore } from 'src/app/models/utente/impegno-collaboratore.model';
+import { SettoreAttivita } from 'src/app/models/zsupport/valuelist.model';
 
 @Component({
   selector: 'app-impegni-collaboratori',

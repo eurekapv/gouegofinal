@@ -4,13 +4,13 @@ import { HttpParams } from '@angular/common/http';
 import { ApicallService } from '../zsupport/apicall.service';
 import { SlotDay } from '../../models/imdb/slotday.model';
 import { StartConfiguration } from '../../models/start-configuration.model';
-import { Location } from '../../models/location.model';
-import { Campo } from '../../models/campo.model';
-import { DateSlotLock } from '../../models/dateslotlock.model';
+import { Location } from '../../models/struttura/location.model';
+import { Campo } from '../../models/struttura/campo.model';
+import { DateSlotLock } from '../../models/prenotazioni/dateslotlock.model';
 import { SlotTime } from '../../models/imdb/slottime.model';
-import { StatoSlot } from '../../models/valuelist.model';
+import { StatoSlot } from '../../models/zsupport/valuelist.model';
 import { MyDateTime, TypePeriod } from '../../library/models/mydatetime.model';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { PostParams } from '../../library/models/requestParams.model';
 

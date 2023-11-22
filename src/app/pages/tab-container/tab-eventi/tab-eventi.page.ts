@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Area } from 'src/app/models/area.model';
-import { NewsEvento } from 'src/app/models/newsevento.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { NewsEvento } from 'src/app/models/evento/newsevento.model';
 import { StartService } from 'src/app/services/start.service';
 import { NewsDetailPage } from '../../pages-eventi/news-detail/news-detail.page';
-import { Evento } from 'src/app/models/evento.model';
+import { Evento } from 'src/app/models/evento/evento.model';
 
 @Component({
   selector: 'app-tab-eventi',

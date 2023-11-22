@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { ModalController, LoadingController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/shared/components/upload/upload.component';
-import { TipoDocumentazione } from 'src/app/models/tipodocumentazione.model';
+import { TipoDocumentazione } from 'src/app/models/archivi/tipodocumentazione.model';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition, ParamsExport } from 'src/app/library/models/iddocument.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { Utente } from 'src/app/models/utente.model';
-import { Documentazione, InvioDocumentazione } from 'src/app/models/documentazione.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { Documentazione, InvioDocumentazione } from 'src/app/models/utente/documentazione.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
 import { FileService } from 'src/app/services/zsupport/file.service';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 
 

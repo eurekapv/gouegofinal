@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Settimana } from 'src/app/models/settimana.model';
+import { Settimana } from 'src/app/models/zsupport/settimana.model';
 
 @Component({
   selector: 'app-settimana-block',

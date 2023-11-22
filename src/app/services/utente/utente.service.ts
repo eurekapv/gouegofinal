@@ -3,16 +3,16 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApicallService } from '../zsupport/apicall.service';
 import { StartConfiguration } from '../../models/start-configuration.model';
-import { LogApp } from '../../models/log.model';
-import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../../models/accountregistration.model';
+import { LogApp } from '../../models/zsupport/log.model';
+import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../../models/utente/accountregistration.model';
 import { PostResponse } from '../../library/models/post-response.model';
 import { ParamsExport } from '../../library/models/iddocument.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { Account } from '../../models/account.model';
-import { TipoVerificaAccount } from '../../models/valuelist.model';
-import { Gruppo } from '../../models/gruppo.model';
-import { ParamsVerificaAccount } from '../../models/params-verifica-account.model';
-import { Utente } from '../../models/utente.model';
+import { Account } from '../../models/utente/account.model';
+import { TipoVerificaAccount } from '../../models/zsupport/valuelist.model';
+import { Gruppo } from '../../models/struttura/gruppo.model';
+import { ParamsVerificaAccount } from '../../models/utente/params-verifica-account.model';
+import { Utente } from '../../models/utente/utente.model';
 import { PostParams, RequestParams } from '../../library/models/requestParams.model';
 
 

@@ -1,4 +1,4 @@
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
 

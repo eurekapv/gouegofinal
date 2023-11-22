@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ValueList, AmbitoNews } from '../../models/valuelist.model';
+import { ValueList, AmbitoNews } from '../../models/zsupport/valuelist.model';
 
 @Pipe({
   name: 'ambitoNews'

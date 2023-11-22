@@ -1,4 +1,4 @@
-import { SettoreQrCode, ValueList } from "../valuelist.model";
+import { SettoreQrCode, ValueList } from "../zsupport/valuelist.model";
 
 export class GeneratorQrcode {
 

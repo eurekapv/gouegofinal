@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
+import { PrenotazionePianificazione } from 'src/app/models/prenotazioni/prenotazionepianificazione.model';
 
 
 @Component({

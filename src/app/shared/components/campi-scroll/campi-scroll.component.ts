@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { Campo } from 'src/app/models/campo.model';
-import { Location } from 'src/app/models/location.model';
+import { Campo } from 'src/app/models/struttura/campo.model';
+import { Location } from 'src/app/models/struttura/location.model';
 import { Swiper } from 'swiper';
 
 

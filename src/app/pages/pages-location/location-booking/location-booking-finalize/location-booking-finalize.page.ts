@@ -3,23 +3,23 @@ import { StartService } from 'src/app/services/start.service';
 import { NavController, LoadingController, ToastController, NavParams, ModalController, Platform } from '@ionic/angular';
 
 import { Subscription } from 'rxjs';
-import { Prenotazione } from 'src/app/models/prenotazione.model';
-import { Location } from 'src/app/models/location.model';
-import { Utente } from 'src/app/models/utente.model';
-import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
-import { Campo } from 'src/app/models/campo.model';
-import { Gruppo } from 'src/app/models/gruppo.model';
-import { PaymentProcess } from 'src/app/models/payment-process.model';
-import { PageType, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/valuelist.model';
+import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
+import { Location } from 'src/app/models/struttura/location.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { PrenotazionePianificazione } from 'src/app/models/prenotazioni/prenotazionepianificazione.model';
+import { Campo } from 'src/app/models/struttura/campo.model';
+import { Gruppo } from 'src/app/models/struttura/gruppo.model';
+import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
+import { PageType, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 
 import { AlertController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
-import { Area } from 'src/app/models/area.model';
-import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
-import { AreaLink } from 'src/app/models/arealink.model';
-import { LogApp } from 'src/app/models/log.model';
-import { PrenotaTesseramento } from 'src/app/models/prenota_tesseramento.model';
+import { AreaLink } from 'src/app/models/struttura/arealink.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { PrenotaTesseramento } from 'src/app/models/prenotazioni/prenota_tesseramento.model';
 
 @Component({
   selector: 'app-location-booking-finalize',

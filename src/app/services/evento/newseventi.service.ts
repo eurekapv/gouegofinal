@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { NewsEvento } from '../../models/newsevento.model';
+import { NewsEvento } from '../../models/evento/newsevento.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { PostParams, RequestParams } from '../../library/models/requestParams.model';
 

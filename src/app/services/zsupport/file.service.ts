@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { FileOpener } from '@capacitor-community/file-opener';
 import { File } from '@awesome-cordova-plugins/file';
 import { ApicallService } from './apicall.service';

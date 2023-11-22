@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Platform, ActionSheetController } from '@ionic/angular';
-import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
+import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 
 @Component({
   selector: 'app-payment-choose',

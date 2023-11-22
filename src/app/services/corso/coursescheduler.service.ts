@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {take } from 'rxjs/operators';
 
-import { PianificazioneCorso } from '../../models/pianificazionecorso.model';
-import { LogApp } from '../../models/log.model';
+import { PianificazioneCorso } from '../../models/corso/pianificazionecorso.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { MyDateTime } from '../../library/models/mydatetime.model';
 import { PostResponse } from '../../library/models/post-response.model';
 import { PostParams, RequestParams } from '../../library/models/requestParams.model';
-import { CorsoPresenze } from '../../models/corsopresenze.model';
+import { CorsoPresenze } from '../../models/corso/corsopresenze.model';
 
 
 @Injectable({

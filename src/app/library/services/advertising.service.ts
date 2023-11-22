@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { AdvertisingConfig, IAdvertisingConfig } from '../models/advertising-config.model';
 import { Platform } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 @Injectable({
   providedIn: 'root'

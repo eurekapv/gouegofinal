@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
-import { PaymentChannel, PaymentMode, ValueList } from 'src/app/models/valuelist.model';
+import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
+import { PaymentChannel, PaymentMode, ValueList } from 'src/app/models/zsupport/valuelist.model';
 import { Platform, ActionSheetController } from '@ionic/angular';
 
 @Component({

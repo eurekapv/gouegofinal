@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ImpegnoCollaboratore } from '../../models/impegno-collaboratore.model';
+import { ImpegnoCollaboratore } from '../../models/utente/impegno-collaboratore.model';
 import { BehaviorSubject } from 'rxjs';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { OperatorCondition } from '../../library/models/iddocument.model';
 import { RequestParams } from '../../library/models/requestParams.model';
-import { Mansione, RangeSearch } from '../../models/valuelist.model';
+import { Mansione, RangeSearch } from '../../models/zsupport/valuelist.model';
 import { MyDateTime } from '../../library/models/mydatetime.model';
 
 @Injectable({

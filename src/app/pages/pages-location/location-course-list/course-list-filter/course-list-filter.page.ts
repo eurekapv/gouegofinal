@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
-import { Sport } from 'src/app/models/sport.model';
-import { CategoriaEta } from 'src/app/models/categoriaeta.model';
+import { Sport } from 'src/app/models/archivi/sport.model';
+import { CategoriaEta } from 'src/app/models/archivi/categoriaeta.model';
 import { Subscription } from 'rxjs';
-import { ValueList, TargetSesso, TipoCorso } from 'src/app/models/valuelist.model';
+import { ValueList, TargetSesso, TipoCorso } from 'src/app/models/zsupport/valuelist.model';
 import { ModalController } from '@ionic/angular';
-import { Corso } from 'src/app/models/corso.model';
+import { Corso } from 'src/app/models/corso/corso.model';
 
 @Component({
   selector: 'app-course-list-filter',

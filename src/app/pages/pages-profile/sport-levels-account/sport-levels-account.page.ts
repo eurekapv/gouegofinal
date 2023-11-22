@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Utente } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
-import { Sport } from 'src/app/models/sport.model';
-import { TipoPrivateImage } from 'src/app/models/valuelist.model';
-import { LogApp } from 'src/app/models/log.model';
+import { Sport } from 'src/app/models/archivi/sport.model';
+import { TipoPrivateImage } from 'src/app/models/zsupport/valuelist.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 
 

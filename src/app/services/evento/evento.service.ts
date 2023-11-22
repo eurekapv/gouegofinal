@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { BehaviorSubject } from 'rxjs';
-import { Evento } from '../../models/evento.model';
+import { Evento } from '../../models/evento/evento.model';
 import { PostParams, RequestForeign, RequestParams } from '../../library/models/requestParams.model';
-import { EventoPrivacy, EventoStato, EventoVisibilita } from '../../models/valuelist.model';
+import { EventoPrivacy, EventoStato, EventoVisibilita } from '../../models/zsupport/valuelist.model';
 
 @Injectable({
   providedIn: 'root'

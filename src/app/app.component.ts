@@ -4,7 +4,7 @@ import { StartConfiguration } from './models/start-configuration.model';
 import { StartService } from './services/start.service';
 import { Subscription } from 'rxjs';
 import { register } from 'swiper/element/bundle';
-import { StateApplication } from './models/valuelist.model';
+import { StateApplication } from './models/zsupport/valuelist.model';
 import { environment } from 'src/environments/environment';
 
 //we need to call Swiper's register function to globally register Swiper's custom elements

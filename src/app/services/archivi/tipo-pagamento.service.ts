@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RequestParams } from '../../library/models/requestParams.model';
-import { TipoPagamento } from '../../models/tipopagamento.model';
+import { TipoPagamento } from '../../models/archivi/tipopagamento.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 
 @Injectable({

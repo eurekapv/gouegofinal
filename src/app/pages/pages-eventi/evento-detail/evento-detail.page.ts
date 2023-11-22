@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { LoadingController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { Area } from 'src/app/models/area.model';
-import { EventoPianificazione } from 'src/app/models/evento-pianificazione.model';
-import { Evento } from 'src/app/models/evento.model';
-import { Tempistica } from 'src/app/models/valuelist.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { EventoPianificazione } from 'src/app/models/evento/evento-pianificazione.model';
+import { Evento } from 'src/app/models/evento/evento.model';
+import { Tempistica } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({

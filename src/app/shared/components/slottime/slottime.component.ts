@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SlotTime } from 'src/app/models/imdb/slottime.model';
-import { StatoSlot } from 'src/app/models/valuelist.model';
-import { LogApp } from 'src/app/models/log.model';
+import { StatoSlot } from 'src/app/models/zsupport/valuelist.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 @Component({
   selector: 'app-slottime',

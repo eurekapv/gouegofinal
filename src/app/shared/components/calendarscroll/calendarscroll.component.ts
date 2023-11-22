@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { PickerController } from '@ionic/angular';
 import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
-import { ValueList, Mesi } from 'src/app/models/valuelist.model';
+import { ValueList, Mesi } from 'src/app/models/zsupport/valuelist.model';
 import { Swiper, SwiperOptions, Navigation } from 'swiper';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
 Swiper.use([Navigation]);
 

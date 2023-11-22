@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Articolo } from 'src/app/models/articolo.model';
-import { TipoArticolo } from 'src/app/models/valuelist.model';
+import { Articolo } from 'src/app/models/shop/articolo.model';
+import { TipoArticolo } from 'src/app/models/zsupport/valuelist.model';
 
 @Component({
   selector: 'app-table-item-articolo',

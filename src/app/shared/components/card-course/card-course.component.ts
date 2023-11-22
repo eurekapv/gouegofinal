@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Corso } from '../../../models/corso.model'
-import { ValueList, TargetSesso, TipoCorso, Tempistica } from 'src/app/models/valuelist.model';
+import { Corso } from '../../../models/corso/corso.model'
+import { ValueList, TargetSesso, TipoCorso, Tempistica } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service'
 
 //https://ionicthemes.com/templates/ionic5-full-starter-app/screenshots

@@ -3,13 +3,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertButton, IonInput, LoadingController, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { CryptoService } from 'src/app/library/services/crypto.service';
-import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/accountregistration.model';
-import { Area } from 'src/app/models/area.model';
-import { AreaLink } from 'src/app/models/arealink.model';
-import { Gruppo } from 'src/app/models/gruppo.model';
-import { LogApp } from 'src/app/models/log.model';
-import { Utente } from 'src/app/models/utente.model';
-import { PageType, RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/valuelist.model';
+import { AccountOperationResponse, AccountRequestCode, AccountVerifyCode } from 'src/app/models/utente/accountregistration.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { AreaLink } from 'src/app/models/struttura/arealink.model';
+import { Gruppo } from 'src/app/models/struttura/gruppo.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { PageType, RequestPincodeUse, TipoVerificaAccount } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({

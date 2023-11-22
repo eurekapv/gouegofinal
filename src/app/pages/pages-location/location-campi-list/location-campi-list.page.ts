@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Location } from '../../../models/location.model';
+import { Location } from '../../../models/struttura/location.model';
 import { StartService } from 'src/app/services/start.service';
 import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Campo } from 'src/app/models/campo.model';
-import { Sport } from 'src/app/models/sport.model'
-import { CampoSport } from 'src/app/models/camposport.model';
+import { Campo } from 'src/app/models/struttura/campo.model';
+import { Sport } from 'src/app/models/archivi/sport.model'
+import { CampoSport } from 'src/app/models/struttura/camposport.model';
 import { Swiper, SwiperOptions } from 'swiper';
 
 

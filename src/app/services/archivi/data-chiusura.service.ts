@@ -7,9 +7,9 @@ import { MyDateTime } from '../../library/models/mydatetime.model';
 
 import { DocstructureService } from '../../library/services/docstructure.service';
 
-import { DataChiusura } from '../../models/datachiusura.model';
-import { AttivitaChiusura, TipoChiusura } from '../../models/valuelist.model';
-import { LogApp } from '../../models/log.model';
+import { DataChiusura } from '../../models/struttura/datachiusura.model';
+import { AttivitaChiusura, TipoChiusura } from '../../models/zsupport/valuelist.model';
+import { LogApp } from '../../models/zsupport/log.model';
 
 @Injectable({
   providedIn: 'root'

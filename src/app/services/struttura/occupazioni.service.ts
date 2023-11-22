@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, from } from 'rxjs';
-import { OccupazioneCampi } from '../../models/occupazionecampi.model';
+import { OccupazioneCampi } from '../../models/struttura/occupazionecampi.model';
 import { IDDocument, OperatorCondition } from '../../library/models/iddocument.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { SettoreAttivita } from '../../models/valuelist.model';
+import { SettoreAttivita } from '../../models/zsupport/valuelist.model';
 
 import { RequestParams } from '../../library/models/requestParams.model';
-import { PrenotazionePianificazione } from '../../models/prenotazionepianificazione.model';
-import { Prenotazione } from '../../models/prenotazione.model';
+import { PrenotazionePianificazione } from '../../models/prenotazioni/prenotazionepianificazione.model';
+import { Prenotazione } from '../../models/prenotazioni/prenotazione.model';
 
 @Injectable({
   providedIn: 'root'

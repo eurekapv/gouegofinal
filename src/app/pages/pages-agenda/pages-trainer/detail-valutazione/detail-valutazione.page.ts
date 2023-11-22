@@ -3,12 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { ActionSheetButton, ActionSheetController, LoadingController, NavController } from '@ionic/angular';
 import { RequestDecode, RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { Corso } from 'src/app/models/corso.model';
-import { CorsoValutazione } from 'src/app/models/corsovalutazione.model';
-import { CorsoValutazioneLivello } from 'src/app/models/corsovalutazionelivello.model';
-import { Livello } from 'src/app/models/livello.model';
-import { LogApp } from 'src/app/models/log.model';
-import { TipoCorso } from 'src/app/models/valuelist.model';
+import { Corso } from 'src/app/models/corso/corso.model';
+import { CorsoValutazione } from 'src/app/models/corso/corsovalutazione.model';
+import { CorsoValutazioneLivello } from 'src/app/models/corso/corsovalutazionelivello.model';
+import { Livello } from 'src/app/models/archivi/livello.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { TipoCorso } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({

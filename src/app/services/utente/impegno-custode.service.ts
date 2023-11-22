@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { OperatorCondition } from '../../library/models/iddocument.model';
 import { RequestParams } from '../../library/models/requestParams.model';
-import { RangeSearch } from '../../models/valuelist.model';
+import { RangeSearch } from '../../models/zsupport/valuelist.model';
 import { MyDateTime } from '../../library/models/mydatetime.model';
-import { ImpegnoCustode } from '../../models/impegno-custode.model';
+import { ImpegnoCustode } from '../../models/utente/impegno-custode.model';
 
 
 @Injectable({

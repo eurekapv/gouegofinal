@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { UtenteIscrizione } from '../../models/utenteiscrizione.model';
+import { UtenteIscrizione } from '../../models/utente/utenteiscrizione.model';
 import { ApicallService } from '../zsupport/apicall.service';
 import { StartConfiguration } from '../../models/start-configuration.model';
 import { map, take } from 'rxjs/operators';

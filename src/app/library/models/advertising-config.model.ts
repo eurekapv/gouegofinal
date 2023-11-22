@@ -1,4 +1,4 @@
-import { LogApp } from "src/app/models/log.model";
+import { LogApp } from "src/app/models/zsupport/log.model";
 import { environment } from "src/environments/environment";
 
 /* Classe per la configurazione dei messaggi pubblicitari 

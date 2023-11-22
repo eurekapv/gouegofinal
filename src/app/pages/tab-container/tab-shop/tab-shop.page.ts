@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Area } from 'src/app/models/area.model';
-import { Articolo } from 'src/app/models/articolo.model';
-import { TipoArticolo } from 'src/app/models/valuelist.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { Articolo } from 'src/app/models/shop/articolo.model';
+import { TipoArticolo } from 'src/app/models/zsupport/valuelist.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 

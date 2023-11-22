@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Area } from 'src/app/models/area.model';
-import { Location } from 'src/app/models/location.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { Location } from 'src/app/models/struttura/location.model';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { TipoSocieta } from 'src/app/models/valuelist.model';
+import { TipoSocieta } from 'src/app/models/zsupport/valuelist.model';
 
 @Component({
   selector: 'app-centri',

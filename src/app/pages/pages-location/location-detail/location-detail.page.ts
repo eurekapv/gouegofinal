@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { Location } from 'src/app/models/location.model';
-import { LocationImage } from 'src/app/models/locaton-image.model';
+import { Location } from 'src/app/models/struttura/location.model';
+import { LocationImage } from 'src/app/models/struttura/locaton-image.model';
 import { ModalController, NavController } from '@ionic/angular';
-import { AperturaLocation } from 'src/app/models/aperturalocation.model';
+import { AperturaLocation } from 'src/app/models/struttura/aperturalocation.model';
 import { LocationCampiListPage } from '../location-campi-list/location-campi-list.page'
-import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { ButtonCard } from 'src/app/models/zsupport/buttoncard.model';
 import { Subscription } from 'rxjs';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
-import { TipoSocieta, TypeUrlPageLocation } from 'src/app/models/valuelist.model';
+import { TipoSocieta, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 import { ImageModalPage } from '../../image-modal/image-modal.page';
 import SwiperCore, { Pagination  } from 'swiper';
 

@@ -1,5 +1,5 @@
-import { Gruppo } from './gruppo.model';
-import { TipoPrivateImage } from './valuelist.model';
+import { Gruppo } from './struttura/gruppo.model';
+import { TipoPrivateImage } from './zsupport/valuelist.model';
 import { HttpHeaders } from '@angular/common/http';
 import { ConnectionMode, environment } from 'src/environments/environment';
 

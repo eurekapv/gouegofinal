@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
-import { ItemCalendario } from 'src/app/models/itemCalendario.model';
+import { ItemCalendario } from 'src/app/models/zsupport/itemCalendario.model';
 
 
 @Component({

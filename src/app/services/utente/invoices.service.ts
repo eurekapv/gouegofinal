@@ -3,8 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { PostResponse } from '../../library/models/post-response.model';
 import { PostParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { MasterDocumento } from '../../models/ricevuta.model';
-import { Utente } from '../../models/utente.model';
+import { MasterDocumento } from '../../models/utente/master-documento.model';
+import { Utente } from '../../models/utente/utente.model';
 
 
 @Injectable({

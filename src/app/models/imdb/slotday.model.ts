@@ -1,7 +1,7 @@
 import { SlotTime } from './slottime.model';
-import { PrenotazionePianificazione } from '../prenotazionepianificazione.model';
+import { PrenotazionePianificazione } from '../prenotazioni/prenotazionepianificazione.model';
 import { MyDateTime, TypePeriod } from '../../library/models/mydatetime.model';
-import { StatoSlot } from '../valuelist.model';
+import { StatoSlot } from '../zsupport/valuelist.model';
 
 
 export class SlotDay {

@@ -6,7 +6,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { ApicallService } from '../zsupport/apicall.service';
 
 import { StartConfiguration } from '../../models/start-configuration.model';
-import { UtentePrenotazione } from '../../models/utenteprenotazione.model';
+import { UtentePrenotazione } from '../../models/utente/utenteprenotazione.model';
 import { IDDocument } from '../../library/models/iddocument.model';
 
 

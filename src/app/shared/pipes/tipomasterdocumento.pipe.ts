@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ValueList, TipoMasterDocumento } from 'src/app/models/valuelist.model';
+import { ValueList, TipoMasterDocumento } from 'src/app/models/zsupport/valuelist.model';
 
 @Pipe({
   name: 'tipomasterdocumento'

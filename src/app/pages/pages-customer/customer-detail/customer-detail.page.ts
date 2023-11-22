@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { ButtonCard } from 'src/app/models/buttoncard.model';
-import { LogApp } from 'src/app/models/log.model';
-import { Tesseramento } from 'src/app/models/tesseramento';
-import { TipoTessera } from 'src/app/models/tipo-tessera';
-import { Utente } from 'src/app/models/utente.model';
+import { ButtonCard } from 'src/app/models/zsupport/buttoncard.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { Tesseramento } from 'src/app/models/utente/tesseramento';
+import { TipoTessera } from 'src/app/models/archivi/tipo-tessera';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { StartService } from 'src/app/services/start.service';
 
 

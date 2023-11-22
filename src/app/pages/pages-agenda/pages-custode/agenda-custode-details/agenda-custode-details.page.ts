@@ -3,15 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { AlertButton,  IonInput, LoadingController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { SupportFunc } from 'src/app/library/models/support-func.model';
-import { Corso } from 'src/app/models/corso.model';
-import { CorsoPresenze } from 'src/app/models/corsopresenze.model';
-import { Evento } from 'src/app/models/evento.model';
-import { ImpegnoCustode } from 'src/app/models/impegno-custode.model';
-import { LogApp } from 'src/app/models/log.model';
+import { Corso } from 'src/app/models/corso/corso.model';
+import { CorsoPresenze } from 'src/app/models/corso/corsopresenze.model';
+import { Evento } from 'src/app/models/evento/evento.model';
+import { ImpegnoCustode } from 'src/app/models/utente/impegno-custode.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
-import { Prenotazione } from 'src/app/models/prenotazione.model';
-import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
-import { SettoreAttivita } from 'src/app/models/valuelist.model';
+import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
+import { PrenotazionePianificazione } from 'src/app/models/prenotazioni/prenotazionepianificazione.model';
+import { SettoreAttivita } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Impegno } from '../../models/impegno.model';
+import { Impegno } from '../../models/utente/impegno.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { OperatorCondition } from '../../library/models/iddocument.model';
 import { RequestParams } from '../../library/models/requestParams.model';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 import { MyDateTime } from '../../library/models/mydatetime.model';
 
 @Injectable({

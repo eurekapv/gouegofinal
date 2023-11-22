@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ButtonCard } from 'src/app/models/buttoncard.model';
+import { ButtonCard } from 'src/app/models/zsupport/buttoncard.model';
 
 @Component({
   selector: 'app-button-card',

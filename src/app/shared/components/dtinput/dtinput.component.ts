@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IDDocument } from 'src/app/library/models/iddocument.model';
 import { ModesCalendar } from 'src/app/library/models/mydatetime.model';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 //import { format, utcToZonedTime } from 'date-fns-tz';
 
 //Esempi di IonDateTime: https://toexpert.dev/ionic-6-datetime-picker-examples/

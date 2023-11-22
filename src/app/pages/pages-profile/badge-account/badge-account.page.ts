@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { Utente } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 

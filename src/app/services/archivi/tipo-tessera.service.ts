@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { TipoTessera } from '../../models/tipo-tessera';
+import { TipoTessera } from '../../models/archivi/tipo-tessera';
 import { BehaviorSubject } from 'rxjs';
 import { RequestParams } from '../../library/models/requestParams.model';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 
 @Injectable({
   providedIn: 'root'

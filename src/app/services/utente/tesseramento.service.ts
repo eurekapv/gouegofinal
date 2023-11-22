@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { BehaviorSubject } from 'rxjs';
-import { Tesseramento } from '../../models/tesseramento';
+import { Tesseramento } from '../../models/utente/tesseramento';
 
 @Injectable({
   providedIn: 'root'

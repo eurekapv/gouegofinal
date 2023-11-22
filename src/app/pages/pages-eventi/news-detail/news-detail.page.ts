@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NewsEvento } from 'src/app/models/newsevento.model';
+import { NewsEvento } from 'src/app/models/evento/newsevento.model';
 
 import { Browser } from '@capacitor/browser';
 import { ModalController } from '@ionic/angular';

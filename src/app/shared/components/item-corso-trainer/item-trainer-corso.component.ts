@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Corso } from 'src/app/models/corso.model';
-import { PianificazioneCorso } from 'src/app/models/pianificazionecorso.model';
-import { Tempistica, TipoCorso } from 'src/app/models/valuelist.model';
+import { Corso } from 'src/app/models/corso/corso.model';
+import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
+import { Tempistica, TipoCorso } from 'src/app/models/zsupport/valuelist.model';
 
 
 @Component({

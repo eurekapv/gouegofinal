@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { CategoriaEta } from '../../models/categoriaeta.model';
+import { CategoriaEta } from '../../models/archivi/categoriaeta.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 
 
 @Injectable({

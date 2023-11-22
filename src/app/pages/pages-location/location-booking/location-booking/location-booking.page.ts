@@ -2,21 +2,21 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
 import { NavController, LoadingController, ModalController, ActionSheetController} from '@ionic/angular';
-import { Location } from 'src/app/models/location.model';
+import { Location } from 'src/app/models/struttura/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Campo } from 'src/app/models/campo.model';
-import { Utente } from 'src/app/models/utente.model';
+import { Campo } from 'src/app/models/struttura/campo.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { SlotWeek } from 'src/app/models/imdb/slotweek.model';
 import { SlotDay } from 'src/app/models/imdb/slotday.model';
 import { SlotTime } from 'src/app/models/imdb/slottime.model';
-import { PrenotazionePianificazione } from 'src/app/models/prenotazionepianificazione.model';
-import { Prenotazione } from 'src/app/models/prenotazione.model';
+import { PrenotazionePianificazione } from 'src/app/models/prenotazioni/prenotazionepianificazione.model';
+import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LocationBookingFinalizePage } from '../location-booking-finalize/location-booking-finalize.page';
-import { Sport } from 'src/app/models/sport.model';
-import { StatoSlot } from 'src/app/models/valuelist.model';
-import { LogApp } from 'src/app/models/log.model';
+import { Sport } from 'src/app/models/archivi/sport.model';
+import { StatoSlot } from 'src/app/models/zsupport/valuelist.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 
 @Component({

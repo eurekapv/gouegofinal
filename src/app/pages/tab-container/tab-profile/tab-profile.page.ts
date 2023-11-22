@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertButton, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Utente } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { StartService } from 'src/app/services/start.service';
 import { UserUpdatePassword } from '../../pages-profile/authorization-account/user-update-password/user-update-password.page';
-import { Gruppo } from 'src/app/models/gruppo.model';
+import { Gruppo } from 'src/app/models/struttura/gruppo.model';
 import { environment } from 'src/environments/environment';
 
 

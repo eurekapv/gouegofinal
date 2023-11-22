@@ -3,13 +3,13 @@ import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 
-import { Corso } from '../../models/corso.model';
-import { FilterCorsi } from '../../models/filtercorsi.model';
+import { Corso } from '../../models/corso/corso.model';
+import { FilterCorsi } from '../../models/corso/filtercorsi.model';
 
 
 import { PostParams, RequestDecode, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { TimeTrainerCourse } from '../../models/valuelist.model';
+import { TimeTrainerCourse } from '../../models/zsupport/valuelist.model';
 
 
 @Injectable({

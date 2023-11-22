@@ -3,18 +3,18 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { ModalController, LoadingController, ToastController, AlertController, NavParams } from '@ionic/angular';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { StartService } from 'src/app/services/start.service';
-import { Utente } from 'src/app/models/utente.model';
-import { Gruppo } from 'src/app/models/gruppo.model';
-import { TipoVerificaAccount, PageType, RequestPincodeUse, ValueList, Sesso } from 'src/app/models/valuelist.model';
-import { Area } from 'src/app/models/area.model';
-import { AreaLink } from 'src/app/models/arealink.model';
-import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/accountregistration.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { Gruppo } from 'src/app/models/struttura/gruppo.model';
+import { TipoVerificaAccount, PageType, RequestPincodeUse, ValueList, Sesso } from 'src/app/models/zsupport/valuelist.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { AreaLink } from 'src/app/models/struttura/arealink.model';
+import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from 'src/app/models/utente/accountregistration.model';
 
 import { CryptoService } from 'src/app/library/services/crypto.service';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
-import { LogApp } from 'src/app/models/log.model';
-import { ParamsVerificaAccount } from 'src/app/models/params-verifica-account.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { ParamsVerificaAccount } from 'src/app/models/utente/params-verifica-account.model';
 
 
 @Component({

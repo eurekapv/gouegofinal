@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Geolocation, Position } from '@capacitor/geolocation';
-import { Area } from '../../models/area.model';
+import { Area } from '../../models/struttura/area.model';
 
 
 

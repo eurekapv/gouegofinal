@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { RequestDecode, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { ArticoloCarrello } from '../../models/articolo-carrello.model';
-import { Articolo } from '../../models/articolo.model';
-import { LogApp } from '../../models/log.model';
+import { Articolo } from '../../models/shop/articolo.model';
+import { LogApp } from '../../models/zsupport/log.model';
 
 @Injectable({
   providedIn: 'root'

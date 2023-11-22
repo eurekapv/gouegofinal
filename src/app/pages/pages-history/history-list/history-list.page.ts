@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { Corso } from 'src/app/models/corso.model';
-import { LogApp } from 'src/app/models/log.model';
-import { Utente } from 'src/app/models/utente.model';
-import { UtenteIscrizione } from 'src/app/models/utenteiscrizione.model';
-import { UtentePrenotazione } from 'src/app/models/utenteprenotazione.model';
-import { Language } from 'src/app/models/valuelist.model';
+import { Corso } from 'src/app/models/corso/corso.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { Utente } from 'src/app/models/utente/utente.model';
+import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
+import { UtentePrenotazione } from 'src/app/models/utente/utenteprenotazione.model';
+import { Language } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({

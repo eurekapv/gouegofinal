@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ValueList, StatoSlot} from '../../models/valuelist.model';
+import { ValueList, StatoSlot} from '../../models/zsupport/valuelist.model';
 
 @Pipe({
   name: 'statoSlot'

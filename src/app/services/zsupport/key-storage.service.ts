@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GetResult, Preferences } from '@capacitor/preferences';
 
 import { CryptoService } from '../../library/services/crypto.service';
-import { StorageUtente } from '../../models/stogare-utente.model';
+import { StorageUtente } from '../../models/utente/stogare-utente.model';
 
 
 @Injectable({

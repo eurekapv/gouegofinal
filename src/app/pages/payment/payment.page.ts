@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { AreaPaymentSetting } from 'src/app/models/areapaymentsetting.model';
-import { LogApp } from 'src/app/models/log.model';
-import { PaymentProcess } from 'src/app/models/payment-process.model';
-import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/valuelist.model';
+import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
+import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/zsupport/valuelist.model';
 
 //questo mi rende disponibile l'oggetto paypal che è presente nello script caricato dinamicamente
 declare let paypal: any

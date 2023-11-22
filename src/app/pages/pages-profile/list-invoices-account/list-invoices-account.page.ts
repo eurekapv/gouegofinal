@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, NavController } from '@ionic/angular';
-import { MasterDocumento } from 'src/app/models/ricevuta.model';
+import { MasterDocumento } from 'src/app/models/utente/master-documento.model';
 import { StartService } from 'src/app/services/start.service';
-import { Utente } from 'src/app/models/utente.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
-import { LogApp } from 'src/app/models/log.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 import { FileService } from 'src/app/services/zsupport/file.service';
 
 @Component({

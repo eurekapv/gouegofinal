@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { Location } from '../../models/location.model';
+import { Location } from '../../models/struttura/location.model';
 import { ApicallService } from '../zsupport/apicall.service';
 import { StartConfiguration } from '../../models/start-configuration.model';
-import { Sport } from '../../models/sport.model';
-import { CampoSport } from '../../models/camposport.model';
+import { Sport } from '../../models/archivi/sport.model';
+import { CampoSport } from '../../models/struttura/camposport.model';
 import { SlotWeek } from '../../models/imdb/slotweek.model';
 import { RequestDecode, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { LocationAppVisibility } from '../../models/valuelist.model';
+import { LocationAppVisibility } from '../../models/zsupport/valuelist.model';
 
 
 

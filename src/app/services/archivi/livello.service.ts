@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Livello } from '../../models/livello.model';
+import { Livello } from '../../models/archivi/livello.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
-import { LogApp } from '../../models/log.model';
+import { LogApp } from '../../models/zsupport/log.model';
 
 @Injectable({
   providedIn: 'root'

@@ -4,12 +4,12 @@ import { map, take } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { ApicallService } from '../zsupport/apicall.service';
-import { Prenotazione } from '../../models/prenotazione.model';
-import { Utente } from '../../models/utente.model';
-import { LogApp } from '../../models/log.model';
-import { Campo } from '../../models/campo.model';
+import { Prenotazione } from '../../models/prenotazioni/prenotazione.model';
+import { Utente } from '../../models/utente/utente.model';
+import { LogApp } from '../../models/zsupport/log.model';
+import { Campo } from '../../models/struttura/campo.model';
 import { StartConfiguration } from '../../models/start-configuration.model';
-import { PrenotazionePianificazione } from '../../models/prenotazionepianificazione.model';
+import { PrenotazionePianificazione } from '../../models/prenotazioni/prenotazionepianificazione.model';
 import { SportService } from '../archivi/sport.service';
 import { ParamsExport } from '../../library/models/iddocument.model';
 import { PostResponse } from '../../library/models/post-response.model';

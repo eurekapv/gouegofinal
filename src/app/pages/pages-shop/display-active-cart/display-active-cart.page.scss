@@ -1,0 +1,11 @@
+ion-grid.grid-images{
+    ion-row{
+      ion-col{
+        display: flex;
+  
+        img{
+          margin: auto;
+        }
+      }
+    }
+}

@@ -1,7 +1,8 @@
 <ion-card 
     *ngIf="flagEmptyCard"
     class="ion-text-center">
-  <img alt="cestino prodotti" src="assets/commercial/basketarticoli_small.png">
+  <img alt="cestino prodotti" 
+      [src]="srcImageEmpty">
   <ion-card-header>
     <ion-card-title>Spiacenti</ion-card-title>
     <ion-card-subtitle>Nessun {{labelFor()}} disponibile</ion-card-subtitle>

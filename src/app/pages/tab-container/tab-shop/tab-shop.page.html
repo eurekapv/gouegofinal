@@ -3,6 +3,20 @@
     <ion-title>
       Acquista
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="clickCarrello()">
+        Carrello&nbsp;
+        <ion-icon 
+            *ngIf="numProdotti == 0"
+            slot="end" name="cart-outline"></ion-icon>
+        <ion-badge 
+            slot="end"
+            color="danger" 
+            *ngIf="numProdotti != 0">
+            {{numProdotti}}
+        </ion-badge>
+      </ion-button>
+    </ion-buttons>  
   </ion-toolbar>
 </ion-header>
 

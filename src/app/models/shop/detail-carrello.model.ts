@@ -24,7 +24,15 @@ export class DetailCarrello extends IDDocument {
     ZORDER: number;
     DISPONIBILE: boolean;
     MSGDISPONIBILE: string;
+    PATHCOVERIMAGE: string;
 
+    constructor() {
+        super();
+
+        this.QUANTITA = 0;
+        this.PREZZO = 0;
+        this.IMPONIBILE = 0;
+    }
 
     /**
     * Ritorna il descrittore della Struttura Campi
@@ -39,7 +47,8 @@ export class DetailCarrello extends IDDocument {
                         'SCONTOTEXT',
                         'IDCODICEIMPOSTA',
                         'IDUNITAMISURA',
-                        'MSGDISPONIBILE'
+                        'MSGDISPONIBILE',
+                        'PATHCOVERIMAGE'
                         ];
         let arNumber = ['TIPORIGO',
                         'STATORIGO',

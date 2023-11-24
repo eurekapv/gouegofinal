@@ -32,19 +32,23 @@ export class PostResponse {
      * Ritorna il documento Tipizzato
      * @returns 
      */
-    getTipizedDocument<T extends IDDocument>(): T {
+    getTipizedDocument<T extends IDDocument>(): Promise<T> {
 
-        let single;
-        let newClass = this.createDoc<T>(single);
+        return new Promise<T>((resolve, reject) => {
+            
+            let single;
+            let newClass = this.createDoc<T>(single);
+    
+            if (this._document && this._document.length != 0) {
+                newClass.setJSONProperty(this._document);
+                resolve(newClass);
+            }
+            else {
+                reject('Document null');
+            }
 
-        if (this._document && this._document.length != 0) {
-            newClass.setJSONProperty(this._document);
-        }
-        else {
-            newClass = null;
-        }
-        
-        return newClass;
+        })
+    
     }
 
     getDocument(): any {

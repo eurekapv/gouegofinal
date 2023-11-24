@@ -1,6 +1,6 @@
 import { Descriptor, TypeDefinition } from "../../library/models/descriptor.model";
 import { IDDocument } from "../../library/models/iddocument.model";
-import { StatoCarrello, TipoPrezzo } from "../zsupport/valuelist.model";
+import { StatoCarrello, TipoPrezzo, TipoRigoDetailCarrello } from "../zsupport/valuelist.model";
 import { DetailCarrello } from "./detail-carrello.model";
 import { RiepilogoCarrello } from "./riepilogo-carrello.model";
 
@@ -205,5 +205,19 @@ export class ShopCarrello extends IDDocument {
                 this.RIEPILOGOCARRELLO.push(itemDoc);
             })
         }
-    }    
+    }  
+    
+    
+    /**
+     * Conta il numero delle righe di tipo Prodotti
+     */
+    getNumProdotti(): number {
+        let numProdotti = 0;
+
+        if (this.DETAILCARRELLO) {
+            numProdotti = this.DETAILCARRELLO.filter(elRow => elRow.TIPORIGO == TipoRigoDetailCarrello.prodotti).length;
+        }
+
+        return numProdotti;
+    }
 }

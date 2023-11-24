@@ -1,0 +1,36 @@
+<ion-grid 
+      *ngIf="detailDoc"
+      class="ion-no-padding ion-no-margin">
+  <ion-row>
+    <ion-grid class="ion-no-padding ion-no-margin">
+      <ion-row>
+        <!-- COLONNA IMMAGINE -->
+        <ion-col
+            *ngIf="flagWithImage"
+            class="ion-align-self-center"
+            size="4">
+          <ion-img [src]="srcImage"></ion-img>
+        </ion-col>
+        <!-- COLONNA DESCRITTIVA -->
+        <ion-col 
+            [size]="flagWithImage ? '8':'12'">
+          <h3>{{detailDoc.DESCR}}</h3>
+          <p *ngIf="detailDoc.MSGDISPONIBILE && detailDoc.MSGDISPONIBILE.length!= 0">
+            {{detailDoc.MSGDISPONIBILE}}
+          </p>
+          <p *ngIf="detailDoc.DISPONIBILE == false"><ion-badge color="danger">Prodotto non disponibile</ion-badge></p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-row>
+  <!-- RIGA CON GESTIONE QUANTITA E ELIMINAZIONE -->
+  <ion-row>
+    <ion-col>
+      <app-numeric-input-up-down 
+          (onDeleteRequest)="onClickRequestDelete()"
+          (onChangeQuantity)="onClickChangeQuantity($event)"
+          [colorButton]="'primary'"
+          [displayNumber]="detailDoc.QUANTITA"></app-numeric-input-up-down>
+    </ion-col>
+  </ion-row>
+</ion-grid>

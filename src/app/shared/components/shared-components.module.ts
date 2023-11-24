@@ -45,6 +45,9 @@ import { TableItemArticoloComponent } from './table-item-articolo/table-item-art
 import { CardImageComponent } from './card-image/card-image.component';
 import { PipesModule } from '../pipes/pipes.module';
 import { DurataChooserComponent } from './durata-chooser/durata-chooser.component';
+import { CartItemRowComponent } from './cart-item-row/cart-item-row.component';
+import { NumericInputUpDownComponent } from './numeric-input-up-down/numeric-input-up-down.component';
+
 
 
 @NgModule({
@@ -93,7 +96,9 @@ import { DurataChooserComponent } from './durata-chooser/durata-chooser.componen
         TableArticoliComponent,
         TableItemArticoloComponent,
         CardImageComponent,
-        DurataChooserComponent
+        DurataChooserComponent,
+        CartItemRowComponent,
+        NumericInputUpDownComponent
         
     ],
     exports: [
@@ -130,7 +135,10 @@ import { DurataChooserComponent } from './durata-chooser/durata-chooser.componen
         TableArticoliComponent,
         TableItemArticoloComponent,
         CardImageComponent,
-        DurataChooserComponent
+        DurataChooserComponent,
+        CartItemRowComponent,
+        NumericInputUpDownComponent
+        
     ]
 })
 export class SharedComponentsModule {}

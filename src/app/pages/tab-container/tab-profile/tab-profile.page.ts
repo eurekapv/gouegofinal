@@ -22,7 +22,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
       this.setSpecialPicture();
   }
 
-  developerMode = !environment.production;
+  developerMode = !environment.production; 
 
   specialPicture: string[]; //Immagini mostrate nella card di registrazione
 

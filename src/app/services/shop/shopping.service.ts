@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { PostParams, RequestDecode, RequestParams } from '../../library/models/requestParams.model';
+import { BehaviorSubject } from 'rxjs';
+import { PostParams, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { Articolo } from '../../models/shop/articolo.model';
-import { LogApp } from '../../models/zsupport/log.model';
 import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { DetailCarrello } from 'src/app/models/shop/detail-carrello.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
-import { TipoArticolo, TipoRigoDetailCarrello } from 'src/app/models/zsupport/valuelist.model';
+import { TipoRigoDetailCarrello } from 'src/app/models/zsupport/valuelist.model';
+import { StartConfiguration } from 'src/app/models/start-configuration.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -35,10 +36,12 @@ export class ShoppingService {
   public get activeCart$() {
     return this._activeCart;
   }
-  
+
   public get activeCart(): ShopCarrello {
     return this._activeCart.getValue();
   }
+
+  private startConfig: StartConfiguration; //Mi serve per modificare i path in arrivo
   
 
   //#region GESTIONE CART
@@ -47,7 +50,13 @@ export class ShoppingService {
    * Svuota e crea un nuovo carrello
    * @param {string} idArea
    */
-  newShoppingCart(idArea: string): void {
+  newShoppingCart(idArea: string, 
+                  config: StartConfiguration): void {
+    
+    //Memorizzo la configurazione di start
+    this.startConfig = config;
+
+    //Preparo il nuovo carrello
     let cartDoc = new ShopCarrello();
     cartDoc.IDAREAOPERATIVA = idArea;
 
@@ -75,6 +84,7 @@ export class ShoppingService {
           itemCart.IDARTICOLO = articoloDoc.ID;
           itemCart.IDARTICOLOCOLORE = idArticoloColor;
           itemCart.IDARTICOLOTAGLIA = idArticoloTaglia;
+          itemCart.QUANTITA = 1;
     
           cart = this._activeCart.getValue();
           cart.DETAILCARRELLO.push(itemCart);
@@ -183,17 +193,18 @@ export class ShoppingService {
                                     reject(risposta.message);
                                   }
                                   else {
-                                    //Recupero il documento tipizzato
-                                    let cartDoc = risposta.getTipizedDocument<ShopCarrello>();
-                                    if (cartDoc) {
-                                      this._activeCart.next(cartDoc);
-                                      resolve();
-                                    }
-                                    else {
-                                      reject('Errore nel ricalcolo');
-                                    }
-
-                                  }                                  
+                                    console.log(risposta);
+                                    return risposta.getTipizedDocument<ShopCarrello>();
+                                  }
+                                })
+                                .then(cartDoc=> {
+                                    //Reimposto l'immagine nei dettagli
+                                    return this._changePathImage(cartDoc);
+                                })
+                                .then(cartDoc => {
+                                  //Riemetto il carrello
+                                  this._activeCart.next(cartDoc);
+                                  resolve();
                                 })
                                 .catch(error => {
                                   reject(error);
@@ -204,6 +215,47 @@ export class ShoppingService {
       }
     })
   }
+
+  /**
+   * Adegua il Pathcoverimage cosi da avere un Url Assoluto corretto
+   * @param config 
+   * @param articoloDoc 
+   */
+  _changePathImage(carrelloDoc: ShopCarrello): Promise<ShopCarrello> {
+    return new Promise<ShopCarrello>((resolve) => {
+      let urlStorage = '';
+      let defaultImage = environment.additionalConfig.defaultShopImage;
+
+      if (this.startConfig && carrelloDoc && carrelloDoc.DETAILCARRELLO) {
+        //Recupero URL dello Storage
+        urlStorage = this.startConfig.urlStorageGroup;
+
+        carrelloDoc.DETAILCARRELLO.forEach(elDetail => {
+          if (elDetail.TIPORIGO == TipoRigoDetailCarrello.prodotti) {
+
+            if (urlStorage.length != 0) {
+              if (elDetail.PATHCOVERIMAGE && elDetail.PATHCOVERIMAGE.length != 0) {
+                elDetail.PATHCOVERIMAGE = `${urlStorage}/shopimage/${elDetail.PATHCOVERIMAGE}`
+              }
+              else {
+                elDetail.PATHCOVERIMAGE = defaultImage;
+              }
+            }
+            else {
+              elDetail.PATHCOVERIMAGE = defaultImage;
+            }
+          }
+        });
+
+        resolve(carrelloDoc);
+      }
+      else {
+        resolve(carrelloDoc);
+      }
+    })
+    
+
+  }  
 
   //#endregion 
 

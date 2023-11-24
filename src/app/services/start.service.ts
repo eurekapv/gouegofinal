@@ -719,6 +719,8 @@ export class StartService {
      */
     onListenAreaSelezionata() {
 
+      const actualStartConfig = this._startConfig.getValue();
+
       this.areaService.areaSelected
           .subscribe(newAreaSelected => {
             //Cambiando Area selezionata
@@ -729,7 +731,7 @@ export class StartService {
               this.requestLocationByIdArea(newAreaSelected.ID);
             }
             //Preparo un nuovo carrello Shop
-            this.shopService.newShoppingCart(newAreaSelected.ID);
+            this.shopService.newShoppingCart(newAreaSelected.ID, actualStartConfig);
           })
     }
 
@@ -2058,6 +2060,19 @@ getUrlPageDisplayProduct(idProduct: string): string[] {
   return retPath;
 }
 
+/**
+ * Ritorna il path per la visualizzazione del carrello attivo
+ * @param idProduct 
+ */
+getUrlPageActiveCart(): string[] {
+  let retPath = [];
+
+  retPath = ['/','appstart-home','tab-shop','display-active-cart'];
+  
+
+  return retPath;
+}
+
 
 get listShopCarrello(): ShopCarrello[] {
   return this.shopService.listShopCarrello;
@@ -2722,6 +2737,46 @@ setInitializedAdvertising(flag: boolean): void {
 
 
   //#endregion
+
+  /**
+   * Viene creato un messaggio combinando header con la listMessage
+   * La listMessage compare come elenco puntato
+   * @param header 
+   * @param listMessage 
+   * @param myTitle 
+   * @param myButtons 
+   */
+  presentAlertListMessage(
+                          listMessage: string[], 
+                          header?: string, 
+                          footer?: string,
+                          myTitle?: string, 
+                          myButtons?: (AlertButton | string)[]) {
+      let finalMessage = '';
+
+      if (listMessage && listMessage.length != 0) {
+        if (header && header.length != 0) {
+          finalMessage = header;
+          finalMessage += '<br/>';
+        }
+
+        //Ora aggiungo gli altri punti
+        finalMessage += '<ul>';
+        listMessage.forEach(elMessage => {
+          finalMessage += `<li>${elMessage}</li>`;
+          finalMessage += '<br/>';
+        });
+
+        finalMessage += '</ul>';
+
+        if (footer && footer.length != 0) {
+          finalMessage += '<br/>';
+          finalMessage += footer;
+        }
+
+        this.presentAlertMessage(finalMessage, myTitle, myButtons);
+      }
+  }
 
 //#region SMART INTERFACE PRESENT
   //I seguenti metodi non tornano una Promise ma presentano subito l'elemento

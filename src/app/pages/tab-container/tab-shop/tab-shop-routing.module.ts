@@ -11,6 +11,10 @@ const routes: Routes = [
   {
     path: 'display-product/:id',
     loadChildren: () => import('../../pages-shop/display-product/display-product.module').then( m => m.DisplayProductPageModule)
+  },
+  {
+    path: 'display-active-cart',
+    loadChildren: () => import('../../pages-shop/display-active-cart/display-active-cart.module').then( m => m.DisplayActiveCartPageModule)
   }
 ];
 

@@ -3,6 +3,20 @@
     <ion-buttons slot="start">
       <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="clickCarrello()">
+        CARRELLO&nbsp;
+        <ion-icon 
+            *ngIf="numProdotti == 0"
+            slot="end" name="cart-outline"></ion-icon>
+        <ion-badge 
+            slot="end"
+            color="danger" 
+            *ngIf="numProdotti != 0">
+            {{numProdotti}}
+        </ion-badge>
+      </ion-button>
+    </ion-buttons>    
   </ion-toolbar>
 </ion-header>
 
@@ -69,11 +83,35 @@
 
                   <ion-row class="ion-padding-vertical">
                     <ion-col>
-                      <ion-button color="success" expand="block">
+                      <ion-button 
+                          (click)="onAddToCart()"
+                          color="success" expand="block">
                         Aggiungi al carrello
                       </ion-button>
                     </ion-col>
-                  </ion-row>                    
+                  </ion-row>    
+                  
+                  <ion-row *ngIf="selectedColor || selectedTaglia">
+
+                    <ion-col *ngIf="selectedColor">
+                      <ion-item>
+                        <ion-label>
+                          <h2>{{selectedColor.DESCRIZIONE}}</h2>
+                          <p class="ion-text-italic">(colore)</p>
+                        </ion-label>
+                      </ion-item>
+                    </ion-col>
+
+                    <ion-col *ngIf="selectedTaglia">
+                      <ion-item>
+                        <ion-label>
+                          <h2>{{selectedTaglia.DESCRIZIONE}}</h2>
+                          <p class="ion-text-italic">(taglia)</p>
+                        </ion-label>
+                      </ion-item>
+                    </ion-col>     
+
+                  </ion-row>
 
                   <!-- VARIAZIONI TAGLIE E COLORI -->
                   <ion-row *ngIf="enableTaglie || enableColori">
@@ -163,5 +201,33 @@
 
       </ion-col>
       </ion-row>
-    </ion-grid>  
+    </ion-grid>
+
+    <ion-modal [isOpen]="isOpenModalAddedItem" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.75]">
+      <ng-template>
+        <ion-content>
+          <!-- <ion-searchbar placeholder="Search" (click)="modalAddedItem.setCurrentBreakpoint(0.75)"></ion-searchbar> -->
+          <ion-list>
+            <ion-list-header mode="ios">
+              <ion-label>Aggiunto al carrello</ion-label>
+              <ion-button (click)="closeModalAddedItem()">Fatto</ion-button>
+            </ion-list-header>
+
+            <ion-item>
+              <ion-avatar slot="start">
+                <ion-img                   
+                  [src]="articoloDoc.PATHCOVERIMAGE && articoloDoc.PATHCOVERIMAGE.length != 0 ? articoloDoc.PATHCOVERIMAGE : 'assets/commercial/item_placeholder.png'">
+                </ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h2>{{articoloDoc.DESCR}}</h2>
+                <p *ngIf="selectedColor">Colore: {{selectedColor.DESCRIZIONE}}</p>
+                <p *ngIf="selectedTaglia">Taglia: {{selectedTaglia.DESCRIZIONE}}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+
 </ion-content>

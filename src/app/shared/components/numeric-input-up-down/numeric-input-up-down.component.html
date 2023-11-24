@@ -1,0 +1,36 @@
+<ion-grid class="ion-no-padding ion-no-margin">
+
+  <ion-row class="ion-align-items-center">
+    <ion-col [size]="sizeColCount">
+      <ion-item lines="none">
+        <ion-button 
+            (click)="onClickChangeQuantity(-1)"
+            slot="start" [color]="buttonColor" size="small" fill="clear">
+          <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-label class="ion-text-center">
+          <h1>
+          {{valueDisplay}}
+          </h1>
+        </ion-label>
+        <ion-button 
+              (click)="onClickChangeQuantity(1)"
+              slot="end" [color]="buttonColor" size="small" fill="clear">
+          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        </ion-button>     
+      </ion-item>
+    </ion-col>
+
+    <ion-col 
+        [size]="sizeColTrash"
+        *ngIf="buttonTrashShow">
+      <ion-button 
+            (click)="onClickRequestDelete()"
+            size="small" expand="full" color="danger">
+        <ion-icon name="trash-outline" slot="start"></ion-icon>
+        Elimina
+      </ion-button>
+    </ion-col>
+
+  </ion-row>
+</ion-grid>

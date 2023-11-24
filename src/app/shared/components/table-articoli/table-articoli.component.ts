@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Articolo } from 'src/app/models/shop/articolo.model';
 import { TipoArticolo } from 'src/app/models/zsupport/valuelist.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-table-articoli',
@@ -24,6 +25,7 @@ export class TableArticoliComponent implements OnInit {
   _listArticoli: Articolo[] = [];
   _typeArticolo: TipoArticolo;
   _received = false;
+  srcImageEmpty = environment.additionalConfig.defaultShopImage;
 
   /**
    * Torna un boolean ad indicare se deve mostrare la card di NoProduct

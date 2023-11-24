@@ -1,0 +1,69 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Carrello</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid id="container-page">
+    <ion-row
+        class="ion-no-margin"
+        >
+      <ion-col sizeXs="12" 
+                sizeSm="12" 
+                sizeMd="10" offsetMd="1"
+                sizeLg="8" offsetLg="2"
+                sizeXl="8" offsetXl="2">
+          
+                <ion-grid>
+                  <ion-row *ngIf="numProdotti == 0">
+                    <ion-col>
+                      <ion-card >
+                        <ion-card-header>
+                          <ion-card-title>Siamo dispiaciuti</ion-card-title>
+                        </ion-card-header>
+              
+                        <ion-grid class="grid-images">
+                          <ion-row>
+                            <ion-col *ngFor="let image  of specialPicture">
+                              <img class="radius-small" [src]="image" alt="">
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+              
+                        <ion-card-content>
+                          <p>
+                            Non hai ancora scelto nessun prodotto, quindi il tuo carrello risulta vuoto.
+                          </p>
+                          <p>
+                            Dai un occhio ai nostri prodotti e poi torna a visionare il tuo carrello
+                          </p>
+                        </ion-card-content>
+                      </ion-card>
+                    </ion-col>
+                    </ion-row>
+
+                    <!-- PRODOTTI PRESENTI -->
+                    <ion-row *ngIf="numProdotti != 0">
+                      <ion-col>
+                        <!-- GRIGLIA PRODOTTI CARRELLO-->
+                        <ion-grid>
+
+                          <!-- RIGA PER PRODOTTO-->
+                          <ion-row *ngFor="let item of carrelloDoc.DETAILCARRELLO">
+                            <ion-col>
+                              <app-cart-item-row [rowDetail]="item"></app-cart-item-row>
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      </ion-col>
+                    </ion-row>
+                 </ion-grid>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

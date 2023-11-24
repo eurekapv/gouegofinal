@@ -33,12 +33,16 @@ export class TabShopPage implements OnInit {
   selectedArea: Area;
   selectedAreaListen: Subscription; 
 
+  subListenCarrello: Subscription;
+  numProdotti: number = 0;
+
   
   
 
   ngOnInit(): void {
     this.onListenArea();
     this.onListenArticoli();
+    this.onListenCarrello();
 
   }
 
@@ -78,6 +82,22 @@ export class TabShopPage implements OnInit {
                                         });                                        
   }
 
+  /**
+   * Mi metto in ascolto del carrello per sapere il numero dei prodotti
+   */
+  onListenCarrello() {
+    this.subListenCarrello = this.startService.activeCart$.subscribe({
+      next: (carrelloDoc) => {
+          if (carrelloDoc) {
+            this.numProdotti = carrelloDoc.getNumProdotti();
+          }
+      },
+      error: () => {
+        this.numProdotti = 0;
+      }
+    })
+  }  
+
 
   /**
    * Tolgo la sottoscrizione a tutto
@@ -99,6 +119,9 @@ export class TabShopPage implements OnInit {
       this.subListPacchetti.unsubscribe();
     }
     
+    if (this.subListenCarrello) {
+      this.subListenCarrello.unsubscribe();
+    }    
   }  
     
 
@@ -162,5 +185,18 @@ export class TabShopPage implements OnInit {
         this.navController.navigateForward(retPath);
       }
     }
+  }
+
+  /**
+   * Richiesta la visualizzazione del carrello
+   */
+  clickCarrello() {
+    
+    let retPath = [];
+    
+    retPath = this.startService.getUrlPageActiveCart();
+    if (retPath.length != 0) {
+      this.navController.navigateForward(retPath);
+    }    
   }
 }

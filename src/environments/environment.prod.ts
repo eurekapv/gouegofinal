@@ -106,6 +106,9 @@ export const environment = {
         urlFileServer: 'app.gouego.com/admin'
       }
     }
+  },  
+  additionalConfig: {
+    defaultShopImage: 'assets/commercial/basketarticoli_small.png'
   }   
 
 };

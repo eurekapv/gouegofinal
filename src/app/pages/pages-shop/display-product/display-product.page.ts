@@ -1,7 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AnimationController, LoadingController, ModalController, NavController } from '@ionic/angular';
-import { DocstructureService } from 'src/app/library/services/docstructure.service';
+import { AnimationController, IonModal, LoadingController, ModalController, NavController } from '@ionic/angular';
 import { Articolo } from 'src/app/models/shop/articolo.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { StartService } from 'src/app/services/start.service';
@@ -10,6 +9,7 @@ import { ImageModalPage } from '../../image-modal/image-modal.page';
 import { ArticoloTaglieMisura } from 'src/app/models/shop/articolotagliemisura.model';
 import { ArticoloColore } from 'src/app/models/shop/articolocolore.model';
 import { TipoArticolo } from 'src/app/models/zsupport/valuelist.model';
+import { Subscription } from 'rxjs';
 
 SwiperCore.use([Pagination, Navigation]);
 
@@ -18,9 +18,11 @@ SwiperCore.use([Pagination, Navigation]);
   templateUrl: './display-product.page.html',
   styleUrls: ['./display-product.page.scss'],
 })
-export class DisplayProductPage implements OnInit {
+export class DisplayProductPage implements OnInit, OnDestroy {
 
   @ViewChild('swiperGallery') swiperRef: ElementRef | undefined;
+  @ViewChild(IonModal) modalAddedItem: IonModal;
+
   idPrimaryKey: string = '';
   articoloDoc: Articolo = new Articolo(true);
   listImagePath: string[] = [];
@@ -30,19 +32,25 @@ export class DisplayProductPage implements OnInit {
   enableTaglie: boolean = false;
   enableColori: boolean = false;
 
+  isOpenModalAddedItem = false; //Switch per l'apertura della modale sotto
+  subListenCarrello: Subscription;
+  numProdotti: number = 0;
+
 
   constructor(private router: ActivatedRoute,
               private animatioCntrl: AnimationController,
               private startService: StartService,
               private loadingController: LoadingController,
               private modalController: ModalController,
-              private docStructureSrv: DocstructureService,
               private navController: NavController) { }
 
   ngOnInit() {
 
     //Reimposto le immagini
     this.setListImagePath();
+
+    //Mi metto in ascolto del carrello
+    this.onListenCarrello();
 
     this.router.paramMap.subscribe( param => {
       if (param.has('id')) {
@@ -57,6 +65,31 @@ export class DisplayProductPage implements OnInit {
         }
       }
     })    
+  }
+
+  ngOnDestroy(): void {
+    if (this.subListenCarrello) {
+      this.subListenCarrello.unsubscribe();
+    }
+  }
+
+  /**
+   * Mi metto in ascolto del carrello per sapere il numero dei prodotti
+   */
+  onListenCarrello() {
+    this.subListenCarrello = this.startService.activeCart$.subscribe({
+      next: (carrelloDoc) => {
+          if (carrelloDoc) {
+            this.numProdotti = carrelloDoc.getNumProdotti();
+          }
+          else {
+            this.numProdotti = 0;
+          }
+      },
+      error: () => {
+        this.numProdotti = 0;
+      }
+    })
   }
 
 /**
@@ -113,7 +146,7 @@ onRequestData(event?: any) {
 setListImagePath(): void {
   
   //Imposto l'immagine di default
-  this.listImagePath.push('assets/commercial/shopmobilelogo.png');
+  this.listImagePath.push('assets/commercial/item_placeholder.png');
 
   if (this.articoloDoc &&
       this.articoloDoc.ARTICOLIIMAGES && 
@@ -257,6 +290,65 @@ changeSize(size: ArticoloTaglieMisura) {
 changeColor(color: ArticoloColore) {
   this.selectedColor = color;
 }
+
+/**
+ * Aggiunta del prodotto al carrello
+ */
+onAddToCart() {
+  let validate = true;
+  let listMessage: string[] = [];
+
+  if (this.articoloDoc) {
+
+    if (this.enableTaglie && !this.selectedTaglia) {
+        validate = false;
+        listMessage.push('Specifica la taglia');
+    }
+
+    if (this.enableColori && !this.selectedColor) {
+      validate = false;
+      listMessage.push('Seleziona il colore');
+    }
+
+    if (!validate) {
+      const header = `Prima di proseguire è necessario correggere i seguenti problemi`;
+      this.startService.presentAlertListMessage(listMessage, header, '','Attenzione');
+    }
+    else {
+      
+      //Posso aggiungere un articolo
+      this.startService.shopAddItemToCart(this.articoloDoc, this.selectedTaglia?.ID, this.selectedColor?.ID)
+                       .then(() => {
+                        this.isOpenModalAddedItem = true;
+                          //this.startService.presentToastMessage('Articolo aggiunto');
+                       })
+    }
+  }
+}
+
+/**
+ * Chiusura della modale con l'aggiunta del prodotto
+ */
+closeModalAddedItem() {
+  if (this.modalAddedItem) {
+    this.modalAddedItem.dismiss();
+    this.isOpenModalAddedItem = false;
+  }
+}
+
+  /**
+   * Richiesta la visualizzazione del carrello
+   */
+  clickCarrello() {
+    
+    let retPath = [];
+    
+    retPath = this.startService.getUrlPageActiveCart();
+    if (retPath.length != 0) {
+      this.navController.navigateForward(retPath);
+    }    
+  }
+
 //#endregion
 
   //#region PULSANTE BACK

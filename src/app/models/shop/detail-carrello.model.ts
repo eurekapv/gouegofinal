@@ -8,6 +8,8 @@ export class DetailCarrello extends IDDocument {
     TIPORIGO: TipoRigoDetailCarrello;
     STATORIGO: StatoRigoDetailCarrello;
     IDARTICOLO: string;
+    IDARTICOLOCOLORE: string;
+    IDARTICOLOTAGLIA: string;
     DESCR: string;
     QUANTITA: number;
     PREZZO: number;
@@ -20,6 +22,9 @@ export class DetailCarrello extends IDDocument {
     ALIQUOTA: number;
     IDUNITAMISURA: string;
     ZORDER: number;
+    DISPONIBILE: boolean;
+    MSGDISPONIBILE: string;
+
 
     /**
     * Ritorna il descrittore della Struttura Campi
@@ -28,10 +33,13 @@ export class DetailCarrello extends IDDocument {
         let objDescriptor = new Descriptor();
         let arString = ['IDSHOPCARRELLO',
                         'IDARTICOLO',
+                        'IDARTICOLOCOLORE',
+                        'IDARTICOLOTAGLIA',
                         'DESCR',
                         'SCONTOTEXT',
                         'IDCODICEIMPOSTA',
-                        'IDUNITAMISURA'
+                        'IDUNITAMISURA',
+                        'MSGDISPONIBILE'
                         ];
         let arNumber = ['TIPORIGO',
                         'STATORIGO',
@@ -43,7 +51,7 @@ export class DetailCarrello extends IDDocument {
                         'IMPONIBILE',
                         'ALIQUOTA',
                         'ZORDER'];
-        let arBoolean = [];
+        let arBoolean = ['DISPONIBILE'];
         let arDate = [''];
         let arDateTime =[];
         let arTime = [];

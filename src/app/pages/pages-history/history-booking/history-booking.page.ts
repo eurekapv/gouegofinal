@@ -53,13 +53,6 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
   //i metodi di pagamento possibili
   arPayments : AreaPaymentSetting[] = [];
 
-  //Opzioni per lo slider
-  sliderOpts: SwiperOptions = {
-    pagination: true,
-    slidesPerView: 1,
-    spaceBetween: 0,
-    initialSlide: 0 
-  }  
 
 
   /**

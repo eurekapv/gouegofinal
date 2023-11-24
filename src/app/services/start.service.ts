@@ -89,6 +89,8 @@ import { CorsoPresenze } from '../models/corso/corsopresenze.model';
 import { Tesseramento } from '../models/utente/tesseramento';
 import { AdvertisingService } from '../library/services/advertising.service';
 import { FileService } from './zsupport/file.service';
+import { ShoppingService } from './shop/shopping.service';
+import { ShopCarrello } from '../models/shop/shop-carrello.model';
 
 @Injectable({
   providedIn: 'root'
@@ -226,7 +228,8 @@ export class StartService {
     private modalController: ModalController,
     private tipoPagamentoService: TipoPagamentoService,
     private advertisingService: AdvertisingService,
-    private fileService: FileService
+    private fileService: FileService,
+    private shopService: ShoppingService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -725,6 +728,8 @@ export class StartService {
               //Richiedo al server le Location
               this.requestLocationByIdArea(newAreaSelected.ID);
             }
+            //Preparo un nuovo carrello Shop
+            this.shopService.newShoppingCart(newAreaSelected.ID);
           })
     }
 
@@ -2006,7 +2011,8 @@ requestNextEventi(idArea: string): Promise<Evento[]> {
 
 //#endregion
 
-//#region ARTICOLO
+//#region SHOP 
+
 get listProdotti() {
   return this.articoloService.listProdotti$;
 }
@@ -2035,7 +2041,109 @@ requestArticoli(idArea: string, tipoArticolo?:TipoArticolo): Promise<void> {
    * @returns 
    */
 requestArticoloById(idArticolo: string, numChild = 0, decodeAll = false): Promise<Articolo> {
-  return this.articoloService.requestById(idArticolo, numChild, decodeAll);
+  return this.articoloService.requestById(this.actualStartConfig, idArticolo, numChild, decodeAll);
+}
+
+/**
+ * Ritorna il path per la visualizzazione di un prodotto
+ * @param idProduct 
+ */
+getUrlPageDisplayProduct(idProduct: string): string[] {
+  let retPath = [];
+
+  if (idProduct && idProduct.length != 0) {
+    retPath = ['/','appstart-home','tab-shop','display-product', idProduct];
+  }
+
+  return retPath;
+}
+
+
+get listShopCarrello(): ShopCarrello[] {
+  return this.shopService.listShopCarrello;
+}
+
+get listShopCarrello$() {
+  return this.shopService.listShopCarrello$;
+}
+
+/**
+ * Carrello in versione Observable
+ */
+get activeCart$() {
+  return this.shopService.activeCart$;
+}
+
+/**
+ * Carrello in versione NON OBSERVABLE
+ */
+get activeCart() {
+  return this.shopService.activeCart;
+}
+
+/**
+ * Effettuo la richiesta di un Carrello per Id
+ * @param idCarrello 
+ * @param numChild Profondità della richiesta (1 Il solo documento / 2+ Profondita Collection)
+ * @param decodeAll Decodifica le chiavi esterne
+ * @returns 
+ */
+requestShopCarrelloById(idCarrello: string, 
+                        numChild = 0, 
+                        decodeAll = false): Promise<ShopCarrello> {
+
+  return this.shopService.requestById(idCarrello, numChild, decodeAll);
+}
+
+/**
+ * Richiede l'elenco degli ordini effettuati da un utente
+ * @returns 
+ */
+requestListShopCarrelli():Promise<ShopCarrello[]> {
+  let idUtente = this.activeUtenteId;
+  return this.shopService.requestList(idUtente);
+}
+
+/**
+ * Aggiunge un elemento al carrello attivo
+ * @param articoloDoc Articolo
+ * @param idArticoloTaglia Taglia
+ * @param idArticoloColor Colore
+ */
+shopAddItemToCart(articoloDoc:Articolo, 
+    idArticoloTaglia?:string, 
+    idArticoloColor?:string): Promise<void> {  
+
+        return this.shopService.addItemToCart(articoloDoc, idArticoloTaglia, idArticoloColor);
+}
+
+/**
+ * Rimuove la riga richiesta dal carrello
+ * @param idDetail 
+ * @param {boolean} recalc Esegue il ricalcolo contattando il server
+ */
+shopRemoveItemFromCart(idDetail: string, recalc = true):Promise<void> {
+  return this.shopService.removeItemFromCart(idDetail, recalc);
+}
+
+
+/**
+ * Modifica la Quantita di un articolo di carrello
+ * @param idDetail 
+ * @param qta 
+ * @param recalc 
+ * @returns 
+ */
+shopChangeItemQuantityFromCart(idDetail: string, qta: number, recalc = true):Promise<void> {
+  return this.shopService.changeItemQuantityFromCart(idDetail, qta, recalc);
+}
+
+/**
+ * Contatta il server, inviando il carrello e ottenendo un carrello 
+ * completo di importi, totali etc
+ */
+shopRecalcCart(): Promise<void> {
+  return this.shopService.recalcCart();
 }
 
 

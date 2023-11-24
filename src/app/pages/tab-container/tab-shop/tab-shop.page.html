@@ -36,16 +36,26 @@
         </ion-segment>
         <!-- LISTA PRODOTTI -->
         <div *ngIf="selectedView == TypeArticle.prodotto">
-            <app-table-articoli [listArticoli]="listProdotti" [typeArticolo]="selectedView"></app-table-articoli>
+            <app-table-articoli 
+                (clickArticolo)="clickArticolo($event)"
+                [listArticoli]="listProdotti" 
+                [typeArticolo]="selectedView"></app-table-articoli>
         </div>
 
         <!-- LISTA SERVIZI -->
         <div *ngIf="selectedView == TypeArticle.servizio">
-          <app-table-articoli [listArticoli]="listServizi" [typeArticolo]="selectedView"></app-table-articoli>
+          <app-table-articoli 
+              (clickArticolo)="clickArticolo($event)"
+              [listArticoli]="listServizi" 
+              [typeArticolo]="selectedView"></app-table-articoli>
         </div>
+
         <!-- LISTA PACCHETTI -->
         <div *ngIf="selectedView == TypeArticle.pacchettoOre">
-          <app-table-articoli [listArticoli]="listPacchetti" [typeArticolo]="selectedView"></app-table-articoli>
+          <app-table-articoli 
+              (clickArticolo)="clickArticolo($event)"
+              [listArticoli]="listPacchetti" 
+              [typeArticolo]="selectedView"></app-table-articoli>
         </div>
       </ion-col>  
     </ion-row>

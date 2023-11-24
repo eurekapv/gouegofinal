@@ -4,6 +4,7 @@ import { ArticoloImages } from './articolo-images.model';
 import { ArticoloColore } from './articolocolore.model';
 import { ArticoloTaglieMisura } from './articolotagliemisura.model';
 import { TipoArticolo, TipoPrezzo } from '../zsupport/valuelist.model';
+import { ArticoloScorta } from './articolo-scorta.model';
 
 export class Articolo extends IDDocument{
     IDAREAOPERATIVA: string;
@@ -28,10 +29,14 @@ export class Articolo extends IDDocument{
     ARTICOLITAGLIEMISURE: ArticoloTaglieMisura[];
     ARTICOLICOLORI: ArticoloColore[];
     ARTICOLIIMAGES: ArticoloImages[];
+    ARTICOLISCORTE: ArticoloScorta[];
     PATHCOVERIMAGE: string;
+    GESTIONESCORTE: boolean;
+    QUANTITAMAGAZZINO: number;
 
     constructor(onlyInstace?:boolean) {
         super(onlyInstace);
+        this.ARTICOLISCORTE = [];
         this.ARTICOLITAGLIEMISURE = [];
         this.ARTICOLICOLORI = [];
         this.ARTICOLIIMAGES = [];
@@ -56,8 +61,8 @@ export class Articolo extends IDDocument{
             'PATHCOVERIMAGE',
             'DESCRADDITIONAL'
         ];
-        let arNumber = ['PREZZONETTO', 'PREZZOLORDO', 'TIPOARTICOLO', 'TIPOPREZZO'];
-        let arBoolean = ['FLAGTAGLIEMISURE', 'FLAGCOLORI', 'FLAGSHOPONLINE'];
+        let arNumber = ['PREZZONETTO', 'PREZZOLORDO', 'TIPOARTICOLO', 'TIPOPREZZO','QUANTITAMAGAZZINO'];
+        let arBoolean = ['FLAGTAGLIEMISURE', 'FLAGCOLORI', 'FLAGSHOPONLINE','GESTIONESCORTE'];
         let arDate = [];
         let arDateTime =['VALIDOFINO'];
         let arTime = [];
@@ -81,6 +86,7 @@ export class Articolo extends IDDocument{
         objDescriptor.addCollection('ARTICOLITAGLIEMISURE','ArticoloTaglieMisura','IDARTICOLO');
         objDescriptor.addCollection('ARTICOLICOLORI','ArticoloColore','IDARTICOLO');
         objDescriptor.addCollection('ARTICOLIIMAGES','ArticoloImages','IDARTICOLO');
+        objDescriptor.addCollection('ARTICOLISCORTE','ArticoloScorta','IDARTICOLO');
         
     
         objDescriptor.setRelation('IDUNITAMISURA','UnitaMisura');
@@ -116,7 +122,7 @@ export class Articolo extends IDDocument{
         let nameCollection = '';
         
         //Gestione Articolo Taglia Misura
-        nameCollection = 'ARTICOLOTAGLIAMISURA';
+        nameCollection = 'ARTICOLOTAGLIEMISURA';
         if (data[nameCollection]) {
             this.ARTICOLITAGLIEMISURE = [];
             let collection = data[nameCollection];
@@ -149,7 +155,19 @@ export class Articolo extends IDDocument{
                 itemDoc.setJSONProperty(elItem);
                 this.ARTICOLIIMAGES.push(itemDoc);
             })
-        }              
+        }  
+        
+        //Gestione Articolo Scorta
+        nameCollection = 'ARTICOLOSCORTA';
+        if (data[nameCollection]) {
+            this.ARTICOLISCORTE = [];
+            let collection = data[nameCollection];
+            collection.forEach(elItem => {
+                let itemDoc = new ArticoloScorta();
+                itemDoc.setJSONProperty(elItem);
+                this.ARTICOLISCORTE.push(itemDoc);
+            })
+        }         
     }
 
     /**

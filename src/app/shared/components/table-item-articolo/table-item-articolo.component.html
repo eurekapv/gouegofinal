@@ -1,4 +1,6 @@
 <ion-item 
+  [button]="true"
+  (click)="onClickArticolo()"
   class="ion-no-margin">
   <ion-thumbnail slot="start">
     <img [src]="_itemArticolo.getSrcImg()" [alt]="_itemArticolo.DESCR" #image (error)="setPlaceholder(image)">

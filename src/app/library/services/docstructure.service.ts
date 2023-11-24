@@ -55,6 +55,9 @@ export class DocstructureService {
     LogApp.consoleLog('New Configuration received');
   }
 
+
+  
+
   /**
    * Converte la Collection Generica in Tipizzata
    * @param collection Collection non tipizzata
@@ -1513,11 +1516,12 @@ public getRelDocOriginale( docStart: IDDocument,
           //Effettuo la chiamata POST
           //Era cosi' ho cambiato la variabile alla fine this.apiService.httpPost(myUrl,myHeaders,myParams, jsonBodyOrDoc)
           this.apiService.httpPost(myUrl,myHeaders,myParams, myJsonBody)
-          .subscribe(response => {
-            resolve(response);
-          }, error => {
-            reject(error);
-          });
+          .subscribe({next: (response)=> {
+                        resolve(response);
+                     }, 
+                    error: (err) => {
+                        reject(err);
+                    }});
 
         }
       }

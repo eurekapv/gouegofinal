@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: TabShopPage
+  },
+  {
+    path: 'display-product/:id',
+    loadChildren: () => import('../../pages-shop/display-product/display-product.module').then( m => m.DisplayProductPageModule)
   }
 ];
 

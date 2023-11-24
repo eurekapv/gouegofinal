@@ -52,7 +52,7 @@ export class ArticoloService {
       }
 
       this.docStructureService.requestNew(filterDoc)
-                              .then(listReceived => this._changePathCoverImage(config, listReceived))
+                              .then(listReceived => this._changePathImage(config, listReceived))
                               .then(listReceived => {
 
                                 switch (tipoArticolo) {
@@ -111,10 +111,15 @@ export class ArticoloService {
    * @param decodeAll Decodifica le chiavi esterne
    * @returns 
    */
-  requestById(idArticolo: string, numChild = 0, decodeAll = false): Promise<Articolo> {
+  requestById(config: StartConfiguration,
+              idArticolo: string, 
+              numChild = 0, 
+              decodeAll = false): Promise<Articolo> {
 
     return new Promise<Articolo>((resolve, reject) => {
+
       if (idArticolo && idArticolo.length != 0)   {
+
         let filterDoc = new Articolo(true);
         filterDoc.ID = idArticolo;
         let reqParams = new RequestParams();
@@ -122,9 +127,11 @@ export class ArticoloService {
         reqParams.decode.active = decodeAll;
 
         this.docStructureService.requestNew(filterDoc, reqParams)
-                                .then(listData => {
-                                  if (listData && listData.length != 0) {
-                                    return listData[0];
+                                .then(listReceived => this._changePathImage(config, listReceived))
+                                .then(listReceived => {
+                                  
+                                  if (listReceived && listReceived.length != 0) {
+                                    return listReceived[0];
                                   }
                                   else {
                                     reject('Articolo non trovato');
@@ -150,7 +157,7 @@ export class ArticoloService {
    * @param config 
    * @param articoloDoc 
    */
-  _changePathCoverImage(config:StartConfiguration, listDoc: Articolo[]): Promise<Articolo[]> {
+  _changePathImage(config:StartConfiguration, listDoc: Articolo[]): Promise<Articolo[]> {
     return new Promise<Articolo[]>((resolve) => {
       let urlStorage = '';
 
@@ -164,6 +171,15 @@ export class ArticoloService {
             if (item.PATHCOVERIMAGE && item.PATHCOVERIMAGE.length != 0) {
               item.PATHCOVERIMAGE = `${urlStorage}/shopimage/${item.PATHCOVERIMAGE}`
             }
+
+            if (item.ARTICOLIIMAGES && item.ARTICOLIIMAGES.length != 0) {
+              item.ARTICOLIIMAGES.forEach(elItemImage => {
+                if (elItemImage.FILENAMEESTENSIONE && elItemImage.FILENAMEESTENSIONE.length != 0) {
+                  elItemImage.FILENAMEESTENSIONE = `${urlStorage}/shopimage/${elItemImage.FILENAMEESTENSIONE}`;
+                }
+              })
+            }
+
             return item;
           });
 

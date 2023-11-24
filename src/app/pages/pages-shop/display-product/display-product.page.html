@@ -1,0 +1,167 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="onRequestData($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+
+  <ion-grid id="container-page">
+    <ion-row
+        class="ion-no-margin"
+        >
+      <ion-col sizeXs="12" 
+                sizeSm="12" 
+                sizeMd="10" offsetMd="1"
+                sizeLg="8" offsetLg="2"
+                sizeXl="8" offsetXl="2">
+
+                <ion-card class="ion-no-margin ion-no-padding backcolorcard">
+                  <swiper-container
+                      #swiperGallery 
+                      class="gallery" 
+                      [pagination]="true">
+              
+                    <swiper-slide 
+                        *ngFor="let img of listImagePath">
+                        <img class="no-wrapper" [src]="img" tappable (click)="openPreview(img)">
+                    </swiper-slide>      
+                  </swiper-container>
+              
+                </ion-card>
+                
+                <ion-grid *ngIf="articoloDoc">
+                  <ion-row class="ion-padding-vertical">
+                    <ion-col>
+                      <h1 class="item-name">{{articoloDoc.DESCR}}</h1>
+                      <p 
+                        *ngIf="articoloDoc.DESCRADDITIONAL && articoloDoc.DESCRADDITIONAL.length != 0" 
+                        class="ion-text-small">
+                        {{articoloDoc.DESCRADDITIONAL}}
+                      </p>
+
+                      <h4 class="price ion-text-right">
+                        {{articoloDoc.PREZZOLORDO | currency: 'EUR'}}
+                        <span class="real-price"></span> <!-- per mettere un prezzo da barrare -->
+                      </h4>
+
+                      <div class="seperator">
+                        <hr>
+                      </div>
+
+                    </ion-col>
+                  </ion-row>
+
+
+
+                  <ion-row *ngIf="articoloDoc.DESCRHTML && articoloDoc.DESCRHTML.length != 0">
+                    <ion-col class="description">
+                      <h5 class="ion-no-margin">Descrizione</h5>
+                      <p [innerHTML]="articoloDoc.DESCRHTML | safeHtml"></p>
+                    </ion-col>
+                  </ion-row>
+
+                  <ion-row class="ion-padding-vertical">
+                    <ion-col>
+                      <ion-button color="success" expand="block">
+                        Aggiungi al carrello
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>                    
+
+                  <!-- VARIAZIONI TAGLIE E COLORI -->
+                  <ion-row *ngIf="enableTaglie || enableColori">
+                    <ion-col>
+                      <div class="variation">
+                        <ion-segment 
+                            mode="md"
+                            (ionChange)="segmentChanged($event)" 
+                            value="size">
+                          <ion-segment-button 
+                                *ngIf="enableTaglie"
+                                value="size">
+                            <ion-label>Scelta Taglia</ion-label>
+                          </ion-segment-button>
+                          <ion-segment-button 
+                                *ngIf="enableColori"
+                                value="color">
+                            <ion-label>Scelta Colore</ion-label>
+                          </ion-segment-button>
+                        </ion-segment>
+                      </div>                      
+                    </ion-col>
+                  </ion-row>
+
+                  <!-- VARIATORE TAGLIA -->
+                  <ion-row *ngIf="enableTaglie && activeVariation == 'size'">
+                    <ion-col>
+                      <div class="variation-selector">
+                        <div class="sizes" [class.active-variation]="activeVariation == 'size'">
+
+                          <ion-grid>
+                            <ion-row >
+                              <ion-col
+                                  *ngFor="let item of articoloDoc.ARTICOLITAGLIEMISURE" 
+                                  size="4">
+                                  <div 
+                                    (click)="changeSize(item)"
+                                    [class.active]="selectedTaglia && selectedTaglia.ID == item.ID"
+                                    >
+                                    {{item.DESCRIZIONE}}
+                                </div>
+                              </ion-col>
+                            </ion-row>
+                          </ion-grid>
+
+                        </div>
+                        </div>
+                    </ion-col>
+                  </ion-row>
+
+                  <!-- VARIATORE COLORE -->
+                  <ion-row *ngIf="enableColori && activeVariation == 'color'">
+                    <ion-col size="12">
+                      <div class="variation-selector">
+                        <div 
+                            class="colors" 
+                            [class.active-variation]="activeVariation == 'color'">
+                            <ion-grid>
+                              <ion-row >
+                                <ion-col
+                                    *ngFor="let item of articoloDoc.ARTICOLICOLORI" 
+                                    size="4">
+                                    <div 
+                                      (click)="changeColor(item)"
+                                      [class.active]="selectedColor && selectedColor.ID == item.ID"
+                                      >
+                                      {{item.DESCRIZIONE}}
+                                  </div>
+                                </ion-col>
+                              </ion-row>
+                            </ion-grid>
+                        </div>
+                        </div>
+                    </ion-col>
+                  </ion-row> 
+                  
+                  <!-- SPAZIATURA FINALE -->
+                  <ion-row class="separator-final">
+                    <ion-col>
+
+                    </ion-col>
+                  </ion-row>
+
+                </ion-grid>
+
+
+
+      </ion-col>
+      </ion-row>
+    </ion-grid>  
+</ion-content>

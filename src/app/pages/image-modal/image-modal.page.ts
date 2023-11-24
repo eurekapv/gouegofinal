@@ -31,7 +31,7 @@ export class ImageModalPage implements OnInit {
   close() {
     this.modalCtrl.dismiss();
     //quando la modale si chiude, riblocco lo schermo in verticale
-    window.screen.orientation.lock("portrait");
+    //window.screen.orientation.lock("portrait");
   }
 
   /**

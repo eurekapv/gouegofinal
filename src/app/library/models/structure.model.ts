@@ -52,6 +52,7 @@ import { IscrizioneCorso } from 'src/app/models/corso/iscrizione-corso.model';
 import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { DetailCarrello } from 'src/app/models/shop/detail-carrello.model';
 import { RiepilogoCarrello } from 'src/app/models/shop/riepilogo-carrello.model';
+import { ArticoloScorta } from 'src/app/models/shop/articolo-scorta.model';
 
 
 
@@ -97,6 +98,7 @@ export const Structure: any = {
     Articolo,
     ArticoloColore,
     ArticoloTaglieMisura,
+    ArticoloScorta,
     Valuta,
     UnitaMisura,
     DataChiusura,

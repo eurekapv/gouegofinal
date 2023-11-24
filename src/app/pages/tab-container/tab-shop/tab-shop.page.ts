@@ -4,6 +4,7 @@ import { Articolo } from 'src/app/models/shop/articolo.model';
 import { TipoArticolo } from 'src/app/models/zsupport/valuelist.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab-shop',
@@ -12,7 +13,8 @@ import { StartService } from 'src/app/services/start.service';
 })
 export class TabShopPage implements OnInit {
 
-  constructor(private startService: StartService,) { }
+  constructor(private startService: StartService,
+              private navController: NavController) { }
 
   selectedView: TipoArticolo = TipoArticolo.prodotto;
   //Questo è per usare l'enum nell HTML
@@ -146,4 +148,19 @@ export class TabShopPage implements OnInit {
       evento.target.complete();
     }
   }  
+
+  /**
+   * Stato eseguito il click su un articolo
+   * @param articoloDoc 
+   */
+  clickArticolo(articoloDoc: Articolo) {
+    let retPath = [];
+
+    if (articoloDoc) {
+      retPath = this.startService.getUrlPageDisplayProduct(articoloDoc.ID);
+      if (retPath.length != 0) {
+        this.navController.navigateForward(retPath);
+      }
+    }
+  }
 }

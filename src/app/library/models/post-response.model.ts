@@ -1,14 +1,22 @@
+import { Utente } from "src/app/models/utente/utente.model";
 import { IDDocument } from "./iddocument.model";
 import { DynamicClass } from "./structure.model";
 
 export class PostResponse {
-    //Risposta ottenuta dal server 
-    private _document: string;
+
     result: boolean;
     message: string; 
     developerMessage: string;
     code: string; //Eventuale codice ritornato dal server
+    listDocuments: any[]; //Eventuali documenti di ritorno
+    
 
+    constructor() {
+        this.listDocuments = [];
+    }
+    
+    //Risposta ottenuta dal server 
+    private _document: string;
     public set document(value:string) {
         this._document = value;
     }
@@ -17,57 +25,119 @@ export class PostResponse {
         return this._document;
     }
 
+    /**
+     * Converte l'informazione data in un oggetto tipizzato
+     * @param data Data che rappresenta PostResponse
+     * @param instanceClass Istanza del Documento presente nella listDocuments
+     */
+    static toPostResponse(data: any, instanceClass?:IDDocument): Promise<PostResponse> {
 
-    setFromResponse(response) {
+        return new Promise<PostResponse>((resolve) => {
+            let ptResponse: PostResponse = new PostResponse();
+            if (typeof data == "object") {
+                ptResponse.setFromResponse(data, instanceClass);
+            }
+            
+            resolve(ptResponse);
+        })
+    }
 
-        if(response){
-            this.result = response['result'];
-            this.message = response['message'];
-            this.code = response['code'];
-            this.developerMessage = response['developerMessage'];
+
+    /**
+     *  Imposta i dati dal valore del response ricevuto
+     * @param response Dati ricevuti
+     */
+    setFromResponse(response: any, instanceClass?:IDDocument) {
+        let prop = [];
+        
+        if(response) {
+            console.log('Qua imposto il Doc')
+            console.log(response);
+            
+
+            prop = Object.keys(response);
+            
+            //Ciclo le proprietà dell'oggetto in arrivo
+            prop.forEach(nameField => {
+                if (response.hasOwnProperty(nameField)) {
+
+                    if (nameField == 'document') {
+
+                        if (response[nameField] && 
+                            response[nameField].length != 0) {
+                            try {
+
+                                let newClass: any = new DynamicClass(instanceClass.getDescriptor().className);
+                                newClass.setJSONProperty(response[nameField]);
+                                this.listDocuments.push(newClass);
+
+                            } catch (error) {
+                                
+                            }
+                        }
+
+                    }
+                    else if (nameField == 'listDocuments') {
+                        //E' una array di documenti
+                        let listDoc: any[] = response[nameField];
+                        listDoc.forEach(elDoc => {
+                            try {
+                                let newClass: any = new DynamicClass(instanceClass.getDescriptor().className);
+                                newClass.setJSONProperty(elDoc);
+                                this.listDocuments.push(newClass);
+                            } catch (error) {
+                                console.log(error);
+                            }                            
+                        })
+                    }
+                    else {
+                        this[nameField] = response[nameField];
+                    }
+                }
+            })
+
         }
     }
 
     /**
-     * Ritorna il documento Tipizzato
-     * @returns 
+     * Analizza il documento e invia un reject se result = false
      */
-    getTipizedDocument<T extends IDDocument>(): Promise<T> {
-
-        return new Promise<T>((resolve, reject) => {
-            
-            let single;
-            let newClass = this.createDoc<T>(single);
-    
-            if (this._document && this._document.length != 0) {
-                newClass.setJSONProperty(this._document);
-                resolve(newClass);
+    analizeResultFlag(): Promise<PostResponse> {
+        return new Promise<PostResponse>((resolve, reject) => {
+            if (this.result) {
+                resolve(this);
             }
             else {
-                reject('Document null');
+                reject(this.message);
             }
-
         })
-    
     }
 
-    getDocument(): any {
-        let doc: any;
-
-        if (this._document && this._document.length != 0) {
-            doc = JSON.parse(this._document);
-        }
-
-        return doc;
+    /**
+     * Estrae dalla lista dei documenti, il documento definito alla posizione position
+     * @param position Zero Based Posizione richiesta
+     * @returns 
+     */
+    getDocFromList<T>(position :number = 0): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            if (this.listDocuments && this.listDocuments.length > position) {
+                resolve(this.listDocuments[position]);
+            }
+            else {
+                reject('Document not found');
+            }
+        })
     }
+
+
 
 
    /**
-   * 
+   * Crea un documento tipizzato
    * @param c 
    * @returns 
    */
-    createDoc<Type>(c: { new (): Type }): Type {
+    static createTypedDoc<T extends IDDocument>(c: { new (): T }): T {
         return new c();
     }
     

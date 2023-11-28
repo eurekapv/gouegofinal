@@ -319,8 +319,10 @@ onAddToCart() {
       //Posso aggiungere un articolo
       this.startService.shopAddItemToCart(this.articoloDoc, this.selectedTaglia?.ID, this.selectedColor?.ID)
                        .then(() => {
-                        this.isOpenModalAddedItem = true;
-                          //this.startService.presentToastMessage('Articolo aggiunto');
+                          this.isOpenModalAddedItem = true;                          
+                       })
+                       .catch(error => {
+                          this.startService.presentAlertMessage(error, 'Aggiunta fallita');
                        })
     }
   }

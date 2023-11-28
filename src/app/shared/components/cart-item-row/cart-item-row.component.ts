@@ -25,8 +25,8 @@ export class CartItemRowComponent implements OnInit {
     }
   }
 
-  @Output() onChangeQuantity = new EventEmitter<number>();
-  @Output() onDeleteRequest = new EventEmitter<void>();
+  @Output() onChangeQuantity = new EventEmitter<DetailCarrello>();
+  @Output() onDeleteRequest = new EventEmitter<string>();
 
   constructor() { }
 
@@ -48,7 +48,11 @@ export class CartItemRowComponent implements OnInit {
     }
 
     if (newValue > 0) {
-      this.onChangeQuantity.emit(newValue);
+      //Creo un documento fittizio con idArticolo e Quantita
+      let sampleRow: DetailCarrello = new DetailCarrello();
+      sampleRow.ID = this.detailDoc.ID;
+      sampleRow.QUANTITA = newValue;
+      this.onChangeQuantity.emit(sampleRow);
     }
   }
 
@@ -57,7 +61,7 @@ export class CartItemRowComponent implements OnInit {
    */
   onClickRequestDelete() {
     //Giro la richiesta al parent
-    this.onDeleteRequest.emit();
+    this.onDeleteRequest.emit(this.detailDoc.ID);
   }
 
 }

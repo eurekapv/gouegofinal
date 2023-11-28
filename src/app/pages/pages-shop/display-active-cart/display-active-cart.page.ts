@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AnimationController, LoadingController, ModalController, NavController } from '@ionic/angular';
+import { AlertButton, AnimationController, LoadingController, ModalController, NavController } from '@ionic/angular';
 import { Subscription, exhaustAll } from 'rxjs';
+import { DetailCarrello } from 'src/app/models/shop/detail-carrello.model';
 import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
+import { Utente } from 'src/app/models/utente/utente.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
@@ -24,6 +26,12 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
     subListenCarrello: Subscription;
     carrelloDoc: ShopCarrello = new ShopCarrello();
 
+    userLogged: boolean;      //TRUE-FALSE: Utente Loggato
+    subUserLogged: Subscription;  
+    
+    userDoc: Utente;
+    subUserDoc: Subscription; 
+
     ngOnInit() {
 
       let myLoading: HTMLIonLoadingElement; 
@@ -40,6 +48,7 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
           myLoading.present();
           return this.onListenCarrello();
       })
+      .then(() => this.onListenUtente())
       .then(() => {
         //Devo chiedere il ricalcolo del carrello
         return this.startService.shopRecalcCart();
@@ -65,6 +74,14 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
       if (this.subListenCarrello) {
         this.subListenCarrello.unsubscribe();
       }
+
+      if (this.subUserLogged) {
+        this.subUserLogged.unsubscribe();
+      }
+
+      if (this.subUserDoc) {
+        this.subUserDoc.unsubscribe();
+      }
     }    
 
   /**
@@ -75,6 +92,7 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
       
       this.subListenCarrello = this.startService.activeCart$.subscribe({
         next: (dataCarrello) => {
+            console.log(dataCarrello);
             if (dataCarrello) {
               //Mi tengo il carrello per mostrare nella pagina
               this.carrelloDoc = dataCarrello;
@@ -92,6 +110,37 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
       })
     })
   }    
+
+  /**
+   * Metto in ascolto dell'utente attivo
+   * @returns 
+   */
+  onListenUtente(): Promise<void> {
+    return new Promise<void>((resolve) => {
+
+      //Controllo dell'utente loggato
+      this.subUserLogged = this.startService.flagUtenteIsLoggato$
+          .subscribe({
+            next: (element: boolean) => {
+              this.userLogged = element;
+            }
+          });
+
+      //Richiedo lo User
+      this.subUserDoc = this.startService.activeUtenteDoc$
+          .subscribe({
+            next: (element: Utente) => {
+              //Utente loggato
+              this.userDoc = element;
+              if (this.userDoc) {
+                this.startService.shopSetIdAnagrafica(this.userDoc);
+              }
+            }
+          });  
+          
+      resolve();
+    })
+  }
 
     /**
     * Crea l'array con l'elenco delle foto da mostrare
@@ -115,7 +164,101 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
       this.specialPicture.push(nameFile);
       
    }
+
+   /**
+    * Cambio Quantità con un documento fittizio
+    * @param sampleRow 
+    */
+   onChangeQuantity(sampleRow: DetailCarrello) {
+      console.log(sampleRow);
+      if (sampleRow && sampleRow.QUANTITA != 0) {
+        this.startService.shopUpdateQuantityRowCart(sampleRow.ID, sampleRow.QUANTITA);
+      }
+   }
+
+   /**
+    * Richiesta di eliminazione da parte dell'utente
+    * @param idRowItem 
+    */
+   onDeleteRequest(idRowItem: string) {
+
+     let message:string = '';
+     let buttons: AlertButton[] = [];
+
+      if (idRowItem && idRowItem.length != 0 && this.carrelloDoc) {
+        let itemRow = this.carrelloDoc.DETAILCARRELLO.find(elRowItem => elRowItem.ID == idRowItem);
+
+        if (itemRow) {
+          message = `<p>Vuoi rimuovere dal carrello</p>`
+          message+= `<p>${itemRow.DESCR}</p>`;
+
+          buttons = [{
+            text: 'Elimina',
+            handler: ()=> {
+              //Eseguo la cancellazione reale
+              this.onExecDeleteRow(itemRow.ID);
+            }
+            },
+            {
+              text: 'No, mantieni',
+              role: 'cancel'
+            }];
+
+          //Procedo con la richiesta
+          this.startService.presentAlertMessage(message, 'Eliminazione', buttons);
+        }
+      }
+   }
+
+   /**
+    * Esegue l'operazione di cancellazione della riga, con ricalcolo
+    * @param idRow 
+    */
+   onExecDeleteRow(idRow: string) {
+      let loadingElement: HTMLIonLoadingElement;
+      this.startService.showLoadingMessage('Attendere eliminazione')
+                       .then(elLoading => {
+
+                          loadingElement = elLoading;
+                          elLoading.present();
+
+                          //Adesso richiedo l'eliminazione
+                          return this.startService.shopRemoveItemFromCart(idRow, true);
+                       })
+                       .then(()=> {
+                          //Chiudo il loading
+                          loadingElement.dismiss();
+                       })
+                       .catch(error => {
+                          loadingElement.dismiss();
+                          this.startService.presentAlertMessage(error);
+                       })
+   }
    
+   /**
+    * Procede con la richiesta di ordine
+    */
+   onClickOrdina() {
+    //Devo chiedere il login utente
+    if (!this.userLogged) {
+      //impostare nel servizio Start forceIdArea = 
+      this.startService.setIdAreaForcedForLogin();
+      
+      //Apro la videata di Login
+      this.startService.openFormLogin();
+    }
+    else {
+      //Controllo se serve aggiornare dei dati (il metodo apre la form di verifica se necessario)
+      this.startService.onVerificationUserData()
+      .then(flagNeed => {
+        if (flagNeed == false) {
+          //Proseguo senza problemi
+          //sono loggato e l'account è completo; posso prenotare
+          //this.execPrenotazione(docPianificazione);
+        }
+      })  
+    }
+   }
   
   
   //#region PULSANTE BACK

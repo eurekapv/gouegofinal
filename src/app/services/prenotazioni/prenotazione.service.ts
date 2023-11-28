@@ -426,21 +426,21 @@ export class PrenotazioneService {
         //abbiamo tutto, faccio la richiesta
         this.apiService
         .httpGet(myUrl, myHeaders, myParams)
-        .subscribe(data => {
-          //creo l'oggetto con la risposta
-          let response = new PostResponse();
-          response.setFromResponse(data);
-          resolve(response);
-
-        },
-        err => {
-          //creo comunque un postResponse fittizio
-          let response = new PostResponse();
-          response.result = false
-          response.message = "Connessione non riuscita";
-          reject(response);
-        })
-        
+        .subscribe({
+            next: (data) => {
+              //creo l'oggetto con la risposta
+              let response = new PostResponse();
+              response.setFromResponse(data);
+              resolve(response);
+            },
+            error: (err) => {
+              //creo comunque un postResponse fittizio
+              let response = new PostResponse();
+              response.result = false
+              response.message = "Connessione non riuscita";
+              reject(response);
+            }
+          })
 
       })
 

@@ -487,53 +487,59 @@ import { MyDateTime } from './mydatetime.model';
   
       // Gli elementi di tipo Array non li copio
       arProperty.forEach(element => {
+
           if (Array.isArray(dataObject[element]) == false) {
-
-              //Chiedo il Tipo del Campo con il descriptor
-              let tipoCampo = objDescriptor.getType(element);
-
-              if (tipoCampo !== TypeDefinition.undefined) {
-                switch (tipoCampo) {
-
-                  case TypeDefinition.boolean:
-                    let value = parseInt(dataObject[element],10);
-                    
-                    if (value === -1) {
-                      _this[element] = true;  
-                    }
-                    else {
-                      _this[element] = false;
-                    }
-
-                    
-                    break;
-                
-                  case TypeDefinition.number:
-                    _this[element] = +dataObject[element]; 
-                    break;
-
-                  case TypeDefinition.numberDecimal:
-                    _this[element] = +dataObject[element]; 
-                    break;
-
-                  case TypeDefinition.time:
-                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
-                    break;
-
-                  case TypeDefinition.date:
-                    //E' una data
-                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
-                    break;
-
-                  case TypeDefinition.dateTime:
-                    _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
-                    break;
-
-                  default:
-                    _this[element] = dataObject[element] + '';
-                    break;
+              if (dataObject[element] == null || dataObject[element] == undefined) {
+                _this[element] = null;
+              }
+              else {
+                //Chiedo il Tipo del Campo con il descriptor
+                let tipoCampo = objDescriptor.getType(element);
+  
+                //Conosco la tipologia del campo
+                if (tipoCampo !== TypeDefinition.undefined) {
+                  switch (tipoCampo) {
+  
+                    case TypeDefinition.boolean:
+                      let value = parseInt(dataObject[element],10);
+                      
+                      if (value === -1) {
+                        _this[element] = true;  
+                      }
+                      else {
+                        _this[element] = false;
+                      }
+  
+                      
+                      break;
+                  
+                    case TypeDefinition.number:
+                      _this[element] = +dataObject[element]; 
+                      break;
+  
+                    case TypeDefinition.numberDecimal:
+                      _this[element] = +dataObject[element]; 
+                      break;
+  
+                    case TypeDefinition.time:
+                      _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
+                      break;
+  
+                    case TypeDefinition.date:
+                      //E' una data
+                      _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
+                      break;
+  
+                    case TypeDefinition.dateTime:
+                      _this[element] = MyDateTime.stringToDateObject(dataObject[element]);
+                      break;
+  
+                    default:
+                      _this[element] = dataObject[element] + '';
+                      break;
+                  }
+  
                 }
-
               }
               
              

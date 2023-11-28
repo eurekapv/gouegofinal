@@ -21,7 +21,12 @@ export class IDLibrary {
 
         switch (tipo) {
           case TypeDefinition.char:
-              strValue = `\"${value}\"`;
+              if (strValue) {
+                strValue = `\"${value}\"`;
+              }
+              else {
+                strValue = "null"
+              }
           break;
         
           case TypeDefinition.date:
@@ -82,6 +87,7 @@ export class IDLibrary {
               let document:IDDocument = value;
               strValue = document.exportToJSON(paramExport);
               break;
+              
         case TypeDefinition.undefined:
             strValue = 'null';
             break;

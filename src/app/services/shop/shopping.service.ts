@@ -9,6 +9,8 @@ import { PostResponse } from 'src/app/library/models/post-response.model';
 import { TipoRigoDetailCarrello } from 'src/app/models/zsupport/valuelist.model';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { environment } from 'src/environments/environment';
+import { Utente } from 'src/app/models/utente/utente.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -41,26 +43,94 @@ export class ShoppingService {
     return this._activeCart.getValue();
   }
 
-  private startConfig: StartConfiguration; //Mi serve per modificare i path in arrivo
+  private _startConfig: StartConfiguration; //Mi serve per modificare i path in arrivo
   
+  
+  //Area di riferimento
+  private _idArea: string; 
+  public set idArea(value: string) {
+    
+    let lastIdArea = this._idArea;
+    if (value && value.length != 0) {
+
+      this._idArea = value;
+      if (this._idArea != lastIdArea) {
+        //Creo un nuovo carrello
+        this.newShoppingCart();
+      }
+    }
+
+  }
 
   //#region GESTIONE CART
 
   /**
-   * Svuota e crea un nuovo carrello
-   * @param {string} idArea
+   * Memorizzo la configurazione
+   * @param config Configurazione globale
    */
-  newShoppingCart(idArea: string, 
-                  config: StartConfiguration): void {
-    
-    //Memorizzo la configurazione di start
-    this.startConfig = config;
+  onStartConfig(config: StartConfiguration) {
+    if (config) {
+      this._startConfig = config;
+    }
+  }
 
+  /**
+   * Svuota e crea un nuovo carrello   
+   */
+  newShoppingCart(): void {
+    
     //Preparo il nuovo carrello
     let cartDoc = new ShopCarrello();
-    cartDoc.IDAREAOPERATIVA = idArea;
+    cartDoc.IDAREAOPERATIVA = this._idArea;
 
     this._activeCart.next(cartDoc);
+  }
+
+  /**
+   * Imposta IDAnagrafica nel carrello
+   */
+  setIdAnagrafica(userDoc: Utente): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      let cart: ShopCarrello;
+
+      if (userDoc) {
+        
+        //Recupero il carrello attivo
+        cart = this._activeCart.getValue();
+
+        if (cart) {
+
+          cart.IDANAGRAFICA = userDoc.ID;
+          cart.INDIRIZZO = userDoc.INDIRIZZO;
+          cart.CAP = userDoc.CAP;
+          cart.COMUNE = userDoc.COMUNE;
+          cart.PROVINCIA = userDoc.PROVINCIA;
+          cart.ISOSTATO = userDoc.ISOSTATO;
+          cart.INDIRIZZODESTINAZIONE = userDoc.INDIRIZZO;
+          cart.CAPDESTINAZIONE = userDoc.CAP;
+          cart.COMUNEDESTINAZIONE = userDoc.COMUNE;
+          cart.PROVINCIADESTINAZIONE = userDoc.PROVINCIA;
+
+          resolve();
+        }
+        else {
+          reject('Carrello non presente');
+        }
+      }
+      else {
+        //Svuoto i riferimenti
+        cart.IDANAGRAFICA = null;
+        cart.INDIRIZZO = null;
+        cart.CAP = null;
+        cart.COMUNE = null;
+        cart.PROVINCIA = null;
+        cart.ISOSTATO = null;
+        cart.INDIRIZZODESTINAZIONE = null;
+        cart.CAPDESTINAZIONE = null;
+        cart.COMUNEDESTINAZIONE = null;
+        cart.PROVINCIADESTINAZIONE = null;
+      }
+    })
   }
 
   /**
@@ -73,7 +143,7 @@ export class ShoppingService {
                 idArticoloTaglia?:string, 
                 idArticoloColor?:string): Promise<void> {  
 
-      return new Promise<void>((resolve) => {
+      return new Promise<void>((resolve, reject) => {
         
         let itemCart: DetailCarrello;
         let cart: ShopCarrello;
@@ -86,13 +156,22 @@ export class ShoppingService {
           itemCart.IDARTICOLOTAGLIA = idArticoloTaglia;
           itemCart.QUANTITA = 1;
     
+          //Recupero il carrello attivo
           cart = this._activeCart.getValue();
-          cart.DETAILCARRELLO.push(itemCart);
-    
-          this._activeCart.next(cart);
-        
-          resolve();
+          //Non ho più il carrello
+          if (cart) {            
+            cart.DETAILCARRELLO.push(itemCart);
+            this._activeCart.next(cart);
+            resolve();
+          }
+          else {
+            reject('Ops, non ho trovato il carrello');
+          }
         }
+        else {
+          reject('Nessun prodotto specificato');
+        }
+
 
       })
 
@@ -110,23 +189,43 @@ export class ShoppingService {
   
       if (idDetail && idDetail.length != 0) {
         cart = this._activeCart.getValue();
-        if (cart && cart.DETAILCARRELLO && cart.DETAILCARRELLO.length != 0) {
-          //Elimino la riga
-          cart.DETAILCARRELLO = cart.DETAILCARRELLO.filter(item => item.ID != idDetail);
-          //Riemetto il documento
-          this._activeCart.next(cart);
 
-          if (recalc) {
-              return this.recalcCart();
+        if (cart) {
+          if (cart.DETAILCARRELLO && cart.DETAILCARRELLO.length != 0) {
+
+            //Elimino la riga
+            cart.DETAILCARRELLO = cart.DETAILCARRELLO.filter(item => item.ID != idDetail);
+            //Riemetto il documento
+            this._activeCart.next(cart);
+  
+            if (recalc) {
+                this.recalcCart()
+                    .then(()=> {
+                      resolve();
+                    })
+                    .catch(error => {
+                      reject(error);
+                    })
+            }
+            else {
+              //Chiudo subito
+              resolve();
+            }
           }
           else {
-            //Chiudo subito
             resolve();
           }
         }
+        else {
+          reject('Carrello non presente')
+        }
+      }
+      else {
+        reject('Dettaglio non definito');
       }
     })
   }
+
 
   /**
    * Modifica la Quantita di un articolo di carrello
@@ -135,35 +234,53 @@ export class ShoppingService {
    * @param recalc 
    * @returns 
    */
-  changeItemQuantityFromCart(idDetail: string, qta: number, recalc = true):Promise<void> {
+  updateQuantityRowCart(idDetail: string, qta: number, recalc = true):Promise<void> {
     return new Promise<void>((resolve, reject) => {
       
       let cart: ShopCarrello;
   
       if (idDetail && idDetail.length != 0) {
         cart = this._activeCart.getValue();
-        if (cart && cart.DETAILCARRELLO && cart.DETAILCARRELLO.length != 0) {
-          let item: DetailCarrello;
+        if (cart) {
+          if (cart.DETAILCARRELLO && cart.DETAILCARRELLO.length != 0) {
+            let item: DetailCarrello;
 
-          item = cart.DETAILCARRELLO.find(elItem => elItem.ID == idDetail);
-          if (item) {
-            item.QUANTITA = qta;
+            item = cart.DETAILCARRELLO.find(elItem => elItem.ID == idDetail);
+            if (item) {
+              item.QUANTITA = qta;
 
-            //Riemetto il documento
-            this._activeCart.next(cart);
+              //Riemetto il documento
+              this._activeCart.next(cart);
 
-            if (recalc) {
-                return this.recalcCart();
+              if (recalc) {
+                this.recalcCart()
+                    .then(()=> {
+                      resolve();
+                    })
+                    .catch(error => {
+                      reject(error);
+                    })
+              }
+              else {
+                //Chiudo subito
+                resolve();
+              }
+
             }
             else {
-              //Chiudo subito
               resolve();
             }
-
           }
-
-
+          else {
+            resolve();
+          }
         }
+        else {
+          reject('Carrello non definito');
+        }
+      }
+      else {
+        reject('Dettaglio non definito');
       }
     })
   }
@@ -188,20 +305,13 @@ export class ShoppingService {
         myPostParams.value = cartDoc;
 
         this.docStructureService.requestForFunction(cartDoc, method, '', myPostParams)
-                                .then((risposta: PostResponse) => {
-                                  if (!risposta.result) {
-                                    reject(risposta.message);
-                                  }
-                                  else {
-                                    console.log(risposta);
-                                    return risposta.getTipizedDocument<ShopCarrello>();
-                                  }
-                                })
-                                .then(cartDoc=> {
-                                    //Reimposto l'immagine nei dettagli
-                                    return this._changePathImage(cartDoc);
-                                })
-                                .then(cartDoc => {
+                                //Converto la risposta nell'oggetto PostResponse con un documento ShopCarrello contenuto
+                                .then(risposta => PostResponse.toPostResponse(risposta, new ShopCarrello()))
+                                //Analizzo la risposta positiva o negativa (va in catch)
+                                .then((typedRisposta:PostResponse) => typedRisposta.analizeResultFlag())
+                                .then((typedRisposta:PostResponse) => typedRisposta.getDocFromList<ShopCarrello>(0))
+                                .then((cartDoc:ShopCarrello) => this._changePathImage(cartDoc))
+                                .then((cartDoc:ShopCarrello) => {
                                   //Riemetto il carrello
                                   this._activeCart.next(cartDoc);
                                   resolve();
@@ -226,10 +336,11 @@ export class ShoppingService {
       let urlStorage = '';
       let defaultImage = environment.additionalConfig.defaultShopImage;
 
-      if (this.startConfig && carrelloDoc && carrelloDoc.DETAILCARRELLO) {
+      if (this._startConfig && carrelloDoc && carrelloDoc.DETAILCARRELLO) {
         //Recupero URL dello Storage
-        urlStorage = this.startConfig.urlStorageGroup;
+        urlStorage = this._startConfig.urlStorageGroup;
 
+        //Elementi del carrello
         carrelloDoc.DETAILCARRELLO.forEach(elDetail => {
           if (elDetail.TIPORIGO == TipoRigoDetailCarrello.prodotti) {
 

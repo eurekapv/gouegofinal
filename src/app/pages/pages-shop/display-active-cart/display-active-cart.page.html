@@ -46,6 +46,32 @@
                     </ion-col>
                     </ion-row>
 
+                    <!-- TOTALE ED ALTRO -->
+                    <ion-row *ngIf="numProdotti != 0">
+                      <ion-col>
+                        <ion-card>
+
+                          <ion-card-header>
+                            <ion-card-title>
+                              Totale {{carrelloDoc.TOTDOCUMENTO | currency : 'EUR'}}
+                            </ion-card-title>
+
+                            <ion-card-subtitle>
+                              <span class="ion-text-x-small" *ngIf="numProdotti == 1">1 articolo</span>
+                              <span class="ion-text-x-small" *ngIf="numProdotti != 1">{{numProdotti}} articoli</span>
+                            </ion-card-subtitle>
+                          </ion-card-header>
+
+                            <ion-card-content>
+                              <ion-button 
+                                    (click)="onClickOrdina()"
+                                    color="warning" expand="full">
+                                Procedi all'ordine 
+                              </ion-button>
+                            </ion-card-content>
+                        </ion-card>
+                      </ion-col>
+                    </ion-row>
                     <!-- PRODOTTI PRESENTI -->
                     <ion-row *ngIf="numProdotti != 0">
                       <ion-col>
@@ -55,12 +81,16 @@
                           <!-- RIGA PER PRODOTTO-->
                           <ion-row *ngFor="let item of carrelloDoc.DETAILCARRELLO">
                             <ion-col>
-                              <app-cart-item-row [rowDetail]="item"></app-cart-item-row>
+                              <app-cart-item-row 
+                                  (onChangeQuantity)="onChangeQuantity($event)"
+                                  (onDeleteRequest)="onDeleteRequest($event)"
+                                  [rowDetail]="item"></app-cart-item-row>
                             </ion-col>
                           </ion-row>
                         </ion-grid>
                       </ion-col>
                     </ion-row>
+
                  </ion-grid>
 
       </ion-col>

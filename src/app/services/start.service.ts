@@ -252,8 +252,13 @@ export class StartService {
       this.retrieveConfiguration()
           .then(dataConfig => {
             LogApp.consoleLog('* Recupero configurazione effettuato',typeLog);
+
             //Riemetto Observable
             this._startConfig.next(dataConfig);
+
+            //Reimposto il servizio dello Shopping
+            this.shopService.onStartConfig(dataConfig);
+
             //Tento il recupero AppId dal Server (se non fosse presente)
             return this.retrieveAppIdFromServer(dataConfig);
           })
@@ -719,8 +724,6 @@ export class StartService {
      */
     onListenAreaSelezionata() {
 
-      const actualStartConfig = this._startConfig.getValue();
-
       this.areaService.areaSelected
           .subscribe(newAreaSelected => {
             //Cambiando Area selezionata
@@ -730,8 +733,9 @@ export class StartService {
               //Richiedo al server le Location
               this.requestLocationByIdArea(newAreaSelected.ID);
             }
-            //Preparo un nuovo carrello Shop
-            this.shopService.newShoppingCart(newAreaSelected.ID, actualStartConfig);
+
+            //Imposta la nuova Area nel servizio Shopping
+            this.shopService.idArea = newAreaSelected.ID;
           })
     }
 
@@ -1446,9 +1450,9 @@ onChangeAreaFavListener() {
  * @param docUtenteUpdate Documento Utente con le modifiche da inviare
  */
 updateUtente(docUtenteUpdate: Utente) {
-  const actualStartConfig = this._startConfig.getValue();
-
-  return this.utenteService.requestUpdate(actualStartConfig, docUtenteUpdate);
+  
+  return this.utenteService.requestUpdate(docUtenteUpdate);
+  
 }
 
 
@@ -2120,6 +2124,14 @@ requestListShopCarrelli():Promise<ShopCarrello[]> {
 }
 
 /**
+ * Imposta IdAnagrafica nel carrello
+ * @param idAnagrafica 
+ */
+shopSetIdAnagrafica(userDoc: Utente):Promise<void> {
+  return this.shopService.setIdAnagrafica(userDoc);
+}
+
+/**
  * Aggiunge un elemento al carrello attivo
  * @param articoloDoc Articolo
  * @param idArticoloTaglia Taglia
@@ -2149,8 +2161,8 @@ shopRemoveItemFromCart(idDetail: string, recalc = true):Promise<void> {
  * @param recalc 
  * @returns 
  */
-shopChangeItemQuantityFromCart(idDetail: string, qta: number, recalc = true):Promise<void> {
-  return this.shopService.changeItemQuantityFromCart(idDetail, qta, recalc);
+shopUpdateQuantityRowCart(idDetail: string, qta: number, recalc = true):Promise<void> {
+  return this.shopService.updateQuantityRowCart(idDetail, qta, recalc);
 }
 
 /**

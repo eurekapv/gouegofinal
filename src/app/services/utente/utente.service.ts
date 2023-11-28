@@ -320,83 +320,47 @@ export class UtenteService {
     })
   }
 
-
   /**
    * Richiede al server l'aggiornamento dei dati Utente
    * @param config Dati di configurazione
-   * @param docUtenteUpdate Documento Utente con dati modificati
+   * @param utenteDoc Documento Utente con dati modificati
    */
-  requestUpdate(config: StartConfiguration, docUtenteUpdate: Utente):Promise<Utente>{
+  requestUpdate(utenteDoc: Utente):Promise<Utente>{
 
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
 
-    const doObject = 'UTENTE';
+      let myPostParams : PostParams = new PostParams();
+      let method = 'updateUserdata';
+      let docToCall: Utente = new Utente();
 
-    const metodo = 'updateUtente';
-    let myHeaders = config.getHttpHeaders();
-    myHeaders = myHeaders.append('X-HTTP-Method-Override', metodo);
+      if (utenteDoc) {
 
-    const myParams = this.docStructureService.getHttpParams();
-    let body = '';
+        myPostParams.key = 'docUtente';
+        myPostParams.value = utenteDoc;
 
+        this.docStructureService.requestForFunction(docToCall, method, '', myPostParams)
+                                //Converto la risposta nell'oggetto PostResponse con un documento Utente contenuto
+                                .then(risposta => PostResponse.toPostResponse(risposta, new Utente()))
+                                //Analizzo la risposta positiva o negativa (va in catch)
+                                .then((typedRisposta:PostResponse) => typedRisposta.analizeResultFlag())
+                                .then((typedRisposta:PostResponse) => typedRisposta.getDocFromList<Utente>(0))
+                                .then((userDoc:Utente) => {
+                                  this._activeUtenteDoc$.next(userDoc);
+                                  resolve(userDoc);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
 
-    let myUrl = config.urlBase + '/' + doObject;
-
-    //Body da inviare
-
-    //Questi sono i parametri per l'esportazione
-    let paramExport = new ParamsExport();
-    paramExport.clearDOProperty = true;
-    paramExport.clearPKProperty = false;
-    paramExport.clearPrivateProperty = true;
-    paramExport.onlyPropertyModified = true;
-
-    body = docUtenteUpdate.exportToJSON(paramExport);
-    body = `{"docUtente": ${body}}`;
-
-
-    //faccio la richiesta
-    this.apiService.httpPost(myUrl, myHeaders, myParams, body)
-    .pipe(map(rawResponse => {
-
-      return rawResponse.update;
-
-    })).subscribe(response => {
-
-      let myResponse = new PostResponse();
-      myResponse.result = response['result'];
-      myResponse.message = response['message'];
-      myResponse.document = response['document'];
-
-      if (myResponse.result){
-
-        let docUtente = new Utente();
-        let objDocument = myResponse.getDocument();
-
-        if (objDocument) {
-            //l'operazione è andata a buon fine, restituisco l'utente
-            docUtente.setJSONProperty(objDocument);
-            
-            this._activeUtenteDoc$.next(docUtente);
-            resolve(docUtente);
-        }
-        else {
-          reject('Errore ricezione dati server');
-        }
 
       }
-      else{
-        //il server ha risposto, ma l'operazione non è andata a buon fine, restituisco il messaggio di errore
-        reject (response.message);
+      else {
+        reject('Document null');
       }
-    }, error => {
-
-      //il server non ha risposto
-      reject(error);
-
     })
-    })
-  }
+  }  
+
+
 
 
   /**

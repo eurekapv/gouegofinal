@@ -2174,6 +2174,15 @@ shopRecalcCart(): Promise<void> {
 }
 
 
+/**
+ * Effettua il salvataggio del carrello sul server
+ * @returns 
+ */
+shopSaveCart(): Promise<ShopCarrello> {
+  return this.shopService.saveCart();
+}
+
+
 //#endregion
 
 //#region OCCUPAZIONE CAMPI

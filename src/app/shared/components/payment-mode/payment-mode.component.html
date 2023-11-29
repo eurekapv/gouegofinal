@@ -1,15 +1,15 @@
 <!-- NELLA PAGINA DOVE VIENE INNESTATO IL COMPONENTE CIRCONDARLO DENTRO A ION-LIST-->
-<ion-item *ngIf="!arPaymentModeList.length" lines="none">
+<ion-item *ngIf="!_arPaymentModeList.length" lines="none">
   <ion-label>Pagamento non supportato</ion-label>
 </ion-item>
 
 <!-- MODALITA STANDARD CON CLIC-->
 <div *ngIf="!_iconMode">
-  <ion-item button *ngIf="arPaymentModeList.length" lines="full" [detail]="true" (click)="onOpenChoose()">
+  <ion-item button *ngIf="_arPaymentModeList.length" lines="full" [detail]="true" (click)="onOpenChoose()">
     <ion-icon slot="start" [name]="itemIcon"></ion-icon>
     <ion-label *ngIf="selectedPaymentMode">
       <h6>{{selectedPaymentMode?.description}}</h6>
-      <p *ngIf="arPaymentModeList.length > 1">
+      <p *ngIf="_arPaymentModeList.length > 1">
           Clicca per altri metodi di pagamento
       </p>
     </ion-label>
@@ -18,13 +18,14 @@
 </div>
 
 <!-- MODALITA A ICONE-->
-<div *ngIf="_iconMode && arPaymentModeList.length != 0">
+<div *ngIf="_iconMode && _arPaymentModeList.length != 0">
 
-  <ion-row class="ion-align-items-center">
+  <ion-row 
+      class="ion-align-items-center ion-margin">
 
     <!-- BUTTON CON IL METODO DI PAGAMENTO -->
     <ion-col 
-        *ngFor="let recItem of arPaymentModeList" 
+        *ngFor="let recItem of _arPaymentModeList" 
         [class]="getModeIconClassColumn(recItem)"
         (click)="onChangePaymentSelection(recItem)"
         [size]="modeIconSizeColumn">

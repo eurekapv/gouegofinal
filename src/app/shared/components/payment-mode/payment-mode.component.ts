@@ -10,7 +10,15 @@ import { Platform, ActionSheetController } from '@ionic/angular';
 })
 export class PaymentModeComponent implements OnInit {
 
-  @Input() arPayment: AreaPaymentSetting[] = [];
+  _arPayment: AreaPaymentSetting[] = [];
+  @Input() set arPayment(value: AreaPaymentSetting[]) {
+    if (value) {
+      console.log(value);
+      this._arPayment = value;
+      this._arPaymentModeList = AreaPaymentSetting.prepareArPaymentMode(this._arPayment);
+      this.chooseStartPayment();
+    }
+  }
   //Modalità ad Icone e non con Alert Popup
   @Input() set iconMode(value:boolean) {
     this._iconMode = value;
@@ -18,15 +26,15 @@ export class PaymentModeComponent implements OnInit {
   @Output() onPaymentModeChoosed = new EventEmitter<PaymentMode>();
   selectedPaymentMode: ValueList;
   
-  arPaymentModeList: ValueList[] = []; //Il contenuto dell'array è al max 3 record (Paga struttura, adesso, bonifico)
+  _arPaymentModeList: ValueList[] = []; //Il contenuto dell'array è al max 3 record (Paga struttura, adesso, bonifico)
   _iconMode: boolean = false;
 
   constructor(private actionSheetController: ActionSheetController) { }
 
   ngOnInit() {
     //Creo una lista con le possibilità
-    this.arPaymentModeList = AreaPaymentSetting.prepareArPaymentMode(this.arPayment);
-    this.chooseStartPayment();
+    //this._arPaymentModeList = AreaPaymentSetting.prepareArPaymentMode(this._arPayment);
+    //this.chooseStartPayment();
   }
 
   /**
@@ -35,21 +43,21 @@ export class PaymentModeComponent implements OnInit {
    */
   chooseStartPayment() {
     
-    if (this.arPaymentModeList) {
+    if (this._arPaymentModeList) {
             
-      if (this.arPaymentModeList.length != 0) {
+      if (this._arPaymentModeList.length != 0) {
         //Metto in ordine decrescente
-        this.arPaymentModeList.sort((a,b) => b.value - a.value);
+        this._arPaymentModeList.sort((a,b) => b.value - a.value);
 
         //Se non ho un paga Adesso giro nuovamente in ordine crescente
-        if (this.arPaymentModeList[0].value != PaymentMode.pagaAdesso) {
+        if (this._arPaymentModeList[0].value != PaymentMode.pagaAdesso) {
          
-          this.arPaymentModeList.sort((a,b) => a.value - b.value);
+          this._arPaymentModeList.sort((a,b) => a.value - b.value);
         }
         //In prima posizione ho il pagamenti che cercavo
-        this.arPaymentModeList[0].selected = true;
+        this._arPaymentModeList[0].selected = true;
         //Emetto un evento di modifica e imposto il pagamento selezionato
-        this.onChangePaymentSelection(this.arPaymentModeList[0]);
+        this.onChangePaymentSelection(this._arPaymentModeList[0]);
         
       }
     }
@@ -72,8 +80,8 @@ export class PaymentModeComponent implements OnInit {
     let lunghezza = 0;
     let size = 12;
 
-    if (this.arPaymentModeList) {
-      lunghezza = this.arPaymentModeList.length;
+    if (this._arPaymentModeList) {
+      lunghezza = this._arPaymentModeList.length;
     }
 
     if (lunghezza != 0) {
@@ -110,11 +118,11 @@ export class PaymentModeComponent implements OnInit {
     let buttonsArray: any[]=[];
     let singleButton: any;
 
-    if (this.arPaymentModeList) {
-      if (this.arPaymentModeList.length !== 0) {
+    if (this._arPaymentModeList) {
+      if (this._arPaymentModeList.length !== 0) {
 
         //Popolo i Bottoni
-        for (const iterator of this.arPaymentModeList) {
+        for (const iterator of this._arPaymentModeList) {
           singleButton = {
             text: iterator.description,
             icon: iterator.itemIcon,

@@ -1,6 +1,6 @@
 import { Descriptor, TypeDefinition } from "../../library/models/descriptor.model";
 import { IDDocument } from "../../library/models/iddocument.model";
-import { StatoCarrello, TipoPrezzo, TipoRigoDetailCarrello } from "../zsupport/valuelist.model";
+import { PaymentChannel, StatoCarrello, TipoPrezzo, TipoRigoDetailCarrello } from "../zsupport/valuelist.model";
 import { DetailCarrello } from "./detail-carrello.model";
 import { RiepilogoCarrello } from "./riepilogo-carrello.model";
 
@@ -44,6 +44,9 @@ export class ShopCarrello extends IDDocument {
     IDPAGAMENTO: string;
     TOTSALDATO: number;
     TOTRESIDUO: number;
+    IDTRANSACTION: string;
+    IDORDER: string;
+    CHANNELPAYMENT: PaymentChannel;    
     NOTESSTAMPA: string;
     NOTESINTERNE: string;
     DETAILCARRELLO: DetailCarrello[];
@@ -84,7 +87,9 @@ export class ShopCarrello extends IDDocument {
                         'STATODESTINAZIONE',
                         'IDPAGAMENTO',
                         'NOTESSTAMPA',
-                        'NOTESINTERNE'
+                        'NOTESINTERNE',
+                        'IDTRANSACTION',
+                        'IDORDER'
                         ];
         let arNumber = ['DECIMALIDOC',
                         'STATOCARRELLO',
@@ -100,7 +105,8 @@ export class ShopCarrello extends IDDocument {
                         'SPESETRASPORTO',
                         'TOTDOCUMENTO',
                         'TOTSALDATO',
-                        'TOTRESIDUO'];
+                        'TOTRESIDUO',
+                        'CHANNELPAYMENT'];
         let arBoolean = ['RITIROINSEDE'];
         let arDate = ['DATADOCUMENTO'];
         let arDateTime =[];

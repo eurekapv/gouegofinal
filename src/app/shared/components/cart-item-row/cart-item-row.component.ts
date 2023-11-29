@@ -12,6 +12,7 @@ export class CartItemRowComponent implements OnInit {
   public detailDoc: DetailCarrello;
   public srcImage: string = '';
   public flagWithImage: boolean = false; //Il rigo possiede una immagine
+  fallbackUrl = environment.additionalConfig.defaultShopImage;
 
   @Input() set rowDetail(value:DetailCarrello) {
     this.detailDoc = value;

@@ -327,6 +327,16 @@ export class ShoppingService {
   }
 
   /**
+   * Effettua il salvataggio del carrello sul server
+   * @returns 
+   */
+  saveCart(): Promise<ShopCarrello> {
+    return new Promise<ShopCarrello>((resolve, reject) => {
+      
+    })
+  }
+
+  /**
    * Adegua il Pathcoverimage cosi da avere un Url Assoluto corretto
    * @param config 
    * @param articoloDoc 

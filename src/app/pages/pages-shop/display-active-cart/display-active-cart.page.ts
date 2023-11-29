@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertButton, AnimationController, LoadingController, ModalController, NavController } from '@ionic/angular';
-import { Subscription, exhaustAll } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DetailCarrello } from 'src/app/models/shop/detail-carrello.model';
 import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { StartService } from 'src/app/services/start.service';
+import { CartCheckoutPage } from '../cart-checkout/cart-checkout.page';
 
 @Component({
   selector: 'app-display-active-cart',
@@ -254,10 +255,24 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
         if (flagNeed == false) {
           //Proseguo senza problemi
           //sono loggato e l'account è completo; posso prenotare
-          //this.execPrenotazione(docPianificazione);
+          this.onOpenCheckout();
         }
       })  
     }
+   }
+
+   /**
+    * Apre la finestra modale per 
+    * eseguire il checkout
+    */
+   onOpenCheckout() {
+    //Apro la videata modale
+    this.modalController.create({
+      component: CartCheckoutPage
+    })
+    .then(elModal => {
+      elModal.present();
+    })
    }
   
   

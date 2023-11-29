@@ -9,6 +9,8 @@ import { DisplayActiveCartPageRoutingModule } from './display-active-cart-routin
 import { DisplayActiveCartPage } from './display-active-cart.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { UserDataVerificationPageModule } from '../../pages-profile/authorization-account/user-data-verification/user-data-verification.module';
+import { CartCheckoutPageModule } from '../cart-checkout/cart-checkout.module';
 
 @NgModule({
   imports: [
@@ -17,7 +19,9 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
     IonicModule,
     DisplayActiveCartPageRoutingModule,
     PipesModule,
-    SharedComponentsModule
+    SharedComponentsModule,
+    UserDataVerificationPageModule,
+    CartCheckoutPageModule
   ],
   declarations: [DisplayActiveCartPage]
 })

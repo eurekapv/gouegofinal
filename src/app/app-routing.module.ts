@@ -5,7 +5,8 @@ const routes: Routes = [
   { 
     path: '', 
     loadChildren: () => import('./pages/appstart-home/appstart-home.module').then( m => m.AppstartHomePageModule)
-  }
+  },
+
 
 
  

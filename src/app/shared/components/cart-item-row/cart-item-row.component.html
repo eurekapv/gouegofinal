@@ -9,7 +9,7 @@
             *ngIf="flagWithImage"
             class="ion-align-self-center"
             size="4">
-          <ion-img [src]="srcImage"></ion-img>
+          <ion-img [src]="srcImage" (ionError)="srcImage = fallbackUrl"></ion-img>
         </ion-col>
         <!-- COLONNA DESCRITTIVA -->
         <ion-col 

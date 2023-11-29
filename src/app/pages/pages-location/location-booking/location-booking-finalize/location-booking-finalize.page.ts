@@ -79,7 +79,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
               private loadingController: LoadingController,
               private toastCtrl: ToastController,
               private navParams: NavParams, 
-              private modalCtrl: ModalController,
+              private modalController: ModalController,
               private alertCtrl: AlertController
               ) {
 
@@ -261,7 +261,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
    * Chiude questa videata modale 
    */
   closeModal() {
-    this.modalCtrl.dismiss();
+    this.modalController.dismiss();
   }
 
   //E' cambiato il numero dei giocatori
@@ -350,7 +350,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
     this.showMessage('Prenotazione confermata');
 
     //1) Chiudere la modale
-    this.modalCtrl.dismiss()
+    this.modalController.dismiss()
                   .then(isClosed => {
                     if (isClosed) {
 
@@ -454,7 +454,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
           //il channelPayment viene impostato nel componente
           //esterno che si preoccupa del pagamento
           //Passo alla modale in paymentData = myCheckoutPayment
-          this.modalCtrl.create({
+          this.modalController.create({
             component: PaymentPage,
             componentProps: {
               paymentData: myCheckoutPayment,

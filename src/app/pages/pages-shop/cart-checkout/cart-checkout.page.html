@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        Annulla
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Checkout</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid >
+    <!-- DISCLAIMER-->
+    <ion-row class="ion-padding-horizontal">
+      <ion-col>
+        <p class="ion-text-small">Confermando il tuo ordine accetti integralmente le nostre condizioni 
+          generali di vendita. Prendi visione della nostra informativa sulla privacy</p>
+      </ion-col>
+    </ion-row>
+    <!-- HEADER PULSANTE -->
+    <ion-row>
+      <ion-col>
+        <ion-button 
+            color="warning" 
+            expand="block" 
+            class="full-buttons" 
+            (click)="onClickAcquista()">
+          Acquista ora
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-grid>
+      <ion-row>
+        <!-- LATO SINISTRO -->
+        <ion-col size="12" size-xl= "6" size-sm="12">
+          <ion-list lines="none">
+            <ion-list-header mode="ios">Ordina</ion-list-header>
+
+            <ion-item>
+              <ion-label><h4></h4>Articoli</ion-label>
+              <ion-label slot="end">{{carrelloDoc.TOTINTERMEDIO | currency : 'EUR'}}</ion-label>
+            </ion-item>
+
+            <ion-item>
+              <ion-label>Costo di Spedizione</ion-label>
+              <ion-label slot="end">{{carrelloDoc.SPESETRASPORTO | currency : 'EUR'}}</ion-label>
+            </ion-item>
+
+            <ion-item>
+              <ion-label class="ion-text-bold">Totale Ordine</ion-label>
+              <ion-label slot="end">{{carrelloDoc.TOTDOCUMENTO | currency : 'EUR'}}</ion-label>
+            </ion-item>                            
+          </ion-list>
+
+          <ion-list lines="none">
+            <ion-list-header mode="ios">
+              Ritiro presso il centro
+            </ion-list-header>
+            <ion-item>
+              <ion-label>a {{carrelloDoc.NOMINATIVO}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+        <!-- LATO DESTRO -->
+        <ion-col size="12" size-xl= "6" size-sm="12">
+          <ion-grid 
+                class="ion-no-padding">
+            <ion-row class="ion-no-padding">
+              <ion-col class="ion-no-padding">
+                <ion-list>
+                  <ion-list-header mode="ios">
+                    Pagamento
+                  </ion-list-header>
+                  <app-payment-mode
+                    [iconMode]="true"
+                    [arPayment]="myListPayment"
+                    (onPaymentModeChoosed)="onPaymentModeSelected($event)">
+                </app-payment-mode>                  
+                </ion-list>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>          
+      </ion-row>
+    </ion-grid>
+
+
+  </ion-grid>
+</ion-content>

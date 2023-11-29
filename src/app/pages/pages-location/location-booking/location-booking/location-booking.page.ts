@@ -65,7 +65,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
   availableFields: Campo[]=[]; //un array dei soli campi per lo sport selezionato
 
-    indexCount: number = 0;
+  indexCount: number = 0;
   showExtraToolbar = true;
   isOnAppleSystem = false; //Sta girando su sistemi IOS (Introdotto per animare diversamente la toolbar Hide)
   

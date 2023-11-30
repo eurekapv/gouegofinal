@@ -268,7 +268,8 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
    onOpenCheckout() {
     //Apro la videata modale
     this.modalController.create({
-      component: CartCheckoutPage
+      component: CartCheckoutPage,
+      cssClass: 'modal-xl-class'
     })
     .then(elModal => {
       elModal.present();

@@ -1,6 +1,7 @@
 import { Utente } from "src/app/models/utente/utente.model";
 import { IDDocument } from "./iddocument.model";
 import { DynamicClass } from "./structure.model";
+import { ErrorDoc } from "./error-doc.model";
 
 export class PostResponse {
 
@@ -9,7 +10,7 @@ export class PostResponse {
     developerMessage: string;
     code: string; //Eventuale codice ritornato dal server
     listDocuments: any[]; //Eventuali documenti di ritorno
-    
+    listMessages: ErrorDoc[]; //Eventuali messaggi di ritorno
 
     constructor() {
         this.listDocuments = [];
@@ -90,6 +91,11 @@ export class PostResponse {
                             }                            
                         })
                     }
+                    else if (nameField == 'listMessages') {
+                        //E' una array di ErrorDoc
+                        let listErrorDoc: any[] = response[nameField];
+                        this.listMessages = ErrorDoc.convertListFrom(listErrorDoc);
+                    }                    
                     else {
                         this[nameField] = response[nameField];
                     }

@@ -287,8 +287,8 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
         //Contatto il server 
         this.startService
                      .requestImportoPrenotazione()
-                     .subscribe(resultData => {
-
+                     .subscribe({
+                      next: (resultData) => {
                           //Chiudo il loading
                           elLoading.dismiss();
 
@@ -303,13 +303,14 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
                           if (!newPrenotazione.ISVALID) {
                             this.showMessage(newPrenotazione.MSGINVALID);
                           }
-
-                        },
-                        error => {
+                      },
+                      error: (err) => {
                           //Chiudo il loading
                           elLoading.dismiss();
-                          this.showMessage(error);
-                        });
+                          this.showMessage(err);
+                      }
+                     })
+
 
         
       });

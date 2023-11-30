@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AlertButton, LoadingController, ModalController, NavController } from '@ionic/angular';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AlertButton, IonModal, LoadingController, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { Area } from 'src/app/models/struttura/area.model';
@@ -16,6 +16,9 @@ import { PaymentPage } from '../../payment/payment.page';
   styleUrls: ['./cart-checkout.page.scss'],
 })
 export class CartCheckoutPage implements OnInit, OnDestroy {
+
+  //@ViewChild(IonModal) modalOrderSuccess: IonModal;
+  isOpenModalOrderSuccess = false; //Switch per l'apertura della modale sotto
 
   numProdotti: number = 0;
   subListenCarrello: Subscription;
@@ -197,7 +200,8 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
   //#region ACQUISTO
   onClickAcquista() {
-
+    //Procedo con il pagamento
+    this.onExecPayment();
   }
   //#endregion
 
@@ -210,7 +214,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
    */  
   setListPayment(): Promise<void> {
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve) => {
 
       //Svuota l'array
       this.myListPayment = [];
@@ -343,12 +347,10 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
       
     }
     else {
-      this.startService.presentAlertMessage('Contattare la struttura. Prenotazioni gratuite concluse');
+      this.startService.presentAlertMessage('Ordine non accettato, Contattare la struttura.');
     }
 
   }
-
-
 
 
   /**
@@ -356,6 +358,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
    * @param resultPayment Risultato del pagamento
    */
   onPaymentSuccess(resultPayment?: PaymentProcess) {
+    let myLoading: HTMLIonLoadingElement;
 
     //Pagamento corretto
     if (resultPayment && resultPayment.processResult)  {
@@ -388,23 +391,57 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
 
       //Pagamento avvenuto correttamente
-      //Posso salvare la prenotazione e poi scappare
-          //Visualizzo il loading controller
-          this.loadingController.create({
-            message: 'Salvataggio Prenotazione',
+      //Posso salvare e poi chiudere
+      //Visualizzo il loading controller
+      this.loadingController.create({
+            message: 'Attendere, invio ordine',
             spinner: 'circular'
           })
           .then(elLoading => {
+
+            //Mmeorizzo il loading
+            myLoading = elLoading;
             //Creo il loading
             elLoading.present();
   
-            //TODO: Effettuo il salvataggio del carrello
-                
-          });
+            //Effettuo l'invio dell'ordine
+            return this.sendOrder();
+          })
+          .then(()=> {
+            //Chiudo il loading
+            myLoading.dismiss();
+
+            //Apro la modale che avviso
+            this.isOpenModalOrderSuccess = true;
+          })
+          .catch(error => {
+            //Chiudo il loading
+            myLoading.dismiss();
+            
+            //Migliorare il messaggio
+            this.startService.presentAlertMessage(error);
+          })
 
 
     }
 
+  }
+
+  /**
+   * Invia l'ordine al Server
+   */
+  sendOrder(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+
+      //Procedo con il salvataggio
+      this.startService.shopSaveCart()
+                        .then(()=> {
+                        resolve();
+                        })
+                        .catch(error => {
+                          reject(error);
+                        });
+    })
   }
 
   /**
@@ -434,11 +471,33 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
   //#endregion
 
+  /**
+   * Chiude la Modale che avverte del successo Ordine e 
+   * chiude anche la modale del Check out
+   */
+  closeModalOrderSuccess() {
+    
+    this.isOpenModalOrderSuccess = false;
+
+    //Creo un nuovo ordine
+    this.startService.shopNewCart();
+
+    //Chiudo la modale principale ed torno allo shop
+    this.closeModal(true);
+  }
 
   /**
    * Chiude la modale
    */
-  closeModal() {
-    this.modalController.dismiss();
+  closeModal(goToShopHome: boolean = false) {
+    this.modalController
+        .dismiss()
+        .then(result => {
+          if (result && goToShopHome) {
+            //Devo portare alla home
+            let pathToGo = this.startService.getUrlPageBasic('shop');
+            this.navController.navigateRoot(pathToGo);
+          }
+        });
   }
 }

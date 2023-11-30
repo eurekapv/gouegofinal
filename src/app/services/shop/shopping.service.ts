@@ -330,9 +330,40 @@ export class ShoppingService {
    * Effettua il salvataggio del carrello sul server
    * @returns 
    */
-  saveCart(): Promise<ShopCarrello> {
-    return new Promise<ShopCarrello>((resolve, reject) => {
+  saveCart(): Promise<void> {
+    
+    return new Promise<void>((resolve, reject) => {
+      let myPostParams : PostParams = new PostParams();
+      let method = 'finalizeCart';
+      let cartDoc: ShopCarrello;
       
+      //Recupero il carrello
+      cartDoc = this._activeCart.getValue();
+
+      if (cartDoc) {
+        
+        myPostParams.key = 'cartDoc';
+        myPostParams.value = cartDoc;
+
+        this.docStructureService.requestForFunction(cartDoc, method, '', myPostParams)
+                                //Converto la risposta nell'oggetto PostResponse con un documento ShopCarrello contenuto
+                                .then(risposta => PostResponse.toPostResponse(risposta, new ShopCarrello()))
+                                //Analizzo la risposta positiva o negativa (va in catch)
+                                .then((typedRisposta:PostResponse) => typedRisposta.analizeResultFlag())
+                                .then((typedRisposta:PostResponse) => typedRisposta.getDocFromList<ShopCarrello>(0))
+                                .then((cartDoc:ShopCarrello) => this._changePathImage(cartDoc))
+                                .then((cartDoc:ShopCarrello) => {
+                                  //Riemetto il carrello
+                                  this._activeCart.next(cartDoc);
+                                  resolve();
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+      }
+      else {
+        reject('Nessun carrello presente');
+      }      
     })
   }
 

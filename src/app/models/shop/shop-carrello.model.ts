@@ -53,7 +53,10 @@ export class ShopCarrello extends IDDocument {
     RIEPILOGOCARRELLO: RiepilogoCarrello[];
 
     constructor(onlyInstance?:boolean) {
+
         super(onlyInstance);
+        
+        this.RITIROINSEDE = true;
 
         this.DETAILCARRELLO = [];
         this.RIEPILOGOCARRELLO = [];

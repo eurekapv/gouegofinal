@@ -2050,33 +2050,6 @@ requestArticoloById(idArticolo: string, numChild = 0, decodeAll = false): Promis
   return this.articoloService.requestById(this.actualStartConfig, idArticolo, numChild, decodeAll);
 }
 
-/**
- * Ritorna il path per la visualizzazione di un prodotto
- * @param idProduct 
- */
-getUrlPageDisplayProduct(idProduct: string): string[] {
-  let retPath = [];
-
-  if (idProduct && idProduct.length != 0) {
-    retPath = ['/','appstart-home','tab-shop','display-product', idProduct];
-  }
-
-  return retPath;
-}
-
-/**
- * Ritorna il path per la visualizzazione del carrello attivo
- * @param idProduct 
- */
-getUrlPageActiveCart(): string[] {
-  let retPath = [];
-
-  retPath = ['/','appstart-home','tab-shop','display-active-cart'];
-  
-
-  return retPath;
-}
-
 
 get listShopCarrello(): ShopCarrello[] {
   return this.shopService.listShopCarrello;
@@ -2178,8 +2151,15 @@ shopRecalcCart(): Promise<void> {
  * Effettua il salvataggio del carrello sul server
  * @returns 
  */
-shopSaveCart(): Promise<ShopCarrello> {
+shopSaveCart(): Promise<void> {
   return this.shopService.saveCart();
+}
+
+/**
+ * Prepara un nuovo carrello vuoto
+ */
+shopNewCart(): void {
+  this.shopService.newShoppingCart();
 }
 
 
@@ -2545,6 +2525,44 @@ getDefaultBreakpoint(actualWidth: number): 'xs' | 'sm' | 'md' | 'lg' | 'xl' {
 
 /**
  * 
+ * @returns Array Routing per la pagina iniziale richiesta
+ */
+getUrlPageBasic(where: 'home'|'agenda'|'eventi'|'shop'|'profile'): string[] {
+  let retPath = [];
+
+  retPath = ['/','appstart-home'];
+  switch (where) {
+    case 'home':
+      retPath.push('tab-home');
+      break;
+
+    case 'agenda':
+      retPath.push('tab-agenda')
+      break;
+
+    case 'eventi':
+      retPath.push('tab-eventi')
+      break;
+
+    case 'shop':
+      retPath.push('tab-shop')
+      break;
+
+    case 'shop':
+      retPath.push('tab-profile')
+      break;
+
+
+    default:
+      retPath.push('tab-home');
+      break;
+  }
+  
+  return retPath;
+}
+
+/**
+ * 
  * @param type Quale pagina vuole visualizzare
  * @param primaryKey Chiave primaria
  * @returns 
@@ -2678,6 +2696,34 @@ getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
   
       return retPath;
   }
+
+  /**
+ * Ritorna il path per la visualizzazione di un prodotto
+ * @param idProduct 
+ */
+getUrlPageDisplayProduct(idProduct: string): string[] {
+  let retPath = [];
+
+  if (idProduct && idProduct.length != 0) {
+    retPath = ['/','appstart-home','tab-shop','display-product', idProduct];
+  }
+
+  return retPath;
+}
+
+/**
+ * Ritorna il path per la visualizzazione del carrello attivo
+ * @param idProduct 
+ */
+getUrlPageActiveCart(): string[] {
+  let retPath = [];
+
+  retPath = ['/','appstart-home','tab-shop','display-active-cart'];
+  
+
+  return retPath;
+}
+
 
 
 //#endregion

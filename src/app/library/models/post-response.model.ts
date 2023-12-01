@@ -52,10 +52,7 @@ export class PostResponse {
         let prop = [];
         
         if(response) {
-            console.log('Qua imposto il Doc')
-            console.log(response);
-            
-
+           
             prop = Object.keys(response);
             
             //Ciclo le proprietà dell'oggetto in arrivo

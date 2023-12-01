@@ -336,6 +336,7 @@ export class ShoppingService {
       let myPostParams : PostParams = new PostParams();
       let method = 'finalizeCart';
       let cartDoc: ShopCarrello;
+      let postResponseDoc: PostResponse;
       
       //Recupero il carrello
       cartDoc = this._activeCart.getValue();
@@ -349,7 +350,10 @@ export class ShoppingService {
                                 //Converto la risposta nell'oggetto PostResponse con un documento ShopCarrello contenuto
                                 .then(risposta => PostResponse.toPostResponse(risposta, new ShopCarrello()))
                                 //Analizzo la risposta positiva o negativa (va in catch)
-                                .then((typedRisposta:PostResponse) => typedRisposta.analizeResultFlag())
+                                .then((typedRisposta:PostResponse) => {
+                                    postResponseDoc = typedRisposta;
+                                    return typedRisposta.analizeResultFlag()
+                                  })
                                 .then((typedRisposta:PostResponse) => typedRisposta.getDocFromList<ShopCarrello>(0))
                                 .then((cartDoc:ShopCarrello) => this._changePathImage(cartDoc))
                                 .then((cartDoc:ShopCarrello) => {
@@ -358,6 +362,18 @@ export class ShoppingService {
                                   resolve();
                                 })
                                 .catch(error => {
+
+                                  //Cancello messaggi presenti
+                                  cartDoc.clearErrorMessages();
+
+                                  if (postResponseDoc != null) {
+                                      cartDoc.setErrorMessage(postResponseDoc.message);
+                                      cartDoc.addErrorDocList(postResponseDoc.listMessages);
+                                  }
+                                  
+                                  //Riemetto il carrello
+                                  this._activeCart.next(cartDoc);
+
                                   reject(error);
                                 })
       }

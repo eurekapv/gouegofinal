@@ -9,6 +9,8 @@ import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
 import { PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { PaymentPage } from '../../payment/payment.page';
+import { ErrorDoc } from 'src/app/library/models/error-doc.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
 
 @Component({
   selector: 'app-cart-checkout',
@@ -17,12 +19,15 @@ import { PaymentPage } from '../../payment/payment.page';
 })
 export class CartCheckoutPage implements OnInit, OnDestroy {
 
-  //@ViewChild(IonModal) modalOrderSuccess: IonModal;
-  isOpenModalOrderSuccess = false; //Switch per l'apertura della modale sotto
+  @ViewChild('modalordersuccess') modalOrderSuccess: IonModal;
+  @ViewChild('modalorderfailed') modalOrderFailed: IonModal;
+  isOpenModalOrderSuccess = false; //Switch per l'apertura della modale Ordine corretto
+  isOpenModalOrderFailed = false; //Switch per l'apertura della modale Ordine Fallito
 
   numProdotti: number = 0;
   subListenCarrello: Subscription;
   carrelloDoc: ShopCarrello = new ShopCarrello();
+  resultReponse: PostResponse = new PostResponse;
 
   userLogged: boolean;      //TRUE-FALSE: Utente Loggato
   subUserLogged: Subscription;  
@@ -476,20 +481,30 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
    * chiude anche la modale del Check out
    */
   closeModalOrderSuccess() {
-    
-    this.isOpenModalOrderSuccess = false;
 
-    //Creo un nuovo ordine
-    this.startService.shopNewCart();
+    if (this.modalOrderSuccess) {
 
-    //Chiudo la modale principale ed torno allo shop
-    this.closeModal(true);
+      this.modalOrderSuccess.dismiss()
+                            .then(result => {
+                              if (result) {
+                                //Creo un nuovo ordine
+                                //Creo un nuovo ordine
+                                this.startService.shopNewCart();
+
+                                //Chiudo la modale principale ed torno allo shop
+                                this.closeModal(true);
+                              }
+                            })
+    }
+   
+
   }
 
   /**
    * Chiude la modale
    */
   closeModal(goToShopHome: boolean = false) {
+
     this.modalController
         .dismiss()
         .then(result => {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { ApicallService } from '../zsupport/apicall.service';
 import { StartConfiguration } from '../../models/start-configuration.model';
 import { LogApp } from '../../models/zsupport/log.model';
@@ -14,6 +14,7 @@ import { Gruppo } from '../../models/struttura/gruppo.model';
 import { ParamsVerificaAccount } from '../../models/utente/params-verifica-account.model';
 import { Utente } from '../../models/utente/utente.model';
 import { PostParams, RequestParams } from '../../library/models/requestParams.model';
+import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 
 
 @Injectable({
@@ -58,6 +59,8 @@ export class UtenteService {
               private docStructureService: DocstructureService) { }
 
 
+  //#region RICHIESTE GENERICHE
+
   /**
    * Carica il documento Utente partendo dal ID
    * @param idUtente 
@@ -95,6 +98,42 @@ export class UtenteService {
       }
     })
    }
+
+   /**
+    * Richiede il documento con il totale dei minuti di un utente
+    * @param idUtente 
+    * @returns 
+    */
+   requestUtenteTotaleMinuti(idUtente: string): Promise<UtenteTotaleMinuti> {
+
+    return new Promise<UtenteTotaleMinuti>((resolve, reject) => {
+
+      let filterDoc: UtenteTotaleMinuti;
+
+      if (idUtente && idUtente.length != 0)   {
+
+        filterDoc = new UtenteTotaleMinuti();
+        filterDoc.IDUTENTE = idUtente;
+        
+        this.docStructureService.requestNew(filterDoc)
+                                .then(listItems => {
+                                  if (listItems && listItems.length == 1) {
+                                    resolve(listItems[0]);
+                                  }
+                                  else {
+                                    reject('Document not found');
+                                  }
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })                                
+      }
+      else {
+        reject('Utente non definito');
+      }
+    })
+   }
+
 
    /**
     * Richiesto il caricamento della collection per nome
@@ -361,8 +400,6 @@ export class UtenteService {
   }  
 
 
-
-
   /**
    * Richiede al server la cancellazione di un account
    * @param actualPassword Password attuale inserita dall'utente
@@ -426,6 +463,8 @@ export class UtenteService {
     
      
   }
+
+  //#endregion
 
   //#region RICHIESTE ELENCHI
   /**

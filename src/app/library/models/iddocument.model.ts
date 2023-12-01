@@ -1,6 +1,7 @@
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { TypeDefinition, Descriptor, TypeReflector } from './descriptor.model';
 import { MyDateTime } from './mydatetime.model';
+import { ErrorDoc } from './error-doc.model';
 
 
  
@@ -25,6 +26,9 @@ import { MyDateTime } from './mydatetime.model';
 
     //Tag documentali
     _tags: IDTag[];
+
+    _errorMessage: string;
+    _listErrorDocMessage: ErrorDoc[];
   
     /**
      * 
@@ -36,8 +40,11 @@ import { MyDateTime } from './mydatetime.model';
         this._original = new IDOriginal();
         this._repositoryRelDoc = [];
         this._tags = [];
+        this._errorMessage = '';
+        this._listErrorDocMessage = [];
 
        if (!onlyInstance) {
+
           this.ID = this.newID();
           this.do_inserted = true;
           this.selected = false;
@@ -1155,6 +1162,65 @@ import { MyDateTime } from './mydatetime.model';
     }
     //#endregion
 
+
+    //#region ERROR DOC PROPERTY
+
+    /**
+     * Aggiunge un errore al documento
+     * @param errDoc 
+     */
+    addErrorDoc(errDoc: ErrorDoc): void {
+
+      if (errDoc) {
+        this._listErrorDocMessage.push(errDoc);
+      }
+
+    }
+
+    /**
+     * Aggiunge la lista Errori a quella presente
+     * @param listErrorDoc 
+     */
+    addErrorDocList(listErrorDoc: ErrorDoc[]): void {
+      if (listErrorDoc) {
+        //Unisco gli array
+        this._listErrorDocMessage = [...this._listErrorDocMessage, ...listErrorDoc];
+      }
+    }
+
+    /**
+     * Elimina tutti gli errori impostati
+     * anche quello singolo
+     */
+    clearErrorMessages(): void {
+      this._listErrorDocMessage = [];
+      this._errorMessage = '';
+    }
+    
+    /**
+     * Ritorna la lista dei messaggi impostati sull'oggetto
+     */
+    getErrorDocMessages(): ErrorDoc[] {
+      return this._listErrorDocMessage;
+    }
+
+    /**
+     * Imposta il messaggi singolo
+     * @param value 
+     */
+    setErrorMessage(value: string):void {
+      if (value) {
+        this._errorMessage = value;
+      }
+    }
+    /**
+     * Ritorna il messaggio singolo
+     */
+    getErrorMessage(): string {
+      return this._errorMessage;
+    }
+
+    //#endregion
   }
 
   export class ParamsExport {

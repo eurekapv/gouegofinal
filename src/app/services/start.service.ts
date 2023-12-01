@@ -91,6 +91,7 @@ import { AdvertisingService } from '../library/services/advertising.service';
 import { FileService } from './zsupport/file.service';
 import { ShoppingService } from './shop/shopping.service';
 import { ShopCarrello } from '../models/shop/shop-carrello.model';
+import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 
 @Injectable({
   providedIn: 'root'
@@ -1244,6 +1245,15 @@ requestUtenteLoadCollection(masterDoc: Utente, nameCollection: string): Promise<
  */
 requestListUtentiBy(filterKeyword: string, numMaxRequest: number = 0): Promise<Utente[]> {
   return this.utenteService.requestListUtenti(filterKeyword, numMaxRequest);
+}
+
+/**
+* Richiede il documento con il totale dei minuti di un utente
+* @param idUtente 
+* @returns 
+*/
+requestUtenteTotaleMinuti(idUtente: string): Promise<UtenteTotaleMinuti> {
+  return this.utenteService.requestUtenteTotaleMinuti(idUtente);
 }
 
 /**

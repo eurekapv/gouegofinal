@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
 import { IonTabBar } from '@ionic/angular';
+import { Area } from 'src/app/models/struttura/area.model';
 
 @Component({
   selector: 'app-appstart-home',
@@ -16,8 +17,15 @@ export class AppstartHomePage implements OnInit {
   flagUserLogged: boolean = false;
   subFlagUserLogged: Subscription;
 
+  //Area
+  areaDoc: Area;
+  subArea: Subscription;  
+  flagShowShop: boolean = false;
+
+
   ngOnInit(): void {
     this.onListenUtente();
+    this.onListenArea();
   }
 
   ngOnDestroy(): void {
@@ -35,6 +43,29 @@ export class AppstartHomePage implements OnInit {
               //Recupero l'utente
               this.flagUserLogged = element;    
           });
+  } 
+  
+  
+  /**
+   * In ascolto delle modifiche dell'area
+   */
+  onListenArea(): void {
+    this.subArea = this.startService.areaSelected.subscribe({
+      next: (areaDoc) => {
+        this.areaDoc = areaDoc;
+        if (this.areaDoc && this.areaDoc.APPSHOPONLINE == true) {
+
+          this.flagShowShop = true;          
+        }
+        else {
+          this.flagShowShop = false;
+        }
+      },
+      error: (err) =>  {
+        this.areaDoc = null;
+        this.flagShowShop = false;
+      }
+    })
   }  
 
 
@@ -44,7 +75,11 @@ export class AppstartHomePage implements OnInit {
   onUnscribeAll(): void {
     if (this.subFlagUserLogged) {
       this.subFlagUserLogged.unsubscribe();
-    }   
+    }  
+    
+    if (this.subArea) {
+      this.subArea.unsubscribe();
+    }    
   }
 
 }

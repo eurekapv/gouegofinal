@@ -5,6 +5,7 @@ import { TipoArticolo } from 'src/app/models/zsupport/valuelist.model';
 import { Subscription } from 'rxjs';
 import { StartService } from 'src/app/services/start.service';
 import { NavController } from '@ionic/angular';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 @Component({
   selector: 'app-tab-shop',
@@ -31,7 +32,8 @@ export class TabShopPage implements OnInit {
 
 
   selectedArea: Area;
-  selectedAreaListen: Subscription; 
+  selectedAreaListen: Subscription;
+  flagShowPacchetti: boolean = false;
 
   subListenCarrello: Subscription;
   numProdotti: number = 0;
@@ -55,11 +57,24 @@ export class TabShopPage implements OnInit {
  */
   onListenArea(): void {
     this.selectedAreaListen = this.startService.areaSelected
-                    .subscribe(areaSel => {
+                    .subscribe({
+                      next: (areaSel) => {
                         this.selectedArea = areaSel;
+                        if (this.selectedArea && this.selectedArea.APPSHOPPACCHETTIORARI == true) {
+                          this.flagShowPacchetti = true;
+                        }
+                        else {
+                          this.flagShowPacchetti = false;
+                        }
                         //Posso richiedere i dati
                         this.requestData()
+                      },
+                      error: (err) => {
+                        this.flagShowPacchetti = false;
+                        LogApp.consoleLog(err);
+                      }
                     })
+                    
   }
 
   /**

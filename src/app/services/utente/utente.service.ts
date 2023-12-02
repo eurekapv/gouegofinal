@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ApicallService } from '../zsupport/apicall.service';
 import { StartConfiguration } from '../../models/start-configuration.model';
 import { LogApp } from '../../models/zsupport/log.model';
@@ -104,16 +104,19 @@ export class UtenteService {
     * @param idUtente 
     * @returns 
     */
-   requestUtenteTotaleMinuti(idUtente: string): Promise<UtenteTotaleMinuti> {
+   requestUtenteTotaleMinuti(idUtente: string, idArea:string): Promise<UtenteTotaleMinuti> {
 
     return new Promise<UtenteTotaleMinuti>((resolve, reject) => {
 
       let filterDoc: UtenteTotaleMinuti;
 
-      if (idUtente && idUtente.length != 0)   {
+      if (idUtente && idUtente.length != 0 &&
+          idArea && idArea.length != 0)   {
 
         filterDoc = new UtenteTotaleMinuti();
         filterDoc.IDUTENTE = idUtente;
+        filterDoc.IDAREAOPERATIVA = idArea;
+
         
         this.docStructureService.requestNew(filterDoc)
                                 .then(listItems => {
@@ -129,7 +132,7 @@ export class UtenteService {
                                 })                                
       }
       else {
-        reject('Utente non definito');
+        reject('Utente/Area non definita');
       }
     })
    }

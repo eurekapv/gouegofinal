@@ -1252,8 +1252,8 @@ requestListUtentiBy(filterKeyword: string, numMaxRequest: number = 0): Promise<U
 * @param idUtente 
 * @returns 
 */
-requestUtenteTotaleMinuti(idUtente: string): Promise<UtenteTotaleMinuti> {
-  return this.utenteService.requestUtenteTotaleMinuti(idUtente);
+requestUtenteTotaleMinuti(idUtente: string, idArea:string): Promise<UtenteTotaleMinuti> {
+  return this.utenteService.requestUtenteTotaleMinuti(idUtente, idArea);
 }
 
 /**

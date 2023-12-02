@@ -16,8 +16,9 @@
     <ion-tab-button tab="tab-eventi">
       <ion-icon name="sparkles-outline"></ion-icon>
       Eventi
-    </ion-tab-button>    
-    <ion-tab-button tab="tab-shop">
+    </ion-tab-button> 
+
+    <ion-tab-button tab="tab-shop" *ngIf="flagShowShop">
       <ion-icon name="basket-outline"></ion-icon>
       Shop
     </ion-tab-button>

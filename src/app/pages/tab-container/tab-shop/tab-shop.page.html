@@ -44,7 +44,7 @@
           <ion-segment-button [value]="TypeArticle.servizio">
             <ion-label>Servizi</ion-label>
           </ion-segment-button>
-          <ion-segment-button [value]="TypeArticle.pacchettoOre">
+          <ion-segment-button [value]="TypeArticle.pacchettoOre" *ngIf="flagShowPacchetti">
             <ion-label>Pacchetti</ion-label>
           </ion-segment-button>
         </ion-segment>

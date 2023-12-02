@@ -3,10 +3,15 @@ import { IDDocument } from "src/app/library/models/iddocument.model";
 
 export class UtenteTotaleMinuti extends IDDocument {
     IDUTENTE: string;
+    IDAREAOPERATIVA: string;
     TOTALEMINUTI: number;
 
     constructor() {
-        super();
+        super(true);
+    }
+    
+    init() {
+        this.TOTALEMINUTI = 0;
     }
 
 
@@ -16,6 +21,7 @@ export class UtenteTotaleMinuti extends IDDocument {
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
         let arString = ['IDUTENTE',
+                        'IDAREAOPERATIVA'
                         ];
         let arNumber = ['TOTALEMINUTI'];
         let arBoolean = [];

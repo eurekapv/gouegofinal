@@ -6,6 +6,9 @@ import { StartService } from 'src/app/services/start.service';
 import { UserUpdatePassword } from '../../pages-profile/authorization-account/user-update-password/user-update-password.page';
 import { Gruppo } from 'src/app/models/struttura/gruppo.model';
 import { environment } from 'src/environments/environment';
+import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { Area } from 'src/app/models/struttura/area.model';
 
 
 @Component({
@@ -34,10 +37,20 @@ export class TabProfilePage implements OnInit, OnDestroy {
   flagUserLogged: boolean = false;
   subFlagUserLogged: Subscription;
 
+
   //Utente Loggato
   utenteDoc: Utente;
   subUtenteDoc: Subscription;
   qrCodeDataUser:string = '';
+
+  //Area
+  areaDoc: Area;
+  subArea: Subscription;
+  
+  //Valori Pacchetti Utente
+  utenteTotaleMinutiDoc: UtenteTotaleMinuti = new UtenteTotaleMinuti();
+  minutiValue: number = 0;
+  showTicketPacchetti: boolean = false;
 
   gruppoDoc: Gruppo;
   flagEnableRegistrazioni: boolean = true;
@@ -58,6 +71,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.onListenUtente();
+    this.onListenArea();
 
     //Recupero il gruupo
     this.gruppoDoc = this.startService.actualStartConfig.gruppo;
@@ -77,40 +91,92 @@ export class TabProfilePage implements OnInit, OnDestroy {
   }
 
   /**
+   * Entrando in questa view
+   */
+  ionViewDidEnter() {
+    //Richiedo nuovamente il totale minuti
+    this.requestUtenteTotaleMinuti();
+  }
+
+  /**
    * Metto in ascolto delle modifiche dell'utente
    */
   onListenUtente(): void {
 
     //Sottoscrivo all'ascolto dell'Account
     this.subUtenteDoc = this.startService.activeUtenteDoc$
-            .subscribe(element => {
-              //Recupero utente
-                this.utenteDoc = element;
+                        .subscribe({
+                          next: (element) => {
+                              //Recupero utente
+                              this.utenteDoc = element;
 
-                if (this.utenteDoc) {
-                  this.qrCodeDataUser = this.utenteDoc.getQrCode();
-                }
-                else {
-                  this.qrCodeDataUser = '';
-                }
-            });    
+                              if (this.utenteDoc) {
+                                //CHiedo il QRCode
+                                this.qrCodeDataUser = this.utenteDoc.getQrCode();
+                              }
+                              else {
+                                this.qrCodeDataUser = '';
+                              }
+                              //Chiedo il totale dei minuti acquistati
+                              this.requestUtenteTotaleMinuti();
+                          },
+                          error: (err) => {
+                            this.utenteDoc = null;
+                            //Chiedo il totale dei minuti acquistati
+                            this.requestUtenteTotaleMinuti();
+                          }
+                        });    
 
     //Sottoscrivo all'ascolto di un utente loggato
     this.subFlagUserLogged = this.startService.flagUtenteIsLoggato$
-          .subscribe(element => {
+          .subscribe({
+            next: (element) => {
               //Recupero l'utente
               this.flagUserLogged = element;    
+            },
+            error: (err)=> {
+              this.flagUserLogged = false;
+            }
           });
 
     //Sottoscrivo alla ricezione della foto
     this.subPathUtentePic = this.startService.utenteImmagine$
-        .subscribe(dataUrl => {
-            this.pathUtentePic = dataUrl;
-    });
+          .subscribe({
+            next: (dataUrl) => {
+              this.pathUtentePic = dataUrl;
+            },
+            error: (err)=> {
+              this.pathUtentePic = '';
+            }
+          });
     
     //Effettuo la richiesta della foto profilo
     this.startService.loadPictureUtente();
 
+  }
+
+  /**
+   * In ascolto delle modifiche dell'area
+   */
+  onListenArea(): void {
+    this.subArea = this.startService.areaSelected.subscribe({
+      next: (areaDoc) => {
+        this.areaDoc = areaDoc;
+        if (this.areaDoc && this.areaDoc.APPSHOPPACCHETTIORARI == true) {
+
+          this.showTicketPacchetti = true;
+          this.requestUtenteTotaleMinuti();
+        }
+        else {
+          this.showTicketPacchetti = false;
+        }
+      },
+      error: (err) =>  {
+        this.areaDoc = null;
+        this.clearUtenteTotaleMinutiDoc();
+        this.showTicketPacchetti = false;
+      }
+    })
   }
 
   /**
@@ -127,7 +193,45 @@ export class TabProfilePage implements OnInit, OnDestroy {
 
     if (this.subPathUtentePic) {
       this.subPathUtentePic.unsubscribe();
-    }    
+    }   
+    
+    if (this.subArea) {
+      this.subArea.unsubscribe();
+    }
+  }
+
+  /**
+   * Richiedo il totale minuti acquistati residui
+   */
+  requestUtenteTotaleMinuti() {
+
+    if (this.utenteDoc && this.areaDoc) {
+      this.startService.requestUtenteTotaleMinuti(this.utenteDoc.ID, this.areaDoc.ID)
+                       .then(elDoc => {
+                          if (elDoc) {
+                            this.utenteTotaleMinutiDoc = elDoc;
+                            this.minutiValue = this.utenteTotaleMinutiDoc.TOTALEMINUTI;
+                          }
+                          else {
+                            this.clearUtenteTotaleMinutiDoc();
+                          }
+                       })
+                       .catch(error => {
+                        LogApp.consoleLog(error);
+                        this.clearUtenteTotaleMinutiDoc();
+                       })
+    }
+    else {
+      this.clearUtenteTotaleMinutiDoc();
+    }
+  }
+
+  /**
+   * Svuota creando un nuovo documento
+   */
+  clearUtenteTotaleMinutiDoc() {
+    this.utenteTotaleMinutiDoc = new UtenteTotaleMinuti();
+    this.minutiValue = 0;
   }
 
   /**

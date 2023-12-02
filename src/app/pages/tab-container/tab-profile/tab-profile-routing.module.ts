@@ -44,7 +44,11 @@ const routes: Routes = [
   {
     path: 'developer-page',
     loadChildren: () => import('../../developer/developer.module').then( m => m.DeveloperPageModule)
-  }
+  },
+  {
+    path: 'list-minuti-account',
+    loadChildren: () => import('../../pages-profile/list-minuti-account/list-minuti-account.module').then( m => m.ListMinutiAccountPageModule)
+  },
 ];
 
 @NgModule({

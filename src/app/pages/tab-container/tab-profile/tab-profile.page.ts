@@ -320,10 +320,18 @@ onClickAccedi(): void {
  * Vuole vedere solo il Badge
  */
 onClickBadge(): void {
-  let navPath = ['/','appstart-home','tab-profile', 'badge-account'];
 
+  let navPath = ['/','appstart-home','tab-profile', 'badge-account'];
   this.navController.navigateForward(navPath);
-  
+
+}
+
+/**
+ * Click sul Pacchetto Ore
+ */
+onClickPacchettiOre(): void {
+ let navPath = ['/','appstart-home','tab-profile', 'list-minuti-account'];
+  this.navController.navigateForward(navPath);
   
 }
 

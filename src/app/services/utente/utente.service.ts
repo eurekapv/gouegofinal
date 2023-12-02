@@ -15,6 +15,7 @@ import { ParamsVerificaAccount } from '../../models/utente/params-verifica-accou
 import { Utente } from '../../models/utente/utente.model';
 import { PostParams, RequestParams } from '../../library/models/requestParams.model';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
+import { UtenteMinuti } from 'src/app/models/utente/utente-minuti.model';
 
 
 @Injectable({
@@ -137,6 +138,40 @@ export class UtenteService {
     })
    }
 
+
+   /**
+    * Richiesta della Lista della situazione Minuti Utente
+    * @param idUtente 
+    * @param idArea 
+    * @returns 
+    */
+   requestListUtenteMinuti(idUtente: string, idArea:string): Promise<UtenteMinuti[]> {
+
+    return new Promise<UtenteMinuti[]>((resolve, reject) => {
+
+      let filterDoc: UtenteMinuti;
+
+      if (idUtente && idUtente.length != 0 &&
+          idArea && idArea.length != 0)   {
+
+        filterDoc = new UtenteMinuti();
+        filterDoc.IDUTENTE = idUtente;
+        filterDoc.IDAREAOPERATIVA = idArea;
+
+        
+        this.docStructureService.requestNew(filterDoc)
+                                .then(listItems => {
+                                  resolve(listItems);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })                                
+      }
+      else {
+        reject('Utente/Area non definita');
+      }
+    })
+   }   
 
    /**
     * Richiesto il caricamento della collection per nome
@@ -511,6 +546,7 @@ export class UtenteService {
     })
   }
   //#endregion
+
 
 
   //#region FASI REGISTRAZIONE

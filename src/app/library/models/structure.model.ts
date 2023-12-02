@@ -54,6 +54,7 @@ import { DetailCarrello } from 'src/app/models/shop/detail-carrello.model';
 import { RiepilogoCarrello } from 'src/app/models/shop/riepilogo-carrello.model';
 import { ArticoloScorta } from 'src/app/models/shop/articolo-scorta.model';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
+import { UtenteMinuti } from 'src/app/models/utente/utente-minuti.model';
 
 
 
@@ -86,6 +87,7 @@ export const Structure: any = {
     UtenteLivello,
     UtentePrenotazione,
     UtenteTotaleMinuti,
+    UtenteMinuti,
     Impegno,
     ImpegnoCollaboratore,
     ImpegnoCustode,

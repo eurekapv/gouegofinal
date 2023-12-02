@@ -1,72 +1,14 @@
-ion-grid.grid-images-login{
-    ion-row{
-      ion-col{
-        display: flex;
-  
-        img{
-          margin: auto;
-        }
-      }
-    }
-}
-
-/* PORZIONE LOGGATO */
-.top {
-
-    background-color: var(--ion-accent-color);
-    
-    border-bottom-left-radius: 50px;
-    border-bottom-right-radius: 50px;
-
-    ion-row {
-        ion-col {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            &.picture {
-                text-align: center;
-
-                ion-button {
-                    --border-radius: 50%;
-                    height: 80px;
-                    width: 80px;
-                }
-
-                ion-avatar {
-                    height: 80px;
-                    width: 80px;
-                }
-
-            }
-
-            &.name {
-                ion-label
-                    h1 {
-                        font-weight: bold;
-                    }
-                    p {
-                        color: white;
-                    }
+div.info {
+    p{
+        font-style: italic;
         
-            }
-
-       }
-    }
-
-    
-
-}
-
-ion-col {
-    ion-card {
-        &.badge-accesso {
-            ion-card-content {
-                text-align: center;
-            }
+        font-weight: 600;
+        ion-icon{
+            font-size: 20px;
         }
     }
 }
+
 
 /*#region Ticket2 */
 $red: var(--ion-color-danger-shade);

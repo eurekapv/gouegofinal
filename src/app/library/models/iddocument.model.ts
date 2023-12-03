@@ -44,11 +44,17 @@ import { ErrorDoc } from './error-doc.model';
         this._listErrorDocMessage = [];
 
        if (!onlyInstance) {
-
-          this.ID = this.newID();
-          this.do_inserted = true;
-          this.selected = false;
+          this.init();
        }
+    }
+
+    /**
+     * Inizializzo l'oggetto
+     */
+    init() {
+      this.ID = this.newID();
+      this.do_inserted = true;
+      this.selected = false;
     }
 
     

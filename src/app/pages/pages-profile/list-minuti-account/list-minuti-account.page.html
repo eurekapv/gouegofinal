@@ -74,8 +74,12 @@
                   Pacchetti Orari
               </ion-list-header>
               <ion-item *ngFor="let item of listUtenteMinuti">
-                <ion-label slot="start">{{item.DATAOPERAZIONE | date }}</ion-label>
-                <ion-label class="ion-text-wrap">{{item.DESCRIZIONE}}</ion-label>
+                <ion-label class="ion-text-wrap">
+                    <ion-badge color="success">{{item.DATAOPERAZIONE | date }}</ion-badge>
+                    <h6>
+                      {{item.DESCRIZIONE}}
+                    </h6>
+                  </ion-label>
                 <ion-label slot="end" class="text-align-right">
                   <h6>
                     {{item.VALOREMINUTI}}

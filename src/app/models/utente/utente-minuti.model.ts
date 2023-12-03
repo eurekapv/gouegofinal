@@ -7,12 +7,17 @@ export class UtenteMinuti extends IDDocument {
     DATAOPERAZIONE: Date;
     DESCRIZIONE: string;
     VALOREMINUTI: number;
+    IDREFER: string;
 
     constructor() {
-        super();
+        super(true);
     }
 
+    /**
+     * Inizializzo l'oggetto
+     */
     init() {
+        super.init();
         this.VALOREMINUTI = 0;
     }
 
@@ -24,7 +29,8 @@ export class UtenteMinuti extends IDDocument {
         let objDescriptor = new Descriptor();
         let arString = ['IDUTENTE',
                         'IDAREAOPERATIVA',
-                        'DESCRIZIONE'
+                        'DESCRIZIONE',
+                        'IDREFER'
                         ];
         let arNumber = ['VALOREMINUTI'];
         let arBoolean = [];

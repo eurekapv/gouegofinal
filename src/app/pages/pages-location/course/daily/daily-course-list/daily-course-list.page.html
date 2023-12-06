@@ -127,6 +127,28 @@
                       (onChangeActiveDay)="onChangeBookDay($event)"></app-calendarscroll>
                   </ion-col>
                 </ion-row>
+                <ion-row *ngIf="listCorsi">
+                  <ion-col>
+                    <ion-list>
+                        <ion-item
+                            button="true"
+                            *ngFor="let itemCorso of listCorsi">
+                            <ion-label>
+                              <h4 class="ion-text-wrap">{{itemCorso.DENOMINAZIONE}}</h4>
+                              <p 
+                                class="ion-text-wrap"
+                                *ngIf="itemCorso.DENOMINAZIONELIVELLO && itemCorso.DENOMINAZIONELIVELLO.length != 0">
+                                {{itemCorso.DENOMINAZIONELIVELLO}}
+                              </p>
+                            </ion-label>
+                            <ion-label slot="end">
+                              <h6>{{itemCorso.DATAORAINIZIO | date : 'H.mm'}}</h6>
+                              <p>{{itemCorso.ORELEZIONE | labelNumeroOre : 'short'}}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                  </ion-col>
+                </ion-row>
               </ion-grid>
           </ion-col>
     </ion-row>

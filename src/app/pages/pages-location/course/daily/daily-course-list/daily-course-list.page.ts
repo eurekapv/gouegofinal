@@ -4,6 +4,7 @@ import { IonAccordionGroup, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Livello } from 'src/app/models/archivi/livello.model';
 import { Sport } from 'src/app/models/archivi/sport.model';
+import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { StartService } from 'src/app/services/start.service';
@@ -31,6 +32,8 @@ export class DailyCourseListPage implements OnInit {
   loadedData: boolean = false;
   errorLoadingData: boolean = false;
   messageErrorPage: string = "";
+
+  listCorsi: CorsoGiornaliero[]=[];
 
   selectedDate = new Date();
 
@@ -96,6 +99,10 @@ export class DailyCourseListPage implements OnInit {
                                 .then(() => {
                                   //Caricamento concluso
                                   this.loadedData = true;
+                                  return this.refreshData(myLoading);
+                                })
+                                .then(() => {
+                                  //Chiudo il loading
                                   myLoading.dismiss();
                                 })
                                 .catch(error => {
@@ -170,7 +177,9 @@ export class DailyCourseListPage implements OnInit {
     this.selectedSport = item;
     //Livello Tutti
     this.selectedLivello = null;
-
+    
+      //Recupero i dati
+      this.refreshData();
   }
 
   /**
@@ -179,6 +188,8 @@ export class DailyCourseListPage implements OnInit {
    */
   onChangeBookDay(selectedDate) {
     this.selectedDate = selectedDate;
+      //Recupero i dati
+      this.refreshData();
   }
 
   /**
@@ -192,14 +203,15 @@ export class DailyCourseListPage implements OnInit {
     else {
       this.selectedLivello = null;
     }
-
+    //Recupero i dati
+    this.refreshData();
   }
 
   /**
    * Effettuo un recupero dei dati
    * @param event 
    */
-  onRefreshData(event) {
+  onRefreshData(event?:any) {
 
     if (event) {
       event.target.complete();
@@ -219,8 +231,88 @@ export class DailyCourseListPage implements OnInit {
   /**
    * Esegue il refresh dei soli dati visualizzati
    */
-  refreshData() {
+  refreshData(objLoading?: HTMLIonLoadingElement):Promise<void> {
+    return new Promise<void>((resolve, reject) => {
 
+
+
+        if (objLoading) {
+          //Creo il filtro e faccio la ricerca
+          this.queryDataList()
+              .then(() => {
+                //Dati Corsi caricati
+                resolve();
+              })
+              .catch(err => {
+                //Anche se ci sono errori chiudo
+                LogApp.consoleLog(err);
+                resolve();
+              })
+        }
+        else {
+          //Loading già presente, non lo ricreo
+          this.startService.showLoadingMessage('Recupero corsi')
+                           .then(elLoading => {
+                              objLoading = elLoading;
+                              elLoading.present();
+                              return this.queryDataList();
+                           })
+                           .then(() => {
+                              objLoading.dismiss();
+                              //Dati caricati
+                              resolve();
+                           })
+                           .catch(err => {
+                             objLoading.dismiss();
+                            //Anche se ci sono errori chiudo
+                            LogApp.consoleLog(err);
+                            resolve();
+                          })
+
+        }
+    })
+  }
+
+  /**
+   * Esegue la query reale per recuperare i dati
+   * @returns 
+   */
+  queryDataList(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+
+      let filter: CorsoGiornaliero;
+      filter = this.prepareFilterList();
+
+      //Chiedo i dati al server
+      this.startService.requestCorsoGiornalieroList(filter)
+                       .then(listData => {
+                          //Imposto i corsi trovati
+                          this.listCorsi = listData;
+                          resolve();
+                       })
+                       .catch(err => {
+                        reject(err);
+                       })
+    })
+  }
+
+  /**
+   * Preparo il documento di filtro
+   */
+  prepareFilterList(): CorsoGiornaliero {
+    let filter: CorsoGiornaliero = new CorsoGiornaliero();
+    
+    filter.IDLOCATION = this.idLocation;
+    filter.IDSPORT = this.selectedSport.ID;
+
+    if (this.selectedLivello) {
+      filter.IDLIVELLOENTRATA = this.selectedLivello.ID; 
+    }
+
+    filter.DATA = this.selectedDate;
+
+
+    return filter;
   }
 
     //#region PULSANTE BACK

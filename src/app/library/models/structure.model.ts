@@ -55,6 +55,7 @@ import { RiepilogoCarrello } from 'src/app/models/shop/riepilogo-carrello.model'
 import { ArticoloScorta } from 'src/app/models/shop/articolo-scorta.model';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from 'src/app/models/utente/utente-minuti.model';
+import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
 
 
 
@@ -107,6 +108,7 @@ export const Structure: any = {
     UnitaMisura,
     DataChiusura,
     CorsoAllegato,
+    CorsoGiornaliero,
     TipoPagamento,
     TipoPagamentoScadenza,
     TipoTessera,

@@ -10,6 +10,7 @@ import { FilterCorsi } from '../../models/corso/filtercorsi.model';
 import { PostParams, RequestDecode, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { TimeTrainerCourse } from '../../models/zsupport/valuelist.model';
+import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
 
 
 @Injectable({
@@ -272,5 +273,28 @@ export class CourseService {
     this._listCorsi.next([]);
   }
 
+
+  //#region CORSO GIORNALIERO
+  /**
+   * Carica una lista con il filtro impostato
+   * @param filter 
+   */
+  requestCorsoGiornalieroList(filter: CorsoGiornaliero):Promise<CorsoGiornaliero[]> {
+    return new Promise<CorsoGiornaliero[]>((resolve, reject) => {
+        if (filter) {
+            this.docStructureService.requestNew(filter)
+                                    .then(listCorsiGiornata => {
+                                        resolve(listCorsiGiornata);
+                                    })
+                                    .catch(error => {
+                                      reject(error);
+                                    })
+        }
+        else {
+          reject('Filtro non impostato');
+        }
+    })
+  }
+  //#endregion
 
 }

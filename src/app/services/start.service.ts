@@ -93,6 +93,7 @@ import { ShoppingService } from './shop/shopping.service';
 import { ShopCarrello } from '../models/shop/shop-carrello.model';
 import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
+import { CorsoGiornaliero } from '../models/corso/corso-giornaliero.model';
 
 @Injectable({
   providedIn: 'root'
@@ -1011,6 +1012,14 @@ newFilterCorsi(idLocation: string) {
  requestTimeTrainerCourse(idTrainer: string, timeState: TimeTrainerCourse):void {
    this.corsoService.requestTimeTrainerCourse(idTrainer, timeState);
  }
+
+ /**
+  * Recupera la lista di Corsi Giornalieri secondo il filtro passato
+  * @param filter 
+  */
+ requestCorsoGiornalieroList(filter: CorsoGiornaliero):Promise<CorsoGiornaliero[]> {
+    return this.corsoService.requestCorsoGiornalieroList(filter);
+}
 
 //#region PIANIFICAZIONI CORSI
 

@@ -2,22 +2,18 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Utente } from 'src/app/models/utente/utente.model';
-import { SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
-import { ModalController, NavController, LoadingController, ToastController, GestureController } from '@ionic/angular';
+import { ModalitaIscrizione, SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
+import { ModalController, NavController, LoadingController } from '@ionic/angular';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { OperatorCondition } from 'src/app/library/models/iddocument.model';
 import { Area } from 'src/app/models/struttura/area.model';
 
-
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Corso } from 'src/app/models/corso/corso.model';
 import { StartService } from 'src/app/services/start.service';
-
-
-
-import { CourseListFilterPage } from './course-list-filter/course-list-filter.page';
-import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
+import { PeriodicCourseListFilterPage } from '../periodic-course-list-filter/periodic-course-list-filter.page';
+import { PeriodicCourseSubscribePage } from '../periodic-course-subscribe/periodic-course-subscribe.page';
 
 
 enum PageState{
@@ -27,11 +23,11 @@ enum PageState{
 
 
 @Component({
-  selector: 'app-location-course-list',
-  templateUrl: './location-course-list.page.html',
-  styleUrls: ['./location-course-list.page.scss'],
+  selector: 'app-periodic-course-list',
+  templateUrl: './periodic-course-list.page.html',
+  styleUrls: ['./periodic-course-list.page.scss'],
 })
-export class LocationCourseListPage implements OnInit, OnDestroy {
+export class PeriodicCourseListPage implements OnInit, OnDestroy {
 
 
   PageState : typeof PageState = PageState;
@@ -84,6 +80,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
     //inserisco nel filtro la condizione di "corsi non ancora finiti"
     this.filtroCorsi.DATAFINE = new Date();
     this.filtroCorsi.addFilterCondition(OperatorCondition.maggiore,'DATAFINE');
+    this.filtroCorsi.MODALITAISCRIZIONE = ModalitaIscrizione.ModalitaAPeriodo;
 
     //Ascolto le modifiche dell'area selezionata
     this.onListenSelectedArea();
@@ -290,7 +287,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
   goToFilter() {
     this.mdlController
       .create({
-        component: CourseListFilterPage,
+        component: PeriodicCourseListFilterPage,
         componentProps: {
           'myFilter': this.filtroCorsi
         }
@@ -354,7 +351,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
     let arPath = [];
 
     if (myCorso) {
-      arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.CourseDetail, myCorso.ID);
+      arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.PeriodicCourseDetail, myCorso.ID);
       this.navController.navigateForward(arPath);
     }
     
@@ -391,7 +388,7 @@ export class LocationCourseListPage implements OnInit, OnDestroy {
                           if (needVerification == false) {
                                 //Posso procedere con la pagina di prenotazione
                                 this.mdlController.create({
-                                  component: LocationCourseSubscribePage,
+                                  component: PeriodicCourseSubscribePage,
                                   cssClass: 'modal-xl-class',
                                   componentProps: {
                                     idCorso: selectedCorso.ID

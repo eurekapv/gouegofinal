@@ -60,7 +60,7 @@ export class LocationDetailPage implements OnInit, OnDestroy {
         this.startService.requestLocationByID(idLocation);
         
         //Ricevo le info della Location
-        this.subSelectedLocation = this.startService.activeLocation
+        this.subSelectedLocation = this.startService.activeLocation$
                                                         .subscribe(myLocation => {
                                                           //Location caricata
                                                           this.onLoadLocation(myLocation);
@@ -172,16 +172,24 @@ export class LocationDetailPage implements OnInit, OnDestroy {
     let arPath = [];
 
     switch (btn.functionCod) {
+
       case 'book':
         arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.LocationBooking, this.selectedLocation.ID);
         //Prenotazioni
         this.navController.navigateForward(arPath);
         break;
+
       case 'course':
         // Lista dei Corsi
-        arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.CourseList, this.selectedLocation.ID);
+        arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.PeriodicCourseList, this.selectedLocation.ID);
         this.navController.navigateForward(arPath);
         break;
+
+      case 'dailycourse':
+          // Lista dei Corsi
+          arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.DailyCourseList, this.selectedLocation.ID);
+          this.navController.navigateForward(arPath);
+        break;        
     
       default:
         break;

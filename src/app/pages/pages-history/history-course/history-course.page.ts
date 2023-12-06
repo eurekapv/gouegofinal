@@ -12,7 +12,7 @@ import { Location } from 'src/app/models/struttura/location.model';
 import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
 import { StatoIscrizione, StatoPagamento } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
-import { CourseDetailCalendarPage } from '../../pages-location/location-course-detail/course-detail-calendar/course-detail-calendar.page';
+import { PeriodicCourseDetailCalendarPage } from '../../pages-location/course/periodic/periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
 
@@ -310,7 +310,7 @@ export class HistoryCoursePage implements OnInit {
     /* Apro in modale il calendario */
     this.modalController
         .create({
-          component: CourseDetailCalendarPage,
+          component: PeriodicCourseDetailCalendarPage,
           componentProps: {
             'myCorso': this.myCorso
           }

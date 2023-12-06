@@ -1,5 +1,5 @@
 import { IDDocument } from '../../library/models/iddocument.model';
-import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni, ModalitaFruizione, Tempistica } from '../zsupport/valuelist.model';
+import {  TipoCorso, StatoCorso, TargetSesso, Language, Giorni, ModalitaFruizione, Tempistica, ModalitaIscrizione } from '../zsupport/valuelist.model';
 import { Settimana } from '../zsupport/settimana.model';
 import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model';
 import { CorsoProgramma } from './corsoprogramma.model';
@@ -38,6 +38,7 @@ export class Corso extends IDDocument {
     MODFRUIZIONE: ModalitaFruizione;
     STATODINAMICO: StatoCorso;
     PREZZOLORDO: number;
+    MODALITAISCRIZIONE: ModalitaIscrizione;
     
     
 

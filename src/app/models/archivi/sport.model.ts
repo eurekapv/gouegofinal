@@ -53,7 +53,10 @@ export class Sport extends IDDocument {
 }    
 
     
-
+    /**
+     * Preparazione dei dati ricevuti
+     * @param data 
+     */
     setJSONProperty(data: any) {
         super.setJSONProperty(data);
 
@@ -70,8 +73,9 @@ export class Sport extends IDDocument {
 
         this.LIVELLO = [];
 
-        if (data.LIVELLO) {
-            this.setCollectionLivello(data.LIVELLO);
+        if (data.hasOwnProperty('LIVELLO') && Array.isArray(data['LIVELLO'])) {
+            //Passo alla costruzione della collection
+            this.setCollectionLivello(data['LIVELLO']);
         }
 
     }
@@ -86,8 +90,8 @@ export class Sport extends IDDocument {
         dataLivello.forEach(elLivello => {
 
             let newLivello = new Livello();
-            newLivello.setJSONProperty(dataLivello);
-
+            newLivello.setJSONProperty(elLivello);
+            
             this.LIVELLO.push(newLivello);
 
         });

@@ -332,6 +332,11 @@ export enum ModalitaFruizione{
     inRemoto = 20
 }
 
+export enum ModalitaIscrizione {
+    ModalitaAPeriodo = 10,
+    ModalitaAGiornata = 20
+}
+
 export enum EventoPrivacy {
     eventoPubblico = 10,
     eventoPrivato = 20
@@ -362,9 +367,10 @@ export enum Tempistica {
 export enum TypeUrlPageLocation {
     LocationBooking = 'locationbooking',
     LocationDetail = 'locationdetail' ,
-    CourseList = 'courselist',
-    CourseDetail = 'coursedetail',
-    CourseSubscribe = 'coursesubscribe'
+    PeriodicCourseList = 'courselist',
+    PeriodicCourseDetail = 'coursedetail',
+    PeriodicCourseSubscribe = 'coursesubscribe',
+    DailyCourseList = 'dailycourselist'
 }
 
 

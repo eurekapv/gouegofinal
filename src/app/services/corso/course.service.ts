@@ -63,7 +63,7 @@ export class CourseService {
    */
   newFilterCorsi(idLocation: string) {
     this._filterCorsi = new FilterCorsi(idLocation);
-
+    
     return this._filterCorsi;
   }
 

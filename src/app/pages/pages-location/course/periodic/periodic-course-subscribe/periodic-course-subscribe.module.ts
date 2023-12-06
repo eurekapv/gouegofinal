@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { LocationCourseSubscribePageRoutingModule } from './location-course-subscribe-routing.module';
+import { PeriodicCourseSubscribePageRoutingModule } from './periodic-course-subscribe-routing.module';
 
-import { LocationCourseSubscribePage } from './location-course-subscribe.page';
+import { PeriodicCourseSubscribePage } from './periodic-course-subscribe.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
@@ -17,11 +17,11 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
         CommonModule,
         FormsModule,
         IonicModule,
-        LocationCourseSubscribePageRoutingModule,
+        PeriodicCourseSubscribePageRoutingModule,
         PipesModule,
         SharedComponentsModule
     ],
-    declarations: [LocationCourseSubscribePage],
-    exports: [LocationCourseSubscribePage]
+    declarations: [PeriodicCourseSubscribePage],
+    exports: [PeriodicCourseSubscribePage]
 })
-export class LocationCourseSubscribePageModule {}
+export class PeriodicCourseSubscribePageModule {}

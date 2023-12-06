@@ -350,7 +350,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   private sottoscrizioneLocationCampi() {
 
     LogApp.consoleLog('Sottoscrizione Location, Campi e CampiSport ');
-    this.subSelectedLocation = this.startService.activeLocation
+    this.subSelectedLocation = this.startService.activeLocation$
       .subscribe(dataLocation => {
 
         // Chiedo la Location

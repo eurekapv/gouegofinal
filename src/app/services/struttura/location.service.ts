@@ -32,8 +32,12 @@ export class LocationService {
     this._decodeListSport = value;
   }
 
-  get activeLocation() {
+  get activeLocation$() {
     return this._activeLocation.asObservable();
+  }
+
+  get activeLocation() {
+    return this._activeLocation.getValue();
   }
 
   constructor(

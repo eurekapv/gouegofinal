@@ -306,7 +306,7 @@ export class TabHomePage implements OnInit, OnDestroy {
    */
    onClickCorsi(location: Location) {
     let fullPath: string[] = [];
-    fullPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.CourseList, location.ID);
+    fullPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.PeriodicCourseList, location.ID);
     this.navController.navigateForward(fullPath);
   }  
 

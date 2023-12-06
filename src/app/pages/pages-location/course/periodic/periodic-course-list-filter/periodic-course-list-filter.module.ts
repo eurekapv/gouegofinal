@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { CourseListFilterPageRoutingModule } from './course-list-filter-routing.module';
-import { CourseListFilterPage } from './course-list-filter.page';
+import { PeriodicCourseListFilterPageRoutingModule } from './periodic-course-list-filter-routing.module';
+import { PeriodicCourseListFilterPage } from './periodic-course-list-filter.page';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
@@ -11,10 +11,10 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
     CommonModule,
     FormsModule,
     IonicModule,
-    CourseListFilterPageRoutingModule,
+    PeriodicCourseListFilterPageRoutingModule,
     SharedComponentsModule
   ],
-  declarations: [CourseListFilterPage],
-  exports: [CourseListFilterPage]
+  declarations: [PeriodicCourseListFilterPage],
+  exports: [PeriodicCourseListFilterPage]
 })
-export class CourseListFilterPageModule {}
+export class PeriodicCourseListFilterPageModule {}

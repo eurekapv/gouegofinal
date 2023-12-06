@@ -761,9 +761,16 @@ export class StartService {
   }
 
   /**
-   * Ritorna la location attiva
+   * Ritorna la location attiva in Observable Mode
    */
-  get activeLocation() {
+  get activeLocation$() {
+    return this.locationService.activeLocation$;
+  }
+
+  /**
+   * Ritorna la location attiva in Normal Mode
+   */
+  get activeLocation(): Location {
     return this.locationService.activeLocation;
   }
 
@@ -885,7 +892,16 @@ requestLocationSport(idLocation: string):Promise<Sport[]> {
   return this.sportService.requestLocationSport(idLocation);
 }
 
-
+/**
+ * Recupera le attività su una location comprensivi di Livelli
+ * @param idLocation 
+ * @returns 
+ */
+requestLocationSportLivelli(idLocation: string):Promise<Sport[]> {
+  
+  //Effettuo la chiamata
+  return this.sportService.requestLocationSportLivelli(idLocation);
+}
 
 
 
@@ -2702,15 +2718,20 @@ getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
           retPath.push(idPrimaryKey);
           break;  
                 
-        case TypeUrlPageLocation.CourseList:
+        case TypeUrlPageLocation.PeriodicCourseList:
           retPath.push('courselist');
           retPath.push(idPrimaryKey);          
           break;
 
-        case TypeUrlPageLocation.CourseDetail:
+        case TypeUrlPageLocation.PeriodicCourseDetail:
           retPath.push('coursedetail');
           retPath.push(idPrimaryKey);          
-          break;          
+          break; 
+          
+        case TypeUrlPageLocation.DailyCourseList:
+          retPath.push(TypeUrlPageLocation.DailyCourseList);
+          retPath.push(idPrimaryKey);          
+          break;
       
         default:
           break;

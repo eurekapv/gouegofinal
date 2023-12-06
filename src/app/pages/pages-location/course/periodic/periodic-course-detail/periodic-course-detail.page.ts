@@ -5,23 +5,23 @@ import { StartService } from 'src/app/services/start.service';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ModalController, LoadingController } from '@ionic/angular';
 import { Location } from 'src/app/models/struttura/location.model';
-import { CourseDetailCalendarPage } from './course-detail-calendar/course-detail-calendar.page';
+import { PeriodicCourseDetailCalendarPage } from '../periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { Area } from 'src/app/models/struttura/area.model';
 import {Utente } from 'src/app/models/utente/utente.model';
 
 import { Tempistica, TipoCorso } from 'src/app/models/zsupport/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
 import { LogApp } from 'src/app/models/zsupport/log.model';
-import { LocationCourseSubscribePage } from '../location-course-subscribe/location-course-subscribe.page';
+import { PeriodicCourseSubscribePage } from '../periodic-course-subscribe/periodic-course-subscribe.page';
 import { IscrizioneCorso } from 'src/app/models/corso/iscrizione-corso.model';
 
 @Component({
-  selector: 'app-location-course-detail',
-  templateUrl: './location-course-detail.page.html',
-  styleUrls: ['./location-course-detail.page.scss'],
+  selector: 'app-periodic-course-detail',
+  templateUrl: './periodic-course-detail.page.html',
+  styleUrls: ['./periodic-course-detail.page.scss'],
 })
 
-export class LocationCourseDetailPage implements OnInit, OnDestroy {
+export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
 
   myCorso: Corso = new Corso(true);
   subMyCorso: Subscription;
@@ -281,7 +281,7 @@ ngOnDestroy() {
     /* Apro in modale il calendario */
     this.mdlController
     .create({
-      component: CourseDetailCalendarPage,
+      component: PeriodicCourseDetailCalendarPage,
       componentProps: {
         'myCorso': this.myCorso
       }
@@ -338,7 +338,7 @@ ngOnDestroy() {
                             if (needVerification == false) {
                                   //Posso procedere con la pagina di prenotazione
                                   this.mdlController.create({
-                                    component: LocationCourseSubscribePage,
+                                    component: PeriodicCourseSubscribePage,
                                     cssClass: 'modal-xl-class',
                                     componentProps: {
                                       idCorso: myIdCorso

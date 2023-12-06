@@ -8,11 +8,11 @@ import { ModalController } from '@ionic/angular';
 import { Corso } from 'src/app/models/corso/corso.model';
 
 @Component({
-  selector: 'app-course-list-filter',
-  templateUrl: './course-list-filter.page.html',
-  styleUrls: ['./course-list-filter.page.scss'],
+  selector: 'app-periodic-course-list-filter',
+  templateUrl: './periodic-course-list-filter.page.html',
+  styleUrls: ['./periodic-course-list-filter.page.scss'],
 })
-export class CourseListFilterPage implements OnInit, OnDestroy {
+export class PeriodicCourseListFilterPage implements OnInit, OnDestroy {
 
   @Input() set myFilter(value: Corso) {
     this._myFilter = value;

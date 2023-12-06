@@ -60,7 +60,7 @@ export class ButtonCard {
                 newBtn.subtitle = 'organizza un incontro con i tuoi amici';
             }
             
-            newBtn.nameicon = 'calendar';
+            newBtn.nameicon = 'calendar-outline';
             newBtn.sloticon = "start";
             newBtn.color = "primary";
             newBtn.iconLink = true;
@@ -70,8 +70,8 @@ export class ButtonCard {
         }
 
         newBtn = new ButtonCard();
-        newBtn.title = 'Impara con noi';
-        newBtn.subtitle = 'guarda i corsi che abbiamo preparato per te';
+        newBtn.title = 'Corsi a periodo';
+        newBtn.subtitle = 'corsi a frequenza programmata annuale/semestrale/trimestrale';
         newBtn.nameicon = 'library-outline';
         newBtn.sloticon = "start";
         newBtn.color = "primary";
@@ -79,6 +79,17 @@ export class ButtonCard {
         newBtn.functionCod = 'course';
 
         arButton.push(newBtn);
+
+        newBtn = new ButtonCard();
+        newBtn.title = 'Corsi Giornalieri';
+        newBtn.subtitle = 'corsi liberi ad iscrizione giornaliera/oraria';
+        newBtn.nameicon = 'time-outline';
+        newBtn.sloticon = "start";
+        newBtn.color = "primary";
+        newBtn.iconLink = true;
+        newBtn.functionCod = 'dailycourse';
+
+        arButton.push(newBtn);        
 
         return arButton;
     }

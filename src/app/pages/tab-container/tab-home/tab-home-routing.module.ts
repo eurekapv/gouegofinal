@@ -18,12 +18,16 @@ const routes: Routes = [
   },
   {
     path: 'location/courselist/:locationId',
-    loadChildren: () => import('../../pages-location/location-course-list/location-course-list.module').then(m => m.LocationCourseListPageModule)
+    loadChildren: () => import('../../pages-location/course/periodic/periodic-course-list/periodic-course-list.module').then(m => m.PeriodicCourseListPageModule)
   },
   {
     path: 'location/coursedetail/:courseId',
-    loadChildren: () => import('../../pages-location/location-course-detail/location-course-detail.module').then(m => m.LocationCourseDetailPageModule)
-  }
+    loadChildren: () => import('../../pages-location/course/periodic/periodic-course-detail/periodic-course-detail.module').then(m => m.PeriodicCourseDetailPageModule)
+  },
+  {
+    path: 'location/dailycourselist/:locationId',
+    loadChildren: () => import('../../pages-location/course/daily/daily-course-list/daily-course-list.module').then(m => m.DailyCourseListPageModule)
+  },
 
   
     //   path: 'listcourses/:locationId',

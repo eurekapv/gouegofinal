@@ -1,19 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Corso } from 'src/app/models/corso/corso.model';
-import { ModalController, ToastController, LoadingController } from '@ionic/angular';
+import { ModalController, LoadingController } from '@ionic/angular';
 import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
 import { Subscription } from 'rxjs';
-import { DocstructureService } from 'src/app/library/services/docstructure.service';
-import { RequestParams, RequestDecode } from 'src/app/library/models/requestParams.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
   selector: 'app-course-detail-calendar',
-  templateUrl: './course-detail-calendar.page.html',
-  styleUrls: ['./course-detail-calendar.page.scss'],
+  templateUrl: './periodic-course-detail-calendar.page.html',
+  styleUrls: ['./periodic-course-detail-calendar.page.scss'],
 })
-export class CourseDetailCalendarPage implements OnInit {
+export class PeriodicCourseDetailCalendarPage implements OnInit {
 
   @Input() myCorso: Corso;
   calendarCorso: PianificazioneCorso[]=[];

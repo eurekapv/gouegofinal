@@ -165,6 +165,46 @@ export class SportService {
     })
     }
 
+    /**
+     * Recupera le attività effettuate su una Location con i livelli di riferimento
+     * @param idLocation 
+     * @returns 
+     */
+  requestLocationSportLivelli(idLocation: string): Promise<Sport[]> {
+      return new Promise<Sport[]>((resolve, reject)=>{
+        
+        let docToCall: Sport;
+        let reqParams: PostParams[] = [];
+        let reqOptions: RequestParams;
+        let method = 'getSportLivelliLocation';
+  
+        docToCall = new Sport(true);
+        PostParams.addParamsTo(reqParams, 'idLocation', idLocation);
+        reqOptions = new RequestParams();
+        reqOptions.child_level = 1;
+  
+        this.docStructureSrv.requestForFunction(docToCall, method, '',reqParams, reqOptions)
+                            .then(responseObj => {
+                              let resultList: Sport[] = [];
+                              
+                              if (responseObj && 
+                                  responseObj.hasOwnProperty('SPORT')) {
+                                
+                                //Converto il risultato in documenti tipizzati
+                                resultList = this.docStructureSrv.castCollection(responseObj['SPORT'], docToCall);
+
+                              }
+                              console.log(resultList)
+                              resolve(resultList);
+                            })
+                            .catch(error => {
+                              reject(error);
+                            })
+  
+  
+      })
+    }    
+
 
     //Aggiunge una attivita alla lista globale
     add2ListLocationSport(objSport: Sport) {

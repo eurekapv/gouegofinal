@@ -23,11 +23,11 @@ import { TotaleScadenze } from 'src/app/shared/interfaces/interfaces';
 
 
 @Component({
-  selector: 'app-location-course-subscribe',
-  templateUrl: './location-course-subscribe.page.html',
-  styleUrls: ['./location-course-subscribe.page.scss'],
+  selector: 'app-periodic-course-subscribe',
+  templateUrl: './periodic-course-subscribe.page.html',
+  styleUrls: ['./periodic-course-subscribe.page.scss'],
 })
-export class LocationCourseSubscribePage implements OnInit, OnDestroy {
+export class PeriodicCourseSubscribePage implements OnInit, OnDestroy {
 
   corsoDoc: Corso = new Corso();  //Corso di riferimento
   idCorso: string; //Id Corso presente nei parametri

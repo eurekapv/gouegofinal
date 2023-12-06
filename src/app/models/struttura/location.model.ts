@@ -95,7 +95,7 @@ export class Location extends IDDocument {
     objDescriptor.setRelation('IDAREAOPERATIVA','Area');
     
     return objDescriptor;
-}
+    }
 
   
 

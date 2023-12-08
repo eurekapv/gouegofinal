@@ -17,6 +17,7 @@ export class ButtonCardComponent implements OnInit {
       this._slotIcon = value.sloticon;
       this._nameIcon = value.nameicon;
       this._color = value.color;
+      this._backcolor = (value.backColor && value.backColor.length != 0 ? value.backColor : 'default');
       this._title = value.title;
       this._subtitle = value.subtitle;
       this._text = value.text;
@@ -62,6 +63,13 @@ export class ButtonCardComponent implements OnInit {
     this._color = value;
     this._buttonCard.color = value;
   }
+
+  _backcolor: string = 'default';
+  @Input() set backcolor(value: string) {
+    value = (value && value.length != 0 ? value : 'default');
+    this._backcolor = value;
+    this._buttonCard.backColor = value;
+  }  
 
   _title: string = '';
   @Input() set title(value: string) {

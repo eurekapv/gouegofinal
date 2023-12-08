@@ -4,23 +4,21 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { DailyCourseListPageRoutingModule } from './daily-course-list-routing.module';
+import { DailyCourseSubscribePageRoutingModule } from './daily-course-subscribe-routing.module';
 
-import { DailyCourseListPage } from './daily-course-list.page';
+import { DailyCourseSubscribePage } from './daily-course-subscribe.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
-import { DailyCourseSubscribePageModule } from '../daily-course-subscribe/daily-course-subscribe.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    DailyCourseListPageRoutingModule,
+    DailyCourseSubscribePageRoutingModule,
     PipesModule,
-    SharedComponentsModule,
-    DailyCourseSubscribePageModule
+    SharedComponentsModule
   ],
-  declarations: [DailyCourseListPage]
+  declarations: [DailyCourseSubscribePage]
 })
-export class DailyCourseListPageModule {}
+export class DailyCourseSubscribePageModule {}

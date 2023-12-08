@@ -198,7 +198,7 @@ ngOnDestroy() {
  * In ascolto dell'area selezionata, per capire se solo abilitate le iscrizioni
  */
  onListenSelectedArea() {
-  this.listenSelectedArea = this.startService.areaSelected
+  this.listenSelectedArea = this.startService.areaSelected$
    .subscribe(elArea => {
 
     //Imposto l'area di riferimento

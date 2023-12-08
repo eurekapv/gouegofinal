@@ -96,7 +96,7 @@ export class TabHomePage implements OnInit, OnDestroy {
       });
 
     // Sottoscrivo alla ricezione delle Aree
-    this.listAreeListen = this.startService.listAree
+    this.listAreeListen = this.startService.listAree$
       .subscribe(listAreeReceived => {
 
             //Filtro e recupero solo le Aree che devono comparire nell'app
@@ -127,7 +127,7 @@ export class TabHomePage implements OnInit, OnDestroy {
 
     //QUESTO E' IMPORTANTE, QUI POSSO AGGANCIARE EVENTI A SEGUITO DEL CAMBIO DI AREA
     //Mi sottoscrivo alla ricezione della Area Selezionata
-    this.selectedAreaListen = this.startService.areaSelected
+    this.selectedAreaListen = this.startService.areaSelected$
                                       .subscribe(areaSel => {
                                         //controllo se nell'array di aree è presente quella selezionata
                                         if (this.listAree.includes(areaSel)) {
@@ -504,7 +504,7 @@ export class TabHomePage implements OnInit, OnDestroy {
     const componente = undefined;
     const componentProps = undefined;
 
-    let idArea = this.startService.areaSelectedValue.ID;
+    let idArea = this.startService.areaSelected.ID;
 
     const path:string = '/agenda-custode/' + idArea;
 

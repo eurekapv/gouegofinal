@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 
@@ -11,6 +11,7 @@ import { PostParams, RequestDecode, RequestParams } from '../../library/models/r
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { TimeTrainerCourse } from '../../models/zsupport/valuelist.model';
 import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
+import { isDate } from 'date-fns';
 
 
 @Injectable({
@@ -24,6 +25,8 @@ export class CourseService {
   private _selectedCorso = new BehaviorSubject<Corso>(new Corso());
 
   private _listCorsiTrainer = new BehaviorSubject<Corso[]>([]);
+
+  
 
   
   constructor(
@@ -54,6 +57,8 @@ export class CourseService {
   set filterCorsi(value: FilterCorsi) {
     this._filterCorsi = value;
   }
+
+
 
 
 
@@ -275,16 +280,40 @@ export class CourseService {
 
 
   //#region CORSO GIORNALIERO
+
+
+    
   /**
    * Carica una lista con il filtro impostato
+   * Utilizza il metodo statico invece della query semplice
    * @param filter 
    */
   requestCorsoGiornalieroList(filter: CorsoGiornaliero):Promise<CorsoGiornaliero[]> {
     return new Promise<CorsoGiornaliero[]>((resolve, reject) => {
-        if (filter) {
-            this.docStructureService.requestNew(filter)
-                                    .then(listCorsiGiornata => {
-                                        resolve(listCorsiGiornata);
+      let myPostParams : PostParams;
+      let arPostParams: PostParams[] = [];
+      let method: string = 'getDailyCourseForSubscribe';
+      let nameCollection = '';
+
+      if (filter) {
+
+            myPostParams = new PostParams();
+            myPostParams.key = 'filterDoc';
+            myPostParams.value = filter;
+            arPostParams.push(myPostParams);
+
+            this.docStructureService.requestForFunction(filter, method,'',arPostParams)
+                                    .then(dataReceived => {
+                                        //Il nome della collection ricevuta è il nome della classe
+                                        nameCollection = filter.getDescriptor().classWebApiName;
+                                        let listElement: CorsoGiornaliero[] = [];
+
+                                        if (dataReceived && dataReceived.hasOwnProperty(nameCollection)) {
+                                          //Converto i risultati
+                                          listElement = this.docStructureService.castCollection(dataReceived[nameCollection],filter);
+                                        }
+
+                                        resolve(listElement);
                                     })
                                     .catch(error => {
                                       reject(error);
@@ -293,6 +322,34 @@ export class CourseService {
         else {
           reject('Filtro non impostato');
         }
+    })
+  }
+
+
+  /**
+   * Recupera un Corso Giornaliero
+   * Catch se non trovato
+   * @param idCorso Corso di riferimento
+   * @returns 
+   */
+  requestCorsoGiornalieroById(idCorso: string): Promise<CorsoGiornaliero> {
+
+    return new Promise<CorsoGiornaliero>((resolve, reject) => {
+      if (idCorso && idCorso.length != 0) {
+        let filter: CorsoGiornaliero = new CorsoGiornaliero();
+        filter.ID = idCorso;
+        this.docStructureService.requestDoc<CorsoGiornaliero>(filter)
+                                .then( itemDoc => {
+                                    resolve(itemDoc);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+
+      }
+      else {
+        reject('IdCorso non impostato');
+      }
     })
   }
   //#endregion

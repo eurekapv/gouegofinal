@@ -14,16 +14,16 @@ export class AreaService {
   private _listAree = new BehaviorSubject<Area[]>([]);
   private _areaSelected = new BehaviorSubject<Area>(new Area);
 
-  get listAree() {
+  get listAree$() {
     return this._listAree.asObservable();
   }
 
-  get areaSelected() {
+  get areaSelected$() {
     return this._areaSelected.asObservable();
   }
 
   /** Ritorna il valore attuale dell'area selezionata */
-  get areaSelectedValue() {
+  get areaSelected() {
     return this._areaSelected.getValue();
   }
 

@@ -60,7 +60,7 @@ export class TabEventiPage implements OnInit, OnDestroy {
    * Metto in ascolto della modifica dell'area
    */
   onListenArea(): void {
-    this.selectedAreaListen = this.startService.areaSelected
+    this.selectedAreaListen = this.startService.areaSelected$
                     .subscribe(areaSel => {
                         this.selectedArea = areaSel;
                         //Posso richiedere i dati

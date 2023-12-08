@@ -85,7 +85,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
     
       //Recupero dell'area selezionata
-      this.docArea = this.startService.areaSelectedValue;
+      this.docArea = this.startService.areaSelected;
       
       //Impostazione tipologie pagamento
       this.setListPayment();

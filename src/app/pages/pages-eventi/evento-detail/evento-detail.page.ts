@@ -66,7 +66,7 @@ export class EventoDetailPage implements OnInit, OnDestroy {
   onListenAreaSelected() {
 
     //Recupero l'area attiva
-    this.subListenArea = this.startService.areaSelected.subscribe(elArea => {
+    this.subListenArea = this.startService.areaSelected$.subscribe(elArea => {
           this.areaSelected = elArea;
           this.areaEnableIscrizioni = false;
 

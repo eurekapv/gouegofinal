@@ -5,16 +5,7 @@ const routes: Routes = [
   { 
     path: '', 
     loadChildren: () => import('./pages/appstart-home/appstart-home.module').then( m => m.AppstartHomePageModule)
-  },
-  {
-    path: 'dayily-course-list',
-    loadChildren: () => import('./pages/pages-location/course/daily/daily-course-list/daily-course-list.module').then( m => m.DailyCourseListPageModule)
-  },
-
-  
- 
-
-
+  }
 
  
 ];

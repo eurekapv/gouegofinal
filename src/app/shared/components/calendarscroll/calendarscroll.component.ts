@@ -15,7 +15,15 @@ Swiper.use([Navigation]);
 export class CalendarscrollComponent implements OnInit {
 
 
-  @Input() activeDay = new Date();
+  _activeDay: Date = new Date();
+  _monthBeforeDay: Date = new Date();
+  _monthAfterDay: Date = new Date();
+
+  @Input() set activeDay(value:Date) {
+    this._activeDay = value;
+    this.setPastFurtherDay();
+  }
+
   @Output() onChangeActiveDay = new EventEmitter<Date>();
   @ViewChild('swiperDays') swiperRef: ElementRef | undefined;
   swiper?: Swiper;
@@ -64,6 +72,11 @@ export class CalendarscrollComponent implements OnInit {
     this.listMesi = ValueList.getArray(Mesi);
   }
 
+  ngOnInit() {
+    //Imposto la lista dei giorni da mostrare
+    this.setListDay();
+  }
+
   //#region Swiper Method
   /**
    * Lo Slider è stato creato nel DOM
@@ -90,24 +103,24 @@ export class CalendarscrollComponent implements OnInit {
       element.setAttribute(nameProp, value);
     }
   } 
-  //#endregion
 
-  
 
   /**
-   * Imposta la Slide del giorno da mostrare a seconda del ActiveDay
+   * Imposta la Slide del giorno da mostrare a seconda del _activeDay
    */
   setStartSlide() {
 
       //Prendo il giorno attivo -1
-      let startSlide = this.activeDay.getDate() - 1;
+      let startSlide = this._activeDay.getDate() - 1;
 
-      //Sottraggo 2 per dare più respiro
-      startSlide -= 2;
+      //Sottraggo 5 per dare più respiro
+      startSlide -= 5;
 
       if (startSlide < 0) {
         startSlide = 0
       }
+      //startSlide = 0
+
 
       setTimeout(()=> {
         this.goToSlide(startSlide);
@@ -127,20 +140,32 @@ export class CalendarscrollComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    //Imposto la lista dei giorni da mostrare
-    this.setListDay();
+  //#endregion
+
+  /**
+   * Sulla base del giorno scelto, imposta anche il mese prima e dopo
+   */
+  setPastFurtherDay() {
+    let endMonth: Date;
+    let startMonth: Date;
+
+    endMonth = MyDateTime.getStartEndDate(this._activeDay, "month", "end");
+    startMonth = MyDateTime.getStartEndDate(this._activeDay, "month", "start");
+    
+    this._monthBeforeDay = MyDateTime.calcola(startMonth, -1, TypePeriod.days);
+    this._monthAfterDay = MyDateTime.calcola(endMonth, 1, TypePeriod.days);
   }
+  
 
 
-  /* Ricava tutti i giorni del mese presente in activeDay */
+  /* Ricava tutti i giorni del mese presente in _activeDay */
   setListDay() {
     let totMonthDays: number = 30; //Numero di giorni del mese
 
     let dtFineMese: Date; 
 
     //Imposto il 1 / Mese / Anno
-    dtFineMese = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+    dtFineMese = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), 1);
     //Aggiungo 1 mese 
     dtFineMese = MyDateTime.calcola(dtFineMese, 1, TypePeriod.months);
     //Sottraggo 1 Giorno per andare alla fine Mese precedente
@@ -157,7 +182,7 @@ export class CalendarscrollComponent implements OnInit {
 
     for (let index = 1; index < totMonthDays; index++) {
 
-      let myDt = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), index);
+      let myDt = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), index);
       //Aggiungo all'array delle giornate
       this.listDay.push({type:'day', 
                          dateValue: myDt, 
@@ -174,7 +199,7 @@ export class CalendarscrollComponent implements OnInit {
 
     if (objDay) {
 
-      if (this.activeDay.getDate() == objDay.numValue) {
+      if (this._activeDay.getDate() == objDay.numValue) {
         fill = 'solid';
       }
 
@@ -191,10 +216,10 @@ export class CalendarscrollComponent implements OnInit {
 
       if (objDay.type == 'day') {
         //Cambio il giorno attivo
-        this.activeDay = objDay.dateValue
+        this._activeDay = objDay.dateValue
     
         //Lancio evento di cambio giorno
-        this.onChangeActiveDay.emit(this.activeDay);
+        this.onChangeActiveDay.emit(this._activeDay);
       }
       else {
         //Cambiamento al mese successivo o prossimo
@@ -202,7 +227,7 @@ export class CalendarscrollComponent implements OnInit {
 
           case 'next':
             //Imposto il primo del mese
-            nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+            nextDate = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), 1);
             //e poi vado al giorno 1 del mese successivo
             nextDate = MyDateTime.calcola(nextDate, 1, TypePeriod.months);
             
@@ -211,7 +236,7 @@ export class CalendarscrollComponent implements OnInit {
 
           case 'prev':
             //Vado al giorno ultimo del mese precedente
-            nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+            nextDate = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), 1);
             nextDate = MyDateTime.calcola(nextDate, -1, TypePeriod.days);
             
             this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
@@ -235,7 +260,7 @@ export class CalendarscrollComponent implements OnInit {
 
         case 'next':
           //Vado al giorno 1 del mese successivo
-          nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+          nextDate = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), 1);
           nextDate = MyDateTime.calcola(nextDate, 1, TypePeriod.months);
 
           this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
@@ -243,7 +268,7 @@ export class CalendarscrollComponent implements OnInit {
 
         case 'prev':
           //Vado al giorno ultimo del mese precedente
-          nextDate = new Date(this.activeDay.getFullYear(), this.activeDay.getMonth(), 1);
+          nextDate = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), 1);
           nextDate = MyDateTime.calcola(nextDate, -1, TypePeriod.days);
 
           this.setNewActiveDateFromPicker(nextDate.getFullYear(), nextDate.getMonth() + 1, nextDate.getDate() );
@@ -328,7 +353,7 @@ export class CalendarscrollComponent implements OnInit {
     let _this = this;
     // Indici delle voci selezionate
     let indexActiveMese = 0;
-    let indexActiveAnno = (_this.activeDay.getFullYear() - (new Date()).getFullYear());
+    let indexActiveAnno = (_this._activeDay.getFullYear() - (new Date()).getFullYear());
     const myMese = (new Date()).getMonth();
 
     let pickButtons: PickerButton[] = [{
@@ -420,14 +445,14 @@ export class CalendarscrollComponent implements OnInit {
   }
 
   /**
-   * Imposta activeDay sulla base della scelta fatta nel picker
+   * Imposta _activeDay sulla base della scelta fatta nel picker
    * @param meseOneBasedNew Numero del Mese (da 1 a 12)
    * @param annoNew Anno scelto
    */
   setNewActiveDateFromPicker(annoNew: number, meseOneBasedNew: number,  dayNew:number = 0 ) {
-    let activeM = this.activeDay.getMonth();
-    let activeA = this.activeDay.getFullYear();
-    let activeG = this.activeDay.getDate();
+    let activeM = this._activeDay.getMonth();
+    let activeA = this._activeDay.getFullYear();
+    let activeG = this._activeDay.getDate();
     let oggi = new Date();
 
 
@@ -461,16 +486,16 @@ export class CalendarscrollComponent implements OnInit {
 
 
       //Cambio il Giorno attivo
-      this.activeDay = new Date(annoNew, (meseOneBasedNew - 1), activeG);
+      this._activeDay = new Date(annoNew, (meseOneBasedNew - 1), activeG);
 
       //Ripreparo la lista dei giorni
       this.setListDay();
 
       //Si posiziona sulla Slide
-      this.goToSlide(this.activeDay.getDate() -1);
+      this.goToSlide(this._activeDay.getDate() -1);
 
       //Lancio evento di cambio giorno
-      this.onChangeActiveDay.emit(this.activeDay);
+      this.onChangeActiveDay.emit(this._activeDay);
     }
   }
 

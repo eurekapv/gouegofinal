@@ -1,52 +1,59 @@
 <!-- GRID MONTH PICKER -->
 <ion-grid 
       class="picker-month ion-no-padding ion-no-margin">
-  <ion-row>
+  <ion-row class="ion-align-items-center">
+
     <ion-col 
-        class="ion-text-center"
+        class="ion-text-left"
         size="2">
       <ion-button
           (click) ="onClickMonthButton('prev')"
           class="ion-no-padding ion-no-margin" 
-          shape="round"
-          size="medium" 
+          size="small"
+          expand="full" 
           fill="clear" 
-          color="primary">
-      <ion-icon 
-          slot="icon-only" 
-          name="play-back-outline">
-        </ion-icon>
+          color="danger">
+          <ion-icon 
+            slot="start" 
+            name="chevron-back-outline">
+          </ion-icon>
+          {{_monthBeforeDay | date: 'MMM' | uppercase}}
     </ion-button>
     
     </ion-col>
 
     <ion-col 
-        (click)="showPickerDate()" size="8" class="ion-text-center">
+        (click)="showPickerDate()" 
+        size="8" 
+        class="ion-text-center">
 
         <ion-button 
           color = "primary"
           expand="block"
           fill="clear" 
           size="medium">
-                {{ activeDay | date: "EEEE dd MMMM yyyy" | uppercase}}
+                {{ _activeDay | date: "EEEE dd MMMM yyyy" | uppercase}}
         </ion-button>
     </ion-col>
 
     <ion-col 
-          class="ion-text-center"
+          class="ion-text-right"
           size="2">
-      <ion-button
-          (click) ="onClickMonthButton('next')" 
-          class="ion-no-padding ion-no-margin" 
-          shape="round"
-          size="medium" 
-          fill="clear" 
-          color="primary">
-      <ion-icon 
-          slot="icon-only" 
-          name="play-forward-outline">
-        </ion-icon>
-    </ion-button>
+
+          <ion-button
+            (click) ="onClickMonthButton('next')"
+            class="ion-no-padding ion-no-margin" 
+            size="small"
+            expand="full" 
+            fill="clear" 
+            color="danger">
+            <ion-icon 
+              slot="end" 
+              name="chevron-forward-outline">
+            </ion-icon>
+            {{_monthAfterDay | date: 'MMM' | uppercase}}
+          </ion-button>
+
     </ion-col>
   </ion-row>
   </ion-grid> 

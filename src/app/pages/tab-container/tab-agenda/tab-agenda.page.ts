@@ -303,7 +303,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
    * Metto in ascolto della modifica dell'area
    */
   onListenArea(): void {
-    this.selectedAreaListen = this.startService.areaSelected
+    this.selectedAreaListen = this.startService.areaSelected$
                     .subscribe(areaSel => {
                         //Area cambiata
                         this.selectedArea = areaSel;

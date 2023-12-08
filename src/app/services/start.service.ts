@@ -182,8 +182,8 @@ export class StartService {
    * Quando il valore della proprietàè settato, a seguito del Login bisogna rimanere su questa area
    */
   setIdAreaForcedForLogin() {
-    if (this.areaService.areaSelectedValue) {
-      this._forceIdAreaOnLogin = this.areaService.areaSelectedValue.ID;
+    if (this.areaService.areaSelected) {
+      this._forceIdAreaOnLogin = this.areaService.areaSelected.ID;
     }
     else {
       this._forceIdAreaOnLogin = '';
@@ -686,20 +686,20 @@ export class StartService {
     /**
      * Area Selezionata, in versione Observable
      */
-    get areaSelected() {
-      return this.areaService.areaSelected;
+    get areaSelected$() {
+      return this.areaService.areaSelected$;
     }
 
     /** Area Selezionata non Observable */
-    get areaSelectedValue() {
-      return this.areaService.areaSelectedValue;
+    get areaSelected() {
+      return this.areaService.areaSelected;
     }
 
     /**
      * Elenco delle Aree
      */
-    get listAree() {
-      return this.areaService.listAree;
+    get listAree$() {
+      return this.areaService.listAree$;
     }
 
     /**
@@ -727,7 +727,7 @@ export class StartService {
      */
     onListenAreaSelezionata() {
 
-      this.areaService.areaSelected
+      this.areaService.areaSelected$
           .subscribe(newAreaSelected => {
             //Cambiando Area selezionata
             //Devo necessariamente recuperare le Location
@@ -1012,7 +1012,9 @@ newFilterCorsi(idLocation: string) {
  requestTimeTrainerCourse(idTrainer: string, timeState: TimeTrainerCourse):void {
    this.corsoService.requestTimeTrainerCourse(idTrainer, timeState);
  }
+//#endregion
 
+ //#region CORSO GIORNALIERO
  /**
   * Recupera la lista di Corsi Giornalieri secondo il filtro passato
   * @param filter 
@@ -1020,6 +1022,20 @@ newFilterCorsi(idLocation: string) {
  requestCorsoGiornalieroList(filter: CorsoGiornaliero):Promise<CorsoGiornaliero[]> {
     return this.corsoService.requestCorsoGiornalieroList(filter);
 }
+
+/**
+ * Recupera dal server un Corso Giornaliero
+ * Catch se non trovato
+ * @param idCorso 
+ * @returns 
+ */
+requestCorsoGiornalieroById(idCorso: string): Promise<CorsoGiornaliero> {
+  return this.corsoService.requestCorsoGiornalieroById(idCorso);
+}
+
+
+
+//#endregion
 
 //#region PIANIFICAZIONI CORSI
 
@@ -2709,7 +2725,7 @@ getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
   * 
   * Url pagina per andare verso una location
   * @param where Cosa si desidera effettuare con la location
-  * @param idLocation Location di riferimento
+  * @param idPrimaryKey Chiave primaria dipendente dalla chiamata
   */
   getUrlPageLocation(where: TypeUrlPageLocation, 
                      idPrimaryKey: string, 
@@ -2718,29 +2734,40 @@ getUrlPageDetailNewsEventi(type: 'news' | 'evento', idPrimaryKey): string[] {
 
       switch (where) {
         case TypeUrlPageLocation.LocationDetail:
+          //idPrimaryKey = idLocation
           retPath.push('detail');
           retPath.push(idPrimaryKey);
           break;
 
         case TypeUrlPageLocation.LocationBooking:
+          //idPrimaryKey = idLocation
           retPath.push('booking');
           retPath.push(idPrimaryKey);
           break;  
                 
         case TypeUrlPageLocation.PeriodicCourseList:
+          //idPrimaryKey = idLocation
           retPath.push('courselist');
           retPath.push(idPrimaryKey);          
           break;
 
         case TypeUrlPageLocation.PeriodicCourseDetail:
+          //idPrimaryKey = idCorso
           retPath.push('coursedetail');
           retPath.push(idPrimaryKey);          
           break; 
           
         case TypeUrlPageLocation.DailyCourseList:
-          retPath.push(TypeUrlPageLocation.DailyCourseList);
+          //idPrimaryKey = idLocation
+          retPath.push("dailycourselist");
           retPath.push(idPrimaryKey);          
           break;
+
+        case TypeUrlPageLocation.DailyCourseSubscribe:
+            //idPrimaryKey = idCorso
+            retPath.push(TypeUrlPageLocation.DailyCourseSubscribe);
+            retPath.push(idPrimaryKey);          
+            break;
       
         default:
           break;
@@ -2955,6 +2982,24 @@ presentAlertMessage(myMessage: string | ErrorEvent,
   }
 
 
+  /**
+   * Converte un errore in una stringa
+   * @param error 
+   */
+  convertErrorDisplay(error: any): string {
+    let finalError: string = '';
+    if (typeof error == 'string') {
+      finalError = error;
+    }
+    else if (typeof error == 'object') {
+      finalError = JSON.stringify(error);
+    }
+    else {
+      finalError = 'Errore sconosciuto';
+    }
+
+    return finalError;
+  }
   //#endregion
 
 

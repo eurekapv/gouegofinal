@@ -6,7 +6,7 @@ import { TabHomePage } from './tab-home.page';
 const routes: Routes = [
   {
     path: '',
-    component: TabHomePage
+    component: TabHomePage,
   },
   {
     path: 'location/detail/:locationId',
@@ -27,17 +27,11 @@ const routes: Routes = [
   {
     path: 'location/dailycourselist/:locationId',
     loadChildren: () => import('../../pages-location/course/daily/daily-course-list/daily-course-list.module').then(m => m.DailyCourseListPageModule)
-  },
-
+  }
   
-    //   path: 'listcourses/:locationId',
-    //   loadChildren: () => import('./pages/location/course/listcourses/listcourses.module').then( m => m.ListcoursesPageModule)
-    // },
-    // {
-    //   path: 'listcourses',
-    //   redirectTo: 'home', pathMatch: 'full'
-    // },
 ];
+//Provare a fare debug qui
+//https://dev.to/manthanank/router-debugging-in-angular-4abd
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

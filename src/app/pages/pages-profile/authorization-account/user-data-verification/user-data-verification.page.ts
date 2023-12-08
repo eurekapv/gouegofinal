@@ -130,7 +130,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
                                               }
                                             })
 
-    this.subListenArea = this.startService.areaSelected
+    this.subListenArea = this.startService.areaSelected$
                                           .subscribe({
                                             next: (dataArea) => {
                                               let dataLink: AreaLink;

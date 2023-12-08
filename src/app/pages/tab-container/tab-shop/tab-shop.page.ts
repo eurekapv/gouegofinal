@@ -56,7 +56,7 @@ export class TabShopPage implements OnInit {
  * Metto in ascolto della modifica dell'area
  */
   onListenArea(): void {
-    this.selectedAreaListen = this.startService.areaSelected
+    this.selectedAreaListen = this.startService.areaSelected$
                     .subscribe({
                       next: (areaSel) => {
                         this.selectedArea = areaSel;

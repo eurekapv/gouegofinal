@@ -1,6 +1,6 @@
 import { IDDocument } from '../../library/models/iddocument.model';
 import { Location } from './location.model';
-import { TipoArea, PageType, SettorePagamentiAttivita } from '../zsupport/valuelist.model';
+import { TipoArea, PageType, SettorePagamentiAttivita, FuturoPrenotazione, FuturoIscrizioneGiornaliere, CancellazioniIscrizioniGiornaliere } from '../zsupport/valuelist.model';
 import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model';
 import { AreaLink } from './arealink.model';
 import { AreaPaymentSetting } from './areapaymentsetting.model';
@@ -30,8 +30,16 @@ export class Area extends IDDocument {
     APPSHOPONLINE: boolean; //Shop Online abilitato
     APPSHOPPACCHETTIORARI: boolean; //Shop Online con Pacchetti Orari
     APPBUTTONHOME: PositionActionButton; //Dove vuole mostrare i bottoni sulla home
+    APPFUTUROPRENOTAZIONIFLAG: FuturoPrenotazione;
+    APPFUTUROPRENOTAZIONIMESI: number;
+    APPFUTUROISCRIZIONIFLAG: FuturoIscrizioneGiornaliere;
+    APPFUTUROISCRIZIONIMESI: number;
+    APPDELETEISCRIZIONIFLAG: CancellazioniIscrizioniGiornaliere;
+    APPDELETEISCRIZIONIORE: number;
+
     LATITUDINE: number;
     LONGITUDINE: number;
+
 
     constructor(onlyInstance?:boolean) {
       
@@ -48,6 +56,10 @@ export class Area extends IDDocument {
         this.APPISCRIZIONI = false;
         this.APPISCRIZIONIEVENTI = false;
         this.APPPRENOTAZIONI = false;
+        this.APPFUTUROISCRIZIONIFLAG = FuturoIscrizioneGiornaliere.sempre;
+        this.APPFUTUROPRENOTAZIONIFLAG = FuturoPrenotazione.sempre;
+        this.APPDELETEISCRIZIONIFLAG = CancellazioniIscrizioniGiornaliere.mai;
+
       }
 
     }
@@ -66,7 +78,18 @@ export class Area extends IDDocument {
                       'ISOSTATO',
                       'CONDVENDITACORSI',
                       'CONDVENDPRENOTAZIONI'];
-      let arNumber = ['TIPOAREA','APPGAPOREPRESENZE','LATITUDINE','LONGITUDINE','APPBUTTONHOME'];
+      let arNumber = ['TIPOAREA',
+                      'APPGAPOREPRESENZE',
+                      'LATITUDINE',
+                      'LONGITUDINE',
+                      'APPBUTTONHOME',
+                      'APPFUTUROPRENOTAZIONIFLAG',
+                      'APPFUTUROPRENOTAZIONIMESI',
+                      'APPFUTUROISCRIZIONIFLAG',
+                      'APPFUTUROISCRIZIONIMESI',
+                      'APPDELETEISCRIZIONIFLAG',
+                      'APPDELETEISCRIZIONIORE'
+                    ];
       let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI','APPISCRIZIONIEVENTI','APPSHOPONLINE','APPSHOPPACCHETTIORARI'];
       let arDate = [];
       let arDateTime =[];

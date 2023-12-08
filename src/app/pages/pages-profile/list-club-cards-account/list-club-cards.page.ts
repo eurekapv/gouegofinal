@@ -51,7 +51,7 @@ export class ListClubCardsPage implements OnInit {
   ngOnInit() {
 
     this.isDesktop=this.startService.isDesktop;
-    this.selectedArea = this.startService.areaSelectedValue;
+    this.selectedArea = this.startService.areaSelected;
     this.actualUtente = this.startService.activeUtenteDoc;
 
     if (this.actualUtente) {

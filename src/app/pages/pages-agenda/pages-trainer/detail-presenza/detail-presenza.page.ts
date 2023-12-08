@@ -65,7 +65,7 @@ export class DetailPresenzaPage implements OnInit {
       //capisco se sono su desktop
       this.isDesktop = startService.isDesktop;
 
-      this.gapAggiornamentoPresenze = startService.areaSelectedValue.APPGAPOREPRESENZE;
+      this.gapAggiornamentoPresenze = startService.areaSelected.APPGAPOREPRESENZE;
       
     }
 

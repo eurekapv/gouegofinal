@@ -103,7 +103,7 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
    * In attesa di alcuni documenti
    */
   onListenDoc() {
-    this.subListenArea = this.startService.areaSelected
+    this.subListenArea = this.startService.areaSelected$
                                           .subscribe({
                                             next: (dataArea) => {
                                               let dataLink: AreaLink;

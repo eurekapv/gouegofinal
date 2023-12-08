@@ -186,7 +186,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
   onListeArea(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
 
-      this.subAreaDoc = this.startService.areaSelected.subscribe({
+      this.subAreaDoc = this.startService.areaSelected$.subscribe({
         next: (dataArea) => {
           if (dataArea) {
             this.docArea = dataArea;

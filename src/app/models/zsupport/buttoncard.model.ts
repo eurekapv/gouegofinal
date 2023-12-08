@@ -1,5 +1,5 @@
 import { Impegno } from '../utente/impegno.model';
-import { SettoreAttivita, TipoSocieta } from './valuelist.model';
+import { SettoreAttivita, TipoSocieta, TypeUrlPageLocation } from './valuelist.model';
 import { Settimana } from './settimana.model';
 import { MyDateTime } from '../../library/models/mydatetime.model';
 import { OccupazioneCampi } from '../struttura/occupazionecampi.model';
@@ -19,6 +19,7 @@ export class ButtonCard {
     nameicon: string;
     sloticon: string;
     color: string;
+    backColor: string;
     iconLink: boolean;
     functionCod: string;
     settore: SettoreAttivita;
@@ -63,6 +64,7 @@ export class ButtonCard {
             newBtn.nameicon = 'calendar-outline';
             newBtn.sloticon = "start";
             newBtn.color = "primary";
+            newBtn.backColor = 'success';
             newBtn.iconLink = true;
             newBtn.functionCod = 'book';
     
@@ -86,8 +88,9 @@ export class ButtonCard {
         newBtn.nameicon = 'time-outline';
         newBtn.sloticon = "start";
         newBtn.color = "primary";
+        newBtn.backColor = 'warning';
         newBtn.iconLink = true;
-        newBtn.functionCod = 'dailycourse';
+        newBtn.functionCod = TypeUrlPageLocation.DailyCourseList;
 
         arButton.push(newBtn);        
 

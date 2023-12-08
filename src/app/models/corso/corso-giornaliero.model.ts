@@ -7,18 +7,21 @@ export class CorsoGiornaliero extends IDDocument{
     IDAREAOPERATIVA: string;
     IDLOCATION: string;
     IDCAMPO: string;
+    DENOMINAZIONECAMPO: string;
     DATA: Date;
     DATAORAINIZIO: Date;
     DATAORAFINE: Date;
     ORELEZIONE: number;
     DENOMINAZIONE: string;
     IDSPORT: string;
+    DENOMINAZIONESPORT: string;
     IDLIVELLOENTRATA: string;
     DENOMINAZIONELIVELLO: string;
     ISCRIZIONEDAL: Date;
     ISCRIZIONEAL: Date;
     TARGETSESSO: TargetSesso;
     MAXPARTECIPANTI: number;
+    LISTTRAINERS: string;
 
     constructor() {
         super(true);
@@ -39,7 +42,10 @@ export class CorsoGiornaliero extends IDDocument{
             'DENOMINAZIONE',
             'IDSPORT',
             'IDLIVELLOENTRATA',
-            'DENOMINAZIONELIVELLO'
+            'DENOMINAZIONELIVELLO',
+            'LISTTRAINERS',
+            'DENOMINAZIONECAMPO',
+            'DENOMINAZIONESPORT'
         ];
         let arNumber = ['ORELEZIONE','MAXPARTECIPANTI','TARGETSESSO'];
         let arBoolean = [];

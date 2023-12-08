@@ -193,7 +193,7 @@ export class UserVerifyPage implements OnInit {
       }
 
      //Prelevo l'area selezionata 
-     this.docArea = this.startService.areaSelectedValue;
+     this.docArea = this.startService.areaSelected;
      LogApp.consoleLog('Area di riferimento: ' + this.docArea.ID);
 
      //recupero l'utente

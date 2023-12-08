@@ -1,3 +1,14 @@
+
+
+  //Questa regola si abbina al setting ion-col sizeXl
+  @media only screen and (min-width: 1200px) {
+
+    ion-modal {  
+      --border-radius: 30px;
+    }
+
+  }
+
 /* La classe viene applicata all'apertura della modale */
 .modal-xl-class{
   // @media only screen and (min-width: 768px) and (min-height: 768px) {
@@ -15,6 +26,7 @@
      width: 900px !important;
      --width: 900px !important;
    }
+
   }
 
 }
@@ -71,6 +83,7 @@ ion-modal {
       // Remove the position: absolute which is coming with the .ion-page element by default,
       // so we can manipulate the modal content as a regular div.
       position: unset;
+      border-radius: 30px 30px 0 0;
     }
   }
 }

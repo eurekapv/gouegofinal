@@ -285,6 +285,22 @@ export enum StatoCarrello  {
     evasoParzialmente = 30
 }
 
+export enum FuturoPrenotazione {
+    sempre = 10,
+    limitata = 20
+}
+
+export enum FuturoIscrizioneGiornaliere {
+    sempre = 10,
+    limitata = 20
+}
+
+export enum CancellazioniIscrizioniGiornaliere {
+    mai = 10,
+    limitata = 20,
+    sempre = 30
+}
+
 //Stati possibili a seguito di una richiesta pagamento Paypal
 /*
 The possible values are:
@@ -370,7 +386,8 @@ export enum TypeUrlPageLocation {
     PeriodicCourseList = 'courselist',
     PeriodicCourseDetail = 'coursedetail',
     PeriodicCourseSubscribe = 'coursesubscribe',
-    DailyCourseList = 'dailycourselist'
+    DailyCourseList = 'dailycourselist',
+    DailyCourseSubscribe = 'dailycoursesubscribe'
 }
 
 

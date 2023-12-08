@@ -1,0 +1,43 @@
+<ion-item
+    [color]="_colorItem"
+    (click)="onClickElement()"
+    button="true">
+    <!-- PORZIONE ICONA -->
+    <ion-icon 
+      [name]="iconName" 
+      slot="start"
+      [color]="iconColor">
+    </ion-icon>
+
+<ion-label 
+    class="ion-text-wrap">
+
+    <h2 class="ion-text-bold ion-text-wrap">{{_dailyCorsoDoc.DENOMINAZIONE}}</h2>
+
+    <p class="ion-text-bold" *ngIf="_containOre || _containCampo">
+      <span *ngIf="_containOre">{{_dailyCorsoDoc?.ORELEZIONE| labelNumeroOre : 'long'}}</span>
+      <span *ngIf="_containCampo" class="ion-text-small">
+        &nbsp;presso {{_dailyCorsoDoc?.DENOMINAZIONECAMPO}}
+      </span>
+    </p>
+  
+  <h4 
+    class="ion-text-wrap"
+    *ngIf="_containLivello">
+    Livello {{_dailyCorsoDoc.DENOMINAZIONELIVELLO}} 
+  </h4>
+
+    <p 
+      class="ion-text-wrap"
+      *ngIf="_containTrainers">
+      con {{_dailyCorsoDoc.LISTTRAINERS}}
+    </p>
+</ion-label> 
+
+<ion-chip 
+  [color]="iconColor">
+  {{_dailyCorsoDoc.DATAORAINIZIO | date: 'HH:mm'}}
+  <ion-icon name="time-outline"></ion-icon>
+</ion-chip>
+
+</ion-item>

@@ -5,12 +5,16 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class LabelNumeroOrePipe implements PipeTransform {
 
-  transform(value: number, mode:'short'|'long' = 'short'): string {
+  transform(value: number, 
+            mode:'short'|'long' = 'short',
+            valueIs: 'ore'|'minuti' = 'ore'): string {
     let minuti: number = 0;
     let ore: number = 0;
     let retValue = "";
     let lblMin: string[] = [];
     let lblOre: string[] = [];
+    const sing = 0;
+    const plur = 1;
 
     if (mode == 'long') {
       lblMin.push('minuto');
@@ -25,22 +29,35 @@ export class LabelNumeroOrePipe implements PipeTransform {
       lblOre.push('h');
     }
 
-
-    if (value < 1) {
-      minuti = value * 60;
-      retValue = minuti + ' ' + lblMin[minuti==1 ? 1 : 0];
-    }
-    else if (value == 1) {
-      retValue = value + ' ' + lblOre[0];
+    if (valueIs == 'ore') {
+  
+      if (value < 1) {
+        minuti = value * 60;
+        retValue = minuti + ' ' + lblMin[minuti==1 ? sing : plur];
+      }
+      else if (value == 1) {
+        retValue = value + ' ' + lblOre[0];
+      }
+      else {
+        ore = Math.trunc(value);
+        minuti = (value - ore) * 60;
+        
+        retValue = `${ore} ${lblOre[ore==1 ? sing : plur]}`;
+  
+        if (minuti != 0) {
+          retValue = retValue + ' ' + `${minuti} ${lblMin[minuti==1 ? sing : plur]}`
+        }
+      }
     }
     else {
-      ore = Math.trunc(value);
-      minuti = (value - ore) * 60;
-      
-      retValue = `${ore} ${lblOre[ore==1 ? 1: 0]}`;
-
-      if (minuti != 0) {
-        retValue = retValue + ' ' + `${minuti} ${lblMin[minuti==1 ? 1: 0]}`
+      if (value < 60) {
+        minuti = value;
+        retValue = `${value} ${lblMin[minuti==1 ? sing : plur]}`;
+      }
+      else {
+        ore = Math.trunc(value/60);
+        minuti = Math.trunc(((value/60) - ore) * 60);
+        retValue = `${ore} ${lblOre[ore==1 ? sing : plur]} e ${minuti} ${lblMin[minuti==1 ? sing : plur]}`
       }
     }
     return retValue;

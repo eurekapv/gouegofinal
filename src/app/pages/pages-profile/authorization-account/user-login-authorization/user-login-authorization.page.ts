@@ -80,7 +80,7 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
    * In attesa di alcuni documenti
    */
   onListenDoc() {
-    this.subListenArea = this.startService.areaSelected
+    this.subListenArea = this.startService.areaSelected$
                                           .subscribe({
                                             next: (dataArea) => {
                                               this.areaDoc = dataArea;

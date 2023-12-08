@@ -164,7 +164,7 @@ export class UserLoginPage implements OnInit {
     });
 
     //Prelevo l'area selezionata 
-    this.docArea = this.startService.areaSelectedValue;
+    this.docArea = this.startService.areaSelected;
   
 
    }

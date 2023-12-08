@@ -150,7 +150,7 @@ export class ListMinutiAccountPage implements OnInit, OnDestroy {
 
     return new Promise<void>((resolve, reject) => {
       
-      this.subArea = this.startService.areaSelected.subscribe({
+      this.subArea = this.startService.areaSelected$.subscribe({
         next: (areaDoc) => {
           this.areaDoc = areaDoc;
           resolve();

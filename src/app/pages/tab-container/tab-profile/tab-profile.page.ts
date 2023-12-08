@@ -159,7 +159,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
    * In ascolto delle modifiche dell'area
    */
   onListenArea(): void {
-    this.subArea = this.startService.areaSelected.subscribe({
+    this.subArea = this.startService.areaSelected$.subscribe({
       next: (areaDoc) => {
         this.areaDoc = areaDoc;
         if (this.areaDoc && this.areaDoc.APPSHOPPACCHETTIORARI == true) {

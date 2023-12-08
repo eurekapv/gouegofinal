@@ -91,7 +91,7 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
    * In ascolto dell'area selezionata, per capire se solo abilitate le iscrizioni
    */
   onListenSelectedArea() {
-    this.listenSelectedArea = this.startService.areaSelected.subscribe({
+    this.listenSelectedArea = this.startService.areaSelected$.subscribe({
       next: (elArea)=> {
         this.selectedArea = elArea;
 

@@ -8,7 +8,7 @@ import { AdvertisingComponent } from './advertising/advertising.component'
 import { ApertureComponent } from './aperture/aperture.component'
 import { ButtonCardComponent } from './button-card/button-card.component'
 import { CalendarscrollComponent } from './calendarscroll/calendarscroll.component'
-import { CardCourseComponent } from './card-course/card-course.component'
+import { CardCourseComponent } from './course/card-course/card-course.component'
 import { CentriComponent } from './centri/centri.component'
 import { CircularComponent } from './circular/circular.component'
 import { FootbookedComponent } from './footbooked/footbooked.component'
@@ -47,6 +47,7 @@ import { PipesModule } from '../pipes/pipes.module';
 import { DurataChooserComponent } from './durata-chooser/durata-chooser.component';
 import { CartItemRowComponent } from './cart-item-row/cart-item-row.component';
 import { NumericInputUpDownComponent } from './numeric-input-up-down/numeric-input-up-down.component';
+import { DailyCourseItemListComponent } from './course/daily-course-item-list/daily-course-item-list.component';
 
 
 
@@ -98,7 +99,8 @@ import { NumericInputUpDownComponent } from './numeric-input-up-down/numeric-inp
         CardImageComponent,
         DurataChooserComponent,
         CartItemRowComponent,
-        NumericInputUpDownComponent
+        NumericInputUpDownComponent,
+        DailyCourseItemListComponent,
         
     ],
     exports: [
@@ -137,7 +139,8 @@ import { NumericInputUpDownComponent } from './numeric-input-up-down/numeric-inp
         CardImageComponent,
         DurataChooserComponent,
         CartItemRowComponent,
-        NumericInputUpDownComponent
+        NumericInputUpDownComponent,
+        DailyCourseItemListComponent,
         
     ]
 })

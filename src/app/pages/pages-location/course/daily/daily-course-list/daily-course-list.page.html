@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
-    </ion-buttons>
+    </ion-buttons> 
     <ion-title>
       Corsi Giornalieri
     </ion-title>
@@ -13,7 +13,6 @@
   <ion-refresher slot="fixed" (ionRefresh)="onRefreshData($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-
   <ion-grid 
         class="ion-no-margin ion-no-padding"
         #gridcontainer>
@@ -127,26 +126,35 @@
                       (onChangeActiveDay)="onChangeBookDay($event)"></app-calendarscroll>
                   </ion-col>
                 </ion-row>
-                <ion-row *ngIf="listCorsi">
+
+                <!-- RIGA CON L'ELENCO DEI CORSI -->
+                <ion-row *ngIf="listCorsi && listCorsi.length != 0">
                   <ion-col>
                     <ion-list>
-                        <ion-item
-                            button="true"
-                            *ngFor="let itemCorso of listCorsi">
-                            <ion-label>
-                              <h4 class="ion-text-wrap">{{itemCorso.DENOMINAZIONE}}</h4>
-                              <p 
-                                class="ion-text-wrap"
-                                *ngIf="itemCorso.DENOMINAZIONELIVELLO && itemCorso.DENOMINAZIONELIVELLO.length != 0">
-                                {{itemCorso.DENOMINAZIONELIVELLO}}
-                              </p>
-                            </ion-label>
-                            <ion-label slot="end">
-                              <h6>{{itemCorso.DATAORAINIZIO | date : 'H.mm'}}</h6>
-                              <p>{{itemCorso.ORELEZIONE | labelNumeroOre : 'short'}}</p>
-                            </ion-label>
-                        </ion-item>
+                        <ion-list-header mode="ios" class="ion-padding-vertical">Corsi in programma</ion-list-header>
+
+                        <app-daily-course-item-list
+                          *ngFor="let itemCorso of listCorsi; index as i"
+                          (OnClickItem)="onClickItem(itemCorso)"
+                          [dailyCorsoDoc]="itemCorso"
+                          [index]="i"
+                          [alternateColor]="true"
+                        >
+                        </app-daily-course-item-list>
                     </ion-list>
+
+                  </ion-col>
+                </ion-row>
+                <!-- NON CI SONO CORSI NELLA GIORNATA -->
+                <ion-row *ngIf="listCorsi && listCorsi.length == 0">
+                  <ion-col>
+                    <app-card-image
+                    *ngIf="listCorsi.length === 0"
+                    src="assets/boysplaying_small.png"
+                    title="Nessun corso trovato"
+                    subtitle="modifica data, attivit&agrave; o livello per cercare altri corsi"
+                    >
+                  </app-card-image> 
                   </ion-col>
                 </ion-row>
               </ion-grid>

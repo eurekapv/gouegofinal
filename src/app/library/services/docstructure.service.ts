@@ -840,6 +840,29 @@ export class DocstructureService {
 
   }
 
+  /**
+   * Chiamata al server per il recupero del singolo documento
+   * Se non viene trovato viene sollevata una catch
+   * @param filterDocument 
+   * @param params 
+   */
+  public requestDoc<T extends IDDocument>(filterDocument: IDDocument, params?:RequestParams): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+        this.requestNew(filterDocument, params)
+            .then(listDocument => {
+              if (listDocument && listDocument.length != 0) {
+                resolve(listDocument[0]);
+              }
+              else {
+                reject('Document not found');
+              }
+            })
+            .catch(err => {
+              reject(err);
+            })
+    })
+  }
+
 
   /**
    * Decodifica una collection di documenti

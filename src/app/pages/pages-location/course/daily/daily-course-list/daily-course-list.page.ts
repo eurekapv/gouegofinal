@@ -1,13 +1,15 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonAccordionGroup, NavController } from '@ionic/angular';
+import { IonAccordionGroup, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Livello } from 'src/app/models/archivi/livello.model';
 import { Sport } from 'src/app/models/archivi/sport.model';
 import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
+import { TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
+import { DailyCourseSubscribePage } from '../daily-course-subscribe/daily-course-subscribe.page';
 
 
 @Component({
@@ -20,6 +22,7 @@ export class DailyCourseListPage implements OnInit {
   listLocationSport: Sport[] = [];  //Lista Sport presenti sulla Location
   subListLocationSport: Subscription;
   selectedSport: Sport; //lo sport selezionato
+  
 
   idLocation: string = "";
   selectedLocation: Location;
@@ -65,13 +68,18 @@ export class DailyCourseListPage implements OnInit {
 
   constructor(private startService: StartService,
               private router: ActivatedRoute,
-              private navController: NavController) {
+              private navController: NavController,
+              private modalController: ModalController) {
   }
 
   ngOnInit() {
-    //Nella fase iniziale si recupera idLocation, Sport, Livelli etc etc
+
+    //Procedo con il recupero idLocation, Sport, Livelli etc etc
     this.startLoading();
   }
+
+
+
 
 
   /**
@@ -92,6 +100,8 @@ export class DailyCourseListPage implements OnInit {
                       this.router.paramMap.subscribe({
                         next: (param) => {
                           if (param.has('locationId')) {
+                            
+                            //Location recuperata
                             this.idLocation = param.get('locationId');
 
                             //Carico i dati per proseguire
@@ -99,7 +109,7 @@ export class DailyCourseListPage implements OnInit {
                                 .then(() => {
                                   //Caricamento concluso
                                   this.loadedData = true;
-                                  return this.refreshData(myLoading);
+                                  return this.queryDataList();
                                 })
                                 .then(() => {
                                   //Chiudo il loading
@@ -109,17 +119,23 @@ export class DailyCourseListPage implements OnInit {
                                   //Errori nel caricamento
                                   this.loadedData = true;
                                   this.errorLoadingData = true;
-                                  this.messageErrorPage = error;
+                                  this.messageErrorPage = this.startService.convertErrorDisplay(error);
                                   myLoading.dismiss();
                                 })
+                          }
+                          else {
+                            this.loadedData = true;
+                            this.errorLoadingData = true;
+                            this.messageErrorPage = 'Location non definita';
+                            myLoading.dismiss();
                           }
                         },
                         error: (err) => {
                           this.loadedData = true;
                           this.errorLoadingData = true;
-                          this.messageErrorPage = err;
+                          this.messageErrorPage = this.startService.convertErrorDisplay(err);                          
                           myLoading.dismiss();
-                          this.messageErrorPage = err;
+                          
                         }
                       })
                     })
@@ -173,13 +189,12 @@ export class DailyCourseListPage implements OnInit {
    * @param item 
    */
   onChangeSport(item) {
+
     //Cambio dello Sport
     this.selectedSport = item;
     //Livello Tutti
     this.selectedLivello = null;
-    
-      //Recupero i dati
-      this.refreshData();
+    this.refreshData();
   }
 
   /**
@@ -187,9 +202,9 @@ export class DailyCourseListPage implements OnInit {
    * @param selectedDate 
    */
   onChangeBookDay(selectedDate) {
+    
     this.selectedDate = selectedDate;
-      //Recupero i dati
-      this.refreshData();
+    this.refreshData();
   }
 
   /**
@@ -203,7 +218,7 @@ export class DailyCourseListPage implements OnInit {
     else {
       this.selectedLivello = null;
     }
-    //Recupero i dati
+
     this.refreshData();
   }
 
@@ -234,10 +249,9 @@ export class DailyCourseListPage implements OnInit {
   refreshData(objLoading?: HTMLIonLoadingElement):Promise<void> {
     return new Promise<void>((resolve, reject) => {
 
-
-
         if (objLoading) {
-          //Creo il filtro e faccio la ricerca
+
+          //Effettuo la vera ricerca dati
           this.queryDataList()
               .then(() => {
                 //Dati Corsi caricati
@@ -250,7 +264,7 @@ export class DailyCourseListPage implements OnInit {
               })
         }
         else {
-          //Loading già presente, non lo ricreo
+          //Loading non presente, lo ricreo
           this.startService.showLoadingMessage('Recupero corsi')
                            .then(elLoading => {
                               objLoading = elLoading;
@@ -280,8 +294,7 @@ export class DailyCourseListPage implements OnInit {
   queryDataList(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
 
-      let filter: CorsoGiornaliero;
-      filter = this.prepareFilterList();
+      let filter: CorsoGiornaliero = this.prepareFilterList();
 
       //Chiedo i dati al server
       this.startService.requestCorsoGiornalieroList(filter)
@@ -302,6 +315,7 @@ export class DailyCourseListPage implements OnInit {
   prepareFilterList(): CorsoGiornaliero {
     let filter: CorsoGiornaliero = new CorsoGiornaliero();
     
+    filter.IDAREAOPERATIVA = (this.startService.areaSelected ? this.startService.areaSelected.ID : '');
     filter.IDLOCATION = this.idLocation;
     filter.IDSPORT = this.selectedSport.ID;
 
@@ -315,12 +329,42 @@ export class DailyCourseListPage implements OnInit {
     return filter;
   }
 
+
+  /**
+   * Click su un corso selezionato
+   * @param itemCorso 
+   */
+  onClickItem(itemCorso: CorsoGiornaliero): void {
+    
+    if (itemCorso) {
+
+      this.modalController.create({
+        component: DailyCourseSubscribePage,
+        // cssClass: 'modal-xl-class',
+        componentProps: {
+          corsoDoc: itemCorso,
+        }
+      })
+      .then(elModal => {
+        //Presento la modale
+        elModal.present();
+      })
+    }
+  }
+
     //#region PULSANTE BACK
   /**
    * Ritorna un Array con il percorso di ritorno
    */
   get backPathArray():string[] {
-    let retPath = ['/','appstart-home'];
+    let retPath = []
+    if (this.idLocation) {
+      retPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.LocationDetail, this.idLocation);
+    }
+    else {
+      //Rimando alla Home
+      retPath = this.startService.getUrlPageBasic('home');
+    }
 
     return retPath;
   }
@@ -329,7 +373,6 @@ export class DailyCourseListPage implements OnInit {
   get backButtonHref(): string {
       let myHref = '';
       myHref = this.backPathArray.join('/').substring(1);
-  
       return myHref;
   }
     

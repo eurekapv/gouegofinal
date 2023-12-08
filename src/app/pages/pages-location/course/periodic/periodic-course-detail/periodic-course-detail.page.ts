@@ -68,7 +68,7 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
  */
   onListenSelectedArea() {
 
-   this.listenSelectedArea = this.startService.areaSelected
+   this.listenSelectedArea = this.startService.areaSelected$
                                               .subscribe({
                                                     next: (elArea) => {
     

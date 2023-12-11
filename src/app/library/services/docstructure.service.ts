@@ -63,7 +63,7 @@ export class DocstructureService {
    * @param collection Collection non tipizzata
    * @param castInto Passare un Documento per specificare la classe su cui tipizzare
    */
-  castCollection(collection: any[], castInto: IDDocument): any[] {
+  castCollection<T>(collection: any[], castInto: IDDocument): T[] {
     let listResult = [];
     let objDescriptor: Descriptor;
 
@@ -676,8 +676,7 @@ export class DocstructureService {
   public requestNew(filterDocument: IDDocument, params?:RequestParams) {
 
     return new Promise<any[]>((resolve, reject)=>{
-      
-      
+            
       let myHeaders = this.myConfig.getHttpHeaders();
       let objDescriptor: Descriptor;
       let childLevel = -1;
@@ -1408,7 +1407,41 @@ public getRelDocOriginale( docStart: IDDocument,
   // ****************************************************************
   // ***************  REQUEST PER I METODI STATICI    ***************
   // ****************************************************************
+  /**
+   * A differenza del metodo requestForFunction
+   * i valori tornano già in una collection tipizzata
+   * @param documentCall 
+   * @param method 
+   * @param postParams 
+   * @param reqOptions 
+   */
+  public requestForFunctionCasting<T extends IDDocument>(documentCall: IDDocument, 
+                                   method: string, 
+                                   postParams?: PostParams[] | PostParams,
+                                   reqOptions?:RequestParams
+    ): Promise<T[]> { 
 
+      return new Promise<T[]>((resolve, reject) => {
+        //Facciamo la richiesta
+        this.requestForFunction(documentCall, method, '', postParams, reqOptions)
+            .then(dataReceived => {
+              //Il nome della collection ricevuta è il nome della classe
+              let nameCollection = documentCall.getDescriptor().classWebApiName;
+              let listElement: T[] = [];
+  
+              if (dataReceived && dataReceived.hasOwnProperty(nameCollection)) {
+                //Converto i risultati
+                listElement = this.castCollection<T>(dataReceived[nameCollection], documentCall);
+              }
+  
+              resolve(listElement);
+          })
+          .catch(error => {
+            reject(error);
+          })
+        
+      })
+    }
   /**
    * Effettua una chiamata POST al metodo indicato dell'oggetto specificato
    * E' possibile indicare a scelta:

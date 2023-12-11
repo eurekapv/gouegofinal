@@ -10,8 +10,11 @@ import { FilterCorsi } from '../../models/corso/filtercorsi.model';
 import { PostParams, RequestDecode, RequestParams } from '../../library/models/requestParams.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { TimeTrainerCourse } from '../../models/zsupport/valuelist.model';
-import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
-import { isDate } from 'date-fns';
+import { CorsoGiornaliero, GroupedCorsiGiornalieri } from 'src/app/models/corso/corso-giornaliero.model';
+import { OperatorCondition } from 'src/app/library/models/iddocument.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
+
 
 
 @Injectable({
@@ -26,7 +29,9 @@ export class CourseService {
 
   private _listCorsiTrainer = new BehaviorSubject<Corso[]>([]);
 
-  
+  //Modalità di caricamento progressivo
+  private _listGroupedCorsiGiornalieri = new BehaviorSubject<GroupedCorsiGiornalieri[]>([]);
+  private _lastDateCorsiGiornalieri = new BehaviorSubject<Date>(new Date);
 
   
   constructor(
@@ -58,8 +63,25 @@ export class CourseService {
     this._filterCorsi = value;
   }
 
+  //#region MODALITA PROGRESSIVE MODE
+  //Lista
+  get listGroupedCorsiGiornalieri$(): Observable<GroupedCorsiGiornalieri[]> {
+    return this._listGroupedCorsiGiornalieri.asObservable();
+  }
 
+  get listGroupedCorsiGiornalieri(): GroupedCorsiGiornalieri[] {
+    return this._listGroupedCorsiGiornalieri.getValue();
+  }
 
+  //Ultima data letta
+  get lastDateCorsiGiornalieri$(): Observable<Date> {
+    return this._lastDateCorsiGiornalieri.asObservable();
+  }
+
+  get lastDateCorsiGiornalieri(): Date {
+    return this._lastDateCorsiGiornalieri.getValue();
+  }  
+  //#endregion
 
 
 
@@ -292,32 +314,21 @@ export class CourseService {
     return new Promise<CorsoGiornaliero[]>((resolve, reject) => {
       let myPostParams : PostParams;
       let arPostParams: PostParams[] = [];
-      let method: string = 'getDailyCourseForSubscribe';
-      let nameCollection = '';
-
+      let method: string = 'getDailyCourseForDate';
+      
       if (filter) {
 
             myPostParams = new PostParams();
             myPostParams.key = 'filterDoc';
             myPostParams.value = filter;
             arPostParams.push(myPostParams);
-
-            this.docStructureService.requestForFunction(filter, method,'',arPostParams)
+            this.docStructureService.requestForFunctionCasting<CorsoGiornaliero>(filter, method,arPostParams)
                                     .then(dataReceived => {
-                                        //Il nome della collection ricevuta è il nome della classe
-                                        nameCollection = filter.getDescriptor().classWebApiName;
-                                        let listElement: CorsoGiornaliero[] = [];
-
-                                        if (dataReceived && dataReceived.hasOwnProperty(nameCollection)) {
-                                          //Converto i risultati
-                                          listElement = this.docStructureService.castCollection(dataReceived[nameCollection],filter);
-                                        }
-
-                                        resolve(listElement);
+                                        resolve(dataReceived);
                                     })
                                     .catch(error => {
                                       reject(error);
-                                    })
+                                    });
         }
         else {
           reject('Filtro non impostato');
@@ -352,6 +363,260 @@ export class CourseService {
       }
     })
   }
+  //#endregion
+
+  //#region GESTIONE CORSI GIORNALIERI CON ELENCO
+  //Caricamento avviene piano piano
+  
+  /**
+   * Richiede i prossimi corsi e ritorna l'ultima data/ora ricevuta
+   * @param idLocation 
+   * @param numMaxRequest Numero massimo di record richiesti (10 = Default)
+   * @param onlyFuture Richiede solo i prossimi impegni
+   * @returns 
+   */
+
+
+  /**
+   * Se filterRequest viene popolata la Data recupera tutto di quella data,
+   * altrimenti recupera numMaxRequest partendo da 
+   * DATAORAINIZIO >= startFromDateTime
+   * @param filterRequest Filtro di richiesta (popolare idLocation e idArea)
+   * @param startFromDatetime Eventuale DataOra da cui richiedere il recupero
+   * @returns 
+   */
+  requestGroupedCorsiGiornalieri(filterRequest: GroupedCorsiGiornalieri,
+                                startFromDatetime?: Date
+                                ): Promise<GroupedCorsiGiornalieri[]> {
+
+  return new Promise<GroupedCorsiGiornalieri[]>((resolve, reject) => {
+    let idLocation: string;
+    let idArea: string;
+    let numMaxRequest: number = 10;
+    let fullRequest: boolean = false;
+    let arPostParams: PostParams[] = [];
+    let method: string = 'getDailyCourseForDate';
+    
+
+    if (filterRequest) {
+      //Posso fare le richieste solo se ho Location e Area
+      if (filterRequest.IDLOCATION && filterRequest.IDLOCATION.length != 0) {
+        idLocation = filterRequest.IDLOCATION;
+      }
+
+      if (filterRequest.IDAREAOPERATIVA && filterRequest.IDAREAOPERATIVA.length != 0) {
+        idArea = filterRequest.IDAREAOPERATIVA;
+      }
+    }
+
+    //Posso proseguire nella chiamata
+    if (idLocation && idLocation.length != 0 && 
+        idArea && idArea.length != 0) {
+
+      //Preparo il filtro di chiamata
+      let filterCall = new CorsoGiornaliero();
+      
+      //Preparo il documento di filtro di chiamata
+      filterCall.IDLOCATION = idLocation;
+      filterCall.IDAREAOPERATIVA = idArea;
+
+      //Ho una data precisa di richiesta
+      if (filterRequest.DATEFILTER) {
+        method = 'getDailyCourseForDate';
+
+        //Imposto la data richeista
+        filterCall.DATA = filterRequest.DATEFILTER;
+
+        //Imposto il documento di filtro con area e location
+        PostParams.addParamsTo(arPostParams, 'filterDoc', filterCall);
+
+        fullRequest = true;
+
+      }
+      else {
+        //Richiedo la modalità progressiva di caricamento
+        method = 'getDailyCourseFromDateTime';
+        //Se non ho date, richiedo da oggi
+        if (!startFromDatetime) {
+          filterCall.DATAORAINIZIO = MyDateTime.today();
+        }
+        else {
+          filterCall.DATAORAINIZIO = startFromDatetime;
+        }        
+
+        //Imposto il documento di filtro con area e location
+        PostParams.addParamsTo(arPostParams, 'filterDoc', filterCall);
+        PostParams.addParamsTo(arPostParams, 'maxRequest', numMaxRequest);
+        
+      }
+      
+      //Effettuo la chiamata
+      this.docStructureService.requestForFunctionCasting<CorsoGiornaliero>(filterCall,method, arPostParams)
+                              .then(dataList => this.orderForDataOraInizio(dataList))
+                              .then(dataList => this.mergeGroupedCorsiGiornalieri(dataList))
+                              .then(groupedData => this.setFlagFullRequestIn(groupedData, fullRequest, filterRequest.DATEFILTER))
+                              .then(finalGroupedList => {
+                                  resolve(finalGroupedList);
+                              })
+                              .catch(error => {
+                                this._listGroupedCorsiGiornalieri.next([]);
+                                LogApp.consoleLog(error,'error');
+                                reject('Errore recupero corsi');
+                              })
+      }
+      else {
+        //Svuoto la collection
+        this._listGroupedCorsiGiornalieri.next([]);
+        resolve([]);
+      }
+    })
+}
+
+/**
+ * Popola la listCorsiGiornalieri 
+ * @param dataList 
+ */
+mergeGroupedCorsiGiornalieri(dataList: CorsoGiornaliero[]): Promise<GroupedCorsiGiornalieri[]> {
+  return new Promise<GroupedCorsiGiornalieri[]>((resolve) => {
+    let actualListGrouped = this._listGroupedCorsiGiornalieri.getValue();
+    let actualMaxDateTime: Date;
+    
+    let groupedDoc: GroupedCorsiGiornalieri;
+    let flagMerge = false;
+
+    //Lista attuale contiene dati
+    if (actualListGrouped.length != 0) {
+
+      if (dataList && dataList.length != 0) {
+        let firstIncoming = dataList[0];
+        let firstActual = actualListGrouped[0];
+
+        if (firstIncoming && firstActual && 
+            firstIncoming.IDLOCATION && firstActual.IDLOCATION && 
+            firstIncoming.IDLOCATION != firstActual.IDLOCATION) {
+
+            //Location cambiata cnon faccio il merge
+            flagMerge = false;
+        }
+        else {
+          //Eseguo operazione di merge
+          flagMerge = true;
+        }
+      }
+    }
+    else {
+      flagMerge = true;
+    }
+
+    //Se non devo fare il merge, svuoto l'esistente
+    if (!flagMerge) {
+
+      actualListGrouped = [];
+      actualMaxDateTime = null;
+
+    }
+
+    //Se ci sono dati posso popolare
+    if (dataList && dataList.length != 0) {
+
+      //Ciclo su i dati ricevuti e creo gli array
+      dataList.forEach(elIncomingCorso => {
+
+        //Cerchiamo la data di riferimento
+        groupedDoc = actualListGrouped.find(elGroup => MyDateTime.compareEqualDate(elGroup.DATEFILTER, elIncomingCorso.DATA));
+
+        if (!groupedDoc) {
+          //Creo il record con la data
+          groupedDoc = new GroupedCorsiGiornalieri();
+          groupedDoc.DATEFILTER = elIncomingCorso.DATA;
+          groupedDoc.IDLOCATION = elIncomingCorso.IDLOCATION;
+          //Aggiungo alla lista Attuale
+          actualListGrouped.push(groupedDoc);
+
+          //Aggiungo il record del corso
+          groupedDoc.addCorso(elIncomingCorso);
+        }
+        else {
+          //Data presente
+          //Vediamo se è gia presente il corso
+          let findCorso = groupedDoc.findCorsoById(elIncomingCorso.ID);
+          //Non ho trovato il corso, lo aggiungo
+          if (!findCorso) {
+            groupedDoc.addCorso(elIncomingCorso);
+          }
+        }
+      })
+
+      //Reimposto la Max DataOrainizio rilevata
+      actualMaxDateTime = GroupedCorsiGiornalieri.getMaxDataOraInizioIn(actualListGrouped);
+
+    }
+
+
+
+    //Reimposto la lista
+    this._listGroupedCorsiGiornalieri.next(actualListGrouped);
+
+    //Reimposto l'ultima Data/Ora
+    if (!actualMaxDateTime) {
+      actualMaxDateTime = new Date();
+    }
+    this._lastDateCorsiGiornalieri.next(actualMaxDateTime);
+
+    //Torno la lista completa corsi
+    resolve(actualListGrouped);
+  })
+}
+
+
+/**
+ * Ordina la Lista in modalità CRESCENTE per DATAORAINIZIO
+ * @param dataList 
+ * @returns 
+ */
+orderForDataOraInizio(dataList: CorsoGiornaliero[]): Promise<CorsoGiornaliero[]> {
+  return new Promise<CorsoGiornaliero[]>((resolve, reject) => {
+    dataList.sort((a,b) => {
+      let valRet: number;
+      if (a.DATAORAINIZIO < b.DATAORAINIZIO) {
+        valRet = -1;
+      }
+      else {
+        valRet = 1;
+      }
+      return valRet;
+    })
+
+    resolve(dataList);
+  })
+}
+
+/**
+ * Imposta nella collection passata il flag di ALLREQUEST
+ * @param collection 
+ * @param fullrequest 
+ * @param dataRequest 
+ */
+setFlagFullRequestIn(collection: GroupedCorsiGiornalieri[], 
+                    flagFullrequest: boolean, 
+                    dataRequest?: Date ): Promise<GroupedCorsiGiornalieri[]> {
+
+  return new Promise<GroupedCorsiGiornalieri[]>((resolve) => {
+
+    if (collection && dataRequest) {
+
+      let itemData = collection.find(elGrouped => MyDateTime.compareEqualDate(elGrouped.DATEFILTER, dataRequest));
+      if (itemData) {
+        itemData.ALLREQUESTED = flagFullrequest;
+      }
+
+    }
+
+    resolve(collection);
+  })
+
+}
+
   //#endregion
 
 }

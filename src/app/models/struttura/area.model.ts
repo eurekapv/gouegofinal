@@ -6,6 +6,7 @@ import { AreaLink } from './arealink.model';
 import { AreaPaymentSetting } from './areapaymentsetting.model';
 import { Position } from '@capacitor/geolocation';
 import { PositionActionButton } from '../../shared/components/centri/centri.component';
+import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
 
 
 export class Area extends IDDocument {
@@ -287,5 +288,37 @@ export class Area extends IDDocument {
     return arSetting;
   }
 
+  /**
+   * Ritorna TRUE o FALSE a seconda se con 
+   * l'impostazione dell'Area posso iscrivermi
+   * @param dataLezione 
+   */
+  canDailyIscrizione(dataLezione: Date): boolean {
+    let flagIscrizione = false;
+
+    //Posso iscrivermi dall'App
+    if (dataLezione && this.APPISCRIZIONI == true) {
+      
+      //Vediamo se ho limitazioni
+      switch(this.APPFUTUROISCRIZIONIFLAG) {
+        case FuturoIscrizioneGiornaliere.sempre:
+            flagIscrizione = true;
+          break;
+
+        case FuturoIscrizioneGiornaliere.limitata:
+          //Aggiungo ad oggi i mesi limiti
+          let limitDate: Date = new Date();
+          limitDate = MyDateTime.calcola(limitDate, this.APPFUTUROISCRIZIONIMESI, TypePeriod.months);
+          flagIscrizione = MyDateTime.isBefore(dataLezione, limitDate);
+          break;
+
+        default:
+            flagIscrizione = true;
+          break;
+      }
+    }
+
+    return flagIscrizione;
+  }
 
 }

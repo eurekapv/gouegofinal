@@ -8,6 +8,13 @@ import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
 })
 export class DailyCourseItemListComponent implements OnInit {
 
+  /**
+   * Mostra tutti i dettagli
+   */
+  @Input() set extendedInfo(value: boolean) {
+    this._extendedInfo = value;
+  }
+
   @Input() set dailyCorsoDoc(value: CorsoGiornaliero) {
     this._dailyCorsoDoc = value;
     this.setContainField();
@@ -43,6 +50,8 @@ export class DailyCourseItemListComponent implements OnInit {
   _containCampo: boolean = false;
   _containTrainers: boolean = false;
   _containLivello: boolean = false;
+  _containSport: boolean = false;
+  _extendedInfo: boolean = false;
 
   iconName: string;
   iconColor: string;
@@ -58,7 +67,7 @@ export class DailyCourseItemListComponent implements OnInit {
   setContainField():void {
 
     if (this._dailyCorsoDoc) {
-
+      
       if (this._dailyCorsoDoc.ORELEZIONE != 0) {
           this._containOre = true;
       } 
@@ -66,6 +75,10 @@ export class DailyCourseItemListComponent implements OnInit {
       if (this._dailyCorsoDoc.DENOMINAZIONECAMPO && this._dailyCorsoDoc.DENOMINAZIONECAMPO.length != 0) {
             this._containCampo = true;
       }
+
+      if (this._dailyCorsoDoc.DENOMINAZIONESPORT && this._dailyCorsoDoc.DENOMINAZIONESPORT.length != 0) {
+        this._containSport = true;
+      }      
 
       if (this._dailyCorsoDoc.DENOMINAZIONELIVELLO && this._dailyCorsoDoc.DENOMINAZIONELIVELLO.length != 0) {
         this._containLivello = true;

@@ -6,7 +6,10 @@ export class LogApp {
      * Visualizza in console i dati
      * @param data Dati da stampare in console
      */
-    static consoleLog(data: any, type:'log'|'error'|'warn' = 'log') {
+    static consoleLog(data: any, 
+                      type:'log'|'error'|'warn' = 'log',
+                      traceOn:boolean = false
+                      ) {
         let showDebug = false;
 
         switch (environment.options.debugMode) {
@@ -29,21 +32,33 @@ export class LogApp {
             switch (type) {
                 case 'log':
                     console.log(data);
+                    if (traceOn) {
+                        console.trace();
+                    }                    
                     break;
 
                 case 'error':
                     console.error(data);
+                    console.trace();
                     break;
 
                 case 'warn':
                     console.warn(data);
+                    if (traceOn) {
+                        console.trace();
+                    }                    
                     break;
             
                 default:
                     console.log(data);
+                    if (traceOn) {
+                        console.trace();
+                    }                    
                     break;
             }
 
+
+            
         }
     }
 }

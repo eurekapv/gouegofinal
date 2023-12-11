@@ -101,20 +101,6 @@
                       </ion-label>
                     </ion-item-divider>
       
-                    <!-- <ion-item>
-                      <ion-icon 
-                          name="people-circle-outline" 
-                          slot="start" 
-                          color="success"></ion-icon>
-                      <ion-label>
-                          <h6>
-                            Quanti saremo
-                          </h6>
-                          <p>numero massimo di partecipanti</p>
-                    </ion-label>
-                      <ion-badge class="ion-padding-horizontal" slot="end" color="success">{{numMaxPartecipanti}}</ion-badge>
-                    </ion-item> -->
-      
                     <ion-item *ngIf="_corsoDoc.LISTTRAINERS && _corsoDoc.LISTTRAINERS.length != 0">                      
                       <ion-icon name="barbell-outline" slot="start" color="primary"></ion-icon>
                       <ion-label class="ion-text-wrap">
@@ -123,7 +109,7 @@
                       </ion-label>
                     </ion-item>
       
-                    <ion-item>
+                    <ion-item *ngIf="flagIscrizioneAttiva">
                       <ion-icon name="person-circle-outline" slot="start" color="warning"></ion-icon>
                       <ion-label>
                         <h6>Posti disponibili</h6>
@@ -136,9 +122,10 @@
                   </ion-item-group>    
                 </ion-list>
               </ion-col>
-            </ion-row>  
+            </ion-row> 
+
             <ion-row 
-                *ngIf="numPostiResidui != 0"
+                *ngIf="numPostiResidui != 0 && flagFuture"
                 class="ion-margin-top">
               <ion-col class="ion-text-center">
                 <ion-note 
@@ -150,7 +137,7 @@
             </ion-row>  
 
             <ion-row 
-              *ngIf="numPostiResidui != 0"
+              *ngIf="numPostiResidui != 0 && flagFuture"
               class="ion-margin-top">
               <ion-col class="ion-text-center">
                 <ion-note 
@@ -159,20 +146,48 @@
                     class="ion-margin-horizontal">
                     Accedere con le proprie credenziali, oppure registrarsi come utente per poter acquistare pacchetti ore ed iscriversi alla lezione
                 </ion-note>
+
                 <ion-note 
                     *ngIf="flagUserLogged && minutiValue != 0"
                     color="medium" 
                     class="ion-margin-horizontal">
                     Il tuo residuo disponibile è di <ion-text color="danger" class="ion-text-bold">{{minutiValue | labelNumeroOre: 'long':'minuti'}}</ion-text>
                 </ion-note>
+
                 <ion-note 
                   *ngIf="flagUserLogged && minutiValue == 0"
                   color="medium" 
                   class="ion-margin-horizontal">
                  Non hai disponibile <ion-text color="danger" class="ion-text-bold">nessuna ora</ion-text> per potersi iscrivere; effettua un nuovo acruisto per proseguire
-                </ion-note>                
+                </ion-note> 
+                               
               </ion-col>
-        </ion-row>            
+            </ion-row>  
+
+            <!-- ISCRIZIONE ATTIVA -->          
+            <ion-row
+                *ngIf="flagUserLogged && minutiValue != 0 && flagIscrizioneAttiva"
+                  >
+              <ion-col>
+                <ion-button 
+                    color="success"
+                    size="large"
+                    expand="full">ISCRIVITI</ion-button>
+              </ion-col>
+            </ion-row>
+
+            <ion-row
+                *ngIf="flagUserLogged && minutiValue != 0 && !flagIscrizioneAttiva"
+                  >
+              <ion-col>
+                <ion-note                   
+                  color="danger" 
+                  class="ion-margin-horizontal">
+                 Non è possibile effettuare l'iscrizione alla lezione direttamente dall'applicazione.
+                 <br/>Contattare la segreteria del centro.
+                </ion-note>                   
+              </ion-col>
+            </ion-row>            
 
           </ion-grid>
           </ion-col>

@@ -809,56 +809,79 @@ static getOnlyDate(dateValue: Date): Date {
     return dateResult;
 }
 
+/**
+ * Trasforma la data in una data a mezzanotte
+ * @param dateValue Valore Data
+ * @returns Data alla mezzanotte
+ */
+static datePartFrom(dateValue: Date): Date {
+    let retDate: Date;
 
-    /**
-     * Ritorna una stringa a indicare la durata partendo da un valore
-     * decimal di Ore
-     * @param durataOre Ore Decimali
-     * @param shortSymbol Usa simboli H e m al posto di ore e minuti
-     */
-    static getLabelDurata(durataOre: number, shortSymbol: boolean = false): string {
-        let labelReturn: string = '';
-        
-
-        if (durataOre == 0) {
-            labelReturn = 'Nessuna ora';
-        }
-        else {
-            //Trasformo in minuti
-            let ore = Math.trunc(durataOre);
-            let minuti = (durataOre - ore) * 60;
-
-            if (ore != 0) {
-                if (shortSymbol) {
-                    labelReturn = `${ore} h.`
-                }
-                else {
-                    labelReturn = `${ore} ${ore == 1 ? 'ora' : 'ore'}`
-                }
-            }
-
-            if (minuti != 0) {
-                if (shortSymbol) {
-                    if (labelReturn.length != 0) {
-                        labelReturn += ' ';
-                    }
-    
-                    labelReturn += `${minuti} m.`
-
-                }
-                else {
-                    if (labelReturn.length != 0) {
-                        labelReturn += ' e ';
-                    }
-    
-                    labelReturn += `${minuti} ${minuti == 1 ? 'minuto' : 'minuti'}`
-                }
-            }
-
-        }
-
-        return labelReturn;
+    if (dateValue) {
+        let mask = `${dateValue.getFullYear()}-${dateValue.getMonth() + 1}-${dateValue.getDate()}T00:00:00`;
+        retDate = new Date(mask);
     }
+
+    return retDate;
+}
+
+/**
+ * Ritorna una data di Oggi
+ */
+static today(): Date {
+    return MyDateTime.datePartFrom(new Date());
+}
+
+
+/**
+ * Ritorna una stringa a indicare la durata partendo da un valore
+ * decimal di Ore
+ * @param durataOre Ore Decimali
+ * @param shortSymbol Usa simboli H e m al posto di ore e minuti
+ */
+static getLabelDurata(durataOre: number, shortSymbol: boolean = false): string {
+    let labelReturn: string = '';
+    
+
+    if (durataOre == 0) {
+        labelReturn = 'Nessuna ora';
+    }
+    else {
+        //Trasformo in minuti
+        let ore = Math.trunc(durataOre);
+        let minuti = (durataOre - ore) * 60;
+
+        if (ore != 0) {
+            if (shortSymbol) {
+                labelReturn = `${ore} h.`
+            }
+            else {
+                labelReturn = `${ore} ${ore == 1 ? 'ora' : 'ore'}`
+            }
+        }
+
+        if (minuti != 0) {
+            if (shortSymbol) {
+                if (labelReturn.length != 0) {
+                    labelReturn += ' ';
+                }
+
+                labelReturn += `${minuti} m.`
+
+            }
+            else {
+                if (labelReturn.length != 0) {
+                    labelReturn += ' e ';
+                }
+
+                labelReturn += `${minuti} ${minuti == 1 ? 'minuto' : 'minuti'}`
+            }
+        }
+
+    }
+
+    return labelReturn;
+}
 
 
 

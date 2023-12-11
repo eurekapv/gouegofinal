@@ -13,6 +13,9 @@
     class="ion-text-wrap">
 
     <h2 class="ion-text-bold ion-text-wrap">{{_dailyCorsoDoc.DENOMINAZIONE}}</h2>
+    <p *ngIf="_extendedInfo && _containSport">
+      <ion-badge color="warning">{{_dailyCorsoDoc.DENOMINAZIONESPORT}}</ion-badge>
+    </p>
 
     <p class="ion-text-bold" *ngIf="_containOre || _containCampo">
       <span *ngIf="_containOre">{{_dailyCorsoDoc?.ORELEZIONE| labelNumeroOre : 'long'}}</span>

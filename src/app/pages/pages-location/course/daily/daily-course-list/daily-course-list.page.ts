@@ -1,15 +1,16 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonAccordionGroup, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Livello } from 'src/app/models/archivi/livello.model';
 import { Sport } from 'src/app/models/archivi/sport.model';
-import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
+import { CorsoGiornaliero, GroupedCorsiGiornalieri } from 'src/app/models/corso/corso-giornaliero.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { DailyCourseSubscribePage } from '../daily-course-subscribe/daily-course-subscribe.page';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 
 
 @Component({
@@ -17,28 +18,37 @@ import { DailyCourseSubscribePage } from '../daily-course-subscribe/daily-course
   templateUrl: './daily-course-list.page.html',
   styleUrls: ['./daily-course-list.page.scss'],
 })
-export class DailyCourseListPage implements OnInit {
+export class DailyCourseListPage implements OnInit, OnDestroy {
 
+  elencoMode: boolean = false;
   listLocationSport: Sport[] = [];  //Lista Sport presenti sulla Location
-  subListLocationSport: Subscription;
   selectedSport: Sport; //lo sport selezionato
   
-
   idLocation: string = "";
   selectedLocation: Location;
-  subSelectedLocation: Subscription;
-  
+    
   //Livello scelto sulla base dell'attività
   selectedLivello: Livello;
+  //Data richiesta in elencoMode = false
+  selectedDate = MyDateTime.today();
 
   //Dati richiesti e caricati
   loadedData: boolean = false;
   errorLoadingData: boolean = false;
   messageErrorPage: string = "";
 
+  //Lista Corsi con modalità filtrata
   listCorsi: CorsoGiornaliero[]=[];
 
-  selectedDate = new Date();
+  //Lista Corsi completi in modalità elenco
+  listGroupedCorsi: GroupedCorsiGiornalieri[]=[];
+  subListGroupedCorsi: Subscription;
+  //Ultima data ora rilevata sulla lista dei corsi
+  lastMaxDateCorsiProgressive: Date;
+  subMaxDateCorsiProgressive: Subscription;
+
+  eventIonInfinit: any; //Eventuale evento IonInfinity
+
 
   //Grid completa che contiene le 2 colonne o la colonna singola
   @ViewChild('gridcontainer', {read: ElementRef}) refGridContainer: ElementRef | undefined;
@@ -73,12 +83,22 @@ export class DailyCourseListPage implements OnInit {
   }
 
   ngOnInit() {
+    //In ascolto per i corsi in elenco progressivemode
+    this.onListenCorsiElencoProgressiveMode();
 
     //Procedo con il recupero idLocation, Sport, Livelli etc etc
     this.startLoading();
   }
 
+  ngOnDestroy(): void {
+    if (this.subListGroupedCorsi) {
+      this.subListGroupedCorsi.unsubscribe();
+    }
 
+    if (this.subMaxDateCorsiProgressive) {
+      this.subMaxDateCorsiProgressive.unsubscribe();
+    }
+  }
 
 
 
@@ -109,7 +129,12 @@ export class DailyCourseListPage implements OnInit {
                                 .then(() => {
                                   //Caricamento concluso
                                   this.loadedData = true;
-                                  return this.queryDataList();
+                                  if (this.elencoMode) {
+                                    return this.requestListGroupedCorsi();
+                                  }
+                                  else {
+                                    return this.queryDataList();
+                                  }
                                 })
                                 .then(() => {
                                   //Chiudo il loading
@@ -141,6 +166,7 @@ export class DailyCourseListPage implements OnInit {
                     })
   }
 
+  //#region MODALITA' CON FILTRO
   /**
    * Carica i dati relativi alla location e agli sport presenti
    * @returns 
@@ -194,7 +220,7 @@ export class DailyCourseListPage implements OnInit {
     this.selectedSport = item;
     //Livello Tutti
     this.selectedLivello = null;
-    this.refreshData();
+    this.requestCorsiFiltered();
   }
 
   /**
@@ -203,8 +229,9 @@ export class DailyCourseListPage implements OnInit {
    */
   onChangeBookDay(selectedDate) {
     
-    this.selectedDate = selectedDate;
-    this.refreshData();
+    this.selectedDate = MyDateTime.datePartFrom(selectedDate);
+    //Faccio la richiesta  dei dati
+    this.requestCorsiFiltered();
   }
 
   /**
@@ -219,7 +246,7 @@ export class DailyCourseListPage implements OnInit {
       this.selectedLivello = null;
     }
 
-    this.refreshData();
+    this.requestCorsiFiltered();
   }
 
   /**
@@ -232,21 +259,30 @@ export class DailyCourseListPage implements OnInit {
       event.target.complete();
     }
 
+
     //Se sono in errore tento di recuperare tutto
     if (this.errorLoadingData) {
       //Ritento tutto
       this.startLoading();
     }
     else {
-      //Recupero solo i dati
-      this.refreshData();
+      if (this.elencoMode) {
+        //Reimposto la data cosi li recupera tutti di nuovo
+        this.lastMaxDateCorsiProgressive = new Date();
+        //Recupero i corsi con la modalità in elenco
+        this.requestListGroupedCorsi();
+      }
+      else {
+        //Recupero solo i dati
+        this.requestCorsiFiltered();
+      }
     }
   }
 
   /**
-   * Esegue il refresh dei soli dati visualizzati
+   * Esegue il refresh dei corsi in modalita filtrata
    */
-  refreshData(objLoading?: HTMLIonLoadingElement):Promise<void> {
+  requestCorsiFiltered(objLoading?: HTMLIonLoadingElement):Promise<void> {
     return new Promise<void>((resolve, reject) => {
 
         if (objLoading) {
@@ -352,7 +388,74 @@ export class DailyCourseListPage implements OnInit {
     }
   }
 
-    //#region PULSANTE BACK
+  //#endregion
+
+  //#region MODALITA ELENCO
+
+  onClickSwitchElencoMode(): void {
+    this.elencoMode = !this.elencoMode;
+    //Ricarico di dati
+    this.onRefreshData();
+  }
+  /**
+   * In ascolto per la ricezione di corsi in elenco con progressive mode
+   */
+  onListenCorsiElencoProgressiveMode() {
+    //Lista Raggruppata dei corsi
+    this.subListGroupedCorsi = this.startService.listGroupedCorsiGiornalieriPM$
+                                                        .subscribe(dataList => {
+                                                          this.listGroupedCorsi = dataList;
+                                                          console.log(this.listGroupedCorsi);
+                                                          //Gestione del IonInifiteScroll
+                                                          if (this.eventIonInfinit && this.eventIonInfinit.target) {
+                                                            this.eventIonInfinit.target.complete();
+                                                          }
+                                                        });
+
+    //Ultima data Ora letta sui corsi
+    this.subMaxDateCorsiProgressive = this.startService.lastDateCorsiGiornalieriPM$
+                                                       .subscribe(myDate => {
+                                                          this.lastMaxDateCorsiProgressive = myDate;
+                                                       });                                                    
+  }
+
+  /**
+   * Richiede la lista dei prossimi corsi
+   */
+  requestListGroupedCorsi(ev?: any) {
+    
+    let filterRequest: GroupedCorsiGiornalieri = new GroupedCorsiGiornalieri();
+    filterRequest.IDLOCATION = this.idLocation;
+    filterRequest.IDAREAOPERATIVA = (this.startService.areaSelected ? this.startService.areaSelected.ID : '');
+
+    //Memorizzo l'evento
+    this.eventIonInfinit = ev;
+
+    //Effettuo la richiesta passando l'ultima dataora richiesta
+    this.startService.requestGroupedCorsiGiornalieri(filterRequest,this.lastMaxDateCorsiProgressive);
+                                              
+  }
+
+  /**
+   * Utente vuole vedere tutti gli elementi del gruppo specificato
+   * @param filterDate 
+   */
+  onClickRequestAllGroupedCorsi(groupedDoc: GroupedCorsiGiornalieri): void {
+    //Passando anche la DATEFILTER chiedo quelli della giornata
+    let filterRequest: GroupedCorsiGiornalieri = new GroupedCorsiGiornalieri();
+    filterRequest.IDLOCATION = this.idLocation;
+    filterRequest.IDAREAOPERATIVA = (this.startService.areaSelected ? this.startService.areaSelected.ID : '');
+    filterRequest.DATEFILTER = groupedDoc.DATEFILTER;
+
+    //Effettuo la richiesta impostando la data nel filtro
+    this.startService.requestGroupedCorsiGiornalieri(filterRequest);
+
+  }
+
+  
+  //#endregion
+
+  //#region PULSANTE BACK
   /**
    * Ritorna un Array con il percorso di ritorno
    */

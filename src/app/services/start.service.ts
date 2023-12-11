@@ -93,7 +93,7 @@ import { ShoppingService } from './shop/shopping.service';
 import { ShopCarrello } from '../models/shop/shop-carrello.model';
 import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
-import { CorsoGiornaliero } from '../models/corso/corso-giornaliero.model';
+import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso-giornaliero.model';
 
 @Injectable({
   providedIn: 'root'
@@ -1033,7 +1033,43 @@ requestCorsoGiornalieroById(idCorso: string): Promise<CorsoGiornaliero> {
   return this.corsoService.requestCorsoGiornalieroById(idCorso);
 }
 
+/* ************************** */
+/* Modalità Progressive Mode  */
+/* ************************** */
 
+//Raggruppamento dei Corsi Giornalieri per Data
+get listGroupedCorsiGiornalieriPM$(): Observable<GroupedCorsiGiornalieri[]> {
+    return this.corsoService.listGroupedCorsiGiornalieri$;
+}
+
+//Raggruppamento dei Corsi Giornalieri per Data
+get listGroupedCorsiGiornalieriPM(): GroupedCorsiGiornalieri[] {
+    return this.corsoService.listGroupedCorsiGiornalieri;
+}
+
+//Ultima data letta
+get lastDateCorsiGiornalieriPM$(): Observable<Date> {
+  return this.corsoService.lastDateCorsiGiornalieri$;
+}
+
+get lastDateCorsiGiornalieri(): Date {
+  return this.corsoService.lastDateCorsiGiornalieri;
+}
+
+  /**
+   * Se filterRequest viene popolata la Data recupera tutto di quella data,
+   * altrimenti recupera numMaxRequest partendo da 
+   * DATAORAINIZIO >= startFromDateTime
+   * @param filterRequest Filtro di richiesta (popolare idLocation e idArea)
+   * @param startFromDatetime Eventuale DataOra da cui richiedere il recupero
+   * @returns 
+   */
+  requestGroupedCorsiGiornalieri(filterRequest: GroupedCorsiGiornalieri,
+                                startFromDatetime?: Date
+                                ): Promise<GroupedCorsiGiornalieri[]> {
+                                  
+      return this.corsoService.requestGroupedCorsiGiornalieri(filterRequest, startFromDatetime);
+  }
 
 //#endregion
 

@@ -1,12 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
 import { Area } from 'src/app/models/struttura/area.model';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
-import { TargetSesso, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
+import { TargetSesso } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
       this.setCorsoDoc(value);
   }
 
-  areaDoc: Area;
+  _areaDoc: Area;
+  subArea: Subscription;
   
   idCorso: string;
   _corsoDoc: CorsoGiornaliero = new CorsoGiornaliero();
@@ -43,7 +45,8 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
   //Identificativo Utente Loggato
   flagUserLogged: boolean = false;
   subFlagUserLogged: Subscription;
-
+  flagIscrizioneAttiva: boolean = false;
+  flagFuture:  boolean = false;
 
   //Utente Loggato
   utenteDoc: Utente;
@@ -62,7 +65,7 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
               ) { }
 
   ngOnInit() {
-      this.areaDoc = this.startService.areaSelected;
+      this.onListenArea();
       this.onListenUtente();
   }
 
@@ -74,6 +77,10 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
     if (this.subFlagUserLogged) {
       this.subFlagUserLogged.unsubscribe();
     }
+
+    if (this.subArea) {
+      this.subArea.unsubscribe();
+    }    
   }
 
 /**
@@ -86,7 +93,27 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
       this.loadedData = true;
 
       this.idCorso = this._corsoDoc.ID;
-      this._containLivello = (value.IDLIVELLOENTRATA && value.IDLIVELLOENTRATA.length != 0);
+      this.prepareAdditionalInfoCorso();      
+    }
+  }
+
+  /**
+   * Prepara i dati addizionali del corso
+   */
+  prepareAdditionalInfoCorso() {
+    if (this._corsoDoc) {
+
+      this.numMaxPartecipanti = this._corsoDoc.MAXPARTECIPANTI;
+      this.numIscritti = this._corsoDoc.NUMISCRITTI;
+      if (this.numMaxPartecipanti >= this.numIscritti) {
+        this.numPostiResidui = this.numMaxPartecipanti - this.numIscritti;
+      }
+      else {
+        this.numPostiResidui = 0;
+      }
+
+      this._containLivello = (this._corsoDoc.IDLIVELLOENTRATA && 
+                              this._corsoDoc.IDLIVELLOENTRATA.length != 0);
 
       switch (this._corsoDoc.TARGETSESSO) {
         case TargetSesso.maschileFemminile:
@@ -106,6 +133,22 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
       if (this._corsoDoc.IDLIVELLOENTRATA && this._corsoDoc.IDLIVELLOENTRATA.length != 0) {
         this.labelLivello = `livello ${this._corsoDoc.DENOMINAZIONELIVELLO}`;
       }
+
+      //Controlla se è nel futuro
+      this.flagFuture = MyDateTime.isAfter(new Date(), this._corsoDoc.DATAORAINIZIO);
+
+      if (this._areaDoc) {
+
+        //Intanto cerchiamo di capire con l'area se posso iscrivermi
+        this.flagIscrizioneAttiva = this._areaDoc.canDailyIscrizione(this._corsoDoc.DATA);
+
+        if (this.flagIscrizioneAttiva) {
+          //Vediamo se sono aperte le iscrizioni
+          this.flagIscrizioneAttiva = this._corsoDoc.getFlagOpenIscrizioni();
+        }
+        
+      }
+      console.log('decido')
     }
   }
 
@@ -202,6 +245,9 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
   
 
  //#region PULSANTE BACK
+ /**
+  * Chiusura della modale
+  */
   closeModal(): void {
     this.modalController.dismiss();
   }
@@ -215,36 +261,50 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
    */
   onListenUtente(): void {
 
-  //Sottoscrivo all'ascolto dell'Account
-  this.subUtenteDoc = this.startService.activeUtenteDoc$
-                      .subscribe({
-                        next: (element) => {
-                            //Recupero utente
-                            this.utenteDoc = element;
-                            
+    //Sottoscrivo all'ascolto dell'Account
+    this.subUtenteDoc = this.startService.activeUtenteDoc$
+                        .subscribe({
+                          next: (element) => {
+                              //Recupero utente
+                              this.utenteDoc = element;
+                              
+                              //Chiedo il totale dei minuti acquistati
+                              this.requestUtenteTotaleMinuti();
+                          },
+                          error: (err) => {
+                            this.utenteDoc = null;
                             //Chiedo il totale dei minuti acquistati
                             this.requestUtenteTotaleMinuti();
-                        },
-                        error: (err) => {
-                          this.utenteDoc = null;
-                          //Chiedo il totale dei minuti acquistati
-                          this.requestUtenteTotaleMinuti();
-                        }
-                      });    
+                          }
+                        });    
 
-  //Sottoscrivo all'ascolto di un utente loggato
-  this.subFlagUserLogged = this.startService.flagUtenteIsLoggato$
-        .subscribe({
-          next: (element) => {
-            //Recupero l'utente
-            this.flagUserLogged = element;    
-          },
-          error: (err)=> {
-            this.flagUserLogged = false;
-          }
-        });
+    //Sottoscrivo all'ascolto di un utente loggato
+    this.subFlagUserLogged = this.startService.flagUtenteIsLoggato$
+          .subscribe({
+            next: (element) => {
+              //Recupero l'utente
+              this.flagUserLogged = element;    
+            },
+            error: (err)=> {
+              this.flagUserLogged = false;
+            }
+          });
 
+  }
 
+  /**
+   * In attesa dell'area di riferimento
+   */
+  onListenArea(): void {
+    this.subArea = this.startService.areaSelected$.subscribe({
+      next: (dataReceived) => {
+        this._areaDoc = dataReceived;
+        this.prepareAdditionalInfoCorso();
+      },
+      error: (err)=> {
+        LogApp.consoleLog(err, "error");
+      }
+    })
 
   }
 
@@ -254,8 +314,8 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
    */
   requestUtenteTotaleMinuti() {
 
-    if (this.utenteDoc && this.areaDoc) {
-      this.startService.requestUtenteTotaleMinuti(this.utenteDoc.ID, this.areaDoc.ID)
+    if (this.utenteDoc && this._areaDoc) {
+      this.startService.requestUtenteTotaleMinuti(this.utenteDoc.ID, this._areaDoc.ID)
                        .then(elDoc => {
                           if (elDoc) {
                             this.utenteTotaleMinutiDoc = elDoc;

@@ -376,7 +376,7 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
 
       this.modalController.create({
         component: DailyCourseSubscribePage,
-        // cssClass: 'modal-xl-class',
+        cssClass: 'modal-xl-class',
         componentProps: {
           corsoDoc: itemCorso,
         }

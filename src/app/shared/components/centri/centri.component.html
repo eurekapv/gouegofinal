@@ -4,132 +4,82 @@
       button="true"
       (click)="onClickLocation($event); $event.stopPropagation();">
 
-  <img [src]="urlCoverCard">
+  <img [src]="_urlCoverCard">
 
-  <!-- PULSANTI DI AZIONE COME FA SUPERIORI -->
-  <div 
-    *ngIf="showButtonsArea(positionActionButton.top)"
-    class="container-header-action">
-
-    <ion-fab 
-        horizontal="start" 
-        vertical="top"
-        *ngIf="showButtonFor('prenotazioni')">
-      <ion-button 
-          color="danger" 
-          (click)="onClickPrenota(); $event.stopPropagation();">
-        <ion-icon 
-            slot="start" 
-            name="calendar-outline">
-        </ion-icon>
-          PRENOTA
-      </ion-button>
-    </ion-fab>
-
-    <ion-fab 
-        horizontal="end" 
-        vertical="top"
-        *ngIf="showButtonFor('corsi')">
-      <ion-button 
-          color="primary" 
-          (click)="onClickCorsi(); $event.stopPropagation();">
-        <ion-icon 
-            slot="start" 
-            name="library-outline">
-        </ion-icon>
-          CORSI
-      </ion-button>
-    </ion-fab>    
-
-  </div>
-  
-    <!-- PULSANTI DI AZIONE INTERNI -->
-    <div 
-      *ngIf="showButtonsArea(positionActionButton.middle)"
-      class="container-middle-action">
-      <ion-row>
-        <ion-col 
-            *ngIf="showButtonFor('prenotazioni')">
-          <ion-button
-              expand="block" 
-              color="danger" 
-              (click)="onClickPrenota(); $event.stopPropagation();">
-            <ion-icon 
-                slot="start" 
-                name="calendar-outline">
-            </ion-icon>
-            PRENOTA
-          </ion-button>
-        </ion-col>
-
-        <ion-col 
-            *ngIf="showButtonFor('corsi')">
-          <ion-button 
-          expand="block" 
-              color="warning" 
-              (click)="onClickCorsi(); $event.stopPropagation();">
-            <ion-icon 
-                slot="start" 
-                name="library-outline">
-            </ion-icon>
-            CORSI
-          </ion-button>
-        </ion-col>      
-      </ion-row>
-  </div>  
-
-
-  <ion-card-header >
+  <ion-card-header>
     <ion-card-title>
-      <h2>
-        {{cardTitle}}
-      </h2>
+      {{_cardTitle}}
     </ion-card-title>
 
-
-
-    <ion-card-subtitle>
-      <div>
-        <span>{{cardSubtitle}}</span>
-      </div>
+    <ion-card-subtitle 
+        *ngIf="_cardSubtitle.length != 0">      
+        {{_cardSubtitle}}      
     </ion-card-subtitle>
   </ion-card-header>
 
-  <!-- PULSANTI DI AZIONE FOOTER -->
-  <ion-footer 
-    *ngIf="showButtonsArea(positionActionButton.footer)"
-    class="container-footer-action">
+  <ion-card-content
+    *ngIf="_locationDoc"
+    class="ion-padding-horizontal">
+    <div
+      class="mh-content"
+      >
+      <div 
+        [innerHTML]="_cardContent"
+        >
+      </div>
+    </div>
+  </ion-card-content>
 
-    <ion-row>
-      <ion-col 
-          *ngIf="showButtonFor('prenotazioni')">
-        <ion-button
-            expand="block" 
-            color="danger" 
-            (click)="onClickPrenota(); $event.stopPropagation();">
-          <ion-icon 
-              slot="start" 
-              name="calendar-outline">
-          </ion-icon>
-          PRENOTA
-        </ion-button>
-      </ion-col>
+    
 
-      <ion-col 
-          *ngIf="showButtonFor('corsi')">
-        <ion-button 
-        expand="block" 
-            color="warning" 
-            (click)="onClickCorsi(); $event.stopPropagation();">
-          <ion-icon 
-              slot="start" 
-              name="library-outline">
-          </ion-icon>
-          CORSI
-        </ion-button>
-      </ion-col>      
-    </ion-row>
+  <ion-list 
+    *ngIf="_buttonVisible">
+    <ion-list-header        
+        color="success"><h6>Oggi ho voglia di...</h6></ion-list-header>
+    
+    <!-- PRENOTAZIONE -->
+    <ion-item
+        (click)="onClickPrenota(); $event.stopPropagation();"
+        *ngIf="_prenotaButtonVisible"
+        detail="true"
+        button="true"
+        >
+      <ion-icon slot="start" name="calendar-outline"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        <h4>Prenotare un campo</h4>
+        <p *ngIf="_showLabelButton">controlla la disponibilità nella struttura</p>
+      </ion-label>
+    </ion-item>
 
-  </ion-footer>
+    <!-- CORSI ANNUALI -->
+    <ion-item
+      (click)="onClickCorsiPeriodo(); $event.stopPropagation();"
+      *ngIf="_corsiPeriodoButtonVisible"
+      detail="true"
+      button="true"
+      >
+      <ion-icon slot="start" name="school-outline"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        <h4>Iscrivermi a un corso</h4>
+        <p *ngIf="_showLabelButton">trova il corso a te dedicato</p>
+      </ion-label>
+    </ion-item>
+
+    <!-- LEZIONI GIORNALIERE -->
+    <ion-item
+      (click)="onClickCorsoGiornata(); $event.stopPropagation();"
+      *ngIf="_corsiGiornataButtonVisible"
+      detail="true"
+      button="true"
+      >
+      <ion-icon slot="start" name="ticket-outline"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        <h4>Lezioni orarie</h4>
+        <p *ngIf="_showLabelButton">iscriviti a una lezione oraria</p>
+      </ion-label>
+    </ion-item>    
+
+  </ion-list>
+
 </ion-card>
 

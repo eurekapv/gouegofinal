@@ -46,8 +46,14 @@
 
           <!-- GRID CONTENT -->
           <ion-grid class="ion-no-margin ion-no-padding">
-            <ion-row>
-              <ion-col class="header">
+            <ion-row class="ion-align-items-center">
+              <ion-col
+                  sizeXl="6"
+                  sizeLg="6"
+                  sizeMd="12"
+                  sizeXs="12"
+                  sizeSm="12" 
+                  class="header">
 
                 <ion-item lines="none" color="light">
                   <ion-icon 
@@ -67,10 +73,53 @@
 
               </ion-col>
               
+              <ion-col
+                  sizeXl="6"
+                  sizeLg="6"
+                  sizeMd="12"
+                  sizeXs="12"
+                  sizeSm="12" 
+                  class="header ion-padding"
+                  *ngIf="flagUserLogged">
+                  <ion-button
+                    *ngIf="minutiValue != 0 && flagIscrizioneAttiva && !existIscrizione"
+                    (click)="onClickIscriviti()" 
+                    color="success"
+                    size="large"
+                    expand="full">
+                    ISCRIVITI
+                  </ion-button>
+
+                  <ion-button
+                    *ngIf="minutiValue == 0 || !flagIscrizioneAttiva && !existIscrizione"
+                    color="danger"
+                    size="large"
+                    expand="full">
+                    ISCRIZIONE NON ABILITATA
+                  </ion-button>                  
+
+                  <ion-button
+                    *ngIf="existIscrizione"
+                    color="warning"
+                    size="large"
+                    expand="full">
+                    ISCRITTO
+                  </ion-button>
+              </ion-col>
+
             </ion-row>
 
+
+
+
             <ion-row>
-              <ion-col>
+              <ion-col
+                class="ion-padding-horizontal"
+                sizeXl="6"
+                sizeLg="6"
+                sizeMd="6"
+                sizeXs="12"
+                sizeSm="12">
                 <ion-list>
                   <!-- ADATTO A -->
                   <ion-item-group class="ion-padding-bottom">
@@ -92,37 +141,53 @@
 
                   </ion-item-group>              
                 </ion-list>
+                </ion-col>
 
-                <ion-list class="ion-margin-top">
-                  <ion-item-group class="ion-padding-bottom">
-                    <ion-item-divider color="success">
-                      <ion-label>
-                        <h2>Lezione</h2>
-                      </ion-label>
-                    </ion-item-divider>
-      
-                    <ion-item *ngIf="_corsoDoc.LISTTRAINERS && _corsoDoc.LISTTRAINERS.length != 0">                      
-                      <ion-icon name="barbell-outline" slot="start" color="primary"></ion-icon>
-                      <ion-label class="ion-text-wrap">
-                        <h6>{{_corsoDoc.LISTTRAINERS}}</h6>
-                        <p>chi troveremo al corso</p>
-                      </ion-label>
-                    </ion-item>
-      
-                    <ion-item *ngIf="flagIscrizioneAttiva">
-                      <ion-icon name="person-circle-outline" slot="start" color="warning"></ion-icon>
-                      <ion-label>
-                        <h6>Posti disponibili</h6>
-                        <p class="ion-text-bold ion-text-danger" *ngIf="numPostiResidui != 0">affrettati a iscriverti</p>
-                        <p class="ion-text-bold ion-text-primary" *ngIf="numPostiResidui == 0">i posti sono esauriti</p>
-                      </ion-label>
-                      <ion-badge class="ion-padding-horizontal" [color]="numPostiResidui == 0 ? 'danger' : 'success'">{{numPostiResidui}}</ion-badge>
-                    </ion-item>
+                <ion-col
+                    class="ion-padding-horizontal"
+                    sizeXl="6"
+                    sizeLg="6"
+                    sizeMd="6"
+                    sizeXs="12"
+                    sizeSm="12">
 
-                  </ion-item-group>    
-                </ion-list>
-              </ion-col>
-            </ion-row> 
+                  <ion-list>
+                    <ion-item-group class="ion-padding-bottom">
+                      <ion-item-divider color="success">
+                        <ion-label>
+                          <h2>Lezione</h2>
+                        </ion-label>
+                      </ion-item-divider>
+        
+                      <ion-item *ngIf="_corsoDoc.LISTTRAINERS && _corsoDoc.LISTTRAINERS.length != 0">                      
+                        <ion-icon name="barbell-outline" slot="start" color="primary"></ion-icon>
+                        <ion-label class="ion-text-wrap">
+                          <h6>{{_corsoDoc.LISTTRAINERS}}</h6>
+                          <p>chi troveremo al corso</p>
+                        </ion-label>
+                      </ion-item>
+        
+                      <ion-item *ngIf="flagIscrizioneAttiva && !existIscrizione">
+                        <ion-icon name="person-circle-outline" slot="start" color="warning"></ion-icon>
+                        <ion-label>
+                          <h6>Posti disponibili</h6>
+                          <p class="ion-text-bold ion-text-danger" *ngIf="numPostiResidui != 0">affrettati a iscriverti</p>
+                          <p class="ion-text-bold ion-text-primary" *ngIf="numPostiResidui == 0">i posti sono esauriti</p>
+                        </ion-label>
+                        <ion-badge class="ion-padding-horizontal" [color]="numPostiResidui == 0 ? 'danger' : 'success'">{{numPostiResidui}}</ion-badge>
+                      </ion-item>
+  
+                    </ion-item-group>    
+                  </ion-list>
+                  <ion-note
+                    *ngIf="existIscrizione"
+                    color="medium" 
+                    class="ion-margin-horizontal ion-padding-vertical"
+                    >Ti aspettiamo qualche minuto prima dell'inizio della lezione presso il centro
+                  </ion-note>
+                </ion-col>
+
+                </ion-row>
 
             <ion-row 
                 *ngIf="numPostiResidui != 0 && flagFuture"
@@ -163,18 +228,6 @@
                                
               </ion-col>
             </ion-row>  
-
-            <!-- ISCRIZIONE ATTIVA -->          
-            <ion-row
-                *ngIf="flagUserLogged && minutiValue != 0 && flagIscrizioneAttiva"
-                  >
-              <ion-col>
-                <ion-button 
-                    color="success"
-                    size="large"
-                    expand="full">ISCRIVITI</ion-button>
-              </ion-col>
-            </ion-row>
 
             <ion-row
                 *ngIf="flagUserLogged && minutiValue != 0 && !flagIscrizioneAttiva"

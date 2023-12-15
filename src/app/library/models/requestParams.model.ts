@@ -144,7 +144,7 @@ export class PostParams {
 
     child_level?: number; //Profondita Richiesta
     top?: number; //Numero massimo di elementi ritornati
-    orderBy?: string; //Ordinamento asc || desc
+    orderBy?: 'asc'|'desc'; //Ordinamento asc || desc
     decode:RequestDecode; //Oggetto per la richiesta di decodifica automatica dei dati ricevuti
 
     constructor() {

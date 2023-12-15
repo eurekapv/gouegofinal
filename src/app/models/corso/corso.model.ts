@@ -78,7 +78,8 @@ export class Corso extends IDDocument {
                     'STATO',
                     'STATODINAMICO',
                     'TARGETSESSO',
-                    'DURATA'
+                    'DURATA',
+                    'MODALITAISCRIZIONE'
                    ];
     let arDecimal = ['ORELEZIONE','PREZZOLORDO'];
     let arBoolean = [];

@@ -1,11 +1,12 @@
 import { IDDocument } from '../../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model';
-import {  SettoreQrCode, StatoPagamento, TipoCorso } from '../zsupport/valuelist.model';
+import {  ModalitaIscrizione, SettoreQrCode, StatoPagamento, TipoCorso } from '../zsupport/valuelist.model';
 import { GeneratorQrcode } from '../imdb/generator-qrcode.model';
 
 export class UtenteIscrizione extends IDDocument {
 
         IDCORSO:               string; //
+        IDPIANIFICAZIONECORSO: string; //
         IDAREAOPERATIVA:       string; //
         TIPOCORSO:             number;
         DENOMINAZIONECORSO:    string;
@@ -34,17 +35,25 @@ export class UtenteIscrizione extends IDDocument {
         CODICEALFA:            string;
         CODICEINT:             number;
         STATOISCRIZIONE:       number;
+        MODALITAISCRIZIONE:    ModalitaIscrizione;
 
         constructor(onlyInstance?:boolean) {
             super(onlyInstance);
         }
 
+        /**
+         * E' una lezione singola quando la modalita di iscrizione è a giornata
+         */
+        isLezioneSingola(): boolean {
+          return this.MODALITAISCRIZIONE == ModalitaIscrizione.ModalitaAGiornata;
+        }
     /**
      * Ritorna il descrittore della Struttura Campi
      */
     getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
         let arString = ['IDCORSO',
+                        'IDPIANIFICAZIONECORSO',
                         'IDAREAOPERATIVA',
                         'DENOMINAZIONECORSO',
                         'IDUTENTE',
@@ -62,7 +71,11 @@ export class UtenteIscrizione extends IDDocument {
                         'CODICEALFA',
                         'GIORNIPREVISTI'
                         ];
-        let arNumber = ['TIPOCORSO','ANNOISCRIZIONE','CODICEINT','STATOISCRIZIONE'];
+        let arNumber = ['TIPOCORSO',
+                        'ANNOISCRIZIONE',
+                        'CODICEINT',
+                        'STATOISCRIZIONE',
+                        'MODALITAISCRIZIONE'];
         let arNumberDecimal = ['IMPORTO','VERSATO','RESIDUO','ORELEZIONE'];
         let arBoolean = [];
         let arDate = ['DATAINIZIO','DATAFINE','DATAISCRIZIONE'];

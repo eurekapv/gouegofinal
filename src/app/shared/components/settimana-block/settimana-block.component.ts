@@ -8,6 +8,8 @@ import { Settimana } from 'src/app/models/zsupport/settimana.model';
 })
 export class SettimanaBlockComponent implements OnInit {
 
+  _cssClassItem: string = 'ion-margin-vertical';
+
   constructor() { 
 
     
@@ -28,14 +30,27 @@ export class SettimanaBlockComponent implements OnInit {
   @Input() colorNotSelected: string = 'secondary';
   @Input() clickable: boolean = false;
   @Input() isDesktop: boolean = false;
+
   @Input() set showOnlySelected(value: boolean) {
     this._showOnlySelected = value;
   }
+  /**
+   * Classe applicata alla table
+   */
+  @Input() set cssClassItem(value: string) {
+    if(value && value.length != 0) {
+      this._cssClassItem = value;
+    }
+  }
+
   //Modalità Solo testo dei giorni selezionati separati da ,
   @Input() set asText(value: boolean) {
     this._asText = value;
   }
 
+  /**
+   * Dimensione della settimana
+   */
   @Input() set size(value: 'sm' | 'md' | 'lg') {
     this._size = value;
   }

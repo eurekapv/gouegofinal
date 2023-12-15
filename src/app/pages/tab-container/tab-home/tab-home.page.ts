@@ -301,14 +301,24 @@ export class TabHomePage implements OnInit, OnDestroy {
   }
 
   /**
-   * Visualizzazione della lista dei corsi
+   * Visualizzazione della lista dei corsi a periodo
    * @param location Location Selezionata
    */
-   onClickCorsi(location: Location) {
+   onClickCorsiPeriodi(location: Location) {
     let fullPath: string[] = [];
     fullPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.PeriodicCourseList, location.ID);
     this.navController.navigateForward(fullPath);
   }  
+
+  /**
+   * Visualizzazione della lista dei corsi a giornata
+   * @param location Location Selezionata
+   */
+  onClickCorsiGiornata(location: Location) {
+    let fullPath: string[] = [];
+    fullPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.DailyCourseList, location.ID);
+    this.navController.navigateForward(fullPath);
+  }    
 
   /**
    * Scheda Location

@@ -2025,10 +2025,9 @@ get listUtentePrenotazioni() {
  * @param idUtente IDUtente
  */
 requestUtenteIscrizioni(idUtente: string) {
-  const actualStartConfig = this._startConfig.getValue();
   
   //Richiedo i dati al servizio
-  return this.utenteIscrizioneService.request(actualStartConfig, idUtente);
+  return this.utenteIscrizioneService.request(idUtente);
 }
 
 
@@ -2040,8 +2039,7 @@ get listUtenteIscrizioni() {
 }
 
 requestIscrizioneById(idIscrizione){
-  const actualStartConfig = this._startConfig.getValue();
-  return this.utenteIscrizioneService.requestById(actualStartConfig, idIscrizione);
+  return this.utenteIscrizioneService.requestById(idIscrizione);
 }
 
 //#endregion

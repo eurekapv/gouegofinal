@@ -12,6 +12,9 @@ import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { TipoSocieta, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 import { ImageModalPage } from '../../image-modal/image-modal.page';
 import SwiperCore, { Pagination  } from 'swiper';
+import { Area } from 'src/app/models/struttura/area.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
+import { Gruppo } from 'src/app/models/struttura/gruppo.model';
 
 SwiperCore.use([Pagination]);
 
@@ -23,9 +26,23 @@ SwiperCore.use([Pagination]);
 export class LocationDetailPage implements OnInit, OnDestroy {
 
   @ViewChild('swiperGallery') swiperRef: ElementRef | undefined;
+
   selectedLocation = new Location();
-  subSelectedLocation: Subscription;
-  myStartConfig: StartConfiguration;
+  
+  
+  areaDoc: Area;
+
+  startConfigDoc: StartConfiguration;
+  subConfig: Subscription;
+
+  idLocation: string = '';
+
+  //Dati richiesti e caricati
+  loadedData: boolean = false;
+  errorLoadingData: boolean = false;
+  messageErrorPage: string = "";
+  refresherMode: boolean = false; //C'e' un refresh in atto
+
 
   aperture: AperturaLocation[] = [];
   listButtonCard: ButtonCard[] = []; // Lista dei Bottoni
@@ -36,49 +53,117 @@ export class LocationDetailPage implements OnInit, OnDestroy {
               private modalCtrl: ModalController, 
               private navController: NavController) {
 
-      //Imposto i bottoni da mostrare 
-      this.setButtonCard();
-
-      //Recupero il documento di start config
-      this.startService.startConfig.subscribe(elData => {
-        this.myStartConfig = elData;
-      })
+                this.onListenStartConfig();
 
   }
 
-
-
   ngOnInit() {
-    let idLocation = '';
+
+    //Recupero area di riferimento
+    this.areaDoc = this.startService.areaSelected;
+
+    this.loadedData = false;
+
     this.router.paramMap.subscribe( param => {
       
-      if (param.has('locationId')) 
-      {
-        idLocation = param.get('locationId');
+      if (param.has('locationId')) {
+        //Recupero la LocationId
+        this.idLocation = param.get('locationId');
 
-        //Chiedo al Server le informazioni Location
-        this.startService.requestLocationByID(idLocation);
-        
-        //Ricevo le info della Location
-        this.subSelectedLocation = this.startService.activeLocation$
-                                                        .subscribe(myLocation => {
-                                                          //Location caricata
-                                                          this.onLoadLocation(myLocation);
-                                                        });
-        
+        if (!this.idLocation || this.idLocation.length == 0) {
+          this.loadedData = true;
+          this.errorLoadingData = true;
+          this.messageErrorPage = 'Non riesco a recuperare la location desiderata';
+        }
+        else {
+          //Creo un loadinh e presento
+          this.startService.showLoadingMessage('Attendere caricamento')
+                           .then(elLoading => {
+
+                              elLoading.present();
+
+                              this.onRequestAllData()
+                                  .then(() => {
+                                      elLoading.dismiss();
+                                  })
+                                  .catch(error => {
+                                    LogApp.consoleLog(error,"error");
+                                    elLoading.dismiss();
+                                  })
+                           })
+        }
       }
       else {
-        //Non è arrivata la location
-        this.navController.navigateForward(this.backPathArray);
+        this.loadedData = true;
+        this.errorLoadingData = true;
+        this.messageErrorPage = 'Non riesco a recuperare la location desiderata';
       }
     });
   }
 
-  ngOnDestroy() {
-    if (this.subSelectedLocation) {
-      this.subSelectedLocation.unsubscribe();
+  ngOnDestroy(): void {
+    if (this.subConfig) {
+      this.subConfig.unsubscribe();
     }
   }
+
+  /**
+   * In ascolto sulla configurazione
+   */
+  onListenStartConfig() {
+
+    this.subConfig = this.startService.startConfig.subscribe(elData => {
+      this.startConfigDoc = elData;
+    });
+
+  }
+
+
+  /**
+   * Richiedo tutti i dati necessari
+   * @returns 
+   */
+  onRequestAllData(): Promise<void> {
+
+    return new Promise<void>((resolve, reject) => {
+      this.loadedData = false;
+      this.errorLoadingData = false;
+      this.messageErrorPage = '';
+
+       
+      if (this.idLocation) {
+        //Chiedo al Server le informazioni Location
+        this.startService.requestLocationByID(this.idLocation)
+                         .then(dataLocation => {
+                            //Location presente
+                            this.selectedLocation = dataLocation;
+
+                            // Recupero i Bottoni che devo mostrare in videata
+                            this.listButtonCard = ButtonCard.getButtonActionLocation(this.areaDoc, 
+                                                                                     this.selectedLocation); 
+                                                                                     
+                            this.loadedData = true;
+                            this.errorLoadingData = false;
+                            this.messageErrorPage = '';
+                            resolve();
+                         })
+                         .catch(error => {
+                          this.loadedData = true;
+                          this.errorLoadingData = true;
+                          this.messageErrorPage = 'Non riesco a recuperare la location desiderata';
+                          reject(error);                          
+                         })
+      }
+      else {
+        this.loadedData = true;
+        this.errorLoadingData = true;
+        this.messageErrorPage = 'Non riesco a recuperare la location desiderata';
+        reject('Location non definita');
+      }
+    })
+  }
+
+  
 
   //#region PULSANTE BACK
   /**
@@ -107,35 +192,6 @@ export class LocationDetailPage implements OnInit, OnDestroy {
   
   //#endregion
 
-  /**
-   * In arrivo una location 
-   * @param incomingLocation 
-   */
-  onLoadLocation(incomingLocation: Location) {
-    //Applico la location
-    this.selectedLocation = incomingLocation;
-
-    //Imposto i Bottoni delle Card
-    if (!this.selectedLocation.do_inserted) {
-      /** Imposto i Bottoni Card */
-      this.setButtonCard();
-    }
-
-  }
-
-  setButtonCard() {
-    let tipoSocieta: TipoSocieta;
-
-    //Recupero il tipo di società
-    if (this.myStartConfig && this.myStartConfig.gruppo) {
-      tipoSocieta = this.myStartConfig.gruppo.TIPOGRUPPO;
-    }
-
-    // Recupero i Bottoni che devo mostrare in videata
-    // A seconda se posso Prenotare nella location oppure no
-    this.listButtonCard = ButtonCard.getButtonActionLocation(this.selectedLocation.ENABLEPRENOTAZIONI, tipoSocieta);
-
-  }
 
   /**
    * Apertura della Preview di una immagine
@@ -162,7 +218,6 @@ export class LocationDetailPage implements OnInit, OnDestroy {
     
   }  
 
-  
 
   /**
    * Click sul bottone 
@@ -173,13 +228,13 @@ export class LocationDetailPage implements OnInit, OnDestroy {
 
     switch (btn.functionCod) {
 
-      case 'book':
+      case TypeUrlPageLocation.LocationBooking:
         arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.LocationBooking, this.selectedLocation.ID);
         //Prenotazioni
         this.navController.navigateForward(arPath);
         break;
 
-      case 'course':
+      case TypeUrlPageLocation.PeriodicCourseList:
         // Lista dei Corsi
         arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.PeriodicCourseList, this.selectedLocation.ID);
         this.navController.navigateForward(arPath);
@@ -212,6 +267,29 @@ export class LocationDetailPage implements OnInit, OnDestroy {
         .then(modal => modal.present());
   }
 
+  /**
+   * Richiesto il refresh dei dati
+   * @param ev 
+   */
+  onRefreshData(ev:any) {
+    //Entro in refreshmode
+    this.refresherMode = true;
+
+    this.onRequestAllData()
+        .then(() => {
+          this.refresherMode = false;
+          if (ev && ev.target) {
+            ev.target.complete();
+          }
+        })
+        .catch(error => {
+          this.refresherMode = false;
+          if (ev && ev.target) {
+            ev.target.complete();
+          }
+        })
+  }
+
 
   /**
    * Ritorna l'etichetta da mostrare nell'item Aule/Campi
@@ -224,9 +302,9 @@ export class LocationDetailPage implements OnInit, OnDestroy {
       singolare = false;
     }
 
-    if (this.myStartConfig && this.myStartConfig.gruppo) {
+    if (this.startConfigDoc && this.startConfigDoc.gruppo) {
 
-      switch (this.myStartConfig.gruppo.TIPOGRUPPO) {
+      switch (this.startConfigDoc.gruppo.TIPOGRUPPO) {
         case TipoSocieta.formazione:
             text = (singolare ? 'Aula disponibile' : 'Aule disponibili');
           break;

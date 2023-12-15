@@ -73,7 +73,9 @@
           <div *ngIf="selectedView == 'personal'">
 
             <!-- BUTTON CARD CON IL PRIMO IMPEGNO-->
-            <ion-list *ngIf="listImpegni && listImpegni.length != 0">
+            <ion-list 
+                class="ion-padding-bottom"
+                *ngIf="listImpegni && listImpegni.length != 0">
               <ion-list-header mode="ios">Prossimo impegno</ion-list-header>
               <app-button-card
                   (clickElement)="onClickImpegnoPersonale(nextImpegno)"

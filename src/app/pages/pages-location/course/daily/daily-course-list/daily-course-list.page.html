@@ -4,7 +4,7 @@
       <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons> 
     <ion-title>
-      Corsi Giornalieri
+      Lezioni
     </ion-title>
     <ion-buttons slot="end">
       <ion-button 
@@ -159,8 +159,8 @@
                         <app-card-image
                         *ngIf="listCorsi.length === 0"
                         src="assets/boysplaying_small.png"
-                        title="Nessun corso trovato"
-                        subtitle="modifica data, attivit&agrave; o livello per cercare altri corsi"
+                        title="Nessuna lezione trovata"
+                        subtitle="modifica data, attivit&agrave; o livello per cercare altre lezioni"
                         >
                       </app-card-image> 
                       </ion-col>
@@ -181,6 +181,14 @@
                 sizeXl="8" offsetXl="2">
                 <ion-list>
                   <ion-list-header mode="ios" class="ion-padding-vertical">Prossime Lezioni</ion-list-header>
+                      <!-- DATI NON PRESENTI -->
+                      <app-card-image
+                        *ngIf="listGroupedCorsi.length === 0"
+                        src="assets/boysplaying_small.png"
+                        subtitle="Guardando in archivio"
+                        title="nessuna lezione trovata"
+                      >
+                      </app-card-image> 
                   <div *ngFor="let itemGrouped of listGroupedCorsi">
                     <ion-item-divider class="ion-padding-vertical">
                       <ion-label>{{itemGrouped.DATEFILTER | date: 'EEEE dd/MM/yyyy' | titlecase}}</ion-label>

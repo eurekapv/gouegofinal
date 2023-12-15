@@ -11,245 +11,177 @@ import { TipoSocieta } from 'src/app/models/zsupport/valuelist.model';
 })
 export class CentriComponent implements OnInit {
 
+  _cardTitle = 'Centro Sportivo';
+  _cardSubtitle = '';
+  _cardContent = '';
+  _urlCoverCard: string = `assets/img/cardhome_ss.png`;
+
   //Mostra / Nasconde i pulsanti di azione
   _showActionButton = false;
-  //Posizione dove vengono mostrati i pulsanti
-  _buttonActionPosition: PositionActionButton = PositionActionButton.middle;
-  //per usare enum nell'Html
-  positionActionButton: typeof PositionActionButton = PositionActionButton;
-  _actualLocation: Location = new Location();
-  _actualArea: Area = new Area();
+
+  _locationDoc: Location = new Location();
+  _areaDoc: Area = new Area();
   _centerCard: boolean = false;
 
+  //Questo è un valore calcolato per sapere
+  //se devo mostrare i button
+  _buttonVisible: boolean = false; 
+  _prenotaButtonVisible: boolean = false;
+  _corsiGiornataButtonVisible: boolean = false;
+  _corsiPeriodoButtonVisible: boolean = false;
+
+  //Lo mantengo per decidere se mostrare le label sotto ai button
+  _showLabelButton: boolean = false; 
+
+
+  _configStartDoc: StartConfiguration = new StartConfiguration();
+
+  //#region VALORI INPUT
 
   //Area di riferimento
   @Input() set area(value: Area) {
-    this._actualArea = value;
-    //Se c'e' un valore imposto anche la posizione
-    if(this._actualArea) {
-
-      if (this._actualArea.APPBUTTONHOME == PositionActionButton.top ||
-        this._actualArea.APPBUTTONHOME == PositionActionButton.middle ||
-        this._actualArea.APPBUTTONHOME == PositionActionButton.footer )  {
-          this._buttonActionPosition = this._actualArea.APPBUTTONHOME;
-        }
-    }
+    this._areaDoc = value;
+    //Imposto la visibilità dei pulsanti
+    this.setFlagButtonVisibility();    
   }
 
   //Location di riferimento
   @Input() set location(value: Location) {
-    this._actualLocation = value;
+    this._locationDoc = value;
+
+    if (value) {
+      if (value.DENOMINAZIONE && value.DENOMINAZIONE.length != 0) {
+        this._cardTitle = value.DENOMINAZIONE;
+      }
+
+      if (value.INDIRIZZO && value.INDIRIZZO.length !== 0) {
+        this._cardSubtitle = value.INDIRIZZO;  
+      } 
+      
+      if (value.DESCRIZIONEMOB && value.DESCRIZIONEMOB.length != 0) {
+
+        this._cardContent = value.DESCRIZIONEMOB;
+
+      }
+    }
+    //Imposto la visibilità dei pulsanti
+    this.setFlagButtonVisibility();
+    //Imposto URL della cover
+    this.setUrlCoverCard();
   }
 
   //Centratura della Card
   @Input() set centerCard(value:boolean) {
     this._centerCard = value;
   }
-  @Output() clickPrenota = new EventEmitter<Location>();
-  @Output() clickCorsi = new EventEmitter<Location>();
-  @Output() clickLocation = new EventEmitter<Location>();
-  @Input() myStartConfig: StartConfiguration = new StartConfiguration();
+
+  @Input() set myStartConfig(value: StartConfiguration) {
+    this._configStartDoc = value;
+    this.setUrlCoverCard();
+  }
 
   @Input() set showActionButton(value: boolean) {
     this._showActionButton = value;
+    this.setFlagButtonVisibility();
   }
 
-  @Input() set buttonActionPosition(value: PositionActionButton) {
-    this._buttonActionPosition = value;
-  }
 
-  constructor() {
-    
-    
-   }
+  //#endregion
+
+  @Output() clickPrenota = new EventEmitter<Location>();
+  @Output() clickCorsiAnnuali = new EventEmitter<Location>();
+  @Output() clickLezioniGiornata = new EventEmitter<Location>();
+  @Output() clickLocation = new EventEmitter<Location>();
+
+
+  constructor() {}
 
   ngOnInit() {}
+
+  /**
+   * Imposta la visibilità dei Button
+   */
+  setFlagButtonVisibility(): void {  
+
+    console.log('Qui');
+    console.log(this._areaDoc);
+    console.log(this._locationDoc);
+
+    if (this._locationDoc && this._areaDoc) {
+      this._prenotaButtonVisible = (this._locationDoc.ENABLEPRENOTAZIONI == true && this._areaDoc.APPPRENOTAZIONI == true);
+      this._corsiPeriodoButtonVisible = this._areaDoc.APPSHOWCORSIPERIODI;
+      this._corsiGiornataButtonVisible = this._areaDoc.APPSHOWCORSIGIORNATA;
+    }
+    else {
+      this._prenotaButtonVisible = false;
+      this._corsiPeriodoButtonVisible = false;
+      this._corsiGiornataButtonVisible = false;
+    }
+
+    this._buttonVisible = (this._showActionButton && 
+                          (this._prenotaButtonVisible || this._corsiPeriodoButtonVisible || this._corsiGiornataButtonVisible))
+  }
+
+  /**
+   * Imposta URL della immagine
+   */
+  setUrlCoverCard() {
+    let tipoSocieta: TipoSocieta;
+    
+    if (this._locationDoc && this._configStartDoc) {
+
+      if (this._configStartDoc.gruppo) {
+        //Recupero il tipo di Gruppo
+        tipoSocieta = this._configStartDoc.gruppo.TIPOGRUPPO;
+      }
+      else {
+        tipoSocieta = TipoSocieta.sportiva;
+      }
+  
+      //Imposto Url Cover
+      this._urlCoverCard = this._locationDoc.getUrlImage(tipoSocieta);
+
+    }
+    else {
+      this._urlCoverCard = `assets/img/cardhome_ss.png`;
+    }
+  }  
 
 
   onClickFavorite()
   {
-    this._actualLocation.FAVORITE = !this._actualLocation.FAVORITE;
+    this._locationDoc.FAVORITE = !this._locationDoc.FAVORITE;
   }
 
   // Lancio l'evento di Click di Prenotazione
   onClickPrenota() {
-    this.clickPrenota.emit(this._actualLocation);
+    this.clickPrenota.emit(this._locationDoc);
   }
 
   // Lancio l'evento di Click di Prenotazione
-  onClickCorsi() {
-    this.clickCorsi.emit(this._actualLocation);
+  onClickCorsiPeriodo() {
+    this.clickCorsiAnnuali.emit(this._locationDoc);
   }  
+
+  // Lancio l'evento di Lezione Singola
+  onClickCorsoGiornata() {
+    this.clickLezioniGiornata.emit(this._locationDoc);
+  }    
 
   /**
    * Lancio l'evento di Click per la scheda Location
    */
   onClickLocation(event:any) {
-    this.clickLocation.emit(this._actualLocation);
+    this.clickLocation.emit(this._locationDoc);
   }
 
   //#region PROPRIETA GENERATE
 
-  /**
-   * Titolo da assegnare alla card
-   */
-  get cardTitle(): string {
-    let testo = 'Centro Sportivo';
-
-    if (this._actualLocation) {
-      if (this._actualLocation.DENOMINAZIONE && this._actualLocation.DENOMINAZIONE.length != 0) {
-        testo = this._actualLocation.DENOMINAZIONE;
-      }
-    }
-
-    return testo;
-  }
 
 
-  /**
-   * Specifica se è necessaria l'area con i pulsanti
-   * @param position 
-   */
-  showButtonsArea(position: PositionActionButton): boolean {
-    let flagShow = false;
-
-    //La posizione è quella richiesta
-    if (this._buttonActionPosition == position) {
-
-          //Vediamo se devo mostrare dei pulsanti
-          //Ho la location
-          if (this._actualLocation) {
-            //Dentro ho solo il pulsante di Prenota
-            if (this._actualLocation.ENABLEPRENOTAZIONI == true) {
-              flagShow = true;
-            }
-          }
-          
-          //Ho l'area
-          if (this._actualArea) {
-            //Dentro ho solo il pulsante di Corsi
-            if (this._actualArea.APPISCRIZIONI == true) {
-              flagShow = true;
-            }
-          }
-    }
-
-    return flagShow;
-  }
-
-  /**
-   * Specifica se bisogna mostrare il pulsante
-   * @param type Tipo pulsante
-   * @returns 
-   */
-  showButtonFor(type: 'prenotazioni'|'corsi'): boolean {
-    let flagShow: boolean = false;
-
-    switch (type) {
-      case 'prenotazioni':
-        if (this._actualLocation) {
-          //Dentro ho solo il pulsante di Prenota
-          if (this._actualLocation.ENABLEPRENOTAZIONI == true) {
-            flagShow = true;
-          }
-        }
-        break;
-
-      case 'corsi':
-            //Ho l'area
-            if (this._actualArea) {
-              //Dentro ho solo il pulsante di Corsi
-              if (this._actualArea.APPISCRIZIONI == true) {
-                flagShow = true;
-              }
-            }        
-        break;
-    
-      default:
-        break;
-    }
-
-    return flagShow;
-  }
-
-  /**
-   * Ritorna il testo dell'indirizzo, in caso non fosse presente 
-   * ritorna l'etichetta del tipo di società
-   */
-  get cardSubtitle() {
-    let testo = 'Centro'
-    let setStandard = false;
-
-    //Imposto la frase standard
-    setStandard = true;
-
-    if (this._actualLocation && this._actualLocation.INDIRIZZO) {
-
-        if (this._actualLocation.INDIRIZZO.length !== 0) {
-          setStandard = false;
-          testo = this._actualLocation.INDIRIZZO;  
-        }  
-    }
-
-
-    if (setStandard) {
-      if (this.myStartConfig && this.myStartConfig.gruppo) {
-
-        if (this.myStartConfig.gruppo) {
-  
-          switch (this.myStartConfig.gruppo.TIPOGRUPPO) {
-            case TipoSocieta.sportiva:
-              testo = 'Centro Sportivo';
-              break;
-  
-            case TipoSocieta.formazione:
-                testo = 'Centro di Formazione';
-                break;
-          
-            default:
-              break;
-          }
-  
-        }
-      }
-    }
-
-    return testo;
-  }
-
-  /**
-   * 
-   * @returns Path dell'immagine da mostrare
-   */
-  get urlCoverCard() {
-    let tipoSocieta: TipoSocieta = TipoSocieta.sportiva;
-    let urlImage = '';
-
-    if (this._actualLocation) {
-
-      if (this.myStartConfig && this.myStartConfig.gruppo) {
-        tipoSocieta = this.myStartConfig.gruppo.TIPOGRUPPO;
-      }
-  
-      urlImage = this._actualLocation.getUrlImage(tipoSocieta);
-
-    }
-    else {
-      urlImage = `assets/cardhome_ss.png`;
-    }
-
-
-    return urlImage;
-  }
 
   //#endregion
 
 
 }
 
-
-export enum PositionActionButton {
-  top = 10,
-  middle = 20,
-  footer = 30
-}

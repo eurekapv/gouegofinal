@@ -5,6 +5,9 @@ import { MyDateTime } from '../../library/models/mydatetime.model';
 import { OccupazioneCampi } from '../struttura/occupazionecampi.model';
 import { PianificazioneCorso } from '../corso/pianificazionecorso.model';
 import { DatePipe } from '@angular/common';
+import { Location } from '../struttura/location.model';
+import { Gruppo } from '../struttura/gruppo.model';
+import { Area } from '../struttura/area.model';
 
 export class ButtonHomeParams {
     utenteLoggato?: boolean; //Utente loggato
@@ -35,67 +38,78 @@ export class ButtonCard {
         this.disabled = false;
     }
 
-
-
     /**
-     * Ritorna i Botton Action per la location
-     * @param canBooking E' possibile prenotare ?
+     * Crea i Button relativi a Prenotazione / Corsi / Lezioni
+     * @param locationDoc 
+     * @param gruppoDoc 
+     * @param canBooking 
+     * @param tipoSocieta 
+     * @returns 
      */
-    static getButtonActionLocation(canBooking?:boolean, tipoSocieta?:TipoSocieta): ButtonCard[] {
+    static getButtonActionLocation(
+            areaDoc: Area,
+            locationDoc: Location,
+            ): ButtonCard[] {
+
         let arButton: ButtonCard[] = [];
-        let newBtn: ButtonCard;
-
-        if (canBooking) {
-            newBtn = new ButtonCard();
-
-            if (tipoSocieta == undefined) {
-                newBtn.title = 'Prenota';
-                newBtn.subtitle = 'organizza un evento in questa location';
-            }
-            else if (tipoSocieta == TipoSocieta.formazione) {
-                newBtn.title = 'Prenota un\'aula';
-                newBtn.subtitle = 'organizza un corso per il tuo team';
-            }
-            else if (tipoSocieta == TipoSocieta.sportiva) {
+        
+        console.log('Fermati qua')
+        console.log(areaDoc)
+        if (locationDoc && areaDoc) {
+            
+            //Nella location posso prenotare
+            if (locationDoc.ENABLEPRENOTAZIONI == true && 
+                areaDoc.APPPRENOTAZIONI == true) {
+                let newBtn: ButtonCard;
+                newBtn = new ButtonCard();
+    
                 newBtn.title = 'Prenota un campo';
                 newBtn.subtitle = 'organizza un incontro con i tuoi amici';
+                
+                newBtn.nameicon = 'calendar-outline';
+                newBtn.sloticon = "start";
+                newBtn.color = "primary";
+                newBtn.backColor = 'success';
+                newBtn.iconLink = true;
+                newBtn.functionCod = TypeUrlPageLocation.LocationBooking;
+                
+                arButton.push(newBtn);
             }
-            
-            newBtn.nameicon = 'calendar-outline';
-            newBtn.sloticon = "start";
-            newBtn.color = "primary";
-            newBtn.backColor = 'success';
-            newBtn.iconLink = true;
-            newBtn.functionCod = 'book';
     
-            arButton.push(newBtn);
+            if (areaDoc.APPSHOWCORSIPERIODI == true) {
+                let newBtn: ButtonCard;
+                newBtn = new ButtonCard();
+                newBtn.title = 'Corsi a periodo';
+                newBtn.subtitle = 'corsi a frequenza annuale/semestrale/trimestrale';
+                newBtn.nameicon = 'school-outline';
+                newBtn.sloticon = "start";
+                newBtn.color = "primary";
+                newBtn.iconLink = true;
+                newBtn.functionCod = TypeUrlPageLocation.PeriodicCourseList;
+        
+                arButton.push(newBtn);
+            }
+    
+            if (areaDoc.APPSHOWCORSIGIORNATA == true) {
+                let newBtn: ButtonCard;
+                newBtn = new ButtonCard();
+                newBtn.title = 'Lezioni Orarie';
+                newBtn.subtitle = 'lezioni con frequenza orarie';
+                newBtn.nameicon = 'ticket-outline';
+                newBtn.sloticon = "start";
+                newBtn.color = "primary";
+                newBtn.backColor = 'warning';
+                newBtn.iconLink = true;
+                newBtn.functionCod = TypeUrlPageLocation.DailyCourseList;
+        
+                arButton.push(newBtn);        
+            }
         }
+        
 
-        newBtn = new ButtonCard();
-        newBtn.title = 'Corsi a periodo';
-        newBtn.subtitle = 'corsi a frequenza programmata annuale/semestrale/trimestrale';
-        newBtn.nameicon = 'library-outline';
-        newBtn.sloticon = "start";
-        newBtn.color = "primary";
-        newBtn.iconLink = true;
-        newBtn.functionCod = 'course';
-
-        arButton.push(newBtn);
-
-        newBtn = new ButtonCard();
-        newBtn.title = 'Corsi Giornalieri';
-        newBtn.subtitle = 'corsi liberi ad iscrizione giornaliera/oraria';
-        newBtn.nameicon = 'time-outline';
-        newBtn.sloticon = "start";
-        newBtn.color = "primary";
-        newBtn.backColor = 'warning';
-        newBtn.iconLink = true;
-        newBtn.functionCod = TypeUrlPageLocation.DailyCourseList;
-
-        arButton.push(newBtn);        
 
         return arButton;
-    }
+    }    
 
     /**
      * Ritorna i Buttoni da mostrare nella Home 

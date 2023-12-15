@@ -10,7 +10,40 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid id="container-page">
+
+  <ion-refresher slot="fixed" (ionRefresh)="onRefreshData($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid
+        *ngIf="loadedData && errorLoadingData && !refresherMode" 
+        class="ion-no-margin ion-no-padding"
+        #gridcontainer>
+
+        <!-- PAGINA IN ERRORE -->
+        <ion-row 
+           >
+          <ion-col 
+            sizeXs="12" 
+            sizeSm="12" 
+            sizeMd="12"
+            sizeLg="8" offsetLg="2"
+            sizeXl="8" offsetXl="2">
+
+            <!-- ERRORE CARICAMENTO -->
+            <app-card-image
+              src="assets/boysplaying_small.png"
+              title="Spiacenti, qualcosa non va"
+              [subtitle]="messageErrorPage"
+            >
+            </app-card-image>    
+          </ion-col>
+        </ion-row>
+  </ion-grid>  
+
+  <ion-grid 
+      *ngIf="(loadedData && !errorLoadingData) || refresherMode" 
+      >
     <ion-row
         class="ion-no-margin"
         >
@@ -121,7 +154,7 @@
                                             <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB && selectedLocation.DESCRIZIONEMOB.length != 0">
                                       
                                               <ion-label class="ion-text-wrap">
-                                                <p>{{selectedLocation.DESCRIZIONEMOB}}</p>
+                                                <p [innerHTML]="selectedLocation.DESCRIZIONEMOB"></p>
                                               </ion-label>
                                       
                                             </ion-item>
@@ -170,11 +203,6 @@
                                     
                                         <!-- CONTATTI TEL E EMAIL -->
                                         <ion-item-group *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL">
-                                          <ion-item-divider color="tertiary">
-                                            
-                                            <ion-label><h2>Contatti</h2></ion-label>
-                                            
-                                          </ion-item-divider>
                                     
                                           <ion-item button *ngIf="selectedLocation.TELEFONO" [href]="'tel:'+selectedLocation.TELEFONO">
                                             <ion-icon 

@@ -61,32 +61,39 @@
                     <!-- LISTA CORSI -->
                       <ion-list *ngIf="listUtenteCorsi!.length !== 0">
                         <ion-item button 
-                              *ngFor="let corso of listUtenteCorsi" 
-                              (click)="onClickCorso(corso)" >
+                              *ngFor="let utenteCorsoDoc of listUtenteCorsi" 
+                              (click)="onClickCorso(utenteCorsoDoc)" >
   
                         <!-- ICONA CORSO -->
                         <ion-icon 
                             name="school-outline" 
                             class="icon-school"
                             slot="start"
-                            [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
+                            [color]="utenteCorsoDoc.DATAFINE > today && utenteCorsoDoc.DATAINIZIO < today ? 'success': 'danger'">
                         </ion-icon>
   
                         <ion-label 
                               class="ion-text-wrap">
-                          <p class="ion-text-color-label">{{corso.DATAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}
-                            <br/>
-                            {{corso.DATAFINE | date : 'EEEE dd/MM/yyyy' | titlecase}}
-                          </p>
-                          <h1>{{corso.DENOMINAZIONESPORT}} in {{corso.DENOMINAZIONELOCATION}}</h1>
-                          <h3>{{corso.GIORNIPREVISTI|giorniPrevisti: lingua|titlecase}} </h3>
+                              <p 
+                                  class="ion-text-color-label"
+                                  *ngIf="utenteCorsoDoc.isLezioneSingola()">
+                                  {{utenteCorsoDoc.DATAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}
+                              </p>
+                              <p 
+                                class="ion-text-color-label"
+                                *ngIf="utenteCorsoDoc.isLezioneSingola() == false">
+                                dal <span>{{utenteCorsoDoc.DATAINIZIO | date : 'dd/MM/yy' | titlecase}}</span> al <span>{{utenteCorsoDoc.DATAFINE | date : 'dd/MM/yy' | titlecase}}</span>
+                              </p>                              
+
+                          <h1>{{utenteCorsoDoc.DENOMINAZIONESPORT}} in {{utenteCorsoDoc.DENOMINAZIONELOCATION}}</h1>
+                          <h3>{{utenteCorsoDoc.GIORNIPREVISTI|giorniPrevisti: lingua|titlecase}} </h3>
   
                         </ion-label>   
                         
                         <!-- ORA INIZIO -->
                         <ion-chip 
-                            [color]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'success': 'danger'">
-                          {{corso.ORAINIZIO | date: 'HH:mm'}}
+                            [color]="utenteCorsoDoc.DATAFINE > today && utenteCorsoDoc.DATAINIZIO < today ? 'success': 'danger'">
+                          {{utenteCorsoDoc.ORAINIZIO | date: 'HH:mm'}}
                           <ion-icon name="time-outline"></ion-icon>
                         </ion-chip>
                         </ion-item>         

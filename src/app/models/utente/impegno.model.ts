@@ -73,11 +73,15 @@ export class Impegno extends IDDocument {
 
         switch (this.SETTORE) {
             case SettoreAttivita.settoreCorso:
-                identifier = this.IDREFER + '-' + this.ID;
+                //identifier = this.IDREFER + '-' + this.ID;
+                identifier = this.IDREFER;
                 break;
 
             case SettoreAttivita.settorePrenotazione:
                 identifier = this.IDREFER + '-' + this.ID;
+                break;
+            case SettoreAttivita.settoreEvento:
+                identifier = this.IDREFER;
                 break;
         
             default:

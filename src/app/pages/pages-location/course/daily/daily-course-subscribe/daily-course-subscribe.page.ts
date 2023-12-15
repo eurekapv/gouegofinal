@@ -1,13 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertButton, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
+import { IscrizioneCorso } from 'src/app/models/corso/iscrizione-corso.model';
 import { Area } from 'src/app/models/struttura/area.model';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
-import { TargetSesso } from 'src/app/models/zsupport/valuelist.model';
+import { ModalitaIscrizione, StatoIscrizione, TargetSesso } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
@@ -27,6 +28,8 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
   idCorso: string;
   _corsoDoc: CorsoGiornaliero = new CorsoGiornaliero();
   _containLivello=false;
+  iscrizioneDoc: IscrizioneCorso;
+  existIscrizione: boolean = false; //Specifica che l'utente è già iscritto
 
   //Dati richiesti e caricati
   loadedData: boolean = false;
@@ -62,6 +65,7 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
 
   constructor(private startService: StartService,
               private modalController: ModalController,
+              private navController: NavController
               ) { }
 
   ngOnInit() {
@@ -101,17 +105,16 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
    * Prepara i dati addizionali del corso
    */
   prepareAdditionalInfoCorso() {
-    if (this._corsoDoc) {
 
-      this.numMaxPartecipanti = this._corsoDoc.MAXPARTECIPANTI;
-      this.numIscritti = this._corsoDoc.NUMISCRITTI;
-      if (this.numMaxPartecipanti >= this.numIscritti) {
-        this.numPostiResidui = this.numMaxPartecipanti - this.numIscritti;
-      }
-      else {
+    if (this._corsoDoc) {
+      this.numMaxPartecipanti = (this._corsoDoc.MAXPARTECIPANTI ? this._corsoDoc.MAXPARTECIPANTI : 0);
+      this.numIscritti = (this._corsoDoc.NUMISCRITTI ? this._corsoDoc.NUMISCRITTI : 0);
+      this.numPostiResidui = this.numMaxPartecipanti - this.numIscritti;
+
+      if (this.numPostiResidui < 0) {
         this.numPostiResidui = 0;
       }
-
+      
       this._containLivello = (this._corsoDoc.IDLIVELLOENTRATA && 
                               this._corsoDoc.IDLIVELLOENTRATA.length != 0);
 
@@ -146,9 +149,39 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
           //Vediamo se sono aperte le iscrizioni
           this.flagIscrizioneAttiva = this._corsoDoc.getFlagOpenIscrizioni();
         }
+
+        //Vediamo se ci sono posti
+        if (this.flagIscrizioneAttiva) {
+          this.flagIscrizioneAttiva = this._corsoDoc.getHasPostiLiberi();
+        }
         
       }
-      console.log('decido')
+
+      //Faccio una chiamata per vedere se l'utente è iscritto
+      this.onSetExistIscrizione();
+    }
+  }
+
+  /**
+   * Controlla se è presente l'iscrizione
+   */
+  onSetExistIscrizione(): void {
+
+    if (this.utenteDoc && this._corsoDoc) {
+      this.iscrizioneDoc = new IscrizioneCorso(true);
+      this.iscrizioneDoc.IDUTENTE = this.utenteDoc.ID;
+      this.iscrizioneDoc.IDPIANIFICAZIONECORSO = this._corsoDoc.ID;
+
+      this.startService.requestIscrizioneCorsoByFilter(this.iscrizioneDoc)
+                       .then(resultCollection => {
+                          this.existIscrizione = (resultCollection.length != 0);
+                       })
+                       .catch(error => {
+                        this.existIscrizione = false;
+                       })
+    }
+    else {
+      this.existIscrizione = false;
     }
   }
 
@@ -248,13 +281,20 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
  /**
   * Chiusura della modale
   */
-  closeModal(): void {
-    this.modalController.dismiss();
+  closeModal(whereToGo?: string[]): void {
+    this.modalController.dismiss()
+                        .then(result => {
+                          if (result) {
+                            if (whereToGo && whereToGo.length != 0) {
+                                this.navController.navigateRoot(whereToGo);
+                            }
+                          } 
+                        })
   }
   
   //#endregion 
   
-  //#region GESTIONE UTENTE
+  //#region GESTIONE DOCUMENTI CORRELATI
   
   /**
    * Metto in ascolto delle modifiche dell'utente
@@ -270,6 +310,9 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
                               
                               //Chiedo il totale dei minuti acquistati
                               this.requestUtenteTotaleMinuti();
+
+                              //Controllo se esiste una iscrizione
+                              this.onSetExistIscrizione();
                           },
                           error: (err) => {
                             this.utenteDoc = null;
@@ -342,6 +385,100 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
     this.utenteTotaleMinutiDoc = new UtenteTotaleMinuti();
     this.minutiValue = 0;
   }  
-  //#endregio
+  //#endregion
 
+  //#region 
+  
+  /**
+   * Risposta al Click del Button Iscriviti
+   */
+  onClickIscriviti() {
+    let myMessage = '';
+    let listButtons: AlertButton[];
+
+    //Serve il doc di corso, l'utente
+    if (this._corsoDoc && this.utenteDoc && this.flagIscrizioneAttiva) {
+      myMessage = `<p>Stai effettuando l'iscrizione alla lezione di</p>`;
+      myMessage += `<p class="ion-text-bold">${this._corsoDoc.DENOMINAZIONE}</p>`;
+      myMessage += `<p>programmata per</p>`
+      myMessage += `<p class="ion-text-bold">${MyDateTime.formatDate(this._corsoDoc.DATAORAINIZIO, 'EEEE dd/MM/yyyy')}</p>`;
+      myMessage += `<p>alle ore ${MyDateTime.formatDate(this._corsoDoc.DATAORAINIZIO, 'H:mm')}</p>`;
+      myMessage += `<p>Vuoi Iscriverti ?</p>`;
+      listButtons = [{
+        text: 'Si, procedi',
+        handler: ()=> {
+          this.execIscrizione();
+        }
+        }, {
+          text: 'No, aspetta',
+          role: 'cancel'
+        }];
+
+      this.startService.presentAlertMessage(myMessage, 'Iscriviti', listButtons);
+    }
+  }
+
+  /**
+   * Esecuzione finale della Iscrizione
+   */
+  execIscrizione() {
+    this.iscrizioneDoc = new IscrizioneCorso();
+    
+    this.iscrizioneDoc.IDAREAOPERATIVA = this._areaDoc.ID;
+    this.iscrizioneDoc.IDLOCATION = this._corsoDoc.IDLOCATION;
+    
+    this.iscrizioneDoc.IDCORSO = this._corsoDoc.IDCORSO;
+    this.iscrizioneDoc.IDPIANIFICAZIONECORSO = this._corsoDoc.ID;
+    this.iscrizioneDoc.MODALITAISCRIZIONE = ModalitaIscrizione.ModalitaAGiornata;
+    this.iscrizioneDoc.IDUTENTE = this.utenteDoc.ID;
+    this.iscrizioneDoc.DATAISCRIZIONE = new Date();
+    this.iscrizioneDoc.ANNOISCRIZIONE = (new Date()).getFullYear();
+    this.iscrizioneDoc.NOMINATIVO = this.utenteDoc.NOMINATIVO;
+    this.iscrizioneDoc.EMAIL = this.utenteDoc.EMAIL;
+    this.iscrizioneDoc.MOBILENUMBER = this.utenteDoc.MOBILENUMBER;
+    this.iscrizioneDoc.IDSPORT = this._corsoDoc.IDSPORT;
+
+    this.iscrizioneDoc.STATOISCRIZIONE = StatoIscrizione.confermata;
+
+    this.startService.showLoadingMessage('Contatto il server')
+                     .then(elLoading => {
+                        elLoading.present();
+
+                        //Tento di eseguire l'iscrizione al corso
+                        this.startService.requestSaveIscrizioneCorso(this.iscrizioneDoc)
+                                         .then(dataResponse => {
+                                            elLoading.dismiss();
+                                            if (dataResponse && dataResponse.result) {
+                                              //In Code è presente ID della iscrizione effettuata
+                                              //Recupero il path dove devo andare
+                                              this.onAfterSuccessExecIscrizione(dataResponse.code);
+                                            }
+                                            else {
+                                              //Fallita iscrizione
+                                              this.startService.presentAlertMessage(dataResponse.message);
+                                            }
+                                         })
+                                         .catch(error => {
+                                            //Sono rilevati errori
+                                            elLoading.dismiss();
+                                            this.startService.presentAlertMessage(error);
+                                         })
+                     })
+
+
+  }
+
+  /**
+   * Al termine del salvataggio a buon fine della iscrizione
+   * @param idIscrizione 
+   */
+  onAfterSuccessExecIscrizione(idIscrizione: string) {
+    let myPath: string[] = [];
+    if (idIscrizione && idIscrizione.length != 0) {
+      myPath = this.startService.getUrlPageHistoryPersonal('course', idIscrizione);
+      //Chiudo la modale e mi sposto
+      this.closeModal(myPath);
+    }
+  }
+  //#endregion
 }

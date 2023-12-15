@@ -2,7 +2,7 @@ import { Descriptor, TypeDefinition } from "../../library/models/descriptor.mode
 import { IDDocument } from "../../library/models/iddocument.model";
 import { IscrizioneTesseramento } from "./iscrizione-tesseramento";
 import { IscrizioneIncasso } from "./iscrizione-incasso.model";
-import { PaymentChannel, Sesso, StatoIscrizione, TipoPrezzo, TipoRigoIncasso, ZOrderIncasso } from "../zsupport/valuelist.model";
+import { ModalitaIscrizione, PaymentChannel, Sesso, StatoIscrizione, TipoPrezzo, TipoRigoIncasso, ZOrderIncasso } from "../zsupport/valuelist.model";
 import { MyDateTime } from "../../library/models/mydatetime.model";
 import { TotaleScadenze } from "../../shared/interfaces/interfaces";
 import { PaymentProcess } from "../zsupport/payment-process.model";
@@ -10,7 +10,9 @@ import { PaymentProcess } from "../zsupport/payment-process.model";
 export class IscrizioneCorso extends IDDocument {
 
     IDCORSO:                     string; //
+    IDPIANIFICAZIONECORSO:       string;
     IDUTENTE:                    string; //
+    MODALITAISCRIZIONE:          ModalitaIscrizione;
     DATAISCRIZIONE:              Date;
     ANNOISCRIZIONE:              number;
     NOMINATIVO:                  string;
@@ -68,13 +70,15 @@ export class IscrizioneCorso extends IDDocument {
                         'CODICEALFA',
                         'IDTIPOPAGAMENTO',
                         'IDCODICEIMPOSTA',
-                        'IDVALUTA'
+                        'IDVALUTA',
+                        'IDPIANIFICAZIONECORSO'
                         ];
         let arNumber = ['ANNOISCRIZIONE',
                         'CODICEINT',
                         'SESSO',
                         'STATOISCRIZIONE',
-                        'TIPOPREZZO'
+                        'TIPOPREZZO',
+                        'MODALITAISCRIZIONE'
                        ];
         let arDecimal = ['IMPORTO',
                         'IMPOSTA',

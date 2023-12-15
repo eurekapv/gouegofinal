@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, ModalController, NavController, ToastController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
@@ -10,11 +10,13 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
-import { StatoIscrizione, StatoPagamento } from 'src/app/models/zsupport/valuelist.model';
+import { ModalitaIscrizione, StatoIscrizione, StatoPagamento, TipoCorso, ValueList } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { PeriodicCourseDetailCalendarPage } from '../../pages-location/course/periodic/periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
+import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
+
 
 @Component({
   selector: 'app-history-course',
@@ -23,22 +25,34 @@ import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model
 })
 export class HistoryCoursePage implements OnInit {
 
+  //Dati richiesti e caricati
+  loadedData: boolean = false;
+  errorLoadingData: boolean = false;
+  messageErrorPage: string = "";
+  
   StatoPagamento : typeof StatoPagamento=StatoPagamento;
   docUtente: Utente;
   subDocUtente: Subscription;
 
-  myIscrizione: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
+  idIscrizione: string; 
+  utenteIscrizioneDoc: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
   listSituazionePagamenti: IscrizioneIncasso[] = []; //Situazione dei pagamenti
 
-  myCorso:Corso= new Corso();
-
-  myLocation: Location = new Location();
+  corsoDoc: Corso = new Corso();
+  locationDoc: Location = new Location();
+  //Valorizzata in caso di Iscrizioni Giornaliere
+  dataPianificataDoc: PianificazioneCorso;
+  isLezioneSingola: boolean = false; //Iscrizione a lezione singola
 
   selectedLocation: Location = new Location(); //il documento location NON OBSERVABLE 
 
   arPayments: AreaPaymentSetting[] = [];
-
   isDesktop: boolean;
+
+  //Enum Html
+  modalitaIscrizione: typeof ModalitaIscrizione = ModalitaIscrizione;
+
+  titleForm = '';
 
   //La Label contenente il programma po' essere ristretta o allargata
   expandProgramma: boolean = false;
@@ -46,7 +60,6 @@ export class HistoryCoursePage implements OnInit {
   constructor(
               private activatedRoute: ActivatedRoute,
               private startService: StartService,
-              private loadingController: LoadingController,
               private navCtr: NavController,
               private modalController: ModalController,
               private docstructrureService: DocstructureService
@@ -60,8 +73,8 @@ export class HistoryCoursePage implements OnInit {
   iscrizioneConfermata(): boolean {
     let flagResult = false;
 
-    if (this.myIscrizione) {
-      flagResult = (this.myIscrizione.STATOISCRIZIONE == StatoIscrizione.confermata);
+    if (this.utenteIscrizioneDoc) {
+      flagResult = (this.utenteIscrizioneDoc.STATOISCRIZIONE == StatoIscrizione.confermata);
     }
 
     return flagResult;
@@ -71,80 +84,178 @@ export class HistoryCoursePage implements OnInit {
 
     this.isDesktop = this.startService.isDesktop;
 
-    //creo lo spinner e lo presento
-    this.loadingController.create({
-        message: 'Caricamento',
-        spinner: 'circular',
-        backdropDismiss: true
-        })
-        .then(elLoading => {
-            //Mostro il loading
-            elLoading.present();
+    this.startService.showLoadingMessage('Caricamento dati')
+                     .then(elLoading => {
+                          //Mostro il loading
+                          elLoading.present(); 
+                          //Recupero dal URL 
+                          this.activatedRoute.paramMap
+                              .subscribe({
+                                next: (paramsRouting)=> {
+
+                                  if(paramsRouting.has('historyId')) {
+                                    //se ho l'id dell'iscrizione, faccio la richiesta al server
+                                    let idIscrizione = paramsRouting.get('historyId');
+
+                                    if (idIscrizione && idIscrizione.length != 0) {
+                                      //Memorizzo ID Iwcrizione
+                                      this.idIscrizione = idIscrizione;
+                                      //Ora richiedo l'iscrizione
+                                      this.onRequestAllData()
+                                          .then(()=> {
+                                            elLoading.dismiss();
+                                            this.loadedData = true;
+                                            this.errorLoadingData = false;
+                                          })
+                                          .catch(error => {
+                                            elLoading.dismiss();
+                                            this.loadedData = true;
+                                            this.errorLoadingData = true;
+                                            this.messageErrorPage = this.startService.convertErrorDisplay(error);
+                                          })
+                                    }
+                                    else {
+                                      elLoading.dismiss();
+                                      this.loadedData = true;
+                                      this.errorLoadingData = true;
+                                      this.messageErrorPage = 'Iscrizione non rilevata';                                      
+                                    }
+                                  }
+                                  else {
+                                    elLoading.dismiss();
+                                    this.loadedData = true;
+                                    this.errorLoadingData = true;
+                                    this.messageErrorPage = 'Iscrizione non rilevata';
+                                  }                                              
+                                },
+                                error: (err) => {
+                                  elLoading.dismiss();
+                                  this.loadedData = true;
+                                  this.errorLoadingData = true;
+                                  this.messageErrorPage = this.startService.convertErrorDisplay(err);
+                                  'Iscrizione non rilevata';
+                                }
+                              })
+                            });
+    }
+ 
+
+  //#region RICHIESTE
+
+  /**
+   * Richiesta di tutti i dati
+   * @returns 
+   */
+  onRequestAllData(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.loadedData = false;
+
+      this.requestIscrizione(this.idIscrizione)
+          .then(elItemIscrizione => {
+            this.utenteIscrizioneDoc = elItemIscrizione;
+            return this.requestCorso(this.utenteIscrizioneDoc);
+          })
+          .then(elItemCorso => {
+            //Imposto il corso
+            this.corsoDoc = elItemCorso;
+            //Faccio la richiesta della data pianificata
+            return this.requestDataPianificata(this.utenteIscrizioneDoc);
+          })
+          .then(elDataPianificata => {
+            this.dataPianificataDoc = elDataPianificata;
+            //Richiedo info sulla location
+            return this.requestLocation(this.utenteIscrizioneDoc);
+          })
+          .then(elLocation => {
+            this.locationDoc = elLocation;
+            //Richiedo anche la situazione degli Incassi dell'Iscrizione
+            return this.requestIncassiIscrizione(this.idIscrizione);
+          })
+          .then(dataPagamenti => {
+            //Imposto i dati del pagamento
+            this.listSituazionePagamenti = dataPagamenti;
+
+            //Posso impostare il titolo
+            switch (this.corsoDoc.MODALITAISCRIZIONE) {
+              case ModalitaIscrizione.ModalitaAGiornata:
+                this.titleForm = 'Lezione';
+                break;
+              case ModalitaIscrizione.ModalitaAPeriodo:
+                this.titleForm = ValueList.decode(TipoCorso, this.corsoDoc.TIPO);
+                break;
             
-            //recupero l'id dell'iscrizione
-            this.activatedRoute.paramMap.subscribe(paramsRouting => {
-                    if(paramsRouting.has('historyId')) {
-                      //se ho l'id dell'iscrizione, faccio la richiesta al server
-                      let idIscrizione = paramsRouting.get('historyId');
-                      
-                      if (idIscrizione.length != 0) {
-                          //Chiedo il documento della Iscrizione
-                          this.requestIscrizione(idIscrizione)
-                              .then(elItemIscrizione => {
-                                this.myIscrizione = elItemIscrizione;
-                                return this.requestCorso(this.myIscrizione);
-                              })
-                              .then(elItemCorso => {
-                                this.myCorso = elItemCorso;
-                                //Richiedo info sulla location
-                                return this.requestLocation(this.myIscrizione);
-                              })
-                              .then(() => {
-                                //Richiedo anche la situazione degli Incassi dell'Iscrizione
-                                return this.requestIcassiIscrizione(idIscrizione);
-                              })
-                              .then(dataPagamenti => {
-                                //Imposto i dati del pagamento
-                                this.listSituazionePagamenti = dataPagamenti;
-
-                                //Chiudo il loading
-                                elLoading.dismiss();
-                              })
-                              .catch(error => {
-                                //Chiudo il loading
-                                elLoading.dismiss();
-                                //Si sono verificati errori
-                                this.showMessage(error);
-                                this.onGoToBack();
-                              });                              
-                      }
-                      else {
-
-                        //Chiudo il loading
-                        elLoading.dismiss();
-
-                        //Non ho trovato ID
-                        this.showMessage('Identificativo Iscrizione non corretto');
-                        //Torno alla pagina di Lista
-                        this.onGoToBack();
-                      }
-                    }
-                    else {
-                      //Non trovo idIscrizione
-
-                      //Chiudo il loading
-                      elLoading.dismiss();
-
-                      //Non ho trovato ID
-                      this.showMessage('Identificativo Iscrizione non corretto');
-                      //Torno alla pagina di Lista
-                      this.onGoToBack();
-                    }
-            })
+              default:
+                this.titleForm = '';
+                break;
+            }            
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });       
     })
   }
 
-  //#region RICHIESTE
+  /**
+   * Effettua il refresh dei dati
+   * @param ev 
+   */
+  onRefreshData(ev: any): void {
+    this.loadedData = false;
+    this.errorLoadingData = false;
+    this.messageErrorPage = '';
+
+    if (this.idIscrizione && this.idIscrizione.length != 0) {
+        if (ev) {
+          //Ora richiedo l'iscrizione
+          this.onRequestAllData()
+              .then(()=> {
+                this.stopRefresher(ev);
+                this.loadedData = true;
+                this.errorLoadingData = false;
+              })
+              .catch(error => {
+                this.stopRefresher(ev);
+                this.loadedData = true;
+                this.errorLoadingData = true;
+                this.messageErrorPage = this.startService.convertErrorDisplay(error);
+              })
+        }
+        else {
+
+          this.startService.showLoadingMessage('Caricamento dati')
+                           .then(elLoading => {
+                              elLoading.present();
+                              //Ora richiedo l'iscrizione
+                              this.onRequestAllData()
+                                  .then(()=> {
+                                    elLoading.dismiss();
+                                    this.loadedData = true;
+                                    this.errorLoadingData = false;
+                                  })
+                                  .catch(error => {
+                                    elLoading.dismiss();
+                                    this.loadedData = true;
+                                    this.errorLoadingData = true;
+                                    this.messageErrorPage = this.startService.convertErrorDisplay(error);
+                                  })
+                           })
+        }
+    }
+  }
+
+  /**
+   * Interrompo il refresher
+   * @param ev 
+   */
+  stopRefresher(ev: any) {
+    if (ev) {
+      if (ev.target) {
+        ev.target.complete();
+      }
+    }
+  }
+
   /**
    * Richiede al server una Iscrizione per ID
    * @param myIdIscrizione idIscrizione richiesta
@@ -192,7 +303,7 @@ export class HistoryCoursePage implements OnInit {
 
       //Richiesta di decodifica
       let params = new RequestParams();
-      params.decode.active = true;
+      params.decode.active = false;
       params.decode.useCache = false;
 
       let filterCorso = new Corso(true);
@@ -225,21 +336,18 @@ export class HistoryCoursePage implements OnInit {
   requestLocation(docIscrizione: UtenteIscrizione): Promise<Location> {
     return new Promise<Location>((resolve, reject) => {
       
-      if (docIscrizione) {
-
-        this.docstructrureService.getRelDoc(docIscrizione, ['IDLOCATION'],1)
-          .then(docLocation => {
-            this.myLocation = docLocation;
-            resolve(this.myLocation);
-          })
-          .catch(error => {
-            LogApp.consoleLog(error,'error');
-            reject(error);
-          });
-
+      if (docIscrizione && docIscrizione.IDLOCATION && docIscrizione.IDLOCATION.length != 0) {
+        //Richiedo la location
+        this.startService.requestLocationByID(docIscrizione.IDLOCATION)
+                         .then(elLocation => {
+                            resolve(elLocation);
+                         })
+                         .catch(error => {
+                            reject(error);
+                         });
       }
       else {
-        reject('Iscrizione non definita');
+        reject('Location non rilevata');
       }
     })
   }
@@ -249,7 +357,7 @@ export class HistoryCoursePage implements OnInit {
    * @param myIdIscrizione 
    * @returns 
    */
-  requestIcassiIscrizione(myIdIscrizione:string): Promise<IscrizioneIncasso[]> {
+  requestIncassiIscrizione(myIdIscrizione:string): Promise<IscrizioneIncasso[]> {
     return new Promise<IscrizioneIncasso[]>((resolve, reject) => {
 
       let filter: IscrizioneIncasso;
@@ -274,6 +382,47 @@ export class HistoryCoursePage implements OnInit {
         reject('Nessuna Iscrizione presente');
       }
       
+    })
+  }
+
+  /**
+   * Richiede la singola data pianificata
+   * @param iscrizioneDoc Documento Iscrizione
+   * @returns 
+   */
+  requestDataPianificata(iscrizioneDoc: UtenteIscrizione): Promise<PianificazioneCorso> {
+    return new Promise<PianificazioneCorso>((resolve, reject) => {
+
+        if (iscrizioneDoc) {
+          console.log(iscrizioneDoc)
+
+          if (iscrizioneDoc.MODALITAISCRIZIONE == ModalitaIscrizione.ModalitaAGiornata) {
+            //Imposto che è una lezione singola
+            this.isLezioneSingola = true;
+            
+            //Controllo la presenza del ID
+            if (iscrizioneDoc.IDPIANIFICAZIONECORSO && iscrizioneDoc.IDPIANIFICAZIONECORSO.length != 0) {
+                this.startService.requestPianificazioneCorso(iscrizioneDoc.IDPIANIFICAZIONECORSO)
+                                 .then(elData => {
+                                    resolve(elData);
+                                 })
+                                 .catch(error => {
+                                  reject(error);
+                                 })
+            }
+            else {
+              //Sono in errore
+              reject('Lezione non trovata');
+            }
+          }
+          else {
+            //Non devo scaricare la data pianificata
+            resolve(null);
+          }
+        }
+        else {
+          reject('Icrizione non presente');
+        }
     })
   }
   //#endregion
@@ -312,7 +461,7 @@ export class HistoryCoursePage implements OnInit {
         .create({
           component: PeriodicCourseDetailCalendarPage,
           componentProps: {
-            'myCorso': this.myCorso
+            'myCorso': this.corsoDoc
           }
         })
         .then(formModal => {
@@ -328,7 +477,7 @@ export class HistoryCoursePage implements OnInit {
     this.modalController.create({
       component: AllegatilistPage,
       componentProps:{
-        'myCorso' : this.myCorso
+        'myCorso' : this.corsoDoc
       }
     })
     .then(elModal => {

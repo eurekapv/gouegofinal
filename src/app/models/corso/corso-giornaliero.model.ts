@@ -105,6 +105,21 @@ export class CorsoGiornaliero extends IDDocument {
 
         return flagIscrizione;
     }
+
+    /**
+     * Controlla se ci sono posti liberi
+     */
+    getHasPostiLiberi(): boolean {
+        let numResidui = (this.MAXPARTECIPANTI ? this.MAXPARTECIPANTI : 0) - (this.NUMISCRITTI ? this.NUMISCRITTI : 0);
+        let flagLiberi = false;
+        if (numResidui > 0) {
+            flagLiberi = true;
+        }
+        else {
+            flagLiberi = false;
+        }
+        return flagLiberi;
+    }
 }
 
 /**

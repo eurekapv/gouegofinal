@@ -5,7 +5,6 @@ import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model
 import { AreaLink } from './arealink.model';
 import { AreaPaymentSetting } from './areapaymentsetting.model';
 import { Position } from '@capacitor/geolocation';
-import { PositionActionButton } from '../../shared/components/centri/centri.component';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
 
 
@@ -24,19 +23,21 @@ export class Area extends IDDocument {
     AREALINKS: AreaLink[];
     AREAPAYMENTSETTINGS: AreaPaymentSetting[];
     APPSHOW: boolean;
+    APPPRENOTAZIONI: boolean; //Mostra i pulsanti per prenotare
+    APPSHOWCORSIPERIODI: boolean; //Mostra i pulsanti per i corsi a periodo
+    APPSHOWCORSIGIORNATA: boolean; //Mostra i pulsanti per i corsi a giornata
     APPISCRIZIONI: boolean;
     APPISCRIZIONIEVENTI: boolean;
-    APPPRENOTAZIONI: boolean;
     APPGAPOREPRESENZE: number; //Indica per quanto tempo (ore) dal termine di una data di corso, il trainer può inserire/aggiornare le presenze
     APPSHOPONLINE: boolean; //Shop Online abilitato
     APPSHOPPACCHETTIORARI: boolean; //Shop Online con Pacchetti Orari
-    APPBUTTONHOME: PositionActionButton; //Dove vuole mostrare i bottoni sulla home
     APPFUTUROPRENOTAZIONIFLAG: FuturoPrenotazione;
     APPFUTUROPRENOTAZIONIMESI: number;
     APPFUTUROISCRIZIONIFLAG: FuturoIscrizioneGiornaliere;
     APPFUTUROISCRIZIONIMESI: number;
     APPDELETEISCRIZIONIFLAG: CancellazioniIscrizioniGiornaliere;
     APPDELETEISCRIZIONIORE: number;
+
 
     LATITUDINE: number;
     LONGITUDINE: number;
@@ -57,6 +58,10 @@ export class Area extends IDDocument {
         this.APPISCRIZIONI = false;
         this.APPISCRIZIONIEVENTI = false;
         this.APPPRENOTAZIONI = false;
+        this.APPSHOPPACCHETTIORARI = false;
+        this.APPSHOWCORSIGIORNATA = false;
+        this.APPSHOWCORSIPERIODI = false;
+        
         this.APPFUTUROISCRIZIONIFLAG = FuturoIscrizioneGiornaliere.sempre;
         this.APPFUTUROPRENOTAZIONIFLAG = FuturoPrenotazione.sempre;
         this.APPDELETEISCRIZIONIFLAG = CancellazioniIscrizioniGiornaliere.mai;
@@ -83,7 +88,6 @@ export class Area extends IDDocument {
                       'APPGAPOREPRESENZE',
                       'LATITUDINE',
                       'LONGITUDINE',
-                      'APPBUTTONHOME',
                       'APPFUTUROPRENOTAZIONIFLAG',
                       'APPFUTUROPRENOTAZIONIMESI',
                       'APPFUTUROISCRIZIONIFLAG',
@@ -91,7 +95,9 @@ export class Area extends IDDocument {
                       'APPDELETEISCRIZIONIFLAG',
                       'APPDELETEISCRIZIONIORE'
                     ];
-      let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI','APPISCRIZIONIEVENTI','APPSHOPONLINE','APPSHOPPACCHETTIORARI'];
+      let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI',
+                       'APPISCRIZIONIEVENTI','APPSHOPONLINE','APPSHOPPACCHETTIORARI',
+                      'APPSHOWCORSIPERIODI','APPSHOWCORSIGIORNATA'];
       let arDate = [];
       let arDateTime =[];
       let arTime = [];

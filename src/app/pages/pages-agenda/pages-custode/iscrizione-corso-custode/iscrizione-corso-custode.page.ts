@@ -68,12 +68,7 @@ export class IscrizioneCorsoCustodePage implements OnInit {
 
     this.isDesktop = this.startService.isDesktop;
 
-    //creo lo spinner e lo presento
-    this.loadingController.create({
-        message: 'Caricamento',
-        spinner: 'circular',
-        backdropDismiss: true
-        })
+    this.startService.showLoadingMessage('Caricamento')
         .then(elLoading => {
             //Mostro il loading
             elLoading.present();

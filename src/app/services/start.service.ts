@@ -87,7 +87,6 @@ import { TipoPagamentoService } from './archivi/tipo-pagamento.service';
 import { TipoPagamento } from '../models/archivi/tipopagamento.model';
 import { CorsoPresenze } from '../models/corso/corsopresenze.model';
 import { Tesseramento } from '../models/utente/tesseramento';
-import { AdvertisingService } from '../library/services/advertising.service';
 import { FileService } from './zsupport/file.service';
 import { ShoppingService } from './shop/shopping.service';
 import { ShopCarrello } from '../models/shop/shop-carrello.model';
@@ -230,7 +229,6 @@ export class StartService {
     private articoloService: ArticoloService,
     private modalController: ModalController,
     private tipoPagamentoService: TipoPagamentoService,
-    private advertisingService: AdvertisingService,
     private fileService: FileService,
     private shopService: ShoppingService
     ) { 
@@ -2841,26 +2839,6 @@ getUrlPageActiveCart(): string[] {
 
 //#endregion
 
-//#region ADVERTISING
-
-get activeAdvertisingConfig$() {
-  return this.advertisingService.activeAdvertisingConfig$;
-}
-
-get activeAdvertisingConfig() {
-  return this.activeAdvertisingConfig;
-}
-
-
-/**
- * Imposta se l'advertising è stato inizializzato
- * @param flag TRUE / FALSE
- */
-setInitializedAdvertising(flag: boolean): void {
-  this.advertisingService.setInitialized(flag);
-}
-
-//#endregion
 
 //#region SMART INTERFACE PROMISE
 

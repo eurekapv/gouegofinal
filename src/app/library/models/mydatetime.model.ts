@@ -815,14 +815,14 @@ static getOnlyDate(dateValue: Date): Date {
  * @returns Data alla mezzanotte
  */
 static datePartFrom(dateValue: Date): Date {
-    let retDate: Date;
-
+    
     if (dateValue) {
-        let mask = `${dateValue.getFullYear()}-${dateValue.getMonth() + 1}-${dateValue.getDate()}T00:00:00`;
-        retDate = new Date(mask);
+        dateValue.setHours(0);
+        dateValue.setMinutes(0);
+        dateValue.setSeconds(0);
     }
 
-    return retDate;
+    return dateValue;
 }
 
 /**

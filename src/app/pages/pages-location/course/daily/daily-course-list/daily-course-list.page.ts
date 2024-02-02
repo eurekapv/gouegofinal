@@ -141,6 +141,7 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
                                   myLoading.dismiss();
                                 })
                                 .catch(error => {
+                                  console.error(error);
                                   //Errori nel caricamento
                                   this.loadedData = true;
                                   this.errorLoadingData = true;

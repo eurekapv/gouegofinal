@@ -34,7 +34,6 @@
     "@awesome-cordova-plugins/chooser": "6.4.0",
     "@awesome-cordova-plugins/core": "6.4.0",
     "@awesome-cordova-plugins/file": "6.4.0",
-    "@capacitor-community/admob": "^5.0.0",
     "@capacitor-community/barcode-scanner": "4.0.1",
     "@capacitor-community/file-opener": "1.0.5",
     "@capacitor/android": "^5.0.0",

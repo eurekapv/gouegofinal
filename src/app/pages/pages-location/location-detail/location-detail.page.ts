@@ -201,7 +201,7 @@ export class LocationDetailPage implements OnInit, OnDestroy {
     
     this.modalCtrl.create({
       component: ImageModalPage,
-      cssClass: 'transparent-modal',
+      cssClass: 'transparent-blur-modal',
       componentProps: {
         'imageUrl': myImageUrl.IMAGEURL
       }

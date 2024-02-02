@@ -4,7 +4,7 @@ Sono presenti Plugin Qui => https://github.com/capawesome-team
 - Sostituzione di tutti gli IonSlides con Swiper
 - Aggiornamento DatePicker
 - Eliminazione Moment.js per Date-Fns (Aggiornamento tutti i riferimenti moment)
-- Aggiunto @capacitor-community/file-opener (https://github.com/capacitor-community/file-opener) in versione 1.0.4 e sarà da aggiornare con Capacitor 5
+- Aggiunto @capacitor-community/file-opener (https://github.com/capacitor-community/file-opener) in versione 1.0.4 e sarà da aggiornare con Capacitor 5 *****
 ```console
 npm install @capacitor-community/file-opener@1.0.4
 ```

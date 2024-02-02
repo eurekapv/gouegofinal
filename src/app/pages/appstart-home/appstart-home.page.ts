@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
 import { Subscription } from 'rxjs';
-import { IonTabBar } from '@ionic/angular';
 import { Area } from 'src/app/models/struttura/area.model';
 
 @Component({

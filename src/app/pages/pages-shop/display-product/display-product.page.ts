@@ -170,7 +170,7 @@ setListImagePath(): void {
     
     this.modalController.create({
       component: ImageModalPage,
-      cssClass: 'transparent-modal',
+      cssClass: 'transparent-blur-modal',
       componentProps: {
         'imageUrl': myImageUrl
       }

@@ -22,33 +22,26 @@
     <p>{{_actualDate | date: _maskFormat}}</p>
   </ion-text>
   
-  <ion-modal [trigger]="_componentId">
+  <ion-modal 
+    [keepContentsMounted]="true" 
+    [trigger]="_componentId">
     <ng-template>
-      <ion-content>
 
-        <ion-toolbar
-              class="datetime-title" 
-              *ngIf="_showCalendarTitle"
-              color="primary">
-          <ion-title size="small">{{_title}}</ion-title>
-        </ion-toolbar>
+      <ion-datetime
+        #mydatetime
+        locale="it-IT"
+        [presentation]="_calendarMode"
+        [readonly] ="_readonly"
+        [value]="formattedDateTimeString"          
+        size="cover"
+        showDefaultButtons="true"
+        cancelText="Annulla"
+        clearText="Elimina"
+        doneText="Conferma"
+        [max]="_isoMaxDate"
+        (ionChange)="dateChanged(mydatetime.value)">
 
-        <ion-datetime
-          #mydatetime
-          locale="it-IT"
-          [presentation]="_calendarMode"
-          [readonly] ="_readonly"
-          [value]="formattedDateTimeString"          
-          size="cover"
-          showDefaultButtons="true"
-          cancelText="Annulla"
-          clearText="Elimina"
-          doneText="Conferma"
-          [max]="_isoMaxDate"
-          (ionChange)="dateChanged(mydatetime.value)">
-
-        </ion-datetime>
-      </ion-content>
+      </ion-datetime>
     </ng-template>    
   </ion-modal>
 

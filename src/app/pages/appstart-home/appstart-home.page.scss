@@ -9,6 +9,8 @@ ion-tabs{
         //Safe Area Bottom
         //Versione Web
         padding-bottom: 5px !important;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
 
         &.md {
             //Versione Android
@@ -36,7 +38,7 @@ ion-tabs{
                 background-color: var(--ion-tab-selected-background);
                 --color: var(--ion-tab-selected-color);
                 color: var(--ion-tab-selected-color);  
-                border-radius: 0px 30px 0px 30px;              
+                border-radius: var(--ion-tab-selected-radius);              
             }
         }
 
@@ -44,7 +46,7 @@ ion-tabs{
             &:focus, &:hover {
                 background-color: var(--ion-tab-selected-background);
                 color: var(--ion-tab-selected-color);  
-                border-radius: 0px 30px 0px 30px;
+                border-radius: var(--ion-tab-selected-radius);
             }
         }
     }
@@ -69,7 +71,7 @@ ion-tabs{
 	ion-tab-bar { 
 		position: absolute; 
 		justify-content: start; 
-		width: 100px; 
+		width: 90px; 
         top: 5px;
         left: 5px;
 		height: 100rem; 

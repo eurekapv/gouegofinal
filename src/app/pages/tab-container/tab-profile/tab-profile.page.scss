@@ -83,7 +83,8 @@ $black: var(--ion-color-primary);
  
   
   .card {
-    background: linear-gradient(to bottom, $red 0%, $red 26%, $grey 26%, $grey 100%);
+    
+    background: linear-gradient(to bottom, var(--ion-color-primary-shade) 0%, var(--ion-color-primary-shade) 26%, #ecedef 26%, #ecedef 100%);
 
     float: left;
     position: relative; 

@@ -46,8 +46,8 @@ export class DetailPresenzaPage implements OnInit {
   loadingError = false;
   messageError: string = '';
   loadingComplete = false; //Caricamento dati concluso
-  
-
+  colorPresente = 'success';
+  colorAssente = 'danger';
    
 
   constructor(

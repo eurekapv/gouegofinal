@@ -90,9 +90,9 @@ export class ImpegnoCollaboratoreService {
     if (filterImpegno && periodAnalize && periodDate) {
       switch (periodAnalize) {
         case RangeSearch.giorno:
-            filterImpegno.DATAORAINIZIO = periodDate;
+            filterImpegno.DATAINIZIO = periodDate;
             //Applico una condizione per la dataorainizio
-            filterImpegno.addFilterCondition(OperatorCondition.uguale, 'DATAORAINIZIO');
+            filterImpegno.addFilterCondition(OperatorCondition.uguale, 'DATAINIZIO');
           break;
 
         case RangeSearch.settimana:

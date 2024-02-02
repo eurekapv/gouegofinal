@@ -19,6 +19,8 @@ export class ImpegnoCollaboratore extends IDDocument {
     DENOMINAZIONESPORT:           string;
     DATAORAINIZIO:                Date;
     DATAORAFINE:                  Date;
+    DATAINIZIO:                   Date;
+    DATAFINE:                   Date;
     
 
     constructor(onlyInstance?:boolean) {
@@ -41,7 +43,7 @@ export class ImpegnoCollaboratore extends IDDocument {
                     ];
     let arNumber = ['SETTORE','MANSIONE'];
     let arBoolean = [];
-    let arDate = [];
+    let arDate = ['DATAINIZIO','DATAFINE'];
     let arDateTime =['DATAORAINIZIO','DATAORAFINE'];
     let arTime = [];
     let arCollection = [];

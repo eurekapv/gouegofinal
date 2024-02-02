@@ -61,6 +61,7 @@
           color="success" 
           expand="full" 
           (click)="onSubmit()">
+        <ion-icon slot="start" name="save"></ion-icon>
         Conferma Presenze
       </ion-button>      
     </div>
@@ -82,28 +83,6 @@
       </ion-segment-button>
     </ion-segment>
     <ion-grid>
-      <!-- BUTTON AZIONE PRESENZA-->
-      <ion-row 
-          *ngIf="canUpdate && selectedView == 1">
-        <ion-col>
-            <ion-button
-                (click) ="setAllPresenze(true)"
-                expand="full"
-                color="success">
-              <ion-icon name="thumbs-up"></ion-icon>
-              Segna presenti
-            </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button
-              (click) ="setAllPresenze(false)" 
-              expand="full"
-              color="danger">
-            <ion-icon name="thumbs-down"></ion-icon>
-            Segna assenti
-          </ion-button>
-        </ion-col>
-      </ion-row>
 
       <!-- VISTA PRESENTI -->
       <ion-row *ngIf="selectedView == 1">
@@ -120,56 +99,66 @@
             </ion-item>
 
             <ion-item
+                  [detail]="false"
                   *ngFor="let presenza of listPresenzeConfermate" 
                   [button]="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)" 
                   (click)="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)? onClickElement(presenza) : {}"
                   >
-            <ion-icon *ngIf="presenza.PRESENTE==true" slot="start" name="thumbs-up-outline" color="primary"></ion-icon>
-            <ion-icon *ngIf="presenza.PRESENTE==false" slot="start" name="thumbs-down-outline" color="danger"></ion-icon>
-            <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" color="" name="person-circle-outline"></ion-icon>
             <ion-label>
               <h2>{{presenza.NOMINATIVO}}</h2>
-              <h4 *ngIf="this.tipoSocieta == TipoSocieta.sportiva">
-                Certificato medico: 
+
+              <h5 *ngIf="this.tipoSocieta == TipoSocieta.sportiva">
+
                 <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
-                  {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
+                  Cert. Medico&nbsp;{{presenza.DATACERTIFICATOMEDICO ? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('non consegnato')}}
                 </ion-badge> 
-              </h4>
+              </h5>
+              <h6 *ngIf="presenza.ALERTPAGAMENTI">
+                <ion-text class="ion-text-bold" color="danger">SCADENZE NON SALDATE</ion-text></h6>
             </ion-label>
+            
+            <ion-label 
+                *ngIf="presenza.PRESENTE == null || presenza.PRESENTE == undefined"
+                slot="end">&egrave; presente ?</ion-label>
+
             <ion-badge
-              *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined && isDesktop"
+              *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined"
               slot="end"
-              [color]="presenza.PRESENTE? 'primary' : 'danger'"
+              [color]="presenza.PRESENTE ? colorPresente : colorAssente"
             >
             {{presenza.PRESENTE? 'Presente' : 'Assente'}}
             </ion-badge>
             </ion-item>
           </ion-list>
+
           <ion-list *ngIf="listPresenzeInProva.length > 0">
             <ion-list-header>
               In Prova
             </ion-list-header>
             <!-- Iscritti in prova -->
-            <ion-item 
+            <ion-item
+              [detail]="false" 
               *ngFor="let presenza of listPresenzeInProva" 
               [button]="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)" 
               (click)="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)? onClickElement(presenza) : {}">
-              <ion-icon *ngIf="presenza.PRESENTE==true" slot="start" name="thumbs-up-outline" color="primary"></ion-icon>
-              <ion-icon *ngIf="presenza.PRESENTE==false" slot="start" name="thumbs-down-outline" color="danger"></ion-icon>
-              <ion-icon *ngIf="presenza.PRESENTE != true && presenza.PRESENTE != false" slot="start" color="" name="person-circle-outline"></ion-icon>
+
               <ion-label>
                 <h2>{{presenza.NOMINATIVO}}</h2>
-                <h4 *ngIf="tipoSocieta == TipoSocieta.sportiva">
-                  Certificato medico: 
+                <h5 *ngIf="tipoSocieta == TipoSocieta.sportiva">
                   <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
-                    {{presenza.DATACERTIFICATOMEDICO? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('Non consegnato')}}
+                    Cert. Medico&nbsp;{{presenza.DATACERTIFICATOMEDICO ? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('non consegnato')}}
                   </ion-badge> 
-                </h4>
+                </h5>
               </ion-label>
+
+              <ion-label 
+                *ngIf="presenza.PRESENTE == null || presenza.PRESENTE == undefined"
+                slot="end">&egrave; presente ?</ion-label>
+
               <ion-badge
                 *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined && isDesktop"
                 slot="end"
-                [color]="presenza.PRESENTE? 'primary' : 'danger'"
+                [color]="presenza.PRESENTE ? colorPresente : colorAssente"
               >
               {{presenza.PRESENTE? 'Presente' : 'Assente'}}
               </ion-badge>
@@ -177,6 +166,27 @@
           </ion-list>
         </ion-col>
       </ion-row>
+
+      <!-- BUTTON AZIONE PRESENZA-->
+      <ion-row 
+          *ngIf="canUpdate && selectedView == 1 && (listPresenzeConfermate.length != 0 || listPresenzeInProva.length != 0)">
+        <ion-col>
+            <ion-button
+                (click) ="setAllPresenze(true)"
+                expand="full"
+                color="success">
+              Tutti presenti
+            </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button
+              (click) ="setAllPresenze(false)" 
+              expand="full"
+              color="danger">
+            Tutti assenti
+          </ion-button>
+        </ion-col>
+      </ion-row>      
 
       <!-- SEGMENT ANNOTAZIONI (Istruttore)-->
       <ion-row *ngIf="selectedView == 2">

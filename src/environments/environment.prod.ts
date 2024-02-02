@@ -9,9 +9,7 @@ export const environment = {
   production: true,
   appSignature: packageJson.appSignature,
   version: packageJson.version,
-  advertisingTestMode: packageJson.advertisingTestMode,
-  advertisingPersonalized: packageJson.advertisingPersonalized,
-  releaseDate: '2023-10-14',
+  releaseDate: '2024-02-02',
   options: {
     debugMode: 'full' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
@@ -27,72 +25,28 @@ export const environment = {
       openbeach: {
         name: 'openbeach',
         appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
-        urlId: 'openbeach.gouego.com',
-        admob: {
-          ios: {
-            enable: true,
-            appId: 'ca-app-pub-8830190853167330~3634380910',
-            bannerId: ['ca-app-pub-8830190853167330/5268431757']
-          },
-          md: {
-            enable: true,
-            appId: 'ca-app-pub-8830190853167330~6657249636',
-            bannerId: ['ca-app-pub-8830190853167330/4665796524']
-          }
-        }        
-      },
-      demo: {
-        name: 'demo',
-        appId: '00F15A91-5395-445C-B7F4-5BA594E55D2F',
-        urlId: 'demo.gouego.com',
-        admob: {
-          ios: {
-            enable: false,
-            appId: '',
-            bannerId: []
-          },
-          md: {
-            enable: false,
-            appId: '',
-            bannerId: []  
-          }          
-        }         
+        urlId: 'openbeach.gouego.com',       
       },
       beachforfun: {
         name: 'beachforfun',
         appId: 'E9682AA1-9E85-4D20-8A86-1A7FDBABF9A8',
-        urlId: 'b4fnovara.gouego.com',
-        admob: {
-          ios: {
-            enable: true,
-            appId: 'ca-app-pub-8830190853167330~3997396892',
-            bannerId: ['ca-app-pub-8830190853167330/9728521131']
-          },
-          md: {
-            enable: true,
-            appId: 'ca-app-pub-8830190853167330~9873621671',
-            bannerId: ['ca-app-pub-8830190853167330/6876757393']  
-          }
-        }        
+        urlId: 'b4fnovara.gouego.com',    
       },
+      progettorieduca: {
+        name: 'progettorieduca',
+        appId: '',
+        urlId: 'progettorieduca.gouego.com',    
+      },      
       beachfuture: {
         name: 'beachfuture',
         appId: '240CFBD7-0C9F-4CE1-8996-0513EC7BBDE2',
-        urlId: 'beachfuture.gouego.com',
-        admob: {
-          ios: {
-            enable: false,
-            appId: '',
-            bannerId: []
-          },
-          md: {
-            enable: false,
-            appId: '',
-            bannerId: []  
-          }
-        }        
+        urlId: 'beachfuture.gouego.com',       
       },      
-
+      demo: {
+        name: 'demo',
+        appId: '00F15A91-5395-445C-B7F4-5BA594E55D2F',
+        urlId: 'demo.gouego.com',       
+      },
     },
     urlLocation: {
       local: {

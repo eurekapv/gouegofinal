@@ -34,7 +34,7 @@ export const environment = {
       },
       progettorieduca: {
         name: 'progettorieduca',
-        appId: '',
+        appId: '130204BF-C4E7-4CF9-8101-C3B36E184D4B',
         urlId: 'progettorieduca.gouego.com',    
       },      
       beachfuture: {

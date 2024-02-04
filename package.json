@@ -23,7 +23,9 @@
     "update-ios": "sudo ionic build --prod --aot --outputHashing=all && sudo npx cap sync ios && npx cap open ios",
     "live-android": "ionic build --prod --aot --outputHashing=all && ionic cap run android --livereload --external",
     "live-ios": "ionic build --prod --aot --outputHashing=all && ionic cap run ios --livereload --external",
-    "dev-android": "chrome://inspect"
+    "dev-android": "chrome://inspect",
+    "new-android": "npx cap add android",
+    "new-ios": "npx cap add ios"
   },
   "private": true,
   "dependencies": {

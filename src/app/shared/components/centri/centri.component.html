@@ -1,5 +1,6 @@
 <ion-card
-      [class]="_centerCard? 'center' : ''"
+
+      [class]="_cardClass"
       mode="ios" 
       button="true"
       (click)="onClickLocation($event); $event.stopPropagation();">
@@ -46,7 +47,7 @@
         >
       <ion-icon slot="start" name="calendar-outline"></ion-icon>
       <ion-label class="ion-text-wrap">
-        <h4>Prenotare un campo</h4>
+        <h3 class="ion-text-bold ion-text-danger large">Prenotare un campo</h3>
         <p *ngIf="_showLabelButton">controlla la disponibilità nella struttura</p>
       </ion-label>
     </ion-item>
@@ -60,8 +61,8 @@
       >
       <ion-icon slot="start" name="school-outline"></ion-icon>
       <ion-label class="ion-text-wrap">
-        <h4>Iscrivermi a un corso</h4>
-        <p *ngIf="_showLabelButton">trova il corso a te dedicato</p>
+        <h4>Iscrivermi ad un corso</h4>
+        <p *ngIf="_showLabelButton">corso di durata mensile/trimestrale etc.</p>
       </ion-label>
     </ion-item>
 
@@ -74,8 +75,8 @@
       >
       <ion-icon slot="start" name="ticket-outline"></ion-icon>
       <ion-label class="ion-text-wrap">
-        <h4>Lezioni singole</h4>
-        <p *ngIf="_showLabelButton">iscriviti a una lezione singole</p>
+        <h4>Iscrivermi ad una lezione</h4>
+        <p *ngIf="_showLabelButton">lezione singola di durata oraria; l'iscrizione &egrave; subordinata all'acquisto di un pacchetto ore presente nello Shop.</p>        
       </ion-label>
     </ion-item>    
 

@@ -22,6 +22,7 @@ export class CentriComponent implements OnInit {
   _locationDoc: Location = new Location();
   _areaDoc: Area = new Area();
   _centerCard: boolean = false;
+  _cardClass: string = "ion-margin-vertical"; 
 
   //Questo è un valore calcolato per sapere
   //se devo mostrare i button
@@ -73,6 +74,10 @@ export class CentriComponent implements OnInit {
   //Centratura della Card
   @Input() set centerCard(value:boolean) {
     this._centerCard = value;
+
+    if (value) {
+      this._cardClass = 'centerCard' + ' ' + 'ion-margin-vertical';
+    }
   }
 
   @Input() set myStartConfig(value: StartConfiguration) {
@@ -85,7 +90,9 @@ export class CentriComponent implements OnInit {
     this.setFlagButtonVisibility();
   }
 
-
+  @Input() set showLabelButton(value: boolean) {
+    this._showLabelButton = value;
+  }
   //#endregion
 
   @Output() clickPrenota = new EventEmitter<Location>();

@@ -70,6 +70,7 @@
                         <ion-row
                               class="ion-justify-content-center">
                           <ion-col 
+                              class="ion-no-padding"
                               [sizeXs]="getValueIonColSize('xs')" 
                               [sizeSm]="getValueIonColSize('sm')" 
                               [sizeMd]="getValueIonColSize('md')"
@@ -81,6 +82,7 @@
                                   [area]="selectedArea"
                                   [location]="locationItem"
                                   [showActionButton]="true"
+                                  [showLabelButton]="false"
                                   (clickPrenota)="onClickPrenota($event)"
                                   (clickCorsiAnnuali)="onClickCorsiPeriodi($event)"
                                   (clickLezioniGiornata)="onClickCorsiGiornata($event)"

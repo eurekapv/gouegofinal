@@ -14,7 +14,7 @@ import { ImageModalPage } from '../../image-modal/image-modal.page';
 import SwiperCore, { Pagination  } from 'swiper';
 import { Area } from 'src/app/models/struttura/area.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
-import { Gruppo } from 'src/app/models/struttura/gruppo.model';
+
 
 SwiperCore.use([Pagination]);
 

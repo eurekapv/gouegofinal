@@ -79,8 +79,8 @@ export class ButtonCard {
             if (areaDoc.APPSHOWCORSIPERIODI == true) {
                 let newBtn: ButtonCard;
                 newBtn = new ButtonCard();
-                newBtn.title = 'Corsi a periodo';
-                newBtn.subtitle = 'corsi a frequenza annuale/semestrale/trimestrale';
+                newBtn.title = 'Corso a periodo';
+                newBtn.subtitle = 'corsi di durata mensile/trimestrale etc';
                 newBtn.nameicon = 'school-outline';
                 newBtn.sloticon = "start";
                 newBtn.color = "primary";
@@ -93,8 +93,8 @@ export class ButtonCard {
             if (areaDoc.APPSHOWCORSIGIORNATA == true) {
                 let newBtn: ButtonCard;
                 newBtn = new ButtonCard();
-                newBtn.title = 'Lezioni Orarie';
-                newBtn.subtitle = 'lezioni con frequenza orarie';
+                newBtn.title = 'Lezione Singola';
+                newBtn.subtitle = 'lezioni singole di durata oraria';
                 newBtn.nameicon = 'ticket-outline';
                 newBtn.sloticon = "start";
                 newBtn.color = "primary";

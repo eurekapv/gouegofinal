@@ -8,17 +8,10 @@ ion-card-header {
 }
 
 ion-card {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
 
-    &.center{
-        margin: auto;
-        margin-top: 10px;
-        margin-bottom: 10px;
-
-    }
-
-    width: max-content;
-    max-width: 300px;
-    min-width: 300px;
 
     img {
         min-width: 100%;
@@ -31,6 +24,10 @@ ion-card {
         font-size: 18px;
     }
 
+    h3.large {
+        font-size: large;
+    }
+
     .container-middle-action {
         background-color: rgb(236, 235, 235);
         padding-bottom: 0px;
@@ -38,5 +35,11 @@ ion-card {
 
 }
 
-
+@media screen and (min-aspect-ratio: 5/4) {
+    ion-card {
+        width: 100%;
+        margin-left: 16px;
+        margin-right: 16px;       
+    }
+}
 

@@ -1,3 +1,5 @@
+Emulatore Android: Processo qemu-... da killare se in errore
+
 Sono presenti Plugin Qui => https://github.com/capawesome-team
 
 ## Aggiornameno a Ionic 7

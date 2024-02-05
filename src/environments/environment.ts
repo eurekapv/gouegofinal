@@ -18,9 +18,9 @@ export const environment = {
     alchimistilab: 'https://www.alchimistilab.it'
   },
   connection: {
-    mode: ConnectionMode.local,
+    mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'demo',
+    activeId: 'progettorieduca',
     customer: {
       openbeach: {
         name: 'openbeach',
@@ -29,7 +29,7 @@ export const environment = {
       },
       progettorieduca: {
         name: 'progettorieduca',
-        appId: '',
+        appId: '130204BF-C4E7-4CF9-8101-C3B36E184D4B',
         urlId: 'progettorieduca.gouego.com',    
       },        
       beachforfun: {

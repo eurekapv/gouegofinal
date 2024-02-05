@@ -1,3 +1,7 @@
+## Creare Screenshot IOS
+https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications/
+
+
 # Nomi Bundle appId
 ### Il file capacitor.config.json sembra venga letto solo prima della operazione di npx cap add android/ios.
 ### E' comunque meglio modificare il file alla voce appId, sempre prima di ogni operazione a seconda della società e del dispositivo su cui avviene.

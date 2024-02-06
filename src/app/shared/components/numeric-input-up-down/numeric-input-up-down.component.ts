@@ -22,7 +22,6 @@ export class NumericInputUpDownComponent implements OnInit {
    */
   @Input() set displayNumber(numero: number) {
     this.valueDisplay = numero;
-    console.log(this.valueDisplay)
   }
 
   /**

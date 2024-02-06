@@ -162,8 +162,6 @@ export class UserLoginAuthorizationPage implements OnInit, OnDestroy {
       let userpassword = this.formPagePrimary.value.profilePassword;
       let flagSave: boolean = this.formPagePrimary.value.profileSaving;
 
-      console.log(`Il flag è ${flagSave ? 'true':'false'}`)
-
       //Preparo il Loading
       this.loadingController.create({
         message: 'Controllo credenziali'

@@ -587,7 +587,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
       else {
         //Cambio il Planning attuale visualizzato
         this.actualPlanning = this.actualSlotDay.changeSelectionSlotTime(slotClicked);
-        console.log(this.actualPlanning);
       }
       
     }

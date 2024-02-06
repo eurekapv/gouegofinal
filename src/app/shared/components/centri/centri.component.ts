@@ -110,10 +110,6 @@ export class CentriComponent implements OnInit {
    */
   setFlagButtonVisibility(): void {  
 
-    console.log('Qui');
-    console.log(this._areaDoc);
-    console.log(this._locationDoc);
-
     if (this._locationDoc && this._areaDoc) {
       this._prenotaButtonVisible = (this._locationDoc.ENABLEPRENOTAZIONI == true && this._areaDoc.APPPRENOTAZIONI == true);
       this._corsiPeriodoButtonVisible = this._areaDoc.APPSHOWCORSIPERIODI;

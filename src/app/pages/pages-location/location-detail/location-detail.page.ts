@@ -243,7 +243,7 @@ export class LocationDetailPage implements OnInit, OnDestroy {
       case TypeUrlPageLocation.DailyCourseList:
           // Lista dei Corsi
           arPath = this.startService.getUrlPageLocation(TypeUrlPageLocation.DailyCourseList, this.selectedLocation.ID);
-          console.log(arPath);
+
           this.navController.navigateForward(arPath);
         break;        
     

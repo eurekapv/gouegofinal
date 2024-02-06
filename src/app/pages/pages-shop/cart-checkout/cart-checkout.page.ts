@@ -132,7 +132,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
       
       this.subListenCarrello = this.startService.activeCart$.subscribe({
         next: (dataCarrello) => {
-            console.log(dataCarrello);
+            
             if (dataCarrello) {
               //Mi tengo il carrello per mostrare nella pagina
               this.carrelloDoc = dataCarrello;
@@ -227,7 +227,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
       this.myListPayment = this.docArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoShop);
       //Seleziono un metodo di pagamento
       this.mySelectedPayment = (this.myListPayment && this.myListPayment.length != 0 ? this.myListPayment[0]: null);      
-      console.log(this.myListPayment);
+
       resolve();
     })
 

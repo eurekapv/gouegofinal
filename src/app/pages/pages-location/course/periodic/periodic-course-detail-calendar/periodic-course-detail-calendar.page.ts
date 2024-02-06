@@ -53,7 +53,6 @@ export class PeriodicCourseDetailCalendarPage implements OnInit {
         elLoading.dismiss();
 
         this.calendarCorso = listCalendar;
-        console.log(listCalendar)
         
       })
       .catch(error => {

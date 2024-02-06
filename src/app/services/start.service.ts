@@ -378,7 +378,7 @@ export class StartService {
       let activeId = '';
   
       //Unico console log da mantenere
-      console.log(`App Version ${environment.version} deployed ${environment.releaseDate}`);
+      LogApp.consoleLog(`App Version ${environment.version} deployed ${environment.releaseDate}`);
   
       //Modalità Web
       if (this.isOnBrowser) {

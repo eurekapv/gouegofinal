@@ -30,8 +30,7 @@ export class LogApp {
 
         if (showDebug) {
             switch (type) {
-                case 'log':
-                    console.log(data);
+                case 'log':                    
                     if (traceOn) {
                         console.trace();
                     }                    

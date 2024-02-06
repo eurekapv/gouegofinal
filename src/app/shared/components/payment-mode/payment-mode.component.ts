@@ -13,7 +13,6 @@ export class PaymentModeComponent implements OnInit {
   _arPayment: AreaPaymentSetting[] = [];
   @Input() set arPayment(value: AreaPaymentSetting[]) {
     if (value) {
-      console.log(value);
       this._arPayment = value;
       this._arPaymentModeList = AreaPaymentSetting.prepareArPaymentMode(this._arPayment);
       this.chooseStartPayment();

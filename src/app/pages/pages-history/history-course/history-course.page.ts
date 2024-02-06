@@ -394,7 +394,7 @@ export class HistoryCoursePage implements OnInit {
     return new Promise<PianificazioneCorso>((resolve, reject) => {
 
         if (iscrizioneDoc) {
-          console.log(iscrizioneDoc)
+
 
           if (iscrizioneDoc.MODALITAISCRIZIONE == ModalitaIscrizione.ModalitaAGiornata) {
             //Imposto che è una lezione singola

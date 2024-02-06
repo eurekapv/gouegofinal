@@ -53,8 +53,6 @@ export class ButtonCard {
 
         let arButton: ButtonCard[] = [];
         
-        console.log('Fermati qua')
-        console.log(areaDoc)
         if (locationDoc && areaDoc) {
             
             //Nella location posso prenotare

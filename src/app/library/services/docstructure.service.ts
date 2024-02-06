@@ -164,8 +164,6 @@ export class DocstructureService {
             //Decodifico le collection del documento
             this.decodeChildCollections(doc,useCache, decodeThisCollectionName)
                 .then(() => {
-                  console.log('Decodifica conclusa')
-                  console.log(doc);
   
                   resolve();
                 })

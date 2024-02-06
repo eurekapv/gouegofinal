@@ -123,7 +123,6 @@ onRequestData(event?: any) {
 
                         //Chiudo il Loading
                         elLoading.dismiss();
-                        console.log(this.articoloDoc)
                       })
                       .catch(error => {
 
@@ -156,9 +155,7 @@ setListImagePath(): void {
 
         this.articoloDoc.ARTICOLIIMAGES.forEach(elImage => {
           this.listImagePath.push(elImage.FILENAMEESTENSIONE);
-        })
-
-        console.log(this.listImagePath);
+        });
       }
 }
 

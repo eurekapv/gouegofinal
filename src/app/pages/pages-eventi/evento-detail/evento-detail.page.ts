@@ -112,7 +112,6 @@ export class EventoDetailPage implements OnInit, OnDestroy {
                         .then(() => {
                           //Chiudo il Loading
                           elLoading.dismiss();
-                          console.log(this.eventoDoc)
                         })
                         .catch(error => {
                           elLoading.dismiss();

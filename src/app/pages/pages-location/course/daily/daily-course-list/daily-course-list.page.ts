@@ -406,7 +406,7 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
     this.subListGroupedCorsi = this.startService.listGroupedCorsiGiornalieriPM$
                                                         .subscribe(dataList => {
                                                           this.listGroupedCorsi = dataList;
-                                                          console.log(this.listGroupedCorsi);
+
                                                           //Gestione del IonInifiteScroll
                                                           if (this.eventIonInfinit && this.eventIonInfinit.target) {
                                                             this.eventIonInfinit.target.complete();

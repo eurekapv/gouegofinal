@@ -531,7 +531,7 @@ export class UtenteService {
                                   if (dataReceived && dataReceived.hasOwnProperty('UTENTE')) {
                                     listUtenti = this.docStructureService.castCollection(dataReceived['UTENTE'], new Utente(true));
                                   }
-                                  console.log(listUtenti)
+
                                   resolve(listUtenti);
 
                                 })

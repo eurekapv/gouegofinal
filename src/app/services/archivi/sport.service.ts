@@ -194,7 +194,6 @@ export class SportService {
                                 resultList = this.docStructureSrv.castCollection(responseObj['SPORT'], docToCall);
 
                               }
-                              console.log(resultList)
                               resolve(resultList);
                             })
                             .catch(error => {

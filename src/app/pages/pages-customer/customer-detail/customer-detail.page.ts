@@ -148,7 +148,6 @@ export class CustomerDetailPage implements OnInit, OnDestroy {
 
                               //Questa è la collection Tesseramenti
                               this.listTesseramenti = elListTesseramenti;
-                              console.log(this.listTesseramenti);
 
                               //Richiedo l'elenco delle Tipologie Tessere
                               return this.startService.requestListTipoTessere();

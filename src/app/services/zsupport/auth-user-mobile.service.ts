@@ -47,7 +47,6 @@ export class AuthUserMobileService {
 
             this.docStructureService.requestForFunction(docToCall, method, bodyRequest)
                                     .then(dataResult => {
-                                      console.log(dataResult);
                                       resolve(dataResult);
                                     })
                                     .catch(error => {

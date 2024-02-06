@@ -393,7 +393,7 @@ prepareDocIscrizione(myCorso: Corso,
       this.startService.onRequestIscrizioneDocFor(this.iscrizioneDoc)
                        .then(elIscrizione => {
                           this.iscrizioneDoc = elIscrizione;
-                          console.log(elIscrizione);
+
                           resolve();
                        })
                        .catch(error => {

@@ -204,8 +204,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
    * un FontSize xx-large
    */
   onChangeSegmentModoIncasso() {
-
-    console.log('Qua');
+    
     if (this.modeIncasso == 'parziale') {
 
       setTimeout(()=> {
@@ -286,9 +285,7 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
                               return this.additionalLoading();
                            })
                            .then(() => {
-                            console.log(this.prenotazioneDoc);
-                            console.log(this.pianificazioneDoc);
-
+                            
                             //Creo di aver fatto tutti i caricamenti richiesti
                             resolve();
                            })
@@ -634,8 +631,6 @@ export class AgendaCustodeDetailsPage implements OnInit, OnDestroy {
                                               return elPianificazione.ID == this.idImpegnoCustode
                                             });
 
-                                            console.log(this.pianificazioneDoc);
-                                            console.log(this.prenotazioneDoc);
 
                                             this.startService.presentToastMessage('Ricalcolo effettuato');
                                           

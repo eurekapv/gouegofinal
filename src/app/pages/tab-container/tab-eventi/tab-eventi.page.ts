@@ -155,7 +155,6 @@ export class TabEventiPage implements OnInit, OnDestroy {
     //Richiesta delle News
     this.startService.requestListNews(idArea, this.numRequestNews)
         .then(listNews => {
-          console.log(listNews);
             this.listNews = listNews;
             this.afterRefresh(eventoRefresher);
         })

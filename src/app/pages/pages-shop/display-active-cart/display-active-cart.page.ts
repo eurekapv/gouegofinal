@@ -93,7 +93,7 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
       
       this.subListenCarrello = this.startService.activeCart$.subscribe({
         next: (dataCarrello) => {
-            console.log(dataCarrello);
+
             if (dataCarrello) {
               //Mi tengo il carrello per mostrare nella pagina
               this.carrelloDoc = dataCarrello;
@@ -171,7 +171,7 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
     * @param sampleRow 
     */
    onChangeQuantity(sampleRow: DetailCarrello) {
-      console.log(sampleRow);
+
       if (sampleRow && sampleRow.QUANTITA != 0) {
         this.startService.shopUpdateQuantityRowCart(sampleRow.ID, sampleRow.QUANTITA);
       }

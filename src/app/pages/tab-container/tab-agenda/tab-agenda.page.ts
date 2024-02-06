@@ -571,7 +571,6 @@ export class TabAgendaPage implements OnInit, OnDestroy {
       //Impegno presente
       this.nextImpegnoCard = this.nextImpegno.asButtonCard();
       this.noImpegnoCard = null;
-      console.log(this.nextImpegnoCard);
     }
     else {
       this.nextImpegnoCard = null;

@@ -332,7 +332,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
       //Valore Email Modificato
       this.formPagePrimary.get('profileEmail').valueChanges.subscribe({
         next: (value: string) => {
-          console.log(value);
+          
           //Modificato il campo EMAIL
           this.onChangeFlagShowMailCode(false, value);
         }
@@ -341,7 +341,7 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
       //Valore Mobile Modificato
       this.formPagePrimary.get('profileMobile').valueChanges.subscribe({
         next: (value: string) => {
-          console.log(value);
+          
           //Modificato il campo Mobile, passo il valore del campo
           this.onChangeFlagShowSmsCode(false, value);
         }
@@ -406,8 +406,6 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
     let valueCompare = '';
 
     valueCompare = useFormValue ? this.formPagePrimary.value.profileMobile : alternativeText;
-
-    console.log(this.formPagePrimary.value.profileMobile)
     
     //Qui mi dice che per impostazione dovrei avere un NUMERO MOBILE VERIFICATO
     let toVerify = this.registrationModeCheckFor('mobile');
@@ -740,7 +738,6 @@ export class UserDataVerificationPage implements OnInit, OnDestroy {
         
         if (control.valid == false && control.status != 'DISABLED') {
           
-          console.log(control)
           flagValidation = false;
           //Questo Elemento non è valido
           //Lo Marchio come toccato

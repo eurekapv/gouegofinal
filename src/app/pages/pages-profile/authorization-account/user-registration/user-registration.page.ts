@@ -135,10 +135,9 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
     //Recupero il Gruppo di riferimento
     this.gruppoDoc = this.startService.actualStartConfig?.gruppo;
 
-    console.log(this.gruppoDoc)
+    
 
-    if (this.gruppoDoc.APPTIPOVERIFICA == TipoVerificaAccount.verificaemail || 
-        this.gruppoDoc.APPTIPOVERIFICA == TipoVerificaAccount.noverifica) {
+    if (this.gruppoDoc.APPTIPOVERIFICA == TipoVerificaAccount.verificaemail ) {
           this.registrationMode = 'mail';
 
     }
@@ -151,11 +150,6 @@ export class UserRegistrationPage implements OnInit, OnDestroy {
     else {
       this.registrationMode = 'none';
     }
-
-    console.log(this.gruppoDoc)
-    console.log(this.registrationMode)
-    
-
 
   }  
 

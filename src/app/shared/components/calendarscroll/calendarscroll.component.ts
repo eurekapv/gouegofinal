@@ -164,12 +164,14 @@ export class CalendarscrollComponent implements OnInit {
 
     let dtFineMese: Date; 
 
+    dtFineMese = MyDateTime.getStartEndDate(this._activeDay, "month", "end");
+
     //Imposto il 1 / Mese / Anno
-    dtFineMese = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), 1);
+    //dtFineMese = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), 1);
     //Aggiungo 1 mese 
-    dtFineMese = MyDateTime.calcola(dtFineMese, 1, TypePeriod.months);
+    //dtFineMese = MyDateTime.calcola(dtFineMese, 1, TypePeriod.months);
     //Sottraggo 1 Giorno per andare alla fine Mese precedente
-    dtFineMese = MyDateTime.calcola(dtFineMese, -1, TypePeriod.days);
+    //dtFineMese = MyDateTime.calcola(dtFineMese, -1, TypePeriod.days);
 
     //Numero di giorni del mese
     totMonthDays = dtFineMese.getDate();
@@ -183,7 +185,6 @@ export class CalendarscrollComponent implements OnInit {
     for (let index = 1; index < totMonthDays; index++) {
 
       let myDt = new Date(this._activeDay.getFullYear(), this._activeDay.getMonth(), index);
-      //Aggiungo all'array delle giornate
       this.listDay.push({type:'day', 
                          dateValue: myDt, 
                          numValue: index});

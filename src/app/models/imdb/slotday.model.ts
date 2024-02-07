@@ -270,7 +270,7 @@ export class SlotDay {
                         if (elSlot.END.getHours() == 0 && elSlot.END.getMinutes() == 0) {
                             docPianificazione.DATAORAFINE = MyDateTime.calcola(elSlot.END, 1, TypePeriod.days);
                         }
-
+ 
                         docPianificazione.DURATAORE = MyDateTime.durataOre(docPianificazione.DATAORAINIZIO, docPianificazione.DATAORAFINE);
                     }
                     else {

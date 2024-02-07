@@ -20,7 +20,7 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'progettorieduca',
+    activeId: 'beachforfun',
     customer: {
       openbeach: {
         name: 'openbeach',

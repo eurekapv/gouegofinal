@@ -81,112 +81,126 @@
                     </ion-col>
                   </ion-row>
 
-                  <ion-row class="ion-padding-vertical">
+                  <!-- Non acquistabile -->
+                  <ion-row *ngIf="articoloDoc && !articoloDoc.FLAGSHOPACQUISTABILE">
                     <ion-col>
-                      <ion-button 
-                          (click)="onAddToCart()"
-                          color="success" expand="block">
-                        Aggiungi al carrello
-                      </ion-button>
+                      <ion-note>
+                        <ion-text>Per l'acquisto &egrave; necessario recarsi presso il centro. </ion-text>
+                        <ion-text color="danger">L'acquisto online non &egrave; disponibile</ion-text>
+                      </ion-note>
                     </ion-col>
-                  </ion-row>    
+                  </ion-row>
+
                   
-                  <ion-row *ngIf="selectedColor || selectedTaglia">
+                  <div *ngIf="articoloDoc && articoloDoc.FLAGSHOPACQUISTABILE">
 
-                    <ion-col *ngIf="selectedColor">
-                      <ion-item>
-                        <ion-label>
-                          <h2>{{selectedColor.DESCRIZIONE}}</h2>
-                          <p class="ion-text-italic">(colore)</p>
-                        </ion-label>
-                      </ion-item>
-                    </ion-col>
+                    <ion-row class="ion-padding-vertical">
+                      <ion-col>
+                        <ion-button 
+                            (click)="onAddToCart()"
+                            color="success" expand="block">
+                          Aggiungi al carrello
+                        </ion-button>
+                      </ion-col>
+                    </ion-row>    
 
-                    <ion-col *ngIf="selectedTaglia">
-                      <ion-item>
-                        <ion-label>
-                          <h2>{{selectedTaglia.DESCRIZIONE}}</h2>
-                          <p class="ion-text-italic">(taglia)</p>
-                        </ion-label>
-                      </ion-item>
-                    </ion-col>     
-
-                  </ion-row>
-
-                  <!-- VARIAZIONI TAGLIE E COLORI -->
-                  <ion-row *ngIf="enableTaglie || enableColori">
-                    <ion-col>
-                      <div class="variation">
-                        <ion-segment 
-                            mode="md"
-                            (ionChange)="segmentChanged($event)" 
-                            value="size">
-                          <ion-segment-button 
-                                *ngIf="enableTaglie"
-                                value="size">
-                            <ion-label>Scelta Taglia</ion-label>
-                          </ion-segment-button>
-                          <ion-segment-button 
-                                *ngIf="enableColori"
-                                value="color">
-                            <ion-label>Scelta Colore</ion-label>
-                          </ion-segment-button>
-                        </ion-segment>
-                      </div>                      
-                    </ion-col>
-                  </ion-row>
-
-                  <!-- VARIATORE TAGLIA -->
-                  <ion-row *ngIf="enableTaglie && activeVariation == 'size'">
-                    <ion-col>
-                      <div class="variation-selector">
-                        <div class="sizes" [class.active-variation]="activeVariation == 'size'">
-
-                          <ion-grid>
-                            <ion-row >
-                              <ion-col
-                                  *ngFor="let item of articoloDoc.ARTICOLITAGLIEMISURE" 
-                                  size="4">
-                                  <div 
-                                    (click)="changeSize(item)"
-                                    [class.active]="selectedTaglia && selectedTaglia.ID == item.ID"
-                                    >
-                                    {{item.DESCRIZIONE}}
-                                </div>
-                              </ion-col>
-                            </ion-row>
-                          </ion-grid>
-
-                        </div>
-                        </div>
-                    </ion-col>
-                  </ion-row>
-
-                  <!-- VARIATORE COLORE -->
-                  <ion-row *ngIf="enableColori && activeVariation == 'color'">
-                    <ion-col size="12">
-                      <div class="variation-selector">
-                        <div 
-                            class="colors" 
-                            [class.active-variation]="activeVariation == 'color'">
+                    <ion-row *ngIf="selectedColor || selectedTaglia">
+  
+                      <ion-col *ngIf="selectedColor">
+                        <ion-item>
+                          <ion-label>
+                            <h2>{{selectedColor.DESCRIZIONE}}</h2>
+                            <p class="ion-text-italic">(colore)</p>
+                          </ion-label>
+                        </ion-item>
+                      </ion-col>
+  
+                      <ion-col *ngIf="selectedTaglia">
+                        <ion-item>
+                          <ion-label>
+                            <h2>{{selectedTaglia.DESCRIZIONE}}</h2>
+                            <p class="ion-text-italic">(taglia)</p>
+                          </ion-label>
+                        </ion-item>
+                      </ion-col>     
+  
+                    </ion-row>
+  
+                    <!-- VARIAZIONI TAGLIE E COLORI -->
+                    <ion-row *ngIf="enableTaglie || enableColori">
+                      <ion-col>
+                        <div class="variation">
+                          <ion-segment 
+                              mode="md"
+                              (ionChange)="segmentChanged($event)" 
+                              value="size">
+                            <ion-segment-button 
+                                  *ngIf="enableTaglie"
+                                  value="size">
+                              <ion-label>Scelta Taglia</ion-label>
+                            </ion-segment-button>
+                            <ion-segment-button 
+                                  *ngIf="enableColori"
+                                  value="color">
+                              <ion-label>Scelta Colore</ion-label>
+                            </ion-segment-button>
+                          </ion-segment>
+                        </div>                      
+                      </ion-col>
+                    </ion-row>
+  
+                    <!-- VARIATORE TAGLIA -->
+                    <ion-row *ngIf="enableTaglie && activeVariation == 'size'">
+                      <ion-col>
+                        <div class="variation-selector">
+                          <div class="sizes" [class.active-variation]="activeVariation == 'size'">
+  
                             <ion-grid>
                               <ion-row >
                                 <ion-col
-                                    *ngFor="let item of articoloDoc.ARTICOLICOLORI" 
+                                    *ngFor="let item of articoloDoc.ARTICOLITAGLIEMISURE" 
                                     size="4">
                                     <div 
-                                      (click)="changeColor(item)"
-                                      [class.active]="selectedColor && selectedColor.ID == item.ID"
+                                      (click)="changeSize(item)"
+                                      [class.active]="selectedTaglia && selectedTaglia.ID == item.ID"
                                       >
                                       {{item.DESCRIZIONE}}
                                   </div>
                                 </ion-col>
                               </ion-row>
                             </ion-grid>
-                        </div>
-                        </div>
-                    </ion-col>
-                  </ion-row> 
+  
+                          </div>
+                          </div>
+                      </ion-col>
+                    </ion-row>
+  
+                    <!-- VARIATORE COLORE -->
+                    <ion-row *ngIf="enableColori && activeVariation == 'color'">
+                      <ion-col size="12">
+                        <div class="variation-selector">
+                          <div 
+                              class="colors" 
+                              [class.active-variation]="activeVariation == 'color'">
+                              <ion-grid>
+                                <ion-row >
+                                  <ion-col
+                                      *ngFor="let item of articoloDoc.ARTICOLICOLORI" 
+                                      size="4">
+                                      <div 
+                                        (click)="changeColor(item)"
+                                        [class.active]="selectedColor && selectedColor.ID == item.ID"
+                                        >
+                                        {{item.DESCRIZIONE}}
+                                    </div>
+                                  </ion-col>
+                                </ion-row>
+                              </ion-grid>
+                          </div>
+                          </div>
+                      </ion-col>
+                    </ion-row> 
+                  </div>
                   
                   <!-- SPAZIATURA FINALE -->
                   <ion-row class="separator-final">

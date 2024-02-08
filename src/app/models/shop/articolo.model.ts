@@ -24,6 +24,7 @@ export class Articolo extends IDDocument{
     FLAGTAGLIEMISURE: boolean;
     FLAGCOLORI: boolean;
     FLAGSHOPONLINE: boolean;
+    FLAGSHOPACQUISTABILE: boolean;
     IDVALUTA: string;
     TOTMINUTI: number;
     ARTICOLITAGLIEMISURE: ArticoloTaglieMisura[];
@@ -62,7 +63,7 @@ export class Articolo extends IDDocument{
             'DESCRADDITIONAL'
         ];
         let arNumber = ['PREZZONETTO', 'PREZZOLORDO', 'TIPOARTICOLO', 'TIPOPREZZO','QUANTITAMAGAZZINO'];
-        let arBoolean = ['FLAGTAGLIEMISURE', 'FLAGCOLORI', 'FLAGSHOPONLINE','GESTIONESCORTE'];
+        let arBoolean = ['FLAGTAGLIEMISURE', 'FLAGCOLORI', 'FLAGSHOPONLINE','GESTIONESCORTE', 'FLAGSHOPACQUISTABILE'];
         let arDate = [];
         let arDateTime =['VALIDOFINO'];
         let arTime = [];

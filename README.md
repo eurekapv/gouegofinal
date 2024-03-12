@@ -1,5 +1,12 @@
 Emulatore Android: Processo qemu-... da killare se in errore
 
+## Errore pod install
+Se pod install non riesce a proseguire con root user
+entrare nella cartella application_build/Società/ios
+Digitare sudo chown -R pietrocavallini . (anche il punto alla fine)
+Adesso l'operazione npx cap sync ios dovrebbe funzionare
+
+
 Sono presenti Plugin Qui => https://github.com/capawesome-team
 
 ## Aggiornameno a Ionic 7

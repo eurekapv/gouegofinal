@@ -14,7 +14,14 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "buildprod": "ionic build --prod --aot --outputHashing=all",
+
     "iosbuildprod": "sudo ionic build --prod --aot --outputHashing=all",
+    "syncios": "sudo npx cap sync ios",
+    "onerrorsyncbeachforfun": "cd application_build/beachforfun/ios/App && pod install --allow-root",
+    "onerrorsyncopenbeach": "cd application_build/openbeach/ios/App/App && pod install --allow-root",
+    "onerrorsyncoprogettorieduca": "cd application_build/progettorieduca/ios/App/App && pod install --allow-root",
+    "copyios": "npx cap copy ios",
+    
     "toAndroid": "npx cap sync android",
     "toIos": "npx cap sync ios",
     "opAndroid": "npx cap open android",
@@ -25,7 +32,8 @@
     "live-ios": "ionic build --prod --aot --outputHashing=all && ionic cap run ios --livereload --external",
     "dev-android": "chrome://inspect",
     "new-android": "npx cap add android",
-    "new-ios": "npx cap add ios"
+    "new-ios": "npx cap add ios",
+    "setownerpietro": "sudo chown -R pietrocavallini ."
   },
   "private": true,
   "dependencies": {

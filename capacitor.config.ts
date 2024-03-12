@@ -3,9 +3,9 @@ import { CapacitorConfig } from '@capacitor/cli';
 //#region OPENBEACH
 //Attenzione che appId è diverso per Android -> com.gouego e IOS -> com.gouego.openbeach
 //Credo sia utile solo la prima volta
-/*
+
 const config: CapacitorConfig = {
-    "appId": "com.gouego",
+    "appId": "com.gouego.openbeach",
     "appName": "Open Beach",
     "webDir": "www",
     "backgroundColor": "#ffffffff",
@@ -50,11 +50,11 @@ const config: CapacitorConfig = {
       }
     }
 };
-*/
+
 //#endregion
 
 //#region B4FNOVARA
-
+/*
 const config: CapacitorConfig = {
   "appId": "com.b4fnovara",
   "appName": "Beach For Fun",
@@ -101,7 +101,7 @@ const config: CapacitorConfig = {
     }
   }
 };
-
+*/
 //#endregion
 
 

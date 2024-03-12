@@ -60,7 +60,7 @@
                         {{articoloDoc.DESCRADDITIONAL}}
                       </p>
 
-                      <h4 class="price ion-text-right">
+                      <h4 class="price ion-text-right" *ngIf="articoloDoc.PREZZOLORDO != 0">
                         {{articoloDoc.PREZZOLORDO | currency: 'EUR'}}
                         <span class="real-price"></span> <!-- per mettere un prezzo da barrare -->
                       </h4>

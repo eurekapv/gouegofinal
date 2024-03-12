@@ -69,6 +69,10 @@ export class CentriComponent implements OnInit {
     this.setFlagButtonVisibility();
     //Imposto URL della cover
     this.setUrlCoverCard();
+
+
+    console.log(this._locationDoc.DENOMINAZIONE)
+    console.log(this._locationDoc)
   }
 
   //Centratura della Card

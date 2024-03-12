@@ -9,7 +9,7 @@ export const environment = {
   production: true,
   appSignature: packageJson.appSignature,
   version: packageJson.version,
-  releaseDate: '2024-02-02',
+  releaseDate: '2024-03-12',
   options: {
     debugMode: 'full' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)

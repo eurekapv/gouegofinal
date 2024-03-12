@@ -9,6 +9,7 @@ import { DailyCourseSubscribePageRoutingModule } from './daily-course-subscribe-
 import { DailyCourseSubscribePage } from './daily-course-subscribe.page';
 import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
+import { UserLoginAuthorizationPageModule } from 'src/app/pages/pages-profile/authorization-account/user-login-authorization/user-login-authorization.module';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { SharedComponentsModule } from 'src/app/shared/components/shared-compone
     IonicModule,
     DailyCourseSubscribePageRoutingModule,
     PipesModule,
-    SharedComponentsModule
+    SharedComponentsModule,
+    UserLoginAuthorizationPageModule
   ],
   declarations: [DailyCourseSubscribePage]
 })

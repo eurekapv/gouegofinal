@@ -138,7 +138,9 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
       }
 
       //Controlla se è nel futuro
-      this.flagFuture = MyDateTime.isAfter(new Date(), this._corsoDoc.DATAORAINIZIO);
+      this.flagFuture = MyDateTime.isAfter(this._corsoDoc.DATA, new Date());
+      console.log(this.flagFuture ? 'Corso nel futuro' : 'Corso nel passato');
+      console.log(this._corsoDoc);
 
       if (this._areaDoc) {
 
@@ -291,6 +293,26 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
                           } 
                         })
   }
+
+  /**
+   * Devo portare l'utente alla modale di Login
+   */
+  onGotoLogin() {
+    this.modalController.dismiss()
+        .then(result => {
+              if (result) {
+                  this.startService.openFormLogin();
+              } 
+    })
+  }
+
+  /**
+   * Chiude la videata e va allo shop
+   */
+  onGotoShop() {
+    let urlPage = this.startService.getUrlPageBasic('shop');
+    this.closeModal(urlPage);
+  }
   
   //#endregion 
   
@@ -387,7 +409,7 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
   }  
   //#endregion
 
-  //#region 
+  //#region ISCRIVITI
   
   /**
    * Risposta al Click del Button Iscriviti

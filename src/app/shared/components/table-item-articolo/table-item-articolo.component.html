@@ -14,7 +14,7 @@
       *ngIf="_itemArticolo.DESCRADDITIONAL && _itemArticolo.DESCRADDITIONAL.length != 0">{{_itemArticolo.DESCRADDITIONAL}}</p>
   </ion-label>
   <ion-label 
-      slot="end">
+      slot="end" *ngIf="_itemArticolo.PREZZOLORDO != 0">
       {{_itemArticolo.PREZZOLORDO | currency : 'EUR'}}
   </ion-label>
 </ion-item>

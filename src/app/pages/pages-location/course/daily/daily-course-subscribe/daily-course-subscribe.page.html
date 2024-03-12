@@ -85,25 +85,25 @@
                     *ngIf="minutiValue != 0 && flagIscrizioneAttiva && !existIscrizione"
                     (click)="onClickIscriviti()" 
                     color="success"
-                    size="large"
+                    size="small"
                     expand="full">
                     ISCRIVITI
                   </ion-button>
 
                   <ion-button
-                    *ngIf="minutiValue == 0 || !flagIscrizioneAttiva && !existIscrizione"
+                    *ngIf="minutiValue == 0 || (!flagIscrizioneAttiva && !existIscrizione)"
                     color="danger"
-                    size="large"
+                    size="small"
                     expand="full">
-                    ISCRIZIONE NON ABILITATA
+                    {{(!flagIscrizioneAttiva && !existIscrizione) ? 'ISCRIZIONE NON ABILITATA' : 'PACCHETTO ORE ESAURITO'}}
                   </ion-button>                  
 
                   <ion-button
                     *ngIf="existIscrizione"
                     color="warning"
-                    size="large"
+                    size="small"
                     expand="full">
-                    ISCRITTO
+                    SEI GIA' ISCRITTO
                   </ion-button>
               </ion-col>
 
@@ -179,6 +179,7 @@
   
                     </ion-item-group>    
                   </ion-list>
+
                   <ion-note
                     *ngIf="existIscrizione"
                     color="medium" 
@@ -187,7 +188,7 @@
                   </ion-note>
                 </ion-col>
 
-                </ion-row>
+              </ion-row>
 
             <ion-row 
                 *ngIf="numPostiResidui != 0 && flagFuture"
@@ -196,7 +197,7 @@
                 <ion-note 
                     color="medium" 
                     class="ion-margin-horizontal">
-                  Per poter partecipare alla lezione &egrave; necessario aver un residuo positivo di pacchetti ore
+                  Per poter partecipare alla lezione &egrave; necessario aver un residuo positivo di <strong>PACCHETTI ORE</strong>
                 </ion-note>
               </ion-col>
             </ion-row>  
@@ -209,7 +210,7 @@
                     *ngIf="!flagUserLogged"
                     color="medium" 
                     class="ion-margin-horizontal">
-                    Accedere con le proprie credenziali, oppure registrarsi come utente per poter acquistare pacchetti ore ed iscriversi alla lezione
+                    Per poter acquistare pacchetti orari, ed iscriversi alla lezione, è necessario <strong>accedere o registrare un profilo utente</strong>
                 </ion-note>
 
                 <ion-note 
@@ -217,17 +218,50 @@
                     color="medium" 
                     class="ion-margin-horizontal">
                     Il tuo residuo disponibile è di <ion-text color="danger" class="ion-text-bold">{{minutiValue | labelNumeroOre: 'long':'minuti'}}</ion-text>
-                </ion-note>
-
-                <ion-note 
-                  *ngIf="flagUserLogged && minutiValue == 0"
-                  color="medium" 
-                  class="ion-margin-horizontal">
-                 Non hai disponibile <ion-text color="danger" class="ion-text-bold">nessuna ora</ion-text> per potersi iscrivere; effettua un nuovo acruisto per proseguire
-                </ion-note> 
-                               
+                </ion-note>                               
               </ion-col>
             </ion-row>  
+
+            <ion-row 
+              *ngIf="numPostiResidui != 0 && flagFuture && flagUserLogged && minutiValue == 0"
+              class="ion-margin-top">
+              <ion-col class="ion-text-center">
+                <ion-item
+                  (click)="onGotoShop()"
+                  [detail]="true"
+                  [button]="true"
+                  lines="none">
+                  <ion-thumbnail slot="start">
+                    <img alt="shop" src="assets/commercial/shopmobilelogo.png" />
+                  </ion-thumbnail>
+                  
+                    <ion-note 
+                      color="medium" 
+                      class="ion-margin-horizontal">
+                        <h6>
+                          Non hai disponibile <ion-text color="danger" class="ion-text-bold">nessuna ora</ion-text> per effettuare l'iscrizione alla lezione.
+                        </h6>
+                        <h5>
+                          Vai allo Shop ed effettua un acquisto
+                        </h5>
+                    </ion-note> 
+                  
+                </ion-item>      
+              </ion-col>
+            </ion-row>              
+
+            <!-- PULSANTE PER EFFETTUARE L'ACCESSO -->
+            <ion-row 
+              *ngIf="numPostiResidui != 0 && flagFuture && !flagUserLogged"
+              class="ion-margin-top">
+              <ion-col class="ion-text-center">
+                <ion-button 
+                  (click)="onGotoLogin()"
+                  expand="full"
+                  color="danger">Accedi o registrati</ion-button>                 
+              </ion-col>
+            </ion-row> 
+
 
             <ion-row
                 *ngIf="flagUserLogged && minutiValue != 0 && !flagIscrizioneAttiva"

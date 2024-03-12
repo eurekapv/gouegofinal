@@ -48,29 +48,30 @@ export class MyDateTime {
     }    
 
     /**
-     * Controlla se Date è superiore a dateCompare
-     * @param date Data Primaria
-     * @param dateCompare Data Comparativa
+     * Is the FirstDate After the Second Date ???
+     * @param firstDate Data Primaria
+     * @param secondDate Data Comparativa
      * @returns 
      */
-    static isAfter(date: number | Date, dateCompare: number | Date): boolean {
+    static isAfter(firstDate: number | Date, secondDate: number | Date): boolean {
         let flagResult = false;
 
-        flagResult = isAfter(date, dateCompare);
+        flagResult = isAfter(firstDate, secondDate);
 
         return flagResult;
     }    
 
     /**
-     * Controlla se Date è inferiore a dateCompare
-     * @param date Data Primaria
-     * @param dateCompare Data Comparativa
+     * Is FirstDate Before the secondDate ??
+     * @param firstDate Data Primaria
+     * @param secondDate Data Comparativa
+     * 
      * @returns 
      */
-    static isBefore(date: number | Date, dateCompare: number | Date): boolean {
+    static isBefore(firstDate: number | Date, secondDate: number | Date): boolean {
         let flagResult = false;
 
-        flagResult = isBefore(date, dateCompare);
+        flagResult = isBefore(firstDate, secondDate);
 
         return flagResult;
     }     

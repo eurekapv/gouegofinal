@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 //#region OPENBEACH
 //Attenzione che appId è diverso per Android -> com.gouego e IOS -> com.gouego.openbeach
 //Credo sia utile solo la prima volta
-/*
+
 const config: CapacitorConfig = {
     "appId": "com.gouego",
     "appName": "Open Beach",
@@ -50,7 +50,7 @@ const config: CapacitorConfig = {
       }
     }
 };
-*/
+
 //#endregion
 
 //#region B4FNOVARA
@@ -106,7 +106,7 @@ const config: CapacitorConfig = {
 
 
 //#region PROGETTO RIEDUCA
-
+/*
 const config: CapacitorConfig = {
   "appId": "com.gouego.progettorieduca",
   "appName": "Progetto Rieduca",
@@ -153,6 +153,7 @@ const config: CapacitorConfig = {
     }
   }
 };
+*/
 //#endregion
 
 
@@ -205,5 +206,5 @@ const config: CapacitorConfig = {
     }
   }
 }; */
-//ß#endregion
+//#endregion
 export default config;

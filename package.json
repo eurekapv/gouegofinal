@@ -20,12 +20,12 @@
     "onerrorsyncbeachforfun": "cd application_build/beachforfun/ios/App && pod install --allow-root",
     "onerrorsyncopenbeach": "cd application_build/openbeach/ios/App/App && pod install --allow-root",
     "onerrorsyncoprogettorieduca": "cd application_build/progettorieduca/ios/App/App && pod install --allow-root",
-    "copyios": "npx cap copy ios",
+    "openios": "npx cap open ios",
+
     
     "toAndroid": "npx cap sync android",
     "toIos": "npx cap sync ios",
     "opAndroid": "npx cap open android",
-    "opIos": "npx cap open ios",
     "update-android": "ionic build --prod --aot --outputHashing=all && npx cap sync android && ionic cap open android",
     "update-ios": "sudo ionic build --prod --aot --outputHashing=all && sudo npx cap sync ios && npx cap open ios",
     "live-android": "ionic build --prod --aot --outputHashing=all && ionic cap run android --livereload --external",

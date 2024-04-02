@@ -32,7 +32,7 @@ export class LabelNumeroOrePipe implements PipeTransform {
     if (valueIs == 'ore') {
   
       if (value < 1) {
-        minuti = value * 60;
+        minuti = Math.round(value * 60);
         retValue = minuti + ' ' + lblMin[minuti==1 ? sing : plur];
       }
       else if (value == 1) {
@@ -40,7 +40,7 @@ export class LabelNumeroOrePipe implements PipeTransform {
       }
       else {
         ore = Math.trunc(value);
-        minuti = (value - ore) * 60;
+        minuti = Math.round((value - ore) * 60);
         
         retValue = `${ore} ${lblOre[ore==1 ? sing : plur]}`;
   

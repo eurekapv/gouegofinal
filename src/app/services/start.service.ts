@@ -1179,6 +1179,15 @@ requestSaveIscrizioneCorso(docIscrizione: IscrizioneCorso):Promise<PostResponse>
 } 
 
 /**
+ * Chiama il server per la cancellazione di una iscrizione a giornata
+ * @param idIscrizione 
+ * @param idCorso 
+ */
+onRequestDeleteIscrizioneGiornataFor(idIscrizione: string, idCorso: string): Promise<PostResponse> {
+  return this.iscrizioneCorsoService.onRequestDeleteIscrizioneGiornataFor(idIscrizione, idCorso);
+}
+
+/**
  * Ricerca una Iscrizione Corso per Chiave Primaria
  * (Reject se non trovata)
  * @param idPrimary Chiave Primaria

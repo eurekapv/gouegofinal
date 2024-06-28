@@ -18,9 +18,9 @@ export const environment = {
     alchimistilab: 'https://www.alchimistilab.it'
   },
   connection: {
-    mode: ConnectionMode.external,
+    mode: ConnectionMode.local,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'progettorieduca',
+    activeId: 'demo',
     customer: {
       openbeach: {
         name: 'openbeach',

@@ -503,4 +503,12 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
     }
   }
   //#endregion
+
+  onClickDebug() {
+    console.log(this.flagIscrizioneAttiva)
+    console.log(this.flagUserLogged)
+    console.log(this.minutiValue)
+
+
+  }
 }

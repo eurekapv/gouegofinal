@@ -263,16 +263,21 @@
             </ion-row> 
 
 
+            <!-- UTENTE LOGGATO -->
             <ion-row
+                class="ion-margin"
                 *ngIf="flagUserLogged && minutiValue != 0 && !flagIscrizioneAttiva"
                   >
               <ion-col>
-                <ion-note                   
-                  color="danger" 
-                  class="ion-margin-horizontal">
-                 Non è possibile effettuare l'iscrizione alla lezione direttamente dall'applicazione.
-                 <br/>Contattare la segreteria del centro.
-                </ion-note>                   
+                <ion-item (click)="onClickDebug()">
+                  <ion-icon slot="start" color="danger" name="ban-outline">
+
+                  </ion-icon>
+                  <ion-label class="ion-text-wrap">
+                    <h6>Non è possibile effettuare l'iscrizione alla lezione direttamente dall'applicazione.</h6>
+                    <p>Contattare la segreteria del centro.</p>
+                  </ion-label>
+                </ion-item>                  
               </ion-col>
             </ion-row>            
 

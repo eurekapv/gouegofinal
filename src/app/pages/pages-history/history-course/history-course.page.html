@@ -279,7 +279,7 @@
                         <ion-card>
                           <ion-card-header color="success">  
                             <ion-card-title>
-                              Info Iscrizione
+                              Iscrizione
                             </ion-card-title>
                           </ion-card-header>                          
                           <ion-card-content class="ion-no-padding">
@@ -387,6 +387,16 @@
                                 </ion-badge>
   
                               </ion-item>
+                            </div>
+                            <div *ngIf="canDelete">
+                              <ion-button
+                                  expand="block"
+                                  color="danger"
+                                  fill="outline" 
+                                  (click)="onClickTrash()">
+                                Cancella Iscrizione
+                            <ion-icon slot="start" name="trash-outline"></ion-icon>
+                          </ion-button>                              
                             </div>
 
                           </ion-card-content>

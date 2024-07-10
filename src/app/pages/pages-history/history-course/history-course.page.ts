@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController, NavController } from '@ionic/angular';
+import { AlertButton, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
@@ -10,12 +10,14 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
-import { ModalitaIscrizione, StatoIscrizione, StatoPagamento, TipoCorso, ValueList } from 'src/app/models/zsupport/valuelist.model';
+import { CancellazioniIscrizioniGiornaliere, ModalitaIscrizione, StatoIscrizione, StatoPagamento, TipoCorso, ValueList } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { PeriodicCourseDetailCalendarPage } from '../../pages-location/course/periodic/periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
 import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
+import { Area } from 'src/app/models/struttura/area.model';
+import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
 
 
 @Component({
@@ -38,11 +40,13 @@ export class HistoryCoursePage implements OnInit {
   utenteIscrizioneDoc: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
   listSituazionePagamenti: IscrizioneIncasso[] = []; //Situazione dei pagamenti
 
+  areaDoc: Area;
   corsoDoc: Corso = new Corso();
   locationDoc: Location = new Location();
   //Valorizzata in caso di Iscrizioni Giornaliere
   dataPianificataDoc: PianificazioneCorso;
   isLezioneSingola: boolean = false; //Iscrizione a lezione singola
+  canDelete:boolean = false; //Possibilità di cancellare
 
   selectedLocation: Location = new Location(); //il documento location NON OBSERVABLE 
 
@@ -188,6 +192,14 @@ export class HistoryCoursePage implements OnInit {
                 this.titleForm = '';
                 break;
             }            
+            //Recupero l'area di riferimento
+            return this.startService.requestAreaById(this.locationDoc.IDAREAOPERATIVA);
+          })
+          .then(elAreaDoc => {
+            this.areaDoc = elAreaDoc;
+            //Reimposto il canDelete
+            this.setCanDelete();
+
             resolve();
           })
           .catch(error => {
@@ -352,6 +364,7 @@ export class HistoryCoursePage implements OnInit {
     })
   }
 
+
   /**
    * Richiede una Lista di IscrizioneIncassi per avere la situazione dei pagamenti
    * @param myIdIscrizione 
@@ -425,6 +438,60 @@ export class HistoryCoursePage implements OnInit {
         }
     })
   }
+
+  /**
+   * Imposta la proprietà che consente la cancellazione
+   */
+  setCanDelete() {
+    let flagDelete: boolean = false;
+
+    if (this.isLezioneSingola) {
+      console.log('Data Singola')
+      if (this.dataPianificataDoc) {
+        console.log(this.dataPianificataDoc)
+
+        //Controlliamo che la lezione sia nel futuro
+        if (MyDateTime.isAfter(this.dataPianificataDoc.DATAORAINIZIO, new Date())) {
+          console.log('Lezione nel futuro');
+
+          if (this.areaDoc) {
+            console.log(this.areaDoc);
+
+            switch (this.areaDoc.APPDELETEISCRIZIONIFLAG) {
+              case  CancellazioniIscrizioniGiornaliere.sempre:
+                  console.log('Sempre abilitate')
+                  flagDelete = true;
+                break;
+
+              case CancellazioniIscrizioniGiornaliere.limitata:
+                  let numHours = 0;
+
+                  if (this.areaDoc.APPDELETEISCRIZIONIORE != null && this.areaDoc.APPDELETEISCRIZIONIORE != undefined) {
+                    numHours = this.areaDoc.APPDELETEISCRIZIONIORE;
+                  }
+
+                  console.log(`Limitate entro ${numHours} ore`)
+                  //Se aggiungo ad adesso le ore
+                  let newDate = MyDateTime.calcola(new Date(), numHours, TypePeriod.hours);
+                  console.log(newDate);
+                  //La data è ancora prima dell'inizio ?
+                  if (MyDateTime.isBefore(newDate, this.dataPianificataDoc.DATAORAINIZIO)) {
+                    flagDelete = true;
+                  }
+                break;
+            
+              default:
+                break;
+            }            
+          }
+
+        }
+
+      }
+    }
+
+    this.canDelete = flagDelete;
+  }
   //#endregion
 
   //#region METODI INTERFACCIA
@@ -491,6 +558,68 @@ export class HistoryCoursePage implements OnInit {
   onClickExpandCorsoProgramma() {
     this.expandProgramma = !this.expandProgramma;
   }  
+
+  /**
+   * L'utente vuole cancellare l'iscrizione effettuata
+   */
+  onClickTrash() {
+    let buttons: AlertButton[] = [{
+      text: 'Prosegui',
+      handler: ()=> {
+        this.onExecDeletionIscrizione();
+      }
+    }, {
+      text: 'Annulla',
+      role: 'cancel'
+    }];
+
+    let myMessage = '';
+
+    if (this.canDelete) {
+
+      myMessage = `<p>` + `Stai eliminando l'iscrizione` + '</p>';
+      myMessage += `<p>` + `effettuata per la lezione di ` + '</p>';
+      myMessage += `<p>` + `<strong>${MyDateTime.formatDate(this.dataPianificataDoc.DATA, 'EEEE dd/MM/yyyy')} </strong>` + '</p>';
+      myMessage += `<p>` + `alle ore ${MyDateTime.formatTime(this.dataPianificataDoc.DATAORAINIZIO)}` + '</p>';
+      myMessage += `<p>` + '</p>';
+
+    }
+
+    //Chiedo cosa vuole fare
+    this.startService.presentAlertMessage(myMessage, 'Cancella Iscrizione', buttons);
+                     
+  }
+
+  /**
+   * Contatto il server per la cancellazione di una iscrizione
+   */
+  onExecDeletionIscrizione() {
+    let myMessage = '';
+
+    myMessage = '<p>' + '<strong>Attendere</strong>' + '</p>';
+    myMessage = '<p>' + 'Operazione in corso' + '</p>';
+
+    this.startService.showLoadingMessage(myMessage)
+                     .then(elLoading => {
+                        elLoading.present();
+
+                        //Contattiamo il server per la cancellazione
+                        this.startService.onRequestDeleteIscrizioneGiornataFor(this.idIscrizione, this.corsoDoc.ID)
+                                         .then(responseDoc => {
+                                            elLoading.dismiss();
+                                            if (responseDoc.result) {
+                                              //Cancellazione effettuata
+                                              //Posso tornare indietro
+                                              this.onGoToBack();
+                                            }
+                                            else {
+                                              this.startService.presentAlertMessage(responseDoc.message);
+                                            }
+                                         })
+                                         //Non va in catch
+
+                     })
+  }
 
   //TODO: pagamento non abilitato
   onClickPaga():void

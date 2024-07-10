@@ -153,6 +153,7 @@ const config: CapacitorConfig = {
   }
 };
 
+
 //#endregion
 
 //#region DEMOBEACH

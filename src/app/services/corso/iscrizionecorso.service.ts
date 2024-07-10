@@ -266,5 +266,50 @@ export class IscrizionecorsoService {
     })
   }  
 
+  //#region CANCELLAZIONE ISCRIZIONE A GIORNATA
+
+  /**
+   * Effettua la cancellazione della Iscrizione
+   */
+  onRequestDeleteIscrizioneGiornataFor(idIscrizione: string, idCorso: string): Promise<PostResponse> {
+    return new Promise<PostResponse>((resolve) => {
+      
+      let listPostParams: PostParams[] = [];
+      let myReturn: PostResponse;
+      let method = 'onRequestDeleteIscrizioneGiornata';
+      let sampleDoc: IscrizioneCorso;
+
+      if (idIscrizione && idIscrizione.length != 0 &&
+        idCorso && idCorso.length != 0) {
+
+          sampleDoc = new IscrizioneCorso();
+          sampleDoc.ID = idIscrizione;
+          sampleDoc.IDCORSO = idCorso;
+
+          //Preparo i parametri
+          PostParams.addParamsTo(listPostParams, 'sampleIscrizioneDoc', sampleDoc);
+
+          //Faccio la chiamata
+          this.docStructureService.requestForFunction(sampleDoc, method ,sampleDoc,listPostParams)
+                                  .then((risposta: PostResponse) => {
+                                    resolve(risposta);
+                                  })
+                                  .catch(error => {
+                                    myReturn = new PostResponse();
+                                    myReturn.result = false;
+                                    myReturn.message = error.message;
+                                    resolve(myReturn);                          
+                                  })          
+      }
+      else {
+        myReturn = new PostResponse();
+        myReturn.result = false;
+        myReturn.message = 'Errore preparazione cancellazione';
+        resolve(myReturn);        
+      }
+
+    })
+  }
+  //#endregion
 
 }

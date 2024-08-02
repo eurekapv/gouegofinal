@@ -89,9 +89,12 @@ export class PostParams {
    */
   static getJsonFrom(myParams: PostParams | PostParams[]): string {
     let jsonReturn = '';
-    if (myParams) {
 
+    if (myParams) {
+      //Array con i parametri
       if (Array.isArray(myParams)) {
+
+        //Ciclo su ogni parametro
         for (let index = 0; index < myParams.length; index++) {
           const element = myParams[index];
           let jsonSingle = element.exportJSON();

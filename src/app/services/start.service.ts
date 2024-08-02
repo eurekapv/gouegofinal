@@ -1119,8 +1119,8 @@ get lastDateCorsiGiornalieri(): Date {
       return this.corsoCalendarioService.requestPresenze(idPianificazione);
   }   
 
-  insertPresenzeIntoPianificazione(docPianificazione: PianificazioneCorso){
-    return this.corsoCalendarioService.insertPresenze(docPianificazione);
+  requestPresenzeFor(docPianificazione: PianificazioneCorso){
+    return this.corsoCalendarioService.requestPresenzeFor(docPianificazione);
   }
 
   requestUpdatePresenze(docPianificazione: PianificazioneCorso){
@@ -1130,7 +1130,7 @@ get lastDateCorsiGiornalieri(): Date {
 
 //#endregion
 
-////#region corsi
+//#region corsi
 
 
 
@@ -1350,6 +1350,11 @@ requestUtenteTotaleMinuti(idUtente: string, idArea:string): Promise<UtenteTotale
  */
 requestUtenteMinutiList(idUtente: string, idArea: string) : Promise<UtenteMinuti[]> {
   return this.utenteService.requestListUtenteMinuti(idUtente, idArea);
+}
+
+
+requestListUtentiTotaliMinuti(listUtentiTotaliMinuti: UtenteTotaleMinuti[]): Promise<UtenteTotaleMinuti[]> {
+  return this.utenteService.requestListUtentiTotaliMinuti(listUtentiTotaliMinuti);
 }
 
 /**

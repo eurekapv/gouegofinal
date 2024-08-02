@@ -1,0 +1,63 @@
+<ion-grid
+      [class]="'ion-no-margin' + ' ' + 'ion-padding-horizontal' + ' ' + _classGrid + ' ion-activatable ripple-parent'">
+      <ion-ripple-effect></ion-ripple-effect>      
+  <!-- NOMINATIVO E PRESENZA -->
+  <ion-row
+      class="ion-no-margin ion-no-padding ion-align-items-center">
+    <ion-col 
+        size="10">
+      <h4 class="ion-no-margin">{{_itemPresenza?.NOMINATIVO | uppercase}}</h4>
+    </ion-col>
+
+    <ion-col
+        class ="ion-text-end"
+        size="2">
+      <ion-icon [name]="iconPresenza" [color]="colorPresenza" size="large"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+  <!-- RIGO CERTIFICATO MEDICO -->
+  <ion-row
+      class="ion-no-margin ion-no-padding">
+    <ion-col>
+      <p 
+         [class]="'ion-no-margin' + ' ' + 'ion-text-medium' + ' ' + 'ion-text-' + coloreCertificato">
+        Certificato Medico&nbsp;{{_itemPresenza.DATACERTIFICATOMEDICO ? (_itemPresenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('non consegnato')}}
+      </p>
+    </ion-col>
+  </ion-row>
+
+  <!-- RIGO SCADENZE NON SALDATE -->
+  <ion-row
+      *ngIf="_itemPresenza.ALERTPAGAMENTI"
+      class="ion-no-margin ion-no-padding ion-align-items-center">
+      <ion-col 
+          class="ion-text-start"
+          size="2">
+        <ion-icon name="card-outline" color="danger" size="large"></ion-icon>
+      </ion-col>
+      <ion-col
+        size="10">
+        <p class="ion-text-small">SCADENZE NON SALDATE</p>
+      </ion-col>
+  </ion-row>
+
+  <!-- RIGO PACCHETTI MINUTI -->
+  <ion-row
+      *ngIf="_showPacchetti"
+      class="ion-no-margin ion-no-padding ion-align-items-center">
+
+      <ion-col
+        size="10">
+        <p class="ion-text-small ion-no-margin"><strong>{{_totMinutiPacchetto}} {{_totMinutiPacchetto == 1 ? 'Minuto' : 'Minuti'}} </strong>a disposizione nel pacchetto </p>
+      </ion-col>
+
+      <ion-col 
+          class="ion-text-end"
+          size="2">
+        <ion-icon name="wallet-outline" color="danger" size="small"></ion-icon>
+      </ion-col>
+
+
+  </ion-row>  
+</ion-grid>

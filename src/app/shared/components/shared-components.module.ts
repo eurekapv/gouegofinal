@@ -48,6 +48,7 @@ import { DurataChooserComponent } from './durata-chooser/durata-chooser.componen
 import { CartItemRowComponent } from './cart-item-row/cart-item-row.component';
 import { NumericInputUpDownComponent } from './numeric-input-up-down/numeric-input-up-down.component';
 import { DailyCourseItemListComponent } from './course/daily-course-item-list/daily-course-item-list.component';
+import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
 
 
 
@@ -101,7 +102,7 @@ import { DailyCourseItemListComponent } from './course/daily-course-item-list/da
         CartItemRowComponent,
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
-        
+        ItemPresenzaComponent
     ],
     exports: [
         AdvertisingComponent,
@@ -141,7 +142,7 @@ import { DailyCourseItemListComponent } from './course/daily-course-item-list/da
         CartItemRowComponent,
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
-        
+        ItemPresenzaComponent
     ]
 })
 export class SharedComponentsModule {}

@@ -375,7 +375,7 @@ export class CourseschedulerService {
    * Richiede al server le presenze della pianificazione passata e le inserisce all'interno della stessa
    * @param docPianificazione IL documento in cui inserire le presenze
    */
-  insertPresenze(docPianificazione: PianificazioneCorso){
+  requestPresenzeFor(docPianificazione: PianificazioneCorso){
     
     return new Promise<PianificazioneCorso>((resolve, reject) => {
 

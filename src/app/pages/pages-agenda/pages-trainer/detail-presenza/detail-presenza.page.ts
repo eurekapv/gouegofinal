@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertButton, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
 import { Corso } from 'src/app/models/corso/corso.model';
 import { CorsoPresenze } from 'src/app/models/corso/corsopresenze.model';
@@ -8,6 +8,7 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
 import { StatoIscrizione, TipoSocieta } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
+import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 
 @Component({
   selector: 'app-detail-presenza',
@@ -19,6 +20,7 @@ export class DetailPresenzaPage implements OnInit {
   listPresenze : CorsoPresenze[] = [];
   listPresenzeConfermate: CorsoPresenze[] = [];
   listPresenzeInProva: CorsoPresenze[] = [];
+  listPacchettiMinuti: UtenteTotaleMinuti[] = [];
 
   pianificazioneDoc: PianificazioneCorso = new PianificazioneCorso();
   corsoDoc: Corso;
@@ -40,7 +42,7 @@ export class DetailPresenzaPage implements OnInit {
 
   showTabs = true;
 
-  selectedSegment= null;
+
 
   //Segnala un errore di caricamento dei dati
   loadingError = false;
@@ -80,7 +82,8 @@ export class DetailPresenzaPage implements OnInit {
       this.idPianificazione = data.get('pianificazioneCorsoId');
       
       //Effettuo il recupero dei documenti interessati
-      this.requestDocs().then(() => {
+      this.requestDocs()
+      .then(() => {
             this.loadingComplete = true;
             this.loadingError = false;
             //Tutto è pronto
@@ -117,37 +120,35 @@ export class DetailPresenzaPage implements OnInit {
       if (this.idPianificazione && this.idPianificazione.length != 0)   {
 
         //Recupero del documento di pianificazione
-        this.startService.requestPianificazioneCorso(this.idPianificazione)
-                         .then(singleDoc => {
+        this.startService.requestPianificazioneCorso(this.idPianificazione)       
+                         .then(dataPianificataDoc => {
                             //Questo è il documento di Pianificazione
-                            this.pianificazioneDoc = singleDoc;
+                            this.pianificazioneDoc = dataPianificataDoc;
                             //Controllo se posso modificare i dati
-                            this.canUpdate = singleDoc.canUpdatePresenze(this.gapAggiornamentoPresenze);
-                            
-                            return singleDoc;
+                            this.canUpdate = dataPianificataDoc.canUpdatePresenze(this.gapAggiornamentoPresenze);
+                            //Chiedo anche la collection delle presenze
+                            return this.startService.requestPresenzeFor(this.pianificazioneDoc);
                          })
-                         .then(singleDoc => this.startService.insertPresenzeIntoPianificazione(singleDoc))
-                         .then(singleDoc => {
-                            //ora ho il documento pianificazione con anche le presenze, posso metterle anche in "listpresenze"
-                            this.listPresenze  = singleDoc.CORSOPRESENZE;
-                            return this.listPresenze;
-                         })
-                         .then(listFullPresenze => {
+                         .then(dataPianificataDoc => {
 
-                            //Prepara una lista delle presenze confermate
-                            this.listPresenzeConfermate = listFullPresenze.filter(element => {
-                              return element.STATOISCRIZIONE == StatoIscrizione.confermata;
-                            });
+                              //Imposto gli array per le presenze
+                              this.setAndSplitListPresenze(dataPianificataDoc.CORSOPRESENZE);
 
-                            return listFullPresenze;
-                         })
-                         .then(listFullPresenze => {
-                          //Prepara una lista delle presenze in prova
-                          this.listPresenzeInProva = listFullPresenze.filter(element => {
-                            return element.STATOISCRIZIONE == StatoIscrizione.inProva;
-                          });
+                              //Qui ho anche le presenze del corso
+                              //Adesso chiedo le info del corso
+                              return this.startService.requestCorsoById(dataPianificataDoc.IDCORSO)
+                          })
+                         .then(myCorso => {
+                            //Ho recuperato il corso e lo memorizzo
+                            this.corsoDoc = myCorso;
+                            console.log(`Area = ${this.corsoDoc.IDAREAOPERATIVA}`);
+                            //Ritorno la pianificazione perchè mi serve lei
+                            return this.requestUtenteTotaleMinuti(this.listPresenze, this.corsoDoc.IDAREAOPERATIVA);
+                        })
+                        .then(() => {
+                          //Conclusa la catena
                           resolve();
-                         })
+                        })
                          .catch(error => {
                           reject(error);
                          })
@@ -155,6 +156,78 @@ export class DetailPresenzaPage implements OnInit {
       else {
         reject('Data pianificazione non presente');
       }
+    })
+  }
+
+  /**
+   * Imposta e splitta le liste delle presenze
+   * @param listFullPresenze 
+   */
+  setAndSplitListPresenze(listFullPresenze: CorsoPresenze[]) {
+    if (listFullPresenze) {
+      this.listPresenze = listFullPresenze;
+
+      //Prepara una lista delle presenze confermate
+      this.listPresenzeConfermate = listFullPresenze.filter(element => {
+        return element.STATOISCRIZIONE == StatoIscrizione.confermata;
+      });
+
+      //Prepara una lista delle presenze in prova
+      this.listPresenzeInProva = listFullPresenze.filter(element => {
+        return element.STATOISCRIZIONE == StatoIscrizione.inProva;
+      });      
+    }
+    else {
+      this.listPresenze = [];
+      this.listPresenzeConfermate = [];
+      this.listPresenzeInProva = [];
+    }
+  }
+
+
+  /**
+   * Richiede al server tutti i pacchetti minuti
+   * @param listFullPresenze 
+   * @param idArea
+   */
+  requestUtenteTotaleMinuti(listFullPresenze: CorsoPresenze[], 
+                            idArea: string): Promise<void> {
+    let listUT: UtenteTotaleMinuti[] = [];
+
+    return new Promise<void>((resolve, reject) => {
+
+      //Creo un array con la lista degli utenti 
+      listUT = listFullPresenze.map(item => {
+        let utmDoc = new UtenteTotaleMinuti();
+        utmDoc.init();
+        utmDoc.IDUTENTE = item.IDUTENTE;
+        utmDoc.IDAREAOPERATIVA = idArea;
+        utmDoc.setOriginal();
+        return utmDoc;
+      });
+
+      //Se ci sono utenti da richiedere i dati
+      if (listUT && listUT.length != 0) {
+
+        LogApp.consoleLog('Richiesta pacchetti minuti');
+        //Effettuo la richiesta
+        this.startService.requestListUtentiTotaliMinuti(listUT)
+                         .then(receivedPacchetti => {
+                            //Memorizzo i pacchetti
+                            this.listPacchettiMinuti = receivedPacchetti;
+                            console.log(this.listPacchettiMinuti);
+                            resolve();
+                         })
+                         .catch(error => {
+                            reject(error);
+                         })
+
+      }
+      else {
+        this.listPacchettiMinuti = [];
+        resolve();
+      }
+
     })
   }
 
@@ -187,7 +260,8 @@ export class DetailPresenzaPage implements OnInit {
     }
   }
 
-    /**
+  //#region PULSANTE BACK
+  /**
    * Ritorna un Array con il percorso di ritorno
    */
     get backPathArray():string[] {
@@ -235,31 +309,36 @@ export class DetailPresenzaPage implements OnInit {
     else{
       this.onGoToBack();
     }
-  }    
+  }   
+  
+  //#endregion
 
   /**
    * Click su un partecipante
    * @param elem 
    */
-  onClickElement(elem: CorsoPresenze){
-    if (elem.PRESENTE == null || elem.PRESENTE == undefined){
-      elem.PRESENTE = true;
-    }
-    else{
-      elem.PRESENTE = !elem.PRESENTE;
-    }
+  onClickElement(elem: CorsoPresenze) {
 
-    if (this.tuttiPresenti){
-      this.selectedSegment = 'presente';
-    }
-    else if (this.tuttiAssenti){
-      this.selectedSegment = 'assente';
-    }
-    else{
+    let message = '';
 
-      this.selectedSegment = null;
-    }
+    if (this.canUpdate) {
 
+      if (elem.PRESENTE == null || elem.PRESENTE == undefined){
+        elem.PRESENTE = true;
+      }
+      else {
+        elem.PRESENTE = !elem.PRESENTE;
+      }
+
+      if (elem.PRESENTE) {
+        message = elem.NOMINATIVO + ' Presente';
+      }
+      else {
+        message = elem.NOMINATIVO +  ' Assente';
+      }
+
+      this.startService.presentToastMessage(message);
+    }
   }
 
   /**
@@ -311,61 +390,8 @@ export class DetailPresenzaPage implements OnInit {
 
   }
 
-  /**
-   * Ritorna il colore da assegnare al certificato
-   * @param presenza 
-   * @returns 
-   */
-    getColoreCertificato(presenza: CorsoPresenze): string{
-    let adesso: Date;
-    let fra7Giorni: Date;
-    let color: string;
 
-    adesso = new Date();
-    fra7Giorni = MyDateTime.calcola(adesso, 7 , TypePeriod.days);
-
-    /*E' presente una data Certificato Medico */
-    if (presenza.DATACERTIFICATOMEDICO) {
-      
-      if (MyDateTime.isBefore(presenza.DATACERTIFICATOMEDICO, adesso)) {
-        //Colore Danger per certificato scaduto
-        color = 'danger';
-      }
-      else if (MyDateTime.isBefore(presenza.DATACERTIFICATOMEDICO, fra7Giorni)) {
-        //Scade tra 7 giorni
-        color = 'warning';
-      }
-      else {
-        color = 'primary';
-      }
-
-    }
-    else{
-      color = 'danger';
-    }
-    return color;
-  }
-
-
-
-  /**
-   * Visualizza un messaggio
-   */
-  showMessage(messaggio: string){
-    this.toastController.create({
-      message: messaggio,
-      duration: 3000
-    })
-    .then(elToast => {
-      elToast.present();
-    })
-  }
-
-
-
-
-
-  onScroll(event:any){
+ onScroll(event:any){
     if(event.detail.currentY < 5){
       this.showTabs = true;
     }
@@ -380,12 +406,42 @@ export class DetailPresenzaPage implements OnInit {
   }
 
   /**
+   * Chiede all'utente come vuole impostare le presenze assenza
+   */
+  onAskForSetPresenze(): void {
+
+    let myButtons: AlertButton[] = [
+      {
+        text: 'Presenti',
+        handler: () => {
+          this.setAllPresenze(true);
+        }
+      },
+      {
+        text: 'Assenti',
+        handler: () => {
+          this.setAllPresenze(false);
+        }
+      },
+      {
+        text: 'Annulla',
+        role: 'cancel'
+      }
+    ];
+
+    let message = '<p>' + `Desideri impostare tutti i ` + '</p>';
+    message += '<p>' + `partecipanti come` + '</p>';
+
+    //Ora posso chiedere
+    this.startService.presentAlertMessage(message, 'Presenti/Assenti', myButtons);
+  }
+
+  /**
    * Imposta per tutti i partecipanti la stessa
    * voce presente/assente
    * @param flagPresente 
    */
   setAllPresenze(flagPresente: boolean){
-    //TODO: Sarebbe meglio chiedere
     if (this.listPresenze) {
 
       this.listPresenze.forEach(elem => {
@@ -395,27 +451,29 @@ export class DetailPresenzaPage implements OnInit {
     }
   }
 
+  /**
+   * Cerca il numero di minuti che contiene il pacchetto del cliente
+   * @param idUtente 
+   */
+  findMinutiPacchettiFor(idUtente: string): number {
+    let totMinuti:number = 0;
 
-  get tuttiPresenti(): boolean{
-    let tuttiPresenti: boolean = true;
-    this.listPresenze.forEach(elem => {
-      if (!elem.PRESENTE){
-        tuttiPresenti = false;
+    if (this.listPacchettiMinuti) {
+      let recUser: UtenteTotaleMinuti;
+      recUser = this.listPacchettiMinuti.find(elItem => {
+        return elItem.IDUTENTE == idUtente
+      });
+
+      if (recUser) {
+        totMinuti = recUser.TOTALEMINUTI;
       }
-    })
-    return tuttiPresenti;
+    }
+
+    return totMinuti;
   }
 
 
-  get tuttiAssenti(): boolean{
-    let tuttiAssenti: boolean = true;
-    this.listPresenze.forEach(elem => {
-      if (elem.PRESENTE){
-        tuttiAssenti = false;
-      }
-    })
-    return tuttiAssenti;
-  }
+
 
 
 }

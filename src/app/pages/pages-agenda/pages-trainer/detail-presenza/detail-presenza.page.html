@@ -26,7 +26,7 @@
             <ion-card-subtitle>{{messageError}}</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <p>Non è possibile operare con le presenze</p>
+            <p>Non &egrave; possibile operare con le presenze</p>
           </ion-card-content>
         </ion-card> 
 
@@ -84,109 +84,82 @@
     </ion-segment>
     <ion-grid>
 
-      <!-- VISTA PRESENTI -->
+    <!-- BUTTON AZIONE TUTTI PRESENTI /ASSENTI-->
+     <ion-item
+        (click)="onAskForSetPresenze()"
+        *ngIf="canUpdate && selectedView == 1 && (listPresenzeConfermate.length != 0 || listPresenzeInProva.length != 0)" 
+        detail="true">
+        <ion-icon name="hand-left-outline" color="danger" slot="start"></ion-icon>
+      <ion-label class="ion-text-wrap ion-text-small">Se vuoi impostare tutti i partecipanti come presenti o assenti premi qui</ion-label>
+     </ion-item>
+
+      <!-- ELENCO DEI PARTECIPANTI AL CORSO (PRESENZE)-->
       <ion-row *ngIf="selectedView == 1">
 
         <ion-col>
+
           <!-- Iscritti confermati -->
           <ion-list>
-            <ion-list-header>
+            <ion-list-header mode="ios">
               Partecipanti
             </ion-list-header>
             <ion-item 
                 *ngIf="listPresenzeConfermate.length == 0">
               Nessun iscritto al corso
-            </ion-item>
-
-            <ion-item
-                  [detail]="false"
-                  *ngFor="let presenza of listPresenzeConfermate" 
-                  [button]="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)" 
-                  (click)="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)? onClickElement(presenza) : {}"
-                  >
-            <ion-label>
-              <h2>{{presenza.NOMINATIVO}}</h2>
-
-              <h5 *ngIf="this.tipoSocieta == TipoSocieta.sportiva">
-
-                <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
-                  Cert. Medico&nbsp;{{presenza.DATACERTIFICATOMEDICO ? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('non consegnato')}}
-                </ion-badge> 
-              </h5>
-              <h6 *ngIf="presenza.ALERTPAGAMENTI">
-                <ion-text class="ion-text-bold" color="danger">SCADENZE NON SALDATE</ion-text></h6>
-            </ion-label>
-            
-            <ion-label 
-                *ngIf="presenza.PRESENTE == null || presenza.PRESENTE == undefined"
-                slot="end">&egrave; presente ?</ion-label>
-
-            <ion-badge
-              *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined"
-              slot="end"
-              [color]="presenza.PRESENTE ? colorPresente : colorAssente"
-            >
-            {{presenza.PRESENTE? 'Presente' : 'Assente'}}
-            </ion-badge>
-            </ion-item>
+            </ion-item>            
           </ion-list>
 
-          <ion-list *ngIf="listPresenzeInProva.length > 0">
-            <ion-list-header>
-              In Prova
-            </ion-list-header>
-            <!-- Iscritti in prova -->
-            <ion-item
-              [detail]="false" 
-              *ngFor="let presenza of listPresenzeInProva" 
-              [button]="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)" 
-              (click)="pianificazioneDoc.canUpdatePresenze(gapAggiornamentoPresenze)? onClickElement(presenza) : {}">
+          <!-- GRIGLIA PRIMARIA CON 1 COLONNA E DENTRO I PARTECIPANTI-->
+          <ion-grid
+              class="ion-margin-bottom ion-no-padding">
+            <ion-row>
+              <ion-col
+                *ngFor="let presenzaDoc of listPresenzeConfermate; index as i">
+                <app-item-presenza 
+                  [totMinutiPacchetto]="findMinutiPacchettiFor(presenzaDoc.IDUTENTE)"
+                  [modoIscrizione]="corsoDoc?.MODALITAISCRIZIONE"
+                  [canUpdate]="canUpdate"
+                  [itemPresenza]="presenzaDoc"
+                  [rowNumber]="i"
+                  (click)="onClickElement(presenzaDoc)"
+                  ></app-item-presenza>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <!-- Fine Iscritti confermati -->          
+      
 
-              <ion-label>
-                <h2>{{presenza.NOMINATIVO}}</h2>
-                <h5 *ngIf="tipoSocieta == TipoSocieta.sportiva">
-                  <ion-badge [color]="getColoreCertificato(presenza)" class="custom-badge"> 
-                    Cert. Medico&nbsp;{{presenza.DATACERTIFICATOMEDICO ? (presenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('non consegnato')}}
-                  </ion-badge> 
-                </h5>
-              </ion-label>
-
-              <ion-label 
-                *ngIf="presenza.PRESENTE == null || presenza.PRESENTE == undefined"
-                slot="end">&egrave; presente ?</ion-label>
-
-              <ion-badge
-                *ngIf="presenza.PRESENTE != null && presenza.PRESENTE != undefined && isDesktop"
-                slot="end"
-                [color]="presenza.PRESENTE ? colorPresente : colorAssente"
-              >
-              {{presenza.PRESENTE? 'Presente' : 'Assente'}}
-              </ion-badge>
-            </ion-item>
+          <!-- Iscritti in prova -->
+          <ion-list
+              *ngIf="listPresenzeInProva.length > 0">
+            <ion-list-header 
+                  mode="ios">
+              In prova
+            </ion-list-header>          
           </ion-list>
+
+          <!-- GRIGLIA PRIMARIA CON 1 COLONNA E DENTRO I PARTECIPANTI-->
+          <ion-grid
+              class="ion-margin-bottom ion-no-padding">
+            <ion-row>
+              <ion-col
+                *ngFor="let presenzaProvaDoc of listPresenzeInProva; index as i">
+                <app-item-presenza
+                  [totMinutiPacchetto]="findMinutiPacchettiFor(presenzaProvaDoc.IDUTENTE)"
+                  [modoIscrizione]="corsoDoc?.MODALITAISCRIZIONE"
+                  [canUpdate]="canUpdate"
+                  [itemPresenza]="presenzaProvaDoc"
+                  [rowNumber]="i"
+                  (click)="onClickElement(presenzaProvaDoc)"
+                  ></app-item-presenza>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <!-- Fine Iscritti in prova -->      
         </ion-col>
       </ion-row>
 
-      <!-- BUTTON AZIONE PRESENZA-->
-      <ion-row 
-          *ngIf="canUpdate && selectedView == 1 && (listPresenzeConfermate.length != 0 || listPresenzeInProva.length != 0)">
-        <ion-col>
-            <ion-button
-                (click) ="setAllPresenze(true)"
-                expand="full"
-                color="success">
-              Tutti presenti
-            </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button
-              (click) ="setAllPresenze(false)" 
-              expand="full"
-              color="danger">
-            Tutti assenti
-          </ion-button>
-        </ion-col>
-      </ion-row>      
+    
 
       <!-- SEGMENT ANNOTAZIONI (Istruttore)-->
       <ion-row *ngIf="selectedView == 2">

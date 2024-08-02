@@ -11,6 +11,7 @@ export class UtenteTotaleMinuti extends IDDocument {
     }
     
     init() {
+        super.init();
         this.TOTALEMINUTI = 0;
     }
 

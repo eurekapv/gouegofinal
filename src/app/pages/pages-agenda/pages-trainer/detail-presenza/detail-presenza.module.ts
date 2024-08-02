@@ -7,14 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { DetailPresenzaPageRoutingModule } from './detail-presenza-routing.module';
 
 import { DetailPresenzaPage } from './detail-presenza.page';
+import { SharedComponentsModule } from "../../../../shared/components/shared-components.module";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    DetailPresenzaPageRoutingModule
-  ],
+    DetailPresenzaPageRoutingModule,
+    SharedComponentsModule
+],
   declarations: [DetailPresenzaPage]
 })
 export class DetailPresenzaPageModule {}

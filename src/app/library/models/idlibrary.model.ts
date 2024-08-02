@@ -56,23 +56,36 @@ export class IDLibrary {
             break;
         
           case TypeDefinition.collection:
+              let className: string = '';
               let arValues: [];
               arValues = value;
 
               strValue = '[';
+
               for (let index = 0; index < arValues.length; index++) {
-                  const element = arValues[index];
+                  const element: any = arValues[index];
                   const elStr = IDLibrary.exportJSONValue(element, onlyPropertyModified, onlyDocModified);
 
+                  //E' un documento e cerco di recuperare la classe
+                  if (element instanceof IDDocument) {
+                    className = element.getDescriptor()?.classWebApiName;
+                  }
+
                   if (elStr && elStr.trim().length !== 0) {
-                      //Se la stringa è diversa da 0 aggiungo la virgola
-                      if (strValue.length != 0) {
+                      //Se la stringa è maggiore di 1 aggiungo la virgola (considero la [ iniziale)
+                      if (strValue.length > 1) {
                           strValue += ', ';
                       }
                       strValue += elStr;
                   }
               }
               strValue += ']';
+
+              if (className && className.length != 0) {
+                //Devo inserire prima il nome della classe
+                strValue = `{"${className}" : ${strValue}}`;
+              }
+
             break;
 
           case TypeDefinition.document:

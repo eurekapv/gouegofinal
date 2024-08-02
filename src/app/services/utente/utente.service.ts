@@ -173,6 +173,52 @@ export class UtenteService {
     })
    }   
 
+
+   /**
+    * Partendo da una lista popolata di soli idUtente richiede al server il ritorno della lista con i minuti residui
+    * degli utenti
+    * @param listUtentiTotaliMinuti 
+    * @param guidArea 
+    * @returns 
+    */
+   requestListUtentiTotaliMinuti(listUtentiTotaliMinuti: UtenteTotaleMinuti[]): Promise<UtenteTotaleMinuti[]> {
+      return new Promise<UtenteTotaleMinuti[]>((resolve, reject) => {
+        let method = 'onRequestCollection';
+        let docToCall: UtenteTotaleMinuti;
+        let listPostParams: PostParams[] = [];
+
+        docToCall = new UtenteTotaleMinuti();
+        PostParams.addParamsTo(listPostParams, 'collRequest', listUtentiTotaliMinuti);
+        
+        this.docStructureService.requestForFunction(docToCall, method, '', listPostParams)
+                                .then(objRecevied => {
+                                  //Ricevo un oggetto composto da
+                                  //{do_loaded: 0, UTENTETOTALEMINUTI: [{...}]}
+                                  //Recupero il nome della classe
+                                  let className = docToCall.getDescriptor().classWebApiName;
+                                  let listDecoded: UtenteTotaleMinuti[] = [];
+
+                                  if (objRecevied && objRecevied.hasOwnProperty(className)) {
+                                    let listItems = objRecevied[className];
+
+                                    if (listItems && Array.isArray(listItems)) {
+                                      //Tipizzola collection
+                                      listDecoded = this.docStructureService.castCollection<UtenteTotaleMinuti>(listItems, new UtenteTotaleMinuti());
+                                    }
+
+
+
+                                  }
+                                  
+                                  
+                                  resolve(listDecoded);
+                                })
+                                .catch(error => {
+                                  reject(error);
+                                })
+      })
+   }
+
    /**
     * Richiesto il caricamento della collection per nome
     * @param masterDoc 

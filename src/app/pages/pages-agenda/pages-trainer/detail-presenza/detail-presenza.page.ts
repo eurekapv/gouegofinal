@@ -10,7 +10,7 @@ import { StatoIscrizione, TipoSocieta } from 'src/app/models/zsupport/valuelist.
 import { StartService } from 'src/app/services/start.service';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
-import { IDDocument } from 'src/app/library/models/iddocument.model';
+
 
 @Component({
   selector: 'app-detail-presenza',
@@ -53,6 +53,7 @@ export class DetailPresenzaPage implements OnInit {
   colorPresente = 'success';
   colorAssente = 'danger';
    
+  //TODO: Sembra tutto effettuato, bisogna solo testare di scaricare le presenze quando utente ha pacchetto minuti
 
   constructor(
     private activatedRoute: ActivatedRoute,

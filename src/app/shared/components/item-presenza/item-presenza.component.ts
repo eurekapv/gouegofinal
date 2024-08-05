@@ -20,10 +20,21 @@ export class ItemPresenzaComponent implements OnInit {
   _classGrid: string = 'row-dispari';
   _modoIscrizione: ModalitaIscrizione = ModalitaIscrizione.ModalitaAPeriodo;
   _totMinutiPacchetto: number = 0;
-  _showPacchetti: boolean = false;
+  _canShowPacchetti: boolean = false; //Dovrei mostrare i pacchetti a seconda del modo iscrizione
+  _showMessageUpdate: boolean = false; //Mostra un messaggio di aggiornamento
+  _sizeIcons: string = 'small';
 
   @Input() set itemPresenza(value: CorsoPresenze) {
     this._itemPresenza = value;
+    console.log(this._itemPresenza)
+    if (value.FLAGUPDATEMOB == true || value.FLAGUPDATEMOB == false) {
+      this._showMessageUpdate = true;
+    }
+    else {
+      this._showMessageUpdate = false;
+    }
+
+    this._showMessageUpdate = true;
   }
 
   @Input() set canUpdate(value: boolean) {
@@ -36,10 +47,10 @@ export class ItemPresenzaComponent implements OnInit {
   @Input() set modoIscrizione(value: ModalitaIscrizione) {
     this._modoIscrizione = value;
     if (this._modoIscrizione == ModalitaIscrizione.ModalitaAGiornata) {
-      this._showPacchetti = true;
+      this._canShowPacchetti = true;
     }
     else {
-      this._showPacchetti = false;
+      this._canShowPacchetti = false;
     }
   }
 
@@ -106,6 +117,69 @@ export class ItemPresenzaComponent implements OnInit {
 
     return colorName;
   }  
+
+    /**
+   * Ritorna il colore da ritornare per la presenza
+   */
+   get colorPacchettiMinuti():string {
+      let colorName = '';
+      colorName = 'warning';
+  
+      if (this._totMinutiPacchetto == 0) {
+          colorName = 'danger';
+      }
+      else if (this._totMinutiPacchetto <= 60) {
+        colorName = 'warning'
+      }
+      else {
+        colorName = 'success';
+      }
+  
+      return colorName;
+    } 
+
+  /**
+   * Calcolo dinamico se è necessario mostrare il valore dei pacchetti residui
+   */
+  get _showPacchetti(): boolean {
+    let showFlag = false;
+    if (this._canShowPacchetti) {
+      //Dovrei mostrarli
+      if (this.isEmptyPresenza) {
+        //Non c'e' la presenza - devo mostrare
+        showFlag = true;
+      }
+      else {
+        //E' già impostata una presenza
+        //Il record non è stato modificato
+        if (this._itemPresenza.isModified() == false) {
+          //Non mostro nulla
+          showFlag = false;
+        }
+        else {
+          //Se faccio modifiche lo mostro
+          showFlag = true;
+        }
+      }
+    }
+
+    return showFlag 
+  }
+
+  /**
+   * Il valore della presenza non è ancora stato impostato
+   */
+  get isEmptyPresenza(): boolean {
+    let emptyFlag: boolean = true;
+    if (this._itemPresenza.PRESENTE == null || this._itemPresenza.PRESENTE == undefined) {
+      emptyFlag = true;
+    }
+    else {
+      emptyFlag = false;
+    }
+
+    return emptyFlag;
+  }
 
   /**
    * Ritorna il colore da assegnare al certificato

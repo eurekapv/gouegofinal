@@ -16,13 +16,60 @@
     </ion-col>
   </ion-row>
 
+  <!-- RIGO OPERAZIONE AGGIORNAMENTO -->
+  <ion-list
+    lines="none"
+    *ngIf="_itemPresenza.FLAGUPDATEMOB == true || _itemPresenza.FLAGUPDATEMOB == false">
+
+    <ion-item 
+        color = "success"
+        *ngIf="_itemPresenza.FLAGUPDATEMOB == true">
+      
+      <ion-icon 
+          size="large"
+          slot="start"
+          name="thumbs-up-outline">
+        </ion-icon>
+      <ion-label 
+          class="ion-text-wrap" >
+          Presenza aggiornata
+      </ion-label>
+      
+    </ion-item>
+
+
+    <ion-item 
+        color = "danger"
+        *ngIf="_itemPresenza.FLAGUPDATEMOB == false">
+      
+      <ion-icon 
+          size="large"
+          slot="start"
+          name="thumbs-down-outline">
+       </ion-icon>
+      <ion-label 
+          class="ion-text-wrap" >
+          {{_itemPresenza.MSGUPDATEMOB}}
+      </ion-label>
+      
+    </ion-item>
+
+  </ion-list>
+
+
+
   <!-- RIGO CERTIFICATO MEDICO -->
   <ion-row
-      class="ion-no-margin ion-no-padding">
-    <ion-col>
+      class="ion-no-margin ion-no-padding ion-align-items-center">
+    <ion-col 
+        class="ion-text-start"
+        size="2">
+      <ion-icon name="heart-circle-outline" [color]="coloreCertificato" [size]="_sizeIcons"></ion-icon>
+    </ion-col>
+    <ion-col size="10">
       <p 
-         [class]="'ion-no-margin' + ' ' + 'ion-text-medium' + ' ' + 'ion-text-' + coloreCertificato">
-        Certificato Medico&nbsp;{{_itemPresenza.DATACERTIFICATOMEDICO ? (_itemPresenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('non consegnato')}}
+         [class]="'ion-no-margin' + ' ' + 'ion-text-small' + ' ' + 'ion-text-' + coloreCertificato">
+        Certificato Mecico&nbsp;{{_itemPresenza.DATACERTIFICATOMEDICO ? (_itemPresenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('NON CONSEGNATO')}}
       </p>
     </ion-col>
   </ion-row>
@@ -34,11 +81,11 @@
       <ion-col 
           class="ion-text-start"
           size="2">
-        <ion-icon name="card-outline" color="danger" size="large"></ion-icon>
+        <ion-icon name="card-outline" color="danger" [size]="_sizeIcons"></ion-icon>
       </ion-col>
       <ion-col
         size="10">
-        <p class="ion-text-small">SCADENZE NON SALDATE</p>
+        <p class="ion-text-small ion-text-danger">Scadenze NON SALDATE</p>
       </ion-col>
   </ion-row>
 
@@ -47,16 +94,27 @@
       *ngIf="_showPacchetti"
       class="ion-no-margin ion-no-padding ion-align-items-center">
 
-      <ion-col
-        size="10">
-        <p class="ion-text-small ion-no-margin"><strong>{{_totMinutiPacchetto}} {{_totMinutiPacchetto == 1 ? 'Minuto' : 'Minuti'}} </strong>a disposizione nel pacchetto </p>
+      <ion-col 
+        class="ion-text-start"
+        size="2">
+        <ion-icon name="wallet-outline" [color]="colorPacchettiMinuti" [size]="_sizeIcons"></ion-icon>
       </ion-col>
 
-      <ion-col 
-          class="ion-text-end"
-          size="2">
-        <ion-icon name="wallet-outline" color="danger" size="small"></ion-icon>
+      <ion-col
+        size="10">
+        <p 
+            *ngIf="_totMinutiPacchetto != 0" 
+            class="ion-text-small ion-no-margin">
+            Pacchetto allenamenti <strong>{{_totMinutiPacchetto}} {{_totMinutiPacchetto == 1 ? 'Minuto' : 'Minuti'}} </strong> 
+        </p>
+        <p 
+            *ngIf="_totMinutiPacchetto == 0" 
+            class="ion-text-small ion-no-margin">
+            Pacchetto allenamenti <strong>VUOTO</strong>
+        </p>
       </ion-col>
+
+
 
 
   </ion-row>  

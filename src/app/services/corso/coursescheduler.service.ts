@@ -391,19 +391,30 @@ export class CourseschedulerService {
     })
   }
 
-  updatePresenze(docPianificazione: PianificazioneCorso): Promise<PostResponse>{
+  /**
+   * Invia al server le informazioni per aggiornare le presenze
+   * Questo è il nuovo metodo creato per ricevere gli errori dovuti 
+   * a mancanza di pacchetti minuti
+   * @param docPianificazione 
+   * @returns 
+   */
+  updateAllPresenze(docPianificazione: PianificazioneCorso): Promise<PostResponse>{
     return new Promise ((res, rej) => {
 
       let myPostParams : PostParams = new PostParams();
 
-      myPostParams.key = 'docPianificazione';
+      myPostParams.key = 'receivedData';
       myPostParams.value = docPianificazione;
       myPostParams.exportOnlyPropertyModified = true;
       myPostParams.exportOnlyDocModified = true;
       
       
-      this.docStructureService.requestForFunction(docPianificazione, 'updatePresenze', null, myPostParams)
-      .then((response:PostResponse) => {
+      this.docStructureService.requestForFunction(docPianificazione, 'updateAllPresenze', null, myPostParams)
+      .then((responseString:string) => {
+        let response: PostResponse;
+        response = new PostResponse();
+        //Passo anche il tipo dei documenti che dovrei trovare nella list document
+        response.setFromResponse(responseString, new PianificazioneCorso());
         res(response);
       })
       .catch(error => {

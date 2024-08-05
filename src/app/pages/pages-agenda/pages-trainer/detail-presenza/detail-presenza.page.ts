@@ -9,6 +9,8 @@ import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.mo
 import { StatoIscrizione, TipoSocieta } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
+import { PostResponse } from 'src/app/library/models/post-response.model';
+import { IDDocument } from 'src/app/library/models/iddocument.model';
 
 @Component({
   selector: 'app-detail-presenza',
@@ -109,7 +111,6 @@ export class DetailPresenzaPage implements OnInit {
   }
 
  
-
 
   /**
    * Effettuo la richiesta dei documenti necessari
@@ -342,35 +343,77 @@ export class DetailPresenzaPage implements OnInit {
   }
 
   /**
+   * Click sul pulsante di invio dati
+   */
+  onClickSubmit() {
+    let myButtons: AlertButton[] = [
+      {
+        text: 'Invia Tutto',
+        handler: () => {
+            this.onExecSubmit();
+        }
+      },
+      {
+        text: 'Annulla',
+        role: 'cancel'
+      }
+    ];
+
+    let message = '<p>' + `Stai inviando i dati aggiornati della lezione alla segreteri` + '</p>';
+    message += '<p>' + `Vuoi continuare ?` + '</p>';
+
+    //Ora posso chiedere
+    this.startService.presentAlertMessage(message, 'Invio Dati', myButtons);  
+  }
+  /**
    * Conferma dei dati presenti
    */
-  onSubmit(){
+  onExecSubmit() {
 
-    if(this.pianificazioneDoc.isModified(2)){
+
+    //Il documento è modificato ?
+    if(this.pianificazioneDoc.isModified(2)) {
       
       this.loadingController.create({
-        message: 'Caricamento',
+        message: 'Aggiornamento dati',
         spinner: 'circular',
         backdropDismiss: true
       })
       .then(elLoading => {
   
         elLoading.present();
-        this.startService.requestUpdatePresenze(this.pianificazioneDoc)
+        this.startService.requestUpdateAllPresenze(this.pianificazioneDoc)
         .then(response => {
   
           elLoading.dismiss();
-          if (response.result){
+
+          //In entrambi i casi chiedo di recuperare nuovamente i pacchetti minuti
+          this.requestUtenteTotaleMinuti(this.listPresenze, this.corsoDoc.IDAREAOPERATIVA);
+
+          if (response.result) {
+            let message: string = '';
+            message = '<p>' + "Tutti i dati sono stati" + '</p>';
+            message = message + '<p class="ion-text-bold">' + "Aggiornati correttamente" + '</p>';
             //è andato tutto bene
-            this.startService.presentToastMessage('Presenze aggiornate');
+            this.startService.presentAlertMessage(message, 'Aggiornamento lezione');
             //Torno indietro
             this.onGoToBack();
           }
-          else{
+          else {
+            let message: string = '';
+            message = '<p>' + "Spiacente, non tutti i dati sono stati" + '</p>';
+            message = message + '<p class="ion-text-bold">' + "aggiornati correttamente" + '</p>';
+            message = message + '<p>' + response.message + '</p>';
+            //è andato tutto bene
+            this.startService.presentAlertMessage(message, 'Aggiornamento lezione');
             //errore dal server
             LogApp.consoleLog(response);
-            this.startService.presentAlertMessage(response.message);
+
+            //I dati ricevuti li rielaboro per visualizzarli
+            this.onFailedSubmit(response);
           }
+
+          
           
         })
         .catch((error) => {
@@ -382,14 +425,114 @@ export class DetailPresenzaPage implements OnInit {
       })
       
     }
-    
-    else{
+    else {
+      this.startService.presentToastMessage('Dati aggiornati');
+      //Vado indietro senza segnalare nulla
       this.onGoToBack();
 
     }
 
   }
 
+  /**
+   * Ho un documento con degli errori ricevuti dal server
+   * @param response 
+   */
+  onFailedSubmit(response: PostResponse): void {
+    let serverDoc: PianificazioneCorso;
+
+    console.log('Qui');
+    //Ho ricevuto un documento di risposta
+    if (response && this.pianificazioneDoc) {
+      //In ListDocument trovo il documento Pianificazione che ho inviato
+      //Quindi attenzione che è un documento con poche proprietà
+      if (response.listDocuments && response.listDocuments.length != 0) {
+        //I documenti in lisDocument sono tipizzati
+        serverDoc = response.listDocuments[0];
+        
+        //Ora sistemo i dati nel documento pianificazioneDoc.CORSOPRESENZE
+        //Sistemando i flag e i messaggi errori
+        serverDoc.CORSOPRESENZE.forEach(receivedPresenza => {
+
+          //Cerco la presenza nel documento in memoria
+          let presenzaDoc = this.pianificazioneDoc.CORSOPRESENZE.find(elItem => {
+            return elItem.ID == receivedPresenza.ID
+          });
+
+          if (presenzaDoc) {
+            presenzaDoc.FLAGUPDATEMOB = receivedPresenza.FLAGUPDATEMOB;
+            presenzaDoc.MSGUPDATEMOB = receivedPresenza.MSGUPDATEMOB;
+
+            if (presenzaDoc.FLAGUPDATEMOB == true) {
+              presenzaDoc.setOriginal();
+            }
+          }
+
+        });
+
+        //Splitto come sempre le presenze
+        this.setAndSplitListPresenze(this.pianificazioneDoc.CORSOPRESENZE);
+
+        
+      }
+    }
+  }
+
+  /**
+   * Richiesto un refresh dei dati 
+   */
+  onClickRefreshData() {
+    let myButtons: AlertButton[] = [
+      {
+        text: 'Ricarica',
+        handler: () => {
+            this.onRefreshData();
+        }
+      },
+      {
+        text: 'Annulla',
+        role: 'cancel'
+      }
+    ];
+
+    let message = '<p>' + `Stai ricaricando la scheda presenze del corso` + '</p>';
+    message += '<p>' + `Tutti i dai non salvati andranno persi` + '</p>';
+    message += '<p>' + `Vuoi continuare ?` + '</p>';
+
+    //Ora posso chiedere
+    this.startService.presentAlertMessage(message, 'Ricarica Dati', myButtons);    
+  }
+
+  /**
+   * Esegue il refresh dei dati
+   */
+  onRefreshData() {
+
+      this.loadingComplete = false;
+      //Effettuo il recupero dei documenti interessati
+      this.requestDocs()
+      .then(() => {
+            this.loadingComplete = true;
+            this.loadingError = false;
+            //Tutto è pronto
+            this.startService.presentToastMessage('Scheda presenze caricata');
+      })
+      .catch(error => {
+        this.loadingComplete = true;
+        this.loadingError = true;
+
+        if (typeof error == 'string') {
+          this.messageError = error
+        }
+        else {
+          try {
+            this.messageError = error.message;
+          } catch (error) {
+            this.messageError = 'Errore nel recupero dei dati'
+          }
+        }
+      })
+  }
 
  onScroll(event:any){
     if(event.detail.currentY < 5){

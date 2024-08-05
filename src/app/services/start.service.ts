@@ -1119,12 +1119,22 @@ get lastDateCorsiGiornalieri(): Date {
       return this.corsoCalendarioService.requestPresenze(idPianificazione);
   }   
 
+  /**
+   * Chiede al server le presenze e le aggiunge al documento di pianificazione
+   * @param docPianificazione 
+   * @returns 
+   */
   requestPresenzeFor(docPianificazione: PianificazioneCorso){
     return this.corsoCalendarioService.requestPresenzeFor(docPianificazione);
   }
 
-  requestUpdatePresenze(docPianificazione: PianificazioneCorso){
-    return this.corsoCalendarioService.updatePresenze(docPianificazione);
+  /**
+   * Richiede l'aggiornamento di tutte le presenze
+   * @param docPianificazione 
+   * @returns 
+   */
+  requestUpdateAllPresenze(docPianificazione: PianificazioneCorso){
+    return this.corsoCalendarioService.updateAllPresenze(docPianificazione);
   }
 
 

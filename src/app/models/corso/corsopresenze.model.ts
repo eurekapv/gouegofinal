@@ -14,6 +14,8 @@ export class CorsoPresenze extends IDDocument {
     DATACERTIFICATOMEDICO: Date;
     STATOISCRIZIONE: StatoIscrizione;
     ALERTPAGAMENTI: boolean;
+    MSGUPDATEMOB: string;
+    FLAGUPDATEMOB: boolean;
 
     /**
      * Ritorna il descrittore della Struttura Campi
@@ -25,7 +27,10 @@ export class CorsoPresenze extends IDDocument {
             'IDUTENTE',
             'NOMINATIVO',
             'NOTE',
-            'IDUSERSETTING'
+            'IDUSERSETTING',
+            'ALERTPAGAMENTI',
+            'MSGUPDATEMOB',
+            'FLAGUPDATEMOB'
         ];
         let arNumber = ['STATOISCRIZIONE'];
         let arBoolean = ['PRESENTE','ALERTPAGAMENTI'];

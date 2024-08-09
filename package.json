@@ -1,6 +1,6 @@
 {
   "name": "gouego",
-  "version": "2.5",
+  "version": "2.6",
   "appSignature": "2316854354984354687654684698",
   "advertisingTestMode": false,
   "advertisingPersonalized": false,
@@ -14,7 +14,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "buildprod": "ionic build --prod --aot --outputHashing=all",
-
+    "webbuildprod": "ionic build --prod --aot --outputHashing=all && node zipbuild.mjs",
     "iosbuildprod": "sudo ionic build --prod --aot --outputHashing=all",
     "syncios": "sudo npx cap sync ios",
     "onerrorsyncbeachforfun": "cd application_build/beachforfun/ios/App && pod install --allow-root",
@@ -81,6 +81,7 @@
     "stream-browserify": "^3.0.0",
     "swiper": "^9.3.1",
     "tslib": "^2.6.2",
+    "zip-a-folder": "^3.1.7",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

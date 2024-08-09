@@ -22,6 +22,7 @@
     *ngIf="_itemPresenza.FLAGUPDATEMOB == true || _itemPresenza.FLAGUPDATEMOB == false">
 
     <ion-item 
+        (click)="onClickCloseMsgUpdate()" 
         color = "success"
         *ngIf="_itemPresenza.FLAGUPDATEMOB == true">
       
@@ -34,11 +35,18 @@
           class="ion-text-wrap" >
           Presenza aggiornata
       </ion-label>
+
+      <ion-icon 
+        size="large"
+        slot="end"
+        name="close-outline">
+      </ion-icon>
       
     </ion-item>
 
 
-    <ion-item 
+    <ion-item
+        (click)="onClickCloseMsgUpdate()" 
         color = "danger"
         *ngIf="_itemPresenza.FLAGUPDATEMOB == false">
       
@@ -51,7 +59,11 @@
           class="ion-text-wrap" >
           {{_itemPresenza.MSGUPDATEMOB}}
       </ion-label>
-      
+      <ion-icon 
+        size="large"
+        slot="end"
+        name="close-outline">
+      </ion-icon>
     </ion-item>
 
   </ion-list>
@@ -69,7 +81,9 @@
     <ion-col size="10">
       <p 
          [class]="'ion-no-margin' + ' ' + 'ion-text-small' + ' ' + 'ion-text-' + coloreCertificato">
-        Certificato Mecico&nbsp;{{_itemPresenza.DATACERTIFICATOMEDICO ? (_itemPresenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy') : ('NON CONSEGNATO')}}
+         <span>Certificato Medico&nbsp;</span>
+         <span *ngIf="_itemPresenza.existDataCertificato()">{{_itemPresenza.DATACERTIFICATOMEDICO | date: 'dd/MM/yyyy'}}</span>
+         <span *ngIf="!_itemPresenza.existDataCertificato()" class="ion-text-bold">NON CONSEGNATO</span>
       </p>
     </ion-col>
   </ion-row>
@@ -85,7 +99,7 @@
       </ion-col>
       <ion-col
         size="10">
-        <p class="ion-text-small ion-text-danger">Scadenze NON SALDATE</p>
+        <p class="ion-text-small ion-text-danger">Scadenze <strong>NON SALDATE</strong></p>
       </ion-col>
   </ion-row>
 

@@ -9,7 +9,7 @@ export const environment = {
   production: true,
   appSignature: packageJson.appSignature,
   version: packageJson.version,
-  releaseDate: '2024-07-08',
+  releaseDate: '2024-08-09',
   options: {
     debugMode: 'full' as DebugMode, //off, minimal, full
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
@@ -20,7 +20,7 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor',
-    activeId: 'progettorieduca',
+    activeId: 'beachforfun',
     customer: {
       openbeach: {
         name: 'openbeach',

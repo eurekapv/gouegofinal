@@ -143,7 +143,7 @@ export class DetailPresenzaPage implements OnInit {
                          .then(myCorso => {
                             //Ho recuperato il corso e lo memorizzo
                             this.corsoDoc = myCorso;
-                            console.log(`Area = ${this.corsoDoc.IDAREAOPERATIVA}`);
+                            
                             //Ritorno la pianificazione perchè mi serve lei
                             return this.requestUtenteTotaleMinuti(this.listPresenze, this.corsoDoc.IDAREAOPERATIVA);
                         })
@@ -325,18 +325,28 @@ export class DetailPresenzaPage implements OnInit {
 
     if (this.canUpdate) {
 
-      if (elem.PRESENTE == null || elem.PRESENTE == undefined){
-        elem.PRESENTE = true;
-      }
-      else {
-        elem.PRESENTE = !elem.PRESENTE;
-      }
+      console.log(elem.getOriginalValue<boolean>('PRESENTE'));
 
-      if (elem.PRESENTE) {
-        message = elem.NOMINATIVO + ' Presente';
+      //Siccome il record non è ancora stato spedito allora posso far scegliere tra 3 valori (Non impostato/Presente/Assente)
+      if (elem.getOriginalValue<boolean>('PRESENTE') == null || elem.getOriginalValue<boolean>('PRESENTE') == undefined) {
+        if (elem.PRESENTE == true) {
+          elem.PRESENTE = false;
+          message = elem.NOMINATIVO + ' assente';
+        }
+        else if (elem.PRESENTE == false) {
+          elem.PRESENTE = null;
+          message = elem.NOMINATIVO + ' non impostato';
+        }
+        else {
+          elem.PRESENTE = true;
+          message = elem.NOMINATIVO + ' presente';
+        }
+
       }
       else {
-        message = elem.NOMINATIVO +  ' Assente';
+        //E' già stato impostato almeno una volta e salvato (quindi posso scegliere solo presente assente)
+        elem.PRESENTE = !elem.PRESENTE;
+        message = elem.NOMINATIVO + (elem.PRESENTE ? ' presente' : ' assente');
       }
 
       this.startService.presentToastMessage(message);
@@ -360,7 +370,7 @@ export class DetailPresenzaPage implements OnInit {
       }
     ];
 
-    let message = '<p>' + `Stai inviando i dati aggiornati della lezione alla segreteri` + '</p>';
+    let message = '<p>' + `Stai inviando i dati aggiornati della lezione alla segreteria` + '</p>';
     message += '<p>' + `Vuoi continuare ?` + '</p>';
 
     //Ora posso chiedere
@@ -442,7 +452,7 @@ export class DetailPresenzaPage implements OnInit {
   onFailedSubmit(response: PostResponse): void {
     let serverDoc: PianificazioneCorso;
 
-    console.log('Qui');
+    
     //Ho ricevuto un documento di risposta
     if (response && this.pianificazioneDoc) {
       //In ListDocument trovo il documento Pianificazione che ho inviato

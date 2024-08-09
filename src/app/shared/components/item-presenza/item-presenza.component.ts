@@ -223,4 +223,13 @@ export class ItemPresenzaComponent implements OnInit {
 
     return color;
   }  
+
+  /**
+   * Click per nascondere il messaggio di update
+   */
+  onClickCloseMsgUpdate() {
+    if (this._itemPresenza) {
+      this._itemPresenza.FLAGUPDATEMOB = null;
+    }
+  }
 }

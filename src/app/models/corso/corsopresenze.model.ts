@@ -29,11 +29,10 @@ export class CorsoPresenze extends IDDocument {
             'NOTE',
             'IDUSERSETTING',
             'ALERTPAGAMENTI',
-            'MSGUPDATEMOB',
-            'FLAGUPDATEMOB'
+            'MSGUPDATEMOB'
         ];
         let arNumber = ['STATOISCRIZIONE'];
-        let arBoolean = ['PRESENTE','ALERTPAGAMENTI'];
+        let arBoolean = ['PRESENTE','ALERTPAGAMENTI', 'FLAGUPDATEMOB'];
         let arDate = ['DATACERTIFICATOMEDICO'];
         let arDateTime =['DATAORASETTING'];
         let arTime = [];
@@ -60,6 +59,15 @@ export class CorsoPresenze extends IDDocument {
 
     constructor(onlyInstance?: boolean){
         super(onlyInstance);
+    }
+
+    existDataCertificato(): boolean {
+        let flagExist: boolean = false;
+        if (this.DATACERTIFICATOMEDICO) {
+            flagExist = true;
+        }
+
+        return flagExist;
     }
 
 }

@@ -621,6 +621,26 @@ import { ErrorDoc } from './error-doc.model';
 
     }
 
+    /**
+     * Ritorna il valore originale della proprietà
+     * @param propName 
+     * @returns 
+     */
+    getOriginalValue<T>(propName: string): T {
+      let idProp: IDProperty;
+      let value: T;
+
+      if (this._original) {
+        //Chiedo la proprietà
+        idProp = this._original.getIDPropertyByName(propName);
+        if (idProp) {
+          value = idProp.value;
+        }
+      }
+
+      return value;
+    }
+
 
 
     /**
@@ -1346,6 +1366,25 @@ import { ErrorDoc } from './error-doc.model';
 
     constructor () {
       this._propOriginals = [];
+    }
+
+
+    /**
+     * Ritorna un IDProperty partendo dal nome
+     * @param propName 
+     */
+    public getIDPropertyByName(propName: string): IDProperty {
+      let propDoc: IDProperty;
+      if (propName && propName.length != 0) {
+
+          if (this._propOriginals && this._propOriginals.length != 0)  {
+            propDoc = this._propOriginals.find(elProp => {
+              return elProp.name == propName
+            });
+          }
+      }
+
+      return propDoc;
     }
 
     /**

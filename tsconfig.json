@@ -10,7 +10,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "ES2016",
+    "target": "ES2022",
     "module": "es2020",
     "typeRoots": [
       "node_modules/@types"
@@ -20,12 +20,17 @@
       "dom",
       "ES2021.String"
     ],
-    "paths":{
-      "crypto":["node_modules/crypto-browserify"],
-      "stream":["node_modules/stream-browserify"]
+    "paths": {
+      "crypto": [
+        "node_modules/crypto-browserify"
+      ],
+      "stream": [
+        "node_modules/stream-browserify"
+      ]
     },
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": false
   },
   "allowedCommonJsDependencies": ["crypto"],
   "angularCompilerOptions": {

@@ -26,8 +26,6 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini nel proprio profilo utente od eventualmente leggere barcode relativi alle prenotazioni</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
 	<key>NSMicrophoneUsageDescription</key>

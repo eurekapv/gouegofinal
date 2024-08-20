@@ -1,6 +1,7 @@
 import { AfterViewInit, Component,  OnDestroy, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+
 import { StartService } from 'src/app/services/start.service';
 
 @Component({
@@ -269,4 +270,8 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
     })
   }
 
+
+  scanItem() {
+    
+  }
 }

@@ -1,8 +1,8 @@
 import { AfterViewInit, Component,  OnDestroy, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
-
+import { CapacitorBarcodeScanner, CapacitorBarcodeScannerOptions, CapacitorBarcodeScannerScanResult, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner';
 import { StartService } from 'src/app/services/start.service';
+
 
 @Component({
   selector: 'app-qr-code-scanner',
@@ -28,13 +28,13 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit() {
-    BarcodeScanner.prepare();
+    //BarcodeScanner.prepare();
     //Inizio il processo 
     this.initScannerOperation();
   }
 
   ngOnDestroy(): void {
-    BarcodeScanner.stopScan();
+    //BarcodeScanner.stopScan();
     //Nascondo il Background
     this.showHideHTMLBackground(true);
   }
@@ -48,40 +48,41 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
    * @deprecated Per ora usiamo barcodeGrantPermission
    * @returns TRUE/FALSE
    */
-  async checkPermission():Promise<boolean> {
+  // async checkPermission():Promise<boolean> {
 
-    return new Promise<boolean>(async (resolve, reject) => {
-      const status = await BarcodeScanner.checkPermission({ force: true });
+  //   return new Promise<boolean>(async (resolve, reject) => {
 
-      if (status.granted) {
-        resolve(true);
-      }
-      else if (status.denied) {
+  //     const status = await BarcodeScanner.checkPermission({ force: true });
 
-        //Porto l'utente alle impostazioni
-        let idTitle = 'Permesso non impostato';
-        let idMessage = `Consentire l'utilizzo della fotocamera nelle impostazioni`;
-        this.srvAgora.presentAlertMessage(idMessage, idTitle,
-                          [{
-                            text: 'No',
-                            role: 'cancel'
-                          }, 
-                          {
-                            text: 'Vai a Impostazioni',
-                            handler: () => {
+  //     if (status.granted) {
+  //       resolve(true);
+  //     }
+  //     else if (status.denied) {
 
-                              BarcodeScanner.openAppSettings();
-                              resolve(false);
-                            }
-                          }]);
+  //       //Porto l'utente alle impostazioni
+  //       let idTitle = 'Permesso non impostato';
+  //       let idMessage = `Consentire l'utilizzo della fotocamera nelle impostazioni`;
+  //       this.srvAgora.presentAlertMessage(idMessage, idTitle,
+  //                         [{
+  //                           text: 'No',
+  //                           role: 'cancel'
+  //                         }, 
+  //                         {
+  //                           text: 'Vai a Impostazioni',
+  //                           handler: () => {
 
-      }
-      else {
-        resolve(false);
-      }
-    })
+  //                             BarcodeScanner.openAppSettings();
+  //                             resolve(false);
+  //                           }
+  //                         }]);
 
-  }
+  //     }
+  //     else {
+  //       resolve(false);
+  //     }
+  //   })
+
+  // }
 
 
   /**
@@ -90,72 +91,72 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
    * 
    * @returns 
    */
-  async barcodeGrantPermission():Promise<boolean> {
+  // async barcodeGrantPermission():Promise<boolean> {
 
-    // check if user already granted permission
-    const status = await BarcodeScanner.checkPermission({ force: false });
+  //   // check if user already granted permission
+  //   const status = await BarcodeScanner.checkPermission({ force: false });
   
-    if (status.granted) {
-      // user granted permission
-      return true;
-    }
+  //   if (status.granted) {
+  //     // user granted permission
+  //     return true;
+  //   }
   
-    if (status.denied) {
-      // user denied permission
-      // redirect user to app settings if they want to grant it anyway
-      const c = confirm(
-        `Per consentire l'uso della fotocamera è necessario abilitarla nelle impostazioni.`      
-      );
+  //   if (status.denied) {
+  //     // user denied permission
+  //     // redirect user to app settings if they want to grant it anyway
+  //     const c = confirm(
+  //       `Per consentire l'uso della fotocamera è necessario abilitarla nelle impostazioni.`      
+  //     );
 
-      if (c) {
-          BarcodeScanner.openAppSettings();
-      }
+  //     if (c) {
+  //         BarcodeScanner.openAppSettings();
+  //     }
 
-      return false;
-    }
+  //     return false;
+  //   }
   
-    if (status.asked) {
-      // system requested the user for permission during this call
-      // only possible when force set to true
+  //   if (status.asked) {
+  //     // system requested the user for permission during this call
+  //     // only possible when force set to true
 
-    }
+  //   }
   
-    if (status.neverAsked) {
-      // user has not been requested this permission before
-      // it is advised to show the user some sort of prompt
-      // this way you will not waste your only chance to ask for the permission
-      const c = confirm(
-        `E' necessario autorizzare l'utilizzo della fotocamera per effettuare la scansione barcode`
-      );
-      if (!c) {
-        return false;
-      }
-    }
+  //   if (status.neverAsked) {
+  //     // user has not been requested this permission before
+  //     // it is advised to show the user some sort of prompt
+  //     // this way you will not waste your only chance to ask for the permission
+  //     const c = confirm(
+  //       `E' necessario autorizzare l'utilizzo della fotocamera per effettuare la scansione barcode`
+  //     );
+  //     if (!c) {
+  //       return false;
+  //     }
+  //   }
   
-    if (status.restricted || status.unknown) {
-      // ios only
-      // probably means the permission has been denied
-      return false;
-    }
+  //   if (status.restricted || status.unknown) {
+  //     // ios only
+  //     // probably means the permission has been denied
+  //     return false;
+  //   }
   
-    // user has not denied permission
-    // but the user also has not yet granted the permission
-    // so request it
-    const statusRequest = await BarcodeScanner.checkPermission({ force: true });
+  //   // user has not denied permission
+  //   // but the user also has not yet granted the permission
+  //   // so request it
+  //   const statusRequest = await BarcodeScanner.checkPermission({ force: true });
   
-    if (statusRequest.asked) {
-      // system requested the user for permission during this call
-      // only possible when force set to true
-    }
+  //   if (statusRequest.asked) {
+  //     // system requested the user for permission during this call
+  //     // only possible when force set to true
+  //   }
   
-    if (statusRequest.granted) {
-      // the user did grant the permission now
-      return true;
-    }
+  //   if (statusRequest.granted) {
+  //     // the user did grant the permission now
+  //     return true;
+  //   }
   
-    // user did not grant the permission, so he must have declined the request
-    return false;
-  };
+  //   // user did not grant the permission, so he must have declined the request
+  //   return false;
+  // };
 
   /**
    * Mostrao nasconde il background classico
@@ -187,7 +188,7 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
     //Nascondo il Background
     this.showHideHTMLBackground(false);
 
-    this.startScanner()
+    this.startScanBarcode()
         .then(resultScan => {
 
           this.readResult = resultScan;
@@ -201,61 +202,60 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
         })
   }
 
-  //Apre la fotocamera per la lettura del QRCode
-  startScanner(): Promise<string> {
+    // //Apre la fotocamera per la lettura del QRCode
+    // startScanner(): Promise<string> {
 
-    return new Promise<string>((resolve, reject) => {
-      
-      //Controlliamo i permessi prima di proseguire 
-      this.barcodeGrantPermission()
-          .then(resultPermission => {
-            //Permesso concesso
-            if (resultPermission) {
+    //   return new Promise<string>((resolve, reject) => {
+        
+    //     //Controlliamo i permessi prima di proseguire 
+    //     this.barcodeGrantPermission()
+    //         .then(resultPermission => {
+    //           //Permesso concesso
+    //           if (resultPermission) {
+    
+    //             this.scanActive = true;
   
-              this.scanActive = true;
-
-              BarcodeScanner.hideBackground(); // make background of WebView transparent
-          
-              // start scanning and wait for a result
-              BarcodeScanner.startScan()
-                            .then(result => {
-                              
-                              this.scanActive = false;
-
-                              // if the result has content
-                              if (result.hasContent) {
-                                  
-                                  resolve(result.content);
-                              }
-                              else {
-                                reject('No barcode read');
-                              }
+    //             BarcodeScanner.hideBackground(); // make background of WebView transparent
+            
+    //             // start scanning and wait for a result
+    //             BarcodeScanner.startScan()
+    //                           .then(result => {
+                                
+    //                             this.scanActive = false;
   
-                            })
-                            .catch(error => {
-                              reject(error);
-                            }); 
-          
+    //                             // if the result has content
+    //                             if (result.hasContent) {
+                                    
+    //                                 resolve(result.content);
+    //                             }
+    //                             else {
+    //                               reject('No barcode read');
+    //                             }
+    
+    //                           })
+    //                           .catch(error => {
+    //                             reject(error);
+    //                           }); 
+            
+    
+    //           }
+    //           else {
+    //             this.scanActive = false;
+    //             reject('Permessi Fotocamera non concessi');
+    //           }
+    //         })
+    //         .catch(error => {
+    //             reject(error);
+    //         })
   
-            }
-            else {
-              this.scanActive = false;
-              reject('Permessi Fotocamera non concessi');
-            }
-          })
-          .catch(error => {
-              reject(error);
-          })
-
-    })
-
-  }
+    //   })
+  
+    // }
 
   /**
    * Interrompe lo scan barcode
    */
   stopScanner() {
-    BarcodeScanner.stopScan();
     this.scanActive = false;
     this.closeScanner();
   }
@@ -271,7 +271,26 @@ export class QrCodeScannerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
 
-  scanItem() {
-    
+  startScanBarcode(): Promise<string>  {
+
+    return new Promise<string>((resolve, reject) => {
+
+      let options: CapacitorBarcodeScannerOptions = {
+        hint:  CapacitorBarcodeScannerTypeHint.ALL,
+        scanInstructions: '' 
+      }
+  
+      this.scanActive = true;
+      CapacitorBarcodeScanner.scanBarcode(options)
+                            .then((result: CapacitorBarcodeScannerScanResult) => {
+                                this.scanActive = false;
+                                resolve(result.ScanResult);
+                            })
+                            .catch(error => {
+                              this.scanActive = false;
+                              reject(error);
+                            })
+      
+    })
   }
 }

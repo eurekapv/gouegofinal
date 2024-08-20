@@ -96,7 +96,7 @@
     "@babel/core": "^7.22.8",
     "@babel/traverse": "^7.22.8",
     "@capacitor/cli": "6.1.2",
-    "@ionic/angular-toolkit": "^6.0.0",
+    "@ionic/angular-toolkit": "11.0.1",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^16.11.7",

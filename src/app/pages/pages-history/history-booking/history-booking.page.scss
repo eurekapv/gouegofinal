@@ -14,13 +14,21 @@ swiper-container {
 
 .div-qr
 {
+    & {
+        background-color: var(--ion-color-light) ;
+        padding-top:3vh;
+        padding-bottom:3vh;
+    
+    }
+    
     h6{
         margin: 0px;
         margin-bottom: 8px;
         color: var(--ion-color-primary);
         font-weight: 700;
     }
-    p{
+
+    p {
         font-size: 14px;
         margin: 0px;
         margin-top: 8px;
@@ -28,9 +36,7 @@ swiper-container {
         padding-left: 25px;
         padding-right: 25px;
     }
-    background-color: var(--ion-color-light) ;
-    padding-top:3vh;
-    padding-bottom:3vh;
+
 }
     
 

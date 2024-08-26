@@ -46,7 +46,7 @@
         <ion-label class="ion-text-wrap">
           <h2>{{pianificazioneDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
           <h2>dalle {{pianificazioneDoc.DATAORAINIZIO | date: 'H.mm'}} alle {{pianificazioneDoc.DATAORAFINE | date: 'H.mm'}}</h2>
-          <p>per {{pianificazioneDoc.getMinutiLezione()}} minuti</p>
+          <p>per {{pianificazioneDoc.ORELEZIONE | labelNumeroOre : 'long'}}</p>
           <h1>{{pianificazioneDoc['_DENOMINAZIONE_Corso']}}</h1>
           <p>{{(pianificazioneDoc['_DENOMINAZIONE_Location'] | titlecase) + ' - ' + (pianificazioneDoc['_DENOMINAZIONE_Campo'] | titlecase)}}</p>
         </ion-label>

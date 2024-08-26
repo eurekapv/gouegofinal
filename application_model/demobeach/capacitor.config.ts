@@ -1,16 +1,17 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
-//#region B4FNOVARA
+//#region DEMOBEACH
+
 const config: CapacitorConfig = {
-  "appId": "com.b4fnovara",
-  "appName": "Beach For Fun",
+  "appId": "com.DEMOBEACH",
+  "appName": "DemoBeach",
   "webDir": "www",
   "backgroundColor": "#ffffffff",
   "android": {
-    "path": "application_build/beachforfun/android"
+    "path": "application_build/demobeach/android"
   },
   "ios": {
-    "path": "application_build/beachforfun/ios",
+    "path": "application_build/demobeach/ios",
     "cordovaLinkerFlags": [
       "-ObjC"
     ]
@@ -46,8 +47,7 @@ const config: CapacitorConfig = {
       "androidScaleType": "CENTER_CROP"
     }
   }
-};
+}; 
 
 //#endregion
-
 export default config;

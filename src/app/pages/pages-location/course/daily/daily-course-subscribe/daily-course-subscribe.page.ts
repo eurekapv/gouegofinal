@@ -139,8 +139,9 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
 
       //Controlla se è nel futuro
       this.flagFuture = MyDateTime.isAfter(this._corsoDoc.DATA, new Date());
-      console.log(this.flagFuture ? 'Corso nel futuro' : 'Corso nel passato');
-      console.log(this._corsoDoc);
+      
+      LogApp.consoleLog(this.flagFuture ? 'Corso nel futuro' : 'Corso nel passato');
+      LogApp.consoleLog(this._corsoDoc);
 
       if (this._areaDoc) {
 
@@ -505,9 +506,9 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
   //#endregion
 
   onClickDebug() {
-    console.log(this.flagIscrizioneAttiva)
-    console.log(this.flagUserLogged)
-    console.log(this.minutiValue)
+    LogApp.consoleLog(this.flagIscrizioneAttiva)
+    LogApp.consoleLog(this.flagUserLogged)
+    LogApp.consoleLog(this.minutiValue)
 
 
   }

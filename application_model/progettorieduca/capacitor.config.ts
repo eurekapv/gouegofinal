@@ -1,16 +1,17 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
-//#region B4FNOVARA
+//#region PROGETTO RIEDUCA
+
 const config: CapacitorConfig = {
-  "appId": "com.b4fnovara",
-  "appName": "Beach For Fun",
+  "appId": "com.gouego.progettorieduca",
+  "appName": "Progetto Rieduca",
   "webDir": "www",
   "backgroundColor": "#ffffffff",
   "android": {
-    "path": "application_build/beachforfun/android"
+    "path": "application_build/progettorieduca/android"
   },
   "ios": {
-    "path": "application_build/beachforfun/ios",
+    "path": "application_build/progettorieduca/ios",
     "cordovaLinkerFlags": [
       "-ObjC"
     ]
@@ -47,6 +48,7 @@ const config: CapacitorConfig = {
     }
   }
 };
+
 
 //#endregion
 

@@ -217,7 +217,7 @@ export class DetailPresenzaPage implements OnInit {
                          .then(receivedPacchetti => {
                             //Memorizzo i pacchetti
                             this.listPacchettiMinuti = receivedPacchetti;
-                            console.log(this.listPacchettiMinuti);
+                            LogApp.consoleLog(this.listPacchettiMinuti);
                             resolve();
                          })
                          .catch(error => {
@@ -324,9 +324,7 @@ export class DetailPresenzaPage implements OnInit {
     let message = '';
 
     if (this.canUpdate) {
-
-      console.log(elem.getOriginalValue<boolean>('PRESENTE'));
-
+      
       //Siccome il record non è ancora stato spedito allora posso far scegliere tra 3 valori (Non impostato/Presente/Assente)
       if (elem.getOriginalValue<boolean>('PRESENTE') == null || elem.getOriginalValue<boolean>('PRESENTE') == undefined) {
         if (elem.PRESENTE == true) {

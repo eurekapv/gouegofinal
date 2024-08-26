@@ -482,7 +482,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
    * @param newDate Nuova Data
    */
   onChangeBookDay(newDate: Date) {
-    console.log(newDate);
+    LogApp.consoleLog(newDate);
     this.actualBookDay = newDate;
 
     //Richiedo le occupazioni

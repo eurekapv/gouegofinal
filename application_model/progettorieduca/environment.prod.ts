@@ -1,0 +1,52 @@
+import packageJson  from '../../package.json';
+
+export enum ConnectionMode {
+  local = 'local',
+  external = 'external'
+}
+
+export const environment = {
+  production: true,
+  appSignature: packageJson.appSignature,
+  version: packageJson.version,
+  releaseDate: packageJson.releaseDate,
+  options: {
+    debugMode: 'full' as DebugMode, //off, minimal, full
+    overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
+  },  
+  externalUrl: {
+    alchimistilab: 'https://www.alchimistilab.it'
+  },
+  connection: {
+    mode: ConnectionMode.external,
+    comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor',
+    activeId: 'progettorieduca',
+    customer: {
+      progettorieduca: {
+        name: 'progettorieduca',
+        appId: '130204BF-C4E7-4CF9-8101-C3B36E184D4B',
+        urlId: 'progettorieduca.gouego.com',    
+      },      
+    },
+    urlLocation: {
+      local: {
+        urlProtocol: 'http',
+        urlDomain: 'localhost/gouegoapi',
+        urlFileServer: 'localhost/gouego'
+      },
+      production: {
+        urlProtocol: 'https',
+        urlDomain: 'api.gouego.com',
+        urlFileServer: 'app.gouego.com/admin'
+      }
+    }
+  },  
+  additionalConfig: {
+    defaultShopImage: 'assets/commercial/basketarticoli_small.png'
+  }   
+
+};
+
+export type ViewConfigs = 'desktop' | 'mobile' | null;
+
+export type DebugMode = 'full' | 'minimal' | 'off';

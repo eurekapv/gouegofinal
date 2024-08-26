@@ -2,6 +2,7 @@ import { Utente } from "src/app/models/utente/utente.model";
 import { IDDocument } from "./iddocument.model";
 import { DynamicClass } from "./structure.model";
 import { ErrorDoc } from "./error-doc.model";
+import { LogApp } from "src/app/models/zsupport/log.model";
 
 export class PostResponse {
 
@@ -84,7 +85,7 @@ export class PostResponse {
                                 newClass.setJSONProperty(elDoc);
                                 this.listDocuments.push(newClass);
                             } catch (error) {
-                                console.log(error);
+                                LogApp.consoleLog(error, "error");
                             }                            
                         })
                     }

@@ -26,7 +26,7 @@ export class ItemPresenzaComponent implements OnInit {
 
   @Input() set itemPresenza(value: CorsoPresenze) {
     this._itemPresenza = value;
-    console.log(this._itemPresenza)
+    
     if (value.FLAGUPDATEMOB == true || value.FLAGUPDATEMOB == false) {
       this._showMessageUpdate = true;
     }

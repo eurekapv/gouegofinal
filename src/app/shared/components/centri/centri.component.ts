@@ -3,6 +3,7 @@ import { Area } from 'src/app/models/struttura/area.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { TipoSocieta } from 'src/app/models/zsupport/valuelist.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 @Component({
   selector: 'app-centri',
@@ -70,9 +71,8 @@ export class CentriComponent implements OnInit {
     //Imposto URL della cover
     this.setUrlCoverCard();
 
-
-    console.log(this._locationDoc.DENOMINAZIONE)
-    console.log(this._locationDoc)
+    LogApp.consoleLog(this._locationDoc.DENOMINAZIONE)
+    LogApp.consoleLog(this._locationDoc)
   }
 
   //Centratura della Card

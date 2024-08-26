@@ -446,20 +446,22 @@ export class HistoryCoursePage implements OnInit {
     let flagDelete: boolean = false;
 
     if (this.isLezioneSingola) {
-      console.log('Data Singola')
+      
+      LogApp.consoleLog('Data Singola');
+
       if (this.dataPianificataDoc) {
-        console.log(this.dataPianificataDoc)
+        LogApp.consoleLog(this.dataPianificataDoc);
 
         //Controlliamo che la lezione sia nel futuro
         if (MyDateTime.isAfter(this.dataPianificataDoc.DATAORAINIZIO, new Date())) {
-          console.log('Lezione nel futuro');
+          LogApp.consoleLog('Lezione nel futuro');
 
           if (this.areaDoc) {
-            console.log(this.areaDoc);
+            LogApp.consoleLog(this.areaDoc);
 
             switch (this.areaDoc.APPDELETEISCRIZIONIFLAG) {
               case  CancellazioniIscrizioniGiornaliere.sempre:
-                  console.log('Sempre abilitate')
+                  LogApp.consoleLog('Sempre abilitate')
                   flagDelete = true;
                 break;
 
@@ -470,10 +472,10 @@ export class HistoryCoursePage implements OnInit {
                     numHours = this.areaDoc.APPDELETEISCRIZIONIORE;
                   }
 
-                  console.log(`Limitate entro ${numHours} ore`)
+                  LogApp.consoleLog(`Limitate entro ${numHours} ore`)
                   //Se aggiungo ad adesso le ore
                   let newDate = MyDateTime.calcola(new Date(), numHours, TypePeriod.hours);
-                  console.log(newDate);
+                  LogApp.consoleLog(newDate);
                   //La data è ancora prima dell'inizio ?
                   if (MyDateTime.isBefore(newDate, this.dataPianificataDoc.DATAORAINIZIO)) {
                     flagDelete = true;

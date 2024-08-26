@@ -8,6 +8,7 @@ import { DetailPresenzaPageRoutingModule } from './detail-presenza-routing.modul
 
 import { DetailPresenzaPage } from './detail-presenza.page';
 import { SharedComponentsModule } from "../../../../shared/components/shared-components.module";
+import { PipesModule } from 'src/app/shared/pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { SharedComponentsModule } from "../../../../shared/components/shared-com
     FormsModule,
     IonicModule,
     DetailPresenzaPageRoutingModule,
-    SharedComponentsModule
+    SharedComponentsModule,
+    PipesModule
 ],
   declarations: [DetailPresenzaPage]
 })

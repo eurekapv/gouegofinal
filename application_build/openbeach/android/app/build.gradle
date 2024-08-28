@@ -5,10 +5,10 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.gouego"
-        minSdk 33
+        minSdk 29
         targetSdk targetSdkVersion
-        versionCode 20
-        versionName '2.6'
+        versionCode 21
+        versionName '2.7'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

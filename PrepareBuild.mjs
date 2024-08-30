@@ -1,5 +1,15 @@
-import { cp, unlink, rm, copyFile, lstat } from 'fs/promises';
 import { lstatSync, existsSync, copyFileSync, constants } from 'fs';
+
+/*
+Prima di eseguire qualsiasi Deploy utilizzare questa classe per copiare correttamente i 
+file relativi alle società sportive
+Comando:
+> node preparebuild.mjs --customer <societyname>
+Dove <societyname> sarà:
+openbeach
+beachforfun
+progettorieduca
+*/
 
 class PrepareBuild {
 
@@ -60,13 +70,18 @@ class PrepareBuild {
             .then(result => {
                 console.log(`Copy Files from ${this._baseCustomer}: PASSED`);
                 console.log('Now you can use command to build and sync application');
+                console.log('Preparing Build Mobile completed');
+                console.log('');
+                console.log('***** NEXT COMMAND ******');
+                console.log('> npm run buildprod');
+                console.log('> npm run to<PLATFORM>');
+                console.log('> npm run op<PLATFORM>');
             })
             .catch(error => {
                 console.log(error);
+                console.log('Error Preparing Build Mobile');
             })
-            .finally(() => {
-                console.log('Preparing Build Mobile completed');
-            })
+            
 
         
     }

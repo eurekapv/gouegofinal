@@ -5,9 +5,9 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.gouego"
-        minSdk 29
+        minSdk 33
         targetSdk targetSdkVersion
-        versionCode 21
+        versionCode 22
         versionName '2.7'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

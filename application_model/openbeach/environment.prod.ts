@@ -15,7 +15,8 @@ export const environment = {
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
   },  
   externalUrl: {
-    alchimistilab: 'https://www.alchimistilab.it'
+    alchimistilab: 'https://www.alchimistilab.it',
+    stripemanager: 'https://stripemanager.oa.r.appspot.com',
   },
   connection: {
     mode: ConnectionMode.external,

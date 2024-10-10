@@ -1,10 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController, ToastController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { environment } from 'application_model/beachforfun/environment.prod';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
+import { HttpClient } from '@angular/common/http';
 import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/zsupport/valuelist.model';
+import {
+  ApplePayEventsEnum,
+  CreatePaymentSheetOption,
+  GooglePayEventsEnum,
+  PaymentFlowEventsEnum,
+  PaymentSheetEventsEnum,
+  Stripe,
+} from '@capacitor-community/stripe';
 
+import { Area } from 'src/app/models/struttura/area.model';
+import { StartService } from 'src/app/services/start.service';
 //questo mi rende disponibile l'oggetto paypal che è presente nello script caricato dinamicamente
 declare let paypal: any
 
@@ -18,12 +30,17 @@ export class PaymentPage implements OnInit{
 
   @Input() paymentData: PaymentProcess;
   @Input() listAreaPaymentSettings: AreaPaymentSetting[];
+  @Input() areaDoc: Area;
 
   
   urlPayPalScriptCheckOut = 'https://www.paypalobjects.com/api/checkout.js';
   urlPayPalScriptSmart = 'https://www.paypal.com/sdk/js?client-id=';
   urlPaypal = '';
   paypalVersion = 'checkout'; //checkout o smart
+
+  //Informazioni Stripe
+  stripePublicKey: string = '';
+  stripeIdAccountConnected: string = '';
 
   //Proprietà per la visualizzazione delle porzioni di pagamento
   showPaypal = false;
@@ -33,15 +50,44 @@ export class PaymentPage implements OnInit{
 
   //Nessuna modalità di pagamento è stata trovata
   noPayment = false;
-  showProgressBar = true;
+  //Quale pagamento è stato trovato
+  actualPaymentType: PaymentChannel;
+  //Configurazione del pagamento
+  actualPaymentSetting: AreaPaymentSetting; 
 
+  showProgressBar = true;
+  debugMode = false;
+  listErrorMessage: string[] = [];
+
+  //Stati per la gestione Stripe
+  stProcessSheet: 'willReady' | 'Ready' = 'willReady';
+  stProcessFlow: 'willReady' | 'Ready' | 'canConfirm' = 'willReady';
+  stProcessApplePay: 'willReady' | 'Ready' = 'willReady';
+  stProcessGooglePay: 'willReady' | 'Ready' = 'willReady';
+  stIsApplePayAvailable = false;
+  stIsGooglePayAvailable = false;
+
+  /**
+   * Indica se necessario mostrare errori
+   */
+  get showErrorAccordion(): boolean {
+    let flagValue: boolean = false;
+    if (this.listErrorMessage.length != 0) {
+      flagValue = true;
+    }
+
+    return flagValue;
+  }
 
   constructor(
     private modalController: ModalController,
-    private toastController: ToastController
+    private startService: StartService
     ) {
     //Uso la nuova modalità SmartButton di Paypal
     this.paypalVersion = 'smart';
+
+    //Se sono in versione Debug attivo il debug per paypal
+    this.debugMode = environment.options.debugMode == 'off' ? false : true;
   }
 
 
@@ -58,22 +104,38 @@ export class PaymentPage implements OnInit{
 
     //devo scorrere tutti i pagamenti possibili e gestirli
     this.noPayment = true;
+    this.actualPaymentType = null;
 
+    //Controlliamo la lista se ci sono pagamenti In App
     if (this.listAreaPaymentSettings && this.listAreaPaymentSettings.length != 0) {
 
       for (let index = 0; index < this.listAreaPaymentSettings.length; index++) {
-
+        
+        //Preleviamo impostazione di pagamento
         const elSettingPayment = this.listAreaPaymentSettings[index];
+        console.log(elSettingPayment);
 
+        //E' un tipo di pagamento in APP
         if (elSettingPayment.paymentInApp) {
 
-          switch (elSettingPayment.TIPOPAYMENT){
+          LogApp.consoleLog('Pagamento In App con ' + elSettingPayment.TIPOPAYMENT);
+
+          //Quale Modalita ?
+          switch (elSettingPayment.TIPOPAYMENT) {
+
             case PaymentChannel.paypal:
               //Flag noPayment spento
               this.noPayment = false;
+              //Questo e' quello attivo
+              this.actualPaymentType = elSettingPayment.TIPOPAYMENT;
+              this.actualPaymentSetting = elSettingPayment;
 
               //Pagamento Paypal
               this.showPaypal = true;
+              this.showApplePay = false;
+              this.showGPay = false;
+              this.showStripe = false;
+              
 
               //Determino URL SCRIPT da caricare
               if (this.paypalVersion == 'checkout') {
@@ -94,12 +156,15 @@ export class PaymentPage implements OnInit{
                 }
 
                 this.urlPaypal += '&currency=EUR';
-                  
+
+                if (this.debugMode) {
+                  this.urlPaypal += '&debug=true';
+                }
               }
 
               //Lo script Paypal è già presente nell'header
               if (this.scriptOnHead(this.urlPaypal)) {
-
+                  //Renderizzo i Button
                   setTimeout(()=>{
                     //Renderizzo il bottone
                     this.renderPayPalBtn(elSettingPayment);
@@ -119,7 +184,7 @@ export class PaymentPage implements OnInit{
                 })
                 .catch(() => {
                   //Non sono riuscito a caricare lo script di pagamento, probabilmente le credenziali di paypal sono state impostate male lato server
-                  this.showMessage("Errore nelle impostazioni di PayPal; contatta la struttura")
+                  this.listErrorMessage.push("Errore nelle impostazioni di PayPal; contatta la struttura")
                   this.onCancelPayment()
                 })
 
@@ -134,6 +199,26 @@ export class PaymentPage implements OnInit{
               //Pagamento Stripe
               this.showStripe = true;
 
+              //Questo e' quello attivo
+              this.actualPaymentType = elSettingPayment.TIPOPAYMENT;
+              this.actualPaymentSetting = elSettingPayment;
+
+              if (this.actualPaymentSetting.STENVIRONMENT == PaymentEnvironment.production) {
+                this.stripePublicKey = this.actualPaymentSetting.STPUBLICKEY;
+                this.stripeIdAccountConnected = this.actualPaymentSetting.STIDACCOUNT;
+              }
+              else {
+                this.stripePublicKey = this.actualPaymentSetting.STPUBLICKEYTEST;
+                this.stripeIdAccountConnected = this.actualPaymentSetting.STIDACCOUNTTEST;
+              }
+              
+              //Pagamento Paypal
+              this.showPaypal = false;
+              this.showApplePay = false;
+              this.showGPay = false;
+                            
+              //Preparo l'ambiente Stripe
+              this.renderStripe(elSettingPayment);
             break;
   
             case PaymentChannel.applePay:
@@ -149,7 +234,15 @@ export class PaymentPage implements OnInit{
               break;
   
           }
+
+          //Ho trovato un pagamento da applicare
+          if (this.actualPaymentType) {
+            //Esco dal ciclo
+            break;
+          }
+
         }
+
       }
 
     }
@@ -347,6 +440,223 @@ export class PaymentPage implements OnInit{
   }
 
 
+  //#region STRIPE FUNCTION
+
+  /**
+   * Effettua la preparazione per Stripe
+   * @param paymentSetting 
+   */
+  renderStripe(paymentSetting: AreaPaymentSetting) {
+    
+    if (paymentSetting) {
+      //Fermo la barra di progressione
+      this.showProgressBar = false;
+
+      //Ho i parametri per continuare
+      if (this.stripePublicKey.length != 0 && this.stripeIdAccountConnected.length != 0) {
+        //Inizializzo Stripe
+        Stripe.initialize({publishableKey: this.stripePublicKey, stripeAccount: this.stripeIdAccountConnected});
+
+        //Aggiungo i Listener di Stripe
+        this.addListenerStripe();    
+
+      }
+      else {
+        this.showStripe = false;
+        this.listErrorMessage.push('Parametri di configurazione pagamento non presenti');
+      }
+
+    }
+  }
+
+  /**
+   * Aggiungo i Listener di Stripe
+   */
+  addListenerStripe() {
+    console.log('Add Listener Stripe');
+
+    Stripe.addListener(PaymentSheetEventsEnum.Loaded, () => {
+      this.stProcessSheet = 'Ready';
+      console.log('PaymentSheetEventsEnum.Loaded');
+    });
+
+    Stripe.addListener(PaymentSheetEventsEnum.FailedToLoad, () => {
+      console.log('PaymentSheetEventsEnum.FailedToLoad');
+    });
+
+    Stripe.addListener(PaymentSheetEventsEnum.Completed, () => {
+      //Pagamento completato
+      this.stProcessSheet = 'willReady';
+      console.log('PaymentSheetEventsEnum.Completed');
+    });
+
+    Stripe.addListener(PaymentSheetEventsEnum.Canceled, () => {
+      this.stProcessSheet = 'willReady';
+      console.log('PaymentSheetEventsEnum.Canceled');
+    });
+
+    Stripe.addListener(PaymentSheetEventsEnum.Failed, () => {
+      this.stProcessSheet = 'willReady';
+      console.log('PaymentSheetEventsEnum.Failed');
+    });
+
+    /** ------------------------------------------------------------------- **/
+
+    Stripe.addListener(PaymentFlowEventsEnum.Loaded, () => {
+      this.stProcessFlow = 'Ready';
+      console.log('PaymentFlowEventsEnum.Loaded');
+    });
+
+    Stripe.addListener(PaymentFlowEventsEnum.FailedToLoad, () => {
+      console.log('PaymentFlowEventsEnum.FailedToLoad');
+    });
+
+    Stripe.addListener(PaymentFlowEventsEnum.Completed, () => {
+      this.stProcessFlow = 'willReady';
+      console.log('PaymentFlowEventsEnum.Completed');
+    });
+
+    Stripe.addListener(PaymentFlowEventsEnum.Canceled, () => {
+      this.stProcessFlow = 'willReady';
+      console.log('PaymentFlowEventsEnum.Canceled');
+    });
+
+    Stripe.addListener(PaymentFlowEventsEnum.Failed, () => {
+      this.stProcessFlow = 'willReady';
+      console.log('PaymentFlowEventsEnum.Failed');
+    });
+
+    Stripe.addListener(PaymentFlowEventsEnum.Created, (info) => {
+      console.log(info);
+      this.stProcessFlow = 'canConfirm';
+    });
+
+    /** ------------------------------------------------------------------- **/
+
+    Stripe.addListener(ApplePayEventsEnum.Loaded, () => {
+      this.stProcessApplePay = 'Ready';
+      console.log('ApplePayEventsEnum.Loaded');
+    });
+
+    Stripe.addListener(ApplePayEventsEnum.FailedToLoad, () => {
+      console.log('ApplePayEventsEnum.FailedToLoad');
+    });
+
+    Stripe.addListener(ApplePayEventsEnum.Completed, () => {
+      this.stProcessApplePay = 'willReady';
+      console.log('ApplePayEventsEnum.Completed');
+    });
+
+    Stripe.addListener(ApplePayEventsEnum.Canceled, () => {
+      this.stProcessApplePay = 'willReady';
+      console.log('ApplePayEventsEnum.Canceled');
+    });
+
+    Stripe.addListener(ApplePayEventsEnum.Failed, () => {
+      this.stProcessApplePay = 'willReady';
+      console.log('ApplePayEventsEnum.Failed');
+    });
+
+    Stripe.addListener(ApplePayEventsEnum.DidCreatePaymentMethod, (data) => {
+      console.log([
+        'ApplePayEventsEnum.DidCreatePaymentMethod',
+        data.hasOwnProperty('contact'),
+      ]);
+    });
+
+    Stripe.addListener(ApplePayEventsEnum.DidSelectShippingContact, (data) => {
+      console.log([
+        'ApplePayEventsEnum.DidSelectShippingContact',
+        data.hasOwnProperty('contact'),
+      ]);
+    });
+
+    /** ------------------------------------------------------------------- **/
+
+    Stripe.addListener(GooglePayEventsEnum.Loaded, () => {
+      this.stProcessGooglePay = 'Ready';
+      console.log('GooglePayEventsEnum.Loaded');
+    });
+
+    Stripe.addListener(GooglePayEventsEnum.FailedToLoad, () => {
+      console.log('GooglePayEventsEnum.FailedToLoad');
+    });
+
+    Stripe.addListener(GooglePayEventsEnum.Completed, () => {
+      this.stProcessGooglePay = 'willReady';
+      console.log('GooglePayEventsEnum.Completed');
+    });
+
+    Stripe.addListener(GooglePayEventsEnum.Canceled, () => {
+      this.stProcessGooglePay = 'willReady';
+      console.log('GooglePayEventsEnum.Canceled');
+    });
+
+    Stripe.addListener(GooglePayEventsEnum.Failed, () => {
+      this.stProcessGooglePay = 'willReady';
+      console.log('GooglePayEventsEnum.Failed');
+    });
+
+    Stripe.isApplePayAvailable()
+      .then(() => (this.stIsApplePayAvailable = true))
+      .catch(() => undefined);
+    Stripe.isGooglePayAvailable()
+      .then(() => (this.stIsGooglePayAvailable = true))
+      .catch(() => undefined);
+  }
+
+  /**
+   * Creazione dello Sheet per effettuare l'inserimento dei dati
+   * @param withCustomer 
+   * @param withBillingDetails 
+   */
+  onPrepareStripePaymentSheet() {
+
+    if (!this.actualPaymentSetting) {
+        this.listErrorMessage.push('Impostazione pagamenti non caricati')
+    }
+    else if (!this.paymentData) {
+        this.listErrorMessage.push('Nessun pagamento da effettuare')
+    }
+    else if (this.paymentData.amount == 0) {
+        this.listErrorMessage.push('Nessun pagamento da effettuare')
+    }
+    else {
+      //Chiamo il servizio per la creazione della intenzione di pagamento
+      this.startService.requestStripeIntentPayment(this.actualPaymentSetting.STENVIRONMENT, 
+                                                   this.paymentData.amount, 
+                                                   this.paymentData.currency, 
+                                                   this.stripeIdAccountConnected)
+                       .then(result => {
+                        console.log(result);
+                        
+                        let opt: CreatePaymentSheetOption = {
+                          paymentIntentClientSecret: result.clientSecret,
+                          countryCode: 'IT',
+                          merchantDisplayName: (this.areaDoc ? this.areaDoc.DENOMINAZIONE : 'Società Sportiva'),
+                        }
+
+                        //Chiedo di creare il Foglio per il pagamento
+                        Stripe.createPaymentSheet(opt);
+                        //Adesso entrano in gioco i listener
+
+                       })
+                       .catch(error => {
+                          if (typeof error == 'string') {
+                            this.listErrorMessage.push(error);
+                          }
+                          else if (typeof error == 'object') {
+                            this.listErrorMessage.push(error.toString());
+                          }
+                          else {
+                            this.listErrorMessage.push('Errore nella richiesta di intenzione al pagamento')
+                          }
+                       })
+    }
+  }
+
+  //#endregion
+
   /**
    * Verifica se un file è già presente nell'header come script caricato
    * 
@@ -367,19 +677,6 @@ export class PaymentPage implements OnInit{
     return onHead;
   }
 
-
-  showMessage(message: string) {
-
-    //Creo un messaggio
-    this.toastController.create({
-      message: message,
-      duration: 3000
-    })
-    .then(tstMsg => {
-      tstMsg.present();
-    });
-
-  }
 }
 
 /* ESEMPIO JSON RISPOSTA DA PAYPAL */

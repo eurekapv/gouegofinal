@@ -299,7 +299,8 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
             component: PaymentPage,
             componentProps: {
               paymentData: myCheckoutPayment,
-              listAreaPaymentSettings: this.myListPayment
+              listAreaPaymentSettings: this.myListPayment,
+              areaDoc: this.docArea
             }
           })
           .then(elModal => {

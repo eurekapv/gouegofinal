@@ -3,7 +3,8 @@
       class="ion-no-padding ion-no-margin">
   <ion-row>
     <ion-grid class="ion-no-padding ion-no-margin">
-      <ion-row>
+      <ion-row
+          class="ion-align-items-center">
         <!-- COLONNA IMMAGINE -->
         <ion-col
             *ngIf="flagWithImage"
@@ -13,8 +14,9 @@
         </ion-col>
         <!-- COLONNA DESCRITTIVA -->
         <ion-col 
+            class="ion-padding-start"
             [size]="flagWithImage ? '8':'12'">
-          <h3>{{detailDoc.DESCR}}</h3>
+          <h4 class="ion-wrap">{{detailDoc.DESCR}}</h4>
           <p *ngIf="detailDoc.MSGDISPONIBILE && detailDoc.MSGDISPONIBILE.length!= 0">
             {{detailDoc.MSGDISPONIBILE}}
           </p>

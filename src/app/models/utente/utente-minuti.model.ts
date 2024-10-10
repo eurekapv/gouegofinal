@@ -1,5 +1,6 @@
 import { Descriptor, TypeDefinition } from "src/app/library/models/descriptor.model";
 import { IDDocument } from "src/app/library/models/iddocument.model";
+import { TipoReferUtenteMinuto } from "../zsupport/valuelist.model";
 
 export class UtenteMinuti extends IDDocument {
     IDUTENTE: string;
@@ -8,6 +9,7 @@ export class UtenteMinuti extends IDDocument {
     DESCRIZIONE: string;
     VALOREMINUTI: number;
     IDREFER: string;
+    TIPOREFER: TipoReferUtenteMinuto;
 
     constructor() {
         super(true);
@@ -32,7 +34,7 @@ export class UtenteMinuti extends IDDocument {
                         'DESCRIZIONE',
                         'IDREFER'
                         ];
-        let arNumber = ['VALOREMINUTI'];
+        let arNumber = ['VALOREMINUTI','TIPOREFER'];
         let arBoolean = [];
         let arDate = ['DATAOPERAZIONE'];
         let arDateTime =[];

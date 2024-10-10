@@ -15,12 +15,13 @@ export const environment = {
     overrideViewConfig: null as ViewConfigs, //Quale layout mostrare (desktop = Layout con menù, mobile = tabs, null = automatico)
   },
   externalUrl: {
-    alchimistilab: 'https://www.alchimistilab.it'
+    alchimistilab: 'https://www.alchimistilab.it',
+    stripemanager: 'https://stripemanager.oa.r.appspot.com',
   },
   connection: {
-    mode: ConnectionMode.local,
+    mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'demo',
+    activeId: 'openbeach',
     customer: {
       openbeach: {
         name: 'openbeach',

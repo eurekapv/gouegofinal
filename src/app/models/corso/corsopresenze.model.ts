@@ -28,7 +28,6 @@ export class CorsoPresenze extends IDDocument {
             'NOMINATIVO',
             'NOTE',
             'IDUSERSETTING',
-            'ALERTPAGAMENTI',
             'MSGUPDATEMOB'
         ];
         let arNumber = ['STATOISCRIZIONE'];

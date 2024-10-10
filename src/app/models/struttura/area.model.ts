@@ -1,6 +1,6 @@
 import { IDDocument } from '../../library/models/iddocument.model';
 import { Location } from './location.model';
-import { TipoArea, PageType, SettorePagamentiAttivita, FuturoPrenotazione, FuturoIscrizioneGiornaliere, CancellazioniIscrizioniGiornaliere } from '../zsupport/valuelist.model';
+import { TipoArea, PageType, SettorePagamentiAttivita, FuturoPrenotazione, FuturoIscrizioneGiornaliere, CancellazioniIscrizioniGiornaliere, TrainerPresenzeSegreteria } from '../zsupport/valuelist.model';
 import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model';
 import { AreaLink } from './arealink.model';
 import { AreaPaymentSetting } from './areapaymentsetting.model';
@@ -28,9 +28,11 @@ export class Area extends IDDocument {
     APPSHOWCORSIGIORNATA: boolean; //Mostra i pulsanti per i corsi a giornata
     APPISCRIZIONI: boolean;
     APPISCRIZIONIEVENTI: boolean;
+    APPTRAINERPRESENZE: TrainerPresenzeSegreteria; //Flag che riflette GapOrePresenze
     APPGAPOREPRESENZE: number; //Indica per quanto tempo (ore) dal termine di una data di corso, il trainer può inserire/aggiornare le presenze
     APPSHOPONLINE: boolean; //Shop Online abilitato
     APPSHOPPACCHETTIORARI: boolean; //Shop Online con Pacchetti Orari
+    APPPROFILEPACCHETTIORARI: boolean; //Mostra i pacchetti orari nel profilo utente
     APPFUTUROPRENOTAZIONIFLAG: FuturoPrenotazione;
     APPFUTUROPRENOTAZIONIMESI: number;
     APPFUTUROISCRIZIONIFLAG: FuturoIscrizioneGiornaliere;
@@ -93,11 +95,12 @@ export class Area extends IDDocument {
                       'APPFUTUROISCRIZIONIFLAG',
                       'APPFUTUROISCRIZIONIMESI',
                       'APPDELETEISCRIZIONIFLAG',
-                      'APPDELETEISCRIZIONIORE'
+                      'APPDELETEISCRIZIONIORE',
+                      'APPTRAINERPRESENZE'
                     ];
       let arBoolean = ['APPSHOW','APPISCRIZIONI','APPPRENOTAZIONI',
                        'APPISCRIZIONIEVENTI','APPSHOPONLINE','APPSHOPPACCHETTIORARI',
-                      'APPSHOWCORSIPERIODI','APPSHOWCORSIGIORNATA'];
+                      'APPSHOWCORSIPERIODI','APPSHOWCORSIGIORNATA','APPPROFILEPACCHETTIORARI'];
       let arDate = [];
       let arDateTime =[];
       let arTime = [];
@@ -274,7 +277,7 @@ export class Area extends IDDocument {
   getPaymentFor(settore: SettorePagamentiAttivita):AreaPaymentSetting[] {
     let arSetting: AreaPaymentSetting[] = [];
 
-    
+    console.log(this);
 
     if (this.AREAPAYMENTSETTINGS && this.AREAPAYMENTSETTINGS.length != 0) {
 

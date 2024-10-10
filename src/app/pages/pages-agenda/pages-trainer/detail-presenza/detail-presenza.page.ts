@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertButton, LoadingController, NavController, ToastController } from '@ionic/angular';
-import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
+import { AlertButton, LoadingController, NavController } from '@ionic/angular';
 import { Corso } from 'src/app/models/corso/corso.model';
 import { CorsoPresenze } from 'src/app/models/corso/corsopresenze.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
@@ -53,13 +52,11 @@ export class DetailPresenzaPage implements OnInit {
   colorPresente = 'success';
   colorAssente = 'danger';
    
-  //TODO: Sembra tutto effettuato, bisogna solo testare di scaricare le presenze quando utente ha pacchetto minuti
-
+  
   constructor(
     private activatedRoute: ActivatedRoute,
     private navController: NavController,
     private startService: StartService,
-    private toastController: ToastController,
     private loadingController: LoadingController,
     
   ) 
@@ -132,7 +129,7 @@ export class DetailPresenzaPage implements OnInit {
                             return this.startService.requestPresenzeFor(this.pianificazioneDoc);
                          })
                          .then(dataPianificataDoc => {
-
+                              console.log(dataPianificataDoc.CORSOPRESENZE)
                               //Imposto gli array per le presenze
                               this.setAndSplitListPresenze(dataPianificataDoc.CORSOPRESENZE);
 

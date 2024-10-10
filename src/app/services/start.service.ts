@@ -30,7 +30,7 @@ import { ModalController, Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './archivi/codicefiscale.service';
 import { CodiceFiscale } from '../models/zsupport/codicefiscale.model';
-import { Mansione, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
+import { Mansione, PaymentEnvironment, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/utente/accountregistration.model';
 import { OccupazioniService } from './struttura/occupazioni.service';
 
@@ -93,6 +93,8 @@ import { ShopCarrello } from '../models/shop/shop-carrello.model';
 import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
 import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso-giornaliero.model';
+import { StripemanagerService } from './zsupport/stripemanager.service';
+import { StripePaymentIntent } from '../models/zsupport/stripe-payment-intent';
 
 @Injectable({
   providedIn: 'root'
@@ -230,7 +232,8 @@ export class StartService {
     private modalController: ModalController,
     private tipoPagamentoService: TipoPagamentoService,
     private fileService: FileService,
-    private shopService: ShoppingService
+    private shopService: ShoppingService,
+    private stripeManagerService: StripemanagerService
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -974,6 +977,11 @@ get filterCorsi() {
   return this.corsoService.filterCorsi;
 }
 
+//Ritorna il corso selezionato nel servizio
+get selectedCorso() {
+  return this.corsoService.selectedCorso;
+}
+
 /**
  * Imposta i filtri corsi nel servizio
  */
@@ -1139,19 +1147,6 @@ get lastDateCorsiGiornalieri(): Date {
 
 
 //#endregion
-
-//#region corsi
-
-
-
-//Ritorna il corso selezionato nel servizio
-get selectedCorso() {
-  return this.corsoService.selectedCorso;
-}
-
-
-//#endregion
-
 
 //#region ISCRIZIONE CORSO
 
@@ -2284,6 +2279,24 @@ shopNewCart(): void {
 
 //#endregion
 
+//#region STRIPE MANAGER 
+
+/**
+ * Comunica con Stripe Manager su Google Cloud per una richiesta di intenzione di pagamento
+* @param mode {PaymentEnvironment} 
+* @param amount 
+ * @param currency 
+ * @param idAccountConnected 
+ * @returns 
+ */
+requestStripeIntentPayment(mode: PaymentEnvironment, amount: number, currency: string = 'eur', idAccountConnected: string = ''): Promise<StripePaymentIntent> {
+
+  return this.stripeManagerService.requestIntentPayment(mode, amount, currency, idAccountConnected);
+  
+}
+//#endregion
+
+
 //#region OCCUPAZIONE CAMPI
 get docOccupazione() {
   return this.slotOccupazioneService.docOccupazione;
@@ -2916,9 +2929,10 @@ getUrlPageActiveCart(): string[] {
     return this.srvSmartInterface.showToastingMessage(myMessage, myTitle, myPosition, myDuration);
   }
 
-
-
   //#endregion
+
+//#region SMART INTERFACE PRESENT
+  //I seguenti metodi non tornano una Promise ma presentano subito l'elemento  
 
   /**
    * Viene creato un messaggio combinando header con la listMessage
@@ -2960,8 +2974,7 @@ getUrlPageActiveCart(): string[] {
       }
   }
 
-//#region SMART INTERFACE PRESENT
-  //I seguenti metodi non tornano una Promise ma presentano subito l'elemento
+
 
 /**
  * Crea e presenta un semplice messaggio con l'uso dell'AlertController

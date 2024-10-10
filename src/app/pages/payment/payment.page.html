@@ -29,13 +29,37 @@
     </ion-card>
   </div> 
 
-  <div class="cart-total">
-    <ion-item lines="none">
-      <ion-label>{{paymentData.description}}</ion-label>
-      <ion-label slot="end" class="ion-text-right">{{paymentData.amount | currency: paymentData.currency}}</ion-label>
-    </ion-item>
-  </div>
+  <!-- PORZIONE CON ERRORI RILEVATI SULLA PIATTAFORMA DI PAGAMENTO -->
+  <ion-accordion-group *ngIf="showErrorAccordion">
+    <ion-accordion value="first">
+      <ion-item slot="header" color="danger">
+        <ion-label>Errori rilevati</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-list>
+          <ion-item *ngFor="let item of listErrorMessage">
+            <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+            <ion-label
+              class="ion-no-wrap"
+              >{{item}}</ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
 
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{paymentData.amount | currency: paymentData.currency}}</ion-card-title>
+      <ion-card-subtitle>{{paymentData.description}}</ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      Effettua il pagamento scegliendo la modalità preferita.
+    </ion-card-content>
+  </ion-card>  
+
+  <!-- AREA PAYPAL -->
   <div class="cart-items" *ngIf = "showPaypal">
     <ion-card mode="ios">
 
@@ -50,6 +74,16 @@
     </ion-card>
   </div>
 
+  <!-- AREA STRIPE -->
+  <div *ngIf="showStripe">
+    <ion-button
+      (click)="onPrepareStripePaymentSheet()"
+      color="success"
+      expand="full">
+      <ion-icon name="card-outline" slot="start"></ion-icon>
+      Paga con carta di credito
+    </ion-button>
+  </div>
 
 
  

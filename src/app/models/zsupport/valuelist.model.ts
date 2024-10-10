@@ -301,6 +301,16 @@ export enum CancellazioniIscrizioniGiornaliere {
     sempre = 30
 }
 
+export enum TrainerPresenzeSegreteria {
+    sempre = 10,
+    entroOre = 20
+}
+
+export enum TipoReferUtenteMinuto {
+    shop = 10,
+    corso = 20
+}
+
 //Stati possibili a seguito di una richiesta pagamento Paypal
 /*
 The possible values are:

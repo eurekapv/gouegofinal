@@ -5,16 +5,19 @@ import { PaymentChannel, PaymentEnvironment, PaymentMode, SettorePagamentiAttivi
 
 export class AreaPaymentSetting extends IDDocument {
     
-    IDAREAOPERATIVA: string;
-    TIPOPAYMENT: PaymentChannel;
-    PPENVIRONMENT: PaymentEnvironment;
-    PPACCOUNT: string;
-    PPCLIENTIDSANDBOX: string;
-    PPCLIENTIDPRODUCTION: string;
-    SETTORI: string;
-    STPUBLICKEY: string;
-    STPUBLICKEYTEST: string;
-    STENVIRONMENT: PaymentEnvironment;
+    IDAREAOPERATIVA:        string;
+    TIPOPAYMENT:            PaymentChannel;
+    PPENVIRONMENT:          PaymentEnvironment;
+    PPACCOUNT:              string;
+    PPCLIENTIDSANDBOX:      string;
+    PPCLIENTIDPRODUCTION:   string;
+    SETTORI:                string;
+    TEXTUTILIZZATO:         string;
+    STPUBLICKEY:            string;
+    STPUBLICKEYTEST:        string;
+    STENVIRONMENT:          PaymentEnvironment;
+    STIDACCOUNT:            string;
+    STIDACCOUNTTEST:        string;
 
 
     constructor(onlyInstance?:boolean) {
@@ -33,7 +36,10 @@ export class AreaPaymentSetting extends IDDocument {
                       'PPCLIENTSECRET',
                       'SETTORI',
                       'STPUBLICKEY',
-                      'STPUBLICKEYTEST'
+                      'STPUBLICKEYTEST',
+                      'STIDACCOUNT',
+                      'STIDACCOUNTTEST',
+                      'TEXTUTILIZZATO'
                     ];
       let arNumber = ['TIPOPAYMENT','PPENVIRONMENT','STENVIRONMENT'];
       let arBoolean = [];
@@ -199,7 +205,7 @@ export class AreaPaymentSetting extends IDDocument {
               break;
 
           case PaymentChannel.stripe:
-              inApp = false;
+              inApp = true;
             break;
 
           default:

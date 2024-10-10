@@ -162,7 +162,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
     this.subArea = this.startService.areaSelected$.subscribe({
       next: (areaDoc) => {
         this.areaDoc = areaDoc;
-        if (this.areaDoc && this.areaDoc.APPSHOPPACCHETTIORARI == true) {
+        if (this.areaDoc && this.areaDoc.APPPROFILEPACCHETTIORARI == true) {
 
           this.showTicketPacchetti = true;
           this.requestUtenteTotaleMinuti();

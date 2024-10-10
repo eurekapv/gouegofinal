@@ -813,7 +813,8 @@ onSelectDefaultTypePayment(): Promise<void> {
           cssClass: 'modal-xl-class',
           componentProps: {
             paymentData: myCheckoutPayment,
-            listAreaPaymentSettings: this.myListModePayment
+            listAreaPaymentSettings: this.myListModePayment,
+            areaDoc: this.selectedArea
           }
         })
         .then(elModal => {

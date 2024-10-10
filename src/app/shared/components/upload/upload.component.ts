@@ -5,7 +5,7 @@ import { InvioDocumentazione } from 'src/app/models/utente/documentazione.model'
 import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Chooser, ChooserResult } from '@awesome-cordova-plugins/chooser';
-
+import { FilePicker, PickedFile, PickFilesOptions } from '@capawesome/capacitor-file-picker';
 
 
 @Component({
@@ -17,9 +17,12 @@ export class UploadComponent implements OnInit {
 
   @Input() isDesktop : boolean;
   @Input() docTypeList : TipoDocumentazione[];
+  //Questo è per usare l'enum nell HTML
+  TSorgenteFile: typeof SorgenteFile = SorgenteFile;
+  
 
   //file caricati (sono tipi diversi a seconda se caricati da mobile o desktop)
-  loadedMobileFile : ChooserResult;
+  loadedMobileFile : PickedFile;
   loadedDesktopFile : File;
   loadedMobilePhoto: Photo;
 
@@ -42,6 +45,9 @@ export class UploadComponent implements OnInit {
   
   //Scadenza opzionale del documento
   docScadenza: Date = new Date();
+
+  iconRadioEmpty: string = 'radio-button-off-outline';
+  iconRadioSelected: string = 'radio-button-on-outline';
 
  
 
@@ -66,25 +72,42 @@ export class UploadComponent implements OnInit {
     //Sorgente FileSystem uso il Chooser
     if (this.sorgenteFile == SorgenteFile.filesystem) {
 
-      //Caricamento con il metodo File
-      Chooser.getFile()      
-              .then(file => {
+      let optFilePicker: PickFilesOptions = {
+        limit: 1
+      }
 
-                //Questo è il file caricato
-                this.loadedMobileFile = file;
-                this.fileLoaded = true;
-                this.fileNameShow = this.loadedMobileFile.name;
+      FilePicker.pickFiles(optFilePicker)
+                .then(pickResult => {
+                    if (pickResult.files && pickResult.files.length != 0) {
+                        let pickFile: PickedFile = pickResult.files[0];
 
-              })
-              .catch((error: any) => {
+                        console.log(pickFile);
 
-                this.loadedMobileFile = null;
-                this.fileLoaded = false;
-                this.fileNameShow = '';
-                
+                        if (pickFile.path && pickFile.path.length != 0) {
+                          //Questo è il file caricato
+                        this.loadedMobileFile = pickResult.files[0];
+                        this.fileLoaded = true;
+                        this.fileNameShow = this.loadedMobileFile.name;      
+                        }
+                        else {
+                          this.loadedMobileFile = null;
+                          this.fileLoaded = false;
+                          this.fileNameShow = '';
+                          
+                          LogApp.consoleLog('File Path undefined','error');                          
+                          this.showToastMessage('File Path undefined');
+                        }
+                    }
+                })
+                .catch((error: any) => {
 
-                LogApp.consoleLog(error,'error');
-              });
+                  this.loadedMobileFile = null;
+                  this.fileLoaded = false;
+                  this.fileNameShow = '';
+                  
+  
+                  LogApp.consoleLog(error,'error');
+                });
 
     }
     else if (this.sorgenteFile == SorgenteFile.fromgallery) {
@@ -171,7 +194,24 @@ export class UploadComponent implements OnInit {
   } 
 
 
+  /**
+   * Cambio della sorgente di upload
+   * @param mySorgente
+   */
+  handleChangeMobSource(mySorgente: SorgenteFile) {
+    
+    this.sorgenteFile = mySorgente;
+  }
   
+  /**
+   * Solo
+   * @param event 
+   */
+  handleChangeDocType(event: any) {
+    let myValue = JSON.stringify(event.target.value);
+    
+    this.idDocTypeSelected = myValue;
+  }  
   //#endregion
 
   //#region VISUALIZZAZIONE MESSAGGI / PICKER
@@ -365,7 +405,7 @@ export class UploadComponent implements OnInit {
 
   }
 
-
+  //#endregion
 
   /**
    * Chiusura modale senza parametri

@@ -20,10 +20,11 @@
 }
 
 div.info{
-    p{
+    background-color: var(--ion-color-light);
+
+    p {
         font-style: italic;
-        // color: var(--ion-color-primary);
-        font-weight: 600;
+        font-size: medium;
         ion-icon{
             font-size: 20px;
         }

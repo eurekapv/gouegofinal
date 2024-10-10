@@ -36,6 +36,10 @@ Aggiornati i types node alla versione 16
 ```console
 npm i @types/node@16.11.7
 ```
+Installato capawesome/capacitor-file-picker per recuperare i file (Chooser non funziona più)
+```console
+npm install @capawesome/capacitor-file-picker
+```
 
 
 

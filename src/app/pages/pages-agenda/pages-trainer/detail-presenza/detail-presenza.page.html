@@ -65,7 +65,7 @@
       <ion-button 
           *ngIf="canUpdate"
           color="success" 
-          fill="outline"
+          
           expand="block" 
           (click)="onClickSubmit()">
         <ion-icon slot="start" name="save-outline"></ion-icon>
@@ -101,34 +101,29 @@
      </ion-item>
 
       <!-- ELENCO DEI PARTECIPANTI AL CORSO (PRESENZE)-->
-      <ion-row *ngIf="selectedView == 1">
-
+      <ion-row 
+            class="ion-no-margin"
+            *ngIf="selectedView == 1">
         <ion-col>
-
           <!-- Iscritti confermati -->
           <ion-list>
-            <ion-list-header mode="ios">
-              Partecipanti
+            <ion-list-header 
+              mode="ios">
+              <ion-label>Partecipanti</ion-label>
+              <ion-button 
+                  fill="outline"
+                  *ngIf="listPresenzeConfermate.length != 0"
+                  (click)="onClickInfoPartecipanti()">INFO</ion-button>
             </ion-list-header>
             <ion-item 
                 *ngIf="listPresenzeConfermate.length == 0">
               Nessun iscritto al corso
-            </ion-item>       
-            <ion-item 
-                *ngIf="listPresenzeConfermate.length != 0"
-                lines="none" color="light">
-                <p
-                  *ngIf="pianificazioneDoc" 
-                  class="text-small">
-                  <ion-icon name="information-circle-outline" color="primary"></ion-icon> 
-                  {{pianificazioneDoc.msgCanUpdatePresenze(gapAggiornamentoPresenze)}}
-                </p>
             </ion-item>                 
           </ion-list>
 
           <!-- GRIGLIA PRIMARIA CON 1 COLONNA E DENTRO I PARTECIPANTI-->
           <ion-grid
-              class="ion-margin-bottom ion-no-padding">
+              class="ion-margin-vertical ion-no-padding">
             <ion-row>
               <ion-col size="12"
                 *ngFor="let presenzaDoc of listPresenzeConfermate; index as i">

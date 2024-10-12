@@ -113,6 +113,8 @@ export class TabAgendaPage implements OnInit, OnDestroy {
       value: RangeSearch.mese,
       title: 'Mese'
     }];
+    //E' il break point che uso per tutte le 3 colonne del searchListPeriodi
+  colBreakpointPeriodi: number = 4; 
 
     //Data Analisi ricerca Trainer
     searchTrainerDate: Date = new Date();

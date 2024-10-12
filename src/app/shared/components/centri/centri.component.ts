@@ -21,6 +21,7 @@ export class CentriComponent implements OnInit {
   _showActionButton = false;
 
   _locationDoc: Location = new Location();
+  _showFullDescription: boolean = false; //Mostra o nasconde la descrizione della locazion
   _areaDoc: Area = new Area();
   _centerCard: boolean = false;
   _cardClass: string = "ion-margin-vertical"; 
@@ -73,6 +74,14 @@ export class CentriComponent implements OnInit {
 
     LogApp.consoleLog(this._locationDoc.DENOMINAZIONE)
     LogApp.consoleLog(this._locationDoc)
+  }
+
+  /**
+   * Mostra o nasconde le caratteristiche della location (se presenti)
+   * Default FALSE
+   */
+  @Input() set showFullDescription(value: boolean) {
+    this._showFullDescription = value;
   }
 
   //Centratura della Card

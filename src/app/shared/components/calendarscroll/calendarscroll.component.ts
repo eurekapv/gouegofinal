@@ -136,7 +136,6 @@ export class CalendarscrollComponent implements OnInit {
   goToSlide(indexSlideZeroBased: number) {
     
     if (this.swiper) {
-      console.log('Spostamento verso ' + indexSlideZeroBased)
       this.swiper?.slideTo(indexSlideZeroBased);
     }
   }

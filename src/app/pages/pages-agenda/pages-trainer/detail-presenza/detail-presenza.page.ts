@@ -313,6 +313,19 @@ export class DetailPresenzaPage implements OnInit {
   //#endregion
 
   /**
+   * Click per avere maggiori informazioni sui parteicpanti
+   */
+  onClickInfoPartecipanti() {
+    let myMessage: string = '';
+    if (this.pianificazioneDoc) {
+      myMessage = this.pianificazioneDoc.msgCanUpdatePresenze(this.gapAggiornamentoPresenze);
+    }
+    else {
+      myMessage = 'Nessuna informazione aggiuntiva';
+    }
+    this.startService.presentAlertMessage(myMessage, 'Informazioni');
+  }
+  /**
    * Click su un partecipante
    * @param elem 
    */
@@ -388,46 +401,48 @@ export class DetailPresenzaPage implements OnInit {
       .then(elLoading => {
   
         elLoading.present();
+
+        //Chiedo l'aggiornamento delle presenze verso il server
         this.startService.requestUpdateAllPresenze(this.pianificazioneDoc)
-        .then(response => {
-  
-          elLoading.dismiss();
+                          .then(response => {
 
-          //In entrambi i casi chiedo di recuperare nuovamente i pacchetti minuti
-          this.requestUtenteTotaleMinuti(this.listPresenze, this.corsoDoc.IDAREAOPERATIVA);
+                            elLoading.dismiss();
 
-          if (response.result) {
-            let message: string = '';
-            message = '<p>' + "Tutti i dati sono stati" + '</p>';
-            message = message + '<p class="ion-text-bold">' + "Aggiornati correttamente" + '</p>';
-            //è andato tutto bene
-            this.startService.presentAlertMessage(message, 'Aggiornamento lezione');
-            //Torno indietro
-            this.onGoToBack();
-          }
-          else {
-            let message: string = '';
-            message = '<p>' + "Spiacente, non tutti i dati sono stati" + '</p>';
-            message = message + '<p class="ion-text-bold">' + "aggiornati correttamente" + '</p>';
-            message = message + '<p>' + response.message + '</p>';
-            //è andato tutto bene
-            this.startService.presentAlertMessage(message, 'Aggiornamento lezione');
-            //errore dal server
-            LogApp.consoleLog(response);
+                            //In entrambi i casi chiedo di recuperare nuovamente i pacchetti minuti
+                            this.requestUtenteTotaleMinuti(this.listPresenze, this.corsoDoc.IDAREAOPERATIVA);
 
-            //I dati ricevuti li rielaboro per visualizzarli
-            this.onFailedSubmit(response);
-          }
+                            if (response.result) {
+                              let message: string = '';
+                              message = '<p>' + "Tutti i dati sono stati" + '</p>';
+                              message = message + '<p class="ion-text-bold">' + "Aggiornati correttamente" + '</p>';
+                              //è andato tutto bene
+                              this.startService.presentAlertMessage(message, 'Aggiornamento lezione');
+                              //Torno indietro
+                              this.onGoToBack();
+                            }
+                            else {
+                              let message: string = '';
+                              message = '<p>' + "Spiacente, non tutti i dati sono stati" + '</p>';
+                              message = message + '<p class="ion-text-bold">' + "aggiornati correttamente" + '</p>';
+                              message = message + '<p>' + response.message + '</p>';
+                              //è andato tutto bene
+                              this.startService.presentAlertMessage(message, 'Aggiornamento lezione');
+                              //errore dal server
+                              LogApp.consoleLog(response);
 
-          
-          
-        })
-        .catch((error) => {
-  
-          elLoading.dismiss();
-          LogApp.consoleLog(error,'error');
-          this.startService.presentToastMessage('Errore di connessione');
-        })
+                              //I dati ricevuti li rielaboro per visualizzarli
+                              this.onFailedSubmit(response);
+                            }
+
+                            
+                            
+                          })
+                          .catch((error) => {
+                    
+                            elLoading.dismiss();
+                            LogApp.consoleLog(error,'error');
+                            this.startService.presentToastMessage('Errore di connessione');
+                          })
       })
       
     }

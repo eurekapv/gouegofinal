@@ -126,13 +126,20 @@
             </ion-button>
             <!-- AREA FILTRO -->
             <ion-card  
-                class="ion-margin-horizontal"
+                class="ion-no-margin"
                 color="light"
                 class="filter">
-                <ion-grid>
-                  <ion-row>
-                    <ion-col *ngFor="let item of searchListPeriodi">
+                <ion-grid class="ion-no-margin">
+                  <ion-row class="ion-no-margin">
+                    <ion-col 
+                          [sizeXs]="colBreakpointPeriodi"
+                          [sizeSm]="colBreakpointPeriodi"
+                          [sizeMd]="colBreakpointPeriodi"
+                          [sizeLg]="colBreakpointPeriodi"
+                          [sizeXl]="colBreakpointPeriodi"
+                          *ngFor="let item of searchListPeriodi">
                         <ion-button
+                          size="small"
                           (click)="onChangePeriodoTrainer(item.value)"
                           [color]="item.value==searchTrainerPeriodo ? 'success':'light'"
                           expand="full">
@@ -237,10 +244,18 @@
                 class="ion-margin-horizontal"
                 color="light"
                 class="filter">
-                <ion-grid>
-                  <ion-row>
-                    <ion-col *ngFor="let item of searchListPeriodi">
+                <ion-grid class="ion-no-margin">
+                  <ion-row class="ion-no-margin">
+                    <ion-col 
+                          [sizeXs]="colBreakpointPeriodi"
+                          [sizeSm]="colBreakpointPeriodi"
+                          [sizeMd]="colBreakpointPeriodi"
+                          [sizeLg]="colBreakpointPeriodi"
+                          [sizeXl]="colBreakpointPeriodi"
+
+                          *ngFor="let item of searchListPeriodi">
                         <ion-button
+                          size="small"
                           (click)="onChangePeriodoCustode(item.value)"
                           [color]="item.value==searchCustodePeriodo ? 'success':'light'"
                           expand="full">

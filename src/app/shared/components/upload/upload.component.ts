@@ -74,7 +74,8 @@ export class UploadComponent implements OnInit {
     if (this.sorgenteFile == SorgenteFile.filesystem) {
 
       let optFilePicker: PickFilesOptions = {
-        limit: 1
+        limit: 1,
+        readData: true
       }
 
       FilePicker.pickFiles(optFilePicker)
@@ -82,7 +83,7 @@ export class UploadComponent implements OnInit {
                     if (pickResult.files && pickResult.files.length != 0) {
                         let pickFile: PickedFile = pickResult.files[0];
 
-                        console.log(pickFile);
+                        
 
                         if (pickFile.path && pickFile.path.length != 0) {
                           //Questo è il file caricato
@@ -369,8 +370,14 @@ export class UploadComponent implements OnInit {
         }
       }
       else if (this.loadedMobileFile) {
-        console.log('Sto inviando il file ' + this.loadedMobileFile.path);
-        resolve(this.loadedMobileFile.path);
+        if (this.loadedMobileFile.data && this.loadedMobileFile.data.length != 0) {
+          let myBase64 = '';
+          myBase64 = 'data:' + this.loadedMobileFile.mimeType + ';' + 'base64,' + this.loadedMobileFile.data;
+          resolve(myBase64);
+        }
+        else {
+          reject('Error reading file');
+        }
 
       }
     })
@@ -396,9 +403,6 @@ export class UploadComponent implements OnInit {
           myDocument.DESCRIZIONE = this.docDescription;
           myDocument.FLAGSCADENZA = this.flagDocScadenza;
           myDocument.DATASCADENZA = this.docScadenza;
-
-          console.log('Questo documento viene tornato alla finestra chiamante');
-          console.log(myDocument);
 
           this.modalController.dismiss(myDocument);
 

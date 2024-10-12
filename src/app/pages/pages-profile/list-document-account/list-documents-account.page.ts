@@ -164,9 +164,6 @@ export class ListDocumentsAccountPage implements OnInit {
                   //Recuperiamo i dati da inviare
                   let docUploadDocumentazione : InvioDocumentazione = receivedData['data'];
 
-                  console.log('Questo è quello che riceviamo dalla modale tipizzato');
-                  console.log(docUploadDocumentazione);
-
                   if (docUploadDocumentazione) {
                     //Passo il controllo per inviare i dati al server
                     this.requestUploadToServer(docUploadDocumentazione);
@@ -214,8 +211,6 @@ export class ListDocumentsAccountPage implements OnInit {
         //Qui Creo il JSON
         let myJson: string = docToSend.exportToJSON(paramExport, nameParams);
         
-        console.log('Ecco il JSON inviato')
-        console.log(myJson);
         
         //ora che ho tutto, faccio la post
         this.docStructureService.requestForFunction(new Utente(), nameFunction, myJson)

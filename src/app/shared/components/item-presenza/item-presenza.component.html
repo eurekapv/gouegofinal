@@ -6,7 +6,7 @@
       class="ion-no-margin ion-no-padding ion-align-items-center">
     <ion-col 
         size="10">
-      <h4 class="ion-no-margin">{{_itemPresenza?.NOMINATIVO | uppercase}}</h4>
+      <h5 class="ion-no-margin">{{_itemPresenza?.NOMINATIVO | uppercase}}</h5>
     </ion-col>
 
     <ion-col
@@ -17,66 +17,66 @@
   </ion-row>
 
   <!-- RIGO OPERAZIONE AGGIORNAMENTO -->
-  <ion-list
-    lines="none"
-    *ngIf="_itemPresenza.FLAGUPDATEMOB == true || _itemPresenza.FLAGUPDATEMOB == false">
-
-    <ion-item 
-        (click)="onClickCloseMsgUpdate()" 
-        color = "success"
-        *ngIf="_itemPresenza.FLAGUPDATEMOB == true">
-      
-      <ion-icon 
-          size="large"
-          slot="start"
-          name="thumbs-up-outline">
-        </ion-icon>
-      <ion-label 
-          class="ion-text-wrap" >
-          Presenza aggiornata
-      </ion-label>
-
-      <ion-icon 
+  <!-- OPERAZIONE AGGIORNAMENTO CON SUCCESSO -->
+  <ion-item 
+      lines="none"
+      (click)="onClickCloseMsgUpdate()" 
+      color = "success"
+      *ngIf="_itemPresenza.FLAGUPDATEMOB == true">
+    
+    <ion-icon 
         size="large"
-        slot="end"
-        name="close-outline">
+        slot="start"
+        name="thumbs-up-outline">
       </ion-icon>
-      
-    </ion-item>
+    <ion-label 
+        class="ion-text-wrap" >
+        Presenza aggiornata
+    </ion-label>
 
+    <ion-icon 
+      size="large"
+      slot="end"
+      name="close-outline">
+    </ion-icon>
+    
+  </ion-item>
 
-    <ion-item
-        (click)="onClickCloseMsgUpdate()" 
-        color = "danger"
-        *ngIf="_itemPresenza.FLAGUPDATEMOB == false">
-      
-      <ion-icon 
-          size="large"
-          slot="start"
-          name="thumbs-down-outline">
-       </ion-icon>
-      <ion-label 
-          class="ion-text-wrap" >
-          {{_itemPresenza.MSGUPDATEMOB}}
-      </ion-label>
-      <ion-icon 
+<!-- OPERAZIONE AGGIORNAMENTO FALLITA -->
+  <ion-item
+      lines="none"
+      (click)="onClickCloseMsgUpdate()" 
+      color = "danger"
+      *ngIf="_itemPresenza.FLAGUPDATEMOB == false">
+    
+    <ion-icon 
         size="large"
-        slot="end"
-        name="close-outline">
-      </ion-icon>
-    </ion-item>
-
-  </ion-list>
+        slot="start"
+        name="thumbs-down-outline">
+     </ion-icon>
+    <ion-label 
+        class="ion-text-wrap" >
+        {{_itemPresenza.MSGUPDATEMOB}}
+    </ion-label>
+    <ion-icon 
+      size="large"
+      slot="end"
+      name="close-outline">
+    </ion-icon>
+  </ion-item>
 
 
 
   <!-- RIGO CERTIFICATO MEDICO -->
   <ion-row
-      class="ion-no-margin ion-no-padding ion-align-items-center">
+      class="ion-margin-top ion-no-padding ion-align-items-center">
     <ion-col 
         class="ion-text-start"
         size="2">
-      <ion-icon name="heart-circle-outline" [color]="coloreCertificato" [size]="_sizeIcons"></ion-icon>
+      <ion-icon 
+        name="heart-circle-outline" 
+        [color]="coloreCertificato" 
+        [size]="_sizeIcons"></ion-icon>
     </ion-col>
     <ion-col size="10">
       <p 
@@ -91,7 +91,7 @@
   <!-- RIGO SCADENZE NON SALDATE -->
   <ion-row
       *ngIf="_itemPresenza.ALERTPAGAMENTI"
-      class="ion-no-margin ion-no-padding ion-align-items-center">
+      class="ion-margin-top ion-no-padding ion-align-items-center">
       <ion-col 
           class="ion-text-start"
           size="2">
@@ -106,7 +106,7 @@
   <!-- RIGO PACCHETTI MINUTI -->
   <ion-row
       *ngIf="_showPacchetti"
-      class="ion-no-margin ion-no-padding ion-align-items-center">
+      class="ion-margin-top ion-no-padding ion-align-items-center">
 
       <ion-col 
         class="ion-text-start"

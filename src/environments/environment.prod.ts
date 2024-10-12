@@ -21,13 +21,13 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor',
-    activeId: 'openbeach',
+    activeId: 'progettorieduca',
     customer: {
-      openbeach: {
-        name: 'openbeach',
-        appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
-        urlId: 'openbeach.gouego.com',       
-      },
+      progettorieduca: {
+        name: 'progettorieduca',
+        appId: '130204BF-C4E7-4CF9-8101-C3B36E184D4B',
+        urlId: 'progettorieduca.gouego.com',    
+      },      
     },
     urlLocation: {
       local: {

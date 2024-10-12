@@ -1,47 +1,90 @@
 PODS:
-  - Capacitor (5.4.1):
+  - Capacitor (6.1.2):
     - CapacitorCordova
-  - CapacitorBrowser (5.1.0):
+  - CapacitorBarcodeScanner (1.0.1):
     - Capacitor
-  - CapacitorCamera (5.0.7):
+    - OSBarcodeLib (~> 1.1.0)
+  - CapacitorBrowser (6.0.2):
     - Capacitor
-  - CapacitorCommunityBarcodeScanner (4.0.1):
+  - CapacitorCamera (6.0.2):
     - Capacitor
-  - CapacitorCommunityFileOpener (1.0.5):
+  - CapacitorCommunityFileOpener (6.0.0):
     - Capacitor
-  - CapacitorCordova (5.4.1)
-  - CapacitorGeolocation (5.0.6):
+  - CapacitorCommunityStripe (6.2.1):
     - Capacitor
-  - CapacitorPreferences (5.0.6):
+    - StripeApplePay (~> 23.29.0)
+    - StripePaymentSheet (~> 23.29.0)
+  - CapacitorCordova (6.1.2)
+  - CapacitorGeolocation (6.0.1):
     - Capacitor
-  - CapacitorShare (5.0.6):
+  - CapacitorPreferences (6.0.2):
     - Capacitor
-  - CordovaPlugins (5.4.1):
+  - CapacitorShare (6.0.2):
+    - Capacitor
+  - CapawesomeCapacitorFilePicker (6.1.0):
+    - Capacitor
+  - CordovaPlugins (6.1.2):
     - CapacitorCordova
+  - CordovaPluginsResources (0.0.105)
+  - OSBarcodeLib (1.1.2)
+  - StripeApplePay (23.29.2):
+    - StripeCore (= 23.29.2)
+  - StripeCore (23.29.2)
+  - StripePayments (23.29.2):
+    - StripeCore (= 23.29.2)
+    - StripePayments/Stripe3DS2 (= 23.29.2)
+  - StripePayments/Stripe3DS2 (23.29.2):
+    - StripeCore (= 23.29.2)
+  - StripePaymentSheet (23.29.2):
+    - StripeApplePay (= 23.29.2)
+    - StripeCore (= 23.29.2)
+    - StripePayments (= 23.29.2)
+    - StripePaymentsUI (= 23.29.2)
+  - StripePaymentsUI (23.29.2):
+    - StripeCore (= 23.29.2)
+    - StripePayments (= 23.29.2)
+    - StripeUICore (= 23.29.2)
+  - StripeUICore (23.29.2):
+    - StripeCore (= 23.29.2)
 
 DEPENDENCIES:
   - "Capacitor (from `../../../../node_modules/@capacitor/ios`)"
+  - "CapacitorBarcodeScanner (from `../../../../node_modules/@capacitor/barcode-scanner`)"
   - "CapacitorBrowser (from `../../../../node_modules/@capacitor/browser`)"
   - "CapacitorCamera (from `../../../../node_modules/@capacitor/camera`)"
-  - "CapacitorCommunityBarcodeScanner (from `../../../../node_modules/@capacitor-community/barcode-scanner`)"
   - "CapacitorCommunityFileOpener (from `../../../../node_modules/@capacitor-community/file-opener`)"
+  - "CapacitorCommunityStripe (from `../../../../node_modules/@capacitor-community/stripe`)"
   - "CapacitorCordova (from `../../../../node_modules/@capacitor/ios`)"
   - "CapacitorGeolocation (from `../../../../node_modules/@capacitor/geolocation`)"
   - "CapacitorPreferences (from `../../../../node_modules/@capacitor/preferences`)"
   - "CapacitorShare (from `../../../../node_modules/@capacitor/share`)"
+  - "CapawesomeCapacitorFilePicker (from `../../../../node_modules/@capawesome/capacitor-file-picker`)"
   - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
+  - CordovaPluginsResources (from `../capacitor-cordova-ios-plugins`)
+
+SPEC REPOS:
+  trunk:
+    - OSBarcodeLib
+    - StripeApplePay
+    - StripeCore
+    - StripePayments
+    - StripePaymentSheet
+    - StripePaymentsUI
+    - StripeUICore
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../../../node_modules/@capacitor/ios"
+  CapacitorBarcodeScanner:
+    :path: "../../../../node_modules/@capacitor/barcode-scanner"
   CapacitorBrowser:
     :path: "../../../../node_modules/@capacitor/browser"
   CapacitorCamera:
     :path: "../../../../node_modules/@capacitor/camera"
-  CapacitorCommunityBarcodeScanner:
-    :path: "../../../../node_modules/@capacitor-community/barcode-scanner"
   CapacitorCommunityFileOpener:
     :path: "../../../../node_modules/@capacitor-community/file-opener"
+  CapacitorCommunityStripe:
+    :path: "../../../../node_modules/@capacitor-community/stripe"
   CapacitorCordova:
     :path: "../../../../node_modules/@capacitor/ios"
   CapacitorGeolocation:
@@ -50,21 +93,35 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/@capacitor/preferences"
   CapacitorShare:
     :path: "../../../../node_modules/@capacitor/share"
+  CapawesomeCapacitorFilePicker:
+    :path: "../../../../node_modules/@capawesome/capacitor-file-picker"
   CordovaPlugins:
+    :path: "../capacitor-cordova-ios-plugins"
+  CordovaPluginsResources:
     :path: "../capacitor-cordova-ios-plugins"
 
 SPEC CHECKSUMS:
-  Capacitor: 4c0681b47eebeba1f902093d24149cf2f518393e
-  CapacitorBrowser: 7a0fb6a1011abfaaf2dfedfd8248f942a8eda3d6
-  CapacitorCamera: 084b0b228bba7d00587910337b1c89e93b1d32ab
-  CapacitorCommunityBarcodeScanner: 7feb206489c8555a8ca0c74c57ddf49ead774eb8
-  CapacitorCommunityFileOpener: 8ae87db61961a6166cb929cc16e3cc719ea58da1
-  CapacitorCordova: 1222fdd78bfd0d323cc22bf254eed1484fe6c92a
-  CapacitorGeolocation: 7be5f77abc205c0efe319fff8587a7183e7b0240
-  CapacitorPreferences: f03954bcb0ff09c792909e46bff88e3183c16b10
-  CapacitorShare: cd41743331cb71d217c029de54b681cbd91e0fcc
-  CordovaPlugins: 0537bc46c4d478b4cf0968e5e7696d78672eedfd
+  Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
+  CapacitorBarcodeScanner: 3057910347ab6c3db06e1a38bdf688a6a469227a
+  CapacitorBrowser: 83ec661a9ccd56c28a6851e4dd1ac33b181227ec
+  CapacitorCamera: ed022171dbf3853e68eec877b4d78995378af6b7
+  CapacitorCommunityFileOpener: 4e0086fac78b4ccaaf64956abe34d3443db5767a
+  CapacitorCommunityStripe: b14501c11292faed000526671538891ba24c9d31
+  CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
+  CapacitorGeolocation: 39dca51d755f08ed1d43e51be55291a402cdc64f
+  CapacitorPreferences: e8284bf740cf8c6d3f25409af3c01df87dfeb5a1
+  CapacitorShare: 591ae4693d85686ceb590db8e8b44aa014ec6490
+  CapawesomeCapacitorFilePicker: abd66735806935246403855cbe62fee8e299cdc5
+  CordovaPlugins: 209525db2a3801c92c2b660986d6fe462d0a9412
+  CordovaPluginsResources: 0c211f770ed91763a179ebcd9b9346e120b70662
+  OSBarcodeLib: 4bb4cc0b9850451fe71ba4953c1c934368e767df
+  StripeApplePay: dff104aeee493627a649576a0014d76eadabceee
+  StripeCore: 9edec1b15faa6bb7f46def319cc689dc37a8d233
+  StripePayments: f1465ee56d5589630ffaf4ad873d400d8752f8f8
+  StripePaymentSheet: 3ac22717a234352d83e936d8b1fe8c5fdb9a9286
+  StripePaymentsUI: 6b182240135130d5d61cd8a9c48717264ac203ec
+  StripeUICore: 5f21b736a399dff66d6c8ca7e2ce3e4fd02c40fd
 
-PODFILE CHECKSUM: 5e6bdfcfed25ce23d1b567f4c304a69d336815eb
+PODFILE CHECKSUM: cd4edf35bb7f364990f1ca78725c160def444ef5
 
 COCOAPODS: 1.14.2

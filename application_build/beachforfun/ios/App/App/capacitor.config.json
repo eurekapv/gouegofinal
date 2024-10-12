@@ -42,5 +42,17 @@
 			"SplashScreenDelay": "0",
 			"androidScaleType": "CENTER_CROP"
 		}
-	}
+	},
+	"packageClassList": [
+		"FileOpenerPlugin",
+		"StripePlugin",
+		"CapacitorBarcodeScannerPlugin",
+		"CAPBrowserPlugin",
+		"CAPCameraPlugin",
+		"GeolocationPlugin",
+		"PreferencesPlugin",
+		"SharePlugin",
+		"FilePickerPlugin",
+		"CDVPlugin"
+	]
 }

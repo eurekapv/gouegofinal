@@ -21,7 +21,6 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 })
 export class ListDocumentsAccountPage implements OnInit {
 
-  /* DA IMPLEMENTARE L'OGGETTO, LA SUBSCRIPTION ETC */
   listDocumenti : Documentazione[]= [];
   inRichiesta = true;
 
@@ -161,9 +160,12 @@ export class ListDocumentsAccountPage implements OnInit {
 
       //#region GESTIONE CHIUSURA MODALE
       elModal.onWillDismiss()
-            .then(data => {
+            .then(receivedData => {
                   //Recuperiamo i dati da inviare
-                  let docUploadDocumentazione : InvioDocumentazione = data['data'];
+                  let docUploadDocumentazione : InvioDocumentazione = receivedData['data'];
+
+                  console.log('Questo è quello che riceviamo dalla modale tipizzato');
+                  console.log(docUploadDocumentazione);
 
                   if (docUploadDocumentazione) {
                     //Passo il controllo per inviare i dati al server
@@ -212,6 +214,8 @@ export class ListDocumentsAccountPage implements OnInit {
         //Qui Creo il JSON
         let myJson: string = docToSend.exportToJSON(paramExport, nameParams);
         
+        console.log('Ecco il JSON inviato')
+        console.log(myJson);
         
         //ora che ho tutto, faccio la post
         this.docStructureService.requestForFunction(new Utente(), nameFunction, myJson)

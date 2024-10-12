@@ -35,7 +35,7 @@ export class UploadComponent implements OnInit {
   idDocTypeSelected: string = '';
 
   //Sorgente da cui caricare il file
-  sorgenteFile: SorgenteFile = SorgenteFile.fromgallery;
+  sorgenteFile: SorgenteFile;
 
   //Descrizione opzionale del documento
   docDescription = '';
@@ -46,8 +46,9 @@ export class UploadComponent implements OnInit {
   //Scadenza opzionale del documento
   docScadenza: Date = new Date();
 
-  iconRadioEmpty: string = 'radio-button-off-outline';
-  iconRadioSelected: string = 'radio-button-on-outline';
+  colorItemEmpty: string = 'light';
+  colorItemSelected: string = 'success';
+
 
  
 
@@ -199,18 +200,22 @@ export class UploadComponent implements OnInit {
    * @param mySorgente
    */
   handleChangeMobSource(mySorgente: SorgenteFile) {
-    
+    //Cambio la sorgete e carico il file
     this.sorgenteFile = mySorgente;
+    this.onMobileSearch();
   }
   
   /**
-   * Solo
-   * @param event 
+   * Id Documento selezionato
+   * @param selectedDocTypeId
    */
-  handleChangeDocType(event: any) {
-    let myValue = JSON.stringify(event.target.value);
-    
-    this.idDocTypeSelected = myValue;
+  handleChangeDocType(selectedDocTypeId: string) {
+    if (selectedDocTypeId == this.idDocTypeSelected) {
+      this.idDocTypeSelected = null;
+    }
+    else {
+      this.idDocTypeSelected = selectedDocTypeId;
+    }
   }  
   //#endregion
 
@@ -364,7 +369,7 @@ export class UploadComponent implements OnInit {
         }
       }
       else if (this.loadedMobileFile) {
-        
+        console.log('Sto inviando il file ' + this.loadedMobileFile.path);
         resolve(this.loadedMobileFile.path);
 
       }
@@ -391,6 +396,9 @@ export class UploadComponent implements OnInit {
           myDocument.DESCRIZIONE = this.docDescription;
           myDocument.FLAGSCADENZA = this.flagDocScadenza;
           myDocument.DATASCADENZA = this.docScadenza;
+
+          console.log('Questo documento viene tornato alla finestra chiamante');
+          console.log(myDocument);
 
           this.modalController.dismiss(myDocument);
 

@@ -22,7 +22,7 @@
   <ion-list>
 
     <!-- INFORMAZIONI -->
-    <div class="info" >
+    <div class="info">
       <ion-item color="light" lines="none">
         <ion-label>
           <p class="ion-text-wrap">
@@ -34,7 +34,6 @@
  
 
     <!-- SE SONO SU MOBILE -->
-
     <ion-item-group 
           *ngIf="!isDesktop">
   
@@ -43,50 +42,52 @@
           color="light">
 
         <ion-label >
-          <h2>Cerca il documento in</h2>
+          <h2>Carica da</h2>
         </ion-label>
         </ion-item-divider>
 
 
           <ion-item 
-              [detail]="false"
+              [color]="sorgenteFile == TSorgenteFile.filesystem ? colorItemSelected : colorItemEmpty"
+              [detail]="true"
               [button]="true"
               (click)="handleChangeMobSource(TSorgenteFile.filesystem)">
             <ion-icon slot="start" name="document-text-outline" size="small"></ion-icon>
             <ion-label>Cartella Documenti</ion-label>
-            <ion-icon slot="end" [name]="sorgenteFile == TSorgenteFile.filesystem ? iconRadioSelected : iconRadioEmpty"></ion-icon>
           </ion-item>
 
           <ion-item
-              [detail]="false"
+              [color]="sorgenteFile == TSorgenteFile.takephoto ? colorItemSelected : colorItemEmpty"
+              [detail]="true"
               [button]="true"
               (click)="handleChangeMobSource(TSorgenteFile.takephoto)">
             <ion-icon slot="start" name="camera-outline" size="small"></ion-icon>
             <ion-label>Scatta una foto</ion-label>
-            <ion-icon slot="end" [name]="sorgenteFile == TSorgenteFile.takephoto ? iconRadioSelected : iconRadioEmpty"></ion-icon>
           </ion-item>
 
           <ion-item
-            [detail]="false"
+            [color]="sorgenteFile == TSorgenteFile.fromgallery ? colorItemSelected : colorItemEmpty"
+            [detail]="true"
             [button]="true"
             (click)="handleChangeMobSource(TSorgenteFile.fromgallery)"
               >
             <ion-icon slot="start" name="images-outline" size="small"></ion-icon>
             <ion-label>Libreria Foto</ion-label>
-            <ion-icon slot="end" [name]="sorgenteFile == TSorgenteFile.fromgallery ? iconRadioSelected : iconRadioEmpty"></ion-icon>
           </ion-item>          
 
         
     </ion-item-group>
 
 
-
-    <ion-item-group class="ion-margin-vertical">
+    <!-- mostro solo se sono su desktop oppure ho il file caricato-->
+    <ion-item-group 
+            *ngIf="fileLoaded || isDesktop"
+            class="ion-margin-vertical">
       <ion-item-divider 
           class="ion-padding-vertical"  
           color="light">
         <ion-label>
-          <h2>Scegli il documento</h2>
+          <h2>Documento caricato</h2>
         </ion-label>
         </ion-item-divider> 
 
@@ -117,68 +118,58 @@
           class="ion-padding-vertical"  
           color="light">
         <ion-label>
-          <h2>Che documento stai caricando</h2>
+          <h2>Informazioni Aggiuntive</h2>
         </ion-label>
         </ion-item-divider> 
 
-        <ion-radio-group
-          (ionChange)="handleChangeDocType($event)"
-          >
-          <ion-item *ngFor="let myTypeDoc of docTypeList">
+        <ion-item 
+            (click)="handleChangeDocType(myTypeDoc.ID)"
+            [color]="myTypeDoc.ID == idDocTypeSelected ? colorItemSelected : colorItemEmpty"
+            [detail]="false"
+            [button]="true"
+            *ngFor="let myTypeDoc of docTypeList">
+            <ion-icon 
+                slot="end" 
+                name="checkmark-outline" 
+                *ngIf="myTypeDoc.ID == idDocTypeSelected">
+            </ion-icon>
             <ion-label>{{myTypeDoc.DENOMINAZIONE}}</ion-label>
-            <ion-radio
-                mode="md" 
-                [value]="myTypeDoc.ID" 
-                slot="start" 
-                color="danger"></ion-radio>
-          </ion-item>
+        </ion-item>
 
-        </ion-radio-group>
-    </ion-item-group>
-    
-
-
-    <ion-item-group class="ion-margin-vertical">
-      <ion-item-divider 
-          class="ion-padding-vertical"  
-          color="light">
-        <ion-label>
-          <h2>Informazioni aggiuntive</h2>
-        </ion-label>
-        </ion-item-divider> 
-            <!-- DESCRIZIONE -->
-            <ion-item>
-              <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-              <ion-textarea placeholder="Inserisci una descrizione"  [(ngModel)]="docDescription" maxlength="50"></ion-textarea>      
-            </ion-item>
+        <!-- DESCRIZIONE -->
+        <ion-item>
+          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+          <ion-textarea 
+                [autoGrow]="true"
+                placeholder="Inserisci una descrizione"  
+                [(ngModel)]="docDescription" 
+                maxlength="50"></ion-textarea>      
+        </ion-item>
    
-            <!-- SCADENZA -->
-            <ion-list>
-              <ion-item (click)="flagDocScadenza=!flagDocScadenza">
-                  <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
-                  <ion-label>documento con scadenza</ion-label>
-                <ion-toggle 
-                    color="danger"
-                    [(ngModel)]="flagDocScadenza">
-                </ion-toggle>
-              </ion-item>
-            </ion-list>        
+        <!-- FLAG SCADENZA -->
+        <ion-item 
+              (click)="flagDocScadenza=!flagDocScadenza">
+            <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
+            <ion-label>con scadenza</ion-label>
+            <ion-icon slot="end" [name]="flagDocScadenza ? 'radio-button-on-outline' : 'radio-button-off-outline'"></ion-icon>
+        </ion-item>
+     
+        <!-- data scadenza -->
+        <app-dtinput
+            *ngIf="flagDocScadenza"
+            title="Data Scadenza Documento"
+            itemLines="full"
+            itemDetail="true"
+            iconName="calendar-outline"
+            iconColor="primary"
+            maskFormat="dddd dd/MM/yyyy"
+            calendarMode="date"
+            [(actualDate)]="docScadenza"
+          >
+          </app-dtinput>               
 
-            <app-dtinput
-                *ngIf="flagDocScadenza"
-                title="Data Scadenza Documento"
-                itemLines="full"
-                itemDetail="true"
-                iconName="calendar-outline"
-                iconColor="primary"
-                maskFormat="dddd dd/MM/yyyy"
-                calendarMode="date"
-                [(actualDate)]="docScadenza"
-              >
-              </app-dtinput>    
     </ion-item-group>
-
-    
+        
     <div class="spacer"></div>
 
 

@@ -1,12 +1,13 @@
 import { zip } from 'zip-a-folder';
-import packageJson  from './package.json' assert { type: "json" };
+import packageJson  from './package.json' with { type: 'json' };
+//assert { type: "json" };
 import { cp, unlink, rm, copyFile } from 'fs/promises';
 
 /**
  * Execution with command
  * > node ZipBuild.mjs
  * Estensione mjs per utilizzare import dei moduli
- * Questa classe usata per preprare il pacchetto Web
+ * Questa classe usata per preparare il pacchetto Web
  * Copia la cartella www in application_build/web/www
  * Sostituisce il web.config con quello corretto del server
  * Crea un file ZIP con nel nome la versione_data_ora.zip

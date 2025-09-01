@@ -4,7 +4,6 @@ import { environment } from 'application_model/beachforfun/environment.prod';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
-import { HttpClient } from '@angular/common/http';
 import { PaymentChannel, PaymentEnvironment, PaypalStatus } from 'src/app/models/zsupport/valuelist.model';
 import {
   ApplePayEventsEnum,
@@ -83,6 +82,7 @@ export class PaymentPage implements OnInit{
     private modalController: ModalController,
     private startService: StartService
     ) {
+      
     //Uso la nuova modalità SmartButton di Paypal
     this.paypalVersion = 'smart';
 

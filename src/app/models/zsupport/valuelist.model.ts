@@ -558,6 +558,7 @@ export enum Mesi {
 
 }
 
+
 //Identifica un corso rispett ad oggi
 export enum TimeTrainerCourse {
     attivi = 0,

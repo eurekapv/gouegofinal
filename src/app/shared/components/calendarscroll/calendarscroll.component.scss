@@ -3,6 +3,18 @@ ion-grid {
     &.picker-month {
         background-color: white;
 
+        ion-toolbar {
+            --background: lightgray;
+
+            .text-lg {
+                font-size: larger;
+            }
+
+            .text-sm {
+                font-size: smaller;
+            }
+        }
+
         ion-row {            
             padding-top: 10px;
         }
@@ -124,4 +136,14 @@ ion-button {
     ion-icon{
         margin-left: 3px;
     }
+}
+
+ion-modal {
+  --height: auto;
+
+  align-items: end;
+}
+
+ion-picker {
+  margin-bottom: var(--ion-safe-area-bottom);
 }

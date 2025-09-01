@@ -1,61 +1,58 @@
 <!-- GRID MONTH PICKER -->
 <ion-grid 
       class="picker-month ion-no-padding ion-no-margin">
-  <ion-row class="ion-align-items-center">
 
-    <ion-col 
-        class="ion-text-left"
-        size="2">
-      <ion-button
-          (click) ="onClickMonthButton('prev')"
-          class="ion-no-padding ion-no-margin" 
-          size="small"
-          expand="full" 
-          fill="clear" 
-          color="danger">
-          <ion-icon 
-            slot="start" 
-            name="chevron-back-outline">
-          </ion-icon>
-          {{_monthBeforeDay | date: 'MMM' | uppercase}}
-    </ion-button>
-    
-    </ion-col>
+      <!--MESE-PREC -  DATAATTIVA - MESE-SUCC -->
+      <ion-toolbar>
 
-    <ion-col 
-        (click)="showPickerDate()" 
-        size="8" 
-        class="ion-text-center">
-
-        <ion-button 
-          color = "primary"
-          expand="block"
-          fill="clear" 
-          size="medium">
-                {{ _activeDay | date: "EEEE dd MMMM yyyy" | uppercase}}
-        </ion-button>
-    </ion-col>
-
-    <ion-col 
-          class="ion-text-right"
-          size="2">
-
+        <ion-buttons slot="start">
           <ion-button
-            (click) ="onClickMonthButton('next')"
+            (click) ="onClickMonthButton('prev')"
             class="ion-no-padding ion-no-margin" 
             size="small"
             expand="full" 
             fill="clear" 
-            color="danger">
+            >
             <ion-icon 
-              slot="end" 
-              name="chevron-forward-outline">
+              slot="start" 
+              name="chevron-back-outline">
             </ion-icon>
+            {{_monthBeforeDay | date: 'MMM' | uppercase}}
+          </ion-button>
+        </ion-buttons>
+
+        <!-- DATA ATTUALE -->
+        <ion-title>
+          <ion-button 
+              id="open-modal-monthyear"
+              color = "primary"
+              expand="block"
+              fill="clear" 
+              size="medium">
+              <ion-label class="ion-text-center">
+                <div class="text-lg font-bold">{{ _activeDay | date: "dd MMMM yyyy" | uppercase}}</div>
+                <div class="text-sm">{{ _activeDay | date: "EEEE" | uppercase}}</div>
+              </ion-label>
+              
+          </ion-button>          
+        </ion-title>
+
+        <ion-buttons slot="end">
+            <ion-button
+              (click) ="onClickMonthButton('next')"
+              class="ion-no-padding ion-no-margin" 
+              size="small"
+              expand="full" 
+              fill="clear" 
+              >
+                <ion-icon 
+                  slot="end" 
+                  name="chevron-forward-outline">
+                </ion-icon>
             {{_monthAfterDay | date: 'MMM' | uppercase}}
           </ion-button>
-
-    </ion-col>
-  </ion-row>
+        </ion-buttons>        
+      </ion-toolbar>
   </ion-grid> 
 
 
@@ -81,9 +78,9 @@
                     class="ion-no-padding ion-no-margin btn-day" 
                     shape="round" 
                     size="large"
-                    [fill]="getFillButton(objDay)" 
+                    [fill]="getFillDayButton(objDay)" 
                     color="secondary" 
-                    (click)="onClickButton(objDay)">
+                    (click)="onClickDayButton(objDay)">
                 {{ objDay.numValue }}
                 <br />
                  {{objDay.dateValue | date : 'EEEEE'}}
@@ -99,3 +96,51 @@
 
   </ion-row>
 </ion-grid>
+
+<!-- MODALI PICKER -->
+<ion-modal
+      #modalmonthyear 
+      trigger="open-modal-monthyear" 
+      (didDismiss)="onDidDismissPickerDate($event)">
+  <ng-template>
+    <ion-toolbar>
+
+      <ion-buttons slot="start">
+        <ion-button (click)="modalmonthyear.dismiss(null, 'cancel')">Annulla</ion-button>
+      </ion-buttons>
+
+      <ion-buttons slot="end">
+        <ion-button (click)="modalmonthyear.dismiss(null, 'confirm')">Conferma</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+
+    <!-- CREO LA LINEA CON GLI ANNI -->
+     
+       <ion-row>
+         <ion-col *ngFor="let anno of listAnni">
+           <ion-button 
+                 (click)="_activeYear=anno"
+                 expand="full"
+                 [color]="_activeYear == anno ? 'success' : 'primary'">
+             {{anno}}
+           </ion-button>
+         </ion-col>
+       </ion-row>
+
+       <!-- LINEA MESI -->
+       <ion-row class="ion-padding-vertical">
+        <ion-col 
+            size="4"
+            *ngFor="let mese of listMesi">
+          <ion-button
+            (click)="_activeMonth=mese.value"
+            expand="full"
+            [fill]="_activeMonth == mese.value ? 'solid' : 'clear'"
+            [color]="_activeMonth == mese.value ? 'success' : 'primary'">
+            {{mese.description}}
+          </ion-button>
+        </ion-col>
+       </ion-row>
+  </ng-template>
+</ion-modal>
+ <!-- END MODALI PICKER -->

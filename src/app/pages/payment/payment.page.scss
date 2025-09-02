@@ -15,7 +15,7 @@
   }
 
 
-/* aggiunt pietro */
+
 
 ion-button.full-buttons{
   margin-left:10px;
@@ -139,6 +139,14 @@ hr {
           color: #434343;
       }
   }
+}
+
+#paypal-button-container, 
+.paypal-buttons-context-iframe, 
+.paypal-buttons-layout-vertical {
+  min-height: 500px !important; /* Altezza minima per evitare troppi resize */
+  height: auto;
+  width: 100%;
 }
 
 ion-footer {

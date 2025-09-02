@@ -48,7 +48,9 @@
     </ion-accordion>
   </ion-accordion-group>
 
-  <ion-card>
+
+
+  <!-- <ion-card>
     <ion-card-header>
       <ion-card-title>{{paymentData.amount | currency: paymentData.currency}}</ion-card-title>
       <ion-card-subtitle>{{paymentData.description}}</ion-card-subtitle>
@@ -57,7 +59,22 @@
     <ion-card-content>
       Effettua il pagamento scegliendo la modalità preferita.
     </ion-card-content>
-  </ion-card>  
+  </ion-card>   -->
+
+   <ion-card class="ion-margin-horizontal">
+      <ion-grid>
+        <!-- IMPORTO PRENOTAZIONI -->
+        <ion-row class="ion-align-items-center">
+          <ion-col size="5" class="ion-text-center left-col">
+            <h6 class="ion-no-margin ion-text-bold">Totale</h6>
+          </ion-col>
+          <ion-col size="7">
+            <h5 class="ion-no-margin ion-text-right ion-text-bold">{{paymentData.amount | currency: paymentData.currency}}</h5>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      </ion-card>
 
   <!-- AREA PAYPAL -->
   <div class="cart-items" *ngIf = "showPaypal">
@@ -65,8 +82,8 @@
 
       <!-- INIZIO PULSANTE PAYPAL -->
       <ion-card-content>
-
-        <div  id="customBtnPaypal">
+        <!-- AREA BUTTON -->
+        <div id="customBtnPaypal">
     
         </div>
       </ion-card-content>

@@ -19,6 +19,10 @@ import { StartService } from 'src/app/services/start.service';
 //questo mi rende disponibile l'oggetto paypal che è presente nello script caricato dinamicamente
 declare let paypal: any
 
+/*
+Generatore Card Test
+https://developer.paypal.com/tools/sandbox/card-testing/
+*/
 
 @Component({
   selector: 'app-payment',
@@ -156,6 +160,8 @@ export class PaymentPage implements OnInit{
                 }
 
                 this.urlPaypal += '&currency=EUR';
+                this.urlPaypal += '&locale=it_IT';
+                this.urlPaypal += '&enable-funding=paylater';
 
                 if (this.debugMode) {
                   this.urlPaypal += '&debug=true';

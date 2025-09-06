@@ -10,6 +10,8 @@ import { PaymentEnvironment } from 'src/app/models/zsupport/valuelist.model';
 })
 export class StripemanagerService {
 
+  //https://stripe.capacitorjs.jp/docs/configuration
+  
   constructor(private apiService: ApicallService) { }
 
       /**

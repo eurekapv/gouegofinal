@@ -35,7 +35,10 @@ export class StripemanagerService {
    * @param currency 
    * @param idAccountConnected 
    */
-  requestIntentPayment(mode: PaymentEnvironment, amount: number, currency: string = 'eur', idAccountConnected: string = ''): Promise<StripePaymentIntent> {
+  requestIntentPayment(mode: PaymentEnvironment, 
+                       amount: number, 
+                       currency: string = 'eur', 
+                       idAccountConnected: string = ''): Promise<StripePaymentIntent> {
 
     return new Promise<StripePaymentIntent>((resolve, reject) => {
       //Devo effettuare una chiamata post con la richiesta di pagamento

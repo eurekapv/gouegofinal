@@ -45,7 +45,7 @@ export const environment = {
       },
       demo: {
         name: 'demo',
-        appId: '00F15A91-5395-445C-B7F4-5BA594E55D2F',
+        appId: '00F15A91-5395-445C-B7F4-5BA594E55D2F',        
         urlId: 'demo.gouego.com',       
       },
     },

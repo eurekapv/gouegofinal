@@ -29,7 +29,8 @@
     "newIOS": "npx cap add ios",
     "prepareOB": "node prepareBuild.mjs --customer openbeach",
     "prepareBF": "node prepareBuild.mjs --customer beachforfun",
-    "preparePR": "node prepareBuild.mjs --customer progettorieduca"
+    "preparePR": "node prepareBuild.mjs --customer progettorieduca",
+    "prepareDB": "node prepareBuild.mjs --customer demobeach "
   },
   "private": true,
   "dependencies": {

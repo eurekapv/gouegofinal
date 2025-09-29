@@ -69,4 +69,6 @@ export class CorsoPresenze extends IDDocument {
         return flagExist;
     }
 
+    
+
 }

@@ -28,7 +28,7 @@
               color = "primary"
               expand="block"
               fill="clear" 
-              size="medium">
+              size="small">
               <ion-label class="ion-text-center">
                 <div class="text-lg font-bold">{{ _activeDay | date: "dd MMMM yyyy" | uppercase}}</div>
                 <div class="text-sm">{{ _activeDay | date: "EEEE" | uppercase}}</div>
@@ -77,7 +77,7 @@
                     *ngIf="objDay.type == 'day'" 
                     class="ion-no-padding ion-no-margin btn-day" 
                     shape="round" 
-                    size="large"
+                    size="small"
                     [fill]="getFillDayButton(objDay)" 
                     color="secondary" 
                     (click)="onClickDayButton(objDay)">

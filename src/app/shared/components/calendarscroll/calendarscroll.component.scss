@@ -4,7 +4,11 @@ ion-grid {
         background-color: white;
 
         ion-toolbar {
+            height: 60px;
+            justify-content: center;
+            align-content: center;
             --background: lightgray;
+            
 
             .text-lg {
                 font-size: larger;

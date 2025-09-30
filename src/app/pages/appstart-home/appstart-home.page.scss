@@ -13,8 +13,8 @@ ion-tabs{
         padding-right: 5px !important;
 
         &.md {
-            //Versione Android
-            padding-bottom: 5px !important;
+            //Versione Android (Era 5px ma poco)
+            padding-bottom: var(--ion-safe-area-bottom) !important;
         }
         &.ios {
             //Versione IOS

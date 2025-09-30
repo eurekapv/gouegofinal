@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.gouego"
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 35
     defaultConfig {
         applicationId "com.gouego"
         minSdk 32
-        targetSdk 36
+        targetSdk 35
         versionCode 25
         versionName '2.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

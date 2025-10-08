@@ -33,7 +33,11 @@
 @import "./theme/various.scss";
 @import "./theme/text-typography.scss";
 @import "./theme/padding-margin.scss";
-@import "./theme/alert-custom.scss";
+
+@import "./theme/custom-alert.scss";
+@import "./theme/custom-action-sheet.scss";
+@import "./theme/custom-loading.scss";
+@import "./theme/custom-toast.scss";
 
 /* Custom CSS components */
 @import "./theme/modals.scss";

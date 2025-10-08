@@ -1,10 +1,10 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
+  <ion-toolbar color="primary" mode="md">
     <ion-buttons slot="start">
-      <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{selectedLocation.DENOMINAZIONE|titlecase}}
+      {{selectedLocation.DENOMINAZIONE | titlecase}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -15,250 +15,186 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <!-- PAGINA IN ERRORE -->
   <ion-grid
-        *ngIf="loadedData && errorLoadingData && !refresherMode" 
-        class="ion-no-margin ion-no-padding"
-        #gridcontainer>
-
-        <!-- PAGINA IN ERRORE -->
-        <ion-row 
-           >
-          <ion-col 
-            sizeXs="12" 
-            sizeSm="12" 
-            sizeMd="12"
-            sizeLg="8" offsetLg="2"
-            sizeXl="8" offsetXl="2">
-
-            <!-- ERRORE CARICAMENTO -->
-            <app-card-image
-              src="assets/boysplaying_small.png"
-              title="Spiacenti, qualcosa non va"
-              [subtitle]="messageErrorPage"
-            >
-            </app-card-image>    
-          </ion-col>
-        </ion-row>
+    *ngIf="loadedData && errorLoadingData && !refresherMode" 
+    class="ion-no-margin ion-no-padding">
+    <ion-row>
+      <ion-col sizeXs="12" sizeSm="12" sizeMd="12" sizeLg="8" offsetLg="2" sizeXl="8" offsetXl="2">
+        <app-card-image
+          src="assets/boysplaying_small.png"
+          title="Spiacenti, qualcosa non va"
+          [subtitle]="messageErrorPage">
+        </app-card-image>    
+      </ion-col>
+    </ion-row>
   </ion-grid>  
 
-  <ion-grid 
-      *ngIf="(loadedData && !errorLoadingData) || refresherMode" 
-      >
-    <ion-row
-        class="ion-no-margin"
-        >
-      <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="10" offsetMd="1"
-                sizeLg="8" offsetLg="2"
-                sizeXl="8" offsetXl="2">
+  <!-- CONTENUTO PRINCIPALE -->
+  <div *ngIf="(loadedData && !errorLoadingData) || refresherMode" class="page-content">
+    
+    <ion-grid>
+      <ion-row>
+        <ion-col sizeXs="12" sizeSm="12" sizeMd="10" offsetMd="1" sizeLg="8" offsetLg="2" sizeXl="8" offsetXl="2">
 
-                <ion-grid>
-                  <!-- RIGA BUTTON SUPERIORE-->
-                  <ion-row 
-                        class="ion-no-margin ion-align-items-center">
-                      <ion-col
-                          sizeXs="12" 
-                          sizeSm="12" 
-                          sizeMd="12"
-                          [sizeLg]="listButtonCard.length == 2 ? 6 : 12"
-                          [sizeXl]="listButtonCard.length == 2 ? 6 : 12"
-                          *ngFor="let btn of listButtonCard"
-                          >
-                          <app-button-card 
-                              [smallVersion]="false" 
-                              [myButtonCard]="btn" 
-                              (clickElement)="onClickButtonCard($event)">
-                          </app-button-card>
-                      </ion-col>
+          <!-- BOTTONI AZIONI IN ALTO -->
+          <div class="actions-grid" *ngIf="listButtonCard.length > 0">
+            <div 
+              *ngFor="let btn of listButtonCard"
+              class="action-card"
+              [class.action-prenota]="btn.functionCod === 'LocationBooking'"
+              [class.action-corso]="btn.functionCod === 'PeriodicCourseList'"
+              [class.action-lezione]="btn.functionCod === 'DailyCourseList'"
+              (click)="onClickButtonCard(btn)">
+              
+              <div class="action-icon-circle" 
+                   [class.icon-prenota]="btn.functionCod === 'LocationBooking'"
+                   [class.icon-corso]="btn.functionCod === 'PeriodicCourseList'"
+                   [class.icon-lezione]="btn.functionCod === 'DailyCourseList'">
+                <ion-icon [name]="btn.nameicon" color="danger"></ion-icon>
+              </div>
+              
+              <div class="action-content">
+                <h3>{{btn.title}}</h3>
+                <p>{{btn.subtitle}}</p>
+              </div>
+              
+              <ion-icon name="chevron-forward" class="action-chevron"></ion-icon>
+            </div>
+          </div>
+
+          <!-- LAYOUT A DUE COLONNE -->
+          <ion-grid class="detail-grid">
+            <ion-row>
+              
+              <!-- COLONNA SINISTRA: Gallery + Info Centro -->
+              <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6" sizeXl="6">
+                
+                <!-- GALLERY IMMAGINI -->
+                <div class="gallery-section">
+                  <swiper-container
+                    #swiperGallery 
+                    class="location-gallery" 
+                    [pagination]="true">
+                    <swiper-slide *ngFor="let img of selectedLocation.LOCATIONIMAGE">
+                      <img [src]="img.IMAGEURL" [alt]="selectedLocation.DENOMINAZIONE" (click)="openPreview(img)">
+                    </swiper-slide>      
+                  </swiper-container>
+                </div>
+
+                <!-- INFO CENTRO -->
+                <div class="info-section">
+                  <h2 class="section-title">
+                    <ion-icon name="information-circle"></ion-icon>
+                    Info Centro
+                  </h2>
+
+                  <div class="info-card">
                     
-                  </ion-row>  
+                    <!-- DENOMINAZIONE -->
+                    <div class="info-item" *ngIf="selectedLocation.DENOMINAZIONE">
+                      <ion-icon name="golf" color="primary"></ion-icon>
+                      <div class="info-text">
+                        <span class="info-label">Nome</span>
+                        <span class="info-value">{{selectedLocation.DENOMINAZIONE}}</span>
+                      </div>
+                    </div>
 
-                  <!-- RIGA INFERIORE UNICA-->
-                  <ion-row>
-                    <!-- COLONNA UNICA SOTTO -->
-                    <ion-col sizeXs="12" 
-                             sizeSm="12" 
-                             sizeMd="12"
-                             sizeLg="12" 
-                             sizeXl="12" >
+                    <!-- DESCRIZIONE -->
+                    <div class="info-item info-description" *ngIf="selectedLocation.DESCRIZIONEMOB">
+                      <div class="info-text full-width">
+                        <p [innerHTML]="selectedLocation.DESCRIZIONEMOB"></p>
+                      </div>
+                    </div>
 
-                      <!-- GRIGLIA SOTTO CHE DIVIDO IN DUE COLONNE -->
-                      <ion-grid>
-                        <ion-row>
-                          <!-- COLONNA INFERIORE SINISTRA (GALLERY E INFO CENTRO)-->
-                          <ion-col 
-                              sizeXs="12" 
-                              sizeSm="12" 
-                              sizeMd="6"
-                              sizeLg="6" 
-                              sizeXl="6">
-                              <!-- QUI METTO LA GALLERY E ALTRO-->
-                              <ion-grid>
-                                  <!-- RIGO GALLERY -->
-                                  <ion-row>
-                                    <!-- GALLERY IMAGES -->
-                                    <ion-col 
-                                          size="12" 
-                                          sizeXs="12" 
-                                          sizeSm="12" 
-                                          sizeMd="12" 
-                                          sizeLg="12" 
-                                          sizeXl="12">
-          
-                                          <ion-card class="ion-no-margin ion-no-padding backcolorcard">
-                                            <swiper-container
-                                                #swiperGallery 
-                                                class="gallery" 
-                                                [pagination]="true">
-                                        
-                                              <swiper-slide 
-                                                  *ngFor="let img of selectedLocation.LOCATIONIMAGE">
-                                                <img [src]="img.IMAGEURL" tappable (click)="openPreview(img)">
-                                              </swiper-slide>      
-                                            </swiper-container>
-                                        
-                                          </ion-card>
-          
-                                    </ion-col> 
-                                </ion-row> 
-                                <!-- RIGO INFORMAZIONI CENTRO -->
-                                <ion-row>
-                                  <ion-col 
-                                        size="12" 
-                                        sizeXs="12" 
-                                        sizeSm="12" 
-                                        sizeMd="12" 
-                                        sizeLg="12" 
-                                        sizeXl="12">
-                                      <ion-list class="ion-list-margin-bottom">
-                                        <ion-item-group>
-                                    
-                                            <ion-item-divider color="tertiary">
-                                              <ion-label>
-                                                <h2>Info Centro</h2>
-                                              </ion-label>
-                                            </ion-item-divider>
+                    <!-- NUMERO CAMPI -->
+                    <div 
+                      class="info-item info-clickable" 
+                      *ngIf="selectedLocation.getNumCampi() !== 0"
+                      (click)="onClickOpenCampi()">
+                      <ion-icon name="grid" color="primary"></ion-icon>
+                      <div class="info-text">
+                        <span class="info-label">{{ getLabelCampiDisponibili() }}</span>
+                        <span class="info-value">{{selectedLocation.getNumCampi()}}</span>
+                      </div>
+                      <ion-icon name="chevron-forward" class="info-chevron"></ion-icon>
+                    </div>
 
-                                            <!-- COMUNE -->
-                                            <ion-item *ngIf="selectedLocation.DENOMINAZIONE && selectedLocation.DENOMINAZIONE.length != 0">
-                                              <ion-icon 
-                                                  name="golf-outline" 
-                                                  slot="start" 
-                                                  color="primary"></ion-icon>
-                                              <ion-label>{{selectedLocation.DENOMINAZIONE}}</ion-label>
-                                            </ion-item>
-                                    
-                                      
-                                            <!-- DESCRIZIONE MOB -->
-                                            <ion-item *ngIf="selectedLocation.DESCRIZIONEMOB && selectedLocation.DESCRIZIONEMOB.length != 0">
-                                      
-                                              <ion-label class="ion-text-wrap">
-                                                <p [innerHTML]="selectedLocation.DESCRIZIONEMOB"></p>
-                                              </ion-label>
-                                      
-                                            </ion-item>
-                                      
-                                            <!-- NUMERO CAMPI/AULE -->
-                                            <ion-item *ngIf="selectedLocation.getNumCampi() !== 0" button
-                                              (click)="onClickOpenCampi()">
-                                              <ion-icon 
-                                                  name="medical-outline" 
-                                                  slot="start" 
-                                                  color="primary">
-                                              </ion-icon>
-                                      
-                                              <ion-label>{{ getLabelCampiDisponibili() }}</ion-label>
-                                              <ion-badge color="primary">{{selectedLocation.getNumCampi()}}</ion-badge>
-                                      
-                                            </ion-item>
-                                      
-                                            <!-- COMUNE -->
-                                            <ion-item *ngIf="selectedLocation.COMUNE">
-                                              <ion-icon 
-                                                  name="home-outline" 
-                                                  slot="start" 
-                                                  color="primary"></ion-icon>
-                                              <ion-label>{{selectedLocation.COMUNE}}</ion-label>
-                                            </ion-item>
-                                      
-                                            <!-- INDIRIZZO -->
-                                            <ion-item *ngIf="selectedLocation.INDIRIZZO">
-                                              <ion-icon 
-                                                name="navigate-outline" 
-                                                slot="start" 
-                                                color="primary">
-                                              </ion-icon>
-                                      
-                                              <ion-label>
-                                                {{selectedLocation.INDIRIZZO}}
-                                              </ion-label>
-                                      
-                                            </ion-item>
-                                      
-                                      
-                                          <!-- </div> -->
-                                    
-                                        </ion-item-group>
-                                    
-                                        <!-- CONTATTI TEL E EMAIL -->
-                                        <ion-item-group *ngIf="selectedLocation.TELEFONO || selectedLocation.EMAIL">
-                                    
-                                          <ion-item button *ngIf="selectedLocation.TELEFONO" [href]="'tel:'+selectedLocation.TELEFONO">
-                                            <ion-icon 
-                                              name="call-outline" 
-                                              slot="start" 
-                                              color="primary"></ion-icon>
-                                            <ion-label>{{selectedLocation.TELEFONO}}</ion-label>
-                                          </ion-item>
-                                      
-                                          <ion-item button *ngIf="selectedLocation.EMAIL" [href]="'mailto:'+selectedLocation.EMAIL">
-                                            <ion-icon 
-                                              name="mail-outline" 
-                                              slot="start" 
-                                              color="primary">
-                                            </ion-icon>
-                                            
-                                            <ion-label>{{selectedLocation.EMAIL}}</ion-label>
-                                          </ion-item>
-                                    
-                                        </ion-item-group>
-                                      </ion-list>
-                                  </ion-col>
-                                </ion-row>
-                              </ion-grid>
-                          </ion-col>
-                          <!-- COLONNA INFERIORE DESTRA (ORARI CENTRO)-->
-                          <ion-col 
-                              sizeXs="12" 
-                              sizeSm="12" 
-                              sizeMd="6"
-                              sizeLg="6" 
-                              sizeXl="6">
-                              <!-- ORARI CENTRO -->
-                              <ion-list class="ion-list-margin-bottom">
-                                <ion-item-group id="loc-orari" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
-                        
-                                  <ion-item-divider color="tertiary">
-                                    
-                                    <ion-label><h2>Orari Centro</h2></ion-label>
-                                  </ion-item-divider>
-                        
-                                  <app-aperture 
-                                        *ngFor="let itemApertura of selectedLocation.APERTURALOCATION" 
-                                        [myApertura]="itemApertura">
-                                  </app-aperture>
-                        
-                                </ion-item-group>
-                            </ion-list>
-                          </ion-col>                          
-                        </ion-row>
-                      </ion-grid>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-      </ion-col>
-    </ion-row>  
-  </ion-grid>
+                    <!-- COMUNE -->
+                    <div class="info-item" *ngIf="selectedLocation.COMUNE">
+                      <ion-icon name="home" color="primary"></ion-icon>
+                      <div class="info-text">
+                        <span class="info-label">Comune</span>
+                        <span class="info-value">{{selectedLocation.COMUNE}}</span>
+                      </div>
+                    </div>
+
+                    <!-- INDIRIZZO -->
+                    <div class="info-item" *ngIf="selectedLocation.INDIRIZZO">
+                      <ion-icon name="navigate" color="primary"></ion-icon>
+                      <div class="info-text">
+                        <span class="info-label">Indirizzo</span>
+                        <span class="info-value">{{selectedLocation.INDIRIZZO}}</span>
+                      </div>
+                    </div>
+
+                    <!-- TELEFONO -->
+                    <a 
+                      class="info-item info-clickable" 
+                      *ngIf="selectedLocation.TELEFONO"
+                      [href]="'tel:'+selectedLocation.TELEFONO">
+                      <ion-icon name="call" color="primary"></ion-icon>
+                      <div class="info-text">
+                        <span class="info-label">Telefono</span>
+                        <span class="info-value">{{selectedLocation.TELEFONO}}</span>
+                      </div>
+                      <ion-icon name="chevron-forward" class="info-chevron"></ion-icon>
+                    </a>
+
+                    <!-- EMAIL -->
+                    <a 
+                      class="info-item info-clickable" 
+                      *ngIf="selectedLocation.EMAIL"
+                      [href]="'mailto:'+selectedLocation.EMAIL">
+                      <ion-icon name="mail" color="primary"></ion-icon>
+                      <div class="info-text">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{selectedLocation.EMAIL}}</span>
+                      </div>
+                      <ion-icon name="chevron-forward" class="info-chevron"></ion-icon>
+                    </a>
+
+                  </div>
+                </div>
+
+              </ion-col>
+
+              <!-- COLONNA DESTRA: Orari Centro -->
+              <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6" sizeXl="6">
+                
+                <div class="schedule-section" *ngIf="selectedLocation.APERTURALOCATION.length !== 0">
+                  <h2 class="section-title">
+                    <ion-icon name="time"></ion-icon>
+                    Orari Centro
+                  </h2>
+
+                  <div class="schedule-card">
+                    <app-aperture 
+                      *ngFor="let itemApertura of selectedLocation.APERTURALOCATION" 
+                      [myApertura]="itemApertura">
+                    </app-aperture>
+                  </div>
+                </div>
+
+              </ion-col>
+
+            </ion-row>
+          </ion-grid>
+
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+
+  </div>
+
 </ion-content>
-

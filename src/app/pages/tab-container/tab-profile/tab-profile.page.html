@@ -1,342 +1,346 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary" mode="md">        
-    <ion-title>
-      Profilo
-    </ion-title>
-    <ion-buttons 
-          color="light"
-          slot="end">
-      <ion-button>Vers. {{numVersion}} </ion-button>
+    <ion-title>Profilo</ion-title>
+    <ion-buttons color="light" slot="end">
+      <ion-button>v{{numVersion}}</ion-button>
     </ion-buttons>    
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-
+  <!-- ================================ -->
   <!-- UTENTE NON LOGGATO -->
-  <div *ngIf="!flagUserLogged">
+  <!-- ================================ -->
+  <div class="not-logged-wrapper" *ngIf="!flagUserLogged">
     <ion-grid>
       <ion-row>
-        <ion-col sizeXs="12" 
-                 sizeSm="12" 
-                 sizeMd="12" 
-                 sizeLg="8" offsetLg="2"
-                 sizeXl="6" offsetXl="3">
-                 <ion-grid>
-                  <ion-row>
-                    <ion-col>
-                      <ion-card >
-                        <ion-card-header>
-                          <ion-card-title>Unisciti a noi</ion-card-title>
-                        </ion-card-header>
-              
-                        <ion-grid class="grid-images-login">
-                          <ion-row>
-                            <ion-col *ngFor="let image  of specialPicture">
-                              <img class="radius-small" [src]="image" alt="">
-                            </ion-col>
-                          </ion-row>
-                        </ion-grid>
-              
-                        <ion-card-content>
-                          <p>
-                            Per essere coinvolto in tutte le attività del nostro centro 
-                            ti consigliamo di registrare il tuo profilo o effettuarne l'accesso.
-                          </p>
-                          <p>
-                            Oltre a conoscere tutti gli eventi che si terranno presso il centro, avrai la possibilità di effettuare prenotazioni, iscrizioni a corsi ed acquistare il nostro merchandising
-                          </p>
-                        </ion-card-content>
-                      </ion-card>
-                    </ion-col>
-                  </ion-row>
-
-                  <ion-row>
-                    <ion-col 
-                          *ngIf="flagEnableRegistrazioni"
-                          sizeXs="12" 
-                          sizeSm="12" 
-                          sizeMd="6" 
-                          sizeXl="6" 
-                          sizeLg="6">
-                      <ion-button
-                      (click)="onClickRegistrati()"
-                      
-                      color="success"
-                      expand="block"
-                      >Registrati</ion-button
-                    >
-                    </ion-col>
-                    <ion-col 
-                        sizeXs="12" 
-                        sizeSm="12" 
-                        sizeMd="6" [offsetMd]="flagEnableRegistrazioni ? 0:6"
-                        sizeXl="6" [offsetXl]="flagEnableRegistrazioni ? 0:6"
-                        sizeLg="6" [offsetLg]="flagEnableRegistrazioni ? 0:6">
-                      <ion-button
-                        (click)="onClickAccedi()"
-                      expand="block"
-                      fill="outline"
-                      >Accedi</ion-button
-                    >
-                    </ion-col>
-                  </ion-row>
-
-                 </ion-grid>
-  
-        </ion-col>
-      </ion-row>
-      
-      <!-- PULSANTE DEVELOPER MODE -->
-      <ion-row *ngIf="developerMode">
-        <ion-col 
-              sizeXs="12" 
-              sizeSm="12" 
-              sizeMd="12" 
-              sizeLg="8" offsetLg="2"
-              sizeXl="6" offsetXl="3">
-          <ion-list>
-            <ion-list-header lines="inset">
-              <ion-label>Developer Mode</ion-label>
-            </ion-list-header>
-            <ion-item 
-                button="true" 
-                (click)="onClickDeveloperMode()" 
-                lines="none">
-              <ion-icon slot="start" name="code-working-outline" color="primary"></ion-icon>              
-              <ion-label>
-                <h2>Attiva Developer Mode</h2>
-              </ion-label>
-            </ion-item>            
-          </ion-list>          
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-
-  <div *ngIf="flagUserLogged">
-    <div class="top">
-      <!-- PORZIONE AVATAR E NOMINATIVO -->
-      <ion-grid>
-        <ion-row>
-          <ion-col
-              class="picture"  
-              *ngIf="!pictureExist"
-              size="12" sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6" sizeXl="6">
-
-            <ion-button 
-                  size="large" 
-                  color="light" 
-                  class="only-camera" 
-                  (click)="onClickAvatar()" 
-                  >
-                <ion-icon name="camera"></ion-icon>
-            </ion-button>
-          </ion-col>
-
-          <ion-col 
-            class="picture"  
-            *ngIf="pictureExist"
-              sizeSm="12" sizeMd="6" sizeLg="6">
-
-              <ion-avatar *ngIf="pictureExist" (click)="onClickAvatar()">
-                <img [src]="pathUtentePic">
-              </ion-avatar>
-          </ion-col>        
+        <ion-col sizeXs="12" sizeSm="12" sizeMd="10" offsetMd="1" sizeLg="8" offsetLg="2" sizeXl="6" offsetXl="3">
           
-          <ion-col 
-            class="name"
-            sizeSm="12" sizeMd="6" sizeLg="6">
-    
-            <ion-label color="primary" class="ion-text-wrap ion-text-center">
-              <h1>{{ utenteDoc?.NOMINATIVO }}</h1>
-              <p>{{ utenteDoc.EMAIL }}</p>
-            </ion-label>
-    
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-    
-    
-    <ion-grid>
-      <!-- TICKET PACCHETTI ORARI -->
-      <ion-row 
-            *ngIf="showTicketPacchetti"
-            class="ion-justify-content-center">
-        <ion-col class="ion-align-self-center">
-          <div
-              (click)="onClickPacchettiOre()" 
-              class="cardWrap">
-            <div class="card cardLeft">
-              <h1>Pacchetti <span>Residui</span></h1>
-              <div class="title">
-                <h2>Pacchetti Allenamenti</h2>
-                <span>residui</span>
-              </div>
-              <div class="name">
-                <h2>Utilizzabili in</h2>
-                <span>corsi aperti</span>
-              </div>
-              <!-- <div class="seat">
-                <h2>156</h2>
-                <span>seat</span>
-              </div>
-              <div class="time">
-                <h2>12:00</h2>
-                <span>time</span>
-              </div> -->
+          <!-- CARD INVITO -->
+          <div class="welcome-card">
+            <div class="welcome-header">
+              <ion-icon name="people-circle" class="welcome-icon"></ion-icon>
+              <h2>Unisciti a noi</h2>
             </div>
-            <div class="card cardRight">
-              <div class="eye"></div>
-              <div class="number">
-                <h3>{{minutiValue}}</h3>
-                <span>minuti</span>
+
+            <!-- GALLERIA IMMAGINI -->
+            <div class="welcome-gallery">
+              <div class="gallery-item" *ngFor="let image of specialPicture">
+                <img [src]="image" alt="Sport">
               </div>
             </div>
-          
+
+            <!-- BOTTONI AZIONE -->
+            <div class="welcome-actions">
+              <ion-button
+                *ngIf="flagEnableRegistrazioni"
+                (click)="onClickRegistrati()"
+                expand="block"
+                size="large"
+                class="btn-register">
+                <ion-icon name="person-add" slot="start"></ion-icon>
+                Registrati
+              </ion-button>
+              
+              <ion-button
+                (click)="onClickAccedi()"
+                expand="block"
+                size="large"
+                fill="outline"
+                class="btn-login">
+                <ion-icon name="log-in" slot="start"></ion-icon>
+                Accedi
+              </ion-button>
+            </div>            
+
+            <!-- TESTO INVITO -->
+            <div class="welcome-content">
+              <p class="welcome-text">
+                Per essere coinvolto in tutte le attività del nostro centro 
+                ti consigliamo di registrare il tuo profilo o effettuarne l'accesso.
+              </p>
+              <div class="welcome-features">
+                <div class="feature-item">
+                  <ion-icon name="calendar" color="warning"></ion-icon>
+                  <span>Prenotazioni Campi</span>
+                </div>
+                <div class="feature-item">
+                  <ion-icon name="school" color="warning"></ion-icon>
+                  <span>Iscrizioni Corsi</span>
+                </div>
+                <div class="feature-item">
+                  <ion-icon name="basket" color="warning"></ion-icon>
+                  <span>Merchandising</span>
+                </div>
+              </div>
+            </div>
+
+
           </div>
-        </ion-col>
-      </ion-row>
 
-      <!-- VOCI DI MENU -->
-      <ion-row>
-        <ion-col size="6" sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6" sizeXl="6">
+          <!-- DEVELOPER MODE (non loggato) -->
+          <div class="developer-section" *ngIf="developerMode">
+            <div class="developer-card" (click)="onClickDeveloperMode()">
+              <ion-icon name="code-working" color="primary"></ion-icon>
+              <div class="developer-text">
+                <h3>Developer Mode</h3>
+                <p>Accedi alle funzioni sviluppatore</p>
+              </div>
+              <ion-icon name="chevron-forward"></ion-icon>
+            </div>
+          </div>
 
-          <ion-list>
-            <ion-item button="true" routerLink="edit-account" routerDirection="forward">
-              <ion-icon slot="start" name="person-circle-outline" color="primary"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                <h2>Qualcosa su di te</h2>
-                <p>Data e luogo di nascita, residenza, ecc..</p>
-              </ion-label>
-            </ion-item>
-
-            <ion-item button="true" routerLink="sportlevels" routerDirection="forward">
-              <ion-icon slot="start" name="stats-chart-outline" color="primary"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                <h2>Livelli Attività</h2>
-                <p>Visualizza i tuoi livelli</p>
-              </ion-label>
-            </ion-item>
-        
-            <!-- DOCUMENTAZIONE -->
-            <ion-list-header lines="inset">
-              <ion-label>Documentazione</ion-label>
-            </ion-list-header>   
-            
-            <ion-item button="true" routerLink="documents" routerDirection="forward">
-              <ion-icon slot="start" name="copy-outline" color="primary"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                <h2>Certificati ed altro</h2>
-                <p>Invia, ricevi e visualizza i tuoi documenti e certificati</p>
-              </ion-label>
-            </ion-item>
-        
-            <ion-item button="true" routerLink="invoices" routerDirection="forward">
-              <ion-icon slot="start" name="ticket-outline" color="primary"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                <h2>Ricevute Acquisti</h2>
-                <p>Scarica le ricevute dei tuoi acquisti</p>
-              </ion-label>
-            </ion-item>
-        
-            <ion-item button="true" routerLink="club-cards" routerDirection="forward">
-              <ion-icon slot="start" name="id-card-outline" color="primary"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                <h2>Tesseramenti</h2>
-                <p>Tessere associative</p>
-              </ion-label>
-            </ion-item> 
-            <!-- FINE DOCUMENTAZIONE -->
-          </ion-list>
-        </ion-col>
-
-        <ion-col size="6" sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6" sizeXl="6">
-            <ion-list>            
-            
-            <ion-list-header lines="inset">
-              <ion-label>Gestione Profilo</ion-label>
-            </ion-list-header>
-            <!-- GESTIONE PROFILO -->
-            <ion-item button="true" (click)="onClickChangePassword()">
-              <ion-icon slot="start" name="key-outline" color="primary"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                <h2>Sicurezza Profilo</h2>
-                <p>Cambia Password di accesso</p>
-              </ion-label>
-            </ion-item>
-        
-            <ion-item button="true" routerLink="delete-account" routerDirection="forward">
-              <ion-icon slot="start" name="trash-outline" color="danger"></ion-icon>
-              <ion-label class="ion-text-wrap">
-                <h2>Eliminazione</h2>
-                <p>Eliminazione profilo</p>
-              </ion-label>
-            </ion-item>    
-        
-            <ion-item button="true" (click)="requestLogout()" lines="none">
-              <ion-icon slot="start" name="log-out-outline" color="primary"></ion-icon>
-              <ion-label>
-                <h2>Esci</h2>
-                <p>Esegui il logout</p>
-              </ion-label>
-            </ion-item>
-
-          </ion-list>
-          <!-- PULSANTE DEVELOPER MODE -->
-          <ion-list *ngIf="developerMode">
-            <ion-list-header lines="inset">
-              <ion-label>Developer Mode</ion-label>
-            </ion-list-header>
-            <ion-item 
-                button="true" 
-                (click)="onClickDeveloperMode()" 
-                lines="none">
-              <ion-icon slot="start" name="code-working-outline" color="primary"></ion-icon>              
-              <ion-label>
-                <h2>Attiva Developer Mode</h2>
-              </ion-label>
-            </ion-item>            
-          </ion-list>
-
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col 
-          sizeXs="12" 
-          sizeSm="12" 
-          sizeMd="12"  
-          sizeLg="6" offsetLg="3" 
-          sizeXl="6" offsetXl="3">
-            <ion-card class="badge-accesso">
-              <ion-card-header>
-                <ion-card-title>Badge Accesso</ion-card-title>
-                <ion-card-subtitle>utilizza il badge per accedere al centro o presentandolo in reception per agevolare il riconoscimento.</ion-card-subtitle>
-              </ion-card-header>
-              <ion-card-content>
-                <qrcode 
-                    [qrdata]="qrCodeDataUser" scale="6">
-                </qrcode>
-              </ion-card-content>
-              <ion-footer class="ion-text-end">
-                <ion-button
-                    (click)="onClickBadge()"
-                    fill="clear"
-                    size="small">
-                    Ingrandisci
-                  <ion-icon slot="end" name="open-outline"></ion-icon>
-                </ion-button>
-              </ion-footer>
-            </ion-card>
         </ion-col>
       </ion-row>
     </ion-grid>
+  </div>
+
+  <!-- ================================ -->
+  <!-- UTENTE LOGGATO -->
+  <!-- ================================ -->
+  <div class="logged-wrapper" *ngIf="flagUserLogged">
+    
+    <!-- HEADER PROFILO -->
+    <div class="profile-header">
+      <div class="profile-avatar-section">
+        <!-- Avatar -->
+        <div class="avatar-wrapper" (click)="onClickAvatar()">
+          <ion-avatar *ngIf="pictureExist">
+            <img [src]="pathUtentePic" alt="Avatar">
+          </ion-avatar>
+          <div class="avatar-placeholder" *ngIf="!pictureExist">
+            <ion-icon name="camera"></ion-icon>
+          </div>
+          <div class="avatar-edit-badge">
+            <ion-icon name="pencil"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Nome e Email -->
+        <div class="profile-info">
+          <h1>{{ utenteDoc?.NOMINATIVO }}</h1>
+          <p>{{ utenteDoc.EMAIL }}</p>
+        </div>
+      </div>
+    </div>
+
+    <ion-grid class="profile-content">
+      
+      <!-- TICKET PACCHETTI ORARI -->
+      <ion-row *ngIf="showTicketPacchetti">
+        <ion-col sizeXs="12" sizeSm="12" sizeMd="10" offsetMd="1" sizeLg="8" offsetLg="2" sizeXl="6" offsetXl="3">
+          
+          <div class="minutes-card" (click)="onClickPacchettiOre()">
+            <div class="minutes-icon">
+              <ion-icon name="time"></ion-icon>
+            </div>
+            <div class="minutes-content">
+              <h3>Pacchetti Residui</h3>
+              <p>Utilizzabili nei corsi aperti</p>
+            </div>
+            <div class="minutes-value">
+              <span class="value">{{minutiValue}}</span>
+              <span class="label">minuti</span>
+            </div>
+            <ion-icon name="chevron-forward" class="minutes-chevron"></ion-icon>
+          </div>
+
+        </ion-col>
+      </ion-row>
+
+      <!-- MENU OPZIONI -->
+      <ion-row>
+        <ion-col sizeXs="12" sizeSm="12" sizeMd="10" offsetMd="1" sizeLg="8" offsetLg="2" sizeXl="8" offsetXl="2">
+          
+          <ion-grid class="menu-grid">
+            <ion-row>
+              
+              <!-- COLONNA SINISTRA -->
+              <ion-col sizeXs="12" sizeSm="12" sizeMd="6">
+                
+                <!-- Informazioni Personali -->
+                <div class="menu-section">
+                  <h3 class="section-title">
+                    <ion-icon name="person"></ion-icon>
+                    Account
+                  </h3>
+
+                  <div class="menu-card">
+                    <div class="menu-item" routerLink="edit-account" routerDirection="forward">
+                      <div class="item-icon">
+                        <ion-icon name="person-circle"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Qualcosa su di te</h4>
+                        <p>Data e luogo di nascita, residenza</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+
+                    <div class="menu-item" routerLink="sportlevels" routerDirection="forward">
+                      <div class="item-icon">
+                        <ion-icon name="stats-chart"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Livelli Attività</h4>
+                        <p>Visualizza i tuoi livelli</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Documentazione -->
+                <div class="menu-section">
+                  <h3 class="section-title">
+                    <ion-icon name="document-text"></ion-icon>
+                    Documentazione
+                  </h3>
+
+                  <div class="menu-card">
+                    <div class="menu-item" routerLink="documents" routerDirection="forward">
+                      <div class="item-icon">
+                        <ion-icon name="copy"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Certificati ed altro</h4>
+                        <p>Documenti e certificati</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+
+                    <div class="menu-item" routerLink="invoices" routerDirection="forward">
+                      <div class="item-icon">
+                        <ion-icon name="receipt"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Ricevute Acquisti</h4>
+                        <p>Scarica le tue ricevute</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+
+                    <div class="menu-item" routerLink="club-cards" routerDirection="forward">
+                      <div class="item-icon">
+                        <ion-icon name="id-card"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Tesseramenti</h4>
+                        <p>Tessere associative</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+                  </div>
+                </div>
+
+              </ion-col>
+
+              <!-- COLONNA DESTRA -->
+              <ion-col sizeXs="12" sizeSm="12" sizeMd="6">
+                
+                <!-- Gestione Profilo -->
+                <div class="menu-section">
+                  <h3 class="section-title">
+                    <ion-icon name="settings"></ion-icon>
+                    Gestione
+                  </h3>
+
+                  <div class="menu-card">
+                    <div class="menu-item" (click)="onClickChangePassword()">
+                      <div class="item-icon">
+                        <ion-icon name="key"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Sicurezza Profilo</h4>
+                        <p>Cambia password</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+
+                    <div class="menu-item menu-item-danger" routerLink="delete-account" routerDirection="forward">
+                      <div class="item-icon">
+                        <ion-icon name="trash"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Eliminazione</h4>
+                        <p>Elimina il tuo profilo</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+
+                    <div class="menu-item menu-item-logout" (click)="requestLogout()">
+                      <div class="item-icon">
+                        <ion-icon name="log-out"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Esci</h4>
+                        <p>Effettua il logout</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Developer Mode (loggato) -->
+                <div class="menu-section" *ngIf="developerMode">
+                  <h3 class="section-title">
+                    <ion-icon name="code-working"></ion-icon>
+                    Developer
+                  </h3>
+
+                  <div class="menu-card">
+                    <div class="menu-item" (click)="onClickDeveloperMode()">
+                      <div class="item-icon">
+                        <ion-icon name="bug"></ion-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>Developer Mode</h4>
+                        <p>Funzioni sviluppatore</p>
+                      </div>
+                      <ion-icon name="chevron-forward" class="item-chevron"></ion-icon>
+                    </div>
+                  </div>
+                </div>
+
+              </ion-col>
+
+            </ion-row>
+          </ion-grid>
+
+        </ion-col>
+      </ion-row>
+
+      <!-- BADGE QR CODE -->
+      <ion-row>
+        <ion-col sizeXs="12" sizeSm="12" sizeMd="10" offsetMd="1" sizeLg="6" offsetLg="3" sizeXl="6" offsetXl="3">
+          
+          <div class="qr-card">
+            <div class="qr-header">
+              <ion-icon name="qr-code" class="qr-icon"></ion-icon>
+              <div class="qr-title">
+                <h3>Badge Accesso</h3>
+                <p>Utilizza il badge per accedere al centro</p>
+              </div>
+            </div>
+
+            <div class="qr-code-wrapper">
+              <qrcode [qrdata]="qrCodeDataUser" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+            </div>
+
+            <div class="qr-footer">
+              <ion-button fill="clear" (click)="onClickBadge()">
+                Ingrandisci
+                <ion-icon name="expand" slot="end"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
 
   </div>
-  
-
-
 
 </ion-content>

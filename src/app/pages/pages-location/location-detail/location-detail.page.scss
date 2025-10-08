@@ -1,31 +1,338 @@
-.btn
-{
-    height: 60px;
+// ===================================
+// CONTENT
+// ===================================
+
+ion-content {
+  --background: var(--ion-color-light);
 }
 
-ion-slides {
+.page-content {
+  padding: 16px 0 80px 0;
+}
 
-    img {
-        padding-top: 10px;
-        padding-bottom: 10px;
-        height: 30vh;
+// ===================================
+// ACTIONS GRID (Bottoni in alto)
+// ===================================
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 0 16px 24px 16px;
+
+  .action-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    .action-icon-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+      ion-icon {
+        font-size: 32px;
+        color: white;
+      }
+    }
+
+    .action-content {
+      flex: 1;
+
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+        margin: 0 0 4px 0;
+      }
+
+      p {
+        font-size: 0.9rem;
+        color: var(--ion-color-mediumlight);
+        margin: 0;
+      }
+    }
+
+    .action-chevron {
+      font-size: 24px;
+      color: var(--ion-color-mediumlight);
+      transition: transform 0.2s ease;
+    }
+
+    &:hover .action-chevron {
+      transform: translateX(4px);
+    }
+
+    // Colori specifici
+    &.action-prenota .action-icon-circle {
+      background: linear-gradient(135deg, #ff6b6b 0%, var(--ion-color-danger) 100%);
+    }
+
+    &.action-corso .action-icon-circle {
+      background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+    }
+
+    &.action-lezione .action-icon-circle {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+  }
+}
+
+// Responsive: 2 colonne su tablet e desktop
+@media screen and (min-width: 768px) {
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ===================================
+// DETAIL GRID
+// ===================================
+
+.detail-grid {
+  padding: 0;
+}
+
+// ===================================
+// SECTION TITLES
+// ===================================
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+  margin: 0 0 16px 0;
+  padding: 0 16px;
+
+  ion-icon {
+    font-size: 28px;
+    color: var(--ion-color-tertiary);
+  }
+}
+
+// ===================================
+// GALLERY SECTION
+// ===================================
+
+.gallery-section {
+  margin: 0 16px 24px 16px;
+
+  .location-gallery {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background: white;
+
+    swiper-slide {
+      height: 320px;
+
+      img {
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-    }
+        cursor: pointer;
+        transition: transform 0.3s ease;
 
-    @media screen and (max-width: 600px){
-        img{
-            width: 100%;
+        &:active {
+          transform: scale(0.98);
         }
+      }
     }
 
+    // Pagination dots personalizzati
+    ::part(bullet) {
+      background: rgba(255, 255, 255, 0.5);
+      width: 8px;
+      height: 8px;
+    }
+
+    ::part(bullet-active) {
+      background: white;
+      width: 24px;
+      border-radius: 4px;
+    }
+  }
 }
 
-.ion-list-margin-bottom {
-    margin-bottom: 2vmax;
+// ===================================
+// INFO SECTION
+// ===================================
+
+.info-section {
+  margin-bottom: 24px;
+
+  .info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 8px;
+    margin: 0 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--ion-color-light);
+      transition: background 0.2s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      > ion-icon:first-child {
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+
+      .info-text {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+
+        &.full-width {
+          width: 100%;
+        }
+
+        .info-label {
+          font-size: 0.85rem;
+          color: var(--ion-color-mediumlight);
+          font-weight: 600;
+        }
+
+        .info-value {
+          font-size: 1rem;
+          color: var(--ion-color-dark);
+          font-weight: 500;
+        }
+
+        p {
+          font-size: 0.95rem;
+          color: var(--ion-color-dark);
+          line-height: 1.5;
+          margin: 0;
+        }
+      }
+
+      .info-chevron {
+        font-size: 20px;
+        color: var(--ion-color-mediumlight);
+        flex-shrink: 0;
+      }
+
+      &.info-clickable {
+        cursor: pointer;
+
+        &:hover {
+          background: var(--ion-color-light);
+        }
+
+        &:active {
+          background: var(--ion-color-extralight);
+        }
+      }
+
+      &.info-description {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    // Link items
+    a.info-item {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
 }
 
-.backcolorcard {
-    background-color: var(--ion-color-light-tint);
+// ===================================
+// SCHEDULE SECTION (Orari)
+// ===================================
+
+.schedule-section {
+  margin-bottom: 24px;
+
+  .schedule-card {
+    background: white;
+    border-radius: 20px;
+    padding: 16px;
+    margin: 0 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+    app-aperture {
+      display: block;
+      margin-bottom: 8px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
+// ===================================
+// RESPONSIVE
+// ===================================
 
+// Tablet
+@media screen and (min-width: 768px) {
+  .gallery-section {
+    .location-gallery {
+      swiper-slide {
+        height: 360px;
+      }
+    }
+  }
+}
+
+// Desktop
+@media screen and (min-width: 992px) {
+  .gallery-section {
+    .location-gallery {
+      swiper-slide {
+        height: 300px;
+      }
+    }
+  }
+
+  .actions-grid {
+    .action-card {
+      .action-icon-circle {
+        width: 56px;
+        height: 56px;
+
+        ion-icon {
+          font-size: 28px;
+        }
+      }
+    }
+  }
+}
+
+// Layout laterale per schermi molto larghi
+@media screen and (min-aspect-ratio: 5/4) {
+  .page-content {
+    padding-left: 16px;
+  }
+}

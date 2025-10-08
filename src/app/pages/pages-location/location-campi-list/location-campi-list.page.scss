@@ -1,62 +1,291 @@
-.cnt{
+// ===================================
+// CONTENT
+// ===================================
+
+ion-content {
+  --background: var(--ion-color-light);
+}
+
+.content-wrapper {
+  padding: 0 0 24px 0;
+}
+
+// ===================================
+// LOCATION HEADER
+// ===================================
+
+.location-header {
+  background: white;
+  margin: 16px;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+
+  .header-image {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    overflow: hidden;
     background: var(--ion-color-light);
-    min-height: 100%;
-}
 
-ion-content{
-    color: var(--ion-color-light);
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 
-}
+  .header-content {
+    flex: 1;
+    min-width: 0;
 
-
-
-ion-card {
-    
-    &.card-sport {
-
-        ion-card-header{
-            // padding:5px;
-            // width: 110px;
-            text-align: center;
-        }
-    
-        ion-card-content{
-            padding: 5px;
-            text-align: center;
-    
-            i{
-                font-size: 40px;
-            }
-        }
-
-        & {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 5px;
-            margin-right: 5px;
-        }
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--ion-color-primary);
+      margin: 0 0 6px 0;
+      line-height: 1.3;
     }
 
-    &.card-campo{
-    
-        ion-card-header{
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
-
-        & {
-            margin:5px;
-        }
+    .location-address {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin: 0 0 8px 0;
     }
 
-    // &.card-info {
-    //     ion-img {
-            
-    //     }
-    // }
-
+    .location-description {
+      font-size: 0.85rem;
+      color: var(--ion-color-mediumlight);
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
 }
 
+// Mobile: layout verticale
+@media screen and (max-width: 575px) {
+  .location-header {
+    flex-direction: column;
 
+    .header-image {
+      width: 100%;
+      height: 160px;
+      border-radius: 12px;
+    }
+  }
+}
 
+// ===================================
+// CAMPI GRID
+// ===================================
 
+.campi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 0 16px;
+}
+
+// Tablet: 2 colonne
+@media screen and (min-width: 768px) {
+  .campi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Desktop: 3 colonne
+@media screen and (min-width: 1200px) {
+  .campi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// ===================================
+// CAMPO CARD
+// ===================================
+
+.campo-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  // Sport Slider
+  .sport-slider {
+    background: var(--ion-color-warning);
+    padding: 16px 12px;
+
+    .sport-swiper {
+      padding: 4px 0;
+
+      swiper-slide {
+        width: auto;
+      }
+
+      // Pagination personalizzata
+      ::part(bullet) {
+        background: var(--ion-color-mediumlight);
+        opacity: 0.3;
+      }
+
+      ::part(bullet-active) {
+        background: var(--ion-color-primary);
+        opacity: 1;
+      }
+    }
+
+    .sport-chip {
+      background: white;
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+      min-width: 100px;
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      .icon-sport {
+        font-size: 32px;
+        color: var(--ion-color-primary);
+        line-height: 1;
+
+        // Supporto per icone ion-icon nel innerHTML
+        ::ng-deep ion-icon {
+          font-size: 32px;
+        }
+      }
+
+      .sport-name {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+        text-align: center;
+        line-height: 1.2;
+      }
+    }
+  }
+
+  // Campo Info
+  .campo-info {
+    padding: 16px 20px;
+
+    .campo-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .campo-icon {
+        font-size: 28px;
+        color: var(--ion-color-tertiary);
+        flex-shrink: 0;
+      }
+
+      .campo-text {
+        flex: 1;
+        min-width: 0;
+
+        h3 {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: var(--ion-color-dark);
+          margin: 0 0 4px 0;
+          line-height: 1.3;
+        }
+
+        p {
+          font-size: 0.85rem;
+          color: var(--ion-color-mediumlight);
+          margin: 0;
+          line-height: 1.4;
+
+          span {
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===================================
+// EMPTY STATE
+// ===================================
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  padding: 24px;
+
+  .empty-card {
+    background: white;
+    border-radius: 24px;
+    max-width: 400px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    .empty-image {
+      width: 100%;
+      height: 200px;
+      background: var(--ion-color-light);
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .empty-content {
+      padding: 32px 24px;
+      text-align: center;
+
+      .empty-icon {
+        font-size: 64px;
+        color: var(--ion-color-tertiary);
+        margin-bottom: 16px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ion-color-primary);
+        margin: 0 0 8px 0;
+      }
+
+      .empty-subtitle {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--ion-color-mediumlight);
+        margin: 0 0 12px 0;
+      }
+
+      .empty-text {
+        font-size: 0.9rem;
+        color: var(--ion-color-mediumlight);
+        line-height: 1.6;
+        margin: 0;
+      }
+    }
+  }
+}

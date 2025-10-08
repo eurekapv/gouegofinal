@@ -10,7 +10,7 @@
   </ion-toolbar>
 
   <!-- SELETTORE DI AREA OPERATIVA -->
-  <ion-grid *ngIf="listAree && listAree.length > 1">
+  <!-- <ion-grid *ngIf="listAree && listAree.length > 1">
     <ion-row
         class="ion-no-margin"
         >
@@ -35,12 +35,28 @@
   
       </ion-col>
     </ion-row>
-  </ion-grid>
+  </ion-grid> -->
 
 </ion-header>
 
 <ion-content>
 
+<!-- SELETTORE SEDE (Cliccabile) -->
+<div class="area-selector" *ngIf="listAree && listAree.length > 1" (click)="onClickChangeArea()">
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" sizeSm="12" sizeMd="12" sizeLg="8" offsetLg="2" sizeXl="6" offsetXl="3">
+        
+        <div class="selector-box">
+          <span class="selector-label">Sede:</span>
+          <span class="selector-value">{{ selectedArea?.DENOMINAZIONE | titlecase }}</span>
+          <ion-icon name="chevron-forward" class="selector-chevron"></ion-icon>
+        </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
 
   <ion-grid>
     <ion-row>
@@ -51,21 +67,7 @@
                 sizeXl="8" offsetXl="2">   
                 
                 <!-- CARD STRUTTURA -->
-                <div class="box-struttura ion-no-padding ion-no-margin">
-                      <!--striscia titolo -->
-                      <ion-item 
-                          type="header" 
-                          lines="none" 
-                          color="success">
-              
-                          <ion-icon 
-                              slot="start" 
-                              name="location-outline"></ion-icon>
-                          <ion-label class="ion-text-nowrap">
-                            <h2 class="ion-text-bold">{{ selectedArea.DENOMINAZIONE | titlecase }}</h2>
-                          </ion-label> 
-                      </ion-item>
-                      
+                <div class="box-struttura ion-no-padding ion-no-margin">                      
                       <ion-grid class="grid-locations">
                         <ion-row
                               class="ion-justify-content-center">

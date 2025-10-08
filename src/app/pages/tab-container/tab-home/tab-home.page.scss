@@ -62,6 +62,45 @@ app-centri {
 
 
 
+.area-selector {
+  background: white;
+  padding: 0;
+  margin-bottom: 24px;
+  cursor: pointer;
+
+  .selector-box {
+    background: var(--ion-color-extralight);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 16px;
+    transition: all 0.2s ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    .selector-label {
+      font-size: 1.1rem;
+      color: var(--ion-color-dark);
+      white-space: nowrap;
+    }
+
+    .selector-value {
+      flex: 1;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+
+    .selector-chevron {
+      font-size: 24px;
+      color: var(--ion-color-mediumlight);
+    }
+  }
+}
 
 
 

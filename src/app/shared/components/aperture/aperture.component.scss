@@ -1,4 +1,169 @@
-.row-border {
-    border-bottom: var(--ion-color-success-tint) thin;
-    border-bottom-style: dotted;
+// ===================================
+// APERTURE ROW
+// ===================================
+
+.aperture-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--ion-color-light);
+  transition: background 0.2s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--ion-color-extralight);
+  }
+
+  // Giorno della settimana
+  .day-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    min-width: 120px;
+
+    .day-icon {
+      font-size: 22px;
+      color: var(--ion-color-primary);
+    }
+
+    .day-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  // Sezione orari/status
+  .time-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex: 1;
+
+    // Container degli slot orari
+    .time-slots {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
+
+    // Badge orario singolo
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--ion-color-primary);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(25, 35, 51, 0.15);
+
+      ion-icon {
+        font-size: 16px;
+      }
+      
+      &.status-open {
+        background: linear-gradient(135deg, var(--ion-color-success) 0%, #3da566 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(44, 179, 97, 0.3);
+
+        ion-icon {
+          color: white;
+        }
+      }
+
+      &.status-closed {
+        background: linear-gradient(135deg, var(--ion-color-danger) 0%, #c43933 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(223, 65, 58, 0.3);
+
+        ion-icon {
+          color: white;
+        }
+      }      
+    }
+
+    // Badge status (aperto/chiuso)
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+
+      ion-icon {
+        font-size: 18px;
+      }
+
+      &.status-open {
+        background: linear-gradient(135deg, var(--ion-color-success) 0%, #3da566 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(44, 179, 97, 0.3);
+
+        ion-icon {
+          color: white;
+        }
+      }
+
+      &.status-closed {
+        background: linear-gradient(135deg, var(--ion-color-danger) 0%, #c43933 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(223, 65, 58, 0.3);
+
+        ion-icon {
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// ===================================
+// RESPONSIVE
+// ===================================
+
+// Mobile: layout verticale
+@media screen and (max-width: 575px) {
+  .aperture-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    .day-section {
+      width: 100%;
+    }
+
+    .time-section {
+      width: 100%;
+      align-items: flex-start;
+
+      .time-slots {
+        align-items: flex-start;
+      }
+    }
+  }
+}
+
+// Tablet e desktop: più compatto
+@media screen and (min-width: 576px) {
+  .aperture-row {
+    padding: 14px 16px;
+
+    .day-section {
+      min-width: 140px;
+    }
+  }
 }

@@ -243,7 +243,7 @@ export class TabProfilePage implements OnInit, OnDestroy {
 
     this.specialPicture = [];
 
-   for (let index = 1; index < numImages; index++) {
+   for (let index = 1; index <= numImages; index++) {
       nameFile = `assets/profile/prof_special_${index}.png`;
       this.specialPicture.push(nameFile);
    }

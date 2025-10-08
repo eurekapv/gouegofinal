@@ -1,110 +1,76 @@
-<ion-card
+<div class="location-card-wrapper">
+  
+  <!-- CARD LOCATION (cliccabile per dettaglio) -->
+  <div class="location-card" (click)="onClickLocation($event); $event.stopPropagation();">
+    
+    <!-- BANNER VERDE CON AREA -->
+    <div class="location-banner">
+      <ion-icon name="location" class="banner-icon"></ion-icon>
+      <span class="banner-text">{{ _areaDoc.DENOMINAZIONE | titlecase }}</span>
+    </div>
 
-      [class]="_cardClass"
-      mode="ios" 
-      button="true"
-      (click)="onClickLocation($event); $event.stopPropagation();">
-
-  <img [src]="_urlCoverCard">
-
-  <ion-card-header>
-    <ion-card-title>
-      {{_cardTitle}}
-    </ion-card-title>
-
-    <ion-card-subtitle 
-        *ngIf="_cardSubtitle.length != 0">      
-        {{_cardSubtitle}}      
-    </ion-card-subtitle>
-  </ion-card-header>
-
-  <ion-card-content
-    *ngIf="_locationDoc && _showFullDescription"
-    class="ion-padding-horizontal">
-    <div  
-      class="mh-content"
-      >
-      <div 
-        [innerHTML]="_cardContent"
-        >
+    <!-- IMMAGINE + NOME LOCATION SOVRAPPOSTO -->
+    <div class="location-image-wrapper">
+      <img 
+        [src]="_urlCoverCard" 
+        [alt]="_cardTitle"
+        class="location-image">
+      <div class="location-overlay">
+        <h2 class="location-name">{{_cardTitle}}</h2>
       </div>
     </div>
 
-  </ion-card-content>
+  </div>
 
-  <!-- LISTA DELLE OPZIONI POSSIBILI -->
-  <ion-list 
-    [lines]="true"
-    *ngIf="_buttonVisible">
-    <ion-list-header        
-        color="light">
-        <h6 class="ion-text-strong">Oggi ho deciso di</h6>
-    </ion-list-header>
-    
-    <!-- PRENOTAZIONE -->
-    <ion-item
-        class="ion-padding-top-small"
-        (click)="onClickPrenota(); $event.stopPropagation();"
-        *ngIf="_prenotaButtonVisible"
-        [detail]="true"
-        [button]="true"
-        >
-      <ion-icon 
-          size="large"
-          slot="start" 
-          name="calendar-outline">
-      </ion-icon>
+  <!-- SEZIONE AZIONI (visibile solo se _buttonVisible) -->
+  <div class="actions-section" *ngIf="_buttonVisible">
+    <h3 class="actions-title">Oggi ho deciso di</h3>
 
-      <ion-label class="ion-text-wrap">
-        <h3 class="ion-text-bold ion-text-danger large">PRENOTARE UN CAMPO</h3>
-        <p *ngIf="_showLabelButton">controlla la disponibilit&agrave; nella struttura</p>
-      </ion-label>
-    </ion-item>
+    <!-- PRENOTA CAMPO -->
+    <div 
+      *ngIf="_prenotaButtonVisible"
+      class="action-button action-prenota"
+      (click)="onClickPrenota(); $event.stopPropagation();">
+      <div class="action-icon-circle action-icon-green">
+        <ion-icon name="calendar"></ion-icon>
+      </div>
+      <div class="action-content">
+        <h4>Prenotare un campo</h4>
+        <p *ngIf="_showLabelButton">controlla la disponibilità nella struttura</p>
+      </div>
+      <ion-icon name="chevron-forward" class="action-chevron"></ion-icon>
+    </div>
 
-    <!-- CORSI ANNUALI -->
-    <ion-item
-      class="ion-padding-top-small"
-      (click)="onClickCorsiPeriodo(); $event.stopPropagation();"
+    <!-- ISCRIVITI CORSO -->
+    <div 
       *ngIf="_corsiPeriodoButtonVisible"
-      [detail]="true"
-      [button]="true"
-      >
-      <ion-icon 
-          size="large"
-          slot="start" 
-          name="school-outline">
-      </ion-icon>
-      <ion-label 
-            class="ion-text-wrap">
-          <h3 class="ion-text-bold ion-text-primary large">ISCRIVERMI AD UN CORSO</h3>
-          <p *ngIf="_showLabelButton">iscriviti ai nostri corsi di gruppo di durata variabile</p>
-      </ion-label>
-    </ion-item>
+      class="action-button action-corso"
+      (click)="onClickCorsiPeriodo(); $event.stopPropagation();">
+      <div class="action-icon-circle action-icon-blue">
+        <ion-icon name="school"></ion-icon>
+      </div>
+      <div class="action-content">
+        <h4>Iscrivermi ad un corso</h4>
+        <p *ngIf="_showLabelButton">iscriviti ai nostri corsi di gruppo</p>
+      </div>
+      <ion-icon name="chevron-forward" class="action-chevron"></ion-icon>
+    </div>
 
-    <!-- LEZIONI GIORNALIERE -->
-    <ion-item
-      class="ion-padding-top-small"
-      (click)="onClickCorsoGiornata(); $event.stopPropagation();"
+    <!-- PRENOTA LEZIONE -->
+    <div 
       *ngIf="_corsiGiornataButtonVisible"
-      [detail]="true"
-      [button]="true"
-      >
-        <ion-icon 
-          size="large"
-          slot="start" 
-          name="ticket-outline">
-        </ion-icon>
+      class="action-button action-lezione"
+      (click)="onClickCorsoGiornata(); $event.stopPropagation();">
+      <div class="action-icon-circle action-icon-purple">
+        <ion-icon name="ticket"></ion-icon>
+      </div>
+      <div class="action-content">
+        <h4>Prenotare una lezione</h4>
+        <p *ngIf="_showLabelButton">prenota una lezione di 30, 50, 60 minuti</p>
+      </div>
+      <ion-icon name="chevron-forward" class="action-chevron"></ion-icon>
+    </div>
 
-        <ion-label class="ion-text-wrap">
-        <h3 class="ion-text-bold ion-text-primary large">PRENOTARE UNA LEZIONE</h3>
-        <p *ngIf="_showLabelButton">prenota una lezione della durata di 30, 50, 60 minuti; l'iscrizione &egrave; subordinata all'acquisto di un pacchetto ore presente nello Shop.</p>        
-      </ion-label>
-    </ion-item>    
+  </div>
 
-  </ion-list>
-
-    
-
-
-</ion-card>
-
+</div>

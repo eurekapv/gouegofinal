@@ -4,7 +4,7 @@ import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Subscription } from 'rxjs';
 import { Area } from 'src/app/models/struttura/area.model';
 import { Location } from 'src/app/models/struttura/location.model';
-import { NavController, ModalController } from '@ionic/angular';
+import { NavController, ModalController, ActionSheetController, ActionSheetButton } from '@ionic/angular';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 
@@ -50,6 +50,7 @@ export class TabHomePage implements OnInit, OnDestroy {
   constructor(private startService: StartService,
     private navController: NavController,
     private modalController: ModalController,
+     private actionSheetController: ActionSheetController
   ) {
 
 
@@ -192,6 +193,36 @@ export class TabHomePage implements OnInit, OnDestroy {
     }
 
   } 
+
+    /**
+   * Apre un action sheet per cambiare area
+   */
+  async onClickChangeArea() {
+    let listButtons: ActionSheetButton[]=[];
+
+    listButtons = this.listAree.map(area => ({
+        text: area.DENOMINAZIONE,
+        icon: area.ID === this.selectedIdArea ? 'checkmark-circle' : 'location',
+        handler: () => {
+          this.startService.selectAreaByID(area.ID);
+        }
+    }));
+
+    listButtons.push({
+        text: 'Annulla',
+        icon: 'close',
+        role: 'cancel'
+    });
+
+    this.actionSheetController.create({
+      header: 'Seleziona Sede',
+      buttons: listButtons
+    })
+    .then(elAction => {
+      elAction.present();
+    });
+
+  }
 
 //#endregion
 

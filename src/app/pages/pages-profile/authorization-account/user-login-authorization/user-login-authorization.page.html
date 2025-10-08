@@ -1,351 +1,326 @@
-<ion-header>
-  <ion-toolbar color="primary">
-      <ion-buttons slot="start">
-          <ion-button 
-                  (click)="closeModal()"
-                  fill="clear">
-              <ion-icon name="arrow-back"></ion-icon>
-          </ion-button>
-      </ion-buttons>
-      <ion-title>Accedi</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" mode="md">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" fill="clear">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ indexShowForm == 1 ? 'Accedi' : 'Recupera Password' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="no-header">
+<ion-content>
 
-  <ion-grid>
-    <ion-row 
-        class="ion-align-items-center"
-        >
-      <ion-col
-          sizeXs="12"
-          sizeSm="12"
-          sizeMd="12"
-          sizeLg="6"
-          sizeXl="6"
-          >
-          <div class="title-image">
-            <img [src]="srcImage" alt="logig-image"/>
+  <div class="login-wrapper">
+    <ion-grid>
+      <ion-row class="ion-align-items-center">
+        
+        <!-- COLONNA SINISTRA: Header + Immagine -->
+        <ion-col sizeXs="12" sizeSm="12" sizeMd="5" sizeLg="6" sizeXl="6" class="left-col">
+          
+          <!-- HEADER BENTORNATO (solo su tablet/desktop per login) -->
+          <div class="welcome-card" *ngIf="indexShowForm == 1">
+
+
+            <!-- Immagine -->
+            <div class="login-image">
+              <img [src]="srcImage" alt="Login">
+            </div>
+
           </div>
 
-      </ion-col>
+          <!-- HEADER RECOVERY (solo su tablet/desktop per recovery) -->
+          <div class="welcome-section" *ngIf="indexShowForm == 2">
+            <div class="form-header">
+              <ion-icon name="key" class="form-icon"></ion-icon>
+              <h2>Recupera Password</h2>
+              <p *ngIf="stepRecovery == 'input'">Ti invieremo un codice</p>
+              <p *ngIf="stepRecovery == 'code'">Inserisci il codice</p>
+              <p *ngIf="stepRecovery == 'password'">Nuova password</p>
+            </div>
 
-      <!-- colonna destra -->
-      <ion-col
-          sizeXs="12"
-          sizeSm="12"
-          sizeMd="12"
-          sizeLg="6"
-          sizeXl="6"
-          >
-          
-            <!-- GRIGLIA DI INSERIMENTO CREDENZIALI -->
-            <ion-grid 
-                  *ngIf="indexShowForm == 1"
-                  class="ion-no-padding ion-no-margin">
-              <ion-row
-                  class="ion-no-padding ion-no-margin">
-                <ion-col>
-                  <!-- TESTO INFORMATIVO -->
-                  <ion-item 
-                        lines="none">
-                    <ion-label class="ion-text-wrap">
-                        <p>
-                        Accedi al tuo profilo per conoscere la programmazione dei corsi, degli eventi, effettuare prenotazioni ed iscrizioni e rimanere in contatto con il nostro centro.
-                      </p>
-                    </ion-label>
-                  </ion-item>
+            <div class="login-image">
+              <img [src]="srcImage" alt="Recovery">
+            </div>
+          </div>
 
-                  <ion-item
-                      (click)="closeModal(true)"
-                      button="true" 
-                      detail="false"
-                      lines="none">
-                      <ion-label 
-                            color="danger"
-                            class="ion-text-wrap">
-                        <p>
-                          se non hai ancora un account, inserisci poche informazioni
-                        </p>
-                      </ion-label>
-                      <ion-button
-                          color="danger"
-                          size="small"
-                          fill="clear"
-                          >
-                        REGISTRATI
-                      </ion-button>
-                  </ion-item>                  
+        </ion-col>
 
-                </ion-col>
-              </ion-row>
+        <!-- COLONNA DESTRA: Solo Form -->
+        <ion-col sizeXs="12" sizeSm="12" sizeMd="7" sizeLg="6" sizeXl="6" class="form-col">
 
-              <!-- FORM PER LA LOGIN -->
-              <ion-row
-                  class="ion-no-padding ion-no-margin">
-                  <ion-col>
-                    <form [formGroup]="formPagePrimary">
+          <!-- ================================ -->
+          <!-- FORM LOGIN -->
+          <!-- ================================ -->
+          <div class="form-container" *ngIf="indexShowForm == 1">
+            
+            <!-- Header -->
+            <div class="form-header">
+              <ion-icon name="log-in" class="form-icon"></ion-icon>
+              <h2>Bentornato!</h2>
+              <p>Accedi per continuare con le tue attività</p>
+            </div>
 
-                      <ion-list lines="none">
-                          <ion-item
-                                color = "light"
-                                >
-                            <ion-input
-                                  label="E-mail"
-                                  labelPlacement="stacked"
-                                  [clearInput]="true"
-                                  helperText="inserisci l'email di registrazione"
-                                  errorText="inserisci un indirizzo email valido"
-                                  formControlName = "profileEmail"
-                                  type="email">
-                            </ion-input>
-                          </ion-item>
+            <!-- Link Registrazione -->
+            <div class="register-banner" (click)="closeModal(true)">
+              <ion-icon name="person-add" color="danger"></ion-icon>
+              <div class="register-text">
+                <p>Non hai ancora un account?</p>
+                <span>Registrati ora</span>
+              </div>
+              <ion-icon name="chevron-forward" color="danger"></ion-icon>
+            </div>
 
-                          <ion-item
-                                color = "light"
-                                >
-                              
-                              <ion-input
-                                  #currentpassword
-                                  id="currentpassword" 
-                                  label="Password"
-                                  labelPlacement="stacked"
-                                  helperText="inserisci la password di accesso"
-                                  errorText="controlla la password inserita"
-                                  formControlName = "profilePassword"
-                                  type="password">
-                              </ion-input>
+            <!-- Form -->
+            <form [formGroup]="formPagePrimary" class="login-form">
+              
+              <!-- Email -->
+              <div class="form-field">
+                <ion-icon name="mail" class="field-icon"></ion-icon>
+                <ion-input
+                  label="E-mail"
+                  labelPlacement="floating"
+                  type="email"
+                  formControlName="profileEmail"
+                  placeholder="nome@esempio.com"
+                  [clearInput]="true">
+                </ion-input>
+              </div>
 
-                              <ion-button
-                                  (click)="showHideInput('currentpassword',currentpassword)"
-                                  color="success"
-                                  fill="clear"
-                                  size="small" 
-                                  slot="end">
-                                  <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
-                              </ion-button>
-                          </ion-item>
+              <!-- Password -->
+              <div class="form-field">
+                <ion-icon name="lock-closed" class="field-icon"></ion-icon>
+                <ion-input
+                  #currentpassword
+                  label="Password"
+                  labelPlacement="floating"
+                  type="password"
+                  formControlName="profilePassword"
+                  placeholder="Inserisci la password">
+                </ion-input>
+                <ion-button
+                  (click)="showHideInput('currentpassword',currentpassword)"
+                  fill="clear"
+                  size="small"
+                  class="eye-button">
+                  <ion-icon 
+                    [name]="showCurrentPassword ? 'eye-off' : 'eye'" 
+                    slot="icon-only">
+                  </ion-icon>
+                </ion-button>
+              </div>
 
-                          <ion-item>
-                            <ion-checkbox 
-                                justify="end"
-                                formControlName="profileSaving">memorizza credenziali</ion-checkbox>
-                          </ion-item>
-                
-                        </ion-list>
-                    </form>
-                  </ion-col>
-              </ion-row>
+              <!-- Checkbox Memorizza -->
+              <div class="form-checkbox">
+                <ion-checkbox formControlName="profileSaving" mode="md"></ion-checkbox>
+                <span>Ricordami su questo dispositivo</span>
+              </div>
 
-              <ion-row
-                  class="ion-no-padding ion-no-margin">
-                  <ion-col>
-                    <ion-button
-                      color="success"
-                      expand="full"
-                      fill="solid"
-                      [disabled]="!formPagePrimary.valid"
-                      (click)="submitLogin()">Accedi</ion-button>          
-                  </ion-col>
-              </ion-row>
+              <!-- Bottone Login -->
+              <ion-button
+                expand="block"
+                size="large"
+                [disabled]="!formPagePrimary.valid"
+                (click)="submitLogin()"
+                class="btn-login">
+                <ion-icon name="log-in" slot="start"></ion-icon>
+                Accedi
+              </ion-button>
 
-              <ion-row
-                  class="ion-no-padding ion-margin-top">
-                <ion-col>
-                  <ion-item
-                      (click)="changeForm()"
-                      button="true"
-                      detail="true"
-                      lines="none"
-                      >
-                    <ion-label class="ion-text-wrap">
-                      <p class = "ion-text-small">nel caso ti fossi dimenticato la password, ti inviamo un messaggio con un codice per effettuare il cambio.</p>
-                    </ion-label>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
+              <!-- Link Password Dimenticata -->
+              <div class="forgot-password" (click)="changeForm()">
+                <ion-icon name="help-circle"></ion-icon>
+                <span>Hai dimenticato la password?</span>
+              </div>
 
-            </ion-grid>
+            </form>
 
-            <!-- GRIGLIA DI RECUPERO CREDENZIALI -->
-            <ion-grid 
-                  *ngIf="indexShowForm == 2"
-                  class="ion-no-padding ion-no-margin">
-              <ion-row
-                  class="ion-no-padding ion-no-margin">
-                <ion-col>
-                <!-- TESTO INFORMATIVO -->
-                <ion-item lines="none">
-                  <ion-label 
-                          *ngIf="recoveryMode == 'mail'"
-                          class="ion-text-wrap">
-                      <h6>
-                      Per richiedere il ripristino delle credenziali &egrave; necessario inserire l'indirizzo email con cui &egrave; stata effettuata la registrazione.
-                      </h6>
-                      <p>Verr&agrave; inviata una mail con un codice che consente la modifica della password</p>
-                  </ion-label>
+            <!-- Benefits -->
+            <div class="benefits-list">
+              <div class="benefit-item">
+                <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                <span>Eventi e programmazione corsi</span>
+              </div>
+              <div class="benefit-item">
+                <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                <span>Prenotazioni e iscrizioni</span>
+              </div>
+              <div class="benefit-item">
+                <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                <span>Rimani in contatto con noi</span>
+              </div>
+            </div>             
 
-                  <ion-label 
-                          *ngIf="recoveryMode == 'mobile'"
-                          class="ion-text-wrap">
-                      <h6>
-                      Per richiedere il ripristino delle credenziali &egrave; necessario inserire il numero mobile utilizzato nella fase di registrazione.
-                      </h6>
-                      <p>Verr&agrave; inviato un SMS contenente un codice che consente la modifica della password</p>
-                  </ion-label>
+          </div>
 
-                  <ion-label 
-                          *ngIf="recoveryMode == 'all'"
-                          class="ion-text-wrap">
-                      <h6>
-                      Per richiedere il ripristino delle credenziali &egrave; necessario inserire il numero mobile oppure indirizzo email utilizzato nella fase di registrazione.
-                      </h6>
-                      <p>A seconda verr&agrave; inviato un SMS, oppure una mail contenente un codice che consente la modifica della password</p>
-                  </ion-label>
+          <!-- ================================ -->
+          <!-- FORM RECOVERY PASSWORD -->
+          <!-- ================================ -->
+          <div class="form-container" *ngIf="indexShowForm == 2">
+            
+            <!-- Header -->
+            <div class="form-header">
+              <ion-icon name="key" class="form-icon"></ion-icon>
+              <h2>Recupera Password</h2>
+              <p *ngIf="stepRecovery == 'input'">Ti invieremo un codice per reimpostare la password</p>
+              <p *ngIf="stepRecovery == 'code'">Inserisci il codice ricevuto</p>
+              <p *ngIf="stepRecovery == 'password'">Imposta la nuova password</p>
+            </div>
 
-                </ion-item>
-                </ion-col>
-              </ion-row>
+            <!-- Steps Indicator -->
+            <div class="steps-indicator">
+              <div class="step" [class.active]="stepRecovery == 'input'" [class.completed]="stepRecovery != 'input'">
+                <div class="step-number">1</div>
+                <span>Richiedi</span>
+              </div>
+              <div class="step-line" [class.completed]="stepRecovery != 'input'"></div>
+              <div class="step" [class.active]="stepRecovery == 'code'" [class.completed]="stepRecovery == 'password'">
+                <div class="step-number">2</div>
+                <span>Verifica</span>
+              </div>
+              <div class="step-line" [class.completed]="stepRecovery == 'password'"></div>
+              <div class="step" [class.active]="stepRecovery == 'password'">
+                <div class="step-number">3</div>
+                <span>Nuova</span>
+              </div>
+            </div>
 
-              <!-- FORM PER IL RECUPERO CREDENZIALI  -->
-              <ion-row
-                  class="ion-no-padding ion-no-margin">
-                  <ion-col>
+            <!-- Info Text -->
+            <div class="info-box">
+              <ion-icon name="information-circle"></ion-icon>
+              <div class="info-text">
+                <p *ngIf="recoveryMode == 'mail' && stepRecovery == 'input'">
+                  Inserisci l'email usata in fase di registrazione. Riceverai un codice via email.
+                </p>
+                <p *ngIf="recoveryMode == 'mobile' && stepRecovery == 'input'">
+                  Inserisci il numero mobile usato in fase di registrazione. Riceverai un SMS con il codice.
+                </p>
+                <p *ngIf="recoveryMode == 'all' && stepRecovery == 'input'">
+                  Inserisci email o numero mobile. Riceverai il codice di verifica.
+                </p>
+                <p *ngIf="stepRecovery == 'code'">
+                  Controlla la tua {{docRichiestaCodici?.REQUESTEMAILCODE ? 'email' : 'SMS'}} e inserisci il codice ricevuto.
+                </p>
+                <p *ngIf="stepRecovery == 'password'">
+                  Imposta una nuova password sicura per il tuo account.
+                </p>
+              </div>
+            </div>
 
-                    <form [formGroup]="formPageSecondary">
-                      <ion-list lines="none">
-                          <ion-item
-                                color = "light"
-                                >
-                              <ion-input
-                                    [label]="labelFormRecovery"
-                                    labelPlacement="stacked"
-                                    [helperText]="helperFormRecovery"
-                                    [errorText]="errorFormRecovery"
-                                    [clearInput]="true"
-                                    formControlName = "profileEmailNumber"
-                                    type="email">
-                                </ion-input>                                
-                                
-                          </ion-item>
+            <!-- Form -->
+            <form [formGroup]="formPageSecondary" class="recovery-form">
+              
+              <!-- Email/Telefono (Step 1) -->
+              <div class="form-field" *ngIf="stepRecovery == 'input' || stepRecovery == 'code'">
+                <ion-icon 
+                  [name]="recoveryMode == 'mobile' ? 'call' : 'mail'" 
+                  class="field-icon">
+                </ion-icon>
+                <ion-input
+                  [label]="labelFormRecovery"
+                  labelPlacement="floating"
+                  [type]="recoveryMode == 'mobile' ? 'tel' : 'email'"
+                  formControlName="profileEmailNumber"
+                  [placeholder]="helperFormRecovery"
+                  [clearInput]="stepRecovery == 'input'">
+                </ion-input>
+              </div>
 
-                          <ion-item
-                                color = "light"
-                                *ngIf="stepRecovery == 'code' || stepRecovery == 'password'"
-                                >
-                              <ion-input
-                                    
-                                    label="Codice di verifica"
-                                    labelPlacement="stacked"
-                                    helperText = "Inserisci il codice ricevuto"
-                                    [clearInput]="false"
-                                    formControlName = "verificationCode"
-                                    type="text">
-                                </ion-input>
+              <!-- Codice Verifica (Step 2 e 3) -->
+              <div class="form-field" *ngIf="stepRecovery == 'code' || stepRecovery == 'password'">
+                <ion-icon name="shield-checkmark" class="field-icon"></ion-icon>
+                <ion-input
+                  label="Codice di verifica"
+                  labelPlacement="floating"
+                  type="text"
+                  formControlName="verificationCode"
+                  placeholder="Inserisci il codice"
+                  maxlength="5">
+                </ion-input>
+                <ion-button
+                  *ngIf="stepRecovery == 'code'"
+                  (click)="onClickReinviaCodice()"
+                  fill="clear"
+                  size="small"
+                  class="resend-button">
+                  Reinvia
+                </ion-button>
+              </div>
 
-                                <ion-button
-                                    *ngIf="stepRecovery == 'code'"
-                                    (click)="onClickReinviaCodice()"
-                                    color="success"
-                                    fill="clear"
-                                    size="small" 
-                                    slot="end">
-                                    Reinvia
-                                </ion-button>                                
-                          </ion-item>
+              <!-- Password 1 (Step 3) -->
+              <div class="form-field" *ngIf="stepRecovery == 'password'">
+                <ion-icon name="lock-closed" class="field-icon"></ion-icon>
+                <ion-input
+                  #password1
+                  label="Nuova Password"
+                  labelPlacement="floating"
+                  type="password"
+                  formControlName="password1"
+                  placeholder="Inserisci password">
+                </ion-input>
+                <ion-button
+                  (click)="showHideInput('password1',password1)"
+                  fill="clear"
+                  size="small"
+                  class="eye-button">
+                  <ion-icon 
+                    [name]="showPassword1 ? 'eye-off' : 'eye'" 
+                    slot="icon-only">
+                  </ion-icon>
+                </ion-button>
+              </div>
 
-                          <ion-item
-                              color = "light"
-                              *ngIf="stepRecovery == 'password'"
-                                >
-                              <ion-input
-                                    #password1
-                                    id="password1"
-                                    label="Nuova Password"
-                                    labelPlacement="stacked"
-                                    helperText="inserisci la nuova password"
-                                    [clearInput]="false"
-                                    formControlName = "password1"
-                                    type="password">
-                                </ion-input>
-                                <ion-button
-                                    (click)="showHideInput('password1',password1)"
-                                    color="success"
-                                    fill="clear"
-                                    size="small" 
-                                    slot="end">
-                                    <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
-                                </ion-button>
-                         </ion-item>
+              <!-- Password 2 (Step 3) -->
+              <div class="form-field" *ngIf="stepRecovery == 'password'">
+                <ion-icon name="lock-closed" class="field-icon"></ion-icon>
+                <ion-input
+                  #password2
+                  label="Ripeti Password"
+                  labelPlacement="floating"
+                  type="password"
+                  formControlName="password2"
+                  placeholder="Ripeti password">
+                </ion-input>
+                <ion-button
+                  (click)="showHideInput('password2',password2)"
+                  fill="clear"
+                  size="small"
+                  class="eye-button">
+                  <ion-icon 
+                    [name]="showPassword2 ? 'eye-off' : 'eye'" 
+                    slot="icon-only">
+                  </ion-icon>
+                </ion-button>
+              </div>
 
-                         <ion-item
-                              color = "light"
-                              *ngIf="stepRecovery == 'password'"
-                              >
-                              <ion-input
-                                    id="password2"
-                                    #password2
-                                    label="Ripeti Password"
-                                    labelPlacement="stacked"
-                                    helperText="ripeti la nuova password"
-                                    [clearInput]="false"
-                                    formControlName = "password2"
-                                    type="password">
-                                </ion-input>
-                                <ion-button
-                                    (click)="showHideInput('password2',password2)"
-                                    color="success"
-                                    fill="clear"
-                                    size="small" 
-                                    slot="end">
-                                    <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
-                                </ion-button>
-                          </ion-item>                         
+              <!-- Bottone Azione -->
+              <ion-button
+                expand="block"
+                size="large"
+                [disabled]="!formPageSecondary.valid"
+                (click)="onClickActionRecovery()"
+                class="btn-recovery">
+                <ion-icon 
+                  [name]="stepRecovery == 'input' ? 'send' : (stepRecovery == 'code' ? 'checkmark-circle' : 'key')" 
+                  slot="start">
+                </ion-icon>
+                {{stepRecovery == 'input' ? 'Richiedi codice' : (stepRecovery == 'code' ? 'Verifica codice' : 'Conferma Password')}}
+              </ion-button>
 
-                        </ion-list>
-                      </form>
+              <!-- Link Torna a Login -->
+              <div class="back-to-login" (click)="changeForm()">
+                <ion-icon name="arrow-back-circle"></ion-icon>
+                <span>Torna al login</span>
+              </div>
 
-                  </ion-col>
-              </ion-row>
+            </form>
 
-              <ion-row
-                class="ion-no-padding ion-no-margin">
-                  <ion-col>
-                    <ion-button
-                      color="tertiary"
-                      expand="full"
-                      fill="solid"
-                      [disabled]="!formPageSecondary.valid"
-                      (click)="onClickActionRecovery()">
-                        {{stepRecovery == 'input' ? 'Richiedi codice' : (stepRecovery == 'code' ? 'Verifica codice' : 'Conferma Password')}}</ion-button>  
-                  </ion-col>
-              </ion-row>
+          </div>
 
-              <ion-row
-                  class="ion-no-padding ion-margin-top">
-                  <ion-col>
-                  <ion-item
-                      (click)="changeForm()"
-                      button="true"
-                      detail="true"
-                      lines="none"
-                      >
-                    <ion-label class="ion-text-wrap">
-                      <p class = "ion-text-small">aspetta, voglio inserire le credenziali di accesso</p>
-                    </ion-label>
-                  </ion-item>
-                  </ion-col>
-              </ion-row>
+        </ion-col>
 
-            </ion-grid>              
-          
-      </ion-col>        
-    </ion-row>
-
-  </ion-grid>
-      
-
-     
+      </ion-row>
+    </ion-grid>
+  </div>
 
 </ion-content>
-

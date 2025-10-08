@@ -1,0 +1,39 @@
+// =====================================================
+// TOAST CUSTOM STYLES
+// =====================================================
+
+ion-toast {
+  --border-radius: 16px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --min-height: 56px;
+
+  &::part(message) {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  &::part(button) {
+    font-weight: 700;
+    text-transform: none;
+  }
+
+  &.toast-success {
+    --background: var(--ion-color-success);
+    --color: white;
+  }
+
+  &.toast-error {
+    --background: var(--ion-color-danger);
+    --color: white;
+  }
+
+  &.toast-warning {
+    --background: var(--ion-color-warning);
+    --color: var(--ion-color-primary);
+  }
+
+  &.toast-info {
+    --background: var(--ion-color-primary);
+    --color: white;
+  }
+}

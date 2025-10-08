@@ -1,0 +1,195 @@
+// =====================================================
+// ALERT CONTROLLER CUSTOM STYLES
+// File: src/theme/alert-custom.scss
+// =====================================================
+
+// Alert Wrapper
+.alert-wrapper.sc-ion-alert-ios,
+.alert-wrapper.sc-ion-alert-md {
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  overflow: hidden;
+}
+
+// Alert Header
+.alert-head.sc-ion-alert-ios,
+.alert-head.sc-ion-alert-md {
+  background: var(--ion-color-primary);
+  padding: 20px 24px 16px 24px;
+  text-align: center;
+
+  .alert-title.sc-ion-alert-ios,
+  .alert-title.sc-ion-alert-md {
+    color: var(--ion-color-primary-contrast);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: none;
+  }
+
+  .alert-sub-title.sc-ion-alert-ios,
+  .alert-sub-title.sc-ion-alert-md {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    margin-top: 8px;
+  }
+}
+
+// Alert Message
+.alert-message.sc-ion-alert-ios,
+.alert-message.sc-ion-alert-md {
+  color: var(--ion-color-dark);
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 24px;
+  text-align: center;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.alert-head.sc-ion-alert-md + .alert-message.sc-ion-alert-md {
+  padding-top: 24px;
+}
+
+// Alert Buttons Container
+.alert-button-group.sc-ion-alert-ios,
+.alert-button-group.sc-ion-alert-md {
+  padding: 0;
+  border-top: 1px solid var(--ion-color-light);
+
+  .alert-button.sc-ion-alert-ios,
+  .alert-button.sc-ion-alert-md {
+    height: 56px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.3px;
+    border: none;
+    margin: 0;
+    transition: background 0.2s ease;
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--ion-color-light);
+    }
+
+    // Bottone Primario (Si, Conferma, Ok, ecc.)
+    &:not([aria-checked="true"]) {
+      color: var(--ion-color-success);
+      font-weight: 700;
+
+      &:hover {
+        background: rgba(84, 220, 152, 0.1);
+      }
+
+      &:active {
+        background: rgba(84, 220, 152, 0.2);
+      }
+    }
+
+    // Bottone Cancel
+    &[aria-checked="true"] {
+      color: var(--ion-color-medium);
+      font-weight: 600;
+
+      &:hover {
+        background: var(--ion-color-extralight);
+      }
+
+      &:active {
+        background: var(--ion-color-light);
+      }
+    }
+  }
+
+  // Layout verticale per più di 2 bottoni
+  &.alert-button-group-vertical {
+    flex-direction: column;
+
+    .alert-button.sc-ion-alert-ios,
+    .alert-button.sc-ion-alert-md {
+      border-right: none;
+      border-bottom: 1px solid var(--ion-color-light);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+// Alert con Input
+.alert-input-group.sc-ion-alert-ios,
+.alert-input-group.sc-ion-alert-md {
+  padding: 16px 24px;
+}
+
+.alert-input.sc-ion-alert-ios,
+.alert-input.sc-ion-alert-md {
+  border: 2px solid var(--ion-color-light);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+  background: var(--ion-color-extralight);
+
+  &:focus {
+    border-color: var(--ion-color-primary);
+    outline: none;
+    background: white;
+  }
+
+  &::placeholder {
+    color: var(--ion-color-mediumlight);
+  }
+}
+
+// Alert con Radio/Checkbox
+.alert-radio-group.sc-ion-alert-ios,
+.alert-radio-group.sc-ion-alert-md,
+.alert-checkbox-group.sc-ion-alert-ios,
+.alert-checkbox-group.sc-ion-alert-md {
+  padding: 16px 0;
+  max-height: 300px;
+  overflow-y: auto;
+
+  .alert-radio-label.sc-ion-alert-ios,
+  .alert-radio-label.sc-ion-alert-md,
+  .alert-checkbox-label.sc-ion-alert-ios,
+  .alert-checkbox-label.sc-ion-alert-md {
+    padding: 14px 24px;
+    font-size: 1rem;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--ion-color-extralight);
+    }
+  }
+
+  .alert-radio-icon.sc-ion-alert-ios,
+  .alert-radio-icon.sc-ion-alert-md {
+    border-color: var(--ion-color-primary);
+    border-width: 2px;
+  }
+
+  .alert-radio-inner.sc-ion-alert-ios,
+  .alert-radio-inner.sc-ion-alert-md {
+    background: var(--ion-color-success);
+  }
+
+  .alert-checkbox-icon.sc-ion-alert-ios,
+  .alert-checkbox-icon.sc-ion-alert-md {
+    border-color: var(--ion-color-primary);
+    border-width: 2px;
+    border-radius: 6px;
+  }
+
+  [aria-checked="true"] {
+    .alert-checkbox-icon.sc-ion-alert-ios,
+    .alert-checkbox-icon.sc-ion-alert-md {
+      background: var(--ion-color-success);
+      border-color: var(--ion-color-success);
+    }
+  }
+}

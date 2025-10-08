@@ -40,6 +40,7 @@ export class LocationCampiListPage implements OnInit {
 
   public sliderOpts: SwiperOptions = {
     slidesPerView: 2.3,
+    spaceBetween: 5
   }
 
   
@@ -88,9 +89,11 @@ export class LocationCampiListPage implements OnInit {
    * Dato un oggetto campo, chiama il servizio e ritorna l'icona
    * @param campoSport L'oggetto campo
    */
-  getIconSport(campoSport: CampoSport){
+  getIconSport(campoSport: CampoSport): string{
+    let iconSport: string = '';
     if (campoSport){
-      return this.startService.getSportIcon(campoSport.IDSPORT);
+      iconSport = this.startService.getSportIcon(campoSport.IDSPORT);
+      return iconSport;
     }
   }
 

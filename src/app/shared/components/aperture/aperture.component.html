@@ -1,61 +1,43 @@
-<ion-row class="ion-padding-start ion-align-items-center row-border">
-  <ion-col size="6">
-    {{ myApertura.getLabel() | titlecase}}
-  </ion-col>
-
-  <ion-col size="6" class="ion-no-padding">
-    
-      <ion-row *ngIf="myApertura.DALLE1" class="ion-no-padding">
-        <ion-col class="ion-text-center ion-no-padding">
-
-          <ion-chip [color]="colorChip">
-            <ion-icon 
-                name="time-outline"></ion-icon>
-            <ion-label>{{ myApertura.DALLE1 | date:'HH:mm'}} - {{ myApertura.ALLE1 | date:'HH:mm'}}</ion-label>
-          </ion-chip>
-        </ion-col>
-
-      </ion-row>
+<div class="aperture-row">
   
-      <ion-row *ngIf="myApertura.DALLE2" class="ion-no-padding">
-        <ion-col class="ion-text-center ion-no-padding">
+  <!-- GIORNO -->
+  <div class="day-section">
+    <ion-icon name="calendar-outline" class="day-icon"></ion-icon>
+    <span class="day-name">{{ myApertura.getLabel() | titlecase}}</span>
+  </div>
 
-          <ion-chip [color]="colorChip">
-            <ion-icon 
-                name="time-outline"></ion-icon>
-            <ion-label>{{ myApertura.DALLE2 | date:'HH:mm'}} - {{ myApertura.ALLE2 | date:'HH:mm'}}</ion-label>
-          </ion-chip>
-
-        </ion-col>
-      </ion-row>
-
-      <ion-row *ngIf=" myApertura.isAlwaysOpen" class="ion-no-padding">
-        <ion-col class="ion-text-center ion-no-padding">
-
-          <ion-chip color="success">
-            <ion-label class="ion-text-bold">
-              SEMPRE APERTO
-            </ion-label>
-          </ion-chip>
-
-        </ion-col>
-      </ion-row>
-  
-      <ion-row *ngIf="!myApertura.isOpen()" class="ion-no-padding">
-        <ion-col class="ion-text-center ion-no-padding">
-          <ion-chip color="danger">
-            <ion-label class="ion-text-bold">
-              OGGI CHIUSO
-            </ion-label>
-          </ion-chip>
-        </ion-col>
-      </ion-row>
+  <!-- ORARI O STATUS -->
+  <div class="time-section">
     
+    <!-- SEMPRE APERTO -->
+    <div class="status-badge status-open" *ngIf="myApertura.isAlwaysOpen">
+      <ion-icon name="infinite"></ion-icon>
+      <span>Sempre aperto</span>
+    </div>
 
-  </ion-col>
+    <!-- OGGI CHIUSO -->
+    <div class="status-badge status-closed" *ngIf="!myApertura.isOpen() && !myApertura.isAlwaysOpen">
+      <ion-icon name="close-circle"></ion-icon>
+      <span>Chiuso</span>
+    </div>
 
-</ion-row>
+    <!-- ORARI NORMALI -->
+    <div class="time-slots" *ngIf="myApertura.isOpen() && !myApertura.isAlwaysOpen">
+      
+      <!-- PRIMO SLOT -->
+      <div class="time-badge status-open" *ngIf="myApertura.DALLE1">
+        <ion-icon name="time-outline"></ion-icon>
+        <span>{{ myApertura.DALLE1 | date:'HH:mm'}} - {{ myApertura.ALLE1 | date:'HH:mm'}}</span>
+      </div>
 
+      <!-- SECONDO SLOT -->
+      <div class="time-badge status-open" *ngIf="myApertura.DALLE2">
+        <ion-icon name="time-outline"></ion-icon>
+        <span>{{ myApertura.DALLE2 | date:'HH:mm'}} - {{ myApertura.ALLE2 | date:'HH:mm'}}</span>
+      </div>
 
+    </div>
 
+  </div>
 
+</div>

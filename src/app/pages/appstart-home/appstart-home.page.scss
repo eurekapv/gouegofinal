@@ -1,99 +1,439 @@
-ion-tabs{
+// ========================================
+// VERSIONE 2: iOS LIQUID / GLASSMORPHISM
+// Stile iOS moderno con blur, solo icone grandi, pill background
+// ========================================
+/*
+ion-tabs {
     ion-tab-bar {
-        background-color: var(--ion-tab-background);
-        box-shadow: 0px 0px 6px 2px var(--ion-tab-shadow);
+        // Glassmorphism effect
+        background: rgba(25, 35, 51, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
         border-style: none;
-        --my-border-radius: calc(var(--base-border-radius) + 15pt);
-        border-radius: var(--my-border-radius) var(--my-border-radius) 0 0;
-
-        //Safe Area Bottom
-        //Versione Web
-        padding-bottom: 5px !important;
+        border-radius: 30px 30px 0 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        
+        // Floating effect con margini
+        margin: 0 15px;
+        
+        // Padding
+        padding-bottom: 12px !important;
+        padding-top: 12px !important;
         padding-left: 5px !important;
         padding-right: 5px !important;
 
         &.md {
-            //Versione Android (Era 5px ma poco)
-            padding-bottom: var(--ion-safe-area-bottom) !important;
+            padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
         }
         &.ios {
-            //Versione IOS
-            padding-bottom: var(--ion-safe-area-bottom) !important;
+            padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
         }
 
-
         ion-tab-button {
-            margin-top: 5px;
-            --background: var(--ion-tab-background);
-            --background-focused: var(--ion-tab-selected-background);
-            --color: var(--ion-tab-color);
-            --color-selected: var(--ion-tab-selected-color);
-            --color-focused: var(--ion-tab-selected-color);
+            margin: 2px;
+            --background: transparent;
+            --color: rgba(255, 255, 255, 1);
+            --color-selected: var(--ion-color-primary);
             
-            background-color: var(--ion-accent-shade);
-            color: white;
+            background-color: transparent;
+            color: rgba(255, 255, 255, 1);
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 60px;
 
+            // Icone molto grandi
+            ion-icon {
+                font-size: 30px;
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                margin-bottom: 2px;
+            }
+
+            // Label piccola sotto
+            ion-label {
+                font-size: 10px;
+                font-weight: 500;
+                margin-top: 2px;
+                opacity: 0.8;
+            }
+
+            // Tab selezionata - effetto pill
             &.tab-selected {
                 --background: var(--ion-tab-selected-background);
-                background-color: var(--ion-tab-selected-background);
+                background: var(--ion-tab-selected-background);
+                background: linear-gradient(135deg, 
+                    var(--ion-tab-selected-background) 0%, 
+                    rgba(84, 220, 152, 0.9) 100%);
                 --color: var(--ion-tab-selected-color);
-                color: var(--ion-tab-selected-color);  
-                border-radius: var(--ion-tab-selected-radius);              
+                color: var(--ion-tab-selected-color);
+                border-radius: 20px;
+                transform: scale(1.05);
+                box-shadow: 
+                    0 8px 16px rgba(84, 220, 152, 0.25),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+                ion-icon {
+                    font-size: 32px;
+                    transform: translateY(-2px);
+                    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                }
+
+                ion-label {
+                    font-weight: 700;
+                    opacity: 1;
+                }
+
+                // Glow effect
+                &::before {
+                    content: '';
+                    position: absolute;
+                    inset: -2px;
+                    border-radius: 20px;
+                    padding: 2px;
+                    background: linear-gradient(135deg, 
+                        rgba(84, 220, 152, 0.5), 
+                        rgba(84, 220, 152, 0.2));
+                    -webkit-mask: 
+                        linear-gradient(#fff 0 0) content-box, 
+                        linear-gradient(#fff 0 0);
+                    -webkit-mask-composite: xor;
+                    mask-composite: exclude;
+                    opacity: 0.5;
+                }
+            }
+
+            // Active press effect
+            &:active {
+                transform: scale(0.95);
+            }
+
+            // Hover effect
+            &:hover:not(.tab-selected) {
+                background-color: rgba(255, 255, 255, 0.08);
+                color: rgba(255, 255, 255, 0.8);
+                
+                ion-icon {
+                    transform: translateY(-1px);
+                }
             }
         }
 
         ion-tab-button::part(native) {
-            &:focus, &:hover {
-                background-color: var(--ion-tab-selected-background);
-                color: var(--ion-tab-selected-color);  
-                border-radius: var(--ion-tab-selected-radius);
-            }
+            padding: 10px 8px;
         }
     }
-  
-  }
+}
+    */
 
-/* Tabs Custom Con spostamento a Sinistra */
+/* Layout Desktop/Tablet - Sidebar Glassmorphism */
+/*
 @media screen and (min-aspect-ratio: 5/4) {
 
-	ion-tabs { 
-		flex-direction: column; 
-		.ion-page { left: 56px; } 
-	}
+    ion-tabs { 
+        flex-direction: column; 
+        .ion-page { left: 90px; } 
+    }
 
     :host ::ng-deep .tabs-inner {
-        left: 110px;
-        top: 5px;
+        left: 100px;
+        top: 15px;
         width: calc(100% - 115px);
     }
 
+    ion-tab-bar { 
+        position: absolute; 
+        justify-content: flex-start; 
+        width: 80px; 
+        top: 15px;
+        left: 15px;
+        height: calc(100vh - 30px);
+        flex-direction: column;
+        border-radius: 25px;
+        margin: 0;
+        padding: 16px 10px !important;
+        background: rgba(25, 35, 51, 0.9);
 
-	ion-tab-bar { 
-		position: absolute; 
-		justify-content: start; 
-		width: 90px; 
-        top: 5px;
-        left: 5px;
-		height: 100rem; 
-		flex-direction: column;
+        ion-tab-button { 
+            max-height: 80px;
+            min-height: 80px;
+            width: 100%;
+            margin: 6px 0;
 
-		ion-tab-button { 
-			max-height: 56px; 
-            width: calc(100% - 10px);
-		} 
+            ion-icon {
+                font-size: 28px;
+            }
 
-		.tabs-ios .tab-button { 
-			width: 100%; 
-			font-size: 10px; 
-			padding: 0; 
-		} 
+            ion-label {
+                font-size: 9px;
+            }
 
-		.has-icon .tab-badge { 
-			right: calc(50% - 22px); 
-		} 
+            &.tab-selected {
+                ion-icon {
+                    font-size: 30px;
+                }
+            }
+        } 
+    }
+}
 
-		.tab-badge { 
-			top: 33%; 
-		} 
-	}
+// Animazioni personalizzate
+@keyframes bounce-in {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+ion-tab-button.tab-selected {
+    animation: bounce-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*/
+
+
+// ========================================
+// TAB BAR - VERSIONE FINALE IBRIDA
+// Glassmorphism + Icona Verde + Indicatore Top
+// ========================================
+
+ion-tabs {
+    ion-tab-bar {
+        // Glassmorphism effect
+        background: rgba(25, 35, 51, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
+        border-style: none;
+        border-radius: 30px 30px 0 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        
+        // Floating effect con margini
+        margin: 0 15px;
+        
+        // Padding
+        padding-bottom: 12px !important;
+        padding-top: 12px !important;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+
+        &.md {
+            padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
+        }
+        &.ios {
+            padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
+        }
+
+        ion-tab-button {
+            margin: 2px;
+            --background: transparent;
+            --color: rgba(255, 255, 255, 0.5);
+            --color-selected: white;
+            
+            background-color: transparent;
+            color: rgba(255, 255, 255, 0.5);
+            border-radius: 18px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 60px;
+
+            // Indicatore top (striscia verde) - NASCOSTO di default
+            &::before {
+                content: '';
+                position: absolute;
+                top: -12px;
+                left: 50%;
+                transform: translateX(-50%) scaleX(0);
+                width: 50%;
+                height: 3px;
+                background: var(--ion-tab-selected-background);
+                border-radius: 0 0 3px 3px;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                opacity: 0;
+            }
+
+            // Icone grandi
+            ion-icon {
+                font-size: 28px;
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                margin-bottom: 2px;
+            }
+
+            // Label piccola
+            ion-label {
+                font-size: 10px;
+                font-weight: 500;
+                margin-top: 2px;
+                opacity: 0.8;
+                transition: all 0.3s ease;
+            }
+
+            // Tab selezionata - ICONA VERDE + LINEA TOP
+            &.tab-selected {
+                --background: rgba(84, 220, 152, 0.42);
+                background: rgba(84, 220, 152, 0.42);
+                --color: white;
+                color: white;
+                border-radius: 18px;
+                transform: scale(1.02);
+
+                // Linea verde superiore VISIBILE
+                &::before {
+                    transform: translateX(-50%) scaleX(1);
+                    opacity: 1;
+                }
+
+                // Icona VERDE e più grande
+                ion-icon {
+                    font-size: 30px;
+                    color: var(--ion-tab-selected-background);
+                    transform: translateY(-2px);
+                    filter: drop-shadow(0 2px 8px rgba(84, 220, 152, 0.4));
+                }
+
+                // Label bianca e bold
+                ion-label {
+                    font-weight: 700;
+                    opacity: 1;
+                    color: white;
+                }
+
+                // Subtle glow attorno alla pill
+                box-shadow: 
+                    0 4px 12px rgba(84, 220, 152, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+
+            // Active press effect
+            &:active {
+                transform: scale(0.96);
+            }
+
+            // Hover effect
+            &:hover:not(.tab-selected) {
+                background-color: rgba(255, 255, 255, 0.08);
+                color: rgba(255, 255, 255, 0.8);
+                
+                ion-icon {
+                    transform: translateY(-1px);
+                }
+            }
+        }
+
+        ion-tab-button::part(native) {
+            padding: 10px 8px;
+        }
+    }
+}
+
+/* ========================================
+   LAYOUT DESKTOP/TABLET - SIDEBAR
+   ======================================== */
+@media screen and (min-aspect-ratio: 5/4) {
+
+    ion-tabs { 
+        flex-direction: column; 
+        .ion-page { left: 90px; } 
+    }
+
+    :host ::ng-deep .tabs-inner {
+        left: 100px;
+        top: 15px;
+        width: calc(100% - 115px);
+    }
+
+    ion-tab-bar { 
+        position: absolute; 
+        justify-content: flex-start; 
+        width: 80px; 
+        top: 15px;
+        left: 15px;
+        height: calc(100vh - 30px);
+        flex-direction: column;
+        border-radius: 25px;
+        margin: 0;
+        padding: 16px 10px !important;
+        background: rgba(25, 35, 51, 0.9);
+
+        ion-tab-button { 
+            max-height: 80px;
+            min-height: 80px;
+            width: 100%;
+            margin: 6px 0;
+
+            // Indicatore a SINISTRA per sidebar
+            &::before {
+                top: 50%;
+                left: -10px;
+                transform: translateY(-50%) scaleY(0);
+                width: 3px;
+                height: 50%;
+                border-radius: 0 3px 3px 0;
+            }
+
+            &.tab-selected::before {
+                transform: translateY(-50%) scaleY(1);
+            }
+
+            ion-icon {
+                font-size: 26px;
+            }
+
+            ion-label {
+                font-size: 9px;
+            }
+
+            &.tab-selected {
+                ion-icon {
+                    font-size: 28px;
+                }
+            }
+        } 
+    }
+}
+
+/* ========================================
+   ANIMAZIONI
+   ======================================== */
+
+// Animazione smooth per tab selezionata
+@keyframes tab-select-bounce {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1.02);
+        opacity: 1;
+    }
+}
+
+ion-tab-button.tab-selected {
+    animation: tab-select-bounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+// Animazione per la linea top
+@keyframes line-slide-in {
+    from {
+        transform: translateX(-50%) scaleX(0);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 1;
+    }
+}
+
+ion-tab-button.tab-selected::before {
+    animation: line-slide-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }

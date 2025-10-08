@@ -1,31 +1,451 @@
-ion-checkbox {
-    --size: 12px;
-    --checkbox-background-checked: var(--ion-color-primary);
-  }
-  
-  ion-checkbox::part(container) {
-    border-radius: 6px;
-    border: 2px solid var(--ion-color-primary);
-  }
+// ========== CONTAINER PRINCIPALE ==========
+.registration-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100%;
+  padding: 20px 0;
+}
 
-  .title-image {
+// ========== CARD CENTRALE ==========
+.registration-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 40px 30px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 30px 20px;
+    border-radius: 15px;
+  }
+}
+
+// ========== ICONA HEADER ==========
+.icon-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    align-content: center;
-    padding: 0;
-    margin: 5px 0px 0px 0px;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    width: 100%;
-    height: 200px;
-    text-align:center;
+    justify-content: center;
+    transition: all 0.3s ease;
 
-    img {
-        max-width: 300px;
-        max-height: 200px;
+    &.step-input {
+      background: var(--ion-color-tertiary);
+      ion-icon {
+        color: var(--ion-color-primary);
+        font-size: 40px;
+      }
+    }
+
+    &.step-code {
+      background: var(--ion-color-warning);
+      ion-icon {
+        color: var(--ion-color-primary);
+        font-size: 40px;
+      }
+    }
+
+    &.step-final {
+      background: var(--ion-color-success);
+      ion-icon {
+        color: white;
+        font-size: 40px;
+      }
     }
   }
+}
+
+// ===================================
+// REGISTER BANNER
+// ===================================
+
+.login-banner {
+  background: linear-gradient(135deg, rgba(223, 65, 58, 0.1) 0%, rgba(196, 57, 51, 0.1) 100%);
+  border: 2px solid var(--ion-color-danger);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  > ion-icon:first-child {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .login-banner-text {
+    flex: 1;
+
+    p {
+      font-size: 0.8rem;
+      color: var(--ion-color-mediumlight);
+      margin: 0 0 2px 0;
+    }
+
+    span {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ion-color-danger);
+    }
+  }
+
+  > ion-icon:last-child {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+}
+
+// Tablet: banner più compatto
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .login-banner {
+    padding: 10px 12px;
+    margin-bottom: 16px;
+
+    > ion-icon:first-child {
+      font-size: 24px;
+    }
+
+    .login-banner-text {
+      p {
+        font-size: 0.75rem;
+      }
+
+      span {
+        font-size: 0.9rem;
+      }
+    }
+
+    > ion-icon:last-child {
+      font-size: 20px;
+    }
+  }
+}
+
+// ========== TITOLO ==========
+.registration-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  text-align: center;
+  margin: 0 0 25px 0;
+  letter-spacing: -0.5px;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+// ========== STEPPER ==========
+.stepper-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 30px 0;
+  gap: 0;
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .step-number {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--ion-color-light);
+      color: var(--ion-color-mediumlight);
+      border: 2px solid var(--ion-color-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 18px;
+      transition: all 0.3s ease;
+    }
+
+    &.active .step-number {
+      background: var(--ion-color-tertiary);
+      color: var(--ion-color-primary);
+      border-color: var(--ion-color-tertiary);
+      transform: scale(1.1);
+    }
+  }
+
+  .step-line {
+    width: 60px;
+    height: 2px;
+    background: var(--ion-color-light);
+    
+    @media (max-width: 768px) {
+      width: 40px;
+    }
+  }
+}
+
+// ========== INFO BOX ==========
+.info-box {
+  background: #fef9e7;
+  border-left: 4px solid var(--ion-color-tertiary);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 0 0 25px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .info-icon {
+    color: var(--ion-color-tertiary);
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-primary);
+    line-height: 1.5;
+    font-size: 14px;
+
+    strong {
+      font-weight: 600;
+    }
+  }
+}
+
+
+
+// ========== INPUT GROUPS ==========
+.input-group {
+  background: var(--ion-color-extralight);
+  border-radius: 12px;
+  padding: 0 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  min-height: 56px;
+
+  .input-icon {
+    color: var(--ion-color-primary);
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  ion-input {
+    flex: 1;
+    --padding-start: 0;
+    --padding-end: 0;
+    --color: var(--ion-color-primary);
+    font-size: 15px;
+  }
+
+  .reinvia-btn,
+  .toggle-pwd-btn {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    margin: 0;
+    font-size: 13px;
+    color: var(--ion-color-success);
+  }
+
+  .toggle-pwd-btn ion-icon {
+    font-size: 22px;
+  }
+}
+
+// ========== USER INFO ==========
+.user-info {
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--ion-color-light);
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ion-color-mediumlight);
+    margin: 4px 0;
+
+    &.mobile-number {
+      font-weight: 600;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+// ========== POLICY LINK ==========
+.policy-link {
+  text-align: center;
+  margin: 20px 0 15px 0;
+
+  ion-button {
+    font-size: 13px;
+    text-transform: none;
+    --padding-start: 0;
+    --padding-end: 0;
+    color: var(--ion-color-primary);
+  }
+}
+
+// ========== CHECKBOX ==========
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+
+  ion-checkbox {
+    --size: 20px;
+    --checkbox-background-checked: var(--ion-color-success);
+    --border-color: var(--ion-color-mediumlight);
+    --border-width: 2px;
+    --border-radius: 6px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  ion-checkbox::part(container) {
+    border-radius: 6px;
+  }
+
+  label {
+    font-size: 14px;
+    color: var(--ion-color-primary);
+    line-height: 1.4;
+    margin: 0;
+  }
+}
+
+// ========== FINAL STEP ==========
+.final-step {
+  
+  .success-message {
+    text-align: center;
+    padding: 20px 0 30px 0;
+
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ion-color-primary);
+      margin: 0 0 15px 0;
+    }
+
+    p {
+      font-size: 15px;
+      color: var(--ion-color-mediumlight);
+      line-height: 1.6;
+      margin: 8px 0;
+
+      &.credentials-info {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--ion-color-light);
+        color: var(--ion-color-primary);
+
+        strong {
+          color: var(--ion-color-success);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .benefits-list {
+    margin-top: 25px;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 12px 0;
+
+    .benefit-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(44, 179, 97, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+
+    p {
+      margin: 0;
+      padding-top: 6px;
+      font-size: 14px;
+      color: var(--ion-color-primary);
+      line-height: 1.5;
+    }
+  }
+}
+
+// ========== BOTTONE AZIONE ==========
+.action-button {
+  --background: var(--ion-color-tertiary);
+  --color: var(--ion-color-primary);
+  --border-radius: 12px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  margin-top: 25px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  &.success {
+    --background: var(--ion-color-success);
+    --color: white;
+  }
+
+  ion-icon {
+    font-size: 22px;
+  }
+}
+
+// ========== RESPONSIVE ==========
+@media (min-width: 768px) {
+  .registration-card {
+    max-width: 650px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .registration-container {
+    padding: 40px 20px;
+  }
+
+  .registration-card {
+    max-width: 700px;
+    padding: 50px 40px;
+  }
+}

@@ -292,6 +292,43 @@ export class Utente extends IDDocument {
         return labelReturn;
     }
 
+    /**
+     * Torna una classe Badge per indicare cosa applicare
+     * @param method 
+     * @returns 
+     */
+    getColorBadgeForVerifica(method: 'mail' | 'mobile'):string {
+        let badgeColor: 'badge-danger' | 'badge-success' | 'badge-warning' = 'badge-danger';
+
+        badgeColor = 'badge-warning';
+
+        if (method == 'mobile') {
+            if (this.VERIFICATAMOBILE) {
+                if (this.MOBILENUMBER && 
+                    this.MOBILENUMBER.length !== 0) {
+                        badgeColor = 'badge-success';
+                }
+            }
+            else {
+                badgeColor = 'badge-danger';
+            }
+        }
+        else if (method == 'mail') {
+            if (this.VERIFICATAMAIL) {
+                if (this.EMAIL && 
+                    this.EMAIL.length !== 0) {
+                      badgeColor = 'badge-success';
+                }
+            }
+            else {
+                badgeColor = 'badge-danger';
+            }
+        }
+
+        badgeColor = 'verified-badge' + ' ' + badgeColor;
+
+        return badgeColor;
+    }
 
     /**
      * Cerca dentro a Utente Livelli se presente uno sport e un determinato livello

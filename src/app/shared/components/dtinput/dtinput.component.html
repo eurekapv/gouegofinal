@@ -1,50 +1,71 @@
-<ion-item
-    [color]="_itemColor"
-    [lines]="_itemLines"
-    [detail]="_itemDetail"
-    [id]="_componentId">
-  <ion-icon 
-      *ngIf="withIcon" 
-      [icon]="_iconName" 
-      [slot]="_iconSlot" 
-      [color]="_iconColor">
-  </ion-icon>
-
-  <ion-label
-      class="ion-text-wrap"
-      [position]="_labelPlacement"
-      *ngIf="withLabel">{{_label}}
-  </ion-label>
-
-  <ion-text
-      [slot]="_slotText"
-    >
-    <p>{{_actualDate | date: _maskFormat}}</p>
-  </ion-text>
+<!-- CONTAINER PRINCIPALE -->
+<div class="dtinput-container">
   
+  <!-- INPUT TRIGGER per modal -->
+  <div 
+      class="dtinput-trigger" 
+      [id]="_componentId"
+      [class.readonly]="_readonly">
+    
+    <!-- Icona -->
+    <div class="dtinput-icon" *ngIf="withIcon">
+      <ion-icon 
+          [name]="_iconName" 
+          [color]="_iconColor">
+      </ion-icon>
+    </div>
+
+    <!-- Content Area -->
+    <div class="dtinput-content">
+      
+      <!-- Label -->
+      <span class="dtinput-label" *ngIf="withLabel">
+        {{_label}}
+      </span>
+
+      <!-- Valore Data -->
+      <span class="dtinput-value" [class.empty]="!_actualDate">
+        {{_actualDate ? (_actualDate | date: _maskFormat) : 'Seleziona una data'}}
+      </span>
+
+    </div>
+
+    <!-- Icona Calendario a destra -->
+    <div class="dtinput-calendar-icon">
+      <ion-icon name="calendar-outline"></ion-icon>
+    </div>
+
+  </div>
+
+  <!-- MODAL CON DATETIME -->
   <ion-modal 
-    [keepContentsMounted]="true" 
-    [trigger]="_componentId">
+      [keepContentsMounted]="true" 
+      [trigger]="_componentId"
+      class="datetime-modal">
     <ng-template>
+      
+      <!-- Header Modal -->
+      <div class="modal-header" *ngIf="_showCalendarTitle">
+        <h3>{{_title}}</h3>
+      </div>
 
+      <!-- DateTime Picker -->
       <ion-datetime
-        #mydatetime
-        locale="it-IT"
-        [presentation]="_calendarMode"
-        [readonly] ="_readonly"
-        [value]="formattedDateTimeString"          
-        size="cover"
-        showDefaultButtons="true"
-        cancelText="Annulla"
-        clearText="Elimina"
-        doneText="Conferma"
-        [max]="_isoMaxDate"
-        (ionChange)="dateChanged(mydatetime.value)">
-
+          #mydatetime
+          locale="it-IT"
+          [presentation]="_calendarMode"
+          [readonly]="_readonly"
+          [value]="formattedDateTimeString"          
+          size="cover"
+          showDefaultButtons="true"
+          cancelText="Annulla"
+          clearText="Elimina"
+          doneText="Conferma"
+          [max]="_isoMaxDate"
+          (ionChange)="dateChanged(mydatetime.value)">
       </ion-datetime>
+
     </ng-template>    
   </ion-modal>
 
-</ion-item>
-  
-
+</div>

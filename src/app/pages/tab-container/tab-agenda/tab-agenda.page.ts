@@ -96,7 +96,8 @@ export class TabAgendaPage implements OnInit, OnDestroy {
 
   personalFilter: 'tutti' | 'oggi' | 'domani' | 'settimana' = 'tutti';
   isLoadingPersonal: boolean = false;
-
+  // Variabile loading per skeleton (aggiungi con le altre variabili)
+  isLoadingTrainer: boolean = false;
   
   //#region FILTRO RICERCA TRAINER
 
@@ -922,14 +923,26 @@ hideLoadingPersonal(): void {
    * Effettua la ricerca degli impegni Trainer
    */
   requestListImpegniTrainer() {
-    let idCollaboratore = (this.utenteDoc ? this.utenteDoc.ID : '');
-    let mansione = (this.utenteDoc ? this.utenteDoc.MANSIONE : 0);
+      let idCollaboratore = (this.utenteDoc ? this.utenteDoc.ID : '');
+      let mansione = (this.utenteDoc ? this.utenteDoc.MANSIONE : 0);
 
-    this.startService.requestImpegniCollaboratore(idCollaboratore, 
-                                            mansione,
-                                            this.searchTrainerPeriodo, 
-                                            this.searchTrainerDate,
-                                            this.numRequestImpegniTrainerTop);
+      // Mostra loading solo se non è refresh
+      if (!this.flagOnRefresh) {
+        this.showLoadingTrainer();
+      }
+
+      this.startService.requestImpegniCollaboratore(
+        idCollaboratore, 
+        mansione,
+        this.searchTrainerPeriodo, 
+        this.searchTrainerDate,
+        this.numRequestImpegniTrainerTop
+      );
+
+      // Nascondi loading dopo un timeout
+      setTimeout(() => {
+        this.hideLoadingTrainer();
+      }, 500);
   }
 
   
@@ -1000,6 +1013,263 @@ hideLoadingPersonal(): void {
       }
     }
   }
+
+  // =====================================================
+// TRAINER - STATISTICHE
+// =====================================================
+
+/**
+ * Conta lezioni di oggi
+ */
+getLezioniOggi(): number {
+  if (!this.listImpegniTrainer || this.listImpegniTrainer.length === 0) {
+    return 0;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  return this.listImpegniTrainer.filter(impegno => {
+    if (!impegno.DATAORAINIZIO) return false;
+    const impegnoDate = new Date(impegno.DATAORAINIZIO);
+    impegnoDate.setHours(0, 0, 0, 0);
+    return impegnoDate.getTime() === today.getTime();
+  }).length;
+}
+
+/**
+ * Ritorna il tempo alla prossima lezione
+ */
+getProssimaLezioneTime(): string {
+  if (!this.listImpegniTrainer || this.listImpegniTrainer.length === 0) {
+    return '--';
+  }
+
+  const now = new Date();
+  
+  // Trova prossima lezione futura
+  const prossimaLezione = this.listImpegniTrainer.find(impegno => {
+    if (!impegno.DATAORAINIZIO) return false;
+    return new Date(impegno.DATAORAINIZIO) > now;
+  });
+
+  if (!prossimaLezione) {
+    return '--';
+  }
+
+  const impegnoDate = new Date(prossimaLezione.DATAORAINIZIO);
+  const diff = impegnoDate.getTime() - now.getTime();
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (hours > 24) {
+    const days = Math.floor(hours / 24);
+    return `${days}g`;
+  } else if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  } else {
+    return `${minutes}m`;
+  }
+}
+
+/**
+ * Conta totale partecipanti (mock - da implementare con dati reali)
+ */
+getTotalPartecipanti(): number {
+  // TODO: Implementa con dati reali dal backend
+  // Per ora ritorna un numero mock basato sugli impegni
+  if (!this.listImpegniTrainer || this.listImpegniTrainer.length === 0) {
+    return 0;
+  }
+
+  // Ogni lezione ha mediamente 10 partecipanti (mock)
+  return this.getLezioniOggi() * 10;
+}
+
+// =====================================================
+// TRAINER - HELPER METHODS
+// =====================================================
+
+/**
+ * Ritorna colore per impegno trainer
+ */
+getImpegnoTrainerColor(impegno: ImpegnoCollaboratore): string {
+  if (!impegno) return 'primary';
+
+  const now = new Date();
+  
+  if (impegno.DATAORAFINE && new Date(impegno.DATAORAFINE) < now) {
+    return 'medium'; // Passato
+  }
+
+  switch (impegno.SETTORE) {
+    case SettoreAttivita.settoreCorso:
+      return 'success';
+    case SettoreAttivita.settorePrenotazione:
+      return 'primary';
+    case SettoreAttivita.settoreEvento:
+      return 'tertiary';
+    default:
+      return 'primary';
+  }
+}
+
+/**
+ * Ritorna icona per impegno trainer
+ */
+getImpegnoTrainerIcon(impegno: ImpegnoCollaboratore): string {
+  if (!impegno) return 'calendar';
+
+  switch (impegno.SETTORE) {
+    case SettoreAttivita.settoreCorso:
+      return 'school';
+    case SettoreAttivita.settorePrenotazione:
+      return 'calendar';
+    case SettoreAttivita.settoreEvento:
+      return 'sparkles';
+    default:
+      return 'clipboard';
+  }
+}
+
+/**
+ * Ritorna tipo impegno trainer (label)
+ */
+getImpegnoTrainerType(impegno: ImpegnoCollaboratore): string {
+  if (!impegno) return 'Impegno';
+
+  switch (impegno.SETTORE) {
+    case SettoreAttivita.settoreCorso:
+      return 'Corso';
+    case SettoreAttivita.settorePrenotazione:
+      return 'Campo';
+    case SettoreAttivita.settoreEvento:
+      return 'Evento';
+    default:
+      return 'Impegno';
+  }
+}
+
+/**
+ * Verifica se impegno trainer è passato
+ */
+isPassedImpegnoTrainer(impegno: ImpegnoCollaboratore): boolean {
+  if (!impegno || !impegno.DATAORAFINE) return false;
+  
+  const now = new Date();
+  const fineImpegno = new Date(impegno.DATAORAFINE);
+  
+  return fineImpegno < now;
+}
+
+/**
+ * Titolo sezione trainer in base al filtro
+ */
+getTrainerSectionTitle(): string {
+  switch (this.searchTrainerPeriodo) {
+    case RangeSearch.giorno:
+      return 'Impegni del Giorno';
+    case RangeSearch.settimana:
+      return 'Impegni della Settimana';
+    case RangeSearch.mese:
+      return 'Impegni del Mese';
+    default:
+      return 'I Tuoi Impegni';
+  }
+}
+
+/**
+ * Ritorna icona per periodo
+ */
+getPeriodIcon(period: RangeSearch): string {
+  switch (period) {
+    case RangeSearch.giorno:
+      return 'today-outline';
+    case RangeSearch.settimana:
+      return 'calendar-outline';
+    case RangeSearch.mese:
+      return 'calendar-number-outline';
+    default:
+      return 'calendar-outline';
+  }
+}
+
+/**
+ * Formato data in base al periodo
+ */
+getDateFormat(): string {
+  switch (this.searchTrainerPeriodo) {
+    case RangeSearch.giorno:
+      return 'EEEE dd/MM/yyyy';
+    case RangeSearch.settimana:
+      return 'dd/MM/yyyy';
+    case RangeSearch.mese:
+      return 'MMMM yyyy';
+    default:
+      return 'dd/MM/yyyy';
+  }
+}
+
+// =====================================================
+// TRAINER - ACTIONS
+// =====================================================
+
+/**
+ * Apre date picker (programmaticamente attiva il componente dtinput)
+ */
+openDatePicker(): void {
+  // Toggle della classe per animazione
+  const dateCard = document.querySelector('.date-picker-card');
+  if (dateCard) {
+    dateCard.classList.toggle('expanded');
+  }
+  
+  // Trigger click sul dtinput nascosto
+  // Implementa logica per aprire il picker
+  console.log('Open date picker');
+}
+
+/**
+ * Gestione presenze (previeni propagazione click)
+ */
+onGestionePresenze(event: Event, impegno: ImpegnoCollaboratore): void {
+  event.stopPropagation();
+  
+  if (impegno && impegno.SETTORE === SettoreAttivita.settoreCorso) {
+    // Naviga a gestione presenze
+    const pathNavigate = ['/','appstart-home','tab-agenda','trainer','detail-presenza', impegno.ID];
+    this.navController.navigateForward(pathNavigate);
+  } else {
+    this.startService,
+    this.startService.presentToastMessage('Gestione presenze disponibile solo per i corsi', 'warning');
+  }
+}
+
+
+
+
+
+// =====================================================
+// TRAINER - LOADING STATE
+// =====================================================
+
+/**
+ * Mostra skeleton loader trainer
+ */
+showLoadingTrainer(): void {
+  this.isLoadingTrainer = true;
+}
+
+/**
+ * Nascondi skeleton loader trainer
+ */
+hideLoadingTrainer(): void {
+  this.isLoadingTrainer = false;
+}
+
   //#endregion
 
   //#region IMPEGNI CUSTODE

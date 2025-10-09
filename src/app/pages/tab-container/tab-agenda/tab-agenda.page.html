@@ -314,88 +314,234 @@
 
 </div>
 
-          <!-- SEGMENTO TRAINER -->
-          <div *ngIf="selectedView == 'trainer'">
-            <ion-button 
-                  expand="full"
-                  (click)="onClickGoToListaValutazioniTrainer()">
-              Valutazioni fine corsi
-            </ion-button>
-            <!-- AREA FILTRO -->
-            <ion-card  
-                class="ion-no-margin"
-                color="light"
-                class="filter">
-                <ion-grid class="ion-no-margin">
-                  <ion-row class="ion-no-margin">
-                    <ion-col 
-                          [sizeXs]="colBreakpointPeriodi"
-                          [sizeSm]="colBreakpointPeriodi"
-                          [sizeMd]="colBreakpointPeriodi"
-                          [sizeLg]="colBreakpointPeriodi"
-                          [sizeXl]="colBreakpointPeriodi"
-                          *ngFor="let item of searchListPeriodi">
-                        <ion-button
-                          size="small"
-                          (click)="onChangePeriodoTrainer(item.value)"
-                          [color]="item.value==searchTrainerPeriodo ? 'success':'light'"
-                          expand="full">
-                          {{item.title}}
-                        </ion-button>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>
-                      <app-dtinput
-                        textAlignmentRight="true"
-                        title="Filtro"
-                        [label]="searchTrainerDateLabel"
-                        itemColor="light"
-                        itemLines="none"
-                        iconName="calendar-outline"
-                        iconColor="primary"
-                        maskFormat="dddd dd/MM/yyyy"
-                        [calendarMode]="searchTrainerCalendarMode"
-                        [(actualDate)]="searchTrainerDate"
-                        (actualDateChange)="onChangeDataPeriodoTrainer()"
-                    >
-                    </app-dtinput>
-                    </ion-col>
+<!-- SEGMENTO TRAINER -->
+<div *ngIf="selectedView == 'trainer'" class="trainer-view">
 
-                  </ion-row>
-                </ion-grid>
-            </ion-card>
-              <!-- BUTTON CARD IN ASSENZA IMPEGNO TRAINER -->
-              <div 
-                class="ion-no-padding ion-no-margin"
-                *ngIf="!listImpegniTrainer || listImpegniTrainer.length == 0">
-                <app-button-card
-                    [myButtonCard] = "emptyImpegnoTrainerCard"
-                    smallVersion="true"
-                    class="small-button-card">
-                </app-button-card>
-              </div>
+  <!-- QUICK STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <ion-icon name="today-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ getLezioniOggi() }}</span>
+        <span class="stat-label">Oggi</span>
+      </div>
+    </div>
 
-              <!-- SE SONO PRESENTI IMPEGNI TRAINER LI ELENCO -->
-              <div *ngIf="listImpegniTrainer && listImpegniTrainer.length != 0">
-                <app-impegni-collaboratori
-                    [impegnoDoc]="item"
-                    (OnClickItem)="onClickImpegnoTrainer(item)" 
-                    *ngFor="let item of listImpegniTrainer">
-                </app-impegni-collaboratori>
+    <div class="stat-card">
+      <ion-icon name="time-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ getProssimaLezioneTime() }}</span>
+        <span class="stat-label">Prossima</span>
+      </div>
+    </div>
 
-                  <!-- INFINITE SCROLL -->
-                  <ion-infinite-scroll
-                      *ngIf="numRequestImpegniTrainerTop != 0"
-                      threshold="100px"
-                      (ionInfinite)="onActivateInfiniteScrollImpegniTrainer($event)"
-                      >
-                      <ion-infinite-scroll-content oading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
-                  </ion-infinite-scroll>                
-              </div>
+    <div class="stat-card active">
+      <ion-icon name="people-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ getTotalPartecipanti() }}</span>
+        <span class="stat-label">Partecipanti</span>
+      </div>
+    </div>
+  </div>
 
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions">
+    <div class="action-card primary" (click)="onClickGoToListaValutazioniTrainer()">
+      <div class="action-icon">
+        <ion-icon name="star"></ion-icon>
+      </div>
+      <div class="action-content">
+        <h4>Valutazioni</h4>
+        <p>Fine corsi</p>
+      </div>
+      <ion-icon name="chevron-forward" class="action-arrow"></ion-icon>
+    </div>
 
+  </div>
+
+  <!-- FILTRI PERIODO -->
+  <div class="period-filters">
+    <div class="filter-chips">
+      <ion-chip 
+        *ngFor="let item of searchListPeriodi"
+        [class.active]="item.value === searchTrainerPeriodo"
+        (click)="onChangePeriodoTrainer(item.value)">
+        <ion-icon [name]="getPeriodIcon(item.value)"></ion-icon>
+        <ion-label>{{ item.title }}</ion-label>
+      </ion-chip>
+    </div>
+
+    <!-- DATE PICKER CARD -->
+    <div class="date-picker-card" (click)="openDatePicker()">
+      <div class="date-display">
+        <ion-icon name="calendar-outline" color="primary"></ion-icon>
+        <div class="date-info">
+          <span class="date-label">{{ searchTrainerDateLabel }}</span>
+          <span class="date-value">{{ searchTrainerDate | date: getDateFormat() }}</span>
+        </div>
+      </div>
+      <ion-icon name="chevron-down" class="expand-icon"></ion-icon>
+    </div>
+
+    <!-- Hidden date picker -->
+    <div style="display: none;">
+      <app-dtinput
+        textAlignmentRight="true"
+        title="Filtro"
+        [label]="searchTrainerDateLabel"
+        itemColor="light"
+        itemLines="none"
+        iconName="calendar-outline"
+        iconColor="primary"
+        maskFormat="dddd dd/MM/yyyy"
+        [calendarMode]="searchTrainerCalendarMode"
+        [(actualDate)]="searchTrainerDate"
+        (actualDateChange)="onChangeDataPeriodoTrainer()">
+      </app-dtinput>
+    </div>
+  </div>
+
+  <!-- LISTA IMPEGNI TRAINER -->
+  <div class="impegni-section" *ngIf="listImpegniTrainer && listImpegniTrainer.length > 0">
+    <div class="section-header">
+      <h3>
+        <ion-icon name="clipboard"></ion-icon>
+        {{ getTrainerSectionTitle() }}
+      </h3>
+      <span class="count-badge">{{ listImpegniTrainer.length }}</span>
+    </div>
+
+    <!-- Timeline List -->
+    <div class="timeline-list">
+      <div 
+        class="timeline-item"
+        *ngFor="let impegno of listImpegniTrainer; let i = index"
+        [class.passed]="isPassedImpegnoTrainer(impegno)"
+        (click)="onClickImpegnoTrainer(impegno)">
+        
+        <!-- Timeline Dot -->
+        <div class="timeline-dot-wrapper">
+          <div class="timeline-line" *ngIf="i !== listImpegniTrainer.length - 1"></div>
+          <div class="timeline-dot" [style.background]="getImpegnoTrainerColor(impegno)">
+            <ion-icon [name]="getImpegnoTrainerIcon(impegno)"></ion-icon>
           </div>
+        </div>
+
+        <!-- Timeline Content -->
+        <div class="timeline-content">
+          <!-- Date Badge -->
+          <div class="date-badge">
+            <div class="date-day">{{ impegno.DATAORAINIZIO | date: 'dd' }}</div>
+            <div class="date-month">{{ impegno.DATAORAINIZIO | date: 'MMM' | uppercase }}</div>
+          </div>
+
+          <!-- Impegno Card -->
+          <div class="timeline-card trainer-card">
+            <div class="card-header">
+              <h4>{{ impegno.DENOMINAZIONE }}</h4>
+              <ion-badge [color]="getImpegnoTrainerColor(impegno)" class="type-badge">
+                {{ getImpegnoTrainerType(impegno) }}
+              </ion-badge>
+            </div>
+
+            <div class="card-details">
+              <div class="detail-item">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{ impegno.DATAORAINIZIO | date: 'HH:mm' }}</span>
+                <span *ngIf="impegno.DATAORAFINE && impegno.compareEqualDate()" class="separator">-</span>
+                <span *ngIf="impegno.DATAORAFINE && impegno.compareEqualDate()">{{ impegno.DATAORAFINE | date: 'HH:mm' }}</span>
+              </div>
+
+              <div class="detail-item" *ngIf="impegno.DENOMINAZIONELOCATION">
+                <ion-icon name="location-outline"></ion-icon>
+                <span>{{ impegno.DENOMINAZIONELOCATION }}</span>
+              </div>
+
+              <div class="detail-item" *ngIf="impegno.DENOMINAZIONESPORT">
+                <ion-icon name="basketball-outline"></ion-icon>
+                <span>{{ impegno.DENOMINAZIONESPORT }}</span>
+              </div>
+
+              <!-- Multi-day indicator -->
+              <div class="detail-item multi-day" *ngIf="!impegno.compareEqualDate()">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>Fino a {{ impegno.DATAORAFINE | date: 'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <!-- Trainer specific actions -->
+            <div class="card-actions">
+              <ion-button 
+                size="small" 
+                fill="outline" 
+                color="success"
+                (click)="onGestionePresenze($event, impegno)">
+                <ion-icon name="checkmark-done" slot="start"></ion-icon>
+                Presenze
+              </ion-button>
+
+              <div class="card-status" [class.passed]="isPassedImpegnoTrainer(impegno)">
+                <ion-icon [name]="isPassedImpegnoTrainer(impegno) ? 'checkmark-circle' : 'time'"></ion-icon>
+                <span>{{ isPassedImpegnoTrainer(impegno) ? 'Completato' : 'Programmato' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFINITE SCROLL -->
+    <ion-infinite-scroll
+      *ngIf="numRequestImpegniTrainerTop != 0"
+      threshold="100px"
+      (ionInfinite)="onActivateInfiniteScrollImpegniTrainer($event)">
+      <ion-infinite-scroll-content 
+        loading-spinner="circles" 
+        loadingText="Caricamento...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" *ngIf="!listImpegniTrainer || listImpegniTrainer.length === 0">
+    <div class="empty-icon">
+      <ion-icon name="clipboard-outline"></ion-icon>
+    </div>
+    <h3>Nessuna lezione in programma</h3>
+    <p>Non ci sono impegni da trainer per il periodo selezionato</p>
+    
+    <div class="empty-actions">
+      <ion-button fill="outline" (click)="onClickGoToListaValutazioniTrainer()">
+        <ion-icon name="star" slot="start"></ion-icon>
+        Valutazioni
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- SKELETON LOADER -->
+  <div class="skeleton-loader" *ngIf="isLoadingTrainer">
+    <div class="skeleton-stat-row">
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+    </div>
+
+    <div class="skeleton-actions">
+      <ion-skeleton-text animated style="width: 100%; height: 100px; border-radius: 16px; margin-bottom: 12px;"></ion-skeleton-text>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <ion-skeleton-text animated style="width: 100%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+      </div>
+    </div>
+
+    <div class="skeleton-timeline">
+      <ion-skeleton-text animated style="width: 100%; height: 140px; border-radius: 16px; margin-bottom: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 140px; border-radius: 16px; margin-bottom: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 140px; border-radius: 16px;"></ion-skeleton-text>
+    </div>
+  </div>
+
+</div>
 
           <!-- SEGMENTO CUSTODE -->
           <div *ngIf="selectedView == 'custode'">

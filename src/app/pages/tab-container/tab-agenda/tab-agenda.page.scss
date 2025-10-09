@@ -327,6 +327,12 @@ ion-content {
 }
 
 // =====================================================
+// TIMELINE - ICONA E DATA SULLA STESSA RIGA SU MOBILE
+// Nel file tab-agenda.page.scss, sostituisci tutto il blocco
+// da "// TIMELINE" fino a "// EMPTY STATE"
+// =====================================================
+
+// =====================================================
 // TIMELINE
 // =====================================================
 .timeline-section {
@@ -362,6 +368,88 @@ ion-content {
 
   &:active .timeline-card {
     transform: scale(0.98);
+  }
+
+  // ======================================
+  // MOBILE: LAYOUT VERTICALE
+  // ======================================
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 0;
+
+    // Wrapper con dot + date badge in linea
+    .timeline-dot-wrapper {
+      flex-direction: row !important;
+      width: 100% !important;
+      align-items: center !important;
+      gap: 0;
+      margin-bottom: 0;
+
+      .timeline-line {
+        display: none; // Nascondi linea verticale su mobile
+      }
+
+      .timeline-dot {
+        position: relative;
+        margin: 0;
+        flex-shrink: 0;
+      }
+
+      // Date badge: STESSO livello del dot, inline, con stile badge
+      .date-badge {
+        position: absolute;
+        top: 0;
+        left: 52px; // Subito dopo il dot (40px + 12px gap)
+        min-width: auto;
+        max-width: calc(100% - 52px);
+        padding: 8px 16px;
+        margin: 0;
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: left;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+
+        // Nascondi formato compatto
+        .date-day,
+        .date-month {
+          display: none !important;
+        }
+
+        // Mostra data estesa nel badge
+        .date-full {
+          display: block !important;
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: var(--ion-color-dark);
+          line-height: 1.2;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }      
+
+    }
+
+    .timeline-content {
+      padding-left: 0;
+      width: 100%;
+      flex-direction: column;
+      gap: 12px;
+
+
+
+      // Card va sotto, occupando tutta la larghezza
+      .timeline-card {
+        width: 100%;
+        margin-top: 0px; // Spazio per date badge assoluto
+        margin-left: 0;
+      }
+    }
   }
 }
 
@@ -402,6 +490,7 @@ ion-content {
   flex: 1;
   display: flex;
   gap: 12px;
+  position: relative;
 }
 
 .date-badge {
@@ -428,6 +517,11 @@ ion-content {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
+  }
+
+  // Data estesa (nascosta su desktop, visibile su mobile)
+  .date-full {
+    display: none;
   }
 }
 
@@ -522,6 +616,191 @@ ion-content {
     &.passed {
       background: rgba(122, 130, 143, 0.1);
       color: var(--ion-color-mediumlight);
+    }
+  }
+}
+
+// =====================================================
+// TRAINER SPECIFIC CARDS
+// =====================================================
+.trainer-card {
+  .card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--ion-color-light);
+
+    ion-button {
+      --border-radius: 12px;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      height: 36px;
+      font-weight: 600;
+      text-transform: none;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 18px;
+      }
+    }
+
+    .card-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(84, 220, 152, 0.1);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ion-color-success);
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 14px;
+      }
+
+      &.passed {
+        background: rgba(122, 130, 143, 0.1);
+        color: var(--ion-color-mediumlight);
+      }
+    }
+
+    // Mobile: azioni verticali se necessario
+    @media (max-width: 400px) {
+      flex-wrap: wrap;
+
+      ion-button {
+        flex: 1 1 100%;
+      }
+
+      .card-status {
+        flex: 1 1 100%;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+// Mobile landscape / Small tablet
+@media (min-width: 576px) {
+  .personal-view,
+  .trainer-view {
+    padding: 24px;
+  }
+
+  .stats-row {
+    gap: 16px;
+  }
+
+  .empty-actions {
+    flex-direction: row !important;
+
+    ion-button {
+      flex: 1;
+    }
+  }
+}
+
+// Tablet - RIPRISTINA LAYOUT ORIZZONTALE
+@media (min-width: 768px) {
+  .timeline-item {
+    // Layout orizzontale normale
+    flex-direction: row !important;
+    gap: 16px;
+
+    .timeline-dot-wrapper {
+      flex-direction: column !important;
+      width: auto !important;
+      gap: 0 !important;
+      margin-bottom: 0 !important;
+
+      .timeline-line {
+        display: block !important;
+      }
+
+      .date-badge {
+        position: static !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-width: 70px;
+        max-width: 70px;
+        padding: 12px;
+        margin: 0 !important;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+        text-align: center;
+
+        // Nascondi data estesa su desktop
+        .date-full {
+          display: none !important;
+        }
+
+        // Mostra badge compatto su desktop
+        .date-day,
+        .date-month {
+          display: block !important;
+        }
+
+        .date-day {
+          font-size: 1.75rem;
+        }
+
+        .date-month {
+          font-size: 0.7rem;
+          margin-top: 2px;
+        }
+      }      
+    }
+
+    .timeline-content {
+      padding-left: 0;
+      flex-direction: row !important;
+      gap: 16px;
+
+
+
+      .timeline-card {
+        margin-top: 0 !important;
+      }
+    }
+  }
+
+  .countdown-card {
+    padding: 32px;
+
+    .impegno-details {
+      gap: 20px;
+
+      .detail-icon {
+        width: 64px;
+        height: 64px;
+
+        ion-icon {
+          font-size: 32px;
+        }
+      }
+    }
+  }
+}
+
+// Desktop
+@media (min-width: 992px) {
+  .stats-row {
+    gap: 20px;
+  }
+
+  .timeline-card {
+    &:hover {
+      transform: translateX(4px);
     }
   }
 }

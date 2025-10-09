@@ -201,67 +201,72 @@
     </div>
 
     <!-- Timeline List -->
-    <div class="timeline-list">
-      <div 
-        class="timeline-item"
-        *ngFor="let impegno of getFilteredImpegni(); let i = index"
-        [class.passed]="isPassedImpegno(impegno)"
-        (click)="onClickImpegnoPersonale(impegno)">
-        
-        <!-- Timeline Dot -->
-        <div class="timeline-dot-wrapper">
-          <div class="timeline-line" *ngIf="i !== getFilteredImpegni().length - 1"></div>
-          <div class="timeline-dot" [style.background]="getImpegnoColor(impegno)">
-            <ion-icon [name]="getImpegnoIcon(impegno)"></ion-icon>
+<!-- Timeline List -->
+<div class="timeline-list">
+  <div 
+    class="timeline-item"
+    *ngFor="let impegno of getFilteredImpegni(); let i = index"
+    [class.passed]="isPassedImpegno(impegno)"
+    (click)="onClickImpegnoPersonale(impegno)">
+    
+    <!-- Timeline Dot -->
+    <div class="timeline-dot-wrapper">
+      <div class="timeline-line" *ngIf="i !== getFilteredImpegni().length - 1"></div>
+        <div class="timeline-dot" [style.background]="getImpegnoColor(impegno)">
+          <ion-icon [name]="getImpegnoIcon(impegno)"></ion-icon>
+        </div>
+        <!-- Date Badge -->
+        <div class="date-badge">
+          <!-- Formato compatto (desktop) -->
+          <div class="date-day">{{ impegno.DATAORAINIZIO | date: 'dd' }}</div>
+          <div class="date-month">{{ impegno.DATAORAINIZIO | date: 'MMM' | uppercase }}</div>
+          
+          <!-- Formato esteso (mobile) -->
+          <div class="date-full">{{ impegno.DATAORAINIZIO | date: 'EEEE d MMMM yyyy' | titlecase }}</div>
+        </div>
+    </div>
+
+    <!-- Timeline Content -->
+    <div class="timeline-content">
+
+      <!-- Impegno Card -->
+      <div class="timeline-card">
+        <div class="card-header">
+          <h4>{{ impegno.DENOMINAZIONE }}</h4>
+          <ion-badge [color]="getImpegnoColor(impegno)" class="type-badge">
+            {{ getCampoImpegno(impegno) }}
+          </ion-badge>
+        </div>
+
+        <div class="card-details">
+          <div class="detail-item">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ impegno.DATAORAINIZIO | date: 'HH:mm' }}</span>
+            <span *ngIf="impegno.DATAORAFINE" class="separator">-</span>
+            <span *ngIf="impegno.DATAORAFINE">{{ impegno.DATAORAFINE | date: 'HH:mm' }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="impegno['_DENOMINAZIONE_Location']">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ impegno['_DENOMINAZIONE_Location'] }}</span>
+          </div>
+
+          <!-- Multi-day indicator -->
+          <div class="detail-item multi-day" *ngIf="!impegno.compareEqualDate()">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Fino a {{ impegno.DATAORAFINE | date: 'dd/MM/yyyy' }}</span>
           </div>
         </div>
 
-        <!-- Timeline Content -->
-        <div class="timeline-content">
-          <!-- Date Badge -->
-          <div class="date-badge">
-            <div class="date-day">{{ impegno.DATAORAINIZIO | date: 'dd' }}</div>
-            <div class="date-month">{{ impegno.DATAORAINIZIO | date: 'MMM' | uppercase }}</div>
-          </div>
-
-          <!-- Impegno Card -->
-          <div class="timeline-card">
-            <div class="card-header">
-              <h4>{{ impegno.DENOMINAZIONE }}</h4>
-              <ion-badge [color]="getImpegnoColor(impegno)" class="type-badge">
-                {{ getCampoImpegno(impegno) }}
-              </ion-badge>
-            </div>
-
-            <div class="card-details">
-              <div class="detail-item">
-                <ion-icon name="time-outline"></ion-icon>
-                <span>{{ impegno.DATAORAINIZIO | date: 'HH:mm' }}</span>
-                <span *ngIf="impegno.DATAORAFINE" class="separator">-</span>
-                <span *ngIf="impegno.DATAORAFINE">{{ impegno.DATAORAFINE | date: 'HH:mm' }}</span>
-              </div>
-
-              <div class="detail-item" *ngIf="impegno['_DENOMINAZIONE_Location']">
-                <ion-icon name="location-outline"></ion-icon>
-                <span>{{ impegno['_DENOMINAZIONE_Location'] }}</span>
-              </div>
-
-              <!-- Multi-day indicator -->
-              <div class="detail-item multi-day" *ngIf="!impegno.compareEqualDate()">
-                <ion-icon name="calendar-outline"></ion-icon>
-                <span>Fino a {{ impegno.DATAORAFINE | date: 'dd/MM/yyyy' }}</span>
-              </div>
-            </div>
-
-            <!-- Status indicator -->
-            <div class="card-status" [class.passed]="isPassedImpegno(impegno)">
-              <ion-icon [name]="isPassedImpegno(impegno) ? 'checkmark-circle' : 'time'"></ion-icon>
-              <span>{{ isPassedImpegno(impegno) ? 'Completato' : 'Programmato' }}</span>
-            </div>
-          </div>
+        <!-- Status indicator -->
+        <div class="card-status" [class.passed]="isPassedImpegno(impegno)">
+          <ion-icon [name]="isPassedImpegno(impegno) ? 'checkmark-circle' : 'time'"></ion-icon>
+          <span>{{ isPassedImpegno(impegno) ? 'Completato' : 'Programmato' }}</span>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- INFINITE SCROLL -->
     <ion-infinite-scroll
@@ -413,83 +418,90 @@
     </div>
 
     <!-- Timeline List -->
-    <div class="timeline-list">
-      <div 
-        class="timeline-item"
-        *ngFor="let impegno of listImpegniTrainer; let i = index"
-        [class.passed]="isPassedImpegnoTrainer(impegno)"
-        (click)="onClickImpegnoTrainer(impegno)">
+
+<!-- Timeline List TRAINER -->
+<div class="timeline-list">
+  <div 
+    class="timeline-item"
+    *ngFor="let impegno of listImpegniTrainer; let i = index"
+    [class.passed]="isPassedImpegnoTrainer(impegno)"
+    (click)="onClickImpegnoTrainer(impegno)">
+    
+    <!-- Timeline Dot -->
+    <div class="timeline-dot-wrapper">
+      <div class="timeline-line" *ngIf="i !== listImpegniTrainer.length - 1"></div>
+      <div class="timeline-dot" [style.background]="getImpegnoTrainerColor(impegno)">
+        <ion-icon [name]="getImpegnoTrainerIcon(impegno)"></ion-icon>
+      </div>
+
+      <!-- Date Badge -->
+      <div class="date-badge">
+        <!-- Formato compatto (desktop) -->
+        <div class="date-day">{{ impegno.DATAORAINIZIO | date: 'dd' }}</div>
+        <div class="date-month">{{ impegno.DATAORAINIZIO | date: 'MMM' | uppercase }}</div>
         
-        <!-- Timeline Dot -->
-        <div class="timeline-dot-wrapper">
-          <div class="timeline-line" *ngIf="i !== listImpegniTrainer.length - 1"></div>
-          <div class="timeline-dot" [style.background]="getImpegnoTrainerColor(impegno)">
-            <ion-icon [name]="getImpegnoTrainerIcon(impegno)"></ion-icon>
+        <!-- Formato esteso (mobile) -->
+        <div class="date-full">{{ impegno.DATAORAINIZIO | date: 'EEEE d MMMM yyyy' | titlecase }}</div>
+      </div>
+    </div>
+
+    <!-- Timeline Content -->
+    <div class="timeline-content">
+
+      <!-- Impegno Card -->
+      <div class="timeline-card trainer-card">
+        <div class="card-header">
+          <h4>{{ impegno.DENOMINAZIONE }}</h4>
+          <ion-badge [color]="getImpegnoTrainerColor(impegno)" class="type-badge">
+            {{ getImpegnoTrainerType(impegno) }}
+          </ion-badge>
+        </div>
+
+        <div class="card-details">
+          <div class="detail-item">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ impegno.DATAORAINIZIO | date: 'HH:mm' }}</span>
+            <span *ngIf="impegno.DATAORAFINE && impegno.compareEqualDate()" class="separator">-</span>
+            <span *ngIf="impegno.DATAORAFINE && impegno.compareEqualDate()">{{ impegno.DATAORAFINE | date: 'HH:mm' }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="impegno.DENOMINAZIONELOCATION">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ impegno.DENOMINAZIONELOCATION }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="impegno.DENOMINAZIONESPORT">
+            <ion-icon name="basketball-outline"></ion-icon>
+            <span>{{ impegno.DENOMINAZIONESPORT }}</span>
+          </div>
+
+          <!-- Multi-day indicator -->
+          <div class="detail-item multi-day" *ngIf="!impegno.compareEqualDate()">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>Fino a {{ impegno.DATAORAFINE | date: 'dd/MM/yyyy' }}</span>
           </div>
         </div>
 
-        <!-- Timeline Content -->
-        <div class="timeline-content">
-          <!-- Date Badge -->
-          <div class="date-badge">
-            <div class="date-day">{{ impegno.DATAORAINIZIO | date: 'dd' }}</div>
-            <div class="date-month">{{ impegno.DATAORAINIZIO | date: 'MMM' | uppercase }}</div>
-          </div>
+        <!-- Trainer specific actions -->
+        <div class="card-actions">
+          <ion-button 
+            size="small" 
+            fill="outline" 
+            color="success"
+            (click)="onGestionePresenze($event, impegno)">
+            <ion-icon name="checkmark-done" slot="start"></ion-icon>
+            Presenze
+          </ion-button>
 
-          <!-- Impegno Card -->
-          <div class="timeline-card trainer-card">
-            <div class="card-header">
-              <h4>{{ impegno.DENOMINAZIONE }}</h4>
-              <ion-badge [color]="getImpegnoTrainerColor(impegno)" class="type-badge">
-                {{ getImpegnoTrainerType(impegno) }}
-              </ion-badge>
-            </div>
-
-            <div class="card-details">
-              <div class="detail-item">
-                <ion-icon name="time-outline"></ion-icon>
-                <span>{{ impegno.DATAORAINIZIO | date: 'HH:mm' }}</span>
-                <span *ngIf="impegno.DATAORAFINE && impegno.compareEqualDate()" class="separator">-</span>
-                <span *ngIf="impegno.DATAORAFINE && impegno.compareEqualDate()">{{ impegno.DATAORAFINE | date: 'HH:mm' }}</span>
-              </div>
-
-              <div class="detail-item" *ngIf="impegno.DENOMINAZIONELOCATION">
-                <ion-icon name="location-outline"></ion-icon>
-                <span>{{ impegno.DENOMINAZIONELOCATION }}</span>
-              </div>
-
-              <div class="detail-item" *ngIf="impegno.DENOMINAZIONESPORT">
-                <ion-icon name="basketball-outline"></ion-icon>
-                <span>{{ impegno.DENOMINAZIONESPORT }}</span>
-              </div>
-
-              <!-- Multi-day indicator -->
-              <div class="detail-item multi-day" *ngIf="!impegno.compareEqualDate()">
-                <ion-icon name="calendar-outline"></ion-icon>
-                <span>Fino a {{ impegno.DATAORAFINE | date: 'dd/MM/yyyy' }}</span>
-              </div>
-            </div>
-
-            <!-- Trainer specific actions -->
-            <div class="card-actions">
-              <ion-button 
-                size="small" 
-                fill="outline" 
-                color="success"
-                (click)="onGestionePresenze($event, impegno)">
-                <ion-icon name="checkmark-done" slot="start"></ion-icon>
-                Presenze
-              </ion-button>
-
-              <div class="card-status" [class.passed]="isPassedImpegnoTrainer(impegno)">
-                <ion-icon [name]="isPassedImpegnoTrainer(impegno) ? 'checkmark-circle' : 'time'"></ion-icon>
-                <span>{{ isPassedImpegnoTrainer(impegno) ? 'Completato' : 'Programmato' }}</span>
-              </div>
-            </div>
+          <div class="card-status" [class.passed]="isPassedImpegnoTrainer(impegno)">
+            <ion-icon [name]="isPassedImpegnoTrainer(impegno) ? 'checkmark-circle' : 'time'"></ion-icon>
+            <span>{{ isPassedImpegnoTrainer(impegno) ? 'Completato' : 'Programmato' }}</span>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- INFINITE SCROLL -->
     <ion-infinite-scroll

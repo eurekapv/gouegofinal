@@ -69,53 +69,250 @@
 
 
 
-          <!-- SEGMENTO PERSONALE -->
-          <div *ngIf="selectedView == 'personal'">
+<!-- SEGMENTO PERSONALE -->
+<div *ngIf="selectedView == 'personal'" class="personal-view">
 
-            <!-- BUTTON CARD CON IL PRIMO IMPEGNO-->
-            <ion-list 
-                class="ion-padding-bottom"
-                *ngIf="listImpegni && listImpegni.length != 0">
-              <ion-list-header mode="ios">Prossimo impegno</ion-list-header>
-              <app-button-card
-                  (clickElement)="onClickImpegnoPersonale(nextImpegno)"
-                  [myButtonCard] = "nextImpegnoCard"
-                  [smallVersion]="false"
-                  >
-              </app-button-card>
-            </ion-list>
+  <!-- QUICK STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <ion-icon name="calendar-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ getTotalImpegniMese() }}</span>
+        <span class="stat-label">Questo mese</span>
+      </div>
+    </div>
 
-            <!-- NON SONO PRESENTI IMPEGNI -->
-            <div *ngIf="listImpegni && listImpegni.length == 0">
-              <app-button-card
-                  (clickElement)="onClickImpegnoPersonale(nextImpegno)"
-                  [myButtonCard] = "noImpegnoCard"
-                  [smallVersion]="true"
-                  >
-              </app-button-card>
-            </div>
-            
+    <div class="stat-card">
+      <ion-icon name="time-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ getNextDays() }}</span>
+        <span class="stat-label">Prossimi gg</span>
+      </div>
+    </div>
 
-            <!-- SE SONO PRESENTI IMPEGNI LI ELENCO -->
-            <div *ngIf="listImpegni && listImpegni.length != 0">
-              <app-impegni 
-                  (OnClickItem)="onClickImpegnoPersonale(item)"
-                  [impegnoDoc]="item"
-                  *ngFor="let item of listImpegni">
-              </app-impegni>
+    <div class="stat-card active">
+      <ion-icon name="checkmark-circle-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ listImpegni?.length || 0 }}</span>
+        <span class="stat-label">In agenda</span>
+      </div>
+    </div>
+  </div>
 
-              <!-- INFINITE SCROLL -->
-              <ion-infinite-scroll
-                  *ngIf="numRequestImpegniTop != 0"
-                  threshold="100px"
-                  (ionInfinite)="onActivateInfiniteScrollImpegni($event)"
-                >
-                <ion-infinite-scroll-content loading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
-              </ion-infinite-scroll>
-            </div>
+  <!-- FILTRI QUICK -->
+  <div class="quick-filters">
+    <ion-chip 
+      [class.active]="personalFilter === 'tutti'"
+      (click)="onChangePersonalFilter('tutti')">
+      <ion-icon name="list-outline"></ion-icon>
+      <ion-label>Tutti</ion-label>
+    </ion-chip>
 
+    <ion-chip 
+      [class.active]="personalFilter === 'oggi'"
+      (click)="onChangePersonalFilter('oggi')">
+      <ion-icon name="today-outline"></ion-icon>
+      <ion-label>Oggi</ion-label>
+    </ion-chip>
 
+    <ion-chip 
+      [class.active]="personalFilter === 'domani'"
+      (click)="onChangePersonalFilter('domani')">
+      <ion-icon name="calendar-clear-outline"></ion-icon>
+      <ion-label>Domani</ion-label>
+    </ion-chip>
+
+    <ion-chip 
+      [class.active]="personalFilter === 'settimana'"
+      (click)="onChangePersonalFilter('settimana')">
+      <ion-icon name="calendar-number-outline"></ion-icon>
+      <ion-label>Settimana</ion-label>
+    </ion-chip>
+  </div>
+
+  <!-- PROSSIMO IMPEGNO CON COUNTDOWN -->
+  <div class="next-impegno-section" *ngIf="nextImpegno">
+    <div class="section-header">
+      <h3>
+        <ion-icon name="flash"></ion-icon>
+        Prossimo Impegno
+      </h3>
+    </div>
+
+    <div class="countdown-card" (click)="onClickImpegnoPersonale(nextImpegno)">
+      <!-- Countdown Timer -->
+      <div class="countdown-header">
+        <div class="countdown-timer">
+          <ion-icon name="time-outline" class="timer-icon"></ion-icon>
+          <div class="timer-text">
+            <span class="timer-value">{{ getCountdown(nextImpegno) }}</span>
+            <span class="timer-label">Inizia tra</span>
           </div>
+        </div>
+        <ion-badge [color]="getImpegnoColor(nextImpegno)">
+          {{ getImpegnoType(nextImpegno) }}
+        </ion-badge>
+      </div>
+
+      <!-- Impegno Details -->
+      <div class="impegno-details">
+        <div class="detail-icon">
+          <ion-icon [name]="getImpegnoIcon(nextImpegno)"></ion-icon>
+        </div>
+        
+        <div class="detail-content">
+          <h2 class="impegno-title">{{ nextImpegno.DENOMINAZIONE }}</h2>
+          
+          <div class="detail-row">
+            <ion-icon name="calendar"></ion-icon>
+            <span>{{ nextImpegno.DATAORAINIZIO | date: 'EEEE dd MMMM' | titlecase }}</span>
+          </div>
+
+          <div class="detail-row">
+            <ion-icon name="time"></ion-icon>
+            <span>{{ nextImpegno.DATAORAINIZIO | date: 'HH:mm' }}</span>
+            <span *ngIf="nextImpegno.DATAORAFINE" class="time-separator">→</span>
+            <span *ngIf="nextImpegno.DATAORAFINE">{{ nextImpegno.DATAORAFINE | date: 'HH:mm' }}</span>
+          </div>
+
+          <div class="detail-row" *ngIf="nextImpegno['_DENOMINAZIONE_Location']">
+            <ion-icon name="location"></ion-icon>
+            <span>{{ nextImpegno['_DENOMINAZIONE_Location'] }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action -->
+      <div class="card-action">
+        <span>Visualizza dettagli</span>
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE IMPEGNI -->
+  <div class="timeline-section" *ngIf="getFilteredImpegni().length > 0">
+    <div class="section-header">
+      <h3>
+        <ion-icon name="list"></ion-icon>
+        {{ getTimelineTitle() }}
+      </h3>
+      <span class="count-badge">{{ getFilteredImpegni().length }}</span>
+    </div>
+
+    <!-- Timeline List -->
+    <div class="timeline-list">
+      <div 
+        class="timeline-item"
+        *ngFor="let impegno of getFilteredImpegni(); let i = index"
+        [class.passed]="isPassedImpegno(impegno)"
+        (click)="onClickImpegnoPersonale(impegno)">
+        
+        <!-- Timeline Dot -->
+        <div class="timeline-dot-wrapper">
+          <div class="timeline-line" *ngIf="i !== getFilteredImpegni().length - 1"></div>
+          <div class="timeline-dot" [style.background]="getImpegnoColor(impegno)">
+            <ion-icon [name]="getImpegnoIcon(impegno)"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Timeline Content -->
+        <div class="timeline-content">
+          <!-- Date Badge -->
+          <div class="date-badge">
+            <div class="date-day">{{ impegno.DATAORAINIZIO | date: 'dd' }}</div>
+            <div class="date-month">{{ impegno.DATAORAINIZIO | date: 'MMM' | uppercase }}</div>
+          </div>
+
+          <!-- Impegno Card -->
+          <div class="timeline-card">
+            <div class="card-header">
+              <h4>{{ impegno.DENOMINAZIONE }}</h4>
+              <ion-badge [color]="getImpegnoColor(impegno)" class="type-badge">
+                {{ getImpegnoType(impegno) }}
+              </ion-badge>
+            </div>
+
+            <div class="card-details">
+              <div class="detail-item">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{ impegno.DATAORAINIZIO | date: 'HH:mm' }}</span>
+                <span *ngIf="impegno.DATAORAFINE" class="separator">-</span>
+                <span *ngIf="impegno.DATAORAFINE">{{ impegno.DATAORAFINE | date: 'HH:mm' }}</span>
+              </div>
+
+              <div class="detail-item" *ngIf="impegno['_DENOMINAZIONE_Location']">
+                <ion-icon name="location-outline"></ion-icon>
+                <span>{{ impegno['_DENOMINAZIONE_Location'] }}</span>
+              </div>
+
+              <!-- Multi-day indicator -->
+              <div class="detail-item multi-day" *ngIf="!impegno.compareEqualDate()">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>Fino a {{ impegno.DATAORAFINE | date: 'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <!-- Status indicator -->
+            <div class="card-status" [class.passed]="isPassedImpegno(impegno)">
+              <ion-icon [name]="isPassedImpegno(impegno) ? 'checkmark-circle' : 'time'"></ion-icon>
+              <span>{{ isPassedImpegno(impegno) ? 'Completato' : 'Programmato' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFINITE SCROLL -->
+    <ion-infinite-scroll
+      *ngIf="numRequestImpegniTop != 0"
+      threshold="100px"
+      (ionInfinite)="onActivateInfiniteScrollImpegni($event)">
+      <ion-infinite-scroll-content 
+        loading-spinner="circles" 
+        loadingText="Caricamento...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" *ngIf="!listImpegni || listImpegni.length === 0">
+    <div class="empty-icon">
+      <ion-icon name="calendar-clear-outline"></ion-icon>
+    </div>
+    <h3>Nessun impegno in programma</h3>
+    <p>La tua agenda è vuota. Prenota un campo o iscriviti a un corso!</p>
+    
+    <div class="empty-actions">
+      <ion-button fill="solid" color="success" (click)="onNavigateToBooking()">
+        <ion-icon name="add-circle" slot="start"></ion-icon>
+        Prenota Campo
+      </ion-button>
+      <ion-button fill="outline" (click)="onNavigateToCourses()">
+        <ion-icon name="school" slot="start"></ion-icon>
+        Vedi Corsi
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- SKELETON LOADER -->
+  <div class="skeleton-loader" *ngIf="isLoadingPersonal">
+    <div class="skeleton-stat-row">
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+    </div>
+
+    <ion-skeleton-text animated style="width: 100%; height: 200px; border-radius: 20px; margin: 20px 0;"></ion-skeleton-text>
+
+    <div class="skeleton-timeline">
+      <ion-skeleton-text animated style="width: 100%; height: 120px; border-radius: 16px; margin-bottom: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 120px; border-radius: 16px; margin-bottom: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 120px; border-radius: 16px;"></ion-skeleton-text>
+    </div>
+  </div>
+
+</div>
 
           <!-- SEGMENTO TRAINER -->
           <div *ngIf="selectedView == 'trainer'">

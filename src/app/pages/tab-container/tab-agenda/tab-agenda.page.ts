@@ -94,6 +94,9 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   numRequestImpegniCustodeTop = 10; //Numero dei dati richiesti come impegni custode
   futureRequestImpegni = true; //Chiede solo quelli futuri
 
+  personalFilter: 'tutti' | 'oggi' | 'domani' | 'settimana' = 'tutti';
+  isLoadingPersonal: boolean = false;
+
   
   //#region FILTRO RICERCA TRAINER
 
@@ -584,9 +587,21 @@ export class TabAgendaPage implements OnInit, OnDestroy {
    * Richiede la lista degli impegni personali
    */
   requestListImpegniPersonali() {
-    let idUtente = (this.utenteDoc ? this.utenteDoc.ID : '');
-    //Effettuo la richiesta
+
+     let idUtente = (this.utenteDoc ? this.utenteDoc.ID : '');
+  
+    // Mostra loading solo se non è refresh
+    if (!this.flagOnRefresh) {
+      this.showLoadingPersonal();
+    }
+  
+    // Effettuo la richiesta
     this.startService.requestImpegniPersonali(idUtente, this.futureRequestImpegni, this.numRequestImpegniTop);
+    
+    // Nascondi loading dopo un timeout (o quando arrivano i dati)
+    setTimeout(() => {
+      this.hideLoadingPersonal();
+    }, 500);
   }
 
   /**
@@ -616,6 +631,272 @@ export class TabAgendaPage implements OnInit, OnDestroy {
     this.requestListImpegniPersonali();
   }
 
+// =====================================================
+// STATISTICHE
+// =====================================================
+
+/**
+ * Conta impegni del mese corrente
+ */
+getTotalImpegniMese(): number {
+  if (!this.listImpegni || this.listImpegni.length === 0) {
+    return 0;
+  }
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  return this.listImpegni.filter(impegno => {
+    if (!impegno.DATAORAINIZIO) return false;
+    const impegnoDate = new Date(impegno.DATAORAINIZIO);
+    return impegnoDate.getMonth() === currentMonth && 
+           impegnoDate.getFullYear() === currentYear;
+  }).length;
+}
+
+/**
+ * Conta giorni fino al prossimo impegno
+ */
+getNextDays(): number {
+  if (!this.nextImpegno || !this.nextImpegno.DATAORAINIZIO) {
+    return 0;
+  }
+
+  const now = new Date();
+  const impegnoDate = new Date(this.nextImpegno.DATAORAINIZIO);
+  const diffTime = impegnoDate.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays > 0 ? diffDays : 0;
+}
+
+// =====================================================
+// COUNTDOWN
+// =====================================================
+
+/**
+ * Calcola countdown per un impegno
+ */
+getCountdown(impegno: Impegno): string {
+  if (!impegno || !impegno.DATAORAINIZIO) {
+    return '--';
+  }
+
+  const now = new Date();
+  const impegnoDate = new Date(impegno.DATAORAINIZIO);
+  const diff = impegnoDate.getTime() - now.getTime();
+
+  if (diff < 0) {
+    return 'In corso';
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (days > 0) {
+    return `${days}g ${hours}h`;
+  } else if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  } else {
+    return `${minutes} minuti`;
+  }
+}
+
+// =====================================================
+// FILTRI
+// =====================================================
+
+/**
+ * Cambia filtro impegni personali
+ */
+onChangePersonalFilter(filter: 'tutti' | 'oggi' | 'domani' | 'settimana'): void {
+  this.personalFilter = filter;
+}
+
+/**
+ * Ritorna lista impegni filtrata
+ */
+getFilteredImpegni(): Impegno[] {
+  if (!this.listImpegni || this.listImpegni.length === 0) {
+    return [];
+  }
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  switch (this.personalFilter) {
+    case 'oggi':
+      return this.listImpegni.filter(impegno => {
+        if (!impegno.DATAORAINIZIO) return false;
+        const impegnoDate = new Date(impegno.DATAORAINIZIO);
+        impegnoDate.setHours(0, 0, 0, 0);
+        return impegnoDate.getTime() === now.getTime();
+      });
+
+    case 'domani':
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return this.listImpegni.filter(impegno => {
+        if (!impegno.DATAORAINIZIO) return false;
+        const impegnoDate = new Date(impegno.DATAORAINIZIO);
+        impegnoDate.setHours(0, 0, 0, 0);
+        return impegnoDate.getTime() === tomorrow.getTime();
+      });
+
+    case 'settimana':
+      const weekEnd = new Date(now);
+      weekEnd.setDate(weekEnd.getDate() + 7);
+      return this.listImpegni.filter(impegno => {
+        if (!impegno.DATAORAINIZIO) return false;
+        const impegnoDate = new Date(impegno.DATAORAINIZIO);
+        impegnoDate.setHours(0, 0, 0, 0);
+        return impegnoDate >= now && impegnoDate <= weekEnd;
+      });
+
+    case 'tutti':
+    default:
+      return this.listImpegni;
+  }
+}
+
+/**
+ * Titolo della timeline in base al filtro
+ */
+getTimelineTitle(): string {
+  switch (this.personalFilter) {
+    case 'oggi':
+      return 'Impegni di Oggi';
+    case 'domani':
+      return 'Impegni di Domani';
+    case 'settimana':
+      return 'Impegni della Settimana';
+    case 'tutti':
+    default:
+      return 'Tutti gli Impegni';
+  }
+}
+
+// =====================================================
+// HELPER METHODS
+// =====================================================
+
+/**
+ * Ritorna colore per tipo impegno
+ */
+getImpegnoColor(impegno: Impegno): string {
+  if (!impegno) return 'primary';
+
+  const now = new Date();
+  
+  if (impegno.DATAORAFINE && new Date(impegno.DATAORAFINE) < now) {
+    return 'medium'; // Passato
+  }
+
+  switch (impegno.SETTORE) {
+    case SettoreAttivita.settoreCorso:
+      return 'success';
+    case SettoreAttivita.settorePrenotazione:
+      return 'primary';
+    case SettoreAttivita.settoreEvento:
+      return 'tertiary';
+    default:
+      return 'primary';
+  }
+}
+
+/**
+ * Ritorna icona per tipo impegno
+ */
+getImpegnoIcon(impegno: Impegno): string {
+  if (!impegno) return 'calendar';
+
+  switch (impegno.SETTORE) {
+    case SettoreAttivita.settoreCorso:
+      return 'school';
+    case SettoreAttivita.settorePrenotazione:
+      return 'calendar';
+    case SettoreAttivita.settoreEvento:
+      return 'sparkles';
+    default:
+      return 'calendar';
+  }
+}
+
+/**
+ * Ritorna tipo impegno (label)
+ */
+getImpegnoType(impegno: Impegno): string {
+  if (!impegno) return 'Impegno';
+
+  switch (impegno.SETTORE) {
+    case SettoreAttivita.settoreCorso:
+      return 'Corso';
+    case SettoreAttivita.settorePrenotazione:
+      return 'Campo';
+    case SettoreAttivita.settoreEvento:
+      return 'Evento';
+    default:
+      return 'Impegno';
+  }
+}
+
+/**
+ * Verifica se impegno è passato
+ */
+isPassedImpegno(impegno: Impegno): boolean {
+  if (!impegno || !impegno.DATAORAFINE) return false;
+  
+  const now = new Date();
+  const fineImpegno = new Date(impegno.DATAORAFINE);
+  
+  return fineImpegno < now;
+}
+
+// =====================================================
+// NAVIGAZIONE
+// =====================================================
+
+/**
+ * Naviga a prenotazione campo
+ */
+onNavigateToBooking(): void {
+  // Implementa navigazione alla pagina di prenotazione
+  // Esempio:
+  // this.navController.navigateForward(['/booking']);
+  console.log('Navigate to booking');
+}
+
+/**
+ * Naviga a lista corsi
+ */
+onNavigateToCourses(): void {
+  // Implementa navigazione alla pagina corsi
+  // Esempio:
+  // this.navController.navigateForward(['/courses']);
+  console.log('Navigate to courses');
+}
+
+// =====================================================
+// LOADING STATE
+// =====================================================
+
+/**
+ * Mostra skeleton loader durante caricamento
+ * Chiama questo metodo prima di requestListImpegniPersonali()
+ */
+showLoadingPersonal(): void {
+  this.isLoadingPersonal = true;
+}
+
+/**
+ * Nascondi skeleton loader dopo caricamento
+ * Chiama questo metodo dopo aver ricevuto i dati
+ */
+hideLoadingPersonal(): void {
+  this.isLoadingPersonal = false;
+}  
   
   //#endregion
 

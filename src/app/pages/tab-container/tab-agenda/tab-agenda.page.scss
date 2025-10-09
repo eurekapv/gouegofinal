@@ -1,8 +1,716 @@
-ion-item {
-    &.mostra-tutto {
+// =====================================================
+// TAB AGENDA - PERSONAL VIEW RESTYLED
+// Sostituisci tutto il contenuto del file scss
+// =====================================================
 
-        >ion-icon {
-            font-size: 40px;
-        }
+ion-content {
+  --background: var(--ion-color-extralight);
+}
+
+// =====================================================
+// PERSONAL VIEW WRAPPER
+// =====================================================
+.personal-view {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+// =====================================================
+// STATS ROW
+// =====================================================
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: slideDown 0.4s ease-out;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, var(--ion-color-success), #3da566);
+    box-shadow: 0 4px 12px rgba(84, 220, 152, 0.3);
+
+    .stat-icon,
+    .stat-value,
+    .stat-label {
+      color: white;
     }
+  }
+
+  .stat-icon {
+    font-size: 28px;
+    color: var(--ion-color-success);
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ion-color-dark);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ion-color-mediumlight);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+}
+
+// =====================================================
+// QUICK FILTERS
+// =====================================================
+.quick-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 20px 0;
+  margin: 0 -4px 20px -4px;
+  animation: slideDown 0.4s ease-out 0.1s both;
+
+  // Hide scrollbar
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ion-chip {
+    flex-shrink: 0;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 20px;
+    background: white;
+    color: var(--ion-color-dark);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 2px solid var(--ion-color-light);
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 18px;
+      margin-right: 6px;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &.active {
+      background: var(--ion-color-success);
+      color: white;
+      border-color: var(--ion-color-success);
+      box-shadow: 0 4px 12px rgba(84, 220, 152, 0.3);
+
+      ion-icon {
+        color: white;
+      }
+    }
+  }
+}
+
+// =====================================================
+// SECTION HEADER
+// =====================================================
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  animation: slideDown 0.4s ease-out 0.2s both;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-success);
+    }
+  }
+
+  .count-badge {
+    background: var(--ion-color-success);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+}
+
+// =====================================================
+// COUNTDOWN CARD (PROSSIMO IMPEGNO)
+// =====================================================
+.next-impegno-section {
+  margin-bottom: 32px;
+  animation: slideDown 0.4s ease-out 0.2s both;
+}
+
+.countdown-card {
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, #2d3748 100%);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(25, 35, 51, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  // Decorative background
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(84, 220, 152, 0.1), transparent);
+    border-radius: 50%;
+  }
+
+  &:active {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(25, 35, 51, 0.4);
+  }
+
+  .countdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .countdown-timer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .timer-icon {
+      font-size: 40px;
+      color: var(--ion-color-tertiary);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .timer-text {
+      display: flex;
+      flex-direction: column;
+
+      .timer-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+        line-height: 1.2;
+      }
+
+      .timer-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  .impegno-details {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 2;
+
+    .detail-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: rgba(84, 220, 152, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 28px;
+        color: var(--ion-color-tertiary);
+      }
+    }
+
+    .detail-content {
+      flex: 1;
+
+      .impegno-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 12px 0;
+        line-height: 1.3;
+      }
+
+      .detail-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        ion-icon {
+          font-size: 18px;
+          color: var(--ion-color-tertiary);
+          flex-shrink: 0;
+        }
+
+        .time-separator {
+          margin: 0 4px;
+          color: var(--ion-color-tertiary);
+        }
+      }
+    }
+  }
+
+  .card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 2;
+
+    span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-tertiary);
+    }
+  }
+}
+
+// =====================================================
+// TIMELINE
+// =====================================================
+.timeline-section {
+  animation: slideUp 0.4s ease-out 0.3s both;
+}
+
+.timeline-list {
+  position: relative;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &.passed {
+    opacity: 0.6;
+
+    .timeline-dot {
+      background: var(--ion-color-mediumlight) !important;
+    }
+
+    .timeline-card {
+      border-color: var(--ion-color-light);
+    }
+  }
+
+  &:active .timeline-card {
+    transform: scale(0.98);
+  }
+}
+
+.timeline-dot-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 40px;
+  width: 2px;
+  height: calc(100% + 24px);
+  background: var(--ion-color-light);
+}
+
+.timeline-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ion-color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(84, 220, 152, 0.3);
+  z-index: 2;
+
+  ion-icon {
+    font-size: 20px;
+    color: white;
+  }
+}
+
+.timeline-content {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+}
+
+.date-badge {
+  background: white;
+  border-radius: 12px;
+  padding: 8px 12px;
+  text-align: center;
+  min-width: 60px;
+  height: fit-content;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+
+  .date-day {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ion-color-primary);
+    line-height: 1;
+  }
+
+  .date-month {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--ion-color-mediumlight);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+}
+
+.timeline-card {
+  flex: 1;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--ion-color-success);
+    box-shadow: 0 4px 16px rgba(84, 220, 152, 0.2);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+      margin: 0;
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .type-badge {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 8px;
+    }
+  }
+
+  .card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--ion-color-mediumlight);
+      font-weight: 500;
+
+      ion-icon {
+        font-size: 16px;
+        color: var(--ion-color-success);
+        flex-shrink: 0;
+      }
+
+      .separator {
+        margin: 0 4px;
+      }
+
+      &.multi-day {
+        color: var(--ion-color-warning);
+        font-weight: 600;
+
+        ion-icon {
+          color: var(--ion-color-warning);
+        }
+      }
+    }
+  }
+
+  .card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(84, 220, 152, 0.1);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ion-color-success);
+
+    ion-icon {
+      font-size: 16px;
+    }
+
+    &.passed {
+      background: rgba(122, 130, 143, 0.1);
+      color: var(--ion-color-mediumlight);
+    }
+  }
+}
+
+// =====================================================
+// EMPTY STATE
+// =====================================================
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  animation: fadeIn 0.6s ease-out;
+
+  .empty-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, var(--ion-color-light), #e8e9ed);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 64px;
+      color: var(--ion-color-mediumlight);
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-mediumlight);
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .empty-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 300px;
+    margin: 0 auto;
+
+    ion-button {
+      --border-radius: 16px;
+      height: 52px;
+      font-weight: 700;
+      text-transform: none;
+    }
+  }
+}
+
+// =====================================================
+// SKELETON LOADER
+// =====================================================
+.skeleton-loader {
+  animation: fadeIn 0.3s ease-out;
+
+  .skeleton-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .skeleton-timeline {
+    margin-top: 20px;
+  }
+}
+
+// =====================================================
+// ANIMATIONS
+// =====================================================
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+// Mobile landscape / Small tablet
+@media (min-width: 576px) {
+  .personal-view {
+    padding: 24px;
+  }
+
+  .stats-row {
+    gap: 16px;
+  }
+
+  .empty-actions {
+    flex-direction: row !important;
+
+    ion-button {
+      flex: 1;
+    }
+  }
+}
+
+// Tablet
+@media (min-width: 768px) {
+  .timeline-content {
+    gap: 16px;
+  }
+
+  .date-badge {
+    min-width: 70px;
+    padding: 12px;
+
+    .date-day {
+      font-size: 1.75rem;
+    }
+  }
+
+  .countdown-card {
+    padding: 32px;
+
+    .impegno-details {
+      gap: 20px;
+
+      .detail-icon {
+        width: 64px;
+        height: 64px;
+
+        ion-icon {
+          font-size: 32px;
+        }
+      }
+    }
+  }
+}
+
+// Desktop
+@media (min-width: 992px) {
+  .stats-row {
+    gap: 20px;
+  }
+
+  .timeline-card {
+    &:hover {
+      transform: translateX(4px);
+    }
+  }
 }

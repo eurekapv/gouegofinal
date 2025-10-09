@@ -3,11 +3,9 @@
     <ion-buttons slot="start">
       <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
-    <ion-title>Documenti</ion-title>
+    <ion-title>DOCUMENTI</ion-title>
   </ion-toolbar>
 </ion-header>
-
-
 
 <ion-content>
 
@@ -15,121 +13,119 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="12" 
-               sizeLg="8" offsetLg="2"
-               sizeXl="6" offsetXl="3">
-               
-               <div class="info" >
+  <div class="page-container">
 
-                <!-- messaggio quando non si puo inviare-->
-                <ion-grid
-                      *ngIf="listaTipiDocumento?.length == 0">
-                  <ion-row>
-                    <ion-col 
-                      sizeXs="12" 
-                      sizeSm="12" 
-                      sizeMd="12" 
-                      sizeLg="6"
-                      sizeXl="6" >
-                      <p class="ion-text-wrap">
-                        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-                        <ion-text>qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato</ion-text>
-                      </p>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>                
+    <!-- INFO BOX + BOTTONE INVIA -->
+    <div class="info-section">
+      <div class="info-box">
+        <ion-icon name="information-circle" class="info-icon"></ion-icon>
+        <div class="info-text">
+          <p *ngIf="listaTipiDocumento?.length == 0">
+            Qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato
+          </p>
+          <p *ngIf="listaTipiDocumento?.length != 0">
+            Qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato; puoi anche inviarci nuovi documenti
+          </p>
+        </div>
+      </div>
 
-                <!-- MESSAGGIO QUANDO SI PUO' INVIARE -->
-                <ion-grid
-                      *ngIf="listaTipiDocumento?.length != 0">
-                  <ion-row>
-                    <ion-col 
-                      sizeXs="12" 
-                      sizeSm="12" 
-                      sizeMd="12" 
-                      sizeLg="6"
-                      sizeXl="6" >
-                      <p class="ion-text-wrap">
-                        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-                        <ion-text>qui trovi l'elenco dei documenti e certificati medici che ci hai consegnato; puoi anche inviarci nuovi documenti con il pulsante Invia.</ion-text>
-                      </p>
-                    </ion-col>
-                    <ion-col
-                        sizeXs="12" 
-                        sizeSm="12" 
-                        sizeMd="12" 
-                        sizeLg="6"
-                        sizeXl="6" >
-                            <ion-button 
-                                (click)="onAddDocument()"
-                                expand="full"
-                                color="success"
-                                >
-                            <ion-icon 
-                                slot="start"
-                                name="add-circle-outline"></ion-icon>
-                            Invia
-                            </ion-button>                      
-                    </ion-col>                    
-                  </ion-row>
-                </ion-grid>
-              </div>  
+      <!-- Bottone Invia (se disponibile) -->
+      <ion-button
+          *ngIf="listaTipiDocumento?.length != 0"
+          (click)="onAddDocument()"
+          class="upload-button"
+          expand="block"
+          size="large">
+          <ion-icon name="cloud-upload" slot="start"></ion-icon>
+          Invia Documento
+      </ion-button>
+    </div>
 
-               <!-- NESSUN DOCUMENTO PRESENTE -->
-               <div *ngIf="listDocumenti.length === 0" class="nofind-cnt">
-                 <ion-label>Nessun documento</ion-label>
-                 <ion-label>disponibile</ion-label>
-               </div>
-             
-               <!-- DOCUMENTI PRESENTI  -->
-               <div *ngIf="listDocumenti.length > 0">
-                 <ion-list>
-                   <ion-item 
-                           *ngFor="let documento of listDocumenti"
-                           (click)="onClickElement(documento)">
-                     <ion-icon slot="start" class="icon-left" color ="" name="document-text-outline"></ion-icon>
-                     <ion-label>
-                       <h3>{{documento['_DENOMINAZIONE_TipoDocumentazione']}}</h3>
-                       <p>Ultima modifica: {{documento.DATAORAMODIFICA | date : 'dd/LL/yyyy' }}</p>
-             
-                       <div *ngIf="documento.REQUESTCONTROLLO">
-                         <ion-chip
-                             color="warning">
-                             IN ATTESA DI VERIFICA
-                         </ion-chip>
-                       </div>
-             
-                       <div *ngIf="!documento.REQUESTCONTROLLO">
-                         <ion-chip 
-                             *ngIf="!documento.checkValidita()"
-                             color="danger">SCADUTO
-                         </ion-chip>
-             
-                         <ion-chip 
-                             *ngIf="documento.checkValidita()"
-                             color="success">VALIDO
-                         </ion-chip>
-             
-                       </div>          
-             
-             
-             
-             
-                     </ion-label>
-                     <ion-icon slot="end" color="primary" name="cloud-download-outline"></ion-icon>
-                   </ion-item>
-                 </ion-list>
-               </div>
+    <!-- LISTA DOCUMENTI -->
+    <div class="documents-grid" *ngIf="listDocumenti.length > 0">
+      
+      <div class="document-card" 
+           *ngFor="let documento of listDocumenti"
+           (click)="onClickElement(documento)">
+        
+        <!-- Icona documento -->
+        <div class="document-icon">
+          <ion-icon name="document-text"></ion-icon>
+        </div>
 
-      </ion-col>      
-    </ion-row>
-  </ion-grid>
+        <!-- Contenuto documento -->
+        <div class="document-content">
+          
+          <!-- Tipo documento -->
+          <h3 class="document-title">
+            {{documento['_DENOMINAZIONE_TipoDocumentazione']}}
+          </h3>
 
+          <!-- Data modifica -->
+          <p class="document-date">
+            <ion-icon name="calendar-outline"></ion-icon>
+            Ultima modifica: {{documento.DATAORAMODIFICA | date : 'dd/MM/yyyy'}}
+          </p>
 
+          <!-- Badge stato -->
+          <div class="document-status">
+            
+            <!-- In attesa di verifica -->
+            <ion-badge 
+                *ngIf="documento.REQUESTCONTROLLO"
+                class="status-badge pending">
+                <ion-icon name="time-outline"></ion-icon>
+                In attesa di verifica
+            </ion-badge>
 
-  
+            <!-- Scaduto -->
+            <ion-badge 
+                *ngIf="!documento.REQUESTCONTROLLO && !documento.checkValidita()"
+                class="status-badge expired">
+                <ion-icon name="close-circle"></ion-icon>
+                Scaduto
+            </ion-badge>
+
+            <!-- Valido -->
+            <ion-badge 
+                *ngIf="!documento.REQUESTCONTROLLO && documento.checkValidita()"
+                class="status-badge valid">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                Valido
+            </ion-badge>
+
+          </div>
+
+        </div>
+
+        <!-- Bottone download -->
+        <div class="download-button">
+          <ion-icon name="cloud-download"></ion-icon>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" *ngIf="listDocumenti.length === 0">
+      <div class="empty-icon">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <h3>Nessun documento</h3>
+      <p>Non hai ancora caricato documenti</p>
+      
+      <!-- Bottone Invia nell'empty state -->
+      <ion-button
+          *ngIf="listaTipiDocumento?.length != 0"
+          (click)="onAddDocument()"
+          class="empty-upload-button"
+          size="default">
+          <ion-icon name="cloud-upload" slot="start"></ion-icon>
+          Invia il tuo primo documento
+      </ion-button>
+    </div>
+
+  </div>
+
 </ion-content>

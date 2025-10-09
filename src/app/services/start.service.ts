@@ -1626,11 +1626,11 @@ takePictureUtente():Promise<string> {
     
     if (this.flagUtenteIsLoggato$) {
   
-      //Identificativo della foto
-      this.activeUtenteDoc$.subscribe(elutente => {
+      this.activeUtenteDoc$.subscribe({
+        next: (elUtente) => {
+          //Identificativo della foto
+            idPhoto = elUtente.ID;
 
-        idPhoto = elutente.ID;
-    
         //Apro la fotocamera per il caricamento
         this.photoService.takePicure(photoType, idPhoto, myTitle)
                         .then(dataUrl => {
@@ -1644,8 +1644,10 @@ takePictureUtente():Promise<string> {
                         .catch(error => {
                           reject(error);
                         })
-      }, error => {
-        reject(error);
+        }, 
+        error: (err) => {
+            reject(err);
+        }
       })
 
     }

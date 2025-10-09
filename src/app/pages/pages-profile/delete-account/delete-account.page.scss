@@ -1,38 +1,465 @@
-
-.lbl-info{
-    display: flex;
-
-    p{
-        margin:auto;
-        font-style: italic;
-        font-size: small;
-    }
-    
-    
-}
+// =====================================================
+// DELETE ACCOUNT PAGE - MODERN DESIGN
+// =====================================================
 
 ion-content {
-    background-color: var(--ion-color-primary-tint);
+  --background: var(--ion-color-extralight);
 }
 
-.title-image {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    padding: 0;
-    margin: 5px 0px 0px 0px;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    width: 100%;
-    height: 200px;
-    text-align:center;
+.content-wrapper {
+  padding: 20px 16px 100px 16px;
+  min-height: 100%;
+}
 
-    img {
-        max-width: 300px;
-        max-height: 200px;
+// =====================================================
+// CARD AVVISO PRINCIPALE
+// =====================================================
+.warning-card {
+  background: white;
+  border-radius: 24px;
+  padding: 32px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+
+  // Sfondo decorativo
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, rgba(223, 65, 58, 0.1), rgba(249, 201, 89, 0.1));
+    border-radius: 50%;
+    z-index: 0;
+  }
+}
+
+.warning-icon-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.warning-icon {
+  font-size: 72px;
+  color: var(--ion-color-danger);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.warning-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--ion-color-dark);
+  text-align: center;
+  margin: 0 0 24px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.warning-content {
+  position: relative;
+  z-index: 1;
+}
+
+.warning-text-primary {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ion-color-danger);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+
+  ion-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
+.warning-text-secondary {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ion-color-mediumlight);
+  line-height: 1.7;
+  margin: 0;
+  padding: 16px;
+  background: var(--ion-color-extralight);
+  border-radius: 16px;
+  border-left: 4px solid var(--ion-color-warning);
+}
+
+.illustration-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.illustration-image {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+// =====================================================
+// CARD VERIFICA PASSWORD
+// =====================================================
+.password-card {
+  background: white;
+  border-radius: 24px;
+  padding: 28px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.password-header {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  align-items: flex-start;
+}
+
+.lock-icon-container {
+  background: linear-gradient(135deg, var(--ion-color-success), #54dc98);
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(84, 220, 152, 0.3);
+}
+
+.lock-icon {
+  font-size: 28px;
+  color: white;
+}
+
+.password-header-text {
+  flex: 1;
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ion-color-mediumlight);
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+// =====================================================
+// FORM INPUT PERSONALIZZATI
+// =====================================================
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  margin-left: 4px;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--ion-color-extralight);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 0 16px;
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    background: white;
+    border-color: var(--ion-color-success);
+    box-shadow: 0 0 0 4px rgba(84, 220, 152, 0.1);
+  }
+}
+
+.input-icon {
+  font-size: 22px;
+  color: var(--ion-color-mediumlight);
+  margin-right: 12px;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+
+  .input-container:focus-within & {
+    color: var(--ion-color-success);
+  }
+}
+
+.custom-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ion-color-dark);
+  padding: 18px 0;
+  outline: none;
+
+  &::placeholder {
+    color: var(--ion-color-mediumlight);
+    font-weight: 400;
+  }
+}
+
+.toggle-visibility-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  ion-icon {
+    font-size: 22px;
+    color: var(--ion-color-mediumlight);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+
+    ion-icon {
+      color: var(--ion-color-dark);
     }
   }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// =====================================================
+// MESSAGGIO DI ERRORE
+// =====================================================
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(223, 65, 58, 0.08);
+  border-radius: 12px;
+  border-left: 4px solid var(--ion-color-danger);
+  margin-top: 4px;
+
+  ion-icon {
+    font-size: 22px;
+    color: var(--ion-color-danger);
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ion-color-danger);
+    line-height: 1.4;
+  }
+}
+
+// =====================================================
+// BOTTONI AZIONE
+// =====================================================
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cancel-button {
+  --border-radius: 16px;
+  --border-width: 2px;
+  --border-color: var(--ion-color-mediumlight);
+  --color: var(--ion-color-dark);
+  height: 56px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    --border-color: var(--ion-color-dark);
+    --background: var(--ion-color-extralight);
+  }
+
+  @media (max-width: 576px) {
+    order: 2;
+  }
+}
+
+.delete-button {
+  --border-radius: 16px;
+  --background: var(--ion-color-danger);
+  --background-hover: #c43933;
+  --box-shadow: 0 4px 12px rgba(223, 65, 58, 0.3);
+  height: 56px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+
+  &:hover:not([disabled]) {
+    --box-shadow: 0 6px 16px rgba(223, 65, 58, 0.4);
+    transform: translateY(-2px);
+  }
+
+  &:active:not([disabled]) {
+    transform: translateY(0);
+  }
+
+  &[disabled] {
+    --background: var(--ion-color-light);
+    --color: var(--ion-color-mediumlight);
+    --box-shadow: none;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 576px) {
+    order: 1;
+  }
+}
+
+// =====================================================
+// FOOTER INFO
+// =====================================================
+.footer-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-warning);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ion-color-mediumlight);
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+// =====================================================
+// RESPONSIVE DESIGN
+// =====================================================
+
+// Tablet
+@media (min-width: 768px) {
+  .content-wrapper {
+    padding: 32px 24px 100px 24px;
+  }
+
+  .warning-card,
+  .password-card {
+    padding: 40px 32px;
+  }
+
+  .warning-title {
+    font-size: 2rem;
+  }
+
+  .illustration-image {
+    max-width: 320px;
+  }
+}
+
+// Desktop
+@media (min-width: 1200px) {
+  .content-wrapper {
+    padding: 40px 32px 100px 32px;
+  }
+
+  .warning-card {
+    padding: 48px 40px;
+  }
+
+  .action-buttons {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}
+
+// =====================================================
+// HEADER PERSONALIZZATO
+// =====================================================
+ion-header {
+  ion-toolbar {
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+    --min-height: 60px;
+
+    ion-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+
+    ion-back-button {
+      --color: white;
+      --icon-font-size: 24px;
+      font-weight: 600;
+    }
+  }
+}

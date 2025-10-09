@@ -1,10 +1,545 @@
-div.info {
-    p{
-        font-style: italic;
-        // color: var(--ion-color-primary);
-        font-weight: 600;
-        ion-icon{
-            font-size: 20px;
+// ========================================
+// PAGE CONTAINER
+// ========================================
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+
+  @media (min-width: 768px) {
+    padding: 30px 20px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 40px 30px;
+  }
+}
+
+// ========================================
+// INFO BOX
+// ========================================
+.info-box {
+  background: #fef9e7;
+  border-left: 4px solid var(--ion-color-tertiary);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .info-icon {
+    color: var(--ion-color-tertiary);
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-primary);
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+// ========================================
+// ACCORDION GROUPS
+// ========================================
+.cards-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .category-accordion {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+
+    // Header Accordion
+    .accordion-header {
+      background: linear-gradient(135deg, 
+        var(--ion-color-tertiary) 0%, 
+        #f9c959 100%);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, 
+          #f9c959 0%, 
+          var(--ion-color-tertiary) 100%);
+      }
+
+      .header-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        ion-icon {
+          font-size: 26px;
+          color: var(--ion-color-primary);
         }
+      }
+
+      .header-content {
+        flex: 1;
+
+        h3 {
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--ion-color-primary);
+          margin: 0;
+          letter-spacing: 0.3px;
+        }
+      }
+
+      .header-arrow {
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+
+        ion-icon {
+          font-size: 24px;
+          color: var(--ion-color-primary);
+        }
+      }
     }
+
+    // Rotazione freccia quando aperto
+    &.accordion-expanded .accordion-header .header-arrow {
+      transform: rotate(180deg);
+    }
+
+    // Content Accordion
+    .accordion-content {
+      padding: 20px;
+      background: var(--ion-color-extralight);
+    }
+  }
+}
+
+// ========================================
+// EMPTY CARDS STATE
+// ========================================
+.empty-cards {
+  text-align: center;
+  padding: 40px 20px;
+
+  ion-icon {
+    font-size: 60px;
+    color: var(--ion-color-mediumlight);
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ion-color-mediumlight);
+    margin: 0;
+  }
+}
+
+// ========================================
+// MEMBERSHIP CARDS
+// ========================================
+.membership-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// ========================================
+// MEMBERSHIP CARD (Tessera digitale)
+// ========================================
+.membership-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  // Barra laterale colorata
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    transition: all 0.3s ease;
+  }
+
+  // Tessera VALIDA (verde)
+  &.valid {
+    &::before {
+      background: var(--ion-color-success);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, 
+        var(--ion-color-success) 0%, 
+        #27ae60 100%);
+    }
+  }
+
+  // Tessera SCADUTA (rosso)
+  &.expired {
+    &::before {
+      background: var(--ion-color-danger);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, 
+        var(--ion-color-danger) 0%, 
+        #c0392b 100%);
+    }
+  }
+
+  // Header Card
+  .card-header {
+    padding: 16px 20px;
+    color: white;
+
+    .card-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  // Body Card
+  .card-body {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    @media (max-width: 400px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    // Info Tessera
+    .card-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      .card-number {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        ion-icon {
+          font-size: 24px;
+          color: var(--ion-color-tertiary);
+        }
+
+        span {
+          font-size: 18px;
+          font-weight: 700;
+          color: var(--ion-color-primary);
+          letter-spacing: 1px;
+        }
+      }
+
+      .card-expiry {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        ion-icon {
+          font-size: 20px;
+          color: var(--ion-color-mediumlight);
+        }
+
+        .expiry-label {
+          font-size: 12px;
+          color: var(--ion-color-mediumlight);
+          margin: 0 0 4px 0;
+          text-transform: uppercase;
+        }
+
+        .expiry-date {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--ion-color-primary);
+          margin: 0;
+        }
+      }
+    }
+
+    // QR Code
+    .card-qr {
+      flex-shrink: 0;
+      background: white;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      ::ng-deep qrcode {
+        display: block;
+      }
+    }
+  }
+}
+
+// ========================================
+// MODULES SECTION
+// ========================================
+.modules-section {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 2px solid rgba(0, 0, 0, 0.05);
+
+  .modules-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    margin: 0 0 20px 0;
+
+    ion-icon {
+      font-size: 22px;
+      color: var(--ion-color-tertiary);
+    }
+  }
+
+  .modules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+// ========================================
+// MODULE ITEM
+// ========================================
+.module-item {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    .module-download {
+      background: var(--ion-color-success);
+      
+      ion-icon {
+        color: white;
+      }
+    }
+  }
+
+  .module-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(250, 212, 122, 0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-tertiary);
+    }
+  }
+
+  .module-info {
+    flex: 1;
+    min-width: 0;
+
+    p {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ion-color-primary);
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+
+  .module-download {
+    width: 40px;
+    height: 40px;
+    background: rgba(44, 179, 97, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 22px;
+      color: var(--ion-color-success);
+      transition: all 0.3s ease;
+    }
+  }
+}
+
+// ========================================
+// ANIMAZIONI
+// ========================================
+.category-accordion {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Delay progressivo
+.category-accordion:nth-child(1) { animation-delay: 0s; }
+.category-accordion:nth-child(2) { animation-delay: 0.1s; }
+.category-accordion:nth-child(3) { animation-delay: 0.15s; }
+.category-accordion:nth-child(4) { animation-delay: 0.2s; }
+
+// ========================================
+// RESPONSIVE - TABLET
+// ========================================
+@media (min-width: 768px) {
+  
+  .info-box {
+    padding: 20px;
+
+    .info-icon {
+      font-size: 26px;
+    }
+
+    p {
+      font-size: 15px;
+    }
+  }
+
+  .cards-accordion {
+    .category-accordion {
+      .accordion-header {
+        padding: 24px;
+
+        .header-icon {
+          width: 52px;
+          height: 52px;
+
+          ion-icon {
+            font-size: 28px;
+          }
+        }
+
+        .header-content h3 {
+          font-size: 20px;
+        }
+      }
+
+      .accordion-content {
+        padding: 25px;
+      }
+    }
+  }
+
+  .membership-card {
+    .card-body {
+      .card-info {
+        .card-number span {
+          font-size: 20px;
+        }
+
+        .card-expiry .expiry-date {
+          font-size: 17px;
+        }
+      }
+    }
+  }
+
+  .module-item {
+    padding: 18px;
+
+    .module-icon {
+      width: 48px;
+      height: 48px;
+
+      ion-icon {
+        font-size: 26px;
+      }
+    }
+
+    .module-info p {
+      font-size: 16px;
+    }
+
+    .module-download {
+      width: 44px;
+      height: 44px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+// ========================================
+// RESPONSIVE - DESKTOP
+// ========================================
+@media (min-width: 1024px) {
+  
+  .membership-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .module-item:hover {
+    transform: translateX(8px);
+  }
 }

@@ -1,148 +1,150 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-back-button 
+        [defaultHref]="backButtonHref"
+        text="Indietro">
+      </ion-back-button>
     </ion-buttons>
-    <ion-title>Eliminazione Profilo</ion-title>
+    <ion-title>ELIMINAZIONE PROFILO</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
+  <div class="content-wrapper">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col 
+          sizeXs="12" 
+          sizeSm="12" 
+          sizeMd="10" offsetMd="1"
+          sizeLg="8" offsetLg="2"
+          sizeXl="6" offsetXl="3">
 
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="12" 
-               sizeLg="6" offsetLg="3"
-               sizeXl="6" offsetXl="3">
+          <!-- CARD PRINCIPALE CON AVVISO -->
+          <div class="warning-card">
+            <div class="warning-icon-container">
+              <ion-icon name="alert-circle" class="warning-icon"></ion-icon>
+            </div>
+            
+            <h2 class="warning-title">Vuoi cancellare il profilo?</h2>
+            
+            <div class="warning-content">
+              <p class="warning-text-primary">
+                <ion-icon name="close-circle-outline"></ion-icon>
+                Stai eliminando definitivamente il tuo profilo
+              </p>
+              
+              <p class="warning-text-secondary">
+                Eliminando il profilo, non potrai più controllare le attività presso il centro, 
+                effettuare iscrizione ai corsi e prenotazione dei campi. Per continuare a rimanere 
+                aggiornato sulle nostre attività, ti invitiamo a non eliminare il profilo.
+              </p>
+            </div>
 
-               <ion-grid>
-                  <ion-row>
-                    <ion-col>
-                      <ion-list-header>
-                        <ion-label>Vuoi cancellare il profilo ?</ion-label>
-                      </ion-list-header>
-                      
-                      <ion-list>
-                        <ion-item lines="none">
-                          <ion-label class="ion-text-wrap">
-                            <ion-text color="danger"><h4>Stai eliminando definitivamente il tuo profilo.</h4></ion-text>
-                            <p style="font-weight: 700;">
-                              Eliminando il profilo, non potrai più controllare le attività presso il centro, effettuare iscrizione ai corsi e prenotazione dei campi.
-                              Per continuare a rimanere aggiornato sulle nostre attività, ti invitiamo a non eliminare il profilo.
-                            </p>
-                          </ion-label>
-                        </ion-item>
-                      </ion-list>
+            <!-- ILLUSTRAZIONE -->
+            <div class="illustration-container">
+              <img 
+                src="assets/img/profilemobile200.jpg" 
+                alt="Eliminazione profilo"
+                class="illustration-image"/>
+            </div>
+          </div>
 
-                      <div class="title-image">
-                        <img src="assets/img/profilemobile200.jpg"/>
-                      </div>
-                      
-                      <form [formGroup]="form" class="ion-margin-horizontal">
-                        <ion-list>
-                          <!-- PASSWORD ATTUALE -->
-                          <ion-list-header>
-                            <ion-label>Password Attuale</ion-label>
-                          </ion-list-header>
+          <!-- CARD VERIFICA PASSWORD -->
+          <div class="password-card">
+            <div class="password-header">
+              <div class="lock-icon-container">
+                <ion-icon name="shield-checkmark" class="lock-icon"></ion-icon>
+              </div>
+              <div class="password-header-text">
+                <h3>Verifica la tua identità</h3>
+                <p>Inserisci la tua password attuale per confermare l'eliminazione</p>
+              </div>
+            </div>
 
-                          <ion-list>
-                            <ion-item lines="none">
-                              <ion-label class="ion-text-wrap">
-                                <ion-text color="danger"><h4>E' necessaria una ulteriore verifica</h4></ion-text>
-                                <p style="font-weight: 700;">
-                                  Ti invitiamo a inserire la tua password attuale per completare l'eliminazione del profilo
-                                </p>
-                              </ion-label>
-                            </ion-item>
-                          </ion-list>      
+            <form [formGroup]="form" class="password-form">
+              <!-- CAMPO PASSWORD 1 -->
+              <div class="input-group">
+                <label class="input-label">Password Attuale</label>
+                <div class="input-container">
+                  <ion-icon name="lock-closed" class="input-icon"></ion-icon>
+                  <input 
+                    [type]="showNew ? 'text' : 'password'"
+                    formControlName="actualPassword1" 
+                    placeholder="Inserisci la password attuale" 
+                    id="actualPassword1"
+                    #actualPassword1
+                    class="custom-input"/>
+                  <button 
+                    type="button"
+                    class="toggle-visibility-btn"
+                    (click)="showHideInput('actualPassword1', actualPassword1)">
+                    <ion-icon [name]="showNew ? 'eye-off' : 'eye'"></ion-icon>
+                  </button>
+                </div>
+              </div>
 
-                          <ion-item >
-                            <ion-icon 
-                            name="lock-closed-outline" 
-                            slot="start"></ion-icon>
-                            <ion-input 
-                                type="password" 
-                                inputmode="password" 
-                                formControlName="actualPassword1" 
-                                placeholder="password attuale" 
-                                id="actualPassword1"
-                                #actualPassword1 ></ion-input>
+              <!-- CAMPO PASSWORD 2 -->
+              <div class="input-group">
+                <label class="input-label">Conferma Password</label>
+                <div class="input-container">
+                  <ion-icon name="lock-closed" class="input-icon"></ion-icon>
+                  <input 
+                    [type]="showNewRetype ? 'text' : 'password'"
+                    formControlName="actualPassword2" 
+                    placeholder="Conferma la password" 
+                    id="actualPassword2"
+                    #actualPassword2
+                    class="custom-input"/>
+                  <button 
+                    type="button"
+                    class="toggle-visibility-btn"
+                    (click)="showHideInput('actualPassword2', actualPassword2)">
+                    <ion-icon [name]="showNewRetype ? 'eye-off' : 'eye'"></ion-icon>
+                  </button>
+                </div>
+              </div>
 
-                            <ion-button slot="end" fill="clear" (click)="showHideInput('actualPassword1',actualPassword1)">
-                              <ion-icon 
-                                  [name]="showNew ? 'eye-off-outline':'eye-outline'" 
-                                  slot="icon-only">
-                              </ion-icon>
-                            </ion-button>
+              <!-- MESSAGGIO DI ERRORE -->
+              <div class="error-message" *ngIf="!form.valid && form.value.actualPassword1 && form.value.actualPassword2">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                <span>{{ invalidMessage() }}</span>
+              </div>
+            </form>
+          </div>
 
-                          </ion-item>
-                        
-                          <ion-item>
-                            <ion-icon 
-                            name="lock-closed-outline" 
-                            slot="start"></ion-icon>
+          <!-- BOTTONI AZIONE -->
+          <div class="action-buttons">
+            <ion-button
+              class="cancel-button"
+              expand="block"
+              fill="outline"
+              (click)="onGoToBack()">
+              <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+              Annulla
+            </ion-button>
 
-                            <ion-input 
-                                type="password" 
-                                inputmode="password" 
-                                formControlName="actualPassword2" 
-                                placeholder="conferma password" 
-                                id="actualPassword2"
-                                #actualPassword2></ion-input>
+            <ion-button
+              class="delete-button"
+              expand="block"
+              color="danger"
+              [disabled]="!form.valid"
+              (click)="onClickElimina()">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Elimina Profilo
+            </ion-button>
+          </div>
 
-                            <ion-button slot="end" fill="clear" (click)="showHideInput('actualPassword2',actualPassword2)">
-                              <ion-icon 
-                                  [name]="showNewRetype ? 'eye-off-outline':'eye-outline'" 
-                                  slot="icon-only">
-                              </ion-icon>
-                            </ion-button>
+          <!-- FOOTER INFO -->
+          <div class="footer-info">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            <p>Questa azione è irreversibile. Una volta eliminato il profilo, 
+               non sarà più possibile recuperarlo.</p>
+          </div>
 
-
-                            </ion-item>
-                          
-                          <!-- ERROR MESSAGE -->
-                          <ion-item 
-                              lines="none" 
-                              *ngIf="!form.valid">
-                              <ion-label 
-                                class="ion-text-wrap"
-                                color="danger">
-                                <h5>
-                                  {{ invalidMessage() }}
-                                </h5>
-                              </ion-label>
-                          </ion-item>
-                        </ion-list>
-                      </form>
-                  </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeXl="6" sizeLg="6">
-                      <ion-button
-                      (click)="onClickElimina()"
-                      [disabled]="!form.valid"
-                      color="danger"
-                      expand="block"
-                      >Elimina Profilo</ion-button
-                    >
-                    </ion-col>
-                    <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeXl="6" sizeLg="6">
-                      <ion-button
-                        (click)="onGoToBack()"
-                      expand="block"
-                      fill="outline"
-                      >Annulla</ion-button
-                    >
-                    </ion-col>
-                  </ion-row>
-          </ion-grid>
-
-
-      </ion-col>
-    </ion-row>
-
-  </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
-

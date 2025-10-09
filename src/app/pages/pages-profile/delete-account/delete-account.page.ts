@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators, AbstractControl } from '@angular/forms';
 import { StartService } from 'src/app/services/start.service';
-import { IonInput, AlertButton, NavController } from '@ionic/angular';
-
+import { AlertButton, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-delete-account',
@@ -10,199 +9,228 @@ import { IonInput, AlertButton, NavController } from '@ionic/angular';
   styleUrls: ['./delete-account.page.scss'],
 })
 export class DeleteAccountPage implements OnInit {
-
-  retypePassword: string = '';
+  
+  // Form Group
   form: UntypedFormGroup;
-  showActual = false;
+  
+  // Visibilità password
   showNew = false;
   showNewRetype = false;
   
-  constructor(private startService: StartService,
-              private navController: NavController,) { }
+  constructor(
+    private startService: StartService,
+    private navController: NavController
+  ) { }
 
   ngOnInit() {
-    this.createFormGroup();
+    this.initializeForm();
   }
 
-  //#region GESTIONE BACK
+  // =====================================================
+  // GESTIONE NAVIGAZIONE E BACK
+  // =====================================================
+
   /**
-   * Ritorna un Array con il percorso di ritorno
+   * Ritorna l'array del percorso di ritorno
    */
-  get backPathArray():string[] {
-    let retPath = ['/','appstart-home','tab-profile'];
-
-    return retPath;
+  get backPathArray(): string[] {
+    return ['/', 'appstart-home', 'tab-profile'];
   }
 
-  //Ritorna il Path Array Back in formato stringa concatenata
+  /**
+   * Ritorna il path di back come stringa concatenata
+   */
   get backButtonHref(): string {
-    let myHref = '';
-    myHref = this.backPathArray.join('/').substring(1);
-
-    return myHref;
+    return this.backPathArray.join('/').substring(1);
   }
 
   /**
-   * Torno alla pagina del profilo
+   * Naviga indietro alla pagina del profilo
    */
-  onGoToBack() {
+  onGoToBack(): void {
     this.navController.navigateBack(this.backPathArray);
-  }   
+  }
 
-  //#endregion
-  
+  // =====================================================
+  // GESTIONE FORM
+  // =====================================================
+
   /**
-   * Creo la form con le due password
+   * Inizializza il form con validatori
    */
-  createFormGroup()
-  {
+  private initializeForm(): void {
     this.form = new UntypedFormGroup({
-      actualPassword1: new UntypedFormControl(null,{
+      actualPassword1: new UntypedFormControl(null, {
         updateOn: 'change',
-        validators:[Validators.required]
+        validators: [Validators.required, Validators.minLength(6)]
       }),
-      actualPassword2: new UntypedFormControl(null,{
+      actualPassword2: new UntypedFormControl(null, {
         updateOn: 'change',
-        validators:[Validators.required]
+        validators: [Validators.required, Validators.minLength(6)]
       })
-    },
-    this.pswValidator);
+    }, this.passwordMatchValidator);
   }
 
-  pswValidator(c:AbstractControl):{invalid:boolean}
-  {
+  /**
+   * Validatore custom per verificare che le password coincidano
+   */
+  private passwordMatchValidator(control: AbstractControl): { invalid: boolean } | null {
+    const password1 = control.get('actualPassword1')?.value;
+    const password2 = control.get('actualPassword2')?.value;
 
-      if ((c.get('actualPassword1').value==c.get('actualPassword2').value))
-      {
-        return
-      }
-      else
-      {
-        return {invalid: true};
-      }
+    if (password1 && password2 && password1 === password2) {
+      return null;
+    }
+    
+    return { invalid: true };
   }
 
-  invalidMessage() {
-    let message = '';
-    if (this.form.value.actualPassword1 && this.form.value.actualPassword2 ) {
-      if (this.form.value.actualPassword1 !== this.form.value.actualPassword2) {
-        message = 'attenzione le password non coincidono'
-      }
-      
+  /**
+   * Ritorna il messaggio di errore appropriato
+   */
+  invalidMessage(): string {
+    const password1 = this.form.value.actualPassword1;
+    const password2 = this.form.value.actualPassword2;
+
+    if (!password1 || !password2) {
+      return 'Inserisci la password in entrambi i campi';
     }
 
-    return message;
+    if (password1 !== password2) {
+      return 'Le password non coincidono';
+    }
+
+    if (password1.length < 6) {
+      return 'La password deve contenere almeno 6 caratteri';
+    }
+
+    return '';
   }
 
-
-  showHideInput(idElement:string, elementDOM: IonInput) {
+  /**
+   * Mostra/nasconde la password nei campi input
+   */
+  showHideInput(idElement: string, elementDOM: any): void {
     switch (idElement) {
-      case 'oldpsw':
-          this.showActual = !this.showActual;
-          elementDOM.type = (this.showActual ? 'text':'password');
-        break;
       case 'actualPassword1':
-          this.showNew = !this.showNew;
-          elementDOM.type = (this.showNew ? 'text':'password');
+        this.showNew = !this.showNew;
+        elementDOM.type = this.showNew ? 'text' : 'password';
         break;
 
       case 'actualPassword2':
-          this.showNewRetype = !this.showNewRetype;
-          elementDOM.type = (this.showNewRetype ? 'text':'password');
+        this.showNewRetype = !this.showNewRetype;
+        elementDOM.type = this.showNewRetype ? 'text' : 'password';
         break;
 
       default:
         break;
     }
-
-    
   }
 
+  // =====================================================
+  // GESTIONE ELIMINAZIONE PROFILO
+  // =====================================================
+
   /**
-   * Chiede di nuovo all'utente se è sicuro della eliminazione del profilo
+   * Mostra alert di conferma prima dell'eliminazione
    */
   onClickElimina(): void {
-    let myMessage = '';
-    let myButtons: AlertButton[];
-
-    myMessage = 'Sei sicuro di voler eliminare definitivamente il tuo profilo ?';
-    myButtons = [
+    const alertButtons: AlertButton[] = [
       {
-        text:'No, aspetta', 
-        role:'cancel'
+        text: 'No, aspetta',
+        role: 'cancel',
+        cssClass: 'alert-button-cancel'
       },
       {
-        text: 'Si, elimina',
+        text: 'Sì, elimina',
         role: 'confirm',
+        cssClass: 'alert-button-confirm',
         handler: () => {
           this.requestDeletionProfile();
         }
       }
-    ]
-    //Mostro un alert e procedo con l'eliminazione
-    this.startService.presentAlertMessage(myMessage, 'Eliminazione Profilo', myButtons);
+    ];
+
+    const message = `
+      <p style="text-align: center; line-height: 1.6;">
+        Sei sicuro di voler eliminare definitivamente il tuo profilo?<br><br>
+        <strong>Questa azione non può essere annullata.</strong>
+      </p>
+    `;
+
+    this.startService.presentAlertMessage(
+      message,
+      'Conferma Eliminazione',
+      alertButtons
+    );
   }
 
   /**
-   * Procede con la cancellazione dell'Account
+   * Esegue la richiesta di eliminazione del profilo
    */
-  requestDeletionProfile(): void {
-    let actualPassword = this.form.value.actualPassword1;
-    let myMessage = '';
+  private async requestDeletionProfile(): Promise<void> {
+    const actualPassword = this.form.value.actualPassword1;
+    const loadingMessage = 'Eliminazione in corso...';
 
-    myMessage = 'Attendere, richiesta in corso';
+    try {
+      // Mostra loading
+      const loading = await this.startService.showLoadingMessage(loadingMessage);
+      await loading.present();
 
-    this.startService.showLoadingMessage(myMessage)
-                     .then(elLoading => {
+      // Esegue la richiesta
+      const response = await this.startService.requestDeleteProfile(actualPassword);
 
-                        //Mostro il loading
-                        elLoading.present();
+      // Chiude loading
+      await loading.dismiss();
 
-                        //Faccio la richiesta
-                        this.startService.requestDeleteProfile(actualPassword)
-                                        .then(myResponse => {
-                                            //Spengo il loading
-                                            elLoading.dismiss();
-
-                                            //Cancellazione impedita
-                                            if (myResponse.result == false) {
-                                              this.startService.presentAlertMessage(myResponse.message, 'Eliminazione fallita');
-                                            }
-                                            else {
-                                              //Preparo un messaggio di eliminazione
-                                              this.deletionProfileFinalize();
-                                            }
-
-                                        })
-                                        .catch(error => {
-                                          //Spengo il loading
-                                          elLoading.dismiss();
-
-                                          this.startService.presentAlertMessage(error,'Eliminazione fallita');
-                                        })
-                     });
-  }
-
-  /**
-   * Il profilo è stato cancellato, mostro un Alert Message e quando chiudo torno alla Home 
-   */
-  deletionProfileFinalize(): void {
-    let myMessage = '';
-    let myButtons: AlertButton[];
-
-    myMessage = 'Ci spiace te ne sia andato, ' + '\n' + 'potrai tornare con noi quando lo desideri.'
-    myButtons = [{
-      text: 'Ok',
-      role: ' confirm',
-      handler: () => {
-        this.onGoToBack();
+      // Gestisce la risposta
+      if (response.result === false) {
+        this.showErrorAlert(response.message);
+      } else {
+        this.showSuccessAlert();
       }
-    }]
 
-    //Mostro un Alert conclusivo
-    this.startService.presentAlertMessage(myMessage, 'Profilo eliminato', myButtons)
+    } catch (error) {
+      console.error('Errore durante l\'eliminazione del profilo:', error);
+      this.showErrorAlert('Si è verificato un errore. Riprova più tardi.');
+    }
   }
 
+  /**
+   * Mostra alert di errore
+   */
+  private showErrorAlert(message: string): void {
+    this.startService.presentAlertMessage(
+      message,
+      'Eliminazione Fallita'
+    );
+  }
 
+  /**
+   * Mostra alert di successo e naviga indietro
+   */
+  private showSuccessAlert(): void {
+    const successButtons: AlertButton[] = [
+      {
+        text: 'Ok',
+        role: 'confirm',
+        handler: () => {
+          this.onGoToBack();
+        }
+      }
+    ];
 
+    const successMessage = `
+      <p style="text-align: center; line-height: 1.6;">
+        Il tuo profilo è stato eliminato con successo.<br><br>
+        Ci spiace che tu te ne sia andato, potrai tornare con noi quando lo desideri.
+      </p>
+    `;
+
+    this.startService.presentAlertMessage(
+      successMessage,
+      'Profilo Eliminato',
+      successButtons
+    );
+  }
 }

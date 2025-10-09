@@ -96,18 +96,39 @@
 }
 
 // ========================================
-// MODAL DATETIME
+// MODAL DATETIME - LAYOUT CORRETTO
 // ========================================
 ion-modal.datetime-modal {
-  --background: rgba(0, 0, 0, 0.4);
-  --backdrop-opacity: 0.6;
+  --background: transparent;
   
-  // Header del modal
+  // Container per centrare tutto
+  ::ng-deep .modal-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  // Contenuto della modale
+  ::ng-deep .ion-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  // Header del modal (il titolo)
   .modal-header {
     background: white;
     padding: 20px;
     border-radius: 16px 16px 0 0;
     text-align: center;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
     h3 {
       font-size: 18px;
@@ -119,14 +140,16 @@ ion-modal.datetime-modal {
 
   // DateTime picker
   ion-datetime {
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 16px 16px;
     --background: white;
+    width: 100%;
+    position: relative !important;
+    transform: none !important;
+    top: auto !important;
     
-    @media (max-width: 768px) {
-      border-radius: 16px;
-      max-width: 90%;
-      margin: 0 auto;
+    // Rimuovo il posizionamento assoluto di default
+    &::part(calendar) {
+      position: relative;
     }
 
     // Stile bottoni
@@ -164,6 +187,40 @@ ion-modal.datetime-modal {
     ::part(calendar-day):hover {
       background: rgba(44, 179, 97, 0.1);
     }
+
+    // Anno selezionato (per il picker year)
+    ::part(wheel-item) {
+      &[aria-selected="true"] {
+        color: var(--ion-color-success);
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Mobile: occupare più spazio
+  @media (max-width: 768px) {
+    ::ng-deep .ion-page {
+      max-width: 90vw;
+    }
+
+    .modal-header {
+      border-radius: 16px 16px 0 0;
+    }
+
+    ion-datetime {
+      border-radius: 0 0 16px 16px;
+    }
+  }
+
+  // Desktop: dimensioni fisse
+  @media (min-width: 769px) {
+    ::ng-deep .ion-page {
+      max-width: 400px;
+    }
+
+    .modal-header h3 {
+      font-size: 20px;
+    }
   }
 }
 
@@ -192,12 +249,6 @@ ion-modal.datetime-modal {
 
     .dtinput-calendar-icon ion-icon {
       font-size: 24px;
-    }
-  }
-
-  ion-modal.datetime-modal {
-    .modal-header h3 {
-      font-size: 20px;
     }
   }
 }

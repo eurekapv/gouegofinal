@@ -1,32 +1,425 @@
-#doc-nofind-cnt  {
+// ========================================
+// PAGE CONTAINER
+// ========================================
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+
+  @media (min-width: 768px) {
+    padding: 30px 20px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 40px 30px;
+  }
+}
+
+// ========================================
+// INFO SECTION
+// ========================================
+.info-section {
+  margin-bottom: 30px;
+
+  .info-box {
+    background: #fef9e7;
+    border-left: 4px solid var(--ion-color-tertiary);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 15px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
+    align-items: flex-start;
+    gap: 12px;
+
+    .info-icon {
+      color: var(--ion-color-tertiary);
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .info-text {
+      flex: 1;
+
+      p {
+        margin: 0;
+        color: var(--ion-color-primary);
+        line-height: 1.5;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .upload-button {
+    --background: var(--ion-color-success);
+    --background-hover: var(--ion-color-success-shade);
+    --border-radius: 12px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    ion-icon {
+      font-size: 22px;
+    }
+  }
+}
+
+// ========================================
+// DOCUMENTS GRID
+// ========================================
+.documents-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    gap: 24px;
+  }
+}
+
+// ========================================
+// DOCUMENT CARD
+// ========================================
+.document-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+    .download-button {
+      background: var(--ion-color-success);
+      transform: scale(1.1);
+
+      ion-icon {
+        color: white;
+      }
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
     height: 100%;
-    padding: 0;
-    margin: 0;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    background-color: var(--ion-color-light);
-    color: var(--ion-color-warning);
+    background: var(--ion-color-success);
+  }
+
+  // Icona documento
+  .document-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, 
+      rgba(44, 179, 97, 0.1) 0%, 
+      rgba(44, 179, 97, 0.15) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 32px;
+      color: var(--ion-color-success);
+    }
+  }
+
+  // Contenuto documento
+  .document-content {
+    flex: 1;
+    min-width: 0;
+
+    .document-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ion-color-primary);
+      margin: 0 0 8px 0;
+      line-height: 1.3;
+    }
+
+    .document-date {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--ion-color-mediumlight);
+      margin: 0 0 12px 0;
+
+      ion-icon {
+        font-size: 16px;
+      }
+    }
+
+    .document-status {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  }
+
+  // Bottone download
+  .download-button {
+    width: 48px;
+    height: 48px;
+    background: rgba(44, 179, 97, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 26px;
+      color: var(--ion-color-success);
+      transition: all 0.3s ease;
+    }
+  }
 }
 
-.icon-left{
-    font-size: 40px;
+// ========================================
+// STATUS BADGES
+// ========================================
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  ion-icon {
+    font-size: 16px;
+  }
+
+  // Stato: Valido (verde)
+  &.valid {
+    --background: rgba(44, 179, 97, 0.1);
+    --color: var(--ion-color-success);
+  }
+
+  // Stato: Scaduto (rosso)
+  &.expired {
+    --background: rgba(223, 65, 58, 0.1);
+    --color: var(--ion-color-danger);
+  }
+
+  // Stato: In attesa (giallo)
+  &.pending {
+    --background: rgba(249, 201, 89, 0.1);
+    --color: var(--ion-color-warning);
+  }
 }
 
-div.info{
-    background-color: var(--ion-color-light);
+// ========================================
+// EMPTY STATE
+// ========================================
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  max-width: 500px;
+  margin: 0 auto;
+
+  .empty-icon {
+    width: 120px;
+    height: 120px;
+    background: var(--ion-color-extralight);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px auto;
+
+    ion-icon {
+      font-size: 60px;
+      color: var(--ion-color-mediumlight);
+    }
+  }
+
+  h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    margin: 0 0 10px 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--ion-color-mediumlight);
+    line-height: 1.6;
+    margin: 0 0 25px 0;
+  }
+
+  .empty-upload-button {
+    --background: var(--ion-color-success);
+    --border-radius: 12px;
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    font-weight: 600;
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+// ========================================
+// ANIMAZIONI
+// ========================================
+.document-card {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Delay progressivo per le card
+.document-card:nth-child(1) { animation-delay: 0s; }
+.document-card:nth-child(2) { animation-delay: 0.1s; }
+.document-card:nth-child(3) { animation-delay: 0.15s; }
+.document-card:nth-child(4) { animation-delay: 0.2s; }
+.document-card:nth-child(5) { animation-delay: 0.25s; }
+.document-card:nth-child(6) { animation-delay: 0.3s; }
+
+// ========================================
+// RESPONSIVE - TABLET
+// ========================================
+@media (min-width: 768px) {
+  
+  .info-section {
+    .info-box {
+      padding: 20px;
+
+      .info-icon {
+        font-size: 26px;
+      }
+
+      .info-text p {
+        font-size: 15px;
+      }
+    }
+
+    .upload-button {
+      font-size: 17px;
+    }
+  }
+
+  .document-card {
+    padding: 24px;
+
+    .document-icon {
+      width: 70px;
+      height: 70px;
+
+      ion-icon {
+        font-size: 36px;
+      }
+    }
+
+    .document-content {
+      .document-title {
+        font-size: 18px;
+      }
+
+      .document-date {
+        font-size: 14px;
+      }
+    }
+
+    .download-button {
+      width: 52px;
+      height: 52px;
+
+      ion-icon {
+        font-size: 28px;
+      }
+    }
+  }
+
+  .empty-state {
+    padding: 100px 20px;
+
+    .empty-icon {
+      width: 140px;
+      height: 140px;
+
+      ion-icon {
+        font-size: 70px;
+      }
+    }
+
+    h3 {
+      font-size: 24px;
+    }
 
     p {
-        font-style: italic;
-        font-size: medium;
-        ion-icon{
-            font-size: 20px;
-        }
+      font-size: 16px;
     }
+  }
+}
+
+// ========================================
+// RESPONSIVE - DESKTOP
+// ========================================
+@media (min-width: 1024px) {
+  
+  .document-card {
+    &:hover {
+      transform: translateY(-6px);
+    }
+  }
+}
+
+// ========================================
+// VARIANTI COLORE BARRA LATERALE (Opzionale)
+// ========================================
+// Puoi colorare la barra sinistra in base allo stato
+
+.document-card {
+  // Default: verde (valido)
+  &::before {
+    background: var(--ion-color-success);
+  }
+
+  // Se vuoi differenziare in base allo stato:
+  /*
+  &.status-expired::before {
+    background: var(--ion-color-danger);
+  }
+
+  &.status-pending::before {
+    background: var(--ion-color-warning);
+  }
+  */
 }

@@ -1,66 +1,225 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-back-button 
+        [defaultHref]="backButtonHref"
+        text="Indietro">
+      </ion-back-button>
     </ion-buttons>
-    <ion-title>Badge</ion-title>
-  </ion-toolbar> 
+    <ion-title>BADGE</ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
+  <div class="content-wrapper" *ngIf="actualUtente">
+    
+    <!-- INFO HEADER -->
+    <div class="info-banner">
+      <ion-icon name="qr-code-outline" class="banner-icon"></ion-icon>
+      <div class="banner-text">
+        <p>Utilizza il badge per accedere al centro o presentalo in reception per il riconoscimento</p>
+      </div>
+    </div>
 
-  
-  <ion-grid *ngIf="actualUtente">
-    <ion-row>
-      <ion-col sizeXs="12" 
-      sizeSm="12" 
-      sizeMd="12" 
-      sizeLg="6" offsetLg="3"
-      sizeXl="6" offsetXl="3">
+    <!-- BADGE CONTAINER -->
+    <div class="badge-container">
       
-      <ion-grid class="ion-no-margin ion-no-padding">
-        <ion-row class="ion-no-margin ion-no-padding">
-          <ion-col>
-            
-            <ion-item color="light" lines="none">
-              <ion-label>
-                <p class="ion-text-wrap">
-                  <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-                  utilizza il badge per accedere al centro o presentandolo in reception per agevolare il riconoscimento
-              </ion-label>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-
-        <ion-row class="ion-no-margin ion-no-padding">
-          <ion-col>
-            <ion-card color="light">
-              <ion-card-header>
-                <ion-card-title>{{actualUtente.NOMINATIVO}}</ion-card-title>
-                <ion-card-subtitle *ngIf="actualUtente.NATOIL">
-                  <ion-item color="light" lines="none">
-                    <ion-label>
-                      Data di Nascita {{actualUtente.NATOIL | date : 'dd/MM/yyyy'}}
-                    </ion-label>
-                    <ion-badge color="success">
-                      {{actualUtente.getEtaAsInteger()}} anni
-                    </ion-badge>
-                  </ion-item>
-                </ion-card-subtitle>
-              </ion-card-header>
-            
-              <ion-card-content>
-                <qrcode [qrdata]="actualUtente.getQrCode()" scale="6"></qrcode>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <!-- BADGE CARD -->
+      <div class="digital-badge" [class.flipped]="isFlipped">
         
+        <!-- FRONTE BADGE -->
+        <div class="badge-front">
+          <!-- Header Badge -->
+          <div class="badge-header">
+            <div class="logo-section">
+              <ion-icon name="basketball-outline" class="badge-logo"></ion-icon>
+              <span class="badge-title">OPEN BEACH</span>
+            </div>
+            <div class="badge-type">
+              <ion-icon name="checkmark-circle" class="verified-icon"></ion-icon>
+              <span>MEMBER</span>
+            </div>
+          </div>
 
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          <!-- Avatar / Photo Section -->
+          <div class="avatar-section">
+            <div class="avatar-container">
+              <div class="avatar-circle">
+                <ion-icon name="person" class="avatar-icon"></ion-icon>
+              </div>
+              <div class="status-indicator"></div>
+            </div>
+          </div>
 
+          <!-- User Info -->
+          <div class="user-info-section">
+            <h2 class="user-name">{{ actualUtente.NOMINATIVO }}</h2>
+            
+            <div class="user-details">
+              <div class="detail-item" *ngIf="actualUtente.NATOIL">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>{{ actualUtente.NATOIL | date : 'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="detail-item" *ngIf="actualUtente.NATOIL">
+                <ion-icon name="time-outline"></ion-icon>
+                <span>{{ actualUtente.getEtaAsInteger() }} anni</span>
+              </div>
+            </div>
 
+            <!-- Member Since / ID -->
+            <div class="member-info">
+              <div class="member-id">
+                <span class="id-label">ID MEMBER</span>
+                <span class="id-value">#{{ getMemberID() }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- QR Code Section -->
+          <div class="qr-section">
+            <div class="qr-container">
+              <div class="qr-wrapper">
+                <qrcode 
+                  [qrdata]="actualUtente.getQrCode()" 
+                  [width]="256"
+                  [errorCorrectionLevel]="'M'">
+                </qrcode>
+              </div>
+              <p class="qr-instruction">Scansiona per accedere</p>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="badge-footer">
+            <div class="footer-pattern"></div>
+          </div>
+
+          <!-- Flip Button -->
+          <button class="flip-button" (click)="flipBadge()">
+            <ion-icon name="swap-horizontal-outline"></ion-icon>
+          </button>
+        </div>
+
+        <!-- RETRO BADGE -->
+        <div class="badge-back">
+          <div class="back-content">
+            <div class="back-header">
+              <ion-icon name="information-circle" class="back-icon"></ion-icon>
+              <h3>Informazioni Badge</h3>
+            </div>
+
+            <div class="back-info">
+              <div class="info-row">
+                <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+                <div>
+                  <strong>Accesso Centro</strong>
+                  <p>Presenta questo badge all'ingresso</p>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
+                <div>
+                  <strong>Identificazione Rapida</strong>
+                  <p>Il QR code permette il riconoscimento immediato</p>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <ion-icon name="phone-portrait-outline" color="success"></ion-icon>
+                <div>
+                  <strong>Sempre Disponibile</strong>
+                  <p>Accedi dal tuo smartphone in qualsiasi momento</p>
+                </div>
+              </div>
+
+              <div class="info-row">
+                <ion-icon name="heart-outline" color="danger"></ion-icon>
+                <div>
+                  <strong>Prenota Attività</strong>
+                  <p>Usa il badge per prenotare campi e corsi</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="back-qr-small">
+              <qrcode 
+                [qrdata]="actualUtente.getQrCode()" 
+                [width]="120"
+                [errorCorrectionLevel]="'M'">
+              </qrcode>
+            </div>
+          </div>
+
+          <!-- Flip Back Button -->
+          <button class="flip-button" (click)="flipBadge()">
+            <ion-icon name="swap-horizontal-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="action-buttons">
+      <ion-button 
+        expand="block" 
+        class="action-btn save-btn"
+        (click)="onSaveBadge()">
+        <ion-icon name="download-outline" slot="start"></ion-icon>
+        Salva Badge
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        class="action-btn share-btn"
+        fill="outline"
+        (click)="onShareBadge()">
+        <ion-icon name="share-social-outline" slot="start"></ion-icon>
+        Condividi
+      </ion-button>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+      <h4 class="section-title">Azioni Rapide</h4>
+      
+      <div class="quick-grid">
+        <div class="quick-card" (click)="onNavigateToBooking()">
+          <div class="quick-icon-container booking">
+            <ion-icon name="calendar"></ion-icon>
+          </div>
+          <span>Prenota Campo</span>
+        </div>
+
+        <div class="quick-card" (click)="onNavigateToCourses()">
+          <div class="quick-icon-container courses">
+            <ion-icon name="school"></ion-icon>
+          </div>
+          <span>Corsi</span>
+        </div>
+
+        <div class="quick-card" (click)="onNavigateToProfile()">
+          <div class="quick-icon-container profile">
+            <ion-icon name="person"></ion-icon>
+          </div>
+          <span>Profilo</span>
+        </div>
+
+        <div class="quick-card" (click)="onNavigateToHistory()">
+          <div class="quick-icon-container history">
+            <ion-icon name="time"></ion-icon>
+          </div>
+          <span>Storico</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER INFO -->
+    <div class="footer-note">
+      <ion-icon name="shield-checkmark-outline"></ion-icon>
+      <p>Il tuo badge è personale e non trasferibile. Mantienilo al sicuro.</p>
+    </div>
+
+  </div>
 </ion-content>

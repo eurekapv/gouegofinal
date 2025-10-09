@@ -4,7 +4,6 @@ import { ToastController, ModalController, AlertController, AlertButton } from '
 import { InvioDocumentazione } from 'src/app/models/utente/documentazione.model';
 import {Camera, CameraResultType, Photo, CameraSource } from '@capacitor/camera';
 import { LogApp } from 'src/app/models/zsupport/log.model';
-import { Chooser, ChooserResult } from '@awesome-cordova-plugins/chooser';
 import { FilePicker, PickedFile, PickFilesOptions } from '@capawesome/capacitor-file-picker';
 
 

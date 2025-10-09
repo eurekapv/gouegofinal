@@ -70,3 +70,75 @@
     }
   }
 }
+
+// =====================================================
+// AVATAR ACTION SHEET 
+// =====================================================
+
+.avatar-action-sheet {
+  
+  .action-sheet-wrapper {
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  .action-sheet-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    padding: 28px 24px 20px 24px;
+    background: linear-gradient(to bottom, white, #f4f5f8);
+  }
+
+  .action-sheet-button {
+    height: 64px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--ion-color-extralight);
+    
+    .action-sheet-icon {
+      font-size: 26px;
+      margin-right: 16px;
+    }
+
+    &:hover {
+      background: var(--ion-color-extralight);
+    }
+
+    &:active {
+      background: var(--ion-color-light);
+      transform: scale(0.98);
+    }
+  }
+
+  // Icona Camera - Verde
+  .btn-camera .action-sheet-icon {
+    color: var(--ion-color-success);
+  }
+
+  // Icona Gallery - Blu
+  .btn-gallery .action-sheet-icon {
+    color: var(--ion-color-primary);
+  }
+
+  // Icona Remove - Rosso
+  .btn-remove {
+    color: var(--ion-color-danger);
+    
+    .action-sheet-icon {
+      color: var(--ion-color-danger);
+    }
+
+    &:hover {
+      background: rgba(223, 65, 58, 0.08);
+    }
+  }
+
+  // Bottone Cancel
+  .action-sheet-cancel {
+    height: 60px;
+    font-weight: 700;
+    color: var(--ion-color-mediumlight);
+    border-top: 8px solid var(--ion-color-light);
+    margin-top: 8px;
+  }
+}

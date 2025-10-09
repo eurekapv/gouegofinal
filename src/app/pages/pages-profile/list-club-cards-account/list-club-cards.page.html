@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
-    <ion-title>Tesseramenti</ion-title>
+    <ion-title>TESSERAMENTI</ion-title>
   </ion-toolbar> 
 </ion-header>
 
@@ -13,133 +13,143 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="12" 
-               sizeLg="8" offsetLg="2"
-               sizeXl="6" offsetXl="3">
+  <div class="page-container">
 
-      <div class="info" >
-        <ion-item color="light" lines="none">
-          <ion-label>
-            <p class="ion-text-wrap">
-              <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-              qui trovi l'elenco delle tessere associative disponibili al centro; puoi verificarne la scadenza ed eventualmente scaricare i modelli per la richiesta iscrizione
-          </ion-label>
-        </ion-item>
-      </div>  
+    <!-- INFO BOX -->
+    <div class="info-box">
+      <ion-icon name="information-circle" class="info-icon"></ion-icon>
+      <p>Qui trovi l'elenco delle tessere associative disponibili al centro; puoi verificarne la scadenza ed eventualmente scaricare i moduli per la richiesta iscrizione</p>
+    </div>
 
+    <!-- ACCORDION GROUPS -->
+    <ion-accordion-group 
+          #accordiontessere
+          [multiple]="true"
+          class="cards-accordion">
       
-      <ion-accordion-group 
-            #accordiontessere
-            class="ion-padding-horizontal" 
-            [multiple]="true">
-          <!-- ELENCO TIPOLOGIE TESSERE PREVISTE-->  
-        <ion-accordion *ngFor="let itemTipo of listTipoTessere" [value]="itemTipo.ID">
-          <ion-item slot="header" color="warning">
-            <ion-label>{{itemTipo.DENOMINAZIONE}}</ion-label>
-            <ion-icon slot="start" [name]="itemTipo.FLAGCLUB ? 'home-outline':'planet-outline'"></ion-icon>
-          </ion-item>
-          <!--CONTENT ACCORDION -->
-          <div class="ion-padding" slot="content">
-
-            <ion-grid>
-              <ion-row>
-                <ion-col size="12" sizeXs="12" size-sm="12" sizeMd="12" sizeXl="12" sizeXl="12">
-                    <!-- Nessuna tessera presente-->
-                    <ion-item *ngIf="existListTessereUtente(itemTipo.ID)==false" lines="none">
-                      <ion-label class="ion-text-wrap">
-                        Non sono presenti tessere di questa tipologia
-                      </ion-label>
-                      <ion-icon slot="start" name="id-card-outline"></ion-icon>
-                    </ion-item>
-
-                      <!-- ELENCO DELLE TESSERE COLLEGATE ALL'UTENTE -->
-                      <div
-                        *ngFor="let itemTessera of listTessereUtente" >
-                        <ion-card 
-                            *ngIf="itemTessera.IDTIPOTESSERA == itemTipo.ID"
-                            [color]="itemTessera.isValid() ? 'success':'danger'">
-                          <ion-card-header>
-                            <ion-card-title>{{itemTessera.isValid()?'Tessera Valida':'Tessera Scaduta'}}</ion-card-title>
-                            <ion-card-subtitle>{{itemTessera.CODICE}}</ion-card-subtitle>
-                          </ion-card-header>
-                        
-                          <ion-card-content>
-                            <!-- QRCODE PRESENTE -->
-                            <div *ngIf="flagShowQRCode(itemTessera)">
-                              <ion-grid>
-                                <ion-row>
-
-                                    <ion-col size = "6" size-xs="12" size-sm="12">
-                                      <ion-label>
-                                        Scadenza
-                                      </ion-label>
+      <!-- SINGOLA CATEGORIA TESSERA -->
+      <ion-accordion 
+          *ngFor="let itemTipo of listTipoTessere" 
+          [value]="itemTipo.ID"
+          class="category-accordion">
         
-                                      <ion-badge>
-                                        {{itemTessera.DATASCADENZA | date : 'dd/LL/yyyy'}}
-                                      </ion-badge>
-        
-                                    </ion-col>
-                                    <ion-col size = "6" size-xs="12" size-sm="12">
-                                      <qrcode [qrdata]="itemTessera.getQrCode()" [colorLight]="itemTessera.isValid() ? '#9fd18b':'#df413a'"></qrcode>
-                                    </ion-col>                            
-                                    
-                                    
-                                  </ion-row>
-                                </ion-grid>
-                            </div>
+        <!-- HEADER ACCORDION -->
+        <div slot="header" class="accordion-header">
+          <div class="header-icon">
+            <ion-icon [name]="itemTipo.FLAGCLUB ? 'home':'planet'"></ion-icon>
+          </div>
+          <div class="header-content">
+            <h3>{{itemTipo.DENOMINAZIONE}}</h3>
+          </div>
+          <div class="header-arrow">
+            <ion-icon name="chevron-down"></ion-icon>
+          </div>
+        </div>
 
-                            <!-- QRCODE NON PRESENTE -->
-                            <div *ngIf="flagShowQRCode(itemTessera)==false">
-                              <ion-item  [color]="itemTessera.isValid() ? 'success':'danger'" lines="none">
-                                <ion-label>
-                                  Scadenza
-                                </ion-label>
-                                <ion-badge slot="end">
-                                  {{itemTessera.DATASCADENZA | date : 'dd/LL/yyyy'}}
-                                </ion-badge>
-                              </ion-item>
-                            </div>                        
+        <!-- CONTENT ACCORDION -->
+        <div slot="content" class="accordion-content">
 
-                          </ion-card-content>
-                        </ion-card>
+          <!-- NESSUNA TESSERA PRESENTE -->
+          <div class="empty-cards" *ngIf="existListTessereUtente(itemTipo.ID)==false">
+            <ion-icon name="card-outline"></ion-icon>
+            <p>Non sono presenti tessere di questa tipologia</p>
+          </div>
+
+          <!-- LISTA TESSERE UTENTE -->
+          <div class="membership-cards" *ngIf="existListTessereUtente(itemTipo.ID)">
+            
+            <div 
+                *ngFor="let itemTessera of listTessereUtente"
+                class="membership-card-wrapper">
+              
+              <!-- CARD TESSERA -->
+              <div 
+                  *ngIf="itemTessera.IDTIPOTESSERA == itemTipo.ID"
+                  class="membership-card"
+                  [class.valid]="itemTessera.isValid()"
+                  [class.expired]="!itemTessera.isValid()">
+                
+                <!-- Header Card -->
+                <div class="card-header">
+                  <div class="card-status">
+                    <ion-icon [name]="itemTessera.isValid() ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+                    <span>{{itemTessera.isValid() ? 'Tessera Valida' : 'Tessera Scaduta'}}</span>
+                  </div>
+                </div>
+
+                <!-- Body Card -->
+                <div class="card-body">
+                  
+                  <!-- Info Tessera -->
+                  <div class="card-info">
+                    <div class="card-number">
+                      <ion-icon name="card"></ion-icon>
+                      <span>{{itemTessera.CODICE}}</span>
+                    </div>
+                    <div class="card-expiry">
+                      <ion-icon name="calendar"></ion-icon>
+                      <div>
+                        <p class="expiry-label">Scadenza</p>
+                        <p class="expiry-date">{{itemTessera.DATASCADENZA | date : 'dd/MM/yyyy'}}</p>
                       </div>
-                </ion-col>
+                    </div>
+                  </div>
 
+                  <!-- QR Code (se presente) -->
+                  <div class="card-qr" *ngIf="flagShowQRCode(itemTessera)">
+                    <qrcode 
+                        [qrdata]="itemTessera.getQrCode()" 
+                        [colorLight]="itemTessera.isValid() ? '#ffffff':'#ffffff'"
+                        [colorDark]="itemTessera.isValid() ? '#2cb361':'#df413a'"
+                        [width]="120">
+                    </qrcode>
+                  </div>
 
-                <!-- MODULI RICHIESTE-->
-                <ion-col size="12" size-xs="12" size-sm="12" size-md="6" size-lg="8" size-xl="8">
-                  <ion-list *ngIf="itemTipo.TIPITESSERETEMPLATE.length != 0">
-                    <ion-list-header>Moduli richieste</ion-list-header>
-                    <ion-item 
-                        (click)="onDownloadTemplate(itemTemplate)"
-                        *ngFor="let itemTemplate of itemTipo.TIPITESSERETEMPLATE">
-                      <ion-icon slot="start" name="document-attach-outline"></ion-icon>
-                      <ion-label class="ion-text-wrap">
-                          {{itemTemplate.DESCRIZIONE}}
-                      </ion-label>
-                      <ion-icon slot="end" name="cloud-download-outline"></ion-icon>
-                    </ion-item>
-                  </ion-list>
+                </div>
 
-                </ion-col>
-              </ion-row>
-            </ion-grid>
+              </div>
 
-
-
-
-
-
+            </div>
 
           </div>
-        </ion-accordion>
-      </ion-accordion-group>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+          <!-- MODULI DA SCARICARE -->
+          <div class="modules-section" *ngIf="itemTipo.TIPITESSERETEMPLATE.length != 0">
+            
+            <h4 class="modules-title">
+              <ion-icon name="document-text"></ion-icon>
+              Moduli richieste
+            </h4>
+
+            <div class="modules-list">
+              <div 
+                  class="module-item"
+                  *ngFor="let itemTemplate of itemTipo.TIPITESSERETEMPLATE"
+                  (click)="onDownloadTemplate(itemTemplate)">
+                
+                <div class="module-icon">
+                  <ion-icon name="document-attach"></ion-icon>
+                </div>
+                
+                <div class="module-info">
+                  <p>{{itemTemplate.DESCRIZIONE}}</p>
+                </div>
+
+                <div class="module-download">
+                  <ion-icon name="cloud-download"></ion-icon>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </ion-accordion>
+
+    </ion-accordion-group>
+
+  </div>
 
 </ion-content>

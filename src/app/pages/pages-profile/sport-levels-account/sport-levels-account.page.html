@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
-    <ion-title>Livelli Attività</ion-title>
+    <ion-title>LIVELLI ATTIVITÀ</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,53 +13,69 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- LIVELLI PRESENTI -->
-  <div class="ion-no-padding" *ngIf="utente.UTENTILIVELLI && utente.UTENTILIVELLI.length > 0">
-    <div style="height: 1vh;"></div>
-    <div class="info" >
-      <ion-item color="light" lines="none">
-        <ion-label>
-          <p class="ion-text-wrap">
-            <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-            I tuoi livelli verranno utilizzati per determinare i corsi più adatti a te.
-            <!-- Tocca un livello per condividerlo con i tuoi amici -->
-        </ion-label>
-      </ion-item>
+  <div class="page-container">
+
+    <!-- INFO BOX -->
+    <div class="info-box" *ngIf="utente.UTENTILIVELLI && utente.UTENTILIVELLI.length > 0">
+      <ion-icon name="information-circle" class="info-icon"></ion-icon>
+      <p>I tuoi livelli verranno utilizzati per determinare i corsi più adatti a te</p>
     </div>
-    
-    <ion-grid>
-      <ion-row>
-        <ion-col *ngFor="let livello of utente.UTENTILIVELLI"  [id]="livello.ID" sizeXs="10" offsetXs="1" sizeSm="6" offsetSm="0" sizeMd="4" sizeLg="3">
-          <ion-card  [button]="!isDesktop" class="card-livello" >
-              <ion-card-header class="ion-no-padding ion-text-center">
-                <img *ngIf="showLogoGruppo" [src]="logoGruppoBase64" id="img-logo">
-              </ion-card-header>
-              <h2 class="ion-text-center">{{ livello.DESCRSPORT }}</h2>
-            <ion-card-content>
-                <ion-row>
-                  <ion-col size="12" class="ion-text-center">
-                    <img  src="/assets/trophy2.png">
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col size="12">
-                    <div class="level-label">
-                      <h1 class="ion-text-center">{{ livello.DESCRLIVELLO }}</h1>
-                    </div>
-                  </ion-col>
-                </ion-row>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+
+    <!-- GRID LIVELLI -->
+    <div class="levels-grid" *ngIf="utente.UTENTILIVELLI && utente.UTENTILIVELLI.length > 0">
+      
+      <div class="level-card" *ngFor="let livello of utente.UTENTILIVELLI" [id]="livello.ID">
+        
+        <!-- Header con gradiente -->
+        <div class="card-header">
+          
+          <!-- Logo gruppo (se presente) -->
+          <div class="logo-container" *ngIf="showLogoGruppo">
+            <img [src]="logoGruppoBase64" alt="Logo" class="gruppo-logo">
+          </div>
+
+          <!-- Icona trofeo -->
+          <div class="trophy-icon">
+            <ion-icon name="trophy"></ion-icon>
+          </div>
+
+        </div>
+
+        <!-- Body della card -->
+        <div class="card-body">
+          
+          <!-- Nome Sport -->
+          <h2 class="sport-name">{{ livello.DESCRSPORT }}</h2>
+
+          <!-- Badge Livello -->
+          <div class="level-badge">
+            <ion-icon name="medal"></ion-icon>
+            <span>{{ livello.DESCRLIVELLO }}</span>
+          </div>
+
+        </div>
+
+        <!-- Footer con dettagli -->
+        <div class="card-footer">
+          <div class="footer-item">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <span>Certificato</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" *ngIf="!utente.UTENTILIVELLI || utente.UTENTILIVELLI.length == 0">
+      <div class="empty-icon">
+        <ion-icon name="trophy-outline"></ion-icon>
+      </div>
+      <h3>Nessun livello assegnato</h3>
+      <p>Per il momento non hai ancora nessun livello. Potrai ottenere un livello dopo aver frequentato una prova presso le nostre strutture</p>
+    </div>
+
   </div>
 
-  <!-- LIVELLI NON PRESENTI -->
-  <div
-    *ngIf="!utente.UTENTILIVELLI || utente.UTENTILIVELLI.length == 0" 
-    class="nofind-cnt"
-  >
-    <ion-label>Per il momento non hai ancora nessun livello assegnato, potrai ottenere un livello dopo aver frequentato una prova presso le nostre strutture</ion-label>
-  </div>
 </ion-content>

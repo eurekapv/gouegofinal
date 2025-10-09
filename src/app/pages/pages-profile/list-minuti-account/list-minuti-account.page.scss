@@ -1,181 +1,444 @@
-div.info {
-    p{
-        font-style: italic;
-        
-        font-weight: 600;
-        ion-icon{
-            font-size: 20px;
-        }
-    }
+// ========================================
+// PAGE CONTAINER
+// ========================================
+.page-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 15px;
+
+  @media (min-width: 768px) {
+    padding: 30px 20px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 40px 30px;
+  }
 }
 
-
-/*#region Ticket2 */
-$red: var(--ion-color-danger-shade);
-$grey: #ecedef;
-$black: var(--ion-color-primary);
-
-.cardWrap {
-
-  color: #fff;
-  font-family: sans-serif;
+// ========================================
+// INFO BOX
+// ========================================
+.info-box {
+  background: #fef9e7;
+  border-left: 4px solid var(--ion-color-tertiary);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 25px;
   display: flex;
-  justify-content: center;  
- 
-  
-  .card {
-    
-    background: linear-gradient(to bottom, var(--ion-color-primary-shade) 0%, var(--ion-color-primary-shade) 26%, #ecedef 26%, #ecedef 100%);
+  align-items: flex-start;
+  gap: 12px;
 
-    float: left;
-    position: relative; 
-    padding: 0.5em 1em 0.5em 1em;
+  .info-icon {
+    color: var(--ion-color-tertiary);
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
 
-    &.cardLeft {
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
-      width: 16em;
-    }
-    
-    &.cardRight {
-      width: 6.5em;
-      border-left: .18em dashed #fff;
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
-      &:before,
-      &:after {
-        content: "";
-        position: absolute;
-        display: block;
-        width: .9em;
-        height: .9em;
-        background: #fff;
-        border-radius: 50%;
-        left: -.5em;
-      }
-      &:before {
-        top: -.4em;
-      }
-      &:after {
-      bottom: -.4em;
-      }
-  }
-  
-  }
-  
-  h1 {
-    font-size: 1.1em;
-    margin-top: 0;
-    span {
-      font-weight: normal;
-    }
-  }
-  
-  .title, .name, .seat, .time {
-    text-transform: uppercase;
-    font-weight: normal;
-    h2 {
-      font-size: .9em;
-      color: #525252;
-      margin: 0;
-     }
-    span {
-      font-size: .7em;
-      color: #a2aeae;
-    }
-  }
-  
-  .title {
-    margin: 2em 0 0 0;
-  }
-  
-  .name, .seat {
-    margin: .7em 0 0 0;
-  }
-  
-  .time {
-    margin: .7em 0 0 1em;
-  }
-  
-  .seat, .time {
-    float: left;
-  }
-  
-  .eye {
-    position: relative;
-    width: 2em;
-    height: 1.5em;
-    background: #fff;
-    margin: 0 auto;
-    border-radius: 1em/0.6em;
-    z-index: 1;
-    &:before, &:after {
-      content:"";
-      display: block;
-      position: absolute;
-      border-radius: 50%;
-    }
-    &:before {
-      width: 1em;
-      height: 1em;
-      background: $red;
-      z-index: 2;
-      left: 8px;
-      top: 4px;
-    }
-    &:after {
-    width: .5em;
-    height: .5em;
-    background: #fff;
-    z-index: 3;
-    left: 12px;
-    top: 8px;
-    }
-  }
-  
-  .number {
-    text-align: center;
-    text-transform: uppercase;
-    h3 {
-      color: $red;
-      margin: .4em 0 0 0;
-      font-size: 2em;
-      
-    }
-    span {
-      display: block;
-      color: #a2aeae;
-    }
-  }
-  
-  .barcode {
-    height: 2em;
-    width: 0;
-    margin: 1.2em 0 0 .8em;
-    box-shadow: 1px 0 0 1px $black,
-    5px 0 0 1px $black,
-    10px 0 0 1px $black,
-    11px 0 0 1px $black,
-    15px 0 0 1px $black,
-    18px 0 0 1px $black,
-    22px 0 0 1px $black,
-    23px 0 0 1px $black,
-    26px 0 0 1px $black,
-    30px 0 0 1px $black,
-    35px 0 0 1px $black,
-    37px 0 0 1px $black,
-    41px 0 0 1px $black,
-    44px 0 0 1px $black,
-    47px 0 0 1px $black,
-    51px 0 0 1px $black,
-    56px 0 0 1px $black,
-    59px 0 0 1px $black,
-    64px 0 0 1px $black,
-    68px 0 0 1px $black,
-    72px 0 0 1px $black,
-    74px 0 0 1px $black,
-    77px 0 0 1px $black,
-    81px 0 0 1px $black;
+  p {
+    margin: 0;
+    color: var(--ion-color-primary);
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
   }
 }
-/*#endregion*/
+
+// ========================================
+// HERO CARD - MINUTI RESIDUI
+// ========================================
+.hero-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 30px;
+
+  .hero-header {
+    background: linear-gradient(135deg, 
+      var(--ion-color-success) 0%, 
+      var(--ion-color-success-shade) 100%);
+    padding: 25px 20px;
+    text-align: center;
+    position: relative;
+
+    &.hero-header-zero {
+      background: linear-gradient(135deg, 
+          var(--ion-color-danger) 0%, 
+          var(--ion-color-danger-shade) 100%);
+    }
+
+    .hero-icon {
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px auto;
+
+      ion-icon {
+        font-size: 36px;
+        color: white;
+      }
+    }
+
+    h2 {
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .hero-number {
+    padding: 40px 20px;
+    background: linear-gradient(to bottom, 
+      white 0%, 
+      var(--ion-color-extralight) 100%);
+
+    .number-display {
+      text-align: center;
+
+      .number {
+        display: block;
+        font-size: 72px;
+        font-weight: 700;
+        color: var(--ion-color-success);
+        line-height: 1;
+        letter-spacing: -2px;
+        text-shadow: 0 2px 4px rgba(44, 179, 97, 0.1);
+
+        &.number-zero {
+          color: var(--ion-color-danger);
+        }
+      }
+
+      .label {
+        display: block;
+        font-size: 16px;
+        color: var(--ion-color-mediumlight);
+        font-weight: 500;
+        margin-top: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    }
+  }
+
+  .hero-info {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 15px;
+    background: white;
+    border-top: 1px solid var(--ion-color-light);
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+
+      ion-icon {
+        font-size: 24px;
+        color: var(--ion-color-tertiary);
+        flex-shrink: 0;
+      }
+
+      .info-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ion-color-primary);
+        margin: 0 0 4px 0;
+        line-height: 1.2;
+      }
+
+      .info-subtitle {
+        font-size: 11px;
+        color: var(--ion-color-mediumlight);
+        margin: 0;
+        text-transform: uppercase;
+      }
+    }
+
+    .info-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--ion-color-light);
+    }
+  }
+}
+
+// ========================================
+// SEZIONE PACCHETTI
+// ========================================
+.pacchetti-section {
+  margin-top: 30px;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ion-color-primary);
+      margin: 0;
+    }
+
+    ion-badge {
+      --padding-start: 10px;
+      --padding-end: 10px;
+      --padding-top: 6px;
+      --padding-bottom: 6px;
+      font-weight: 600;
+    }
+  }
+
+  .pacchetti-list {
+    position: relative;
+  }
+}
+
+// ========================================
+// CARD PACCHETTO (TIMELINE STYLE)
+// ========================================
+.pacchetto-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 20px;
+  position: relative;
+  padding: 20px;
+  border-left: 4px solid var(--ion-color-success);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .pacchetto-header {
+    margin-bottom: 12px;
+
+    .date-badge {
+      --background: rgba(44, 179, 97, 0.1);
+      --color: var(--ion-color-success);
+      --padding-start: 12px;
+      --padding-end: 12px;
+      --padding-top: 8px;
+      --padding-bottom: 8px;
+      font-weight: 600;
+      font-size: 12px;
+      border-radius: 8px;
+
+      ion-icon {
+        font-size: 14px;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .pacchetto-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    .pacchetto-info {
+      flex: 1;
+
+      h4 {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ion-color-primary);
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+
+    .pacchetto-minuti {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, 
+        rgba(44, 179, 97, 0.08) 0%, 
+        rgba(44, 179, 97, 0.12) 100%);
+      padding: 12px 18px;
+      border-radius: 12px;
+      min-width: 80px;
+
+      .minuti-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--ion-color-success);
+        line-height: 1;
+      }
+
+      .minuti-label {
+        font-size: 11px;
+        color: var(--ion-color-mediumlight);
+        margin-top: 4px;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Linea timeline tra le card
+  .timeline-line {
+    position: absolute;
+    left: -2px;
+    bottom: -20px;
+    width: 4px;
+    height: 20px;
+    background: var(--ion-color-light);
+  }
+}
+
+// ========================================
+// EMPTY STATE
+// ========================================
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+
+  ion-icon {
+    font-size: 80px;
+    color: var(--ion-color-light);
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    margin: 0 0 10px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ion-color-mediumlight);
+    margin: 0;
+  }
+}
+
+// ========================================
+// RESPONSIVE - TABLET
+// ========================================
+@media (min-width: 768px) {
+  
+  .hero-card {
+    .hero-header {
+      padding: 30px 25px;
+
+      .hero-icon {
+        width: 80px;
+        height: 80px;
+
+        ion-icon {
+          font-size: 40px;
+        }
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+    }
+
+    .hero-number {
+      padding: 50px 30px;
+
+      .number-display .number {
+        font-size: 90px;
+      }
+    }
+
+    .hero-info {
+      padding: 25px 30px;
+    }
+  }
+
+  .pacchetto-card {
+    padding: 25px;
+
+    .pacchetto-body {
+      .pacchetto-info h4 {
+        font-size: 16px;
+      }
+
+      .pacchetto-minuti {
+        padding: 15px 22px;
+        min-width: 90px;
+
+        .minuti-value {
+          font-size: 28px;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// RESPONSIVE - DESKTOP
+// ========================================
+@media (min-width: 1024px) {
+  
+  .page-container {
+    max-width: 900px;
+  }
+
+  .hero-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+
+    .hero-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 35px 40px;
+
+      .hero-icon {
+        margin: 0;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+    }
+
+    .hero-number {
+      grid-column: 1 / -1;
+      padding: 50px 40px;
+    }
+
+    .hero-info {
+      grid-column: 1 / -1;
+      padding: 30px 40px;
+    }
+  }
+
+  .pacchetti-section {
+    .section-header h3 {
+      font-size: 22px;
+    }
+  }
+
+  .pacchetto-card {
+    padding: 30px;
+
+    &:hover {
+      transform: translateX(8px);
+    }
+  }
+}

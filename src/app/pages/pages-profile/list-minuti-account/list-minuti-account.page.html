@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
-    <ion-title>Pacchetti Ore</ion-title>
+    <ion-title>PACCHETTI ORE</ion-title>
   </ion-toolbar> 
 </ion-header>
 
@@ -13,87 +13,99 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeXs="12" 
-      sizeSm="12" 
-      sizeMd="12" 
-      sizeLg="6" offsetLg="3"
-      sizeXl="6" offsetXl="3">
+  <div class="page-container">
+    
+    <!-- INFO BOX -->
+    <div class="info-box">
+      <ion-icon name="information-circle" class="info-icon"></ion-icon>
+      <p>Qui trovi l'elenco dei pacchetti ore acquistati e i minuti ancora disponibili</p>
+    </div>
 
-      <ion-grid>
-        <ion-row class="ion-padding-vertical">
-          <ion-col class="ion-no-padding">
+    <!-- CARD HERO - MINUTI RESIDUI -->
+    <div class="hero-card">
+      
+      <!-- Sezione superiore con gradiente -->
+      <div [class]="minutiValue==0 ?'hero-header hero-header-zero':'hero-header'">
+        <div class="hero-icon">
+          <ion-icon name="time"></ion-icon>
+        </div>
+        <h2>Minuti Disponibili</h2>
+      </div>
 
-            <div class="info">
-              <ion-item color="light" lines="none">
-                <ion-label>
-                  <p class="ion-text-wrap">
-                    <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-                    qui trovi l'elenco dei pacchetti Ore acquistati e residui
-                </ion-label>
-              </ion-item>
-            </div> 
+      <!-- Numero grande centrale -->
+      <div class="hero-number">
+        <div class="number-display">
+          <span [class]="minutiValue==0 ?'number number-zero':'number'">{{minutiValue}}</span>
+          <span class="label">minuti</span>
+        </div>
+      </div>
 
-          </ion-col>
-        </ion-row>
+      <!-- Info pacchetti -->
+      <div class="hero-info">
+        <div class="info-item">
+          <ion-icon name="ticket"></ion-icon>
+          <div>
+            <p class="info-title">Pacchetti Allenamenti</p>
+            <p class="info-subtitle">residui</p>
+          </div>
+        </div>
+        <div class="info-divider"></div>
+        <div class="info-item">
+          <ion-icon name="list"></ion-icon>
+          <div>
+            <p class="info-title">Utilizzabili in</p>
+            <p class="info-subtitle">corsi aperti</p>
+          </div>
+        </div>
+      </div>
 
-        <ion-row class="ion-no-padding">
-          <ion-col class="ion-no-padding">
-            <div class="cardWrap">
-              <div class="card cardLeft">
-                <h1>Pacchetti <span>Residui</span></h1>
-                <div class="title">
-                  <h2>Pacchetti Allenamenti</h2>
-                  <span>residui</span>
-                </div>
-                <div class="name">
-                  <h2>Utilizzabili in</h2>
-                  <span>corsi aperti</span>
-                </div>
-              </div>
-              <div class="card cardRight">
-                <div class="eye"></div>
-                <div class="number">
-                  <h3>{{minutiValue}}</h3>
-                  <span>minuti</span>
-                </div>
-              </div>
-            
+    </div>
+
+    <!-- LISTA PACCHETTI -->
+    <div class="pacchetti-section" *ngIf="loadedData && listUtenteMinuti.length != 0">
+      
+      <div class="section-header">
+        <h3>Storico Pacchetti</h3>
+        <ion-badge color="primary">{{listUtenteMinuti.length}}</ion-badge>
+      </div>
+
+      <div class="pacchetti-list">
+        <div class="pacchetto-card" *ngFor="let item of listUtenteMinuti; let i = index">
+          
+          <!-- Badge data -->
+          <div class="pacchetto-header">
+            <ion-badge class="date-badge">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{item.DATAOPERAZIONE | date: 'dd MMM yyyy'}}
+            </ion-badge>
+          </div>
+
+          <!-- Contenuto pacchetto -->
+          <div class="pacchetto-body">
+            <div class="pacchetto-info">
+              <h4>{{item.DESCRIZIONE}}</h4>
             </div>
-          </ion-col>
-        </ion-row>
+            <div class="pacchetto-minuti">
+              <span class="minuti-value">{{item.VALOREMINUTI}}</span>
+              <span class="minuti-label">min</span>
+            </div>
+          </div>
 
-        <ion-row
-            *ngIf="loadedData && listUtenteMinuti.length != 0" 
-            class="ion-no-padding">
-          <ion-col class="ion-no-padding">
-            <ion-list
-                lines="none">
-              <ion-list-header mode="ios">
-                  Pacchetti Orari
-              </ion-list-header>
-              <ion-item *ngFor="let item of listUtenteMinuti">
-                <ion-label class="ion-text-wrap">
-                    <ion-badge color="success">{{item.DATAOPERAZIONE | date }}</ion-badge>
-                    <h6>
-                      {{item.DESCRIZIONE}}
-                    </h6>
-                  </ion-label>
-                <ion-label slot="end" class="text-align-right">
-                  <h6>
-                    {{item.VALOREMINUTI}}
-                  </h6> 
-                  <p>minuti</p>
-                </ion-label>
-              </ion-item>
-            </ion-list>
-          </ion-col>
-        </ion-row>
+          <!-- Linea timeline (tranne ultimo) -->
+          <div class="timeline-line" *ngIf="i < listUtenteMinuti.length - 1"></div>
 
-      </ion-grid>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" *ngIf="loadedData && listUtenteMinuti.length == 0">
+      <ion-icon name="time-outline"></ion-icon>
+      <h3>Nessun pacchetto trovato</h3>
+      <p>Non hai ancora acquistato pacchetti ore</p>
+    </div>
+
+  </div>
 
 </ion-content>

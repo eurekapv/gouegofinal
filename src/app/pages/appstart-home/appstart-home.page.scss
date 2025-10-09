@@ -225,10 +225,12 @@ ion-tabs {
         padding-right: 5px !important;
 
         &.md {
-            padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
+            padding-bottom: var(--ion-safe-area-bottom) !important;
+            // padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
         }
         &.ios {
-            padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
+            // padding-bottom: calc(var(--ion-safe-area-bottom) + 12px) !important;
+            padding-bottom: var(--ion-safe-area-bottom)  !important;
         }
 
         ion-tab-button {
@@ -354,11 +356,11 @@ ion-tabs {
         justify-content: flex-start; 
         width: 80px; 
         top: 15px;
-        left: 15px;
+        left: 5px;
         height: calc(100vh - 30px);
         flex-direction: column;
         border-radius: 25px;
-        margin: 0;
+        margin: 0 !important;
         padding: 16px 10px !important;
         background: rgba(25, 35, 51, 0.9);
 

@@ -962,6 +962,20 @@ ion-content {
   }
 }
 
+
+// Hidden dtinput - invisibile ma cliccabile
+.hidden-dtinput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  
+  .dtinput-trigger {
+    pointer-events: auto;
+  }
+}
 // =====================================================
 // TRAINER SPECIFIC CARDS
 // =====================================================

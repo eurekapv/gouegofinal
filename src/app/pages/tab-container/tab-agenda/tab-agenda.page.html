@@ -150,7 +150,7 @@
           </div>
         </div>
         <ion-badge [color]="getImpegnoColor(nextImpegno)">
-          {{ getImpegnoType(nextImpegno) }}
+          {{ getCampoImpegno(nextImpegno) }}
         </ion-badge>
       </div>
 
@@ -229,7 +229,7 @@
             <div class="card-header">
               <h4>{{ impegno.DENOMINAZIONE }}</h4>
               <ion-badge [color]="getImpegnoColor(impegno)" class="type-badge">
-                {{ getImpegnoType(impegno) }}
+                {{ getCampoImpegno(impegno) }}
               </ion-badge>
             </div>
 
@@ -371,6 +371,7 @@
       </ion-chip>
     </div>
 
+
     <!-- DATE PICKER CARD -->
     <div class="date-picker-card" (click)="openDatePicker()">
       <div class="date-display">
@@ -383,8 +384,8 @@
       <ion-icon name="chevron-down" class="expand-icon"></ion-icon>
     </div>
 
-    <!-- Hidden date picker -->
-    <div style="display: none;">
+    <!-- Hidden date picker - INVISIBILE ma PRESENTE -->
+    <div class="hidden-dtinput">
       <app-dtinput
         textAlignmentRight="true"
         title="Filtro"

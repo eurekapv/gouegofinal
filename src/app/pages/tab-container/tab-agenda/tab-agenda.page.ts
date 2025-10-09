@@ -829,18 +829,31 @@ getImpegnoIcon(impegno: Impegno): string {
  * Ritorna tipo impegno (label)
  */
 getImpegnoType(impegno: Impegno): string {
+  
+
+  
   if (!impegno) return 'Impegno';
 
   switch (impegno.SETTORE) {
     case SettoreAttivita.settoreCorso:
       return 'Corso';
     case SettoreAttivita.settorePrenotazione:
-      return 'Campo';
+      return 'Prenotazione';
     case SettoreAttivita.settoreEvento:
       return 'Evento';
     default:
       return 'Impegno';
   }
+}
+
+/**
+ * Ritorna il campo dell'impegno
+ * @param impegno 
+ * @returns 
+ */
+getCampoImpegno(impegno: Impegno):string {
+  if (!impegno) return 'Campo';
+  return impegno['_DENOMINAZIONE_Campo'];
 }
 
 /**
@@ -1221,15 +1234,17 @@ getDateFormat(): string {
  * Apre date picker (programmaticamente attiva il componente dtinput)
  */
 openDatePicker(): void {
-  // Toggle della classe per animazione
   const dateCard = document.querySelector('.date-picker-card');
   if (dateCard) {
     dateCard.classList.toggle('expanded');
   }
   
-  // Trigger click sul dtinput nascosto
-  // Implementa logica per aprire il picker
-  console.log('Open date picker');
+  setTimeout(() => {
+    const dtInputTrigger = document.querySelector('.hidden-dtinput .dtinput-trigger');
+    if (dtInputTrigger) {
+      (dtInputTrigger as HTMLElement).click();
+    }
+  }, 50);
 }
 
 /**
@@ -1243,7 +1258,6 @@ onGestionePresenze(event: Event, impegno: ImpegnoCollaboratore): void {
     const pathNavigate = ['/','appstart-home','tab-agenda','trainer','detail-presenza', impegno.ID];
     this.navController.navigateForward(pathNavigate);
   } else {
-    this.startService,
     this.startService.presentToastMessage('Gestione presenze disponibile solo per i corsi', 'warning');
   }
 }

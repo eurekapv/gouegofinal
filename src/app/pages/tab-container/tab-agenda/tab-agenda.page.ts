@@ -1491,26 +1491,25 @@ hideLoadingTrainer(): void {
     this.requestListImpegniCustode();
   }  
 
-  /**
-   * Cambiata la Location sul Custode
-   * @param idLocation 
-   */
+  
   onChangeLocationCustode(idLocation: string) {
+  //Reimposto il valore a 10
+  this.numRequestImpegniCustodeTop = 10;
 
-    //Reimposto il valore a 10
-    this.numRequestImpegniCustodeTop = 10;
+  if (idLocation && idLocation.length != 0) {
+    this.idSelectedLocation = idLocation;
 
-    if (idLocation && idLocation.length != 0) {
-      this.idSelectedLocation = idLocation;
+    this.selectedLocation = this.listLocation.find(itemLocation => {
+      return itemLocation.ID == idLocation
+    });
 
-      this.selectedLocation = this.listLocation.find(itemLocation => {
-        return itemLocation.ID == idLocation
-      });
-
-      //Chiedo il recupero Impegni
-      this.requestListImpegniCustode();
-    }
+    //Chiudo la lista location
+    this.showLocationFilter = false;
+    
+    //Chiedo il recupero Impegni
+    this.requestListImpegniCustode();
   }
+}
 
 
   /**

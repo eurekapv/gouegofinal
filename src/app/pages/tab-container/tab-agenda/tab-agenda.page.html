@@ -603,8 +603,8 @@
       <ion-icon name="chevron-forward" class="action-arrow"></ion-icon>
     </div>
 
-    <!-- Clienti -->
-    <div class="action-card secondary" (click)="goToListCustomer()">
+    <!-- Clienti per ora disattivata -->
+    <!-- <div class="action-card secondary" (click)="goToListCustomer()">
       <div class="action-icon">
         <ion-icon name="people"></ion-icon>
       </div>
@@ -613,7 +613,7 @@
         <p>Gestisci anagrafica</p>
       </div>
       <ion-icon name="chevron-forward" class="action-arrow"></ion-icon>
-    </div>
+    </div> -->
   </div>
 
   <!-- FILTRI PERIODO -->
@@ -679,7 +679,7 @@
     <div 
       *ngIf="showLocationFilter && listLocation && listLocation.length > 2"
       class="location-options"
-      [@slideDown]>
+      >
       <div 
         class="location-option"
         *ngFor="let itemLocation of listLocation"

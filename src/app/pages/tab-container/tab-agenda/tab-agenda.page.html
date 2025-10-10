@@ -556,157 +556,218 @@
 
 </div>
 
-          <!-- SEGMENTO CUSTODE -->
-          <div *ngIf="selectedView == 'custode'">
-            <ion-button 
-                *ngIf="!platformDesktop"
-                expand="full"
-                (click)="onClickQrCodeCustode()">
-                <ion-icon slot="start" name="qr-code-outline"></ion-icon>
-                Scansiona Codice
-            </ion-button>
+<!-- SEGMENTO CUSTODE -->
+<div *ngIf="selectedView == 'custode'" class="custode-view">
 
-            <!-- UTILIZZATO IN TEST PER INSERIRE MANUALMENTE QRCODE-->
-            <!-- <ion-grid class="ion-no-margin ion-no-padding">
-              <ion-row 
-                  *ngIf="platformDesktop && developerMode"
-                  class="ion-no-margin ion-no-padding">
-                <ion-col size="8">
-                  <ion-searchbar
-                      mode="ios"
-                      [debounce]="1000" 
-                      [(ngModel)]="inputManualCode"
-                      show-cancel-button="never"
-                      show-clear-button="never"
-                      search-icon="search-outline"
-                      placeholder="inserisci codice a barre">
-                  </ion-searchbar>
-                </ion-col>
-                <ion-col size="4">
-                  <ion-button
-                    (click)="onClickSearchManualCode()"
-                    fill="outline"
-                    >
-                    Cerca
-                  </ion-button>
-                </ion-col>
-              </ion-row>
-            </ion-grid> -->
+  <!-- QUICK STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <ion-icon name="today-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ getOccupazioniOggi() }}</span>
+        <span class="stat-label">Oggi</span>
+      </div>
+    </div>
 
+    <div class="stat-card">
+      <ion-icon name="location-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ getLocationAttive() }}</span>
+        <span class="stat-label">Location</span>
+      </div>
+    </div>
 
-            
-            <!-- AREA FILTRO -->
-            <ion-card 
-                class="ion-margin-horizontal"
-                color="light"
-                class="filter">
-                <ion-grid class="ion-no-margin">
-                  <ion-row class="ion-no-margin">
-                    <ion-col 
-                          [sizeXs]="colBreakpointPeriodi"
-                          [sizeSm]="colBreakpointPeriodi"
-                          [sizeMd]="colBreakpointPeriodi"
-                          [sizeLg]="colBreakpointPeriodi"
-                          [sizeXl]="colBreakpointPeriodi"
+    <div class="stat-card active">
+      <ion-icon name="calendar-outline" class="stat-icon"></ion-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ listImpegniCustode?.length || 0 }}</span>
+        <span class="stat-label">Totale</span>
+      </div>
+    </div>
+  </div>
 
-                          *ngFor="let item of searchListPeriodi">
-                        <ion-button
-                          size="small"
-                          (click)="onChangePeriodoCustode(item.value)"
-                          [color]="item.value==searchCustodePeriodo ? 'success':'light'"
-                          expand="full">
-                          {{item.title}}
-                        </ion-button>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>
-                      <app-dtinput
-                        textAlignmentRight="true"
-                        title="Filtro"
-                        [label]="searchCustodeDateLabel"
-                        itemColor="light"
-                        itemLines="none"
-                        iconName="calendar-outline"
-                        iconColor="primary"
-                        maskFormat="dddd dd/MM/yyyy"
-                        [calendarMode]="searchCustodeCalendarMode"
-                        [(actualDate)]="searchCustodeDate"
-                        (actualDateChange)="onChangeDataPeriodoCustode()"
-                    >
-                    </app-dtinput>
-                    </ion-col>
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions">
+    <!-- Scansiona QR -->
+    <div 
+      *ngIf="!platformDesktop"
+      class="action-card primary" 
+      (click)="onClickQrCodeCustode()">
+      <div class="action-icon">
+        <ion-icon name="qr-code"></ion-icon>
+      </div>
+      <div class="action-content">
+        <h4>Scansiona Codice</h4>
+        <p>QR Code utente o prenotazione</p>
+      </div>
+      <ion-icon name="chevron-forward" class="action-arrow"></ion-icon>
+    </div>
 
-                  </ion-row>
-                  <!-- SE AVESSI PIU LOCATION MOSTRO UNA SCELTA -->
-                    <!-- metto maggiore 2 perchè c'e Tutte + 1 Location sempre presente -->
-                  <ion-row 
-                      *ngIf="listLocation && listLocation.length > 2"
-                      class="ion-no-margin">
-                      <ion-col>
-                        <ion-accordion-group>
-                          <ion-accordion value = "location">
-  
-                            <ion-item slot="header" color="light">
-                              <ion-label 
-                                    class="ion-text-wrap">
-                                <p class="ion-text-small ion-text-bold">{{selectedLocation.DENOMINAZIONE}}</p>
-                              </ion-label>
-                            </ion-item>
-                            <div class="ion-padding" slot="content">
-                              <ion-list lines="none">
-      
-                                <ion-radio-group
-                                    (ngModelChange)="onChangeLocationCustode($event)"
-                                    [(ngModel)]="idSelectedLocation">
-                                    <ion-item
-                                        *ngFor="let itemLocation of listLocation">
-                                      <ion-radio [value]="itemLocation.ID">
-                                        <h6>{{itemLocation.DENOMINAZIONE}}</h6>
-                                      </ion-radio>
-                                    </ion-item>
-                               </ion-radio-group>
-  
-                              </ion-list>
-                            </div>
-  
-                          </ion-accordion>
-                        </ion-accordion-group>
-                      </ion-col>
-                  </ion-row>
-                </ion-grid>
-            </ion-card>
-              <!-- BUTTON CARD IN ASSENZA IMPEGNO CUSTODI -->
-              <div 
-                class="ion-no-padding ion-no-margin"
-                *ngIf="!listImpegniCustode || listImpegniCustode.length == 0">
-                <app-button-card
-                    [myButtonCard] = "emptyImpegnoCustodeCard"
-                    smallVersion="true"
-                    class="small-button-card">
-                </app-button-card>
-              </div>
+    <!-- Clienti -->
+    <div class="action-card secondary" (click)="goToListCustomer()">
+      <div class="action-icon">
+        <ion-icon name="people"></ion-icon>
+      </div>
+      <div class="action-content">
+        <h4>Clienti</h4>
+        <p>Gestisci anagrafica</p>
+      </div>
+      <ion-icon name="chevron-forward" class="action-arrow"></ion-icon>
+    </div>
+  </div>
 
-              <!-- SE SONO PRESENTI IMPEGNI CUSTODE LI ELENCO -->
-              <div *ngIf="listImpegniCustode && listImpegniCustode.length != 0">
-                <app-impegni-custodi
-                    [impegnoDoc]="item"
-                    (OnClickItem)="onClickImpegnoCustode(item)" 
-                    *ngFor="let item of listImpegniCustode">
-                </app-impegni-custodi>
+  <!-- FILTRI PERIODO -->
+  <div class="period-filters">
+    <div class="filter-chips">
+      <ion-chip 
+        *ngFor="let item of searchListPeriodi"
+        [class.active]="item.value === searchCustodePeriodo"
+        (click)="onChangePeriodoCustode(item.value)">
+        <ion-icon [name]="getPeriodIcon(item.value)"></ion-icon>
+        <ion-label>{{ item.title }}</ion-label>
+      </ion-chip>
+    </div>
 
-                  <!-- INFINITE SCROLL -->
-                  <ion-infinite-scroll
-                      *ngIf="numRequestImpegniCustodeTop != 0"
-                      threshold="100px"
-                      (ionInfinite)="onActivateInfiniteScrollImpegniCustode($event)"
-                      >
-                      <ion-infinite-scroll-content oading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
-                  </ion-infinite-scroll>                  
-              </div>
+    <!-- DATE PICKER CARD -->
+    <div class="date-picker-card" (click)="openDatePickerCustode()">
+      <div class="date-display">
+        <ion-icon name="calendar-outline" color="primary"></ion-icon>
+        <div class="date-info">
+          <span class="date-label">{{ searchCustodeDateLabel }}</span>
+          <span class="date-value">{{ searchCustodeDate | date: getDateFormatCustode() }}</span>
+        </div>
+      </div>
+      <ion-icon name="chevron-down" class="expand-icon"></ion-icon>
+    </div>
 
+    <!-- Hidden date picker -->
+    <div class="hidden-dtinput">
+      <app-dtinput
+        textAlignmentRight="true"
+        title="Filtro"
+        [label]="searchCustodeDateLabel"
+        itemColor="light"
+        itemLines="none"
+        iconName="calendar-outline"
+        iconColor="primary"
+        maskFormat="dddd dd/MM/yyyy"
+        [calendarMode]="searchCustodeCalendarMode"
+        [(actualDate)]="searchCustodeDate"
+        (actualDateChange)="onChangeDataPeriodoCustode()">
+      </app-dtinput>
+    </div>
 
-          </div>
+    <!-- LOCATION FILTER CARD (solo se più di 2 location) -->
+    <div 
+      *ngIf="listLocation && listLocation.length > 2"
+      class="location-filter-card"
+      (click)="toggleLocationFilter()">
+      <div class="location-display">
+        <ion-icon name="location" color="success"></ion-icon>
+        <div class="location-info">
+          <span class="location-label">Location</span>
+          <span class="location-value">{{ selectedLocation?.DENOMINAZIONE || 'Tutte' }}</span>
+        </div>
+      </div>
+      <ion-icon 
+        name="chevron-down" 
+        class="expand-icon"
+        [class.expanded]="showLocationFilter"></ion-icon>
+    </div>
+
+    <!-- Location options (espandibile) -->
+    <div 
+      *ngIf="showLocationFilter && listLocation && listLocation.length > 2"
+      class="location-options"
+      [@slideDown]>
+      <div 
+        class="location-option"
+        *ngFor="let itemLocation of listLocation"
+        [class.active]="itemLocation.ID === idSelectedLocation"
+        (click)="onChangeLocationCustode(itemLocation.ID)">
+        <ion-icon 
+          [name]="itemLocation.ID === idSelectedLocation ? 'radio-button-on' : 'radio-button-off'"
+          [color]="itemLocation.ID === idSelectedLocation ? 'success' : 'medium'"></ion-icon>
+        <span>{{ itemLocation.DENOMINAZIONE }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTA IMPEGNI CUSTODE -->
+  <div class="impegni-section" *ngIf="listImpegniCustode && listImpegniCustode.length > 0">
+    <div class="section-header">
+      <h3>
+        <ion-icon name="clipboard"></ion-icon>
+        {{ getCustodeSectionTitle() }}
+      </h3>
+      <span class="count-badge">{{ listImpegniCustode.length }}</span>
+    </div>
+
+    <!-- Lista Impegni Custode -->
+    <div class="custode-timeline-list">
+      <app-impegni-custodi
+        [impegnoDoc]="item"
+        (OnClickItem)="onClickImpegnoCustode(item)" 
+        *ngFor="let item of listImpegniCustode">
+      </app-impegni-custodi>
+    </div>
+
+    <!-- INFINITE SCROLL -->
+    <ion-infinite-scroll
+      *ngIf="numRequestImpegniCustodeTop != 0"
+      threshold="100px"
+      (ionInfinite)="onActivateInfiniteScrollImpegniCustode($event)">
+      <ion-infinite-scroll-content 
+        loading-spinner="circles" 
+        loadingText="Caricamento...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" *ngIf="!listImpegniCustode || listImpegniCustode.length === 0">
+    <div class="empty-icon">
+      <ion-icon name="calendar-clear-outline"></ion-icon>
+    </div>
+    <h3>Nessuna occupazione</h3>
+    <p>Non ci sono impegni per il periodo e la location selezionati</p>
+    
+    <div class="empty-actions">
+      <ion-button 
+        *ngIf="!platformDesktop"
+        fill="solid" 
+        color="success" 
+        (click)="onClickQrCodeCustode()">
+        <ion-icon name="qr-code" slot="start"></ion-icon>
+        Scansiona Codice
+      </ion-button>
+      <ion-button fill="outline" (click)="goToListCustomer()">
+        <ion-icon name="people" slot="start"></ion-icon>
+        Gestisci Clienti
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- SKELETON LOADER -->
+  <div class="skeleton-loader" *ngIf="isLoadingCustode">
+    <div class="skeleton-stat-row">
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 30%; height: 80px; border-radius: 16px;"></ion-skeleton-text>
+    </div>
+
+    <div class="skeleton-actions">
+      <ion-skeleton-text animated style="width: 100%; height: 100px; border-radius: 16px; margin-bottom: 12px;"></ion-skeleton-text>
+    </div>
+
+    <div class="skeleton-timeline">
+      <ion-skeleton-text animated style="width: 100%; height: 120px; border-radius: 16px; margin-bottom: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 120px; border-radius: 16px; margin-bottom: 16px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 100%; height: 120px; border-radius: 16px;"></ion-skeleton-text>
+    </div>
+  </div>
+
+</div>
       </ion-col>  
     </ion-row>  
   </ion-grid>                

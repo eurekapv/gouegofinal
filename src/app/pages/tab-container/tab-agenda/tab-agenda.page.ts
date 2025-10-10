@@ -98,6 +98,8 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   isLoadingPersonal: boolean = false;
   // Variabile loading per skeleton (aggiungi con le altre variabili)
   isLoadingTrainer: boolean = false;
+  isLoadingCustode: boolean = false;
+  showLocationFilter: boolean = false;
   
   //#region FILTRO RICERCA TRAINER
 
@@ -1287,10 +1289,114 @@ hideLoadingTrainer(): void {
   //#endregion
 
   //#region IMPEGNI CUSTODE
+
+  // =====================================================
+  // CUSTODE - STATISTICHE
+  // =====================================================
+
+  /**
+   * Conta occupazioni di oggi
+   */
+  getOccupazioniOggi(): number {
+    if (!this.listImpegniCustode || this.listImpegniCustode.length === 0) {
+      return 0;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    return this.listImpegniCustode.filter(impegno => {
+      if (!impegno.DATAORAINIZIO) return false;
+      const impegnoDate = new Date(impegno.DATAORAINIZIO);
+      impegnoDate.setHours(0, 0, 0, 0);
+      return impegnoDate.getTime() === today.getTime();
+    }).length;
+  }
+
+  /**
+   * Conta location attive (mock - da implementare con dati reali)
+   */
+  getLocationAttive(): number {
+    if (!this.listLocation || this.listLocation.length <= 1) {
+      return 0;
+    }
+    
+    // Escludi "Tutte le location"
+    return this.listLocation.length - 1;
+  }
+
+  /**
+   * Titolo sezione custode
+   */
+  getCustodeSectionTitle(): string {
+    switch (this.searchCustodePeriodo) {
+      case RangeSearch.giorno:
+        return 'Occupazioni del Giorno';
+      case RangeSearch.settimana:
+        return 'Occupazioni della Settimana';
+      case RangeSearch.mese:
+        return 'Occupazioni del Mese';
+      default:
+        return 'Tutte le Occupazioni';
+    }
+  }
+
+  /**
+   * Formato data custode
+   */
+  getDateFormatCustode(): string {
+    switch (this.searchCustodePeriodo) {
+      case RangeSearch.giorno:
+        return 'EEEE dd/MM/yyyy';
+      case RangeSearch.settimana:
+        return 'dd/MM/yyyy';
+      case RangeSearch.mese:
+        return 'MMMM yyyy';
+      default:
+        return 'dd/MM/yyyy';
+    }
+  }
+
+  /**
+   * Toggle filtro location
+   */
+  
+  toggleLocationFilter(): void {
+    this.showLocationFilter = !this.showLocationFilter;
+  }
+
+  /**
+   * Apre date picker custode
+   */
+  openDatePickerCustode(): void {
+    const dateCard = document.querySelector('.custode-view .date-picker-card');
+    if (dateCard) {
+      dateCard.classList.toggle('expanded');
+    }
+    
+    setTimeout(() => {
+      const dtInputTrigger = document.querySelector('.custode-view .hidden-dtinput .dtinput-trigger');
+      if (dtInputTrigger) {
+        (dtInputTrigger as HTMLElement).click();
+      }
+    }, 50);
+  }
+
+
+
+  showLoadingCustode(): void {
+    this.isLoadingCustode = true;
+  }
+
+  hideLoadingCustode(): void {
+    this.isLoadingCustode = false;
+  }
   /**
    * Effettua la ricerca degli impegni Custode
    */
-  requestListImpegniCustode() {
+  requestListImpegniCustodeOld() {
     let idArea = (this.selectedArea ? this.selectedArea.ID : '');
     let idLocation = '';
 
@@ -1304,6 +1410,36 @@ hideLoadingTrainer(): void {
                                             idLocation,
                                             this.numRequestImpegniCustodeTop);
   }
+
+    /**
+     * Effettua la ricerca degli impegni Custode
+     */
+    requestListImpegniCustode() {
+      let idArea = (this.selectedArea ? this.selectedArea.ID : '');
+      let idLocation = '';
+
+      if (this.idSelectedLocation != this.id_location_tutte) {
+        idLocation = this.idSelectedLocation;
+      }
+
+      // Mostra loading solo se non è refresh
+      if (!this.flagOnRefresh) {
+        this.showLoadingCustode();
+      }
+
+      this.startService.requestImpegniCustode(
+        this.searchCustodePeriodo, 
+        this.searchCustodeDate,
+        idArea, 
+        idLocation,
+        this.numRequestImpegniCustodeTop
+      );
+
+      // Nascondi loading dopo timeout
+      setTimeout(() => {
+        this.hideLoadingCustode();
+      }, 500);
+    }  
 
   /**
    * Scroll della videata relativi agli Impegni Custode

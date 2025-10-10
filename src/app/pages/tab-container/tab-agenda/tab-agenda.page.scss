@@ -7,6 +7,7 @@ ion-content {
   --background: var(--ion-color-extralight);
 }
 
+/*#region PERSONAL VIEW TRAINER */
 // =====================================================
 // PERSONAL VIEW WRAPPER
 // =====================================================
@@ -1371,3 +1372,157 @@ ion-content {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/*#endregion*/
+
+/*#region CUSTODE */
+// =====================================================
+// CUSTODE VIEW
+// =====================================================
+
+.custode-view {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+// Location Filter Card
+.location-filter-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 2px solid transparent;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:hover {
+    border-color: var(--ion-color-success);
+    box-shadow: 0 4px 12px rgba(84, 220, 152, 0.2);
+  }
+
+  .location-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+
+    ion-icon {
+      font-size: 24px;
+    }
+
+    .location-info {
+      display: flex;
+      flex-direction: column;
+
+      .location-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ion-color-mediumlight);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .location-value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+        margin-top: 2px;
+      }
+    }
+  }
+
+  .expand-icon {
+    font-size: 20px;
+    color: var(--ion-color-mediumlight);
+    transition: transform 0.3s ease;
+
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+// Location Options
+.location-options {
+  background: white;
+  border-radius: 16px;
+  padding: 12px;
+  margin-top: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  animation: slideDown 0.3s ease-out;
+
+  .location-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &.active {
+      background: rgba(84, 220, 152, 0.1);
+    }
+
+    &:not(.active):hover {
+      background: var(--ion-color-extralight);
+    }
+
+    ion-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+
+    &.active span {
+      color: var(--ion-color-success);
+    }
+  }
+}
+
+// Custode Timeline List
+.custode-timeline-list {
+  app-impegni-custodi {
+    display: block;
+    margin-bottom: 12px;
+    animation: slideUp 0.3s ease-out;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Action Card Secondary (per Clienti)
+.action-card.secondary {
+  background: linear-gradient(135deg, var(--ion-color-success), #3da566);
+
+  .action-icon {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Responsive Custode
+@media (min-width: 576px) {
+  .custode-view {
+    padding: 24px;
+  }
+}
+/*#endregion*/

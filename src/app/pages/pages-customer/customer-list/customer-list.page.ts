@@ -23,6 +23,9 @@ export class CustomerListPage implements OnInit {
   helpCard: ButtonCard = new ButtonCard();
   noResultCard: ButtonCard = new ButtonCard();
 
+
+  isSearching: boolean = false; // ✅ Aggiungi questa riga
+
   platformDesktop = false;
 
   constructor(private navController: NavController,
@@ -214,10 +217,53 @@ export class CustomerListPage implements OnInit {
     this.requestList();
   }   
 
+/**
+ * Effettua la ricerca dei dati
+ */
+requestList(): void {
+  this.loadingComplete = false;
+
+  // Posso fare la ricerca
+  if (this.filterKeywords && this.filterKeywords.length >= 3) {
+    
+    // ✅ Mostra loading state
+    this.isSearching = true;
+
+    // Effettuo la richiesta
+    this.startService.requestListUtentiBy(this.filterKeywords, this.numRequestUtentiTop)
+      .then(listReceived => {
+        // ✅ Nascondi loading
+        this.isSearching = false;
+        
+        // Gestisco altri eventi
+        this.onAfterRequest();
+
+        // Dati presenti
+        this.loadingComplete = true;
+        this.listUtenti = listReceived;
+      })
+      .catch(error => {
+        // ✅ Nascondi loading
+        this.isSearching = false;
+        
+        // Gestisco altri eventi
+        this.onAfterRequest();
+
+        this.loadingComplete = true;
+        this.startService.presentAlertMessage(error);
+      })
+  }
+  else {
+    this.loadingComplete = true;
+    this.listUtenti = [];
+    this.onAfterRequest();
+  }
+}  
+
    /**
     * Effettua la ricerca dei dati
     */
-   requestList(): void {
+   requestListOld(): void {
 
     this.loadingComplete = false;
 

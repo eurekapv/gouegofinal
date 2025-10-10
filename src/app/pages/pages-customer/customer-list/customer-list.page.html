@@ -13,116 +13,169 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-    <!-- GRID GENERAL-->
-    <ion-grid>
-      <ion-row>
-        <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="12" 
-                sizeLg="8" offsetLg="2"
-                sizeXl="6" offsetXl="3">
+  <!-- GRID GENERAL-->
+  <ion-grid class="customer-list-container">
+    <ion-row>
+      <ion-col sizeXs="12" 
+               sizeSm="12" 
+               sizeMd="12" 
+               sizeLg="8" offsetLg="2"
+               sizeXl="6" offsetXl="3">
 
-                <!-- GRID ELEMENTI -->
-                <ion-grid class="ion-no-padding ion-no-margin">
-                  <!-- RIGA SEARCH BAR -->
-                  <ion-row>
-                      <ion-col>
-                        <ion-searchbar
-                            mode="ios"
-                            [debounce]="1000" 
-                            (ionInput)="handleInput($event)" 
-                            show-cancel-button="always"
-                            show-clear-button="never"
-                            cancel-button-text="Cancella"
-                            search-icon="search-outline"
-                            placeholder="inserisci parte del nominativo">
-                        </ion-searchbar>
-                      </ion-col>
-                  </ion-row>
+        <!-- SEARCH SECTION -->
+        <div class="search-section">
+          <div class="search-header">
+            <ion-icon name="search" class="search-icon"></ion-icon>
+            <div class="search-info">
+              <h3>Cerca Cliente</h3>
+              <p>Inserisci nome, cognome o email</p>
+            </div>
+          </div>
 
-                  <!-- BOTTONE PER SCANSIONE -->
-                  <ion-row 
-                      *ngIf="!platformDesktop"
-                      class="ion-margin-horizontal"
-                      >
-                    <ion-col>
-                      <ion-button 
-                          (click)="onClickQrCode()"
-                          color="success"
-                          expand="block"
-                          fill="outline"
-                          >
-                        <ion-icon slot="start" name="qr-code-outline"></ion-icon>
-                        Scansiona Badge Accesso
-                      </ion-button>
-                    </ion-col>
-                  </ion-row>
+          <ion-searchbar
+            mode="ios"
+            [debounce]="1000" 
+            (ionInput)="handleInput($event)" 
+            show-cancel-button="always"
+            show-clear-button="always"
+            cancel-button-text="Cancella"
+            search-icon="search-outline"
+            placeholder="es. Mario Rossi"
+            class="custom-searchbar">
+          </ion-searchbar>
 
-                  <!-- TROPPO POCHI CARATTERI-->
-                  <ion-row 
-                      class="ion-margin-horizontal"
-                      *ngIf="filterKeywords.length < 3">
-                    <ion-col>
-                      <app-button-card
-                          [myButtonCard] = "helpCard"
-                          smallVersion="true"
-                          class="small-button-card">
-                      </app-button-card>
-                    </ion-col>
-                  </ion-row>
+          <!-- SCAN BUTTON (solo mobile) -->
+          <ion-button 
+            *ngIf="!platformDesktop"
+            (click)="onClickQrCode()"
+            color="success"
+            expand="block"
+            class="scan-button"
+            fill="outline">
+            <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+            Scansiona Badge Accesso
+          </ion-button>
+        </div>
 
-                  <div *ngIf="loadingComplete">
+        <!-- HELPER STATE (meno di 3 caratteri) -->
+        <div class="helper-state" *ngIf="filterKeywords.length < 3 && !isSearching">
+          <div class="helper-icon">
+            <ion-icon name="information-circle"></ion-icon>
+          </div>
+          <h3>Inizia la ricerca</h3>
+          <p>Inserisci almeno 3 caratteri per cercare un cliente</p>
+          
+          <div class="helper-tips">
+            <div class="tip-item">
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+              <span>Cerca per nome o cognome</span>
+            </div>
+            <div class="tip-item">
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+              <span>Cerca per email</span>
+            </div>
+            <div class="tip-item">
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+              <span>Usa lo scanner QR code</span>
+            </div>
+          </div>
+        </div>
 
-                    <!-- non ci sono utenti anche con il filtro inserito-->
-                    <ion-row *ngIf="listUtenti.length == 0 && filterKeywords.length > 2">
-                      <ion-col>
-                        <app-button-card
-                            [myButtonCard] = "noResultCard"
-                            smallVersion="true"
-                            class="small-button-card">
-                        </app-button-card>
-                      </ion-col>
-                    </ion-row>
+        <!-- LOADING STATE -->
+        <div class="loading-state" *ngIf="isSearching">
+          <div class="loading-icon">
+            <ion-spinner name="crescent" color="success"></ion-spinner>
+          </div>
+          <h3>Ricerca in corso...</h3>
+          <p>Sto cercando "{{ filterKeywords }}"</p>
+        </div>
 
-                    <!-- SONO PRESENTI UTENTI -->
-                    <ion-row *ngIf="listUtenti.length != 0">
-                      <ion-col>
-                        <ion-list>
-                          <ion-item 
-                                (click)="onClickItem(item)"
-                                button="true"
-                                detail="true"
-                                *ngFor="let item of listUtenti">
-                            <ion-icon slot="start" name="people-outline"></ion-icon>
-                            <ion-label class="ion-text-wrap">
-                              <h2>{{item.NOMINATIVO}}</h2>
-                              <p>{{item.EMAIL}}</p>
-                              <ion-chip 
-                                    *ngIf="item.MOBILENUMBER && item.MOBILENUMBER.length != 0"
-                                    color="success">
-                                    {{item.MOBILENUMBER}}
-                              </ion-chip>
-                            </ion-label>
-                          </ion-item>
-                        </ion-list>
-  
-                        <!-- INFINITE SCROLL -->
-                        <ion-infinite-scroll
-                            *ngIf="numRequestUtentiTop != 0"
-                            threshold="100px"
-                            (ionInfinite)="onActivateInfiniteScrollUtenti($event)"
-                            >
-                            <ion-infinite-scroll-content oading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
-                        </ion-infinite-scroll> 
-  
-                      </ion-col>
-                    </ion-row>
-                  </div>
+        <!-- NO RESULTS STATE -->
+        <div class="empty-state" *ngIf="loadingComplete && listUtenti.length === 0 && filterKeywords.length >= 3 && !isSearching">
+          <div class="empty-icon">
+            <ion-icon name="person-remove"></ion-icon>
+          </div>
+          <h3>Nessun cliente trovato</h3>
+          <p>Non ho trovato nessun cliente con <strong>"{{ filterKeywords }}"</strong></p>
+          
+          <div class="empty-suggestions">
+            <p class="suggestion-title">Suggerimenti:</p>
+            <ul>
+              <li>Verifica l'ortografia</li>
+              <li>Prova con meno parole</li>
+              <li>Usa termini più generici</li>
+            </ul>
+          </div>
 
+          <ion-button 
+            *ngIf="!platformDesktop"
+            fill="outline" 
+            color="success"
+            (click)="onClickQrCode()">
+            <ion-icon name="qr-code" slot="start"></ion-icon>
+            Scansiona Badge
+          </ion-button>
+        </div>
 
-                </ion-grid>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+        <!-- RESULTS LIST -->
+        <div class="results-section" *ngIf="loadingComplete && listUtenti.length > 0">
+          
+          <!-- Results Header -->
+          <div class="results-header">
+            <h3>
+              <ion-icon name="people"></ion-icon>
+              Risultati
+            </h3>
+            <ion-badge color="success">{{ listUtenti.length }}</ion-badge>
+          </div>
+
+          <!-- User Cards -->
+          <div class="user-cards-list">
+            <div 
+              class="user-card"
+              *ngFor="let item of listUtenti; let i = index"
+              (click)="onClickItem(item)"
+              [style.animation-delay]="(i * 0.05) + 's'">
+              
+              <!-- Avatar -->
+              <div class="user-avatar">
+                <ion-icon name="person"></ion-icon>
+              </div>
+
+              <!-- User Info -->
+              <div class="user-info">
+                <h4 class="user-name">{{ item.NOMINATIVO }}</h4>
+                
+                <div class="user-detail" *ngIf="item.EMAIL">
+                  <ion-icon name="mail-outline"></ion-icon>
+                  <span>{{ item.EMAIL }}</span>
+                </div>
+
+                <div class="user-detail phone" *ngIf="item.MOBILENUMBER && item.MOBILENUMBER.length !== 0">
+                  <ion-icon name="call-outline"></ion-icon>
+                  <span>{{ item.MOBILENUMBER }}</span>
+                </div>
+              </div>
+
+              <!-- Arrow Icon -->
+              <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+            </div>
+          </div>
+
+          <!-- INFINITE SCROLL -->
+          <ion-infinite-scroll
+            *ngIf="numRequestUtentiTop != 0"
+            threshold="100px"
+            (ionInfinite)="onActivateInfiniteScrollUtenti($event)">
+            <ion-infinite-scroll-content 
+              loading-spinner="circles" 
+              loadingText="Caricamento...">
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>

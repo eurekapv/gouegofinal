@@ -1,0 +1,201 @@
+// =====================================================
+// NUMERIC INPUT UP-DOWN - MODERN DESIGN
+// =====================================================
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+
+  // =====================================================
+  // QUANTITY SELECTOR
+  // =====================================================
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--ion-color-extralight);
+    border-radius: 12px;
+    padding: 4px;
+    flex: 1;
+
+    // Quantity Buttons (+ and -)
+    .quantity-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: none;
+      background: white;
+      color: var(--ion-color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 24px;
+        pointer-events: none;
+      }
+
+      &:hover {
+        background: var(--ion-color-success);
+        color: white;
+        transform: scale(1.05);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      &.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      // Decrease specific styles
+      &.decrease {
+        ion-icon {
+          font-weight: bold;
+        }
+      }
+
+      // Increase specific styles
+      &.increase {
+        ion-icon {
+          font-weight: bold;
+        }
+      }
+    }
+
+    // Display Number
+    .quantity-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      min-width: 50px;
+
+      .quantity-value {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--ion-color-primary);
+        user-select: none;
+      }
+    }
+  }
+
+  // =====================================================
+  // DELETE BUTTON
+  // =====================================================
+  .delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 48px;
+    padding: 0 16px;
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    color: var(--ion-color-danger);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+
+    ion-icon {
+      font-size: 20px;
+    }
+
+    &:hover {
+      background: var(--ion-color-danger);
+      color: white;
+      border-color: var(--ion-color-danger);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(223, 65, 58, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - MOBILE SMALL
+// =====================================================
+@media (max-width: 374px) {
+  .quantity-controls {
+    flex-direction: column;
+    gap: 10px;
+
+    .quantity-selector {
+      width: 100%;
+    }
+
+    .delete-button {
+      width: 100%;
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+@media (min-width: 768px) {
+  .quantity-controls {
+    gap: 14px;
+
+    .quantity-selector {
+      padding: 5px;
+
+      .quantity-button {
+        width: 44px;
+        height: 44px;
+
+        ion-icon {
+          font-size: 26px;
+        }
+      }
+
+      .quantity-display {
+        .quantity-value {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .delete-button {
+      height: 52px;
+      padding: 0 20px;
+      font-size: 0.95rem;
+
+      ion-icon {
+        font-size: 22px;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - DESKTOP
+// =====================================================
+@media (min-width: 1024px) {
+  .quantity-controls {
+    .quantity-selector {
+      .quantity-button:hover {
+        transform: scale(1.08);
+      }
+    }
+
+    .delete-button:hover {
+      transform: translateY(-3px);
+    }
+  }
+}

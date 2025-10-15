@@ -1,18 +1,19 @@
 <ion-header>
   <ion-toolbar color="primary" mode="md">        
-    <ion-title>
-      Acquista
-    </ion-title>
+    <ion-title>Acquista</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="clickCarrello()">
-        Carrello&nbsp;
+      <ion-button (click)="clickCarrello()" class="cart-button">
+        <span class="cart-label">Carrello</span>
         <ion-icon 
             *ngIf="numProdotti == 0"
-            slot="end" name="cart-outline"></ion-icon>
+            slot="end" 
+            name="cart-outline">
+        </ion-icon>
         <ion-badge 
             slot="end"
             color="danger" 
-            *ngIf="numProdotti != 0">
+            *ngIf="numProdotti != 0"
+            class="cart-badge">
             {{numProdotti}}
         </ion-badge>
       </ion-button>
@@ -25,54 +26,65 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="12" 
-                sizeLg="8" offsetLg="2"
-                sizeXl="6" offsetXl="3">
+  <div class="shop-container">
+    
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+      <ion-chip 
+          [class.active]="selectedView === TypeArticle.prodotto"
+          (click)="selectedView = TypeArticle.prodotto; onChangeSegment($event)">
+        <ion-icon name="cube"></ion-icon>
+        <ion-label>Prodotti</ion-label>
+      </ion-chip>
+      
+      <ion-chip 
+          [class.active]="selectedView === TypeArticle.servizio"
+          (click)="selectedView = TypeArticle.servizio; onChangeSegment($event)">
+        <ion-icon name="construct"></ion-icon>
+        <ion-label>Servizi</ion-label>
+      </ion-chip>
+      
+      <ion-chip 
+          *ngIf="flagShowPacchetti"
+          [class.active]="selectedView === TypeArticle.pacchettoOre"
+          (click)="selectedView = TypeArticle.pacchettoOre; onChangeSegment($event)">
+        <ion-icon name="time"></ion-icon>
+        <ion-label>Pacchetti</ion-label>
+      </ion-chip>
+    </div>
 
-        <ion-segment 
-            mode="md"
-            [(ngModel)] = "selectedView"
-            (ionChange) = "onChangeSegment($event)"
-            >
-          <ion-segment-button [value]="TypeArticle.prodotto">
-            <ion-label>Prodotti</ion-label>
-          </ion-segment-button>
-          <ion-segment-button [value]="TypeArticle.servizio">
-            <ion-label>Servizi</ion-label>
-          </ion-segment-button>
-          <ion-segment-button [value]="TypeArticle.pacchettoOre" *ngIf="flagShowPacchetti">
-            <ion-label>Pacchetti</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-        <!-- LISTA PRODOTTI -->
-        <div *ngIf="selectedView == TypeArticle.prodotto">
-            <app-table-articoli 
-                (clickArticolo)="clickArticolo($event)"
-                [listArticoli]="listProdotti" 
-                [typeArticolo]="selectedView"></app-table-articoli>
-        </div>
+    <!-- Content Sections -->
+    <div class="content-wrapper">
+      
+      <!-- LISTA PRODOTTI -->
+      <div *ngIf="selectedView === TypeArticle.prodotto">
+        <app-table-articoli 
+            (clickArticolo)="clickArticolo($event)"
+            [listArticoli]="listProdotti" 
+            [typeArticolo]="selectedView">
+        </app-table-articoli>
+      </div>
 
-        <!-- LISTA SERVIZI -->
-        <div *ngIf="selectedView == TypeArticle.servizio">
-          <app-table-articoli 
-              (clickArticolo)="clickArticolo($event)"
-              [listArticoli]="listServizi" 
-              [typeArticolo]="selectedView"></app-table-articoli>
-        </div>
+      <!-- LISTA SERVIZI -->
+      <div *ngIf="selectedView === TypeArticle.servizio">
+        <app-table-articoli 
+            (clickArticolo)="clickArticolo($event)"
+            [listArticoli]="listServizi" 
+            [typeArticolo]="selectedView">
+        </app-table-articoli>
+      </div>
 
-        <!-- LISTA PACCHETTI -->
-        <div *ngIf="selectedView == TypeArticle.pacchettoOre">
-          <app-table-articoli 
-              (clickArticolo)="clickArticolo($event)"
-              [listArticoli]="listPacchetti" 
-              [typeArticolo]="selectedView"></app-table-articoli>
-        </div>
-      </ion-col>  
-    </ion-row>
-  </ion-grid>
+      <!-- LISTA PACCHETTI -->
+      <div *ngIf="selectedView === TypeArticle.pacchettoOre">
+        <app-table-articoli 
+            (clickArticolo)="clickArticolo($event)"
+            [listArticoli]="listPacchetti" 
+            [typeArticolo]="selectedView">
+        </app-table-articoli>
+      </div>
+
+    </div>
+
+  </div>
 
 </ion-content>

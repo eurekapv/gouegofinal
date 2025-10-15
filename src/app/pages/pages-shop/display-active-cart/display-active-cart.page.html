@@ -1,99 +1,107 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
     <ion-title>Carrello</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid id="container-page">
-    <ion-row 
-        class="ion-no-margin"
-        >
-      <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="10" offsetMd="1"
-                sizeLg="8" offsetLg="2"
-                sizeXl="8" offsetXl="2">
+  
+  <div class="cart-container">
+
+    <!-- ========================================== -->
+    <!-- EMPTY STATE -->
+    <!-- ========================================== -->
+    <div class="empty-cart" *ngIf="numProdotti === 0">
+      
+      <!-- Icon -->
+      <div class="empty-icon">
+        <ion-icon name="cart-outline"></ion-icon>
+      </div>
+
+      <!-- Title -->
+      <h2>Il tuo carrello è vuoto</h2>
+      <p>Non hai ancora scelto nessun prodotto</p>
+
+      <!-- Images Grid -->
+      <div class="empty-images">
+        <img *ngFor="let image of specialPicture" 
+             [src]="image" 
+             alt="Shop">
+      </div>
+
+      <!-- CTA -->
+      <ion-button 
+          (click)="onGoToBack()"
+          expand="block"
+          color="success"
+          size="large"
+          class="empty-cta">
+        <ion-icon name="storefront" slot="start"></ion-icon>
+        Scopri i nostri prodotti
+      </ion-button>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CART WITH ITEMS -->
+    <!-- ========================================== -->
+    <div class="cart-content" *ngIf="numProdotti !== 0">
+
+      <!-- Summary Card (Sticky Top) -->
+      <div class="summary-card">
+        <div class="summary-header">
+          <div class="summary-info">
+            <span class="summary-label">
+              {{numProdotti === 1 ? '1 articolo' : numProdotti + ' articoli'}}
+            </span>
+            <h2 class="summary-total">{{carrelloDoc.TOTDOCUMENTO | currency: 'EUR'}}</h2>
+          </div>
+          <ion-icon name="cart" class="summary-icon"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Products List -->
+      <div class="products-list">
+        <div class="product-card" 
+             *ngFor="let item of carrelloDoc.DETAILCARRELLO; let i = index"
+             [style.animation-delay]="(i * 0.05) + 's'">
           
-                <ion-grid>
-                  <ion-row *ngIf="numProdotti == 0">
-                    <ion-col>
-                      <ion-card >
-                        <ion-card-header>
-                          <ion-card-title>Siamo dispiaciuti</ion-card-title>
-                        </ion-card-header>
-              
-                        <ion-grid class="grid-images">
-                          <ion-row>
-                            <ion-col *ngFor="let image  of specialPicture">
-                              <img class="radius-small" [src]="image" alt="">
-                            </ion-col>
-                          </ion-row>
-                        </ion-grid>
-              
-                        <ion-card-content>
-                          <p>
-                            Non hai ancora scelto nessun prodotto, quindi il tuo carrello risulta vuoto.
-                          </p>
-                          <p>
-                            Dai un occhio ai nostri prodotti e poi torna a visionare il tuo carrello
-                          </p>
-                        </ion-card-content>
-                      </ion-card>
-                    </ion-col>
-                    </ion-row>
+          <app-cart-item-row 
+              (onChangeQuantity)="onChangeQuantity($event)"
+              (onDeleteRequest)="onDeleteRequest($event)"
+              [rowDetail]="item">
+          </app-cart-item-row>
 
-                    <!-- TOTALE ED ALTRO -->
-                    <ion-row *ngIf="numProdotti != 0">
-                      <ion-col>
-                        <ion-card>
+        </div>
+      </div>
 
-                          <ion-card-header>
-                            <ion-card-title>
-                              Totale {{carrelloDoc.TOTDOCUMENTO | currency : 'EUR'}}
-                            </ion-card-title>
+      <!-- Bottom Spacer -->
+      <div class="bottom-spacer"></div>
 
-                            <ion-card-subtitle>
-                              <span class="ion-text-x-small" *ngIf="numProdotti == 1">1 articolo</span>
-                              <span class="ion-text-x-small" *ngIf="numProdotti != 1">{{numProdotti}} articoli</span>
-                            </ion-card-subtitle>
-                          </ion-card-header>
+    </div>
 
-                            <ion-card-content>
-                              <ion-button 
-                                    (click)="onClickOrdina()"
-                                    color="warning" expand="full">
-                                Procedi all'ordine 
-                              </ion-button>
-                            </ion-card-content>
-                        </ion-card>
-                      </ion-col>
-                    </ion-row>
-                    <!-- PRODOTTI PRESENTI -->
-                    <ion-row *ngIf="numProdotti != 0">
-                      <ion-col>
-                        <!-- GRIGLIA PRODOTTI CARRELLO-->
-                        <ion-grid>
+  </div>
 
-                          <!-- RIGA PER PRODOTTO-->
-                          <ion-row *ngFor="let item of carrelloDoc.DETAILCARRELLO">
-                            <ion-col>
-                              <app-cart-item-row 
-                                  (onChangeQuantity)="onChangeQuantity($event)"
-                                  (onDeleteRequest)="onDeleteRequest($event)"
-                                  [rowDetail]="item"></app-cart-item-row>
-                            </ion-col>
-                          </ion-row>
-                        </ion-grid>
-                      </ion-col>
-                    </ion-row>
+  <!-- ========================================== -->
+  <!-- FIXED CHECKOUT BUTTON -->
+  <!-- ========================================== -->
+  <div class="fixed-checkout" *ngIf="numProdotti !== 0">
+    <div class="checkout-info">
+      <span class="checkout-label">Totale</span>
+      <span class="checkout-total">{{carrelloDoc.TOTDOCUMENTO | currency: 'EUR'}}</span>
+    </div>
+    <ion-button 
+        (click)="onClickOrdina()"
+        expand="block"
+        color="success"
+        size="large"
+        class="checkout-button">
+      <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+      Procedi all'ordine
+    </ion-button>
+  </div>
 
-                 </ion-grid>
-
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 </ion-content>

@@ -1,37 +1,118 @@
-<ion-card 
-    *ngIf="flagEmptyCard"
-    class="ion-text-center">
-  <img alt="cestino prodotti" 
-      [src]="srcImageEmpty">
-  <ion-card-header>
-    <ion-card-title>Spiacenti</ion-card-title>
-    <ion-card-subtitle>Nessun {{labelFor()}} disponibile</ion-card-subtitle>
-  </ion-card-header>
+<!-- ========================================== -->
+<!-- EMPTY STATE -->
+<!-- ========================================== -->
+<div class="empty-state" *ngIf="flagEmptyCard">
+  <div class="empty-icon">
+    <img [src]="srcImageEmpty" alt="Nessun articolo">
+  </div>
+  <h2>Spiacenti</h2>
+  <p>Nessun {{labelFor()}} disponibile</p>
+  <span class="empty-subtitle">Seleziona una tipologia differente o ritorna a trovarci per nuove novità</span>
+</div>
 
-  <ion-card-content>
-    Seleziona una tipologia differente o ritorna a trovarci per trovare novità
-  </ion-card-content>
-</ion-card>
+<!-- ========================================== -->
+<!-- INFO BANNER -->
+<!-- ========================================== -->
+<div class="info-banner" *ngIf="!flagEmptyCard">
+  <!-- <div class="banner-icon">
+    <img src="assets/commercial/shopmobilelogo.png" alt="Shop">
+  </div> -->
+  <div class="banner-text">
+    <ion-icon name="information-circle"></ion-icon>
+    <p>Scopri i nostri {{labelFor(true)}}; ed effettua il tuo ordine</p>
+  </div>
+</div>
 
-<ion-item 
-    lines="none"
-    *ngIf="!flagEmptyCard">
-    <ion-thumbnail slot="start">
-      <img alt="cestino prodotti" src="assets/commercial/shopmobilelogo.png">
-    </ion-thumbnail>
-    <ion-label 
-        class="ion-text-wrap">
-      <p class="ion-text-success">scopri i nostri prodotti, servizi, pacchetti orari; a breve sarà possibile ordinarli direttamente da qui</p>
-    </ion-label>
-</ion-item>
+<!-- ========================================== -->
+<!-- GRID PRODOTTI -->
+<!-- ========================================== -->
+<div class="products-grid" *ngIf="!flagEmptyCard">
+  
+  <div class="product-card" 
+       *ngFor="let articolo of _listArticoli; let i = index"
+       [style.animation-delay]="(i * 0.05) + 's'"
+       (click)="onClickArticolo(articolo)">
+    
+    <!-- Image Container -->
+    <div class="card-image-container">
+      <img [src]="articolo.getSrcImg()" 
+           [alt]="articolo.DESCR"
+           class="card-image">
+      
+      <!-- Badges -->
+      <div class="card-badges">
+        <!-- Sconto Badge -->
+        <div class="badge badge-discount" *ngIf="articolo.SCONTOTEXT">
+          <ion-icon name="pricetag"></ion-icon>
+          <span>{{articolo.SCONTOTEXT}}</span>
+        </div>
+        
+        <!-- Disponibilità Badge -->
+        <div class="badge badge-stock" 
+             *ngIf="articolo.GESTIONESCORTE"
+             [class.out-of-stock]="articolo.QUANTITAMAGAZZINO === 0">
+          <ion-icon [name]="articolo.QUANTITAMAGAZZINO > 0 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          <span>{{articolo.QUANTITAMAGAZZINO > 0 ? 'Disponibile' : 'Esaurito'}}</span>
+        </div>
+      </div>
 
-<ion-list 
-    class="ion-padding-vertical"
-    *ngIf="!flagEmptyCard">
-  <app-table-item-articolo 
-      *ngFor="let item of _listArticoli"
-      [itemArticolo]="item"
-      (clickArticolo)="onClickArticolo(item)">
+      <!-- Overlay Hover -->
+      <div class="card-overlay">
+        <ion-icon name="eye-outline"></ion-icon>
+        <span>Visualizza</span>
+      </div>
+    </div>
 
-  </app-table-item-articolo>
-</ion-list>
+    <!-- Card Content -->
+    <div class="card-content">
+      
+      <!-- Category -->
+      <div class="card-category" *ngIf="articolo.CATEGORIA">
+        {{articolo.CATEGORIA}}
+      </div>
+
+      <!-- Title -->
+      <h3 class="card-title">{{articolo.DESCR}}</h3>
+
+      <!-- Description (se presente) -->
+      <p class="card-description" *ngIf="articolo.DESCRADDITIONAL">
+        {{articolo.DESCRADDITIONAL}}
+      </p>
+
+      <!-- Footer -->
+      <div class="card-footer">
+        
+        <!-- Price -->
+        <div class="card-price">
+          <span class="price-label">Prezzo</span>
+          <div class="price-value">
+            <span class="price-main">{{articolo.PREZZONETTO | currency: 'EUR'}}</span>
+            <span class="price-old" *ngIf="articolo.PREZZOLORDO && articolo.PREZZOLORDO > articolo.PREZZONETTO">
+              {{articolo.PREZZOLORDO | currency: 'EUR'}}
+            </span>
+          </div>
+        </div>
+
+        <!-- Add Button -->
+        <ion-button 
+            *ngIf="articolo.FLAGSHOPACQUISTABILE && (!articolo.GESTIONESCORTE || articolo.QUANTITAMAGAZZINO > 0)"
+            size="small" 
+            color="success"
+            class="add-button">
+          <ion-icon name="add-circle" slot="icon-only"></ion-icon>
+        </ion-button>
+
+        <!-- Non Acquistabile -->
+        <div class="not-available" 
+             *ngIf="!articolo.FLAGSHOPACQUISTABILE || (articolo.GESTIONESCORTE && articolo.QUANTITAMAGAZZINO === 0)">
+          <ion-icon name="information-circle"></ion-icon>
+          <span>Info</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

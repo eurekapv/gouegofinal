@@ -1,38 +1,57 @@
-<ion-grid 
-      *ngIf="detailDoc"
-      class="ion-no-padding ion-no-margin">
-  <ion-row>
-    <ion-grid class="ion-no-padding ion-no-margin">
-      <ion-row
-          class="ion-align-items-center">
-        <!-- COLONNA IMMAGINE -->
-        <ion-col
-            *ngIf="flagWithImage"
-            class="ion-align-self-center"
-            size="4">
-          <ion-img [src]="srcImage" (ionError)="srcImage = fallbackUrl"></ion-img>
-        </ion-col>
-        <!-- COLONNA DESCRITTIVA -->
-        <ion-col 
-            class="ion-padding-start"
-            [size]="flagWithImage ? '8':'12'">
-          <h4 class="ion-wrap">{{detailDoc.DESCR}}</h4>
-          <p *ngIf="detailDoc.MSGDISPONIBILE && detailDoc.MSGDISPONIBILE.length!= 0">
-            {{detailDoc.MSGDISPONIBILE}}
-          </p>
-          <p *ngIf="detailDoc.DISPONIBILE == false"><ion-badge color="danger">Prodotto non disponibile</ion-badge></p>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-row>
-  <!-- RIGA CON GESTIONE QUANTITA E ELIMINAZIONE -->
-  <ion-row>
-    <ion-col>
+<div class="cart-item" *ngIf="detailDoc">
+  
+  <!-- Product Content -->
+  <div class="item-content">
+    
+    <!-- Image -->
+    <div class="item-image">
+      <img [src]="flagWithImage ? srcImage : fallbackUrl" 
+           (error)="srcImage = fallbackUrl"
+           [alt]="detailDoc.DESCR">
+    </div>
+
+    <!-- Info -->
+    <div class="item-info">
+      
+      <!-- Title -->
+      <h3 class="item-title">{{detailDoc.DESCR}}</h3>
+
+      <!-- Availability Message -->
+      <p class="item-note" *ngIf="detailDoc.MSGDISPONIBILE">
+        <ion-icon name="information-circle"></ion-icon>
+        {{detailDoc.MSGDISPONIBILE}}
+      </p>
+
+      <!-- Not Available Badge -->
+      <div class="not-available-badge" *ngIf="detailDoc.DISPONIBILE === false">
+        <ion-icon name="close-circle"></ion-icon>
+        <span>Prodotto non disponibile</span>
+      </div>
+
+      <!-- Price per unit -->
+      <div class="item-price" *ngIf="detailDoc.PREZZO">
+        <span class="price-label">Prezzo unitario</span>
+        <span class="price-value">{{detailDoc.PREZZO | currency: 'EUR'}}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Quantity Controls -->
+  <div class="item-controls">
+    
+    <!-- Quantity Selector -->
+    <div class="quantity-selector">
       <app-numeric-input-up-down 
           (onDeleteRequest)="onClickRequestDelete()"
           (onChangeQuantity)="onClickChangeQuantity($event)"
-          [colorButton]="'primary'"
-          [displayNumber]="detailDoc.QUANTITA"></app-numeric-input-up-down>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+          [colorButton]="'success'"
+          [displayNumber]="detailDoc.QUANTITA">
+      </app-numeric-input-up-down>
+    </div>
+
+
+  </div>
+
+</div>

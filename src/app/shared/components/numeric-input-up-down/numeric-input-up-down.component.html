@@ -1,36 +1,34 @@
-<ion-grid class="ion-no-padding ion-no-margin">
-
-  <ion-row class="ion-align-items-center">
-    <ion-col [size]="sizeColCount">
-      <ion-item lines="none">
-        <ion-button 
+<div class="quantity-controls">
+  
+  <!-- Quantity Selector -->
+  <div class="quantity-selector">
+    
+    <!-- Decrease Button -->
+    <button class="quantity-button decrease" 
             (click)="onClickChangeQuantity(-1)"
-            slot="start" [color]="buttonColor" size="small" fill="clear">
-          <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
-        </ion-button>
-        <ion-label class="ion-text-center">
-          <h1>
-          {{valueDisplay}}
-          </h1>
-        </ion-label>
-        <ion-button 
-              (click)="onClickChangeQuantity(1)"
-              slot="end" [color]="buttonColor" size="small" fill="clear">
-          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-        </ion-button>     
-      </ion-item>
-    </ion-col>
+            [class.disabled]="valueDisplay <= 1">
+      <ion-icon name="remove"></ion-icon>
+    </button>
 
-    <ion-col 
-        [size]="sizeColTrash"
-        *ngIf="buttonTrashShow">
-      <ion-button 
-            (click)="onClickRequestDelete()"
-            size="small" expand="full" color="danger">
-        <ion-icon name="trash-outline" slot="start"></ion-icon>
-        Elimina
-      </ion-button>
-    </ion-col>
+    <!-- Display Number -->
+    <div class="quantity-display">
+      <span class="quantity-value">{{valueDisplay}}</span>
+    </div>
 
-  </ion-row>
-</ion-grid>
+    <!-- Increase Button -->
+    <button class="quantity-button increase" 
+            (click)="onClickChangeQuantity(1)">
+      <ion-icon name="add"></ion-icon>
+    </button>
+
+  </div>
+
+  <!-- Delete Button -->
+  <button class="delete-button" 
+          *ngIf="buttonTrashShow"
+          (click)="onClickRequestDelete()">
+    <ion-icon name="trash-outline"></ion-icon>
+    <span>Elimina</span>
+  </button>
+
+</div>

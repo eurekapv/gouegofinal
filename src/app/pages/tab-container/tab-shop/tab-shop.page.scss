@@ -1,0 +1,161 @@
+// =====================================================
+// SHOP PAGE - MODERN DESIGN
+// =====================================================
+
+// Animazioni
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =====================================================
+// CART BUTTON
+// =====================================================
+.cart-button {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  font-weight: 600;
+  
+  .cart-label {
+    margin-right: 6px;
+  }
+
+  ion-icon {
+    font-size: 22px;
+  }
+
+  .cart-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    animation: pulse 0.6s ease;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+// =====================================================
+// MAIN CONTAINER
+// =====================================================
+.shop-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease;
+}
+
+// =====================================================
+// FILTER CHIPS
+// =====================================================
+.filter-chips {
+  display: flex;
+  gap: 10px;
+  padding: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  animation: slideDown 0.5s ease;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ion-chip {
+    --background: white;
+    --color: var(--ion-color-primary);
+    height: 44px;
+    border-radius: 22px;
+    padding: 0 18px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid var(--ion-color-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 20px;
+      margin-right: 8px;
+      color: var(--ion-color-mediumlight);
+      transition: all 0.3s ease;
+    }
+
+    ion-label {
+      margin: 0;
+    }
+
+    &:hover {
+      border-color: var(--ion-color-success);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    &.active {
+      --background: var(--ion-color-success);
+      --color: white;
+      border-color: var(--ion-color-success);
+      box-shadow: 0 4px 16px rgba(44, 179, 97, 0.3);
+
+      ion-icon {
+        color: white;
+      }
+    }
+  }
+}
+
+// =====================================================
+// CONTENT WRAPPER
+// =====================================================
+.content-wrapper {
+  padding: 0 0 16px 0;
+  animation: fadeIn 0.6s ease 0.2s backwards;
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+@media (min-width: 768px) {
+  .filter-chips {
+    padding: 20px 24px;
+    justify-content: center;
+
+    ion-chip {
+      height: 48px;
+      padding: 0 24px;
+      font-size: 1rem;
+
+      ion-icon {
+        font-size: 22px;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .content-wrapper {
+    padding: 0 8px 24px 8px;
+  }
+}
+
+// =====================================================
+// RESPONSIVE - DESKTOP
+// =====================================================
+@media (min-width: 1024px) {
+  .filter-chips ion-chip:hover {
+    transform: translateY(-3px);
+  }
+}

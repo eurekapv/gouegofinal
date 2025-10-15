@@ -3,169 +3,226 @@
     <ion-buttons slot="start">
       <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
-    <ion-title>Attivit&agrave;</ion-title>
-  </ion-toolbar>
-
-  <ion-toolbar *ngIf="showTabs" mode="md">
-    <ion-segment 
-          mode="md"
-          [(ngModel)]="selectedView" 
-          value="prenotazioni"
-          (ionChange)="onChangeSegment($event)" >
-
-      <ion-segment-button  
-                value="prenotazioni">
-
-        <ion-icon name="calendar-outline"></ion-icon>
-        <ion-label>Prenotazioni</ion-label>
-      </ion-segment-button>
-
-      <ion-segment-button 
-            value="corsi">
-        <ion-icon name="school-outline"></ion-icon>
-        <ion-label>Corsi</ion-label>
-        
-      </ion-segment-button>
-
-    </ion-segment>
+    <ion-title>Storico</ion-title>
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content id="content" scrollEvents (ionScroll)="onScroll($event)">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="12" 
-               sizeLg="8" offsetLg="2"
-               sizeXl="6" offsetXl="3">
- 
-              <!-- PARTE CORSI -->
-              <div class="contentExpand" *ngIf="selectedView=='corsi'">
+  <div class="history-container">
 
-                  <!-- CORSI CARICATI E NON IN ERRORE-->
-                  <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
-                    <!-- NESSUN CORSO-->
-                    <app-card-image
-                        *ngIf="listUtenteCorsi!.length === 0"
-                        src="assets/boysplaying_small.png"
-                        title="Che peccato !!!"
-                        subtitle="Non ho trovato nessuna iscrizione ai nostri corsi"
-                    ></app-card-image>                  
-  
-                    <!-- LISTA CORSI -->
-                      <ion-list *ngIf="listUtenteCorsi!.length !== 0">
-                        <ion-item button 
-                              *ngFor="let utenteCorsoDoc of listUtenteCorsi" 
-                              (click)="onClickCorso(utenteCorsoDoc)" >
-  
-                        <!-- ICONA CORSO -->
-                        <ion-icon 
-                            name="school-outline" 
-                            class="icon-school"
-                            slot="start"
-                            [color]="utenteCorsoDoc.DATAFINE > today && utenteCorsoDoc.DATAINIZIO < today ? 'success': 'danger'">
-                        </ion-icon>
-  
-                        <ion-label 
-                              class="ion-text-wrap">
-                              <p 
-                                  class="ion-text-color-label"
-                                  *ngIf="utenteCorsoDoc.isLezioneSingola()">
-                                  {{utenteCorsoDoc.DATAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}
-                              </p>
-                              <p 
-                                class="ion-text-color-label"
-                                *ngIf="utenteCorsoDoc.isLezioneSingola() == false">
-                                dal <span>{{utenteCorsoDoc.DATAINIZIO | date : 'dd/MM/yy' | titlecase}}</span> al <span>{{utenteCorsoDoc.DATAFINE | date : 'dd/MM/yy' | titlecase}}</span>
-                              </p>                              
+        <ion-segment 
+          mode="md"
+          [(ngModel)]="selectedView" 
+          value="prenotazioni"
+          (ionChange)="onChangeSegment($event)">
 
-                          <h1>{{utenteCorsoDoc.DENOMINAZIONESPORT}} in {{utenteCorsoDoc.DENOMINAZIONELOCATION}}</h1>
-                          <h3>{{utenteCorsoDoc.GIORNIPREVISTI|giorniPrevisti: lingua|titlecase}} </h3>
-  
-                        </ion-label>   
-                        
-                        <!-- ORA INIZIO -->
-                        <ion-chip 
-                            [color]="utenteCorsoDoc.DATAFINE > today && utenteCorsoDoc.DATAINIZIO < today ? 'success': 'danger'">
-                          {{utenteCorsoDoc.ORAINIZIO | date: 'HH:mm'}}
-                          <ion-icon name="time-outline"></ion-icon>
-                        </ion-chip>
-                        </ion-item>         
-                      </ion-list>     
-                  </div>
-                  <!-- CORSI CARICATI E IN ERRORE-->
-                  <div *ngIf="loadingCorsiComplete && loadingCorsiError">
-                    <app-card-image
-                        src="assets/boysplaying_small.png"
-                        title="Ops, spiacente"
-                        subtitle="Si &egrave; verificato un errore nel recupero"
-                    ></app-card-image>       
-                  </div>
-              </div>
+      <ion-segment-button value="prenotazioni">
+        <ion-icon name="calendar"></ion-icon>
+        <ion-label>PRENOTAZIONI</ion-label>
+      </ion-segment-button>
 
-              <!-- PARTE PRENOTAZIONI -->
-              <div class="contentExpand" *ngIf="selectedView=='prenotazioni'">
+      <ion-segment-button value="corsi">
+        <ion-icon name="school"></ion-icon>
+        <ion-label>CORSI</ion-label>
+      </ion-segment-button>
 
-                  <!-- PRENOTAZIONI CARICATI E NON IN ERRORE-->
-                  <div *ngIf="loadingPrenotazioniComplete && !loadingPrenotazioniError">                
-                      <!-- NESSUNA PRENOTAZIONE-->
-                      <app-card-image
-                          *ngIf="listUtentePrenotazione!.length === 0"
-                          src="assets/boysplaying_small.png"
-                          title="Che peccato !!!"
-                          subtitle="Non ho trovato nessuna prenotazione presso la nostra struttura"
-                      ></app-card-image> 
+    </ion-segment>
 
 
-                      <!-- Lista prenotazioni -->
-                      <ion-list *ngIf="listUtentePrenotazione!.length !== 0">
-                        <ion-item button 
-                                *ngFor="let prenotazione of listUtentePrenotazione" 
-                                (click)="onClickPrenotazione(prenotazione)">
+    <!-- ========================================== -->
+    <!-- CORSI -->
+    <!-- ========================================== -->
+    <div class="content-section" *ngIf="selectedView=='corsi'">
 
-                          <ion-icon 
-                              class="icon-prenotazioni"
-                              name="calendar-outline" 
-                              slot="start" 
-                              [color]="prenotazione.DATAORAFINE < today ? 'danger': 'success'">
+      <!-- LOADING STATE -->
+      <div class="loading-state" *ngIf="!loadingCorsiComplete">
+        <ion-spinner name="circular" color="success"></ion-spinner>
+      </div>
 
-                          </ion-icon>
-                          
+      <!-- LOADED - NO ERROR -->
+      <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
+        
+        <!-- EMPTY STATE -->
+        <div class="empty-state" *ngIf="listUtenteCorsi?.length === 0">
+          <div class="empty-icon">
+            <ion-icon name="school-outline"></ion-icon>
+          </div>
+          <h2>Nessun corso trovato</h2>
+          <p>Non hai iscrizioni ai nostri corsi</p>
+        </div>
 
-                          <ion-label class="ion-text-wrap">
-                            <p class="ion-text-color-label">{{prenotazione.DATAORAINIZIO | date : 'EEEE dd/MM/yyyy' | titlecase}}</p>
-                            <h1>Ore {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}</h1>
-                            <h3>{{prenotazione.COMUNELOCATION|titlecase}} 
-                              <span>{{( (prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION) ? ', ':'')}}</span> 
-                              <span>{{prenotazione.INDIRIZZOLOCATION|titlecase}}</span>
-                            </h3> <!--anche qui manca decodifica centro sportivo-->
+        <!-- LISTA CORSI -->
+        <div class="timeline-list" *ngIf="listUtenteCorsi?.length > 0">
+          <div class="timeline-item" 
+               *ngFor="let corso of listUtenteCorsi; let i = index"
+               [style.animation-delay]="(i * 0.05) + 's'"
+               (click)="onClickCorso(corso)">
+            
+            <!-- Timeline Dot -->
+            <div class="timeline-dot" [class.active]="corso.DATAFINE > today && corso.DATAINIZIO < today">
+              <ion-icon name="school"></ion-icon>
+            </div>
 
-                          </ion-label>
-                          <ion-chip [color]="prenotazione.DATAORAFINE < today ? 'danger': 'success'">
-                            {{prenotazione.DURATAORE > 1 ? prenotazione.DURATAORE : prenotazione.DURATAORE*60}} {{prenotazione.DURATAORE>1? 'Ore' : 'Min.'}}
-                          </ion-chip>
-                        </ion-item>
-                      </ion-list>
+            <!-- Card Content -->
+            <div class="timeline-card">
+              
+              <!-- Header con Data -->
+              <div class="card-header">
+                <div class="date-badge">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  <span *ngIf="corso.isLezioneSingola()">
+                    {{corso.DATAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase}}
+                  </span>
+                  <span *ngIf="!corso.isLezioneSingola()">
+                    dal {{corso.DATAINIZIO | date: 'dd/MM/yy'}} al {{corso.DATAFINE | date: 'dd/MM/yy'}}
+                  </span>
                 </div>
-
-                <!-- PRENOTAZIONI CARICATI E IN ERRORE-->
-                <div *ngIf="loadingPrenotazioniComplete && loadingPrenotazioniError">                
-                  <app-card-image
-                  src="assets/boysplaying_small.png"
-                  title="Ops, spiacente"
-                  subtitle="Si &egrave; verificato un errore nel recupero"
-                  ></app-card-image>  
-                </div>                
-
+                <div class="time-chip" [class.active]="corso.DATAFINE > today && corso.DATAINIZIO < today">
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{corso.ORAINIZIO | date: 'HH:mm'}}
+                </div>
               </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+              <!-- Body -->
+              <div class="card-body">
+                <h3>{{corso.DENOMINAZIONESPORT}}</h3>
+                <p class="location">
+                  <ion-icon name="location-outline"></ion-icon>
+                  {{corso.DENOMINAZIONELOCATION}}
+                </p>
+                <p class="schedule">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  {{corso.GIORNIPREVISTI | giorniPrevisti: lingua | titlecase}}
+                </p>
+              </div>
+
+              <!-- Status Badge -->
+              <div class="status-badge" [class.active]="corso.DATAFINE > today && corso.DATAINIZIO < today">
+                <ion-icon [name]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'checkmark-circle' : 'time-outline'"></ion-icon>
+                <span>{{corso.DATAFINE > today && corso.DATAINIZIO < today ? 'In Corso' : 'Terminato'}}</span>
+              </div>
+
+              <!-- Arrow -->
+              <div class="card-arrow">
+                <ion-icon name="chevron-forward"></ion-icon>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ERROR STATE -->
+      <div class="error-state" *ngIf="loadingCorsiComplete && loadingCorsiError">
+        <div class="error-icon">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+        </div>
+        <h2>Ops, spiacente</h2>
+        <p>Si è verificato un errore nel recupero</p>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PRENOTAZIONI -->
+    <!-- ========================================== -->
+    <div class="content-section" *ngIf="selectedView=='prenotazioni'">
+
+      <!-- LOADING STATE -->
+      <div class="loading-state" *ngIf="!loadingPrenotazioniComplete">
+        <ion-spinner name="circular" color="success"></ion-spinner>
+      </div>
+
+      <!-- LOADED - NO ERROR -->
+      <div *ngIf="loadingPrenotazioniComplete && !loadingPrenotazioniError">
+        
+        <!-- EMPTY STATE -->
+        <div class="empty-state" *ngIf="listUtentePrenotazione?.length === 0">
+          <div class="empty-icon">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+          <h2>Nessuna prenotazione</h2>
+          <p>Non hai effettuato prenotazioni presso la nostra struttura</p>
+        </div>
+
+        <!-- LISTA PRENOTAZIONI -->
+        <div class="timeline-list" *ngIf="listUtentePrenotazione?.length > 0">
+          <div class="timeline-item" 
+               *ngFor="let prenotazione of listUtentePrenotazione; let i = index"
+               [style.animation-delay]="(i * 0.05) + 's'"
+               (click)="onClickPrenotazione(prenotazione)">
+            
+            <!-- Timeline Dot -->
+            <div class="timeline-dot" [class.active]="prenotazione.DATAORAFINE > today">
+              <ion-icon name="calendar"></ion-icon>
+            </div>
+
+            <!-- Card Content -->
+            <div class="timeline-card">
+              
+              <!-- Header con Data -->
+              <div class="card-header">
+                <div class="date-badge">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  <span>{{prenotazione.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase}}</span>
+                </div>
+                <div class="time-chip" [class.active]="prenotazione.DATAORAFINE > today">
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body">
+                <h3>{{prenotazione.DENOMINAZIONESPORT}}</h3>
+                <p class="location">
+                  <ion-icon name="location-outline"></ion-icon>
+                  {{prenotazione.COMUNELOCATION | titlecase}}
+                  <span *ngIf="prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION">, </span>
+                  {{prenotazione.INDIRIZZOLOCATION | titlecase}}
+                </p>
+              </div>
+
+              <!-- Duration Badge -->
+              <div class="duration-badge">
+                <ion-icon name="timer-outline"></ion-icon>
+                {{prenotazione.DURATAORE > 1 ? prenotazione.DURATAORE : prenotazione.DURATAORE*60}} 
+                {{prenotazione.DURATAORE > 1 ? 'Ore' : 'Min.'}}
+              </div>
+
+              <!-- Status Badge -->
+              <div class="status-badge" [class.active]="prenotazione.DATAORAFINE > today">
+                <ion-icon [name]="prenotazione.DATAORAFINE > today ? 'checkmark-circle' : 'time-outline'"></ion-icon>
+                <span>{{prenotazione.DATAORAFINE > today ? 'Attiva' : 'Completata'}}</span>
+              </div>
+
+              <!-- Arrow -->
+              <div class="card-arrow">
+                <ion-icon name="chevron-forward"></ion-icon>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ERROR STATE -->
+      <div class="error-state" *ngIf="loadingPrenotazioniComplete && loadingPrenotazioniError">
+        <div class="error-icon">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+        </div>
+        <h2>Ops, spiacente</h2>
+        <p>Si è verificato un errore nel recupero</p>
+      </div>
+
+    </div>
+
+  </div>
 
 </ion-content>

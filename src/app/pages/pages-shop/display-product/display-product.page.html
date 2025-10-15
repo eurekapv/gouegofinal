@@ -1,18 +1,21 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button (click)="clickCarrello()">
-        CARRELLO&nbsp;
+      <ion-button (click)="clickCarrello()" class="cart-button">
+        <span class="cart-label">CARRELLO</span>
         <ion-icon 
-            *ngIf="numProdotti == 0"
-            slot="end" name="cart-outline"></ion-icon>
+            *ngIf="numProdotti === 0"
+            slot="end" 
+            name="cart-outline">
+        </ion-icon>
         <ion-badge 
             slot="end"
             color="danger" 
-            *ngIf="numProdotti != 0">
+            *ngIf="numProdotti !== 0"
+            class="cart-badge">
             {{numProdotti}}
         </ion-badge>
       </ion-button>
@@ -25,223 +28,259 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <div class="product-detail-container" *ngIf="articoloDoc">
+    
+    <!-- ========================================== -->
+    <!-- IMAGE GALLERY -->
+    <!-- ========================================== -->
+    <div class="gallery-section">
+      <swiper-container
+          #swiperGallery 
+          class="product-gallery" 
+          [pagination]="true">
+        <swiper-slide *ngFor="let img of listImagePath">
+          <img [src]="img" 
+               [alt]="articoloDoc.DESCR"
+               (click)="openPreview(img)"
+               class="gallery-image">
+        </swiper-slide>      
+      </swiper-container>
 
-  <ion-grid id="container-page">
-    <ion-row
-        class="ion-no-margin"
-        >
-      <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="10" offsetMd="1"
-                sizeLg="8" offsetLg="2"
-                sizeXl="8" offsetXl="2">
+      <!-- Badges Overlay -->
+      <div class="gallery-badges">
+        <!-- Sconto Badge -->
+        <div class="badge badge-discount" *ngIf="articoloDoc.SCONTOTEXT">
+          <ion-icon name="pricetag"></ion-icon>
+          <span>{{articoloDoc.SCONTOTEXT}}</span>
+        </div>
 
-                <ion-card class="ion-no-margin ion-no-padding backcolorcard">
-                  <swiper-container
-                      #swiperGallery 
-                      class="gallery" 
-                      [pagination]="true">
-              
-                    <swiper-slide 
-                        *ngFor="let img of listImagePath">
-                        <img class="no-wrapper" [src]="img" tappable (click)="openPreview(img)">
-                    </swiper-slide>      
-                  </swiper-container>
-              
-                </ion-card>
-                
-                <ion-grid *ngIf="articoloDoc">
-                  <ion-row class="ion-padding-vertical">
-                    <ion-col>
-                      <h1 class="item-name">{{articoloDoc.DESCR}}</h1>
-                      <p 
-                        *ngIf="articoloDoc.DESCRADDITIONAL && articoloDoc.DESCRADDITIONAL.length != 0" 
-                        class="ion-text-small">
-                        {{articoloDoc.DESCRADDITIONAL}}
-                      </p>
+        <!-- Stock Badge -->
+        <div class="badge badge-stock" 
+             *ngIf="articoloDoc.GESTIONESCORTE"
+             [class.out-of-stock]="articoloDoc.QUANTITAMAGAZZINO === 0">
+          <ion-icon [name]="articoloDoc.QUANTITAMAGAZZINO > 0 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+          <span>{{articoloDoc.QUANTITAMAGAZZINO > 0 ? 'Disponibile' : 'Esaurito'}}</span>
+        </div>
+      </div>
+    </div>
 
-                      <h4 class="price ion-text-right" *ngIf="articoloDoc.PREZZOLORDO != 0">
-                        {{articoloDoc.PREZZOLORDO | currency: 'EUR'}}
-                        <span class="real-price"></span> <!-- per mettere un prezzo da barrare -->
-                      </h4>
+    <!-- ========================================== -->
+    <!-- PRODUCT INFO -->
+    <!-- ========================================== -->
+    <div class="product-info">
+      
+      <!-- Category -->
+      <div class="product-category" *ngIf="articoloDoc.CATEGORIA">
+        {{articoloDoc.CATEGORIA}}
+      </div>
 
-                      <div class="seperator">
-                        <hr>
-                      </div>
+      <!-- Title -->
+      <h1 class="product-title">{{articoloDoc.DESCR}}</h1>
 
-                    </ion-col>
-                  </ion-row>
+      <!-- Subtitle -->
+      <p class="product-subtitle" *ngIf="articoloDoc.DESCRADDITIONAL">
+        {{articoloDoc.DESCRADDITIONAL}}
+      </p>
 
+      <!-- Price Section -->
+      <div class="price-section">
+        <div class="price-main">
+          <span class="price-label">Prezzo</span>
+          <span class="price-value">{{articoloDoc.PREZZONETTO | currency: 'EUR'}}</span>
+        </div>
+        <div class="price-old" *ngIf="articoloDoc.PREZZOLORDO && articoloDoc.PREZZOLORDO > articoloDoc.PREZZONETTO">
+          <span>{{articoloDoc.PREZZOLORDO | currency: 'EUR'}}</span>
+        </div>
+      </div>
 
+    </div>
 
-                  <ion-row *ngIf="articoloDoc.DESCRHTML && articoloDoc.DESCRHTML.length != 0">
-                    <ion-col class="description">
-                      <h5 class="ion-no-margin">Descrizione</h5>
-                      <p [innerHTML]="articoloDoc.DESCRHTML | safeHtml"></p>
-                    </ion-col>
-                  </ion-row>
+    <!-- ========================================== -->
+    <!-- DESCRIPTION -->
+    <!-- ========================================== -->
+    <div class="description-section" *ngIf="articoloDoc.DESCRHTML">
+      <h3 class="section-title">
+        <ion-icon name="document-text"></ion-icon>
+        Descrizione
+      </h3>
+      <div class="description-content" [innerHTML]="articoloDoc.DESCRHTML | safeHtml"></div>
+    </div>
 
-                  <!-- Non acquistabile -->
-                  <ion-row *ngIf="articoloDoc && !articoloDoc.FLAGSHOPACQUISTABILE">
-                    <ion-col>
-                      <ion-note>
-                        <ion-text>Per l'acquisto &egrave; necessario recarsi presso il centro. </ion-text>
-                        <ion-text color="danger">L'acquisto online non &egrave; disponibile</ion-text>
-                      </ion-note>
-                    </ion-col>
-                  </ion-row>
+    <!-- ========================================== -->
+    <!-- SELECTION SECTION -->
+    <!-- ========================================== -->
+    <div class="selection-section" *ngIf="articoloDoc.FLAGSHOPACQUISTABILE">
 
-                  
-                  <div *ngIf="articoloDoc && articoloDoc.FLAGSHOPACQUISTABILE">
+      <!-- Selected Items Display -->
+      <div class="selected-items" *ngIf="selectedColor || selectedTaglia">
+        
+        <div class="selected-item" *ngIf="selectedTaglia">
+          <ion-icon name="resize"></ion-icon>
+          <div class="selected-info">
+            <span class="selected-label">Taglia</span>
+            <span class="selected-value">{{selectedTaglia.DESCRIZIONE}}</span>
+          </div>
+        </div>
 
-                    <ion-row class="ion-padding-vertical">
-                      <ion-col>
-                        <ion-button 
-                            (click)="onAddToCart()"
-                            color="success" expand="block">
-                          Aggiungi al carrello
-                        </ion-button>
-                      </ion-col>
-                    </ion-row>    
+        <div class="selected-item" *ngIf="selectedColor">
+          <ion-icon name="color-palette"></ion-icon>
+          <div class="selected-info">
+            <span class="selected-label">Colore</span>
+            <span class="selected-value">{{selectedColor.DESCRIZIONE}}</span>
+          </div>
+        </div>
 
-                    <ion-row *ngIf="selectedColor || selectedTaglia">
-  
-                      <ion-col *ngIf="selectedColor">
-                        <ion-item>
-                          <ion-label>
-                            <h2>{{selectedColor.DESCRIZIONE}}</h2>
-                            <p class="ion-text-italic">(colore)</p>
-                          </ion-label>
-                        </ion-item>
-                      </ion-col>
-  
-                      <ion-col *ngIf="selectedTaglia">
-                        <ion-item>
-                          <ion-label>
-                            <h2>{{selectedTaglia.DESCRIZIONE}}</h2>
-                            <p class="ion-text-italic">(taglia)</p>
-                          </ion-label>
-                        </ion-item>
-                      </ion-col>     
-  
-                    </ion-row>
-  
-                    <!-- VARIAZIONI TAGLIE E COLORI -->
-                    <ion-row *ngIf="enableTaglie || enableColori">
-                      <ion-col>
-                        <div class="variation">
-                          <ion-segment 
-                              mode="md"
-                              (ionChange)="segmentChanged($event)" 
-                              value="size">
-                            <ion-segment-button 
-                                  *ngIf="enableTaglie"
-                                  value="size">
-                              <ion-label>Scelta Taglia</ion-label>
-                            </ion-segment-button>
-                            <ion-segment-button 
-                                  *ngIf="enableColori"
-                                  value="color">
-                              <ion-label>Scelta Colore</ion-label>
-                            </ion-segment-button>
-                          </ion-segment>
-                        </div>                      
-                      </ion-col>
-                    </ion-row>
-  
-                    <!-- VARIATORE TAGLIA -->
-                    <ion-row *ngIf="enableTaglie && activeVariation == 'size'">
-                      <ion-col>
-                        <div class="variation-selector">
-                          <div class="sizes" [class.active-variation]="activeVariation == 'size'">
-  
-                            <ion-grid>
-                              <ion-row >
-                                <ion-col
-                                    *ngFor="let item of articoloDoc.ARTICOLITAGLIEMISURE" 
-                                    size="4">
-                                    <div 
-                                      (click)="changeSize(item)"
-                                      [class.active]="selectedTaglia && selectedTaglia.ID == item.ID"
-                                      >
-                                      {{item.DESCRIZIONE}}
-                                  </div>
-                                </ion-col>
-                              </ion-row>
-                            </ion-grid>
-  
-                          </div>
-                          </div>
-                      </ion-col>
-                    </ion-row>
-  
-                    <!-- VARIATORE COLORE -->
-                    <ion-row *ngIf="enableColori && activeVariation == 'color'">
-                      <ion-col size="12">
-                        <div class="variation-selector">
-                          <div 
-                              class="colors" 
-                              [class.active-variation]="activeVariation == 'color'">
-                              <ion-grid>
-                                <ion-row >
-                                  <ion-col
-                                      *ngFor="let item of articoloDoc.ARTICOLICOLORI" 
-                                      size="4">
-                                      <div 
-                                        (click)="changeColor(item)"
-                                        [class.active]="selectedColor && selectedColor.ID == item.ID"
-                                        >
-                                        {{item.DESCRIZIONE}}
-                                    </div>
-                                  </ion-col>
-                                </ion-row>
-                              </ion-grid>
-                          </div>
-                          </div>
-                      </ion-col>
-                    </ion-row> 
-                  </div>
-                  
-                  <!-- SPAZIATURA FINALE -->
-                  <ion-row class="separator-final">
-                    <ion-col>
+      </div>
 
-                    </ion-col>
-                  </ion-row>
+      <!-- Tabs for Size/Color -->
+      <div class="selection-tabs" *ngIf="enableTaglie || enableColori">
+        <ion-segment 
+            mode="md"
+            (ionChange)="segmentChanged($event)" 
+            [value]="activeVariation">
+          
+          <ion-segment-button 
+              *ngIf="enableTaglie"
+              value="size">
+            <ion-icon name="resize"></ion-icon>
+            <ion-label>Taglie</ion-label>
+          </ion-segment-button>
+          
+          <ion-segment-button 
+              *ngIf="enableColori"
+              value="color">
+            <ion-icon name="color-palette"></ion-icon>
+            <ion-label>Colori</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
 
-                </ion-grid>
+      <!-- Size Selector -->
+      <div class="selector-container" *ngIf="enableTaglie && activeVariation === 'size'">
+        <div class="sizes-grid">
+          <div class="size-chip" 
+               *ngFor="let item of articoloDoc.ARTICOLITAGLIEMISURE"
+               [class.active]="selectedTaglia && selectedTaglia.ID === item.ID"
+               (click)="changeSize(item)">
+            <span>{{item.DESCRIZIONE}}</span>
+            <ion-icon name="checkmark-circle" *ngIf="selectedTaglia && selectedTaglia.ID === item.ID"></ion-icon>
+          </div>
+        </div>
+      </div>
 
+      <!-- Color Selector -->
+      <div class="selector-container" *ngIf="enableColori && activeVariation === 'color'">
+        <div class="colors-grid">
+          <div class="color-chip" 
+               *ngFor="let item of articoloDoc.ARTICOLICOLORI"
+               [class.active]="selectedColor && selectedColor.ID === item.ID"
+               (click)="changeColor(item)">
+            <span>{{item.DESCRIZIONE}}</span>
+            <ion-icon name="checkmark-circle" *ngIf="selectedColor && selectedColor.ID === item.ID"></ion-icon>
+          </div>
+        </div>
+      </div>
 
+    </div>
 
-      </ion-col>
-      </ion-row>
-    </ion-grid>
+    <!-- ========================================== -->
+    <!-- NOT AVAILABLE MESSAGE -->
+    <!-- ========================================== -->
+    <div class="not-available-section" *ngIf="!articoloDoc.FLAGSHOPACQUISTABILE || !isDisponibile()">
+      <div class="not-available-card">
+        <ion-icon name="information-circle"></ion-icon>
+        <div class="not-available-content">
+          <h3>Acquisto online non disponibile</h3>
+          <p>Per acquistare questo articolo è necessario recarsi presso il centro.</p>
+        </div>
+      </div>
+    </div>
 
-    <ion-modal [isOpen]="isOpenModalAddedItem" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.75]">
-      <ng-template>
-        <ion-content>
-          <!-- <ion-searchbar placeholder="Search" (click)="modalAddedItem.setCurrentBreakpoint(0.75)"></ion-searchbar> -->
-          <ion-list>
-            <ion-list-header mode="ios">
-              <ion-label>Aggiunto al carrello</ion-label>
-              <ion-button (click)="closeModalAddedItem()">Fatto</ion-button>
-            </ion-list-header>
+    <!-- Spacer for fixed button -->
+    <div class="bottom-spacer"></div>
 
-            <ion-item>
-              <ion-avatar slot="start">
-                <ion-img                   
-                  [src]="articoloDoc.PATHCOVERIMAGE && articoloDoc.PATHCOVERIMAGE.length != 0 ? articoloDoc.PATHCOVERIMAGE : 'assets/commercial/item_placeholder.png'">
-                </ion-img>
-              </ion-avatar>
-              <ion-label>
-                <h2>{{articoloDoc.DESCR}}</h2>
-                <p *ngIf="selectedColor">Colore: {{selectedColor.DESCRIZIONE}}</p>
-                <p *ngIf="selectedTaglia">Taglia: {{selectedTaglia.DESCRIZIONE}}</p>
-              </ion-label>
-            </ion-item>
-          </ion-list>
-        </ion-content>
-      </ng-template>
-    </ion-modal>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FIXED ADD TO CART BUTTON -->
+  <!-- ========================================== -->
+  <div class="fixed-cta" *ngIf="isDisponibile()">
+    <ion-button 
+        (click)="onAddToCart()"
+        expand="block"
+        color="success"
+        size="large"
+        class="add-to-cart-button">
+      <ion-icon name="cart" slot="start"></ion-icon>
+      Aggiungi al carrello
+    </ion-button>
+  </div>
+
+<!-- ========================================== -->
+<!-- MODAL ADDED TO CART -->
+<!-- ========================================== -->
+<ion-modal 
+    [isOpen]="isOpenModalAddedItem" 
+    [initialBreakpoint]="0.35" 
+    [breakpoints]="[0, 0.35, 0.5]"
+    class="added-modal">
+  <ng-template>
+    <ion-content class="modal-content">
+      
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="modal-success-icon">
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </div>
+        <h2 class="modal-title">Aggiunto al carrello!</h2>
+      </div>
+
+      <!-- Product Info -->
+      <div class="modal-product">
+        <div class="modal-product-image">
+          <img [src]="articoloDoc.getSrcImg()" [alt]="articoloDoc.DESCR">
+        </div>
+        <div class="modal-product-info">
+          <h3>{{articoloDoc.DESCR}}</h3>
+          <div class="modal-product-details">
+            <span *ngIf="selectedColor">
+              <ion-icon name="color-palette"></ion-icon>
+              {{selectedColor.DESCRIZIONE}}
+            </span>
+            <span *ngIf="selectedTaglia">
+              <ion-icon name="resize"></ion-icon>
+              {{selectedTaglia.DESCRIZIONE}}
+            </span>
+          </div>
+          <div class="modal-product-price">
+            {{articoloDoc.PREZZONETTO | currency: 'EUR'}}
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="modal-actions">
+        <ion-button 
+            (click)="closeModalAddedItem()"
+            expand="block"
+            color="success"
+            size="large">
+          <ion-icon name="checkmark" slot="start"></ion-icon>
+          FATTO
+        </ion-button>
+        <!-- <ion-button 
+            (click)="clickCarrello(); closeModalAddedItem()"
+            expand="block"
+            fill="outline"
+            color="primary"
+            size="large">
+          <ion-icon name="cart" slot="start"></ion-icon>
+          Vai al carrello
+        </ion-button> -->
+      </div>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>
 
 </ion-content>

@@ -377,4 +377,26 @@ closeModalAddedItem() {
   
   //#endregion
 
+  /**
+   * Disponibile all'acquisto
+   * @returns 
+   */
+  isDisponibile():boolean {
+    let flagDisponibile:boolean = true;
+
+    if (this.articoloDoc && 
+        this.articoloDoc.GESTIONESCORTE &&
+        (this.articoloDoc.QUANTITAMAGAZZINO <= 0 || this.articoloDoc.QUANTITAMAGAZZINO == undefined || this.articoloDoc.QUANTITAMAGAZZINO == null)) {
+        flagDisponibile = false;
+    }
+
+    if (flagDisponibile && !this.articoloDoc.FLAGSHOPACQUISTABILE) {
+      flagDisponibile = false;
+    }
+
+    console.log(this.articoloDoc.GESTIONESCORTE)
+    console.log(this.articoloDoc.QUANTITAMAGAZZINO)
+
+    return flagDisponibile;
+  }
 }

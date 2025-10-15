@@ -3,35 +3,77 @@
     <ion-buttons slot="start">
       <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
-    <ion-title>News</ion-title>
+    <ion-title>NEWS</ion-title>
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
-  <ion-card>
-    <ion-img [src]="newsDoc.LINKIMAGE" *ngIf="newsDoc.LINKIMAGE"></ion-img>
-    <ion-card-header>
-      <ion-card-title>
-        {{ newsDoc.TITLE }}
-      </ion-card-title>
-      <ion-card-subtitle>
-        {{ newsDoc.SUBTITLE }}
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-text>
-        {{ newsDoc.SHORTTEXT }}
-      </ion-text>
-    </ion-card-content>
-  </ion-card> 
   
+  <div class="news-container">
+
+    <!-- ========================================== -->
+    <!-- HERO SECTION -->
+    <!-- ========================================== -->
+    
+    <!-- Hero CON immagine -->
+    <div class="news-hero with-image" *ngIf="newsDoc.LINKIMAGE">
+      <div class="hero-image">
+        <img [src]="newsDoc.LINKIMAGE" [alt]="newsDoc.TITLE">
+        <div class="hero-overlay"></div>
+      </div>
+    </div>
+
+    <!-- Hero SENZA immagine (gradiente) -->
+    <div class="news-hero gradient" *ngIf="!newsDoc.LINKIMAGE">
+      <div class="hero-pattern">
+        <ion-icon name="newspaper-outline"></ion-icon>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CONTENT SECTION -->
+    <!-- ========================================== -->
+    <div class="news-content">
+
+      <!-- Badge Data/Categoria (opzionale) -->
+      <div class="news-meta">
+        <div class="meta-badge">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>Notizia</span>
+        </div>
+      </div>
+
+      <!-- Titolo -->
+      <h1 class="news-title">{{ newsDoc.TITLE }}</h1>
+
+      <!-- Sottotitolo -->
+      <h2 class="news-subtitle" *ngIf="newsDoc.SUBTITLE">
+        {{ newsDoc.SUBTITLE }}
+      </h2>
+
+      <!-- Divider -->
+      <div class="content-divider"></div>
+
+      <!-- Testo principale -->
+      <div class="news-text">
+        <p>{{ newsDoc.SHORTTEXT }}</p>
+      </div>
+
+      <!-- Bottone Leggi Articolo -->
+      <ion-button
+        *ngIf="existLinkNews()"
+        expand="block"
+        size="large"
+        color="success"
+        class="read-article-button"
+        (click)="onClickReadNews(newsDoc.LINKNEWS)">
+        <ion-icon name="open-outline" slot="start"></ion-icon>
+        Leggi articolo completo
+        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+      </ion-button>
+
+    </div>
+
+  </div>
+
 </ion-content>
-<ion-footer *ngIf="existLinkNews()">
-  <ion-button 
-      color="primary" 
-      expand="full"
-      (click)="onClickReadNews(newsDoc.LINKNEWS)">
-    Leggi articolo
-  </ion-button>
-</ion-footer>

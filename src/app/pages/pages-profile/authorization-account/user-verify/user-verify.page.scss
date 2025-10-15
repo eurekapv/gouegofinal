@@ -1,124 +1,480 @@
-div.div-logo{
-    background-color: white;
+// ========================================
+// PAGE CONTAINER
+// ========================================
+.page-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 15px;
 
-    padding-top: 3vh;
-    padding-bottom: 3vh;
-    margin-bottom: 3vh;
+  @media (min-width: 768px) {
+    padding: 30px 20px;
+  }
 
-    img{
-        height: 15vh;
-    }
+  @media (min-width: 1024px) {
+    padding: 40px 30px;
+  }
 }
 
+// ========================================
+// INFO BOX
+// ========================================
+.info-box {
+  background: #fef9e7;
+  border-left: 4px solid var(--ion-color-tertiary);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 
-div.content {
-    form {
-        background-color : var(--ion-color-mediumlight); 
-    }
-}
+  .info-icon {
+    color: var(--ion-color-tertiary);
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
 
-div.div-message {
-    p {
-        text-align: center;
-    }
-}
-
-
-
-div.div-logo.desktop{
-    padding-top: 1vh;
-    padding-bottom:0vh;
-    margin-bottom: 0vh;
-}
-
-
-div.form-verifica{
-    width:320px;
-    margin:auto;
-    margin-bottom: 8vh;
-    text-align:center;
-    ion-segment{
-        background:white;
-        ion-input{
-            display:inline;
-            border-radius:15px;
-            margin:2px;
-            border:3px solid var(--ion-color-primary);
-            text-align:center;
-            font-family: Arial, Helvetica, sans-serif;
-            color: var(--ion-color-primary);
-            font-size: 40px;
-        }
-    }
-}
-
-div.form-verifica.desktop{
-    margin-bottom: 2vh;
-}
-
-
-//inserisci i codici
-h6{
-    font-size: small;
-}
-
-a{
+  p {
+    margin: 0;
     color: var(--ion-color-primary);
-    text-decoration: underline;
-    cursor: pointer;
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
+  }
 }
 
-span.link{
+// ========================================
+// SECTION CARD (IDENTICO A EDIT-ACCOUNT)
+// ========================================
+.section-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 20px;
+  overflow: hidden;
+  animation: fadeInUp 0.3s ease;
+
+  .section-header {
+    background: linear-gradient(135deg, 
+      var(--ion-color-warning) 0%, 
+      var(--ion-color-warning-shade) 100%);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    // Variante per Email (verde)
+    &.email-header {
+      background: linear-gradient(135deg, 
+        var(--ion-color-success) 0%, 
+        var(--ion-color-success-shade) 100%);
+    }
+
+    // Variante per SMS (blu)
+    &.sms-header {
+      background: linear-gradient(135deg, 
+        var(--ion-color-primary) 0%, 
+        var(--ion-color-primary-shade) 100%);
+    }
+
+    .header-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 26px;
+        color: white;
+      }
+    }
+
+    h3 {
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  .section-body {
+    padding: 20px;
+  }
+}
+
+// ========================================
+// INPUT GROUPS (IDENTICO A EDIT-ACCOUNT)
+// ========================================
+.input-group {
+  background: var(--ion-color-extralight);
+  border-radius: 12px;
+  padding: 0 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+
+  &.half {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .input-icon {
     color: var(--ion-color-primary);
-    text-decoration: underline;
-    cursor: pointer;
-}
+    font-size: 22px;
+    flex-shrink: 0;
+  }
 
-ion-item-divider {
-    --padding-top: 5px;
-    --padding-bottom: 5px;
-    --padding-end: 10px;
-}
+  ion-input,
+  ion-select {
+    flex: 1;
+    --padding-start: 0;
+    --padding-end: 0;
+    --color: var(--ion-color-primary);
+    font-size: 15px;
+  }
 
-ion-content {
-    &::part(scroll) {
-        padding-left: 0px;
-        padding-right: 0px;
-        padding-top: 8px;
-        padding-bottom: 8px;
+  ion-select {
+    max-width: 100%;
+  }
+
+  // Stato di validazione
+  &.ion-invalid.ion-touched {
+    border: 1px solid var(--ion-color-danger);
+    
+    .input-icon {
+      color: var(--ion-color-danger);
     }
+  }
 }
 
-form {
-    padding-bottom: 30px;
+// Input su due colonne (CAP + Provincia)
+.input-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 15px;
+
+    .input-group.half {
+      width: 100%;
+    }
+  }
 }
 
-div.step-verifica{
-    ion-grid{
-        padding: 15px;
+// ========================================
+// DATE INPUT WRAPPER (IDENTICO A EDIT-ACCOUNT)
+// ========================================
+.date-input-wrapper {
+  margin-bottom: 15px;
+  
+  ::ng-deep app-dtinput {
+    display: block;
 
-        ion-row.submit{
-            ion-col{
-                padding-top: 40px;
-            }
+    ion-item {
+      --background: var(--ion-color-extralight);
+      --border-radius: 12px;
+      --padding-start: 15px;
+      --padding-end: 15px;
+      --min-height: 56px;
+      border-radius: 12px;
+      margin-bottom: 0;
+    }
+
+    ion-icon {
+      color: var(--ion-color-primary);
+      font-size: 22px;
+      margin-right: 12px;
+    }
+
+    ion-label {
+      color: var(--ion-color-primary);
+      font-size: 15px;
+    }
+  }
+}
+
+// ========================================
+// POLICY LINK
+// ========================================
+.policy-link {
+  margin-top: 8px;
+  text-align: center;
+
+  ion-button {
+    --color: var(--ion-color-primary);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// ========================================
+// INFO FOOTER (dentro le card)
+// ========================================
+.info-footer {
+  margin-top: 20px;
+  padding: 12px;
+  background: rgba(84, 220, 152, 0.08);
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  ion-icon {
+    color: var(--ion-color-success);
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-primary);
+    font-size: 13px;
+    line-height: 1.4;
+    font-style: italic;
+  }
+}
+
+// ========================================
+// VERIFY CONTAINER (stato VERIFY)
+// ========================================
+.verify-container {
+  
+  .verify-image {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+
+    img {
+      max-width: 220px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+    }
+
+    @media (min-width: 768px) {
+      img {
+        max-width: 260px;
+      }
+    }
+  }
+
+  .verify-label {
+    text-align: center;
+    color: var(--ion-color-primary);
+    font-size: 14px;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+
+    strong {
+      color: var(--ion-color-success);
+      font-weight: 600;
+    }
+  }
+
+  .code-input-wrapper {
+    margin-bottom: 16px;
+
+    .code-input {
+      --background: white;
+      --padding-start: 20px;
+      --padding-end: 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      color: var(--ion-color-primary);
+      border: 3px solid var(--ion-color-success);
+      border-radius: 12px;
+      min-height: 70px;
+
+      &::placeholder {
+        color: var(--ion-color-mediumlight);
+        font-size: 16px;
+        letter-spacing: normal;
+      }
+    }
+  }
+
+  .resend-button {
+    --color: var(--ion-color-primary);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    width: 100%;
+    margin: 0;
+
+    ion-icon {
+      font-size: 18px;
+    }
+
+    &:hover {
+      --color: var(--ion-color-success);
+    }
+  }
+}
+
+// ========================================
+// FOOTER (IDENTICO A EDIT-ACCOUNT)
+// ========================================
+ion-footer {
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+  
+  .footer-container {
+    padding: 16px;
+    background: white;
+
+    @media (min-width: 768px) {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  }
+
+  .footer-button {
+    --background: var(--ion-color-tertiary);
+    --color: var(--ion-color-primary);
+    --border-radius: 12px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    margin: 0;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+
+    ion-icon {
+      font-size: 22px;
+    }
+
+    &:hover {
+      --background: var(--ion-color-tertiary-shade);
+    }
+  }
+}
+
+// ========================================
+// ANIMAZIONI
+// ========================================
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Delay progressivo per le card
+.section-card:nth-child(2) { animation-delay: 0.1s; }
+.section-card:nth-child(3) { animation-delay: 0.2s; }
+.section-card:nth-child(4) { animation-delay: 0.3s; }
+
+// ========================================
+// RESPONSIVE - TABLET
+// ========================================
+@media (min-width: 768px) {
+  
+  .section-card {
+    .section-header {
+      padding: 25px;
+
+      .header-icon {
+        width: 52px;
+        height: 52px;
+
+        ion-icon {
+          font-size: 28px;
         }
-       
+      }
+
+      h3 {
+        font-size: 20px;
+      }
     }
 
-    ion-input{
-        text-align: center;
-        --padding-start: 5px;
-        --padding-end: 5px;
-        --padding-top: 10px;
-        --padding-bottom: 10px;
-        font-size: 25px;
-        
+    .section-body {
+      padding: 25px;
+    }
+  }
+
+  .input-group {
+    padding: 0 18px;
+    min-height: 60px;
+
+    .input-icon {
+      font-size: 24px;
     }
 
+    ion-input,
+    ion-select {
+      font-size: 16px;
+    }
+  }
+
+  .verify-container {
+    .code-input-wrapper {
+      .code-input {
+        font-size: 32px;
+        letter-spacing: 10px;
+        min-height: 80px;
+      }
+    }
+  }
+
+  ion-footer {
+    .footer-button {
+      font-size: 17px;
+    }
+  }
 }
 
+// ========================================
+// RESPONSIVE - DESKTOP
+// ========================================
+@media (min-width: 1024px) {
+  
+  .page-container {
+    max-width: 900px;
+  }
 
+  .section-card {
+    .section-header {
+      padding: 28px 30px;
 
+      .header-icon {
+        width: 56px;
+        height: 56px;
 
+        ion-icon {
+          font-size: 30px;
+        }
+      }
 
+      h3 {
+        font-size: 22px;
+      }
+    }
 
+    .section-body {
+      padding: 30px;
+    }
+  }
+}

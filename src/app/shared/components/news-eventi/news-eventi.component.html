@@ -1,25 +1,44 @@
-<ion-card>
-  <ion-item [button]="!myNews.do_inserted" (click)="onClickNews()" lines="none">
+<div 
+  class="news-card"
+  [class.clickable]="!myNews.do_inserted"
+  (click)="onClickNews()">
+  
+  <!-- Image / Icon Section -->
+  <div class="news-image-wrapper">
+    <!-- Con immagine -->
+    <div class="news-image" *ngIf="myNews.LINKIMAGE">
+      <img [src]="myNews.LINKIMAGE" [alt]="myNews.TITLE" />
+      <div class="image-overlay"></div>
+    </div>
 
-    <ion-thumbnail slot="start" *ngIf="myNews.LINKIMAGE">
-      <ion-img [src]="myNews.LINKIMAGE"></ion-img>
-    </ion-thumbnail>
+    <!-- Senza immagine - Icona grande -->
+    <div class="news-icon-fallback" *ngIf="!myNews.LINKIMAGE">
+      <ion-icon [name]="myNews._NAMEICON || 'newspaper'" [color]="myNews._COLOR || 'primary'"></ion-icon>
+    </div>
 
-    <ion-icon 
-      *ngIf = "!myNews.LINKIMAGE"
-      slot="start" [name]="myNews._NAMEICON" [color]="myNews._COLOR"></ion-icon>
+    <!-- Badge tipo (opzionale) -->
+    <div class="news-badge" *ngIf="!myNews.do_inserted">
+      <ion-icon name="newspaper-outline"></ion-icon>
+      <span>News</span>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="news-content">
+    <h3 class="news-title">{{ myNews.TITLE }}</h3>
     
-    <ion-label>
-      <h3 class="ion-text-wrap">
-        {{ myNews.TITLE }}
-      </h3>
+    <p class="news-subtitle" *ngIf="myNews.SUBTITLE">
+      {{ myNews.SUBTITLE }}
+    </p>
 
-      <p class="ion-text-wrap" *ngIf="myNews.SUBTITLE">
-        {{ myNews.SUBTITLE }}
-      </p>
-      <p *ngIf="myNews.PUBBLICATADAL" color="medium" class="ion-text-right ion-padding-horizontal">
-        <em>{{ myNews.PUBBLICATADAL | date : 'dd/MM/yyyy' }}</em>
-      </p>
-    </ion-label>
-  </ion-item>
-</ion-card>
+    <!-- Footer con data -->
+    <div class="news-footer" *ngIf="myNews.PUBBLICATADAL">
+      <div class="news-date">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <span>{{ myNews.PUBBLICATADAL | date: 'dd/MM/yyyy' }}</span>
+      </div>
+      <ion-icon name="chevron-forward" class="arrow-icon"></ion-icon>
+    </div>
+  </div>
+
+</div>

@@ -177,13 +177,20 @@ export class TabEventiPage implements OnInit, OnDestroy {
    */
   onClickNews(newsDoc: NewsEvento, event: any) {
 
-    //Apro la News in Modale
-    this.modalController.create({
-      component: NewsDetailPage,
-      componentProps: { myNews: newsDoc }
-    }).then(modal => {
-      modal.present();
-    })
+    let arPath: string[];
+    
+    if (newsDoc) {
+      arPath = this.startService.getUrlPageDetailNewsEventi('news', newsDoc.ID);
+      this.navController.navigateForward(arPath);
+    }
+
+    // //Apro la News in Modale
+    // this.modalController.create({
+    //   component: NewsDetailPage,
+    //   componentProps: { myNews: newsDoc }
+    // }).then(modal => {
+    //   modal.present();
+    // })
   }
 
   //#endregion  
@@ -219,4 +226,34 @@ export class TabEventiPage implements OnInit, OnDestroy {
     }
   }
   //#endregion
+
+  /**
+ * Gestisce il cambio segment manualmente
+ */
+onChangeSegmentManual(view: string): void {
+  this.selectedView = view;
+  this.onChangeSegment(null);
+}
+
+/**
+ * Calcola giorni al prossimo evento
+ */
+getNextEventDays(): number {
+  if (!this.listEventi || this.listEventi.length === 0) {
+    return 0;
+  }
+
+  const now = new Date();
+  const nextEvent = this.listEventi[0]; // Assumendo che siano ordinati
+
+  if (!nextEvent || !nextEvent.DATAINIZIO) {
+    return 0;
+  }
+
+  const eventDate = new Date(nextEvent.DATAINIZIO);
+  const diffTime = eventDate.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays > 0 ? diffDays : 0;
+}
 }

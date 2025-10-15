@@ -12,176 +12,199 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- GRID QUANDO E' FALLITO IL CARICAMENTO DEI DATI-->
-  <ion-grid 
-      *ngIf="loadingComplete && loadingError">
+  <!-- ERROR STATE -->
+  <div class="error-state" *ngIf="loadingComplete && loadingError">
+    <div class="error-icon">
+      <ion-icon name="alert-circle"></ion-icon>
+    </div>
+    <h3>Errore nel caricamento</h3>
+    <p>{{ messageError }}</p>
+    
+    <ion-button fill="solid" color="primary" (click)="requestDocs()">
+      <ion-icon name="refresh" slot="start"></ion-icon>
+      Riprova
+    </ion-button>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div class="loading-state" *ngIf="!loadingComplete">
+    <ion-spinner name="crescent" color="success"></ion-spinner>
+    <p>Caricamento dati cliente...</p>
+  </div>
+
+  <!-- CONTENT LOADED -->
+  <ion-grid class="customer-detail-container" *ngIf="loadingComplete && !loadingError">
     <ion-row>
       <ion-col sizeXs="12" 
                sizeSm="12" 
                sizeMd="12" 
-               sizeLg="8" offsetLg="2"
-               sizeXl="6" offsetXl="3">
+               sizeLg="10" offsetLg="1"
+               sizeXl="8" offsetXl="2">
 
-        <!-- ERRORI DI CARICAMENTO DATI -->
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Spiacenti</ion-card-title>
-            <ion-card-subtitle>{{messageError}}</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            <p>Recupero dei dati cliente fallito</p>
-          </ion-card-content>
-        </ion-card>                
+        <!-- PROFILE HEADER -->
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <ion-icon name="person"></ion-icon>
+          </div>
+          <div class="profile-info">
+            <h1 class="profile-name">{{ utenteDoc.NOMINATIVO }}</h1>
+            <div class="profile-badges">
+              <ion-badge 
+                [color]="hasValidMembership() ? 'success' : 'medium'"
+                class="membership-badge">
+                <ion-icon 
+                  [name]="hasValidMembership() ? 'checkmark-circle' : 'time'"
+                  class="badge-icon"></ion-icon>
+                {{ hasValidMembership() ? 'Tessera Valida' : 'Nessuna Tessera Attiva' }}
+              </ion-badge>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRID 2 COLONNE -->
+        <ion-grid class="content-grid">
+          <ion-row>
+            
+            <!-- COLONNA SINISTRA: CONTATTI -->
+            <ion-col sizeXs="12" sizeMd="12" sizeLg="6">
+              
+              <!-- CONTACT SECTION -->
+              <div class="section-header">
+                <ion-icon name="mail"></ion-icon>
+                <h3>Informazioni di Contatto</h3>
+              </div>
+
+              <!-- EMAIL CARD -->
+              <div class="contact-card" *ngIf="utenteDoc.EMAIL && utenteDoc.EMAIL.length !== 0">
+                <div class="contact-icon email">
+                  <ion-icon name="mail"></ion-icon>
+                </div>
+                <div class="contact-info">
+                  <span class="contact-label">Email</span>
+                  <span class="contact-value">{{ utenteDoc.EMAIL }}</span>
+                </div>
+                <!-- <a [href]="'mailto:' + utenteDoc.EMAIL" class="contact-action">
+                  <ion-icon name="send"></ion-icon>
+                </a> -->
+              </div>
+
+              <!-- PHONE CARD -->
+              <div class="contact-card" *ngIf="utenteDoc.MOBILENUMBER && utenteDoc.MOBILENUMBER.length !== 0">
+                <div class="contact-icon phone">
+                  <ion-icon name="call"></ion-icon>
+                </div>
+                <div class="contact-info">
+                  <span class="contact-label">Telefono</span>
+                  <span class="contact-value">{{ utenteDoc.MOBILENUMBER }}</span>
+                </div>
+                <a [href]="'tel:' + utenteDoc.MOBILENUMBER" class="contact-action">
+                  <ion-icon name="call"></ion-icon>
+                </a>
+              </div>
+
+              <!-- AGE CARD -->
+              <div class="contact-card" *ngIf="utenteDoc.NATOIL">
+                <div class="contact-icon age">
+                  <ion-icon name="calendar"></ion-icon>
+                </div>
+                <div class="contact-info">
+                  <span class="contact-label">Età</span>
+                  <span class="contact-value">{{ utenteDoc.getEtaAsInteger() }} anni</span>
+                </div>
+                <div class="contact-detail">
+                  <ion-icon name="gift"></ion-icon>
+                </div>
+              </div>
+
+            </ion-col>
+
+            <!-- COLONNA DESTRA: TESSERE -->
+            <ion-col sizeXs="12" sizeMd="12" sizeLg="6">
+              
+              <!-- MEMBERSHIPS SECTION -->
+              <div class="section-header">
+                <ion-icon name="card"></ion-icon>
+                <h3>Tessere e Abbonamenti</h3>
+              </div>
+
+              <!-- MEMBERSHIP CARDS -->
+              <div 
+                class="membership-card"
+                *ngFor="let itemTessera of listTesseramenti; let i = index"
+                [class.valid]="itemTessera.isValid()"
+                [class.expired]="!itemTessera.isValid()"
+                [style.animation-delay]="(i * 0.1) + 's'">
+                
+                <!-- Card Header -->
+                <div class="membership-header">
+                  <div class="membership-status">
+                    <ion-icon 
+                      [name]="itemTessera.isValid() ? 'checkmark-circle' : 'close-circle'"
+                      [color]="itemTessera.isValid() ? 'success' : 'danger'">
+                    </ion-icon>
+                    <span [class.valid-text]="itemTessera.isValid()" [class.expired-text]="!itemTessera.isValid()">
+                      {{ itemTessera.isValid() ? 'Tessera Valida' : 'Tessera Scaduta' }}
+                    </span>
+                  </div>
+                  <span class="membership-code">{{ itemTessera.CODICE }}</span>
+                </div>
+
+                <!-- Card Body -->
+                <div class="membership-body">
+                  <h4 class="membership-title" *ngIf="itemTessera[nameFieldDenominazioneTessera]">
+                    {{ itemTessera[nameFieldDenominazioneTessera] }}
+                  </h4>
+                  
+                  <p class="membership-description" *ngIf="itemTessera.isValid()">
+                    {{ itemTessera.decodeListAreaApplicazione('Valida per') }}
+                  </p>
+
+                  <!-- Expiry Date -->
+                  <div class="membership-expiry">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    <span>{{itemTessera.isValid() ? 'Scadenza' : 'Scaduta il'}}</span>
+                    <ion-badge 
+                      [color]="itemTessera.isValid() ? 'success' : 'danger'"
+                      class="expiry-badge">
+                      {{ itemTessera.DATASCADENZA | date: 'dd/MM/yyyy' }}
+                    </ion-badge>
+                  </div>
+                </div>
+
+                <!-- QR Code -->
+                <div class="membership-qr">
+                  <div class="qr-wrapper">
+                    <qrcode 
+                      [qrdata]="itemTessera.getQrCode()" 
+                      [width]="200"
+                      [errorCorrectionLevel]="'M'"
+                      [colorLight]="'#FFFFFF'">
+                    </qrcode>
+                  </div>
+                  <!-- <p class="qr-hint">Scansiona per accedere</p> -->
+                </div>
+              </div>
+
+              <!-- NO MEMBERSHIPS STATE -->
+              <div class="no-memberships" *ngIf="listTesseramenti.length === 0 && loadingComplete">
+                <div class="no-memberships-icon">
+                  <ion-icon name="card-outline"></ion-icon>
+                </div>
+                <h4>Nessuna Tessera</h4>
+                <p>Non sono presenti tessere intestate al cliente</p>
+                
+                <ion-button fill="outline" color="success" size="small">
+                  <ion-icon name="add-circle" slot="start"></ion-icon>
+                  Aggiungi Tessera
+                </ion-button>
+              </div>
+
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <!-- DATI CARICATI CORRETTAMENTE -->
-  <ion-grid 
-      class="ion-no-margin ion-no-padding"
-      *ngIf="loadingComplete && !loadingError">
-      <ion-row>
-            <ion-col sizeXs="12" 
-                    sizeSm="12" 
-                    sizeMd="12" 
-                    sizeLg="8" offsetLg="2"
-                    sizeXl="6" offsetXl="3">
-
-                    <!-- DIVIDO IN 2 COLONNE A SINISTRA I DATI E DESTRA LE TESSERE -->
-                    <ion-grid 
-                        class="ion-no-padding ion-no-margin">
-                        <ion-row class="ion-no-padding ion-margin-horizontal">
-                          <!-- COLONNA A SINISTRA DETTAGLI -->
-                          <ion-col
-                              sizeXs="12" 
-                              sizeSm="12" 
-                              sizeMd="12" 
-                              sizeLg="6" 
-                              sizeXl="6">
-
-                              <ion-card
-                                  color="light">
-                                  <ion-card-header>
-                                    <ion-card-title>{{utenteDoc.NOMINATIVO}}</ion-card-title>
-                                  </ion-card-header>
-                                  <ion-card-content
-                                        >
-                                        <!-- RIFERIMENTO EMAIL -->
-                                        <ion-item
-                                              lines="none"  
-                                              *ngIf="utenteDoc.EMAIL && utenteDoc.EMAIL.length != 0"
-                                              color="light">
-                                          <ion-icon slot="start" name="mail-outline"></ion-icon>                                              
-                                          <ion-label class="ion-text-wrap">{{utenteDoc.EMAIL}}</ion-label>
-                                        </ion-item>
-      
-                                        <!-- RIFERIMENTO MOBILE NUMBER -->
-                                        <ion-item
-                                              lines="none"  
-                                              *ngIf="utenteDoc.MOBILENUMBER && utenteDoc.MOBILENUMBER.length != 0"
-                                              color="light">
-                                          <ion-icon slot="start" name="call-outline"></ion-icon>
-                                          <ion-label class="ion-text-wrap">{{utenteDoc.MOBILENUMBER}}</ion-label>
-                                          <ion-button
-                                              [href]="'tel:' + utenteDoc.MOBILENUMBER"
-                                              slot="end"
-                                              size="small"
-                                              fill="clear"
-                                              color="success"
-                                              >
-                                              Chiama
-                                          </ion-button>
-                                        </ion-item>     
-                                        
-                                        <!-- RIFERIMENTO ETA-->
-                                        <ion-item
-                                              lines="none" 
-                                              *ngIf="utenteDoc.NATOIL"
-                                                color="light">
-                                          <ion-icon slot="start" name="gift-outline"></ion-icon>
-                                          <ion-label class="ion-text-wrap">{{utenteDoc.getEtaAsInteger()}} anni</ion-label>
-                                        </ion-item> 
-
-                                  </ion-card-content>
-                              </ion-card>
-
-                          </ion-col>
-                          <!-- COLONNA A DESTRA DETTAGLI -->
-                          <ion-col
-                              sizeXs="12" 
-                              sizeSm="12" 
-                              sizeMd="12" 
-                              sizeLg="6" 
-                              sizeXl="6">
-
-                               <!-- CARD CON LA TESSERA -->
-                              <ion-card 
-                                      *ngFor="let itemTessera of listTesseramenti"
-                                      [color]="itemTessera.isValid() ? 'success':'danger'">
-
-                                      <ion-card-header>
-                                        <ion-card-title>{{itemTessera.isValid()?'Tessera Valida':'Tessera Scaduta'}}</ion-card-title>
-                                        <ion-card-subtitle>{{itemTessera.CODICE}}</ion-card-subtitle>
-                                      </ion-card-header>
-                            
-                              <ion-card-content
-                                  class="ion-card-white" 
-                                  >                                
-                                <!-- TIPO TESSERA E APPLICAZIONE -->
-                                <ion-item
-                                    lines="none"
-                                    >
-                                    <ion-label 
-                                        class="ion-text-wrap">
-                                      <h6 
-                                          *ngIf="itemTessera[nameFieldDenominazioneTessera] && itemTessera[nameFieldDenominazioneTessera].length != 0"
-                                          class="ion-text-bold">
-                                        {{itemTessera[nameFieldDenominazioneTessera]}}
-                                      </h6>
-
-                                       <p class="ion-text-small">
-                                        {{itemTessera.decodeListAreaApplicazione('Valida per')}}
-                                      </p> 
-
-                                    </ion-label>
-                                </ion-item>                                        
-
-                                <!-- SCADENZA -->
-                                <ion-item 
-                                      lines="none">
-                                  <ion-label>
-                                    Scadenza
-                                  </ion-label>
-                                  <ion-badge 
-                                        [color]="itemTessera.isValid() ? 'success':'danger'" 
-                                        slot="end">
-                                    {{itemTessera.DATASCADENZA | date : 'dd/LL/yyyy'}}
-                                  </ion-badge>
-                                </ion-item>
-
-                                <qrcode 
-                                    [qrdata]="itemTessera.getQrCode()" 
-                                    [colorLight]="'FFFFFF'">
-                                </qrcode>                                    
-            
-                              </ion-card-content>
-                              </ion-card>
-            
-                              <!-- NESSUNA TESSERA PRESENTE -->
-                              <app-button-card
-                                  *ngIf="listTesseramenti.length == 0 && loadingComplete"
-                                  [myButtonCard] = "noTesseramentiCard"
-                                  smallVersion="true"
-                                  class="small-button-card">
-                              </app-button-card>
-                          </ion-col>
-                        </ion-row>
-
-                    </ion-grid>
-
-
-            </ion-col>
-      </ion-row>
-  </ion-grid> 
 
 </ion-content>

@@ -14,7 +14,17 @@ export class NewsEventiComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Imposta icona di default se non presente
+    if (!this.myNews._NAMEICON) {
+      this.myNews._NAMEICON = 'newspaper';
+    }
+    
+    // Imposta colore di default se non presente
+    if (!this.myNews._COLOR) {
+      this.myNews._COLOR = 'primary';
+    }
+  }
 
 
   /**

@@ -1,3 +1,589 @@
-.ion-card-white {
-    background-color: white;
+// =====================================================
+// CUSTOMER DETAIL - MODERN DESIGN
+// =====================================================
+
+ion-content {
+  --background: var(--ion-color-extralight);
+}
+
+// =====================================================
+// CONTAINER
+// =====================================================
+.customer-detail-container {
+  padding: 0;
+  padding-bottom: 100px;
+}
+
+// =====================================================
+// ERROR STATE
+// =====================================================
+.error-state {
+  text-align: center;
+  padding: 80px 20px;
+  animation: fadeIn 0.6s ease-out;
+
+  .error-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, var(--ion-color-danger), #c53030);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 48px;
+      color: white;
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-mediumlight);
+    margin: 0 0 32px 0;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  ion-button {
+    --border-radius: 16px;
+    height: 48px;
+    font-weight: 600;
+    text-transform: none;
+  }
+}
+
+// =====================================================
+// LOADING STATE
+// =====================================================
+.loading-state {
+  text-align: center;
+  padding: 100px 20px;
+  animation: fadeIn 0.4s ease-out;
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-mediumlight);
+    margin: 0;
+  }
+}
+
+// =====================================================
+// PROFILE HEADER
+// =====================================================
+.profile-header {
+  background: linear-gradient(135deg, var(--ion-color-primary), #2d3748);
+  padding: 40px 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: slideDown 0.4s ease-out;
+
+  // Decorative background
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(84, 220, 152, 0.15), transparent);
+    border-radius: 50%;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ion-color-success), #3da566);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+
+    ion-icon {
+      font-size: 40px;
+      color: white;
+    }
+  }
+
+  .profile-info {
+    flex: 1;
+    position: relative;
+    z-index: 2;
+
+    .profile-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: white;
+      margin: 0 0 12px 0;
+      line-height: 1.2;
+    }
+
+    .profile-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+
+      .membership-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 12px;
+
+        .badge-icon {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+// =====================================================
+// CONTENT GRID
+// =====================================================
+.content-grid {
+  padding: 24px 16px;
+}
+
+// =====================================================
+// SECTION HEADER
+// =====================================================
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-success);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0;
+  }
+}
+
+// =====================================================
+// CONTACT CARDS
+// =====================================================
+.contact-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  animation: slideUp 0.4s ease-out both;
+
+  &:hover {
+    border-color: var(--ion-color-success);
+    box-shadow: 0 4px 16px rgba(84, 220, 152, 0.2);
+    transform: translateX(4px);
+  }
+
+  .contact-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 24px;
+      color: white;
+    }
+
+    &.email {
+      background: linear-gradient(135deg, var(--ion-color-primary), #2d3748);
+      box-shadow: 0 4px 12px rgba(25, 35, 51, 0.3);
+    }
+
+    &.phone {
+      background: linear-gradient(135deg, var(--ion-color-success), #3da566);
+      box-shadow: 0 4px 12px rgba(84, 220, 152, 0.3);
+    }
+
+    &.age {
+      background: linear-gradient(135deg, var(--ion-color-tertiary), #e0b045);
+      box-shadow: 0 4px 12px rgba(250, 212, 122, 0.3);
+    }
+  }
+
+  .contact-info {
+    flex: 1;
+    min-width: 0;
+
+    .contact-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ion-color-mediumlight);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .contact-value {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .contact-action {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ion-color-success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+
+    ion-icon {
+      font-size: 20px;
+      color: white;
+    }
+
+    &:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(84, 220, 152, 0.4);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .contact-detail {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ion-color-extralight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-tertiary);
+    }
+  }
+}
+
+// =====================================================
+// MEMBERSHIP CARDS
+// =====================================================
+.membership-card {
+  background: white;
+  border-radius: 20px;
+  padding: 0;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  animation: slideUp 0.4s ease-out both;
+
+  &.valid {
+    border-color: var(--ion-color-success);
+
+    .membership-header {
+      background: linear-gradient(135deg, var(--ion-color-success), #3da566);
+    }
+  }
+
+  &.expired {
+    border-color: var(--ion-color-danger);
+
+    .membership-header {
+      background: linear-gradient(135deg, var(--ion-color-danger), #c53030);
+    }
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .membership-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .membership-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+
+      span {
+        font-size: 1rem;
+        font-weight: 700;
+        color: white;
+      }
+    }
+
+    .membership-code {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 12px;
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  .membership-body {
+    padding: 20px;
+
+    .membership-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+      margin: 0 0 8px 0;
+    }
+
+    .membership-description {
+      font-size: 0.9rem;
+      color: var(--ion-color-mediumlight);
+      line-height: 1.5;
+      margin: 0 0 16px 0;
+    }
+
+    .membership-expiry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      background: var(--ion-color-extralight);
+      border-radius: 12px;
+
+      ion-icon {
+        font-size: 20px;
+        color: var(--ion-color-success);
+      }
+
+      span {
+        font-size: 0.9rem;
+        color: var(--ion-color-mediumlight);
+        font-weight: 600;
+      }
+
+      .expiry-badge {
+        margin-left: auto;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .membership-qr {
+    background: var(--ion-color-extralight);
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid var(--ion-color-light);
+
+    .qr-wrapper {
+      background: white;
+      padding: 16px;
+      border-radius: 16px;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .qr-hint {
+      font-size: 0.85rem;
+      color: var(--ion-color-mediumlight);
+      margin: 12px 0 0 0;
+      font-weight: 600;
+    }
+  }
+}
+
+// =====================================================
+// NO MEMBERSHIPS STATE
+// =====================================================
+.no-memberships {
+  background: white;
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.6s ease-out;
+
+  .no-memberships-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--ion-color-light), #e8e9ed);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 40px;
+      color: var(--ion-color-mediumlight);
+    }
+  }
+
+  h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: var(--ion-color-mediumlight);
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+  }
+
+  ion-button {
+    --border-radius: 12px;
+    height: 40px;
+    font-weight: 600;
+    text-transform: none;
+  }
+}
+
+// =====================================================
+// ANIMATIONS
+// =====================================================
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+// Mobile landscape / Small tablet
+@media (min-width: 576px) {
+  .profile-header {
+    padding: 48px 32px 40px;
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+
+      ion-icon {
+        font-size: 50px;
+      }
+    }
+
+    .profile-info .profile-name {
+      font-size: 2rem;
+    }
+  }
+
+  .content-grid {
+    padding: 32px 24px;
+  }
+
+  .contact-card {
+    .contact-icon {
+      width: 56px;
+      height: 56px;
+
+      ion-icon {
+        font-size: 28px;
+      }
+    }
+  }
+}
+
+// Tablet
+@media (min-width: 768px) {
+  .membership-card {
+    &:hover {
+      transform: translateY(-8px);
+    }
+  }
+}
+
+// Desktop
+@media (min-width: 992px) {
+  .contact-card {
+    &:hover {
+      transform: translateX(8px);
+    }
+  }
 }

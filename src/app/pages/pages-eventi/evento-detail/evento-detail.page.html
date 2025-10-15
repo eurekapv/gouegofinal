@@ -1,11 +1,9 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      Evento
-    </ion-title>
+    <ion-title>Evento</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -15,316 +13,342 @@
   </ion-refresher>
 
   <ion-grid id="container-page">
-    <ion-row
-        class="ion-no-margin"
-        >
-      <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="10" offsetMd="1"
-                sizeLg="8" offsetLg="2"
-                sizeXl="8" offsetXl="2">
+    <ion-row class="ion-no-margin">
+      <ion-col sizeXs="12" sizeSm="12" sizeMd="10" offsetMd="1" sizeLg="8" offsetLg="2" sizeXl="8" offsetXl="2">
 
-          <ion-card class="special">
-            <ion-card-header class="ion-no-padding">
+        <!-- ========================================== -->
+        <!-- HERO HEADER CARD -->
+        <!-- ========================================== -->
+        <div class="hero-card">
+          <div class="hero-content">
+            <!-- Sport Badge -->
+            <div class="sport-badge">
+              <ion-icon name="sunny"></ion-icon>
+              <span>{{ eventoDoc['_DENOMINAZIONE_Sport'] }}</span>
+            </div>
 
-              <ion-item [color]="getColorHeader()" button="false" lines="none">
-                <ion-label>
-                  <h1 class="ion-text-wrap">{{ eventoDoc.DENOMINAZIONE }}</h1>
-                  <h3 class="ion-text-wrap">{{ eventoDoc['_DENOMINAZIONE_Sport'] }}</h3>
-                  <p class="ion-text-bold">{{eventoDoc['_DENOMINAZIONE_TipoEvento'] | uppercase}}</p>
-                </ion-label>
-              </ion-item>
-            </ion-card-header>
-          </ion-card>
+            <!-- Titolo Evento -->
+            <h1 class="event-title">{{ eventoDoc.DENOMINAZIONE }}</h1>
 
+            <!-- Tipo Evento Badge -->
+            <div class="event-type-badge">
+              {{ eventoDoc['_DENOMINAZIONE_TipoEvento'] | uppercase }}
+            </div>
+          </div>
+        </div>
 
-          <ion-grid>
-            <ion-row
-                  *ngIf="eventoDoc.PROGRAMMA && eventoDoc.PROGRAMMA.length != 0">
-              <ion-col 
-                    size="12">
-                    <ion-accordion-group>
-                      <ion-accordion value="programma-accordion">
-                        <ion-item slot="header" color="tertiary">
-                          <ion-icon slot="start" name="document-text-outline"></ion-icon>
-                          <ion-label class="ion-text-bold">PROGRAMMA</ion-label>
-                        </ion-item>
-                        <div class="ion-padding" slot="content">
-                          <p [innerHTML]="eventoDoc.PROGRAMMA | safeHtml"></p>
-                        </div>
-                      </ion-accordion>
-                    </ion-accordion-group>
-              </ion-col>
-            </ion-row>
+        <!-- ========================================== -->
+        <!-- SECTION: QUANDO (Timeline Orizzontale) -->
+        <!-- ========================================== -->
+        <div class="section-card quando-section" *ngIf="eventoDoc.tempoEvento() != tempoEvento.NULL">
+          <div class="section-header">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <h2>Quando</h2>
+          </div>
 
-            <ion-row *ngIf="eventoDoc.existCalendario()">
-              <!-- CALENDARIO -->
-              <ion-col 
-                  size="12">
-                  <ion-accordion-group>
-                    <ion-accordion value="calendar-accordion">
-                      <ion-item slot="header" color="tertiary">
-                        <ion-icon slot="start" name="calendar-outline"></ion-icon>
-                        <ion-label class="ion-text-bold">CALENDARIO</ion-label>
-                      </ion-item>
-                      <div class="ion-padding-vertical" slot="content">
-                        <ion-list class="ion-no-margin">
-                          <ion-item 
-                              *ngFor="let item of eventoDoc.EVENTOPIANIFICAZIONE">
-                              <ion-label class="ion-text-wrap">
-                                <h4>{{item['_DENOMINAZIONE_Location']}}</h4>
-                                <p>{{item['_DENOMINAZIONE_Campo']}}</p>
-                              </ion-label>
-                              <ion-label 
-                                    class="ion-text-end"
-                                    slot="end">
-                                <ion-badge color="success">{{item.DATAORAINIZIO | date: "EEE dd/MM/yyyy" | titlecase}}</ion-badge>
-                                <p class="ion-text-bold">{{item.DATAORAINIZIO | date: "HH:mm"}} - {{item.DATAORAFINE | date: "HH:mm"}}</p>
-                              </ion-label>
-                          </ion-item>
-                        </ion-list>
-                      </div>
-                    </ion-accordion>
-                  </ion-accordion-group>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+          <!-- Timeline Orizzontale -->
+          <div class="timeline-horizontal">
+            <div class="timeline-points">
+              <div class="timeline-point" 
+                   [ngClass]="{'active': eventoDoc.tempoEvento() == tempoEvento.FUTURO || eventoDoc.tempoEvento() == tempoEvento.IN_CORSO || eventoDoc.tempoEvento() == tempoEvento.PASSATO}">
+                <div class="point-label">
+                  <span class="label-date" *ngIf="eventoDoc.DATAINIZIO">{{ eventoDoc.DATAINIZIO | date: 'dd MMM' }}</span>
+                  <span class="label-text">INIZIO</span>
+                </div>
+                <div class="point-dot"></div>
+              </div>
 
-          <!-- GRID CONTENT -->
-          <ion-grid>
-            <ion-row>
-              <!-- COLONNA SINISTRA-->
-              <ion-col 
-                  sizeXs="12" 
-                  sizeSm="12" 
-                  sizeMd="6" 
-                  sizeLg="6" 
-                  sizeXl="6">
-                      <ion-list class="ion-no-padding">
-                        <!-- GIORNATE -->
-                        <ion-item-group class="ion-padding-bottom">
-                          <ion-item-divider [color]="groupColor">
-                            <ion-label>
-                              <h2>Quando</h2>
-                            </ion-label>
-                          </ion-item-divider>
+              <div class="timeline-point" 
+                   [ngClass]="{'active': eventoDoc.tempoEvento() == tempoEvento.IN_CORSO || eventoDoc.tempoEvento() == tempoEvento.PASSATO}">
+                <div class="point-label">
+                  <span class="label-date">Oggi</span>
+                  <span class="label-text">IN CORSO</span>
+                </div>
+                <div class="point-dot"></div>
+              </div>
 
-                          <ion-grid class="ion-padding-horizontal">
-                            
-                            <!-- HO UN TEMPO PER L'EVENTO-->
-                            <ion-row *ngIf="eventoDoc.tempoEvento() != tempoEvento.NULL">
+              <div class="timeline-point" 
+                   [ngClass]="{'active': eventoDoc.tempoEvento() == tempoEvento.PASSATO}">
+                <div class="point-label">
+                  <span class="label-date" *ngIf="eventoDoc.DATAFINE">{{ eventoDoc.DATAFINE | date: 'dd MMM' }}</span>
+                  <span class="label-text">FINE</span>
+                </div>
+                <div class="point-dot"></div>
+              </div>
+            </div>
 
-                              <ion-col *ngIf="eventoDoc.tempoEvento()==tempoEvento.FUTURO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  L'evento sar&agrave; effettuato prossimamente&nbsp;
-                                  <ion-text class="ion-text-bold" *ngIf="eventoDoc.DATAINIZIO"> da {{eventoDoc.DATAINIZIO|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text> 
-                                  <ion-text class="ion-text-bold" *ngIf="eventoDoc.DATAFINE"> fino a {{eventoDoc.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
-                                </h6>
-                              </ion-col>
+            <div class="timeline-track">
+              <div class="timeline-progress" 
+                   [ngClass]="{
+                     'progress-future': eventoDoc.tempoEvento() == tempoEvento.FUTURO,
+                     'progress-ongoing': eventoDoc.tempoEvento() == tempoEvento.IN_CORSO,
+                     'progress-past': eventoDoc.tempoEvento() == tempoEvento.PASSATO
+                   }"></div>
+            </div>
+          </div>
 
-                              <ion-col *ngIf="eventoDoc.tempoEvento()==tempoEvento.IN_CORSO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  L'evento &egrave; attualmente in corso&nbsp;
-                                  <ion-text class="ion-text-bold" *ngIf="eventoDoc.DATAINIZIO"> da {{eventoDoc.DATAINIZIO|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text> 
-                                  <ion-text class="ion-text-bold" *ngIf="eventoDoc.DATAFINE"> fino a {{eventoDoc.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>                                  
-                                </h6>
-                              </ion-col>
+          <!-- Status Message -->
+          <div class="status-message" 
+               [ngClass]="{
+                 'status-future': eventoDoc.tempoEvento() == tempoEvento.FUTURO,
+                 'status-ongoing': eventoDoc.tempoEvento() == tempoEvento.IN_CORSO,
+                 'status-past': eventoDoc.tempoEvento() == tempoEvento.PASSATO
+               }">
+            <ion-icon name="information-circle"></ion-icon>
+            <div class="message-content">
+              <!-- FUTURO -->
+              <p *ngIf="eventoDoc.tempoEvento() == tempoEvento.FUTURO">
+                L'evento sarà effettuato prossimamente
+                <strong *ngIf="eventoDoc.DATAINIZIO">da {{ eventoDoc.DATAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase }}</strong>
+                <strong *ngIf="eventoDoc.DATAFINE">fino a {{ eventoDoc.DATAFINE | date: 'EEEE dd/MM/yyyy' | titlecase }}</strong>
+              </p>
 
-                              <ion-col *ngIf="eventoDoc.tempoEvento()==tempoEvento.PASSATO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  L'evento si &egrave; svolto &nbsp;
-                                  <ion-text class="ion-text-bold" *ngIf="eventoDoc.DATAINIZIO"> da {{eventoDoc.DATAINIZIO|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text> 
-                                  <ion-text class="ion-text-bold" *ngIf="eventoDoc.DATAFINE"> fino a {{eventoDoc.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
-                                  &nbsp;ed &egrave; ora concluso
-                                </h6>
-                              </ion-col>                              
-                            </ion-row>
+              <!-- IN CORSO -->
+              <p *ngIf="eventoDoc.tempoEvento() == tempoEvento.IN_CORSO">
+                L'evento è attualmente in corso
+                <strong *ngIf="eventoDoc.DATAINIZIO">da {{ eventoDoc.DATAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase }}</strong>
+                <strong *ngIf="eventoDoc.DATAFINE">fino a {{ eventoDoc.DATAFINE | date: 'EEEE dd/MM/yyyy' | titlecase }}</strong>
+              </p>
 
-                          </ion-grid>
-                        </ion-item-group>
-                      </ion-list>
-              </ion-col>
-              <!-- COLONNA DESTRA -->
-              <ion-col 
-                  sizeXs="12" 
-                  sizeSm="12" 
-                  sizeMd="6" 
-                  sizeLg="6" 
-                  sizeXl="6">
+              <!-- PASSATO -->
+              <p *ngIf="eventoDoc.tempoEvento() == tempoEvento.PASSATO">
+                L'evento si è svolto
+                <strong *ngIf="eventoDoc.DATAINIZIO">da {{ eventoDoc.DATAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase }}</strong>
+                <strong *ngIf="eventoDoc.DATAFINE">fino a {{ eventoDoc.DATAFINE | date: 'EEEE dd/MM/yyyy' | titlecase }}</strong>
+                ed è ora concluso
+              </p>
+            </div>
+          </div>
+        </div>
 
-                  <ion-list class="ion-no-padding">
+        <!-- ========================================== -->
+        <!-- SECTION: PROGRAMMA (Accordion) -->
+        <!-- ========================================== -->
+        <div class="section-card" *ngIf="eventoDoc.PROGRAMMA && eventoDoc.PROGRAMMA.length != 0">
+          <ion-accordion-group class="custom-accordion">
+            <ion-accordion value="programma" class="category-accordion">
+              
+              <!-- HEADER ACCORDION -->
+              <div slot="header" class="accordion-header">
+                <div class="header-icon">
+                  <ion-icon name="document-text"></ion-icon>
+                </div>
+                <div class="header-content">
+                  <h3>PROGRAMMA</h3>
+                </div>
+                <div class="header-arrow">
+                  <ion-icon name="chevron-down"></ion-icon>
+                </div>
+              </div>
+
+              <!-- CONTENT ACCORDION -->
+              <div class="accordion-content" slot="content">
+                <div class="programma-text" [innerHTML]="eventoDoc.PROGRAMMA | safeHtml"></div>
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION: CALENDARIO (Timeline Verticale) -->
+        <!-- ========================================== -->
+        <div class="section-card" *ngIf="eventoDoc.existCalendario()">
+          <ion-accordion-group class="custom-accordion">
+            <ion-accordion value="calendario" class="category-accordion">
+              
+              <!-- HEADER ACCORDION -->
+              <div slot="header" class="accordion-header">
+                <div class="header-icon">
+                  <ion-icon name="calendar"></ion-icon>
+                </div>
+                <div class="header-content">
+                  <h3>CALENDARIO</h3>
+                </div>
+                <div class="header-arrow">
+                  <ion-icon name="chevron-down"></ion-icon>
+                </div>
+              </div>
+
+              <!-- CONTENT ACCORDION -->
+              <div class="accordion-content" slot="content">
+                
+                <!-- Timeline Verticale -->
+                <div class="calendar-timeline">
+                  <div class="timeline-item" *ngFor="let item of eventoDoc.EVENTOPIANIFICAZIONE; let i = index">
                     
+                    <!-- Timeline Dot -->
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-line" *ngIf="i < eventoDoc.EVENTOPIANIFICAZIONE.length - 1"></div>
 
-                    <!-- INFO ISCRIZIONI -->
-                    <ion-item-group 
-                          class="ion-padding-bottom"
-                        >
-                      <ion-item-divider [color]="groupColor">
-                        <ion-label>
-                          <h2>Iscrizioni</h2>
-                        </ion-label>
-                      </ion-item-divider>
+                    <!-- Event Card -->
+                    <div class="timeline-event-card">
+                      <!-- Date Badge -->
+                      <div class="event-date-badge">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                        <span>{{ item.DATAORAINIZIO | date: 'EEE dd/MM/yyyy' | titlecase }}</span>
+                      </div>
 
-                      <!-- GESTIONE IMPORTI -->
-                      <ion-item 
-                              *ngIf="eventoDoc.isAPagamento()"
-                              lines="none">
-                        <ion-label>Quota Iscrizione</ion-label>                        
-                        <ion-badge
-                            color="success"
-                            slot="end">
-                            {{eventoDoc.PREZZOLORDO | currency:"EUR"}}
-                        </ion-badge>
-                      </ion-item>
+                      <!-- Event Details -->
+                      <div class="event-details">
+                        <div class="detail-row">
+                          <ion-icon name="time-outline"></ion-icon>
+                          <span class="detail-text">{{ item.DATAORAINIZIO | date: 'HH:mm' }} - {{ item.DATAORAFINE | date: 'HH:mm' }}</span>
+                        </div>
 
-                      <!-- GESTIONE IMPORTI -->
-                      <ion-item 
-                              color="light"
-                              *ngIf="!eventoDoc.isAPagamento()"
-                              lines="none">
-                        <ion-label>Quota Iscrizione</ion-label>                              
-                        <ion-badge 
-                            color="success"
-                            slot="end">
-                            GRATUITA
-                          </ion-badge>
-                      </ion-item>                         
+                        <div class="detail-row">
+                          <ion-icon name="location-outline"></ion-icon>
+                          <span class="detail-text">{{ item['_DENOMINAZIONE_Location'] }}</span>
+                        </div>
 
-                      <!-- LE ISCRIZIONI SARANNO DISPONIBILI NEL FUTURO -->
-                      <ion-item *ngIf="eventoDoc?.tempoIscrizioni() == tempoEvento.FUTURO"
-                                lines="none">
-                        <ion-icon 
-                            [color]="iconColor" 
-                            slot="start" 
-                            name="timer-outline">
-                        </ion-icon>
-                        <!-- LABEL QUANDO CI SONO ENTRAMBI LE DATE -->
-                        <ion-label 
-                              *ngIf="eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Sar&agrave; possibile effettuare l'iscrizione da <ion-text class="ion-text-bold ion-text-danger">{{eventoDoc.ISCRIZIONEDAL | date: "EEEE dd/MM/yyyy"}}</ion-text> a <ion-text class="ion-text-bold">{{eventoDoc.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                          <p>Contatta la struttura in caso di particolari richieste o eventuali problematiche di iscrizione.</p>
-                        </ion-label>
+                        <div class="detail-row" *ngIf="item['_DENOMINAZIONE_Campo']">
+                          <ion-icon name="tennisball-outline"></ion-icon>
+                          <span class="detail-text">{{ item['_DENOMINAZIONE_Campo'] }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI INIZIO -->
-                        <ion-label 
-                              *ngIf="eventoDoc.ISCRIZIONEDAL && !eventoDoc.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Sar&agrave; possibile effettuare l'iscrizione da <ion-text class="ion-text-bold ion-text-danger">{{eventoDoc.ISCRIZIONEDAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                          <p>Contatta la struttura in caso di particolari richieste o eventuali problematiche di iscrizione.</p>
-                        </ion-label>               
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </div>
 
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI FINE -->
-                        <ion-label 
-                              *ngIf="!eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                              <h3>&Egrave; possibile effettuare l'iscrizione fino a <ion-text class="ion-text-bold ion-text-danger">{{eventoDoc.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                              <p>Contatta la struttura in caso di particolari richieste o eventuali problematiche di iscrizione.</p>
-                        </ion-label>                                       
-                      </ion-item>
+        <!-- ========================================== -->
+        <!-- SECTION: ISCRIZIONI -->
+        <!-- ========================================== -->
+        <div class="section-card iscrizioni-section">
+          <div class="section-header">
+            <ion-icon name="person-add-outline"></ion-icon>
+            <h2>Iscrizioni</h2>
+          </div>
 
-                      <!-- LE ISCRIZIONI SONO IN CORSO -->
-                      <ion-item *ngIf="eventoDoc?.tempoIscrizioni() == tempoEvento.IN_CORSO" 
-                                lines="none">
-                        <ion-icon 
-                            [color]="iconColor" 
-                            slot="start" 
-                            name="timer-outline">
-                        </ion-icon>
-                        <!-- LABEL QUANDO CI SONO ENTRAMBI LE DATE -->
-                        <ion-label 
-                              *ngIf="eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Che fortuna, le iscrizioni sono aperte fino a <ion-text class="ion-text-bold ion-text-danger">{{eventoDoc.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                          <p><ion-text class="ion-text-bold ion-text-primary">Procedi subito</ion-text> con l'iscrizione ed in caso di problematiche o particolari richieste contatta la struttura</p>
-                        </ion-label>
+          <!-- Prezzo -->
+          <div class="price-card" [ngClass]="{'free-price': !eventoDoc.isAPagamento()}">
+            <div class="price-icon">
+              <ion-icon [name]="eventoDoc.isAPagamento() ? 'card-outline' : 'gift-outline'"></ion-icon>
+            </div>
+            <div class="price-content">
+              <span class="price-label">Quota Iscrizione</span>
+              <span class="price-value" *ngIf="eventoDoc.isAPagamento()">{{ eventoDoc.PREZZOLORDO | currency:'EUR' }}</span>
+              <span class="price-value free" *ngIf="!eventoDoc.isAPagamento()">GRATUITA</span>
+            </div>
+          </div>
 
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI INIZIO -->
-                        <ion-label 
-                              *ngIf="eventoDoc.ISCRIZIONEDAL && !eventoDoc.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Che fortuna, &egrave; ancora possibile iscriversi all'evento.</h3>
-                          <p><ion-text class="ion-text-bold ion-text-primary">Procedi subito</ion-text> con l'iscrizione ed in caso di problematiche o particolari richieste contatta la struttura</p>
-                        </ion-label>               
+          <!-- Status Iscrizioni -->
+          <div class="subscription-status" 
+               [ngClass]="{
+                 'status-future': eventoDoc.tempoIscrizioni() == tempoEvento.FUTURO,
+                 'status-open': eventoDoc.tempoIscrizioni() == tempoEvento.IN_CORSO,
+                 'status-closed': eventoDoc.tempoIscrizioni() == tempoEvento.PASSATO,
+                 'status-unavailable': eventoDoc.tempoIscrizioni() == tempoEvento.NULL
+               }">
+            
+            <div class="status-icon">
+              <ion-icon [name]="getSubscriptionIcon()"></ion-icon>
+            </div>
 
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI FINE -->
-                        <ion-label 
-                              *ngIf="!eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                              <h3>Che fortuna, le iscrizione sono ancora aperte e termineranno <ion-text class="ion-text-bold ion-text-danger">{{eventoDoc.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text>.</h3>
-                              <p><ion-text class="ion-text-bold ion-text-primary">Procedi subito</ion-text> con l'iscrizione ed in caso di problematiche o particolari richieste contatta la struttura</p>                              
-                        </ion-label>                                      
-                      </ion-item>
+            <div class="status-content">
+              <!-- FUTURO -->
+              <div *ngIf="eventoDoc.tempoIscrizioni() == tempoEvento.FUTURO">
+                <h3>Iscrizioni in arrivo</h3>
+                <p *ngIf="eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL">
+                  Sarà possibile effettuare l'iscrizione da 
+                  <strong>{{ eventoDoc.ISCRIZIONEDAL | date: 'dd/MM/yyyy' }}</strong> 
+                  a 
+                  <strong>{{ eventoDoc.ISCRIZIONEAL | date: 'dd/MM/yyyy' }}</strong>
+                </p>
+                <p *ngIf="eventoDoc.ISCRIZIONEDAL && !eventoDoc.ISCRIZIONEAL">
+                  Sarà possibile effettuare l'iscrizione da 
+                  <strong>{{ eventoDoc.ISCRIZIONEDAL | date: 'dd/MM/yyyy' }}</strong>
+                </p>
+                <p *ngIf="!eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL">
+                  È possibile effettuare l'iscrizione fino a 
+                  <strong>{{ eventoDoc.ISCRIZIONEAL | date: 'dd/MM/yyyy' }}</strong>
+                </p>
+                <span class="status-note">Contatta la struttura in caso di particolari richieste</span>
+              </div>
 
-                      <!-- LE ISCRIZIONI SONO TERMINATE -->
-                      <ion-item *ngIf="eventoDoc?.tempoIscrizioni() == tempoEvento.PASSATO"
-                                lines="none">
-                        <ion-icon 
-                            [color]="iconColor" 
-                            slot="start" 
-                            name="timer-outline">
-                        </ion-icon>
-                        <!-- MESSAGGIO UNICO -->
-                        <ion-label 
-                              class="ion-text-wrap">
-                          <h3>Purtroppo le iscrizioni all'evento sono chiuse</h3>
-                          <p><ion-text class="ion-text-bold ion-text-danger">Contatta la struttura</ion-text> per verificare la disponibilit&agrave; e l'inserimento in eventi equivalenti </p>
-                        </ion-label>                                       
-                      </ion-item>
+              <!-- IN CORSO -->
+              <div *ngIf="eventoDoc.tempoIscrizioni() == tempoEvento.IN_CORSO">
+                <h3>Iscrizioni aperte! 🎉</h3>
+                <p *ngIf="eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL">
+                  Le iscrizioni sono aperte fino a 
+                  <strong>{{ eventoDoc.ISCRIZIONEAL | date: 'dd/MM/yyyy' }}</strong>
+                </p>
+                <p *ngIf="eventoDoc.ISCRIZIONEDAL && !eventoDoc.ISCRIZIONEAL">
+                  È ancora possibile iscriversi all'evento
+                </p>
+                <p *ngIf="!eventoDoc.ISCRIZIONEDAL && eventoDoc.ISCRIZIONEAL">
+                  Le iscrizioni sono aperte e termineranno 
+                  <strong>{{ eventoDoc.ISCRIZIONEAL | date: 'dd/MM/yyyy' }}</strong>
+                </p>
+                <span class="status-note success">Procedi subito con l'iscrizione!</span>
+              </div>
 
-                      <ion-item *ngIf="eventoDoc?.tempoIscrizioni() == tempoEvento.NULL"
-                                lines="none">
-                        <ion-icon 
-                            color="danger" 
-                            slot="start" 
-                            name="timer-outline">
-                        </ion-icon>
-                        <!-- MESSAGGIO UNICO -->
-                        <ion-label 
-                              class="ion-text-wrap">
-                          <h3>Non &egrave; possibile effettare iscrizioni online all'evento</h3>
-                          <p><ion-text class="ion-text-bold ion-text-danger">Contattare la struttura</ion-text> per richiedere l'iscrizione all'evento</p>
-                        </ion-label>                                       
-                      </ion-item>                      
-                   
+              <!-- PASSATO -->
+              <div *ngIf="eventoDoc.tempoIscrizioni() == tempoEvento.PASSATO">
+                <h3>Iscrizioni chiuse</h3>
+                <p>Purtroppo le iscrizioni all'evento sono terminate</p>
+                <span class="status-note danger">Contatta la struttura per verificare disponibilità</span>
+              </div>
 
-                      <!-- BUTTON PER L'ISCRIZIONE -->
-                      <ion-button
-                          (click)="onClickIscrizione()"
-                          *ngIf="showIscrizioniButton()" 
-                          color="success"
-                          expand="full"
-                          slot="end">
-                          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
-                          ISCRIVITI ADESSO
-                      </ion-button>                       
+              <!-- NULL -->
+              <div *ngIf="eventoDoc.tempoIscrizioni() == tempoEvento.NULL">
+                <h3>Iscrizioni non disponibili online</h3>
+                <p>Non è possibile effettuare iscrizioni online per questo evento</p>
+                <span class="status-note danger">Contattare la struttura per l'iscrizione</span>
+              </div>
+            </div>
+          </div>
 
-                    </ion-item-group>
-        
-                    <!-- ADATTO A -->
-                    <ion-item-group class="ion-padding-bottom">
-                      <ion-item-divider [color]="groupColor">
-                        <ion-label>
-                          <h2>Rivolto a</h2>
-                        </ion-label>
-                      </ion-item-divider>
-        
-                      <ion-item>
-                        <ion-icon name="bookmark-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{eventoDoc['_DESCTOOLTIP_CategoriaEta']?eventoDoc['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
-                      </ion-item>
-        
-                      <ion-item lines="none" *ngIf="eventoDoc.TARGETSESSO">
-                        <ion-icon name="transgender-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{eventoDoc.TARGETSESSO | targetSesso}}</ion-label>
-                      </ion-item>
-                    </ion-item-group>
-        
-                  </ion-list>
+          <!-- Bottone Iscrizione -->
+          <ion-button
+            *ngIf="showIscrizioniButton()"
+            expand="block"
+            size="large"
+            color="success"
+            class="subscribe-button"
+            (click)="onClickIscrizione()">
+            <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+            ISCRIVITI ADESSO
+            <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          </ion-button>
+        </div>
 
-              </ion-col>              
-            </ion-row>
-          </ion-grid>
+        <!-- ========================================== -->
+        <!-- SECTION: RIVOLTO A -->
+        <!-- ========================================== -->
+        <div class="section-card rivolto-section">
+          <div class="section-header">
+            <ion-icon name="people-outline"></ion-icon>
+            <h2>Rivolto a</h2>
+          </div>
+
+          <div class="target-cards">
+            <!-- Età -->
+            <div class="target-card">
+              <div class="target-icon">
+                <ion-icon name="bookmark"></ion-icon>
+              </div>
+              <div class="target-content">
+                <span class="target-label">Età</span>
+                <span class="target-value">{{ eventoDoc['_DESCTOOLTIP_CategoriaEta'] || 'Per tutte le età' }}</span>
+              </div>
+            </div>
+
+            <!-- Sesso -->
+            <div class="target-card" *ngIf="eventoDoc.TARGETSESSO">
+              <div class="target-icon">
+                <ion-icon name="transgender"></ion-icon>
+              </div>
+              <div class="target-content">
+                <span class="target-label">Genere</span>
+                <span class="target-value">{{ eventoDoc.TARGETSESSO | targetSesso }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </ion-col>
     </ion-row>

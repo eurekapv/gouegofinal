@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary" mode="md">       
     <ion-title>
-      {{selectedArea ? selectedArea.DENOMINAZIONE : 'Eventi e News'}}
+      {{ selectedArea ? selectedArea.DENOMINAZIONE : 'Eventi e News' }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,79 +12,167 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
+  <ion-grid class="eventi-container">
     <ion-row>
       <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="12"
-                sizeLg="8" offsetLg="2"
-                sizeXl="6" offsetXl="3">
+               sizeSm="12" 
+               sizeMd="12"
+               sizeLg="10" offsetLg="1"
+               sizeXl="8" offsetXl="2">
 
-        <ion-segment 
-            mode="md"
-            [(ngModel)] = "selectedView"
-            (ionChange) = "onChangeSegment($event)"
-            >
-          <ion-segment-button value="pag-eventi">
-            <ion-label>Eventi</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="pag-news">
-            <ion-label>News</ion-label>
-          </ion-segment-button>
-        </ion-segment>
+        <!-- HEADER SECTION -->
+        <div class="header-section">
+          <div class="header-icon">
+            <ion-icon [name]="selectedView === 'pag-eventi' ? 'sparkles' : 'newspaper'"></ion-icon>
+          </div>
+          <div class="header-info">
+            <h1>{{ selectedView === 'pag-eventi' ? 'Eventi' : 'News' }}</h1>
+            <p>{{ selectedArea ? selectedArea.DENOMINAZIONE : 'Tutte le aree' }}</p>
+          </div>
+        </div>
+
+        <!-- SEGMENT -->
+        <div class="custom-segment">
+          <div 
+            class="segment-button"
+            [class.active]="selectedView === 'pag-eventi'"
+            (click)="onChangeSegmentManual('pag-eventi')">
+            <ion-icon name="sparkles"></ion-icon>
+            <span>Eventi</span>
+          </div>
+          <div 
+            class="segment-button"
+            [class.active]="selectedView === 'pag-news'"
+            (click)="onChangeSegmentManual('pag-news')">
+            <ion-icon name="newspaper"></ion-icon>
+            <span>News</span>
+          </div>
+        </div>
+
+        <!-- STATS ROW -->
+        <div class="stats-row" *ngIf="selectedView === 'pag-eventi'">
+          <div class="stat-card">
+            <ion-icon name="calendar-outline" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <span class="stat-value">{{ listEventi?.length || 0 }}</span>
+              <span class="stat-label">Prossimi</span>
+            </div>
+          </div>
+
+          <div class="stat-card active">
+            <ion-icon name="time-outline" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <span class="stat-value">{{ getNextEventDays() }}</span>
+              <span class="stat-label">Giorni</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row" *ngIf="selectedView === 'pag-news'">
+          <div class="stat-card">
+            <ion-icon name="newspaper-outline" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <span class="stat-value">{{ listNews?.length || 0 }}</span>
+              <span class="stat-label">News</span>
+            </div>
+          </div>
+
+          <div class="stat-card active" *ngIf="numRequestNews !== numMaxNews">
+            <ion-icon name="eye-outline" class="stat-icon"></ion-icon>
+            <div class="stat-content">
+              <span class="stat-value">{{ numMaxNews }}</span>
+              <span class="stat-label">Totali</span>
+            </div>
+          </div>
+        </div>
 
         <!-- LISTA EVENTI -->
-        <ion-list *ngIf="selectedView == 'pag-eventi'">
-          <ion-list-header>
-            <ion-label class="ion-text-wrap">
-              <h2>
-                Prossimi Eventi {{selectedArea ? 'a ' + selectedArea?.DENOMINAZIONE : ''}}
-              </h2>
-          </ion-label>
-          </ion-list-header>
+        <div *ngIf="selectedView === 'pag-eventi'" class="eventi-view">
+          
+          <!-- Section Header -->
+          <div class="section-header" *ngIf="listEventi.length > 0">
+            <h3>
+              <ion-icon name="calendar"></ion-icon>
+              Prossimi Eventi
+            </h3>
+            <span class="count-badge">{{ listEventi.length }}</span>
+          </div>
 
-          <ion-grid class="ion-no-padding" *ngIf="listEventi.length === 0">
-            <ion-row>
-              <ion-col>
-                <app-news-eventi [myNews]="cardNessunEvento" size="12"></app-news-eventi>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+          <!-- Eventi List -->
+          <div class="eventi-list" *ngIf="listEventi.length > 0">
+            <app-table-eventi 
+              (clickEvento)="onClickEvento($event)"
+              [listEventi]="listEventi">
+            </app-table-eventi>
+          </div>
 
-          <app-table-eventi 
-                (clickEvento)="onClickEvento($event)"
-                [listEventi]="listEventi">
-          </app-table-eventi>
-        </ion-list>
+          <!-- Empty State -->
+          <div class="empty-state" *ngIf="listEventi.length === 0">
+            <div class="empty-icon">
+              <ion-icon name="calendar-clear"></ion-icon>
+            </div>
+            <h3>Nessun evento in programma</h3>
+            <p>Non ci sono eventi previsti {{ selectedArea ? 'per ' + selectedArea.DENOMINAZIONE : 'al momento' }}</p>
+            
+            <div class="empty-suggestion">
+              <ion-icon name="information-circle" color="primary"></ion-icon>
+              <span>Torna più tardi per scoprire i prossimi eventi!</span>
+            </div>
+          </div>
+
+        </div>
 
         <!-- LISTA NEWS -->
-        <ion-list *ngIf="selectedView == 'pag-news'">
-          <ion-list-header>
-            <ion-label>
-              <h2>
-                News {{selectedArea ? 'da ' + selectedArea?.DENOMINAZIONE : ''}}
-              </h2>
-            </ion-label>
+        <div *ngIf="selectedView === 'pag-news'" class="news-view">
+          
+          <!-- Section Header -->
+          <div class="section-header" *ngIf="listNews.length > 0">
+            <h3>
+              <ion-icon name="newspaper"></ion-icon>
+              Ultime Notizie
+            </h3>
             <ion-button 
-                *ngIf="numRequestNews != numMaxNews"
-                (click)="onClickShowAllNews()">Mostra tutti</ion-button>
-          </ion-list-header>
-          <ion-grid class="ion-no-padding" *ngIf="listNews.length === 0">
-            <ion-row>
-              <ion-col>
-                <app-news-eventi [myNews]="cardNessunaNews" size="12"></app-news-eventi>
-              </ion-col>
-            </ion-row>
-            </ion-grid>
-          <ion-grid class="ion-no-padding" *ngIf="listNews.length !== 0">
-            <ion-row>
-              <ion-col *ngFor="let news of listNews" size ="12" >
-                <app-news-eventi [myNews]="news" (clickNews)="onClickNews(news,$event)"></app-news-eventi>
-              </ion-col>
-            </ion-row>
-            </ion-grid>
-        </ion-list>  
+              *ngIf="numRequestNews !== numMaxNews"
+              size="small"
+              fill="outline"
+              color="success"
+              (click)="onClickShowAllNews()">
+              <ion-icon name="eye" slot="start"></ion-icon>
+              Mostra tutti
+            </ion-button>
+          </div>
+
+          <!-- News Grid -->
+          <div class="news-grid" *ngIf="listNews.length > 0">
+            <div 
+              class="news-item-wrapper"
+              *ngFor="let news of listNews; let i = index"
+              [style.animation-delay]="(i * 0.05) + 's'">
+              <app-news-eventi 
+                [myNews]="news" 
+                (clickNews)="onClickNews(news, $event)">
+              </app-news-eventi>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" *ngIf="listNews.length === 0">
+            <div class="empty-icon">
+              <ion-icon name="newspaper-outline"></ion-icon>
+            </div>
+            <h3>Nessuna news disponibile</h3>
+            <p>Non ci sono notizie {{ selectedArea ? 'da ' + selectedArea.DENOMINAZIONE : 'al momento' }}</p>
+            
+            <div class="empty-suggestion">
+              <ion-icon name="information-circle" color="primary"></ion-icon>
+              <span>Controlla periodicamente per rimanere aggiornato!</span>
+            </div>
+          </div>
+
+        </div>
+
       </ion-col>
     </ion-row>
   </ion-grid>  
+
 </ion-content>

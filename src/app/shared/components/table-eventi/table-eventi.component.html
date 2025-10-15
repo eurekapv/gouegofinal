@@ -1,38 +1,76 @@
-<ion-item 
-    button="true"
-    detail="false"
+<div class="eventi-list">
+  <div 
+    class="event-card"
+    *ngFor="let item of _listEventi; let i = index"
     (click)="onClickEvento(item)"
-    *ngFor="let item of _listEventi">
+    [style.animation-delay]="(i * 0.05) + 's'">
+    
+    <!-- Timeline Dot -->
+    <div class="event-dot">
+      <div class="dot-inner"></div>
+      <div class="dot-line" *ngIf="i !== _listEventi.length - 1"></div>
+    </div>
 
-<ion-label>
-  <p class="ion-text-bold">{{item['_DENOMINAZIONE_Sport']}}</p>
-  <h3 class="ion-text-wrap">
-    {{ item.DENOMINAZIONE }}
-  </h3>
-  <p
-    class="ion-text-bold ion-text-success ion-text-wrap" 
-    *ngIf="item.DATAINIZIO && !item.DATAFINE">da {{item.DATAINIZIO | date: 'EEEE dd/MM/yyyy' }}
-  </p>
-  <p
-    class="ion-text-bold ion-text-success ion-text-wrap" 
-    *ngIf="!item.DATAINIZIO && item.DATAFINE">fino a {{item.DATAFINE | date: 'EEEE dd/MM/yyyy' }}
-  </p> 
-  <p
-    class="ion-text-bold ion-text-success ion-text-wrap" 
-    *ngIf="item.DATAINIZIO && item.DATAFINE">da {{item.DATAINIZIO | date: 'EEEE dd/MM/yyyy' }} a {{item.DATAFINE | date: 'EEEE dd/MM/yyyy' }} 
-  </p>  
-</ion-label>
-<ion-badge 
-    color="success"
-    *ngIf="item.DATAORAINIZIO"
-    slot="end">{{item.DATAORAINIZIO | date : 'HH:mm'}}
-</ion-badge>
+    <!-- Event Content -->
+    <div class="event-content">
+      
+      <!-- Header -->
+      <div class="event-header">
+        <div class="event-sport">
+          <ion-icon [name]="getSportIcon(item['_DENOMINAZIONE_Sport'])"></ion-icon>
+          <span>{{ item['_DENOMINAZIONE_Sport'] || 'Evento' }}</span>
+        </div>
+        
+        <!-- Countdown Badge -->
+        <div class="event-countdown" *ngIf="getCountdownDays(item) >= 0">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ getCountdownText(item) }}</span>
+        </div>
+      </div>
 
+      <!-- Title -->
+      <h3 class="event-title">{{ item.DENOMINAZIONE }}</h3>
 
-  <!-- <p class="ion-text-wrap" *ngIf="eventoDoc.SUBTITLE">
-    {{ eventoDoc.SUBTITLE }}
-  </p>
-  <p *ngIf="eventoDoc.PUBBLICATADAL" color="medium" class="ion-text-right ion-padding-horizontal">
-    <em>{{ eventoDoc.PUBBLICATADAL | date : 'dd/MM/yyyy' }}</em>
-  </p> -->
-</ion-item>
+      <!-- Date Info -->
+      <div class="event-dates">
+        <!-- Solo data inizio -->
+        <div class="date-item" *ngIf="item.DATAINIZIO && !item.DATAFINE">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{ item.DATAINIZIO | date: 'EEEE dd MMMM yyyy' | titlecase }}</span>
+        </div>
+
+        <!-- Solo data fine -->
+        <div class="date-item" *ngIf="!item.DATAINIZIO && item.DATAFINE">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>Fino a {{ item.DATAFINE | date: 'EEEE dd MMMM yyyy' | titlecase }}</span>
+        </div>
+
+        <!-- Range date -->
+        <div class="date-range" *ngIf="item.DATAINIZIO && item.DATAFINE">
+          <div class="date-item from">
+            <ion-icon name="play-outline"></ion-icon>
+            <span>{{ item.DATAINIZIO | date: 'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="date-separator">
+            <ion-icon name="arrow-forward"></ion-icon>
+          </div>
+          <div class="date-item to">
+            <ion-icon name="stop-outline"></ion-icon>
+            <span>{{ item.DATAFINE | date: 'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+
+        <!-- Time Badge -->
+        <div class="time-badge" *ngIf="item.DATAORAINIZIO">
+          <ion-icon name="time"></ion-icon>
+          <span>{{ item.DATAORAINIZIO | date: 'HH:mm' }}</span>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="event-arrow">
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+    </div>
+  </div>
+</div>

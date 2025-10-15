@@ -287,6 +287,15 @@ export class CustomerDetailPage implements OnInit, OnDestroy {
   
   //#endregion
 
-  
+  /**
+   * Verifica se il cliente ha almeno una tessera valida
+   */
+  hasValidMembership(): boolean {
+    if (!this.listTesseramenti || this.listTesseramenti.length === 0) {
+      return false;
+    }
+    
+    return this.listTesseramenti.some(tessera => tessera.isValid());
+  }
 
 }

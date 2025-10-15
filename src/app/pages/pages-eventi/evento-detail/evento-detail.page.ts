@@ -190,4 +190,122 @@ export class EventoDetailPage implements OnInit, OnDestroy {
     this.startService.presentAlertMessage('A breve sarà disponibile l\'iscrizione Online','Ancora un attimo');
   }
   //endregion
+// =====================================================
+// METODO DA AGGIUNGERE alla classe EventoDetailPage
+// nel file: evento-detail.page.ts
+// =====================================================
+
+/**
+ * Ritorna l'icona appropriata in base allo stato delle iscrizioni
+ * Utilizzato nella sezione iscrizioni per mostrare l'icona corretta
+ */
+getSubscriptionIcon(): string {
+  const stato = this.eventoDoc.tempoIscrizioni();
+  
+  switch(stato) {
+    case Tempistica.FUTURO:
+      // Iscrizioni future - icona clessidra
+      return 'hourglass-outline';
+    
+    case Tempistica.IN_CORSO:
+      // Iscrizioni aperte - icona checkmark
+      return 'checkmark-circle-outline';
+    
+    case Tempistica.PASSATO:
+      // Iscrizioni chiuse - icona close
+      return 'close-circle-outline';
+    
+    case Tempistica.NULL:
+      // Iscrizioni non disponibili - icona info
+      return 'information-circle-outline';
+    
+    default:
+      // Fallback
+      return 'help-circle-outline';
+  }
+}
+
+// =====================================================
+// OPZIONALE: Metodo per icona sport dinamica nel hero
+// =====================================================
+
+/**
+ * Ritorna l'icona appropriata per lo sport dell'evento
+ * Da usare nel hero header al posto di "sunny" statico
+ */
+getSportIcon(): string {
+  const sport = this.eventoDoc['_DENOMINAZIONE_Sport'];
+  
+  if (!sport) {
+    return 'trophy'; // Icona default
+  }
+  
+  const sportLower = sport.toLowerCase();
+  
+  // Beach / Spiaggia
+  if (sportLower.includes('beach') || sportLower.includes('spiaggia')) {
+    return 'sunny';
+  }
+  
+  // Tennis
+  if (sportLower.includes('tennis')) {
+    return 'tennisball';
+  }
+  
+  // Calcio / Football
+  if (sportLower.includes('calcio') || sportLower.includes('football')) {
+    return 'football';
+  }
+  
+  // Basket / Basketball
+  if (sportLower.includes('basket')) {
+    return 'basketball';
+  }
+  
+  // Pallavolo / Volley
+  if (sportLower.includes('pallavolo') || sportLower.includes('volley')) {
+    return 'tennisball'; // Ionic non ha icona volley, usiamo tennis
+  }
+  
+  // Nuoto
+  if (sportLower.includes('nuoto') || sportLower.includes('swim')) {
+    return 'water';
+  }
+  
+  // Fitness / Gym
+  if (sportLower.includes('fitness') || sportLower.includes('gym')) {
+    return 'barbell';
+  }
+  
+  // Yoga
+  if (sportLower.includes('yoga')) {
+    return 'body';
+  }
+  
+  // Running / Corsa
+  if (sportLower.includes('running') || sportLower.includes('corsa')) {
+    return 'walk';
+  }
+  
+  // Default - icona trofeo
+  return 'trophy';
+}
+
+// =====================================================
+// ESEMPIO DI UTILIZZO NEI TEMPLATE
+// =====================================================
+
+/*
+  Nel file HTML, sostituisci:
+
+  PRIMA (statico):
+  <ion-icon name="sunny"></ion-icon>
+
+  DOPO (dinamico):
+  <ion-icon [name]="getSportIcon()"></ion-icon>
+
+
+  E per lo stato iscrizioni (già implementato):
+  <ion-icon [name]="getSubscriptionIcon()"></ion-icon>
+*/
 }

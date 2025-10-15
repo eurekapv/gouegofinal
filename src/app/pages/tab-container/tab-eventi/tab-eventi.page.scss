@@ -1,0 +1,437 @@
+// =====================================================
+// EVENTI & NEWS - MODERN DESIGN
+// =====================================================
+
+ion-content {
+  --background: var(--ion-color-extralight);
+}
+
+// =====================================================
+// CONTAINER
+// =====================================================
+.eventi-container {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+// =====================================================
+// HEADER SECTION
+// =====================================================
+.header-section {
+  background: linear-gradient(135deg, var(--ion-color-primary), #2d3748);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: slideDown 0.4s ease-out;
+
+  // Decorative background
+  &::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(84, 220, 152, 0.15), transparent);
+    border-radius: 50%;
+  }
+
+  .header-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(84, 220, 152, 0.2);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+
+    ion-icon {
+      font-size: 32px;
+      color: var(--ion-color-tertiary);
+    }
+  }
+
+  .header-info {
+    flex: 1;
+    position: relative;
+    z-index: 2;
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: white;
+      margin: 0 0 4px 0;
+      line-height: 1.2;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0;
+    }
+  }
+}
+
+// =====================================================
+// CUSTOM SEGMENT
+// =====================================================
+.custom-segment {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 6px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: slideDown 0.4s ease-out 0.1s both;
+
+  .segment-button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ion-color-mediumlight);
+    background: transparent;
+
+    ion-icon {
+      font-size: 20px;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &.active {
+      background: linear-gradient(135deg, var(--ion-color-success), #3da566);
+      color: white;
+      box-shadow: 0 4px 12px rgba(84, 220, 152, 0.3);
+
+      ion-icon {
+        color: white;
+      }
+    }
+  }
+}
+
+// =====================================================
+// STATS ROW
+// =====================================================
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+  animation: slideDown 0.4s ease-out 0.2s both;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, var(--ion-color-success), #3da566);
+    box-shadow: 0 4px 12px rgba(84, 220, 152, 0.3);
+
+    .stat-icon,
+    .stat-value,
+    .stat-label {
+      color: white;
+    }
+  }
+
+  .stat-icon {
+    font-size: 32px;
+    color: var(--ion-color-success);
+    flex-shrink: 0;
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--ion-color-dark);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ion-color-mediumlight);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+  }
+}
+
+// =====================================================
+// SECTION HEADER
+// =====================================================
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 4px;
+  animation: slideDown 0.4s ease-out 0.3s both;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-success);
+    }
+  }
+
+  .count-badge {
+    background: var(--ion-color-success);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  ion-button {
+    --border-radius: 12px;
+    height: 36px;
+    font-weight: 600;
+    text-transform: none;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// =====================================================
+// EVENTI VIEW
+// =====================================================
+.eventi-view {
+  animation: slideUp 0.4s ease-out 0.3s both;
+
+  .eventi-list {
+    app-table-eventi {
+      display: block;
+      animation: slideUp 0.4s ease-out;
+    }
+  }
+}
+
+// =====================================================
+// NEWS VIEW
+// =====================================================
+.news-view {
+  animation: slideUp 0.4s ease-out 0.3s both;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  .news-item-wrapper {
+    animation: slideUp 0.4s ease-out both;
+
+    app-news-eventi {
+      display: block;
+    }
+  }
+}
+
+// =====================================================
+// EMPTY STATE
+// =====================================================
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  animation: fadeIn 0.6s ease-out;
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, var(--ion-color-light), #e8e9ed);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 48px;
+      color: var(--ion-color-mediumlight);
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-mediumlight);
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .empty-suggestion {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 350px;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    ion-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 0.9rem;
+      color: var(--ion-color-dark);
+      text-align: left;
+      line-height: 1.4;
+    }
+  }
+}
+
+// =====================================================
+// ANIMATIONS
+// =====================================================
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+// Mobile landscape / Small tablet
+@media (min-width: 576px) {
+  .eventi-container {
+    padding: 24px;
+  }
+
+  .header-section {
+    padding: 32px;
+
+    .header-icon {
+      width: 80px;
+      height: 80px;
+
+      ion-icon {
+        font-size: 40px;
+      }
+    }
+
+    .header-info h1 {
+      font-size: 2rem;
+    }
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .news-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+// Tablet
+@media (min-width: 768px) {
+  .custom-segment {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// Desktop
+@media (min-width: 992px) {
+  .news-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .news-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

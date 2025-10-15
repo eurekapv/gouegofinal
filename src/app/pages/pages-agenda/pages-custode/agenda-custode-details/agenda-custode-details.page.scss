@@ -953,3 +953,132 @@
     transform: translateY(-2px);
   }
 }
+
+// =====================================================
+// ISCRITTI CORSO SECTION
+// =====================================================
+.custode-container ion-list {
+  background: transparent;
+  padding: 0 16px;
+  margin: 0 0 24px 0;
+
+  ion-list-header {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    padding: 24px 4px 12px 4px;
+    margin: 0;
+    text-transform: none;
+    letter-spacing: normal;
+    background: transparent;
+  }
+
+  // Empty State
+  ion-item:first-of-type:last-of-type {
+    --background: rgba(var(--ion-color-tertiary-rgb), 0.1);
+    --border-color: transparent;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+    --min-height: 60px;
+
+    ion-label h4 {
+      color: var(--ion-color-mediumlight);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0;
+      font-style: italic;
+    }
+  }
+
+  // Lista Items
+  ion-item {
+    --background: white;
+    --border-color: transparent;
+    --padding-start: 18px;
+    --padding-end: 18px;
+    --min-height: 64px;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    animation: slideUp 0.4s ease backwards;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    // Stagger animation per ogni item
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i + 1}) {
+        animation-delay: #{$i * 0.05}s;
+      }
+    }
+
+    ion-icon {
+      font-size: 24px;
+      color: white;
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--ion-color-success) 0%, #1e9657 100%);
+      border-radius: 50%;
+      padding: 10px;
+      margin-right: 14px;
+    }
+
+    ion-label {
+      margin: 0;
+
+      h5 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--ion-color-primary);
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+@media (min-width: 768px) {
+  .custode-container ion-list {
+    padding: 0 20px;
+
+    ion-list-header {
+      padding: 28px 8px 12px 8px;
+    }
+
+    ion-item {
+      --min-height: 68px;
+      --padding-start: 20px;
+      --padding-end: 20px;
+
+      ion-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 26px;
+        margin-right: 16px;
+      }
+
+      ion-label h5 {
+        font-size: 1.05rem;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - DESKTOP  
+// =====================================================
+@media (min-width: 1024px) {
+  .custode-container ion-list {
+    ion-item:hover {
+      transform: translateY(-3px);
+    }
+  }
+}

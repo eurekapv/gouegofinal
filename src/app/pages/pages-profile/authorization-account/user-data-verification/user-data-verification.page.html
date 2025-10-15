@@ -1,356 +1,308 @@
 <ion-header>
   <ion-toolbar color="primary">
-      <ion-buttons slot="start">
-          <ion-button 
-                  (click)="closeModal()"
-                  fill="clear">
-              <ion-icon name="arrow-back"></ion-icon>
-          </ion-button>
-      </ion-buttons>
-      <ion-title>Verifica</ion-title>
+    <ion-buttons slot="start">
+      <ion-button 
+            (click)="closeModal()"
+            fill="clear">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Verifica Dati</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <!-- QUI DEVO METTERE LA FORM -->
+  
+  <div class="page-container">
+
     <form [formGroup]="formPagePrimary">
 
-    <ion-row 
-        class="ion-align-items-top"
-        >
-        <!-- colonna sinistra -->
-      <ion-col
-          sizeXs="12"
-          sizeSm="12"
-          sizeMd="12"
-          sizeLg="6"
-          sizeXl="6"
-          >
-          <ion-grid 
-                class="ion-no-padding ion-no-margin">
-            <ion-row 
-                  class="ion-no-padding ion-no-margin">
-              <ion-col>
-                <div class="title-image">
-                  <img [src]="srcImage" alt="logig-image"/>
-                </div>
-              </ion-col>
-            </ion-row>
+      <!-- Immagine Header -->
+      <!-- <div class="header-image">
+        <img [src]="srcImage" alt="Verifica Dati" />
+      </div> -->
 
-            <!-- TESTO INFORMATIVO -->
-            <ion-row>
-                <ion-col>
+      <!-- Info Box -->
+      <div class="info-box">
+        <ion-icon name="information-circle" class="info-icon"></ion-icon>
+        <p [innerHTML]="informationText | safeHtml"></p>
+      </div>
 
-                  <ion-item 
-                      lines="none">
-                    <ion-label 
-                          class="ion-text-wrap">
-                        <p [innerHTML]="informationText | safeHtml">                            
-                      </p>
-                    </ion-label>
-                  </ion-item>  
+      <!-- ========== SEZIONE 1: DATI PERSONALI ========== -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="header-icon">
+            <ion-icon name="person"></ion-icon>
+          </div>
+          <h3>Dati Personali</h3>
+        </div>
 
-                </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col>
-                <!-- CAMPI NOMINATIVO EMAIL MOBILE-->
-                <ion-list lines="none">
-                          <!-- profileName -->
-                          <ion-item
-                              color = "light"
-                              >
-                            <ion-input
-                                  label="Nome"
-                                  labelPlacement="stacked"
-                                  helperText="inserisci il tuo nome"
-                                  errorText="controlla l\'inserimento del nome"
-                                  [clearInput]="true"
-                                  formControlName = "profileName"
-                                  type="text">
-                              </ion-input>                                                          
-                          </ion-item>
+        <div class="section-body">
+          
+          <!-- Nome -->
+          <div class="input-group">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Nome"
+                  labelPlacement="floating"
+                  type="text"
+                  placeholder="Inserisci il tuo nome"
+                  [clearInput]="true"
+                  formControlName="profileName">
+            </ion-input>
+          </div>
 
-                          <!-- profileSurname -->
-                          <ion-item
-                              color = "light"
-                              >
-                            <ion-input
-                                  label="Cognome"
-                                  labelPlacement="stacked"
-                                  helperText="inserisci il tuo cognome"
-                                  errorText="controlla l\'inserimento del cognome"
-                                  [clearInput]="true"
-                                  formControlName = "profileSurname"
-                                  type="text">
-                              </ion-input>                                                          
-                          </ion-item>
+          <!-- Cognome -->
+          <div class="input-group">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Cognome"
+                  labelPlacement="floating"
+                  type="text"
+                  placeholder="Inserisci il tuo cognome"
+                  [clearInput]="true"
+                  formControlName="profileSurname">
+            </ion-input>
+          </div>
 
-                          <!-- profileEmail -->
-                          <ion-item
-                                color = "light"
-                                >
-                              <ion-input
-                                    label="E-mail"
-                                    labelPlacement="stacked"
-                                    errorText="controlla l'inserimento dell'indirizzo e-mail"
-                                    [clearInput]="true"
-                                    formControlName = "profileEmail"
-                                    type="email">
-                                </ion-input>                                
-                          </ion-item>
+          <!-- Email -->
+          <div class="input-group">
+            <ion-icon name="mail" class="input-icon"></ion-icon>
+            <ion-input
+                  label="E-mail"
+                  labelPlacement="floating"
+                  type="email"
+                  placeholder="tuaemail@esempio.com"
+                  [clearInput]="true"
+                  formControlName="profileEmail">
+            </ion-input>
+          </div>
 
-                          <!-- MAIL NON VERIFICATA E DA VERIFICARE -->
-                          <ion-item
-                              color="light"
-                              *ngIf="flagShowMailCode"
-                              >
-                            <ion-label 
-                                class="ion-text-wrap">
-                              <p class="ion-text-danger ion-text-bold ion-text-smaller">
-                              Mail non verificata, &egrave; necessario ricevere un codice di verifica
-                              </p>
-                            </ion-label>
-                            <ion-button
-                                  (click)="onRequestReinvioCode('mail')"
-                                  fill="clear"
-                                  color="success"
-                                  size="small"
-                                  slot="end">
-                                  INVIA CODICE
-                            </ion-button>                        
-                          </ion-item>                          
+          <!-- Alert Email non verificata -->
+          <div class="verification-alert" *ngIf="flagShowMailCode">
+            <ion-icon name="warning" class="alert-icon"></ion-icon>
+            <div class="alert-content">
+              <p>Mail non verificata, è necessario ricevere un codice di verifica</p>
+              <ion-button
+                    (click)="onRequestReinvioCode('mail')"
+                    fill="solid"
+                    color="success"
+                    size="small">
+                <ion-icon name="mail-outline" slot="start"></ion-icon>
+                Invia Codice
+              </ion-button>
+            </div>
+          </div>
 
-                          <!-- CODICE VERIFICA MAIL -->
-                          <ion-item
-                              *ngIf="flagShowMailCode"
-                              >
-                            <ion-input
-                                aria-label="Codice di verifica E-mail"
-                                label="Codice di verifica E-mail"
-                                labelPlacement="stacked"
-                                helperText = "Inserisci il codice ricevuto con il messaggio e-mail"
-                                [clearInput]="false"
-                                formControlName="verificationMailCode"
-                                type="text">
-                            </ion-input>
-                          </ion-item>
-                          <!-- FINE MAIL NON VERIFICATA E DA VERIFICARE -->                          
+          <!-- Codice Verifica Email -->
+          <div class="input-group code-verify" *ngIf="flagShowMailCode">
+            <ion-icon name="key" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Codice E-mail"
+                  labelPlacement="floating"
+                  placeholder="12345"
+                  [clearInput]="false"
+                  formControlName="verificationMailCode"
+                  type="tel"
+                  inputmode="numeric"
+                  [maxlength]="verificationCodeLength">
+            </ion-input>
+          </div>
 
+          <!-- Mobile -->
+          <div class="input-group">
+            <ion-icon name="call" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Numero Mobile"
+                  labelPlacement="floating"
+                  type="tel"
+                  placeholder="+39 123 456 7890"
+                  [clearInput]="true"
+                  formControlName="profileMobile">
+            </ion-input>
+          </div>
 
+          <!-- Alert Mobile non verificato -->
+          <div class="verification-alert" *ngIf="flagShowSmsCode">
+            <ion-icon name="warning" class="alert-icon"></ion-icon>
+            <div class="alert-content">
+              <p>Numero mobile non verificato, è necessario ricevere un codice di verifica</p>
+              <ion-button
+                    (click)="onRequestReinvioCode('mobile')"
+                    fill="solid"
+                    color="success"
+                    size="small">
+                <ion-icon name="chatbox-outline" slot="start"></ion-icon>
+                Invia Codice
+              </ion-button>
+            </div>
+          </div>
 
+          <!-- Codice Verifica SMS -->
+          <div class="input-group code-verify" *ngIf="flagShowSmsCode">
+            <ion-icon name="key" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Codice SMS"
+                  labelPlacement="floating"
+                  placeholder="12345"
+                  [clearInput]="false"
+                  formControlName="verificationSmsCode"
+                  type="tel"
+                  inputmode="numeric"
+                  [maxlength]="verificationCodeLength">
+            </ion-input>
+          </div>
 
-                          <!-- profileMobile -->                          
-                          <ion-item
-                              color = "light"
-                              >
-                              <ion-input
-                                  label="Numero Mobile"
-                                  labelPlacement="stacked"
-                                  errorText="controlla l'inserimento del numero telefonico"
-                                  [clearInput]="true"
-                                  formControlName = 'profileMobile'
-                                  type="text">
-                              </ion-input>                                
-                          </ion-item> 
-                          
-                          <!-- NUMERO MOBILE NON VERIFICATO E DA VERIFICARE -->
-                          <ion-item
-                              color="light"
-                              *ngIf="flagShowSmsCode"
-                              >
-                            <ion-label 
-                                class="ion-text-wrap">
-                              <p class="ion-text-danger ion-text-bold ion-text-smaller">
-                              Numero mobile non verificato, &egrave; necessario ricevere un codice di verifica
-                              </p>
-                            </ion-label>
-                            <ion-button
-                                  (click)="onRequestReinvioCode('mobile')"
-                                  fill="clear"
-                                  color="success"
-                                  size="small"
-                                  slot="end">
-                                  INVIA CODICE
-                            </ion-button>                        
-                          </ion-item>                          
+        </div>
+      </div>
 
-                          <!-- CODICE SMS -->
-                          <ion-item 
-                              *ngIf="flagShowSmsCode"
-                              >
-                            <ion-input
-                                aria-label="Codice di verifica Mobile"
-                                label="Codice di verifica Mobile"
-                                labelPlacement="stacked"
-                                helperText = "Inserisci il codice ricevuto con il messaggio SMS"
-                                [clearInput]="false"
-                                formControlName="verificationSmsCode"
-                                type="text">
-                            </ion-input>
-                          </ion-item>
-                          <!-- FINE NUMERO MOBILE NON VERIFICATO E DA VERIFICARE -->                            
-                </ion-list>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+      <!-- ========== SEZIONE 2: DATI ANAGRAFICI ========== -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="header-icon">
+            <ion-icon name="id-card"></ion-icon>
+          </div>
+          <h3>Dati Anagrafici</h3>
+        </div>
 
-      </ion-col>
+        <div class="section-body">
+          
+          <!-- Codice Fiscale -->
+          <div class="input-group">
+            <ion-icon name="card-outline" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Codice Fiscale"
+                  labelPlacement="floating"
+                  type="text"
+                  placeholder="RSSMRA80A01H501Z"
+                  [clearInput]="true"
+                  (ionBlur)="onCfChange()"
+                  formControlName="codiceFiscale">
+            </ion-input>
+          </div>
 
-      <!-- colonna destra -->
-      <ion-col
-          sizeXs="12"
-          sizeSm="12"
-          sizeMd="12"
-          sizeLg="6"
-          sizeXl="6"
-          >
+          <!-- Sesso -->
+          <div class="input-group">
+            <ion-icon name="male-female-outline" class="input-icon"></ion-icon>
+            <ion-select
+                  label="Sesso"
+                  labelPlacement="floating"
+                  interface="popover"
+                  formControlName="sesso">
+              <ion-select-option 
+                *ngFor="let sesso of listSesso"
+                [value]="sesso.value">
+                {{ sesso.description }}
+              </ion-select-option>
+            </ion-select>
+          </div>
 
-            <!-- GRIGLIA DI INSERIMENTO  -->
-            <ion-grid
-                class="ion-no-padding ion-no-margin">
-                <!-- FORM ALTRI DATI   -->
-                <ion-row
-                    class="ion-no-padding ion-no-margin">
-                    <ion-col>                
+          <!-- Data di nascita -->
+          <div class="date-input-wrapper">
+            <app-dtinput
+                  title="Data di nascita"
+                  label="Nato il"
+                  labelPlacement="stacked"
+                  [(actualDate)]="this.utenteVerification.NATOIL">
+            </app-dtinput>
+          </div>
 
-                        <ion-list lines="none">                            
-                            <!-- codiceFiscale -->                          
-                            <ion-item
-                                color = "light"
-                                >
-                                <ion-input
-                                    label="Codice Fiscale"
-                                    labelPlacement="stacked"
-                                    helperText="inserisci il codice fiscale"
-                                    errorText="controlla l'inserimento del codice inserito"
-                                    [clearInput]="true"
-                                    formControlName = "codiceFiscale"
-                                    (ionBlur)="onCfChange()"
-                                    type="text">
-                                </ion-input>                                
-                            </ion-item>  
+        </div>
+      </div>
 
-                            <!-- sesso -->                          
-                            <ion-item
-                                lines="full"
-                                color = "light"
-                                >
-                                <ion-select 
-                                      label="Sesso"
-                                      labelPlacement="stacked"
-                                      errorText="controlla l'inserimento della voce"
-                                      formControlName="sesso" 
-                                      interface="popover">
-                                  <ion-select-option *ngFor="let sesso of listSesso" [value]="sesso.value">
-                                    {{ sesso.description }}
-                                  </ion-select-option>
-                                </ion-select>                              
-                            </ion-item> 
-                          
-                            <!-- DATA NASCITA -->
-                            <app-dtinput
-                                itemColor="light" 
-                                title="Data di nascita" 
-                                label="Nato il" 
-                                labelPlacement="stacked"
-                                [(actualDate)]="this.utenteVerification.NATOIL">
-                            </app-dtinput>                           
+      <!-- ========== SEZIONE 3: INDIRIZZO ========== -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="header-icon">
+            <ion-icon name="home"></ion-icon>
+          </div>
+          <h3>Indirizzo di Residenza</h3>
+        </div>
 
-                            <!-- indResidenza -->
-                            <ion-item
-                              color = "light"
-                            >
-                              <ion-input
-                                  label="Indirizzo"
-                                  labelPlacement="stacked"
-                                  errorText="controlla l'inserimento dell'indirizzo"
-                                  [clearInput]="true"
-                                  formControlName = "indResidenza"
-                                  type="tex">
-                              </ion-input>                                
-                            </ion-item>
+        <div class="section-body">
+          
+          <!-- Indirizzo -->
+          <div class="input-group">
+            <ion-icon name="location-outline" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Indirizzo"
+                  labelPlacement="floating"
+                  type="text"
+                  placeholder="Via/Piazza"
+                  [clearInput]="true"
+                  formControlName="indResidenza">
+            </ion-input>
+          </div>
 
-                            <!-- capResidenza -->
-                            <ion-item
-                              color = "light"
-                            >
-                              <ion-input
-                                  label="C.A.P."
-                                  labelPlacement="stacked"
-                                  errorText="controlla l'inserimento del cap"
-                                  [clearInput]="true"
-                                  formControlName = "capResidenza"
-                                  inputmode="tel" 
-                                  maxlength="5"                                  
-                                  type="tel">
-                              </ion-input>                                
-                            </ion-item>                             
+          <!-- Comune -->
+          <div class="input-group">
+            <ion-icon name="business-outline" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Comune"
+                  labelPlacement="floating"
+                  type="text"
+                  placeholder="Città"
+                  [clearInput]="true"
+                  formControlName="comResidenza">
+            </ion-input>
+          </div>
 
-                            <!-- comResidenza -->
-                            <ion-item
-                              color = "light"
-                            >
-                              <ion-input
-                                  label="Comune"
-                                  labelPlacement="stacked"
-                                  errorText="controlla l'inserimento del comune"
-                                  [clearInput]="true"
-                                  formControlName = "comResidenza"
-                                  type="text">
-                              </ion-input>                                
-                            </ion-item>      
-                            
-                            <!-- provResidenza -->
-                            <ion-item
-                              color = "light"
-                            >
-                              <ion-input
-                                  label="Provincia"
-                                  labelPlacement="stacked"
-                                  errorText="controlla l'inserimento della provincia"
-                                  [clearInput]="true"
-                                  formControlName = "provResidenza"
-                                  type="text">
-                              </ion-input>                                
-                            </ion-item>
+          <!-- CAP e Provincia -->
+          <div class="input-row">
+            <div class="input-group half">
+              <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+              <ion-input
+                    label="CAP"
+                    labelPlacement="floating"
+                    placeholder="00000"
+                    [clearInput]="true"
+                    type="tel"
+                    inputmode="tel"
+                    maxlength="5"
+                    formControlName="capResidenza">
+              </ion-input>
+            </div>
 
-                            <!-- statoResidenza -->
-                            <ion-item
-                              color = "light"
-                            >
-                              <ion-input
-                                  label="Stato"
-                                  labelPlacement="stacked"
-                                  errorText="controlla l'inserimento dello stato"
-                                  [clearInput]="true"
-                                  formControlName = "statoResidenza"
-                                  type="text">
-                              </ion-input>                                
-                            </ion-item>
+            <div class="input-group half">
+              <ion-icon name="map-outline" class="input-icon"></ion-icon>
+              <ion-input
+                    label="Provincia"
+                    labelPlacement="floating"
+                    placeholder="Sigla"
+                    [clearInput]="true"
+                    formControlName="provResidenza">
+              </ion-input>
+            </div>
+          </div>
 
-                          </ion-list>
-                        
-                    </ion-col>
-                </ion-row>
+          <!-- Stato -->
+          <div class="input-group">
+            <ion-icon name="flag-outline" class="input-icon"></ion-icon>
+            <ion-input
+                  label="Stato"
+                  labelPlacement="floating"
+                  type="text"
+                  placeholder="Italia"
+                  [clearInput]="true"
+                  formControlName="statoResidenza">
+            </ion-input>
+          </div>
 
-                <ion-row
-                    class="ion-no-padding ion-no-margin">
-                  <ion-col>
-                    <ion-button
-                      (click)="onSubmitData()"
-                      color="tertiary"
-                      expand="full"
-                      fill="solid">
-                      CONFERMA
-                    </ion-button>  
-                  </ion-col>
-              </ion-row>
-            </ion-grid>
-      </ion-col>
-    </ion-row>
+        </div>
+      </div>
+
+      <!-- BOTTONE CONFERMA -->
+      <ion-button
+            class="confirm-button"
+            expand="block"
+            size="large"
+            (click)="onSubmitData()">
+        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+        Conferma Dati
+      </ion-button>
+
     </form>
-  </ion-grid>
+
+  </div>
 
 </ion-content>

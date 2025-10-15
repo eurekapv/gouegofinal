@@ -255,31 +255,24 @@ export class DtinputComponent implements OnInit {
   }
 
   
+/**
+ * Data modificata nel componente DateTime
+ * @param valueTz Valore Data/ora nel TimeZone
+ */
+dateChanged(valueTz: any) {
 
-  /**
-   * Data modificata nel componente DateTime
-   * @param valueTz Valore Data/ora nel TimeZone
-   */
-  dateChanged(valueTz: any) {
+  //Questa è la data che emettiamo con il timezone
+  let myDateToEmit: Date = new Date(valueTz);
+  
+  let off = myDateToEmit.getTimezoneOffset();
+  let myCorrectionDate = new Date();
+  myCorrectionDate.setTime(myDateToEmit.getTime() + (off * 60 * 1000));
 
-    //Questa è la data che emettiamo con il timezone
-    let myDateToEmit: Date = new Date(valueTz);
-    
-
-    let off = myDateToEmit.getTimezoneOffset();
-    let myCorrectionDate = new Date();
-    myCorrectionDate.setTime(myDateToEmit.getTime() + (off * 60 * 1000));
-
-
-    if (this._actualDate.getTime() != myCorrectionDate.getTime()) {
-      this.actualDateChange.emit(myDateToEmit);
-      LogApp.consoleLog('Emetto la data ' + myDateToEmit.toDateString());
-    }
-
-
-
-    
-
+  // FIX: Controllo se _actualDate esiste prima di confrontare
+  if (!this._actualDate || this._actualDate.getTime() != myCorrectionDate.getTime()) {
+    this.actualDateChange.emit(myDateToEmit);
+    LogApp.consoleLog('Emetto la data ' + myDateToEmit.toDateString());
   }
+}
 }
 

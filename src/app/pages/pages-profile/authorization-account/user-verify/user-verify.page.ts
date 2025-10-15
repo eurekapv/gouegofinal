@@ -147,20 +147,7 @@ export class UserVerifyPage implements OnInit {
     return label;
    }
  
-   //#region questi servono per accedere ai corrispettivi elementi in HTML
-  //  @ViewChild('c1') c1;
-  //  @ViewChild('c2') c2;
-  //  @ViewChild('c3') c3;
-  //  @ViewChild('c4') c4;
-  //  @ViewChild('c5') c5;
-  //  @ViewChild('c6') c6;
-  //  @ViewChild('c7') c7;
-  //  @ViewChild('c8') c8;
-  //  @ViewChild('c9') c9;
-  //  @ViewChild('c10') c10;
-   
-   //#endregion
- 
+
  
    constructor(
      private modalCtrl:ModalController,

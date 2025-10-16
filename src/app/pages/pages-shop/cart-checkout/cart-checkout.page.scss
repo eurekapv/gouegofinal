@@ -1,61 +1,609 @@
-ion-content.cart {
-    --background: #eff1f8;
+// ========================================
+// CONTENT BACKGROUND
+// ========================================
+ion-content {
+  --background: #f4f5f8;
 }
 
-.griglia-principale {
-    >ion-row{
-        >ion-col{
-            padding:0px;
-        }
-    }
+// ========================================
+// PAGE CONTAINER
+// ========================================
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+
+  @media (min-width: 768px) {
+    padding: 30px 20px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 40px 30px;
+  }
 }
 
-h6
-{
-    margin-top: 5px;
-    margin-bottom: 4px;
-    font-size: 15px;
-}
+// ========================================
+// INFO BOX
+// ========================================
+.info-box {
+  background: #fef9e7;
+  border-left: 4px solid var(--ion-color-tertiary);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  animation: fadeInDown 0.4s ease;
 
-h4
-{
-    margin-top: 4px;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
+  .info-icon {
+    color: var(--ion-color-tertiary);
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
 
-.left-col
-{
-    border-right-style: solid;
-    border-width: thin;
-    border-color: #eff1f8;
-}
-
-p {
+  p {
+    margin: 0;
+    color: var(--ion-color-primary);
+    line-height: 1.5;
     font-size: 13px;
+    font-weight: 500;
+  }
 }
 
-ion-button.full-buttons{
-    margin-left:10px;
-    margin-right:10px;
+// ========================================
+// CHECKOUT BUTTON
+// ========================================
+.checkout-button {
+  --background: var(--ion-color-tertiary);
+  --color: var(--ion-color-primary);
+  --border-radius: 12px;
+  --padding-top: 18px;
+  --padding-bottom: 18px;
+  --box-shadow: 0 4px 16px rgba(250, 212, 122, 0.3);
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  animation: fadeInUp 0.5s ease;
+
+  ion-icon {
+    font-size: 24px;
+  }
+
+  &:hover {
+    --background: var(--ion-color-tertiary-shade);
+    transform: translateY(-2px);
+    --box-shadow: 0 6px 20px rgba(250, 212, 122, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
-#item-totale {
-    ion-label {
+// ========================================
+// CHECKOUT GRID (Layout Responsive)
+// ========================================
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
+
+  @media (min-width: 1024px) {
+    gap: 30px;
+  }
+}
+
+.checkout-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// ========================================
+// SECTION CARD
+// ========================================
+.section-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  animation: fadeInUp 0.5s ease;
+
+  .section-header {
+    background: linear-gradient(135deg, 
+      var(--ion-color-warning) 0%, 
+      var(--ion-color-warning-shade) 100%);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    // Variante per Ritiro (verde)
+    &.pickup-header {
+      background: linear-gradient(135deg, 
+        var(--ion-color-success) 0%, 
+        var(--ion-color-success-shade) 100%);
+    }
+
+    // Variante per Pagamento (blu scuro)
+    &.payment-header {
+      background: linear-gradient(135deg, 
+        var(--ion-color-primary) 0%, 
+        var(--ion-color-primary-shade) 100%);
+    }
+
+    .header-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 26px;
+        color: white;
+      }
+    }
+
+    h3 {
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  .section-body {
+    padding: 20px;
+  }
+}
+
+// ========================================
+// ORDER ROWS (righe riepilogo ordine)
+// ========================================
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+
+  .order-label {
+    color: var(--ion-color-mediumlight);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .order-value {
+    color: var(--ion-color-primary);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  // Row Totale
+  &.total {
+    margin-top: 8px;
+
+    .order-label {
+      color: var(--ion-color-primary);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .order-value {
+      color: var(--ion-color-success);
+      font-size: 20px;
+      font-weight: 700;
+    }
+  }
+}
+
+// Separatore ordine
+.order-divider {
+  height: 1px;
+  background: var(--ion-color-light);
+  margin: 8px 0;
+}
+
+// ========================================
+// PICKUP INFO (informazioni ritiro)
+// ========================================
+.pickup-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  background: rgba(44, 179, 97, 0.08);
+  border-radius: 12px;
+
+  .pickup-icon {
+    font-size: 48px;
+    color: var(--ion-color-success);
+    flex-shrink: 0;
+  }
+
+  .pickup-content {
+    flex: 1;
+
+    .pickup-label {
+      font-size: 12px;
+      color: var(--ion-color-mediumlight);
+      margin: 0 0 4px 0;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .pickup-name {
+      font-size: 16px;
+      color: var(--ion-color-primary);
+      margin: 0;
+      font-weight: 600;
+    }
+  }
+}
+
+// ========================================
+// MODAL STYLES
+// ========================================
+ion-modal.order-modal {
+  --width: 90%;
+  --max-width: 500px;
+  --height: auto;
+  --border-radius: 20px;
+  --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+
+  @media (min-width: 768px) {
+    --width: 500px;
+  }
+}
+
+.modal-container {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+
+  .modal-header {
+    padding: 40px 30px 30px 30px;
+    text-align: center;
+    position: relative;
+
+    // Success variant
+    &.success {
+      background: linear-gradient(135deg, 
+        var(--ion-color-success) 0%, 
+        var(--ion-color-success-shade) 100%);
+
+      .success-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        animation: scaleIn 0.5s ease;
+
+        ion-icon {
+          font-size: 50px;
+          color: white;
+        }
+      }
+    }
+
+    // Error variant
+    &.error {
+      background: linear-gradient(135deg, 
+        var(--ion-color-danger) 0%, 
+        var(--ion-color-danger-shade) 100%);
+
+      .error-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+        animation: shake 0.5s ease;
+
+        ion-icon {
+          font-size: 50px;
+          color: white;
+        }
+      }
+    }
+
+    h2 {
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+
+  .modal-body {
+    padding: 30px;
+  }
+
+  .modal-footer {
+    padding: 0 30px 30px 30px;
+
+    ion-button {
+      --border-radius: 12px;
+      --padding-top: 16px;
+      --padding-bottom: 16px;
+      font-weight: 600;
+      font-size: 16px;
+      text-transform: none;
+
+      ion-icon {
+        font-size: 22px;
+      }
+    }
+  }
+}
+
+// ========================================
+// ORDER DETAIL ROWS (dettagli ordine in modal)
+// ========================================
+.order-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--ion-color-light);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .detail-icon {
+    font-size: 28px;
+    color: var(--ion-color-success);
+    flex-shrink: 0;
+  }
+
+  .detail-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .detail-label {
+      color: var(--ion-color-mediumlight);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .detail-value {
+      color: var(--ion-color-primary);
+      font-size: 15px;
+      font-weight: 600;
+    }
+  }
+
+  // Highlight rows (totale, da pagare)
+  &.highlight {
+    background: rgba(44, 179, 97, 0.05);
+    padding: 15px 12px;
+    border-radius: 10px;
+    border-bottom: none;
+    margin-top: 8px;
+
+    .detail-icon {
+      color: var(--ion-color-success);
+    }
+
+    .detail-content {
+      .detail-label {
+        color: var(--ion-color-primary);
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .detail-value {
+        color: var(--ion-color-success);
+        font-size: 18px;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Detail divider
+.detail-divider {
+  height: 1px;
+  background: var(--ion-color-light);
+  margin: 15px 0;
+}
+
+// Error message
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background: rgba(223, 65, 58, 0.08);
+  border-radius: 12px;
+
+  ion-icon {
+    font-size: 48px;
+    color: var(--ion-color-danger);
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: var(--ion-color-primary);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+// ========================================
+// ANIMAZIONI
+// ========================================
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+// Delay progressivo per le card
+.section-card:nth-child(1) { animation-delay: 0.1s; }
+.section-card:nth-child(2) { animation-delay: 0.2s; }
+.section-card:nth-child(3) { animation-delay: 0.3s; }
+
+// ========================================
+// RESPONSIVE - TABLET
+// ========================================
+@media (min-width: 768px) {
+  
+  .section-card {
+    .section-header {
+      padding: 25px;
+
+      .header-icon {
+        width: 52px;
+        height: 52px;
+
+        ion-icon {
+          font-size: 28px;
+        }
+      }
+
+      h3 {
         font-size: 20px;
+      }
     }
-}
 
-ion-label.ion-text-small {
-    font-size: 0.8em;
-}
-
-ion-card {
-    &.ion-margin-horizontal {
-        margin-top: 0px !important;
-        margin-bottom: 0px !important;
+    .section-body {
+      padding: 25px;
     }
+  }
+
+  .order-row {
+    padding: 14px 0;
+
+    .order-label {
+      font-size: 16px;
+    }
+
+    .order-value {
+      font-size: 17px;
+    }
+
+    &.total {
+      .order-label {
+        font-size: 18px;
+      }
+
+      .order-value {
+        font-size: 22px;
+      }
+    }
+  }
+
+  .pickup-info {
+    padding: 16px;
+
+    .pickup-icon {
+      font-size: 56px;
+    }
+
+    .pickup-content {
+      .pickup-label {
+        font-size: 13px;
+      }
+
+      .pickup-name {
+        font-size: 18px;
+      }
+    }
+  }
+
+  .checkout-button {
+    font-size: 18px;
+  }
 }
 
+// ========================================
+// RESPONSIVE - DESKTOP
+// ========================================
+@media (min-width: 1024px) {
+  
+  .section-card {
+    .section-header {
+      padding: 28px 30px;
 
+      .header-icon {
+        width: 56px;
+        height: 56px;
 
+        ion-icon {
+          font-size: 30px;
+        }
+      }
+
+      h3 {
+        font-size: 22px;
+      }
+    }
+
+    .section-body {
+      padding: 30px;
+    }
+  }
+}

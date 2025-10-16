@@ -528,7 +528,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     
     //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata (TRUE-> Chiedo di aggiornare la data su tutti i record figli SLOTTIME)
     this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
-    
+    console.log(this.actualSlotDay)
       
     LogApp.consoleLog('Richiesta Slot Occupazioni');
     
@@ -538,6 +538,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
                                             this.selectedCampo, 
                                             this.actualBookDay)
       .then(() => {
+
         //Per gli orario del centro saremmo aperti (come giornata)
         if (this.actualSlotDay.APERTOCHIUSO == true) {
           //Controlliamo se per caso è un giorno FESTIVO o di chiusura generale

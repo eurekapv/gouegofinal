@@ -1,10 +1,216 @@
-swiper-slide {
-    max-height: 80px;
+.campi-inline-container {
+  padding: 16px;
+  background: white;
+  border-top: 1px solid var(--ion-color-light);
+
+  .empty-state {
+    background: var(--ion-color-light);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+
+    ion-icon {
+      font-size: 48px;
+      color: var(--ion-color-danger);
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin: 0;
+
+      strong {
+        color: var(--ion-color-dark);
+        font-weight: 600;
+      }
+    }
+  }
+
+  // =====================================================
+  // HEADER CAMPO SELEZIONATO
+  // =====================================================
+  .campo-header-row {
+    margin-bottom: 12px;
+  }
+
+  .campo-selected-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--ion-color-success), #3ac979);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(44, 179, 97, 0.2);
+    min-width: 300px;
+  }
+
+  .header-icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+
+    ion-icon {
+      font-size: 28px;
+      color: white;
+    }
+  }
+
+  .header-info {
+    flex: 1;
+  }
+
+  .campo-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+  }
+
+  .campo-subtitle {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+  }
+
+  // =====================================================
+  // LISTA CAMPI SCROLLABILE
+  // =====================================================
+  .campi-list-row {
+    margin: 0;
+  }
+
+  .campi-scroll {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 4px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--ion-color-light-shade);
+      border-radius: 2px;
+    }
+  }
+
+  .campo-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--ion-color-light);
+    border: 2px solid transparent;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: inherit;
+
+    &:hover:not(&--disabled) {
+      background: var(--ion-color-light-shade);
+      transform: scale(1.05);
+    }
+
+    &:active:not(&--disabled) {
+      transform: scale(0.97);
+    }
+
+    // Chip attiva
+    &--active {
+      background: var(--ion-color-success);
+      border-color: var(--ion-color-success-shade);
+      box-shadow: 0 2px 8px rgba(44, 179, 97, 0.3);
+
+      .chip-icon,
+      .chip-label {
+        color: white;
+      }
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(44, 179, 97, 0.4);
+      }
+    }
+
+    // Chip disabilitata
+    &--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+
+  .chip-icon {
+    font-size: 20px;
+    color: var(--ion-color-primary);
+    transition: color 0.3s ease;
+  }
+
+  .chip-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    transition: color 0.3s ease;
+  }
+
+  // =====================================================
+  // RESPONSIVE
+  // =====================================================
+  @media (max-width: 576px) {
+    padding: 12px;
+
+    .campo-selected-header {
+      padding: 10px 14px;
+      gap: 10px;
+    }
+
+    .header-icon-circle {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+
+    .campo-title {
+      font-size: 1rem;
+    }
+
+    .campo-subtitle {
+      font-size: 0.8rem;
+    }
+
+    .campo-chip {
+      padding: 8px 14px;
+      gap: 6px;
+    }
+
+    .chip-icon {
+      font-size: 18px;
+    }
+
+    .chip-label {
+      font-size: 0.85rem;
+    }
+  }
 }
-
-ion-button {
-    width: 90%;
-}
-
-
-

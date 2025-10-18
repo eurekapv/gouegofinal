@@ -21,9 +21,9 @@
               
               sizeXs="12" 
               sizeSm="12" 
-              sizeMd="4" 
-              sizeLg="4" 
-              sizeXl="4">
+              sizeMd="12" 
+              sizeLg="12" 
+              sizeXl="12">
               <ion-grid 
                   class="ion-no-margin ion-no-padding">
                 <!-- RIGA COMPLESSA CON GLI SPORT-->
@@ -38,6 +38,16 @@
                   </ion-col>                  
                 </ion-row>
 
+
+                <!-- RIGA 1 CALENDAR SCROLL -->
+                <ion-row class="ion-no-margin">
+                  <ion-col>
+                    <app-calendarscroll 
+                      [activeDay]="actualBookDay"
+                      (onChangeActiveDay)="onChangeBookDay($event)"></app-calendarscroll>
+                  </ion-col>
+                </ion-row>                
+
                 <!-- RIGA CON I CAMPI-->
                 <ion-row>
                     <ion-col>
@@ -51,31 +61,8 @@
                       </app-campi-scroll>
                     </ion-col>
                 </ion-row>
-              </ion-grid>
 
-          </ion-col>
-
-          <!-- COLONNA A DESTRA -->
-          <ion-col
-              sizeXs="12" 
-              sizeSm="12" 
-              sizeMd="8" 
-              sizeLg="8" 
-              sizeXl="8">
-
-              <!-- ITEM DEL CALENDARIO  -->
-              <ion-grid 
-                      class="ion-no-margin ion-no-padding">
-
-                <!-- RIGA 1 CALENDAR SCROLL -->
-                <ion-row class="ion-margin-top ion-margin-bottom">
-                  <ion-col>
-                    <app-calendarscroll 
-                      [activeDay]="actualBookDay"
-                      (onChangeActiveDay)="onChangeBookDay($event)"></app-calendarscroll>
-                  </ion-col>
-                </ion-row>
-
+                
                 <!-- RIGA 2 SLOT DISPONIBILITA (PRENOTAZIONI ABILITATE)-->
                 <ion-row  *ngIf="flagDatiRicevuti && flagPrenotazioneDisponibile && actualSlotDay.APERTOCHIUSO"
                     class="ion-no-margin"
@@ -93,7 +80,7 @@
                                     </ion-label>
                                     <ion-spinner slot="end" name="circular" color="primary" *ngIf="actualSlotDay._TEMPLATELOCK"></ion-spinner>
                                 </ion-item>
-
+      
                             </ion-col>
                           </ion-row>
                         <ion-row>
@@ -126,7 +113,7 @@
                     ></app-card-image>
                   </ion-col>
                 </ion-row>
-
+      
                 <!-- RIGA 2 CARD AVVISO (PRENOTAZIONI DISABILITATE)-->
                 <ion-row  *ngIf="!flagPrenotazioneDisponibile"
                     class="ion-no-margin">
@@ -143,6 +130,7 @@
               </ion-grid>
 
           </ion-col>
+
         </ion-row>
       </ion-grid>
 

@@ -1,20 +1,132 @@
-swiper-slide {
-    max-height: 80px;
-}
+.sport-compact-container {
+  padding: 8px 12px;
+  background: white;
 
-.icon-sport{
-    font-size: 30px;
+  // =====================================================
+  // MESSAGGIO VUOTO
+  // =====================================================
+  .empty-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--ion-color-light);
+    border-radius: 10px; // Angoli arrotondati, non ovale
+    color: var(--ion-color-medium);
+    font-size: 0.9rem;
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-danger);
+    }
+  }
+
+  // =====================================================
+  // SPORT SCROLL
+  // =====================================================
+  .sport-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 0;
+    
+
+    // Scrollbar minimal
+    &::-webkit-scrollbar {
+      height: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--ion-color-light-shade);
+      border-radius: 1px;
+    }
+  }
+
+  // =====================================================
+  // BOTTONE SPORT - RETTANGOLARE CON BLU
+  // =====================================================
+  .sport-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    border: 2px solid var(--ion-color-light-shade);
+    border-radius: 12px; // RETTANGOLARE, non ovale!
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: inherit;
+    min-height: 44px;
+
+    &:hover {
+      border-color: var(--ion-color-secondary); // BLU
+      transform: scale(1.02);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    // Attivo - BLU #2974d9
+    &--active {
+      background: var(--ion-color-secondary); // BLU!
+      border-color: var(--ion-color-secondary-shade);
+
+      .sport-icon {
+        color: white;
+      }
+
+      .sport-label {
+        color: white;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .sport-icon {
+    font-size: 24px;
     font-family: "sports";
+    color: var(--ion-color-dark);
+    transition: color 0.2s ease;
+  }
 
-}
-
-.text-sport
-{
-    font-size: 12px;
+  .sport-label {
+    font-size: 0.9rem;
     font-weight: 600;
-}
+    color: var(--ion-color-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+  }
 
-.card-sport
-{
-    width: 90%;
+  // =====================================================
+  // RESPONSIVE
+  // =====================================================
+  @media (max-width: 576px) {
+    padding: 10px 15px;
+
+    .sport-scroll {
+      gap: 6px;
+    }
+
+    .sport-btn {
+      padding: 10px 15px;
+      gap: 6px;
+      min-height: 40px;
+    }
+
+    .sport-icon {
+      font-size: 20px;
+    }
+
+    .sport-label {
+      font-size: 0.85rem;
+    }
+  }
 }

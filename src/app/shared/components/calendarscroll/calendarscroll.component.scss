@@ -1,153 +1,238 @@
-ion-grid {
+.modern-calendar {
+  background: white;
+  border-bottom: 1px solid var(--ion-color-light);
 
-    &.picker-month {
-        background-color: white;
+  // =====================================================
+  // HEADER MESE/ANNO
+  // =====================================================
+  .calendar-header {
+    background: var(--ion-color-light);
+    padding: 16px 0;
+  }
 
-        ion-toolbar {
-            height: 60px;
-            justify-content: center;
-            align-content: center;
-            --background: lightgray;
-            
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    gap: 16px;
+  }
 
-            .text-lg {
-                font-size: larger;
-            }
-
-            .text-sm {
-                font-size: smaller;
-            }
-        }
-
-        ion-row {            
-            padding-top: 10px;
-        }
-    }
-
-    &.picker-day {
-        background-color: white;
-
-        swiper-container {
-            swiper-slide {
-                max-width: 55px;
-            }
-        }
-
-        .swiper_wrap {
-            padding:0px 25px;
-            height:100%;
-            width: 100%;
-            position: relative;
-            display: block;
-            text-align: left;
-        }
-
-        .swiper-button-next{
-            margin-top: 0px;
-            position: absolute;
-            top: 50%;
-            right: -20px;
-            width: 45px;
-            height: 45px;
-            transform: translateY(-50%);
-            background-image: none;
-
-            &:after {
-                color: var(--ion-color-primary);
-                font-weight: bold;
-                font-size: 1.2em;
-            }
-        }
-        .swiper-button-prev{
-            position: absolute;
-            top: 50%;
-            left: -20px;
-            width: 45px;
-            height: 45px;
-            transform: translateY(-50%);
-            margin-top: 0px;
-            background-image: none;
-
-            &:after {
-                color: var(--ion-color-primary);
-                font-weight: bold;
-                font-size: 1.2em;
-            }
-        }
-
-
-    }
-}
-
-
-a {
-    text-decoration: none;
+  .nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: none;
+    border-radius: 12px;
     cursor: pointer;
-}
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-family: inherit;
 
-ion-button {
-    
-    &.btn-day { 
-        margin: 5px 0px 5px 0px;
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        min-height: 50px;
-
-        &.button-inner {
-            font-size: 16px;
-            flex-flow: column; 
-        }
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary);
     }
-   
-    
-}
 
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
 
-.flessibile {
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .current-date {
+    flex: 1;
+    text-align: center;
+  }
+
+  .date-day {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+  }
+
+  .date-weekday {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ion-color-medium);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  // =====================================================
+  // GIORNI SCROLLABILI
+  // =====================================================
+  .calendar-days {
+    padding: 0px 0;
+  }
+
+  .days-scroll {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 4px 16px 8px 16px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--ion-color-light-shade);
+      border-radius: 2px;
+    }
+  }
+
+  // =====================================================
+  // BOTTONE GIORNO
+  // =====================================================
+  .day-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
+    gap: 4px;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    background: white;
+    border: 2px solid var(--ion-color-light-shade);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    padding: 8px;
 
-.circle {
-    border-radius: 50%;
-    border-style: solid;
-    border-width: thin;
-    border-color: var(--ion-color-light-shade);
-    width: 50px;
-    height: 50px;
-}
-
-.icon-calendar{
-    font-size: 25px;
-}
-
-
-
-.custom-h5{
-    display: flex;
-    align-items: center;
-
-}
-
-.custom-div
-{
-    cursor:pointer;
-    display: flex;
-    justify-content: center;
-    ion-icon{
-        margin-left: 3px;
+    &:hover {
+      transform: scale(1.1);
+      border-color: var(--ion-color-primary);
+      box-shadow: 0 2px 8px rgba(25, 35, 51, 0.15);
     }
-}
 
-ion-modal {
-  --height: auto;
+    &:active {
+      transform: scale(0.95);
+    }
 
-  align-items: end;
-}
+    // Giorno attivo - BLU PRIMARY
+    &--active {
+      background: var(--ion-color-secondary);
+      border-color: var(--ion-color-secondary-shade);
+      box-shadow: 0 4px 12px rgba(25, 35, 51, 0.3);
 
-ion-picker {
-  margin-bottom: var(--ion-safe-area-bottom);
+      .day-number,
+      .day-letter {
+        color: white;
+      }
+
+      &:hover {
+        box-shadow: 0 6px 16px rgba(25, 35, 51, 0.4);
+      }
+    }
+
+    // Giorno corrente (oggi) - border accent
+    &--today:not(&--active) {
+      border-color: var(--ion-color-tertiary);
+      border-width: 3px;
+
+      .day-number {
+        color: var(--ion-color-tertiary);
+        font-weight: 700;
+      }
+    }
+  }
+
+  .day-number {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    line-height: 1;
+    transition: color 0.3s ease;
+  }
+
+  .day-letter {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    line-height: 1;
+    transition: color 0.3s ease;
+  }
+
+  // =====================================================
+  // RESPONSIVE
+  // =====================================================
+  @media (max-width: 576px) {
+    .header-content {
+      padding: 0 12px;
+      gap: 12px;
+    }
+
+    .nav-button {
+      width: 36px;
+      height: 36px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+
+    .date-day {
+      font-size: 1rem;
+    }
+
+    .date-weekday {
+      font-size: 0.75rem;
+    }
+
+    .days-scroll {
+      gap: 10px;
+      padding: 4px 12px 8px 12px;
+    }
+
+    .day-button {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+    }
+
+    .day-number {
+      font-size: 1rem;
+    }
+
+    .day-letter {
+      font-size: 0.65rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .date-day {
+      font-size: 1.2rem;
+    }
+
+    .day-button {
+      width: 64px;
+      height: 64px;
+      min-width: 64px;
+
+      &:hover {
+        transform: scale(1.15);
+      }
+    }
+
+    .day-number {
+      font-size: 1.15rem;
+    }
+  }
 }

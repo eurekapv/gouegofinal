@@ -1,146 +1,45 @@
-<!-- GRID MONTH PICKER -->
-<ion-grid 
-      class="picker-month ion-no-padding ion-no-margin">
+<ion-grid class="modern-calendar ion-no-margin ion-no-padding">
+  
+  <!-- HEADER MESE/ANNO -->
+  <ion-row class="calendar-header">
+    <ion-col size="12">
+      <div class="header-content">
+        
+        <!-- Bottone mese precedente -->
+        <button class="nav-button" (click)="goToPreviousMonth()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </button>
 
-      <!--MESE-PREC -  DATAATTIVA - MESE-SUCC -->
-      <ion-toolbar>
-
-        <ion-buttons slot="start">
-          <ion-button
-            (click) ="onClickMonthButton('prev')"
-            class="ion-no-padding ion-no-margin" 
-            size="small"
-            expand="full" 
-            fill="clear" 
-            >
-            <ion-icon 
-              slot="start" 
-              name="chevron-back-outline">
-            </ion-icon>
-            {{_monthBeforeDay | date: 'MMM' | uppercase}}
-          </ion-button>
-        </ion-buttons>
-
-        <!-- DATA ATTUALE -->
-        <ion-title>
-          <ion-button 
-              id="open-modal-monthyear"
-              color = "primary"
-              expand="block"
-              fill="clear" 
-              size="small">
-              <ion-label class="ion-text-center">
-                <div class="text-lg font-bold">{{ _activeDay | date: "dd MMMM yyyy" | uppercase}}</div>
-                <div class="text-sm">{{ _activeDay | date: "EEEE" | uppercase}}</div>
-              </ion-label>
-              
-          </ion-button>          
-        </ion-title>
-
-        <ion-buttons slot="end">
-            <ion-button
-              (click) ="onClickMonthButton('next')"
-              class="ion-no-padding ion-no-margin" 
-              size="small"
-              expand="full" 
-              fill="clear" 
-              >
-                <ion-icon 
-                  slot="end" 
-                  name="chevron-forward-outline">
-                </ion-icon>
-            {{_monthAfterDay | date: 'MMM' | uppercase}}
-          </ion-button>
-        </ion-buttons>        
-      </ion-toolbar>
-  </ion-grid> 
-
-
-<!-- GRID PICKER DAY -->
-<ion-grid class="picker-day ion-no-margin">
-  <ion-row class="ion-no-margin ion-padding-horizontal">
-      <ion-col>
-        <div class="swiper_wrap">
-          <div class="slider-wrapper">
-            <div class="swiper-button-prev"></div>
-            <swiper-container
-                  navigation="true" 
-                  (afterinit)="swiperReady()"
-                  appSwiper [config]="sliderOpts" 
-                  init="false"
-                  #swiperDays>
-            <swiper-slide *ngFor="let objDay of listDay">
-      
-
-      
-              <ion-button 
-                    *ngIf="objDay.type == 'day'" 
-                    class="ion-no-padding ion-no-margin btn-day" 
-                    shape="round" 
-                    size="small"
-                    [fill]="getFillDayButton(objDay)" 
-                    color="secondary" 
-                    (click)="onClickDayButton(objDay)">
-                {{ objDay.numValue }}
-                <br />
-                 {{objDay.dateValue | date : 'EEEEE'}}
-              </ion-button>
-      
-      
-            </swiper-slide>
-          </swiper-container>            
-            <div class="swiper-button-next"></div>
-          </div>
+        <!-- Data corrente -->
+        <div class="current-date">
+          <h2 class="date-day">{{ _activeDay | date: 'dd MMMM yyyy' | uppercase }}</h2>
+          <p class="date-weekday">{{ _activeDay | date: 'EEEE' | uppercase }}</p>
         </div>
-      </ion-col>
 
+        <!-- Bottone mese successivo -->
+        <button class="nav-button" (click)="goToNextMonth()">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </button>
+      </div>
+    </ion-col>
   </ion-row>
+
+  <!-- GIORNI SCROLLABILI -->
+  <ion-row class="calendar-days">
+    <ion-col size="12">
+      <div class="days-scroll">
+        <button
+          *ngFor="let day of listDay"
+          class="day-button"
+          [class.day-button--active]="isActiveDay(day)"
+          [class.day-button--today]="isToday(day)"
+          (click)="onClickDay(day)">
+          
+          <span class="day-number">{{ day.dateValue | date: 'd' }}</span>
+          <span class="day-letter">{{ day.dateValue | date: 'EEE' | uppercase | slice:0:1 }}</span>
+        </button>
+      </div>
+    </ion-col>
+  </ion-row>
+
 </ion-grid>
-
-<!-- MODALI PICKER -->
-<ion-modal
-      #modalmonthyear 
-      trigger="open-modal-monthyear" 
-      (didDismiss)="onDidDismissPickerDate($event)">
-  <ng-template>
-    <ion-toolbar>
-
-      <ion-buttons slot="start">
-        <ion-button (click)="modalmonthyear.dismiss(null, 'cancel')">Annulla</ion-button>
-      </ion-buttons>
-
-      <ion-buttons slot="end">
-        <ion-button (click)="modalmonthyear.dismiss(null, 'confirm')">Conferma</ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-
-    <!-- CREO LA LINEA CON GLI ANNI -->
-     
-       <ion-row>
-         <ion-col *ngFor="let anno of listAnni">
-           <ion-button 
-                 (click)="_activeYear=anno"
-                 expand="full"
-                 [color]="_activeYear == anno ? 'success' : 'primary'">
-             {{anno}}
-           </ion-button>
-         </ion-col>
-       </ion-row>
-
-       <!-- LINEA MESI -->
-       <ion-row class="ion-padding-vertical">
-        <ion-col 
-            size="4"
-            *ngFor="let mese of listMesi">
-          <ion-button
-            (click)="_activeMonth=mese.value"
-            expand="full"
-            [fill]="_activeMonth == mese.value ? 'solid' : 'clear'"
-            [color]="_activeMonth == mese.value ? 'success' : 'primary'">
-            {{mese.description}}
-          </ion-button>
-        </ion-col>
-       </ion-row>
-  </ng-template>
-</ion-modal>
- <!-- END MODALI PICKER -->

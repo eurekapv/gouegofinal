@@ -139,6 +139,84 @@
 }
 
 // =====================================================
+// PERIODIC COURSE LIST - FIX COLONNE TABLET
+// =====================================================
+
+// Aggiungi queste regole al tuo file SCSS esistente
+
+// =====================================================
+// COURSES GRID - PADDING/GAP FIX
+// =====================================================
+
+.courses-grid {
+  padding: 0;
+
+  ion-row {
+    // Aggiungi gap tra le colonne per tablet/desktop
+    gap: 16px;
+
+    ion-col {
+      // Rimuovi il padding di default di Ionic per avere controllo completo
+      padding: 0;
+    }
+  }
+
+  // VERSIONE CARD (2 colonne su tablet/desktop)
+  @media (min-width: 768px) {
+    padding: 0 16px;
+
+    ion-row {
+      gap: 20px;
+      ion-col {
+        padding: 0 5px 0 5px;
+      }
+    }
+  }
+
+  @media (min-width: 1024px) {
+    padding: 0 24px;
+
+    ion-row {
+      gap: 0px;
+      ion-col {
+        padding: 0 5px 0 5px;
+      }
+    }
+  }
+}
+
+// =====================================================
+// ALTERNATIVA: Se preferisci usare padding nelle colonne
+// =====================================================
+
+// Invece di gap su row, usa padding sulle colonne:
+/*
+.courses-grid {
+  padding: 0;
+
+  ion-row {
+    margin: 0;
+  }
+
+  ion-col {
+    padding: 8px;  // Metà dello spazio desiderato (16px totale tra card)
+  }
+
+  @media (min-width: 768px) {
+    ion-col {
+      padding: 10px;  // 20px totale
+    }
+  }
+
+  @media (min-width: 1024px) {
+    ion-col {
+      padding: 12px;  // 24px totale
+    }
+  }
+}
+*/
+
+// =====================================================
 // EMPTY STATE (Stile come secondo screenshot)
 // =====================================================
 

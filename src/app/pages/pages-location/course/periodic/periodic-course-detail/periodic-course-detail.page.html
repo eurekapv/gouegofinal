@@ -37,37 +37,6 @@
     </div>
   </div>
 
-  <!-- BOTTONI AZIONE PRINCIPALI -->
-  <div class="action-buttons">
-    <ion-grid class="ion-no-padding">
-      <ion-row>
-        <ion-col size="6">
-          <ion-button 
-              expand="block" 
-              fill="solid"
-              color="warning"
-              class="action-btn"
-              (click)="onClickCalendario()">
-            <ion-icon slot="start" name="calendar-outline"></ion-icon>
-            Calendario
-          </ion-button>
-        </ion-col>
-        
-        <ion-col size="6" *ngIf="myCorso.CORSOPROGRAMMA && myCorso.existProgrammaCorso()">
-          <ion-button 
-              expand="block" 
-              fill="solid"
-              color="success"
-              class="action-btn"
-              (click)="onClickAllegati()">
-            <ion-icon slot="start" name="document-attach-outline"></ion-icon>
-            Allegati
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-
   <!-- CONTENUTO PRINCIPALE -->
   <div class="main-content">
     
@@ -159,6 +128,16 @@
 
           <!-- GIORNI SETTIMANA -->
           <app-settimana-block [listDays]="myCorso._SETTIMANA"></app-settimana-block>
+
+          <ion-button 
+              expand="block" 
+              fill="outline"
+              color="success"
+              class="action-btn"
+              (click)="onClickCalendario()">
+            <ion-icon slot="start" name="calendar-outline"></ion-icon>
+            Calendario
+          </ion-button>
           
         </ion-card-content>
       </ion-card>
@@ -338,6 +317,32 @@
       </ion-card>
     </section>
 
+    <!-- SEZIONE PROGRAMMA E ALLEGATI -->
+    <section class="info-section" >
+        <div class="section-header">
+          <ion-icon name="document-text-outline" color="secondary"></ion-icon>
+          <h2>Programma</h2>
+      </div>
+
+      <ion-card class="info-card">
+        <ion-card-content>
+            <div 
+                class="html-content" 
+                [innerHTML]="myCorso.getFullProgrammaHTML() | safeHtml"
+                *ngIf="myCorso.existProgrammaCorso()"
+                ></div>
+            <ion-button 
+              expand="block" 
+              fill="outline"
+              color="success"
+              class="action-btn"
+              (click)="onClickAllegati()">
+            <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+            Scarica Allegati
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </section>
   </div>
 
 </ion-content>

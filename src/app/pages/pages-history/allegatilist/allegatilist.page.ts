@@ -13,8 +13,18 @@ import { StartService } from 'src/app/services/start.service';
 })
 export class AllegatilistPage implements OnInit {
   
-  @Input() myCorso:Corso
+  @Input() set myCorso(value:Corso) {
+    this._corsoDoc = value;
+    if (value) {
+      //Richiedo il caricamento dei dati
+      this.requestListAllegati();
+    }
+  }
+
   listAllegati: CorsoAllegato[] = [];
+
+  _corsoDoc: Corso;
+
 
 
   constructor(
@@ -27,15 +37,17 @@ export class AllegatilistPage implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    this.requestListAllegati();    
+ 
   }
 
 
+  /**
+   * Effettua la richiesta degli allegati
+   * @param event 
+   */
   requestListAllegati(event?: any){
 
     
-
     this.loadingController.create({
       message: 'Caricamento...',
       spinner: "circular",
@@ -47,7 +59,7 @@ export class AllegatilistPage implements OnInit {
       if(!event){
         elLoading.present();
       }
-      return this.startService.requestListAllegatiByIdCorso(this.myCorso.ID);
+      return this.startService.requestListAllegatiByIdCorso(this._corsoDoc.ID);
     })
     .then(listAllegati => {
 
@@ -69,7 +81,8 @@ export class AllegatilistPage implements OnInit {
       else{
         this.loadingController.dismiss();
       }
-      this.showMessage('Errore di connessione');
+      
+      this.startService.presentAlertMessage('Spiacente, errore di connessione');
       LogApp.consoleLog(error,'error');
     })
   }
@@ -81,18 +94,10 @@ export class AllegatilistPage implements OnInit {
   }
 
 
-
-
-  showMessage (messaggio : string){
-    this.toastController.create({
-      message: messaggio,
-      duration: 3000
-
-    }).then (elModal => {
-      elModal.present();
-    })
-  }
-
+  /**
+   * Richiesto scaricamento Allegato
+   * @param elemento 
+   */
   downloadAllegato(elemento: CorsoAllegato){
     if(elemento && elemento.FILENAMEESTENSIONE && elemento.FILENAMEESTENSIONE.length > 0){
       //ho il percorso per scaricare il file
@@ -119,7 +124,7 @@ export class AllegatilistPage implements OnInit {
       })
       .catch(error => {
         LogApp.consoleLog(error,'error');
-        this.showMessage('Impossibile scaricare il file');
+        this.startService.presentAlertMessage('Impossibile scaricare il file');
       })
     }
 

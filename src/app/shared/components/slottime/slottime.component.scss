@@ -1,68 +1,210 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+// =====================================================
+// SLOT TIME CARD - MODERN DESIGN
+// =====================================================
 
 ion-card {
-    background-color: white;
-    min-height: 50px;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+  background: white;
+  border-radius: 12px;
+  margin: 6px 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  border: 1px solid var(--ion-color-light);
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
 }
 
+ion-row {
+  min-height: 64px;
+  --ion-grid-columns: 12; // FIX: Forza 12 colonne
+}
+
+// =====================================================
+// COLONNA ORARI
+// =====================================================
 #col-orari {
-    border-right-style: solid;
-    border-width: thin;
-    border-color: #eff1f8;
-    
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  background: var(--ion-color-extralight);
+  border-right: 1px solid var(--ion-color-light);
+  flex: 0 0 25%; // FIX: Forza 25% (3/12 colonne)
+  max-width: 25%;
 }
 
 .orario-black {
-    font-family: Roboto;
-    font-size: medium;
-    color: black;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
 }
 
 .orario-light {
-    font-family: Roboto;
-    font-size: medium;
-    color: #9da2b3;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ion-color-mediumlight);
+  line-height: 1.2;
 }
 
-.slot-busy {
-    //Background of the button
-    --background: var(--ion-color-danger);
-    /*
-    //Background of the button when pressed. Note: setting this will interfere with the Material Design ripple.
-    --background-activated:
-    //Opacity of the button when pressed
-    --background-activated-opacity:
-    //Background of the button when focused with the tab key
-    --background-focused	
-    //Opacity of the button when focused with the tab key
-    --background-focused-opacity
-    //Background of the button on hover
-    --background-hover	
-    //Opacity of the background on hover
-    --background-hover-opacity
-    */
+// =====================================================
+// COLONNA BOTTONE SLOT
+// =====================================================
+#col-slot {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  flex: 0 0 75%; // FIX: Forza 75% (9/12 colonne)
+  max-width: 75%;
 }
 
+ion-button {
+  margin: 0;
+  width: 100%; // FIX: Occupa tutto lo spazio disponibile
+  height: 48px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  --border-radius: 10px;
+  transition: all 0.2s ease;
+
+  ion-icon {
+    font-size: 20px;
+    margin-right: 6px;
+  }
+
+  &:not([disabled]) {
+    &:hover {
+      transform: scale(1.02);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// =====================================================
+// STATI SLOT - LIBERO (VERDE PIENO)
+// =====================================================
 .slot-free {
-    //Background of the button
-    --background: var(--ion-color-success);
-    //var(--ion-color-success-tint);
+  --background: var(--ion-color-success);
+  --color: white;
+  font-weight: 700;
 }
 
+// =====================================================
+// STATI SLOT - CONTATTARE (VERDE CHIARO)
+// =====================================================
 .slot-free-contact {
-    --background: var(--ion-color-success-tint);
+  --background: #7ce5ab;
+  --color: var(--ion-color-dark);
+  font-weight: 600;
+
+  ion-icon {
+    color: var(--ion-color-dark);
+  }
 }
 
+// =====================================================
+// STATI SLOT - SELEZIONATO (BLU)
+// =====================================================
 .slot-selected {
-        //Background of the button
-        --background: var(--ion-color-mediumlight);
+  --background: var(--ion-color-secondary);
+  --color: white;
+  --box-shadow: 0 3px 12px rgba(41, 116, 217, 0.3);
+  font-weight: 700;
+
+  ion-icon {
+    color: white;
+    animation: checkBounce 0.4s ease;
+  }
 }
 
+@keyframes checkBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+// =====================================================
+// STATI SLOT - OCCUPATO (ROSSO)
+// =====================================================
+.slot-busy {
+  --background: var(--ion-color-danger);
+  --color: white;
+  opacity: 0.85;
+  font-weight: 600;
+
+  ion-icon {
+    color: white;
+  }
+}
+
+// =====================================================
+// STATI SLOT - READ ONLY / CHIUSO (GRIGIO)
+// =====================================================
 .slot-read-only {
-    --background: lightgray;
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-mediumlight);
+  opacity: 0.6;
+  font-weight: 500;
 }
 
+// =====================================================
+// RESPONSIVE
+// =====================================================
+@media (max-width: 576px) {
+  ion-card {
+    margin: 5px 12px;
+    border-radius: 10px;
+  }
+
+  ion-row {
+    min-height: 60px;
+  }
+
+  #col-orari {
+    padding: 10px 6px;
+  }
+
+  .orario-black {
+    font-size: 1rem;
+  }
+
+  .orario-light {
+    font-size: 0.85rem;
+  }
+
+  ion-button {
+    height: 44px;
+    font-size: 0.85rem;
+
+    ion-icon {
+      font-size: 18px;
+      margin-right: 4px;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  ion-card {
+    margin: 8px 20px;
+  }
+
+  ion-row {
+    min-height: 68px;
+  }
+
+  ion-button {
+    height: 52px;
+    font-size: 1rem;
+  }
+}

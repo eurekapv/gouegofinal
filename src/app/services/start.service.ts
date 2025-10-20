@@ -30,7 +30,7 @@ import { ModalController, Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './archivi/codicefiscale.service';
 import { CodiceFiscale } from '../models/zsupport/codicefiscale.model';
-import { Mansione, PaymentEnvironment, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
+import { CustomAlertClass, Mansione, PaymentEnvironment, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/utente/accountregistration.model';
 import { OccupazioniService } from './struttura/occupazioni.service';
 
@@ -2990,10 +2990,11 @@ getUrlPageActiveCart(): string[] {
 presentAlertMessage(myMessage: string | ErrorEvent, 
                     myTitle?: string, 
                     myButtons?: (AlertButton | string)[], 
-                    subTitle?: string) {
+                    subTitle?: string,
+                    customCssClass?: CustomAlertClass) {
   
   this.srvSmartInterface
-      .showMessage(myMessage, myTitle, myButtons, subTitle)
+      .showMessage(myMessage, myTitle, myButtons, subTitle, customCssClass)
       .then(elMessage => {
         elMessage.present();
       })

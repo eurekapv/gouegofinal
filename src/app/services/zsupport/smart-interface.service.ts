@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { AlertButton, SpinnerTypes, ToastOptions } from "@ionic/core";
+import { CustomAlertClass } from 'src/app/models/zsupport/valuelist.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +15,21 @@ export class SmartInterfaceService {
   /**
   * Crea un semplice messaggio con l'uso dell'AlertController
   * La presentazione del messaggio è a carico del chiamante
+  *  cssClass: 'custom-alert subtitle-success' // Per telefono verde
+  // oppure 'custom-alert subtitle-danger' per errori
+  // oppure 'custom-alert subtitle-warning' per warning
+  // oppure 'custom-alert' senza classe per grigio default
   * @param message Messaggio
   * @param myTitle: Titolo
   * @param myButtons: Button da mostrare
   * @param subTitle: Sottotitolo
+  * @param customCssClass: Eventuale classe aggiuntiva
   */
   showMessage(myMessage: string | ErrorEvent | Error, 
               myTitle?: string, 
               myButtons?: (AlertButton | string)[],
-              subTitle?: string): Promise<HTMLIonAlertElement> {
+              subTitle?: string,
+              customCssClass?: CustomAlertClass): Promise<HTMLIonAlertElement> {
 
     let finalMessage = '';
 
@@ -48,7 +55,8 @@ export class SmartInterfaceService {
       header: myTitle,
       subHeader: subTitle ? subTitle:'',
       message: finalMessage,
-      buttons: myButtons
+      buttons: myButtons,
+      cssClass: 'custom-alert' + (customCssClass && customCssClass.length != 0 ? ` ${customCssClass}` : '')
     });
 
   }

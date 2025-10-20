@@ -583,7 +583,14 @@ export enum StateApplication {
 
 }
 
-
+/**
+ * Colorazione del sottotitolo di un custom alert
+ */
+export enum CustomAlertClass {
+    subtitleSuccess = 'subtitle-success',
+    subtitleDanger = 'subtitle-danger',
+    subtitleWarning = 'subtitle-warning'
+}
 
 
 

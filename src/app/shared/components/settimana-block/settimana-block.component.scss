@@ -1,0 +1,810 @@
+// =====================================================
+// PERIODIC COURSE DETAIL - MODERN PROFESSIONAL DESIGN
+// =====================================================
+
+// =====================================================
+// CONTENT GENERAL
+// =====================================================
+
+.course-detail-content {
+  --background: #f5f6f8;
+}
+
+// =====================================================
+// HERO SECTION
+// =====================================================
+
+.course-hero {
+  position: relative;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+  padding: 40px 20px;
+  text-align: center;
+  overflow: hidden;
+
+  &.past {
+    background: linear-gradient(135deg, var(--ion-color-medium) 0%, var(--ion-color-medium-shade) 100%);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+
+    .sport-icon-wrapper {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+      .sport-icon {
+        font-family: "sports";
+        font-size: 50px;
+        color: white;
+      }
+    }
+
+    .course-name {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: white;
+      margin: 0 0 8px 0;
+      line-height: 1.2;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .course-sport {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin: 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+
+  .status-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 3;
+
+    ion-icon {
+      font-size: 18px;
+    }
+
+    &.future {
+      color: var(--ion-color-warning);
+    }
+
+    &.in-progress {
+      color: var(--ion-color-success);
+    }
+
+    &.past {
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+// =====================================================
+// DESCRIPTION
+// =====================================================
+
+.course-description {
+  padding: 16px;
+
+  .description-card {
+    margin: 0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+    ion-card-content {
+      padding: 20px;
+
+      .description-text {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--ion-color-dark);
+        margin: 0;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+// =====================================================
+// ACTION BUTTONS
+// =====================================================
+
+.action-buttons {
+  padding: 0 16px 16px 16px;
+
+  .action-btn {
+    font-weight: 700;
+    height: 48px;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+
+    ion-icon {
+      font-size: 22px;
+    }
+  }
+}
+
+// =====================================================
+// MAIN CONTENT
+// =====================================================
+
+.main-content {
+  padding: 0 16px 100px 16px;
+}
+
+// =====================================================
+// INFO SECTIONS
+// =====================================================
+
+.info-section {
+  margin-bottom: 24px;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 0 4px;
+
+    ion-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--ion-color-dark);
+      margin: 0;
+      flex: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .lessons-badge {
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+  }
+
+  .info-card {
+    margin: 0;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+
+    ion-card-content {
+      padding: 20px;
+    }
+  }
+}
+
+// =====================================================
+// DATE INFO BLOCK
+// =====================================================
+
+.date-info-block {
+  margin-bottom: 20px;
+
+  .date-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--ion-color-dark);
+    margin: 0;
+
+    strong {
+      color: var(--ion-color-primary);
+      font-weight: 800;
+    }
+  }
+}
+
+// =====================================================
+// TIME & DURATION GRID
+// =====================================================
+
+.time-duration-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+
+  .time-box {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid var(--ion-color-primary-tint);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    ion-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .time-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .time-label {
+        font-size: 0.75rem;
+        color: var(--ion-color-medium);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .time-value {
+        font-size: 1.1rem;
+        color: var(--ion-color-primary);
+        font-weight: 800;
+      }
+    }
+  }
+}
+
+// =====================================================
+// FREQUENCY INFO
+// =====================================================
+
+.frequency-info {
+  margin-bottom: 16px;
+  padding: 14px;
+  background: #fef3c7;
+  border-radius: 10px;
+  border-left: 4px solid var(--ion-color-warning);
+
+  .frequency-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-dark);
+    line-height: 1.5;
+  }
+}
+
+// =====================================================
+// ENROLLMENT CARD
+// =====================================================
+
+.enrollment-card {
+  border: 2px solid var(--ion-color-success-tint);
+  background: linear-gradient(to bottom, white 0%, #f0fdf4 100%);
+
+  .enrollment-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px dashed #e5e7eb;
+
+    .price-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+
+    .price-badge {
+      font-size: 1.2rem;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .price-badge-free {
+      font-size: 1.3rem;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+  }
+
+  .enrollment-status {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    ion-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--ion-color-dark);
+
+      strong {
+        color: var(--ion-color-danger);
+      }
+    }
+  }
+
+  .enroll-button {
+    font-weight: 800;
+    height: 56px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin-top: 8px;
+
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+}
+
+// =====================================================
+// ACTIVE ENROLLMENT CARD
+// =====================================================
+
+.active-enrollment-card {
+  border: 2px solid var(--ion-color-success);
+  background: linear-gradient(to bottom, #f0fdf4 0%, white 100%);
+
+  .active-enrollment-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+
+    ion-icon {
+      font-size: 48px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ion-color-success);
+      text-align: center;
+    }
+  }
+}
+
+// =====================================================
+// TARGET INFO
+// =====================================================
+
+.target-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  ion-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .target-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+
+    .target-label {
+      font-size: 0.8rem;
+      color: var(--ion-color-medium);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    strong {
+      font-size: 1rem;
+      color: var(--ion-color-dark);
+      font-weight: 700;
+    }
+  }
+}
+
+// =====================================================
+// LOCATION CARD
+// =====================================================
+
+.location-card {
+  border: 2px solid var(--ion-color-danger-tint);
+
+  .location-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    ion-icon {
+      font-size: 24px;
+    }
+
+    strong {
+      font-size: 1.1rem;
+      color: var(--ion-color-dark);
+      font-weight: 700;
+    }
+  }
+
+  .location-address {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #fef2f2;
+    border-radius: 10px;
+
+    ion-icon {
+      font-size: 20px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .location-btn {
+    font-weight: 700;
+    height: 48px;
+
+    ion-icon {
+      font-size: 22px;
+    }
+  }
+}
+
+// =====================================================
+// TRAINER CARD
+// =====================================================
+
+.trainer-card {
+  border: 2px solid var(--ion-color-secondary-tint);
+
+  .trainer-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+
+    .trainer-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--ion-color-secondary-tint) 0%, var(--ion-color-secondary-shade) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      ion-icon {
+        font-size: 48px;
+        color: white;
+      }
+    }
+
+    .trainer-name {
+      font-size: 1.2rem;
+      color: var(--ion-color-dark);
+      font-weight: 700;
+      text-align: center;
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+
+@media (min-width: 768px) {
+  
+  .course-hero {
+    padding: 60px 40px;
+
+    .hero-content {
+      .sport-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 24px;
+
+        .sport-icon {
+          font-size: 60px;
+        }
+      }
+
+      .course-name {
+        font-size: 2.2rem;
+      }
+
+      .course-sport {
+        font-size: 1.1rem;
+      }
+    }
+
+    .status-badge {
+      top: 24px;
+      right: 24px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .course-description {
+    padding: 20px 40px;
+
+    .description-card ion-card-content {
+      padding: 24px;
+
+      .description-text {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .action-buttons {
+    padding: 0 40px 20px 40px;
+
+    .action-btn {
+      height: 52px;
+      font-size: 1rem;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+
+  .main-content {
+    padding: 0 40px 120px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .info-section {
+    .section-header {
+      margin-bottom: 16px;
+
+      ion-icon {
+        font-size: 30px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+
+    .info-card ion-card-content {
+      padding: 24px;
+    }
+  }
+
+  .time-duration-grid {
+    gap: 16px;
+
+    .time-box {
+      padding: 20px;
+
+      ion-icon {
+        font-size: 32px;
+      }
+
+      .time-info {
+        .time-label {
+          font-size: 0.8rem;
+        }
+
+        .time-value {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  .enrollment-card {
+    .enroll-button {
+      height: 60px;
+      font-size: 1.1rem;
+
+      ion-icon {
+        font-size: 26px;
+      }
+    }
+  }
+
+  .trainer-card {
+    .trainer-info {
+      .trainer-avatar {
+        width: 100px;
+        height: 100px;
+
+        ion-icon {
+          font-size: 56px;
+        }
+      }
+
+      .trainer-name {
+        font-size: 1.3rem;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - DESKTOP
+// =====================================================
+
+@media (min-width: 1024px) {
+  
+  .course-hero {
+    padding: 80px 60px;
+
+    .hero-content {
+      .sport-icon-wrapper {
+        width: 140px;
+        height: 140px;
+
+        .sport-icon {
+          font-size: 70px;
+        }
+      }
+
+      .course-name {
+        font-size: 2.5rem;
+      }
+
+      .course-sport {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .main-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 0 60px 120px 60px;
+
+    .info-section {
+      grid-column: span 1;
+
+      &:first-child {
+        grid-column: span 2;
+      }
+    }
+  }
+
+  .action-buttons {
+    padding: 0 60px 24px 60px;
+  }
+
+  .course-description {
+    padding: 24px 60px;
+  }
+}
+
+// =====================================================
+// ANIMATIONS
+// =====================================================
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-section {
+  animation: fadeInUp 0.5s ease;
+  animation-fill-mode: both;
+
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+  &:nth-child(4) { animation-delay: 0.4s; }
+  &:nth-child(5) { animation-delay: 0.5s; }
+}
+
+// =====================================================
+// ICON SPORT (generale)
+// =====================================================
+
+.sport-icon {
+  font-family: "sports";
+}
+
+// =====================================================
+// LEGACY STYLES (mantenuti per compatibilità)
+// =====================================================
+
+.num-lezioni {
+  font-size: small;
+  font-weight: bolder;
+  color: var(--ion-color-dark);
+  padding-right: 15px;
+  font-style: oblique;
+}
+
+.icon-sport {
+  font-size: 25px;
+}
+
+ion-card.title {
+  --background: var(--ion-color-light);
+  margin-bottom: 0px;
+
+  ion-card-content span {
+    font-style: italic;
+  }
+}
+
+ion-card.special {
+  --background: var(--ion-color-success);
+  margin-bottom: 0px;
+
+  ion-card-content span {
+    font-style: italic;
+  }
+}
+
+.links {
+  ion-button {
+    font-weight: 700;
+  }
+}

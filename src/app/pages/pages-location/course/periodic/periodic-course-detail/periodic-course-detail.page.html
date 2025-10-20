@@ -1,459 +1,343 @@
-<ion-header class="ion-no-border">
+<ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    <ion-title>{{ myCorso.TIPO | tipoCorso }}</ion-title>
+    <ion-title>CORSO</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid id="container-page">
-    <ion-row
-        class="ion-no-margin"
-        >
-      <ion-col sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="10" offsetMd="1"
-                sizeLg="8" offsetLg="2"
-                sizeXl="8" offsetXl="2">
+<ion-content class="course-detail-content">
+  
+  <!-- HERO SECTION CON IMMAGINE/ICONA SPORT -->
+  <div class="course-hero" [class.past]="myCorso.tempoCorso() == tempoCorso.PASSATO">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="sport-icon-wrapper">
+        <!-- <span class="sport-icon" [innerHTML]="myCorso['_ICON_Sport']"></span> -->
+        <span class="sport-icon" [innerHTML]="getSportIcon(myCorso)"></span>
+      </div>
+      <h1 class="course-name">{{myCorso.DENOMINAZIONE}}</h1>
+      <p class="course-sport">{{myCorso['_DENOMINAZIONE_Sport']}}</p>
+    </div>
+    
+    <!-- STATUS BADGE -->
+    <div class="status-badge" 
+         [class.future]="myCorso.tempoCorso() == tempoCorso.FUTURO"
+         [class.in-progress]="myCorso.tempoCorso() == tempoCorso.IN_CORSO"
+         [class.past]="myCorso.tempoCorso() == tempoCorso.PASSATO">
+      <ion-icon [name]="myCorso.tempoCorso() == tempoCorso.FUTURO ? 'time-outline' : 
+                        myCorso.tempoCorso() == tempoCorso.IN_CORSO ? 'play-circle-outline' : 
+                        'checkmark-circle-outline'"></ion-icon>
+      <span>{{myCorso.tempoCorso() == tempoCorso.FUTURO ? 'In Arrivo' : 
+              myCorso.tempoCorso() == tempoCorso.IN_CORSO ? 'In Corso' : 
+              'Concluso'}}</span>
+    </div>
+  </div>
 
-          <ion-card [class]="getClassHeader()">
-            <ion-card-header class="ion-no-padding">
-              <!-- FAB CON LA VOCE PROVA -->
-              <ion-fab *ngIf="showFabProva()" vertical="top" horizontal="end">
-                <ion-fab-button color="danger">Prova</ion-fab-button>
-              </ion-fab>
-
-              <ion-item [color]="getColorHeader()" button="false" lines="none">
-                <i class="icon-sport" slot="start"><span [innerHTML]="getIcon(myCorso)"></span></i>
-
-                <ion-label>
-                  <h1 class="ion-text-wrap">{{ myCorso.DENOMINAZIONE }}</h1>
-                  <h3 class="ion-text-wrap">{{ myCorso['_DENOMINAZIONE_Sport'] }}</h3>
-                </ion-label>
-              </ion-item>
-            </ion-card-header>
-
-            <ion-card-content class="ion-padding-horizontal" style="display: flex" *ngIf="myCorso?.existProgrammaCorso()">
-              <ion-label class="ion-text-wrap">
-                <span [innerHTML]="myCorso.getFullProgrammaHTML() | safeHtml"></span>
-              </ion-label>
-            </ion-card-content>
-          </ion-card>
-
-          <ion-grid class="links">
-            <ion-row>
-              <!-- CALENDARIO -->
-              <ion-col 
-                  size="6">
-                <ion-button 
-                      class="vertical"
-                      expand="block" 
-                      fill="solid" 
-                      color="warning" 
-                      (click)="onClickCardCalendar()">
-                  
-                    <ion-icon 
-                          name="calendar-outline" 
-                          slot="start"></ion-icon>
-                      Calendario
-                </ion-button>
-              </ion-col>
-              <!-- ALLEGATI -->
-              <ion-col size="6">
-                <ion-button
-                      (click)="onClickAllegati()" 
-                      expand="block" 
-                      fill="solid" 
-                      color="success">
-
-                  <ion-icon slot="start" name="document-attach-outline"></ion-icon>
-                  Allegati
-                </ion-button>
-              </ion-col>
-            </ion-row>
-
-          </ion-grid>
-
-          <!-- GRID CONTENT -->
-          <ion-grid>
-            <ion-row>
-              <!-- COLONNA SINISTRA-->
-              <ion-col 
-                  sizeXs="12" 
-                  sizeSm="12" 
-                  sizeMd="6" 
-                  sizeLg="6" 
-                  sizeXl="6">
-                      <ion-list class="ion-no-padding">
-                        <!-- GIORNATE -->
-                        <ion-item-group class="ion-padding-bottom">
-                          <ion-item-divider [color]="groupColor">
-                            <ion-label>
-                              <h2>Quando</h2>
-                            </ion-label>
-
-                            <ion-label slot="end" *ngIf="myCorso.NUMEROLEZIONI">
-                              <p class="num-lezioni">
-                                {{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ?'Incontri':'Incontro '}}
-                              </p>
-                            </ion-label>
-                          </ion-item-divider>
-
-                          <ion-grid class="ion-padding-horizontal">
-                            <!-- CORSO -->
-                            <ion-row *ngIf="myCorso.TIPO == tipoCorso.corso" >
-
-                              <!-- FUTURO -->
-                              <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.FUTURO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  Il corso sar&agrave; effettuato da <ion-text class="ion-text-bold">{{myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy'|titlecase}}</ion-text> fino a
-                                  <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
-                                </h6>
-                              </ion-col>
-
-                              <!-- IN CORSO -->
-                              <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.IN_CORSO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  Il corso &egrave; in esecuzione e si concluder&agrave; <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
-                                </h6>
-                              </ion-col>
-
-                              <!-- CONCLUSO -->
-                              <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.PASSATO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  Il corso si &egrave; concluso  <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
-                                </h6>
-                              </ion-col>                              
-                            </ion-row>
-
-                            <!-- PROVA -->
-                            <ion-row *ngIf="myCorso.TIPO == tipoCorso.prova" >
-
-                              <!-- FUTURO -->
-                              <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.FUTURO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  La prova sar&agrave; effettuata da <ion-text class="ion-text-bold">{{myCorso.DATAINIZIO|date:'EEEE dd/MM/yyyy'|titlecase}}</ion-text> fino a
-                                  <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' | titlecase}}</ion-text>
-                                </h6>
-                              </ion-col>
-
-                              <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.IN_CORSO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  La prova &egrave; in esecuzione e si concluder&agrave; <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
-                                </h6>
-                              </ion-col>
-                              
-                              <ion-col *ngIf="myCorso.tempoCorso()==tempoCorso.PASSATO">
-                                <h6 class="ion-text-wrap ion-text-secondary">
-                                  La prova si &egrave; conclusa <ion-text class="ion-text-bold">{{myCorso.DATAFINE|date:'EEEE dd/MM/yyyy' |titlecase}}</ion-text>
-                                </h6>
-                              </ion-col> 
-                            </ion-row>
-
-                            <!-- ORA E DURATA -->
-                            <ion-row>
-                              <ion-col size="6" size-sm="6">
-                                <ion-button color="primary" expand="block" fill="clear">
-                                  <ion-icon name="time" slot="start"></ion-icon>
-                                  {{myCorso.ORAINIZIO | date:'HH:mm'}}
-                                </ion-button>
-                              </ion-col>
-
-                              <ion-col size="6" size-sm="6">
-                                <ion-button color="primary" expand="block" fill="clear">
-                                  <ion-icon name="infinite" slot="start"></ion-icon>
-                                  {{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ?'Ore':'Ora'}}
-                                </ion-button>
-                              </ion-col>
-                            </ion-row>
-
-                            <!-- NUMERO GIORNI SETTIMANALI -->
-                            <ion-row 
-                                *ngIf="_labelNumeroGiorni && _labelNumeroGiorni.length != 0">
-                              <ion-col>
-                                <p class="ion-no-margin ion-text-primary" [innerHTML]="_labelNumeroGiorni | safeHtml"></p>
-                              </ion-col>
-                            </ion-row>
-                          </ion-grid>
-
-                          <!-- GIORNATA SETTIMANA -->
-                          <app-settimana-block [listDays]="myCorso._SETTIMANA">
-                          </app-settimana-block>
-                        </ion-item-group>
-                      </ion-list>
-              </ion-col>
-              <!-- COLONNA DESTRA -->
-              <ion-col 
-                  sizeXs="12" 
-                  sizeSm="12" 
-                  sizeMd="6" 
-                  sizeLg="6" 
-                  sizeXl="6">
-
-                  <ion-list class="ion-no-padding">
-                    
-
-                    <!-- INFO ISCRIZIONI SE NON SONO ISCRITTO -->
-                    <ion-item-group
-                          *ngIf="!activeIscrizione"
-                          class="ion-padding-bottom"
-                        >
-                      <ion-item-divider [color]="groupColor">
-                        <ion-label>
-                          <h2>Iscrizioni</h2>
-                        </ion-label>
-                      </ion-item-divider>
-
-                      <!-- GESTIONE IMPORTI -->
-                      <ion-item 
-                              *ngIf="myCorso.isAPagamento()"
-                              lines="none">
-                        <ion-label>Quota Iscrizione</ion-label>                        
-                        <ion-badge
-                            color="success"
-                            slot="end">
-                            {{myCorso.PREZZOLORDO | currency:"EUR"}}
-                        </ion-badge>
-                      </ion-item>
-
-                      <!-- GESTIONE IMPORTI -->
-                      <ion-item 
-                              color="light"
-                              *ngIf="!myCorso.isAPagamento()"
-                              lines="none">
-                        <ion-label>Quota Iscrizione</ion-label>                              
-                        <ion-badge 
-                            color="success"
-                            slot="end">
-                            GRATUITA
-                          </ion-badge>
-                      </ion-item>                         
-
-                      <!-- LE ISCRIZIONI SARANNO DISPONIBILI NEL FUTURO -->
-                      <ion-item *ngIf="myCorso?.tempoIscrizioni() == tempoCorso.FUTURO"
-                                lines="none">
-                        <ion-icon 
-                            [color]="iconColor" 
-                            slot="start" 
-                            name="timer-outline">
-                        </ion-icon>
-                        <!-- LABEL QUANDO CI SONO ENTRAMBI LE DATE -->
-                        <ion-label 
-                              *ngIf="myCorso.ISCRIZIONEDAL && myCorso.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Sar&agrave; possibile effettuare l'iscrizione Online da <ion-text class="ion-text-bold ion-text-danger">{{myCorso.ISCRIZIONEDAL | date: "EEEE dd/MM/yyyy"}}</ion-text> a <ion-text class="ion-text-bold">{{myCorso.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                          <p>Contatta la struttura in caso di particolari richieste o eventuali problematiche di iscrizione.</p>
-                        </ion-label>
-
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI INIZIO -->
-                        <ion-label 
-                              *ngIf="myCorso.ISCRIZIONEDAL && !myCorso.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Sar&agrave; possibile effettuare l'iscrizione Online da <ion-text class="ion-text-bold ion-text-danger">{{myCorso.ISCRIZIONEDAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                          <p>Contatta la struttura in caso di particolari richieste o eventuali problematiche di iscrizione.</p>
-                        </ion-label>               
-
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI FINE -->
-                        <ion-label 
-                              *ngIf="!myCorso.ISCRIZIONEDAL && myCorso.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                              <h3>&Egrave; possibile effettuare l'iscrizione Online fino a <ion-text class="ion-text-bold ion-text-danger">{{myCorso.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                              <p>Contatta la struttura in caso di particolari richieste o eventuali problematiche di iscrizione.</p>
-                        </ion-label>                                       
-                      </ion-item>
-
-                      <!-- LE ISCRIZIONI SONO IN CORSO -->
-                      <ion-item *ngIf="myCorso?.tempoIscrizioni() == tempoCorso.IN_CORSO" 
-                                lines="none">
-                        <ion-icon 
-                            [color]="iconColor" 
-                            slot="start" 
-                            name="timer-outline">
-                        </ion-icon>
-                        <!-- LABEL QUANDO CI SONO ENTRAMBI LE DATE -->
-                        <ion-label 
-                              *ngIf="myCorso.ISCRIZIONEDAL && myCorso.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Che fortuna, le iscrizioni sono aperte fino a <ion-text class="ion-text-bold ion-text-danger">{{myCorso.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text></h3>
-                          <p><ion-text class="ion-text-bold ion-text-primary">Procedi subito</ion-text> con l'iscrizione ed in caso di problematiche o particolari richieste contatta la struttura</p>
-                        </ion-label>
-
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI INIZIO -->
-                        <ion-label 
-                              *ngIf="myCorso.ISCRIZIONEDAL && !myCorso.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                          <h3>Che fortuna, &egrave; ancora possibile iscriversi al corso.</h3>
-                          <p><ion-text class="ion-text-bold ion-text-primary">Procedi subito</ion-text> con l'iscrizione ed in caso di problematiche o particolari richieste contatta la struttura</p>
-                        </ion-label>               
-
-                        <!-- LABEL QUANDO E' PRESENTE SOLO LA DATA DI FINE -->
-                        <ion-label 
-                              *ngIf="!myCorso.ISCRIZIONEDAL && myCorso.ISCRIZIONEAL"
-                              class="ion-text-wrap">
-                              <h3>Che fortuna, le iscrizione al corso sono ancora aperte e termineranno <ion-text class="ion-text-bold ion-text-danger">{{myCorso.ISCRIZIONEAL | date: "EEEE dd/MM/yyyy"}}</ion-text>.</h3>
-                              <p><ion-text class="ion-text-bold ion-text-primary">Procedi subito</ion-text> con l'iscrizione ed in caso di problematiche o particolari richieste contatta la struttura</p>                              
-                        </ion-label>                                      
-                      </ion-item>
-
-                      <!-- LE ISCRIZIONI SONO TERMINATE -->
-                      <ion-item *ngIf="myCorso?.tempoIscrizioni() == tempoCorso.PASSATO"
-                                lines="none">
-                        <ion-icon 
-                            [color]="iconColor" 
-                            slot="start" 
-                            name="timer-outline">
-                        </ion-icon>
-                        <!-- MESSAGGIO UNICO -->
-                        <ion-label 
-                              class="ion-text-wrap">
-                          <h3>Purtroppo le iscrizioni al corso sono chiuse</h3>
-                          <p><ion-text class="ion-text-bold ion-text-danger">Contatta la struttura</ion-text> per verificare la disponibilit&agrave; e l'inserimento in corsi equivalenti </p>
-                        </ion-label>                                       
-                      </ion-item>
-
-                   
-                      <!-- BUTTON PER L'ISCRIZIONE -->
-                      <ion-button
-                          *ngIf="showIscrizioniButton()"
-                          (click)="onClickIscrivitiAdesso()" 
-                          color="success"
-                          expand="full"
-                          slot="end">
-                          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
-                          ISCRIVITI ADESSO
-                      </ion-button>                        
-                    </ion-item-group>
-
-                    <!-- ISCRIZIONE PRESENTE -->
-                    <ion-item-group
-                          *ngIf="activeIscrizione"
-                          class="ion-padding-bottom"
-                        >
-                      <ion-item-divider [color]="groupColor">
-                        <ion-label>
-                          <h2>Iscrizione</h2>
-                        </ion-label>
-                      </ion-item-divider>
-
-                      <ion-list lines="none">
-                      <!-- SEGNALA CHE PER QUESTO CORSO SI E' GIA ISCRITTI -->
-                      <ion-item>
-                          <ion-label class="ion-text-wrap">
-                              <h5>
-                              Risulti iscritto a {{myCorso.TIPO == tipoCorso.corso ? 'questo corso':'questa prova'}} da {{activeIscrizione.DATAISCRIZIONE | date: 'EEEE dd/MM/yyyy'}}
-                            </h5>
-                          </ion-label>
-                          <ion-button
-                              color="success"
-                              slot="end"
-                              size="small"
-                              expand="block"
-                              >
-                            ISCRITTO
-                          </ion-button>
-                      </ion-item>
-
-                      <!-- QUOTA ISCRIZIONE -->
-                      <ion-item
-                          >
-                        <ion-label 
-                            class="ion-text-wrap">
-                          <h5 class="ion-text-bold">Quota Iscrizione</h5>
-                        </ion-label>
-                        <ion-badge
-                            *ngIf="myCorso.isAPagamento()"
-                            color="success"
-                            slot="end">
-                            {{activeIscrizione.TOTALE | currency:"EUR"}}
-                        </ion-badge>         
-                        <ion-badge
-                            *ngIf="myCorso.isAPagamento()==false" 
-                            color="success"
-                            slot="end">
-                            GRATUITA
-                          </ion-badge>                                       
-                      </ion-item>
-
-                      <ion-button
-                            (click)="onClickVisualizzaIscrizione()"
-                            size="small"
-                            expand="block"
-                            color="success"
-                            >
-                        VISUALIZZA ISCRIZIONE
-                        <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
-                      </ion-button>
-
-                      </ion-list>
-                    </ion-item-group>                    
+  <!-- BOTTONI AZIONE PRINCIPALI -->
+  <div class="action-buttons">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="6">
+          <ion-button 
+              expand="block" 
+              fill="solid"
+              color="warning"
+              class="action-btn"
+              (click)="onClickCalendario()">
+            <ion-icon slot="start" name="calendar-outline"></ion-icon>
+            Calendario
+          </ion-button>
+        </ion-col>
         
-                    <!-- ADATTO A -->
-                    <ion-item-group class="ion-padding-bottom">
-                      <ion-item-divider [color]="groupColor">
-                        <ion-label>
-                          <h2>Rivolto a</h2>
-                        </ion-label>
-                      </ion-item-divider>
-        
-                      <ion-item>
-                        <ion-icon name="stats-chart-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{myCorso['_DENOMINAZIONE_Livello']?myCorso['_DENOMINAZIONE_Livello']:'Tutti i Livelli'}}</ion-label>
-                      </ion-item>
-        
-                      <ion-item>
-                        <ion-icon name="bookmark-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{myCorso['_DESCTOOLTIP_CategoriaEta']?myCorso['_DESCTOOLTIP_CategoriaEta']:'Per tutte le età'}}</ion-label>
-                      </ion-item>
-        
-                      <ion-item lines="none" *ngIf="myCorso.TARGETSESSO">
-                        <ion-icon name="transgender-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{myCorso.TARGETSESSO | targetSesso}}</ion-label>
-                      </ion-item>
-                    </ion-item-group>
-        
-                    <!-- LOCATION -->
-                    <ion-item-group class="ion-padding-bottom">
-                      <ion-item-divider [color]="groupColor">
-                        <ion-label>
-                          <h2>Dove</h2>
-                        </ion-label>
-                      </ion-item-divider>
+        <ion-col size="6" *ngIf="myCorso.CORSOPROGRAMMA && myCorso.existProgrammaCorso()">
+          <ion-button 
+              expand="block" 
+              fill="solid"
+              color="success"
+              class="action-btn"
+              (click)="onClickAllegati()">
+            <ion-icon slot="start" name="document-attach-outline"></ion-icon>
+            Allegati
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 
-                      <!-- LOCATION NAME -->
-                      <ion-item>
-                        <ion-icon name="locate-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{myLocation?.DENOMINAZIONE | titlecase}}</ion-label>
-                      </ion-item>
-        
-                      <!-- COMUNE -->
-                      <ion-item *ngIf="myLocation?.COMUNE">
-                        <ion-icon name="home-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{myLocation?.COMUNE | titlecase}}</ion-label>
-                      </ion-item>
-        
-                      <!-- INDIRIZZO -->
-                      <ion-item *ngIf="myLocation?.INDIRIZZO">
-                        <ion-icon name="navigate-outline" slot="start" [color]="iconColor">
-                        </ion-icon>
-        
-                        <ion-label> {{myLocation?.INDIRIZZO}} </ion-label>
-                      </ion-item>
-        
-                      <ion-item *ngIf="myLocation?.TELEFONO">
-                        <ion-icon name="call-outline" slot="start" [color]="iconColor"></ion-icon>
-                        <ion-label>{{myLocation?.TELEFONO}}</ion-label>
-                      </ion-item>
-                    </ion-item-group>
-                  </ion-list>
+  <!-- CONTENUTO PRINCIPALE -->
+  <div class="main-content">
+    
+    <!-- SEZIONE "QUANDO" -->
+    <section class="info-section">
+      <div class="section-header">
+        <ion-icon name="calendar-outline" color="primary"></ion-icon>
+        <h2>Quando</h2>
+        <ion-badge *ngIf="myCorso.NUMEROLEZIONI" color="primary" class="lessons-badge">
+          {{myCorso.NUMEROLEZIONI}} {{myCorso.NUMEROLEZIONI > 1 ? 'Incontri' : 'Incontro'}}
+        </ion-badge>
+      </div>
 
-              </ion-col>              
-            </ion-row>
-          </ion-grid>
+      <ion-card class="info-card">
+        <ion-card-content>
+          
+          <!-- DATA INIZIO/FINE -->
+          <div class="date-info-block">
+            <!-- CORSO - FUTURO -->
+            <p *ngIf="myCorso.TIPO == tipoCorso.corso && myCorso.tempoCorso() == tempoCorso.FUTURO" 
+               class="date-text">
+              Il corso sarà effettuato da 
+              <strong>{{myCorso.DATAINIZIO | date:'EEEE dd/MM/yyyy' | titlecase}}</strong> 
+              fino a 
+              <strong>{{myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</strong>
+            </p>
 
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+            <!-- CORSO - IN CORSO -->
+            <p *ngIf="myCorso.TIPO == tipoCorso.corso && myCorso.tempoCorso() == tempoCorso.IN_CORSO" 
+               class="date-text">
+              Il corso è in esecuzione e si concluderà 
+              <strong>{{myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</strong>
+            </p>
+
+            <!-- CORSO - CONCLUSO -->
+            <p *ngIf="myCorso.TIPO == tipoCorso.corso && myCorso.tempoCorso() == tempoCorso.PASSATO" 
+               class="date-text">
+              Il corso si è concluso 
+              <strong>{{myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</strong>
+            </p>
+
+            <!-- PROVA - FUTURO -->
+            <p *ngIf="myCorso.TIPO == tipoCorso.prova && myCorso.tempoCorso() == tempoCorso.FUTURO" 
+               class="date-text">
+              La prova sarà effettuata da 
+              <strong>{{myCorso.DATAINIZIO | date:'EEEE dd/MM/yyyy' | titlecase}}</strong> 
+              fino a 
+              <strong>{{myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</strong>
+            </p>
+
+            <!-- PROVA - IN CORSO -->
+            <p *ngIf="myCorso.TIPO == tipoCorso.prova && myCorso.tempoCorso() == tempoCorso.IN_CORSO" 
+               class="date-text">
+              La prova è in esecuzione e si concluderà 
+              <strong>{{myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</strong>
+            </p>
+
+            <!-- PROVA - CONCLUSO -->
+            <p *ngIf="myCorso.TIPO == tipoCorso.prova && myCorso.tempoCorso() == tempoCorso.PASSATO" 
+               class="date-text">
+              La prova si è conclusa 
+              <strong>{{myCorso.DATAFINE | date:'EEEE dd/MM/yyyy' | titlecase}}</strong>
+            </p>
+          </div>
+
+          <!-- ORA E DURATA -->
+          <div class="time-duration-grid">
+            <div class="time-box">
+              <ion-icon name="time-outline" color="primary"></ion-icon>
+              <div class="time-info">
+                <span class="time-label">Orario</span>
+                <strong class="time-value">{{myCorso.ORAINIZIO | date:'HH:mm'}}</strong>
+              </div>
+            </div>
+
+            <div class="time-box">
+              <ion-icon name="hourglass-outline" color="primary"></ion-icon>
+              <div class="time-info">
+                <span class="time-label">Durata</span>
+                <strong class="time-value">{{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ? 'Ore' : 'Ora'}}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- FREQUENZA -->
+          <div class="frequency-info" *ngIf="_labelNumeroGiorni && _labelNumeroGiorni.length != 0">
+            <p class="frequency-text" [innerHTML]="_labelNumeroGiorni | safeHtml"></p>
+          </div>
+
+          <!-- GIORNI SETTIMANA -->
+          <app-settimana-block [listDays]="myCorso._SETTIMANA"></app-settimana-block>
+          
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <!-- SEZIONE ISCRIZIONI (se utente NON è già iscritto) -->
+    <section class="info-section" *ngIf="!activeIscrizione">
+      <div class="section-header">
+        <ion-icon name="newspaper-outline" color="success"></ion-icon>
+        <h2>Iscrizioni</h2>
+      </div>
+
+      <ion-card class="info-card enrollment-card">
+        <ion-card-content>
+          
+          <!-- QUOTA ISCRIZIONE -->
+          <div class="enrollment-price" *ngIf="myCorso.isAPagamento()">
+            <span class="price-label">Quota Iscrizione</span>
+            <ion-badge color="success" class="price-badge">
+              {{myCorso.PREZZOLORDO | currency:'EUR':'symbol':'1.2-2':'it'}}
+            </ion-badge>
+          </div>
+
+          <div class="enrollment-price" *ngIf="!myCorso.isAPagamento()">
+            <ion-badge color="success" class="price-badge-free">GRATUITA</ion-badge>
+          </div>
+
+          <!-- STATO ISCRIZIONI -->
+          <div class="enrollment-status">
+            <ion-icon [name]="!myCorso.flagIscrizioniAperte() ? 'close-circle-outline' : 'information-circle-outline'" 
+                      [color]="!myCorso.flagIscrizioniAperte() ? 'danger' : 'medium'"></ion-icon>
+            <p *ngIf="!myCorso.flagIscrizioniAperte()">
+              Purtroppo le iscrizioni al corso sono chiuse
+            </p>
+            <p *ngIf="myCorso.flagIscrizioniAperte()">
+              <strong>Contatta la struttura</strong> per verificare la disponibilità e l'inserimento in corsi equivalenti
+            </p>
+          </div>
+
+          <!-- BOTTONE ISCRIZIONE -->
+          <ion-button 
+              *ngIf="userLogged && areaEnableIscrizioni && myCorso.flagIscrizioniAperte()"
+              expand="block"
+              color="success"
+              size="large"
+              class="enroll-button"
+              (click)="onClickIscrizione()">
+            <ion-icon slot="start" name="person-add-outline"></ion-icon>
+            ISCRIVITI ORA
+            <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+          </ion-button>
+
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <!-- SEZIONE ISCRIZIONE ATTIVA (se utente è già iscritto) -->
+    <section class="info-section" *ngIf="activeIscrizione">
+      <div class="section-header">
+        <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+        <h2>La Tua Iscrizione</h2>
+      </div>
+
+      <ion-card class="info-card active-enrollment-card">
+        <ion-card-content>
+          <div class="active-enrollment-message">
+            <ion-icon name="ribbon-outline" color="success"></ion-icon>
+            <p>Sei già iscritto a questo corso!</p>
+          </div>
+
+          <ion-button 
+              expand="block"
+              fill="outline"
+              color="primary"
+              (click)="onClickVisualizzaIscrizione()">
+            VISUALIZZA ISCRIZIONE
+            <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <!-- SEZIONE "RIVOLTO A" -->
+    <section class="info-section">
+      <div class="section-header">
+        <ion-icon name="people-outline" color="tertiary"></ion-icon>
+        <h2>Rivolto a</h2>
+      </div>
+
+      <ion-card class="info-card">
+        <ion-card-content>
+          
+          <div class="target-item">
+            <ion-icon name="stats-chart-outline" color="primary"></ion-icon>
+            <div class="target-info">
+              <span class="target-label">Livello</span>
+              <strong>{{myCorso['_DENOMINAZIONE_Livello'] ? myCorso['_DENOMINAZIONE_Livello'] : 'Tutti i Livelli'}}</strong>
+            </div>
+          </div>
+
+          <div class="target-item">
+            <ion-icon name="bookmark-outline" color="primary"></ion-icon>
+            <div class="target-info">
+              <span class="target-label">Età</span>
+              <strong>{{myCorso['_DESCTOOLTIP_CategoriaEta'] ? myCorso['_DESCTOOLTIP_CategoriaEta'] : 'Per tutte le età'}}</strong>
+            </div>
+          </div>
+
+          <div class="target-item" *ngIf="myCorso.TARGETSESSO">
+            <ion-icon name="male-female-outline" color="primary"></ion-icon>
+            <div class="target-info">
+              <span class="target-label">Genere</span>
+              <strong>{{myCorso.TARGETSESSO | targetSesso}}</strong>
+            </div>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <!-- SEZIONE LOCATION -->
+    <section class="info-section">
+      <div class="section-header">
+        <ion-icon name="location-outline" color="danger"></ion-icon>
+        <h2>Dove</h2>
+      </div>
+
+      <ion-card class="info-card location-card">
+        <ion-card-content>
+          
+          <div class="location-name">
+            <ion-icon name="business-outline" color="primary"></ion-icon>
+            <strong>{{myLocation.DENOMINAZIONE}}</strong>
+          </div>
+
+          <div class="location-address" *ngIf="myLocation.INDIRIZZO || myLocation.COMUNE">
+            <ion-icon name="map-outline" color="medium"></ion-icon>
+            <p>
+              <span *ngIf="myLocation.INDIRIZZO">{{myLocation.INDIRIZZO}}</span>
+              <span *ngIf="myLocation.INDIRIZZO && myLocation.COMUNE">, </span>
+              <span *ngIf="myLocation.CAP">{{myLocation.CAP}} </span>
+              <span *ngIf="myLocation.COMUNE">{{myLocation.COMUNE}}</span>
+            </p>
+          </div>
+
+          <ion-button 
+              *ngIf="myLocation.INDIRIZZO || myLocation.COMUNE"
+              expand="block"
+              fill="outline"
+              color="primary"
+              class="location-btn"
+              (click)="onClickLocation()">
+            <ion-icon slot="start" name="navigate-outline"></ion-icon>
+            VISUALIZZA SULLA MAPPA
+          </ion-button>
+
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <!-- SEZIONE TRAINER (se presente) -->
+    <section class="info-section" *ngIf="myCorso['_DENOMINAZIONE_Trainer']">
+      <div class="section-header">
+        <ion-icon name="person-outline" color="secondary"></ion-icon>
+        <h2>Trainer</h2>
+      </div>
+
+      <ion-card class="info-card trainer-card">
+        <ion-card-content>
+          <div class="trainer-info">
+            <div class="trainer-avatar">
+              <ion-icon name="person-circle-outline"></ion-icon>
+            </div>
+            <strong class="trainer-name">{{myCorso['_DENOMINAZIONE_Trainer']}}</strong>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+  </div>
 
 </ion-content>

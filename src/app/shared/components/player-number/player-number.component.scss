@@ -1,50 +1,336 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+// =====================================================
+// PLAYER NUMBER COMPONENT - MODERN DESIGN (NO GRADIENTS)
+// =====================================================
 
-ion-card {
-    background-color: white;
+.player-number-card {
+  background: white;
+  border-radius: 16px;
+  margin: 12px 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-wrap: wrap; // AGGIUNTO: permette di andare a capo
+  align-items: center;
+  gap: 16px;
+  animation: fadeIn 0.5s ease-out 0.15s backwards;
 }
 
-.left-border {
-    border-left-style: solid;
-    border-width: thin;
-    border-color: #eff1f8;
-    
+// =====================================================
+// SEZIONE INDICATORE GIOCATORI
+// =====================================================
+.player-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 80px;
+  padding-right: 16px;
+  border-right: 2px solid var(--ion-color-light);
+
+  .player-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: var(--ion-color-secondary);
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(41, 116, 217, 0.3);
+
+    ion-icon {
+      font-size: 32px;
+      color: white;
+    }
+  }
+
+  .player-count {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+
+    .count-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ion-color-secondary);
+      line-height: 1;
+    }
+
+    .count-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ion-color-mediumlight);
+      text-align: center;
+      line-height: 1.2;
+    }
+  }
 }
 
-.orario-black {
-    font-family: Roboto;
-    font-size: medium;
-    color: black;
-}
+// =====================================================
+// SEZIONE SELETTORE GIOCATORI
+// =====================================================
+.player-selector {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 200px; // AGGIUNTO: larghezza minima
 
-.orario-light {
-    font-family: Roboto;
-    font-size: medium;
-    color: #9da2b3;
-}
-.player-buttons{
-    height:50px;
+  .player-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+  }
+
+  .player-button {
     width: 50px;
-    margin-right: 5px;
-    margin-left: 5px;
-}
-.add-buttons
-{
     height: 50px;
-    width: 50px;
-}
-.add-icons{
-    min-width: 30px;
-}
-.player-icons
-{
-    min-width:20px;
+    border-radius: 50%;
+    border: 2px solid var(--ion-color-light);
+    background: var(--ion-color-extralight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-mediumlight);
+      transition: all 0.3s ease;
+    }
+
+    &.active {
+      background: var(--ion-color-secondary);
+      border-color: var(--ion-color-secondary);
+      box-shadow: 0 4px 12px rgba(41, 116, 217, 0.3);
+
+      ion-icon {
+        color: white;
+        transform: scale(1.1);
+      }
+    }
+
+    &:hover:not(.active) {
+      border-color: var(--ion-color-secondary);
+      background: var(--ion-color-light);
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
 }
 
-.player-indicator-icon
-{
-    height: 50px;
-    width: 50px;
+// =====================================================
+// SEZIONE BOTTONE AGGIUNGI
+// =====================================================
+.add-player-section {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+
+  .add-button {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--ion-color-light);
+    background: var(--ion-color-extralight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 28px;
+      color: var(--ion-color-mediumlight);
+      transition: all 0.3s ease;
+    }
+
+    &.active {
+      background: var(--ion-color-secondary);
+      border-color: var(--ion-color-secondary);
+      box-shadow: 0 4px 12px rgba(41, 116, 217, 0.3);
+
+      ion-icon {
+        color: white;
+        transform: rotate(90deg) scale(1.1);
+      }
+    }
+
+    &:hover:not(.active) {
+      border-color: var(--ion-color-secondary);
+      background: var(--ion-color-light);
+      transform: scale(1.08);
+
+      ion-icon {
+        transform: rotate(90deg);
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
 }
 
+// =====================================================
+// MESSAGGIO INFORMATIVO
+// =====================================================
+.info-message {
+  flex-basis: 100%; // CRITICO: occupa tutta la larghezza e va a capo
+  width: 100%; // AGGIUNTO
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  margin-top: 4px;
+  background: rgba(41, 116, 217, 0.05);
+  border-left: 3px solid var(--ion-color-secondary);
+  border-radius: 8px;
 
+  ion-icon {
+    font-size: 18px;
+    color: var(--ion-color-secondary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  span {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--ion-color-mediumlight);
+    font-weight: 500;
+    flex: 1; // AGGIUNTO: permette al testo di espandersi
+  }
+}
+
+// =====================================================
+// ANIMAZIONI
+// =====================================================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+@media (max-width: 576px) {
+  .player-number-card {
+    padding: 16px;
+    margin: 10px 12px;
+    gap: 12px;
+  }
+
+  .player-indicator {
+    min-width: 70px;
+    padding-right: 12px;
+
+    .player-icon-wrapper {
+      width: 50px;
+      height: 50px;
+
+      ion-icon {
+        font-size: 28px;
+      }
+    }
+
+    .player-count {
+      .count-number {
+        font-size: 1.3rem;
+      }
+
+      .count-label {
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .player-selector {
+    min-width: 150px;
+
+    .player-buttons-grid {
+      gap: 8px;
+    }
+
+    .player-button {
+      width: 44px;
+      height: 44px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .add-player-section {
+    .add-button {
+      width: 46px;
+      height: 46px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+
+  .info-message {
+    padding: 10px;
+
+    span {
+      font-size: 0.75rem;
+    }
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .player-number-card {
+    padding: 24px;
+  }
+
+  .player-indicator {
+    .player-icon-wrapper {
+      width: 60px;
+      height: 60px;
+
+      ion-icon {
+        font-size: 36px;
+      }
+    }
+  }
+
+  .player-selector {
+    .player-button {
+      width: 54px;
+      height: 54px;
+
+      ion-icon {
+        font-size: 26px;
+      }
+    }
+  }
+
+  .add-player-section {
+    .add-button {
+      width: 56px;
+      height: 56px;
+
+      ion-icon {
+        font-size: 30px;
+      }
+    }
+  }
+}

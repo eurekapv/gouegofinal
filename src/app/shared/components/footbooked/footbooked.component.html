@@ -1,22 +1,20 @@
-
-  <ion-list color="tertiary">
-    <ion-item lines="none" detail="false">
-      <ion-icon slot="start" name="calendar" color="tertiary"></ion-icon>
-      <ion-label>
-        <h2>
-          {{ myPrenotaPianifica?.DATAORAINIZIO | date: "EEE dd/MM/yyyy" | titlecase }}
-        </h2>
-        <p>
-          dalle {{ myPrenotaPianifica?.DATAORAINIZIO | date : "HH:mm" }} alle {{ myPrenotaPianifica?.DATAORAFINE | date : "HH:mm" }}
-        </p>
-      </ion-label>
-      <ion-button 
-        slot="end" 
-        color="tertiary" 
-        expand="block"
-        size="default"
-        (click)="onClickPrenota()"
-        >Prenota</ion-button>
-    </ion-item>
-  </ion-list>
-
+<ion-list color="white">
+  <ion-item lines="none" detail="false">
+    <ion-icon slot="start" name="calendar-outline"></ion-icon>
+    <ion-label>
+      <h2>
+        {{ myPrenotaPianifica?.DATAORAINIZIO | date: "EEE dd/MM/yyyy" | titlecase }}
+      </h2>
+      <p>
+        {{ myPrenotaPianifica?.DATAORAINIZIO | date : "HH:mm" }} - {{ myPrenotaPianifica?.DATAORAFINE | date : "HH:mm" }}
+      </p>
+    </ion-label>
+    <ion-button 
+      slot="end" 
+      expand="block"
+      size="default"
+      (click)="onClickPrenota()">
+      Prenota
+    </ion-button>
+  </ion-item>
+</ion-list>

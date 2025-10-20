@@ -5,9 +5,8 @@
         <ion-icon name="calendar"></ion-icon>
       </ion-button>
     </ion-buttons>
-
     
-    <ion-title>{{myCorso.DENOMINAZIONE|titlecase}}</ion-title>
+    <ion-title>{{myCorso.DENOMINAZIONE | titlecase}}</ion-title>
     
     <ion-buttons slot="end">
       <ion-button (click)="closeCalendar()">
@@ -17,64 +16,105 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="calendar-content">
 
-  <!-- RICEVUTI E PRESENTI -->
-  <ion-list class="ion-no-padding" *ngIf="calendarCorso.length !== 0" id="cal-find">
-    <ion-item *ngFor="let giornata of calendarCorso" class="ion-no-padding ion-no-margin" color="light">
-
-      <ion-col size="4" class="colGiorno">
-        <div class="contentGiorno ion-no-padding">
-          <h5>
-            {{giornata.DATA | date:'EEEE'|titlecase}}
-          </h5>
-          <h4>
-            {{giornata.DATA | date:'d'}}
-            {{giornata.DATA | date:'MMM' | uppercase}} 
-            '{{giornata.DATA | date:'yy'}}
-          </h4>      
-          <h6>
-            {{giornata['_DENOMINAZIONE_Campo']}}
-          </h6>    
-        </div>
-      </ion-col>
-
-      <ion-col size="8" class="colOrario">
-        <ion-card mode="ios" class="ion-no-margin ion-no-padding">
-          <ion-card-content class="ion-no-margin ion-no-padding" >
-            <ion-list class="ion-no-margin">
-              <ion-item lines="none" [color]="colorItem(giornata)">
-                <ion-icon name="play" slot="start"></ion-icon>
-                <ion-label> {{giornata.DATAORAINIZIO | date:'HH:mm'}}</ion-label>
-                
-              </ion-item>
-
-              <ion-item lines="none"  >
-                <ion-icon name="pause" slot="start"></ion-icon>
-                <ion-label> {{giornata.DATAORAFINE | date:'HH:mm'}}</ion-label>
-                <ion-badge [color]="colorItem(giornata)" slot="end">{{ giornata.ORELEZIONE }} h</ion-badge>
-              </ion-item>
-
-            </ion-list>
-
-
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-      
-    </ion-item>
-  </ion-list>
-
-
-  <div 
-    *ngIf="ricevuti && calendarCorso.length === 0" 
-    class="nofind-cnt" >
-
-    <ion-label>Programmazione</ion-label>
-    <ion-label>non disponibile</ion-label>
+  <!-- CALENDARIO CON DATE -->
+  <div *ngIf="calendarCorso.length !== 0" class="diary-container">
     
+    <ng-container *ngFor="let giornata of calendarCorso; let i = index">
+      
+      <!-- SEPARATORE MESE (quando cambia il mese) -->
+      <div *ngIf="shouldShowMonthSeparator(i)" class="month-separator">
+        <div class="month-line"></div>
+        <div class="month-badge">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>{{giornata.DATA | date:'MMMM yyyy' | uppercase}}</span>
+        </div>
+        <div class="month-line"></div>
+      </div>
+
+      <!-- CARD GIORNATA -->
+      <div class="diary-entry" 
+           [class.past]="giornata.eventoPassato()"
+           [class.today]="isToday(giornata.DATA)"
+           [class.future]="!giornata.eventoPassato()">
+        
+        <!-- LATO SINISTRO - DATA -->
+        <div class="diary-date">
+          <div class="date-day-name">
+            {{giornata.DATA | date:'EEEE' | titlecase}}
+          </div>
+          <div class="date-day-number">
+            {{giornata.DATA | date:'dd'}}
+          </div>
+          <div class="date-month">
+            {{giornata.DATA | date:'MMM' | uppercase}}
+          </div>
+          <div class="date-year">
+            '{{giornata.DATA | date:'yy'}}
+          </div>
+        </div>
+
+        <!-- LATO DESTRO - DETTAGLI -->
+        <div class="diary-details">
+          
+          <!-- CAMPO (se presente) -->
+          <div class="detail-location" *ngIf="giornata['_DENOMINAZIONE_Campo']">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{giornata['_DENOMINAZIONE_Campo']}}</span>
+          </div>
+
+          <!-- ORARI -->
+          <div class="detail-times">
+            <div class="time-item start-time">
+              <ion-icon name="play-circle-outline"></ion-icon>
+              <span class="time-label">Inizio</span>
+              <strong class="time-value">{{giornata.DATAORAINIZIO | date:'HH:mm'}}</strong>
+            </div>
+
+            <div class="time-separator">
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </div>
+
+            <div class="time-item end-time">
+              <ion-icon name="pause-circle-outline"></ion-icon>
+              <span class="time-label">Fine</span>
+              <strong class="time-value">{{giornata.DATAORAFINE | date:'HH:mm'}}</strong>
+            </div>
+          </div>
+
+          <!-- DURATA -->
+          <div class="detail-duration">
+            <ion-icon name="hourglass-outline"></ion-icon>
+            <span>Durata:</span>
+            <strong>{{giornata.ORELEZIONE}} {{giornata.ORELEZIONE > 1 ? 'ore' : 'ora'}}</strong>
+          </div>
+
+          <!-- BADGE STATUS -->
+          <div class="status-badge-bottom">
+            <ion-badge 
+                [color]="giornata.eventoPassato() ? 'medium' : isToday(giornata.DATA) ? 'warning' : 'success'"
+                class="lesson-badge">
+              <ion-icon [name]="giornata.eventoPassato() ? 'checkmark-circle' : isToday(giornata.DATA) ? 'time' : 'calendar'"></ion-icon>
+              <span>{{giornata.eventoPassato() ? 'Conclusa' : isToday(giornata.DATA) ? 'Oggi' : 'Programmata'}}</span>
+            </ion-badge>
+          </div>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
   </div>
 
+  <!-- NESSUNA DATA TROVATA -->
+  <div *ngIf="ricevuti && calendarCorso.length === 0" class="empty-calendar">
+    <div class="empty-icon">
+      <ion-icon name="calendar-outline"></ion-icon>
+    </div>
+    <h3>Programmazione non disponibile</h3>
+    <p>Non ci sono date programmate per questo corso</p>
+  </div>
 
 </ion-content>
-

@@ -14,30 +14,18 @@ import { StartService } from 'src/app/services/start.service';
 export class PeriodicCourseDetailCalendarPage implements OnInit {
 
   @Input() myCorso: Corso;
-  calendarCorso: PianificazioneCorso[]=[];
+  calendarCorso: PianificazioneCorso[] = [];
   listenCalendarCorso: Subscription;
-  ricevuti = false; //Indica se gli orari sono stati ricevuti
+  ricevuti = false; // Indica se gli orari sono stati ricevuti
 
   constructor(
-              private mdlController: ModalController,
-              private loadingController : LoadingController,
-              private startService: StartService) { }
+    private mdlController: ModalController,
+    private loadingController: LoadingController,
+    private startService: StartService
+  ) { }
 
   ngOnInit() {
-
-    
-
-
-    // //creo il filtro per la richiesta
-    // let filter = new PianificazioneCorso(true);
-    // filter.IDCORSO=this.myCorso.ID;
-
-    // //creo i parametri per la richiesta
-    // let params = new RequestParams();
-    // params.decode = new RequestDecode();
-    // params.decode.active = true;
-
-    //creo il loading 
+    // Creo il loading 
     this.loadingController.create({
       message: 'Caricamento...',
       spinner: "circular",
@@ -46,41 +34,81 @@ export class PeriodicCourseDetailCalendarPage implements OnInit {
     .then(elLoading => {
       elLoading.present();
 
-
-      this.startService.requestCalendarioCorso(this.myCorso.ID,true)
+      this.startService.requestCalendarioCorso(this.myCorso.ID, true)
       .then(listCalendar => {
-        //dismetto il loading e salvo il calendario
+        // Dismetto il loading e salvo il calendario
         elLoading.dismiss();
-
         this.calendarCorso = listCalendar;
-        
+        this.ricevuti = true;
       })
       .catch(error => {
-        //dismetto il loading e mostro l'errore
+        // Dismetto il loading e mostro l'errore
         elLoading.dismiss();
-
         this.startService.presentToastMessage('Errore di connessione');
-        
-        LogApp.consoleLog(error,'error');
-        
-      })
-    })
-    
+        this.ricevuti = true;
+        LogApp.consoleLog(error, 'error');
+      });
+    });
   }
 
-
-  //Chiudo il calendario
+  /**
+   * Chiude il calendario
+   */
   closeCalendar() {
     this.mdlController.dismiss();
   }
 
+  /**
+   * Determina il colore dell'item in base allo stato
+   * @deprecated - Non più usato nel nuovo design
+   */
   colorItem(itemCalendarCorso: PianificazioneCorso) {
     let color = 'success';
     if (itemCalendarCorso.eventoPassato()) {
-      color='danger';
+      color = 'danger';
     }
     return color;
   }
 
+  /**
+   * Verifica se deve mostrare il separatore del mese
+   * @param index Indice dell'elemento corrente
+   */
+  shouldShowMonthSeparator(index: number): boolean {
+    if (index === 0) {
+      return true; // Mostra sempre il primo mese
+    }
 
+    const currentDate = this.calendarCorso[index].DATA;
+    const previousDate = this.calendarCorso[index - 1].DATA;
+
+    if (!currentDate || !previousDate) {
+      return false;
+    }
+
+    const currentMonth = new Date(currentDate).getMonth();
+    const currentYear = new Date(currentDate).getFullYear();
+    const previousMonth = new Date(previousDate).getMonth();
+    const previousYear = new Date(previousDate).getFullYear();
+
+    // Mostra il separatore se il mese o l'anno cambiano
+    return currentMonth !== previousMonth || currentYear !== previousYear;
+  }
+
+  /**
+   * Verifica se una data è oggi
+   * @param date Data da verificare
+   */
+  isToday(date: Date): boolean {
+    if (!date) {
+      return false;
+    }
+
+    const today = new Date();
+    const checkDate = new Date(date);
+
+    return today.getDate() === checkDate.getDate() &&
+           today.getMonth() === checkDate.getMonth() &&
+           today.getFullYear() === checkDate.getFullYear();
+  }
 }

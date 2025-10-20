@@ -1,83 +1,403 @@
-h5 {
-    color: var(--ion-color-primary);
-}
-.colGiorno {
-    background-color: var(--ion-color-light);
+// =====================================================
+// CALENDAR MODAL - DIARY STYLE
+// =====================================================
+
+.calendar-content {
+  --background: #f5f6f8;
 }
 
-.colOrario, ion-item {
-    /*background-color: #f2545461;*/
-    background-color: var(--ion-color-light);
+// =====================================================
+// DIARY CONTAINER
+// =====================================================
+
+.diary-container {
+  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.contentGiorno {
-    display: flex; 
-    flex-direction: column; 
-    background-color: var(--ion-color-light);
+// =====================================================
+// MONTH SEPARATOR
+// =====================================================
+
+.month-separator {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 32px 0 24px 0;
+
+  &:first-child {
+    margin-top: 8px;
+  }
+
+  .month-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--ion-color-primary), transparent);
+  }
+
+  .month-badge {
+    display: flex;
     align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--ion-color-primary);
+    color: white;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
 
-    h4{
-        color: var(--ion-color-primary);
-        margin: 0px;
-        font-weight: 600;
-        font-size: 18px;
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+// =====================================================
+// DIARY ENTRY (CARD GIORNATA)
+// =====================================================
+
+.diary-entry {
+  display: flex;
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  animation: slideUp 0.4s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  // STATI
+  &.past {
+    opacity: 0.7;
+
+    .diary-date {
+      background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    }
+  }
+
+  &.today {
+    border: 3px solid var(--ion-color-warning);
+    box-shadow: 0 4px 20px rgba(var(--ion-color-warning-rgb), 0.3);
+
+    .diary-date {
+      background: linear-gradient(135deg, var(--ion-color-warning) 0%, var(--ion-color-warning-shade) 100%);
+    }
+  }
+
+  &.future {
+    .diary-date {
+      background: linear-gradient(135deg, var(--ion-color-success) 0%, var(--ion-color-success-shade) 100%);
+    }
+  }
+}
+
+// =====================================================
+// DIARY DATE (LATO SINISTRO)
+// =====================================================
+
+.diary-date {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  color: white;
+  text-align: center;
+  flex-shrink: 0;
+
+  .date-day-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+
+  .date-day-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .date-month {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .date-year {
+    font-size: 0.7rem;
+    font-weight: 600;
+    opacity: 0.8;
+  }
+}
+
+// =====================================================
+// DIARY DETAILS (LATO DESTRO)
+// =====================================================
+
+.diary-details {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// LOCATION
+.detail-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--ion-color-dark);
+
+  ion-icon {
+    font-size: 18px;
+    color: var(--ion-color-primary);
+  }
+
+  span {
+    font-weight: 600;
+  }
+}
+
+// TIMES
+.detail-times {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-radius: 12px;
+
+  .time-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary);
     }
 
-    h5 {
-        color: var(--ion-color-primary);
-        margin: 0px;
+    .time-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--ion-color-medium);
+      letter-spacing: 0.5px;
     }
 
-
-    h6 {
-        margin: 0px;
+    .time-value {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--ion-color-primary);
     }
+  }
+
+  .time-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ion-color-primary);
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
 }
 
-.contentOrari {
-    display: flex; 
-    flex-direction: column; 
-    background-color: var(--ion-color-light);
-    align-items: flex-start;
+// DURATION
+.detail-duration {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--ion-color-dark);
 
-    
-    h2,h5,h3 {
-        color: var(--ion-color-mediumlight);
-        padding: 0px 0px 0px 0px;
-        margin: 0px 0px 0px 0px;
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-warning);
+  }
+
+  span {
+    color: var(--ion-color-medium);
+  }
+
+  strong {
+    color: var(--ion-color-warning);
+    font-weight: 700;
+  }
+}
+
+// STATUS BADGE
+.status-badge-bottom {
+  margin-top: 8px;
+
+  .lesson-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+// =====================================================
+// EMPTY STATE
+// =====================================================
+
+.empty-calendar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 30px;
+  text-align: center;
+  min-height: 400px;
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    background: #f3f4f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+
+    ion-icon {
+      font-size: 50px;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--ion-color-medium);
+    margin: 0;
+    max-width: 300px;
+  }
+}
+
+// =====================================================
+// ANIMATIONS
+// =====================================================
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+
+@media (min-width: 768px) {
+  
+  .diary-container {
+    padding: 24px;
+  }
+
+  .month-separator {
+    margin: 40px 0 32px 0;
+
+    .month-badge {
+      padding: 12px 24px;
+      font-size: 1.1rem;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+
+  .diary-entry {
+    margin-bottom: 20px;
+
+    .diary-date {
+      width: 120px;
+      padding: 20px 12px;
+
+      .date-day-number {
+        font-size: 3rem;
+      }
+
+      .date-month {
+        font-size: 0.95rem;
+      }
     }
 
+    .diary-details {
+      padding: 20px;
+      gap: 16px;
+    }
+  }
 
+  .detail-times {
+    .time-item {
+      ion-icon {
+        font-size: 28px;
+      }
+
+      .time-value {
+        font-size: 1.4rem;
+      }
+    }
+  }
 }
 
-ion-card {
-    background-color: var(--ion-color-primary-contrast);    
+// =====================================================
+// RESPONSIVE - DESKTOP
+// =====================================================
+
+@media (min-width: 1024px) {
+  
+  .diary-container {
+    padding: 32px;
+  }
+
+  .diary-entry {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+    }
+  }
 }
-
-
-col-content {
-    background-color: var(--ion-color-light);
-}
-
-// #cal-nofind-cnt  {
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     align-content: center;
-//     height: 100%;
-//     padding: 0;
-//     margin: 0;
-//     display: -webkit-box;
-//     display: -moz-box;
-//     display: -ms-flexbox;
-//     display: -webkit-flex;
-//     background-color: var(--ion-color-light);
-//     color: var(--ion-color-warning);
-// }
-
-ion-content{
-    --background: var(--ion-color-light)
-}
-
-

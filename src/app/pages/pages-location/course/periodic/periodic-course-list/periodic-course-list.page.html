@@ -1,179 +1,215 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button  defaultHref="/"></ion-back-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
 
-    <ion-title>Corsi</ion-title>
+    <ion-title>CORSI</ion-title>
 
-    <ion-buttons slot="primary">
+    <ion-buttons slot="end">
       <ion-button (click)="goToFilter()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
     </ion-buttons>
-
   </ion-toolbar>
 
-  <ion-toolbar 
-        mode="md" 
-        *ngIf="showTabs && userLogged">
 
-    <!-- BOTTONI SEGMENTATI -->
-    <ion-segment 
-      mode="md"
-      (ionChange)="onChangeSegmentCorsi($event)"
-      color="primary"
-      [(ngModel)]="statoPagina"
-      id="crs:button">
-      
-    <ion-segment-button [value]="PageState.MIEI">
-      <ion-icon name="bar-chart-outline"></ion-icon>
-      <ion-label>Adatti a Me</ion-label>
-    </ion-segment-button>
-
-      <ion-segment-button [value]="PageState.TUTTI">
-        <ion-icon name="school-outline"></ion-icon>
-          <ion-label>Tutti</ion-label>
-      </ion-segment-button>
-      
-    </ion-segment>
-  </ion-toolbar>
 
 </ion-header>
- 
 
 <ion-content id="content" scrollEvents (ionScroll)="onScroll($event)">
+  
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
-    <ion-row
-            *ngIf="(statoPagina==PageState.TUTTI && listCorsi.length !== 0) || (statoPagina==PageState.MIEI && listCorsiMioLivello.length !== 0)" 
-            class="ion-padding-horizontal">
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="12" 
-               sizeLg="8" offsetLg="2"
-               sizeXl="8" offsetXl="2">
-      <ion-item
-          (click)="onChangeVersionList()" 
-          button="true"
-          detail="false"
-          lines="none">
-        <ion-label>
-          Cambia visualizzazione in
-        </ion-label>
-        <ion-badge color="success">{{versionList == 'card' ? 'Ridotta' : 'Estesa'}}</ion-badge>
-      </ion-item>
-      </ion-col>
-    </ion-row>
+  <!-- SEGMENT TABS (solo se utente loggato) -->
+  <div class="tabs-container" *ngIf="showTabs && userLogged">
+    <div class="tabs-wrapper">
+      <button 
+          class="tab-button"
+          [class.active]="statoPagina === PageState.MIEI"
+          (click)="statoPagina = PageState.MIEI">
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <span>ADATTI A ME</span>
+      </button>
+      <button 
+          class="tab-button"
+          [class.active]="statoPagina === PageState.TUTTI"
+          (click)="statoPagina = PageState.TUTTI">
+        <ion-icon name="school-outline"></ion-icon>
+        <span>TUTTI</span>
+      </button>
+    </div>
+  </div>
 
+  <!-- CAMBIO VISUALIZZAZIONE -->
+  <div class="view-switcher" *ngIf="(statoPagina==PageState.TUTTI && listCorsi.length !== 0) || (statoPagina==PageState.MIEI && listCorsiMioLivello.length !== 0)">
+    <button 
+        class="switch-button"
+        (click)="onChangeVersionList()">
+      <span>Cambia visualizzazione in</span>
+      <span class="switch-badge" [class.active]="versionList=='short'">
+        {{versionList == 'card' ? 'Ridotta' : 'Estesa'}}
+      </span>
+    </button>
+  </div>
+
+  <ion-grid>
     <ion-row>
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="12"
-               sizeLg="8" offsetLg="2"
-               sizeXl="8" offsetXl="2">
-               <!-- VISUALIZZAZIONE TUTTI -->
-               <div *ngIf="statoPagina==PageState.TUTTI">
-                  <!-- CARICATI E NON IN ERRORE -->
-                  <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
-                    <!-- DATI PRESENTI -->
-                    <ion-grid *ngIf="listCorsi.length !== 0">
-                      <ion-row >
-                        <ion-col *ngFor="let itemCorso of listCorsi" 
-                                  sizeXs="12" 
-                                  sizeSm="12"  
-                                  sizeMd="12"
-                                  [sizeLg]="versionList=='card' ? 6: 12"
-                                  [sizeXl]="versionList=='card' ? 6: 12"
-                                  >
+      <ion-col 
+          sizeXs="12" 
+          sizeSm="12" 
+          sizeMd="12"
+          sizeLg="8" 
+          offsetLg="2"
+          sizeXl="8" 
+          offsetXl="2">
+        
+        <!-- ========================================== -->
+        <!-- VISUALIZZAZIONE TUTTI -->
+        <!-- ========================================== -->
+        <div *ngIf="statoPagina==PageState.TUTTI">
+          
+          <!-- CARICATI E NON IN ERRORE -->
+          <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
+            
+            <!-- DATI PRESENTI -->
+            <ion-grid *ngIf="listCorsi.length !== 0" class="courses-grid">
+              <ion-row>
+                <ion-col 
+                    *ngFor="let itemCorso of listCorsi" 
+                    sizeXs="12" 
+                    sizeSm="12"  
+                    sizeMd="12"
+                    [sizeLg]="versionList=='card' ? 6 : 12"
+                    [sizeXl]="versionList=='card' ? 6 : 12">
                   
-                              <app-card-course 
-                                [version]="versionList"
-                                [myCorso]="itemCorso" 
-                                [useIscrizioniColor]="enableIscrizioni"
-                                (clickDetail)="onClickCardDetail($event)"
-                                (clickIscrizione)="onClickIscrizione($event)">
-                              </app-card-course>
+                  <app-card-course
+                      [myCorso]="itemCorso"
+                      [version]="versionList"
+                      [useIscrizioniColor]="enableIscrizioni"
+                      (clickDetail)="onClickCardDetail($event)"
+                      (clickIscrizione)="onClickIscrizione($event)">
+                  </app-card-course>
+
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+            <!-- NESSUN DATO -->
+            <div *ngIf="listCorsi.length === 0" class="empty-state">
+              <div class="empty-illustration">
+                <div class="empty-icon-large">
+                  <ion-icon name="school-outline"></ion-icon>
+                </div>
+              </div>
+              <h2 class="empty-title">Nessun corso disponibile</h2>
+              <p class="empty-description">Al momento non ci sono corsi che corrispondono ai criteri di ricerca.</p>
+              <ion-button 
+                  class="empty-action"
+                  color="primary" 
+                  fill="outline"
+                  size="default"
+                  (click)="goToFilter()">
+                <ion-icon name="search" slot="start"></ion-icon>
+                Modifica filtri
+              </ion-button>
+            </div>
+
+          </div>
+
+          <!-- ERRORE DI CARICAMENTO -->
+          <div *ngIf="loadingCorsiError" class="error-state">
+            <div class="error-icon">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+            </div>
+            <h3>Errore di caricamento</h3>
+            <p>Si è verificato un problema durante il caricamento dei corsi.</p>
+            <ion-button 
+                color="danger" 
+                fill="outline"
+                (click)="requestCorsi()">
+              <ion-icon name="refresh" slot="start"></ion-icon>
+              Riprova
+            </ion-button>
+          </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VISUALIZZAZIONE ADATTI A ME -->
+        <!-- ========================================== -->
+        <div *ngIf="statoPagina==PageState.MIEI">
+          
+          <!-- CARICATI E NON IN ERRORE -->
+          <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
+            
+            <!-- DATI PRESENTI -->
+            <ion-grid *ngIf="listCorsiMioLivello.length !== 0" class="courses-grid">
+              <ion-row>
+                <ion-col 
+                    *ngFor="let itemCorso of listCorsiMioLivello" 
+                    sizeXs="12" 
+                    sizeSm="12"  
+                    sizeMd="12"
+                    [sizeLg]="versionList=='card' ? 6 : 12"
+                    [sizeXl]="versionList=='card' ? 6 : 12">
                   
-                        </ion-col>
-                      </ion-row>
-                    </ion-grid>
-                    <!-- DATI NON PRESENTI -->
-                      <app-card-image
-                          *ngIf="listCorsi.length === 0"
-                          src="assets/boysplaying_small.png"
-                          title="Guardando in archivio"
-                          subtitle="Non ho trovato nessun corso con i criteri impostati"
-                          >
-                      </app-card-image> 
-                  </div>
-                  <!-- CARICATI E IN ERRORE -->
-                  <div *ngIf="loadingCorsiComplete && loadingCorsiError">
-                    <app-card-image
-                      src="assets/boysplaying_small.png"
-                      title="Ops, spiacente"
-                      subtitle="Si, &egrave; verificato un errore nel recupero"
-                      >
-                    </app-card-image> 
-                  </div>                  
-               </div>
-               <div *ngIf="statoPagina==PageState.MIEI">
-                  <!-- CARICATI E NON IN ERRORE -->
-                  <div *ngIf="loadingCorsiComplete && !loadingCorsiError">
-                    <!-- DATI PRESENTI -->
-                    <ion-grid *ngIf="listCorsiMioLivello.length !== 0">
-                      <ion-row >
-                        <ion-col *ngFor="let corso of listCorsiMioLivello" 
-                              sizeXs="12" 
-                              sizeSm="12"  
-                              sizeMd="12"
-                              [sizeLg]="versionList=='card' ? 6: 12"
-                              [sizeXl]="versionList=='card' ? 6: 12"
-                                  >
-                              <app-card-course 
-                                  [version]="versionList"
-                                  [myCorso]="corso" 
-                                  [useIscrizioniColor]="enableIscrizioni"
-                                  (clickDetail)="onClickCardDetail($event)"
-                                  (clickIscrizione)="onClickIscrizione($event)">
-                              </app-card-course>
-                        </ion-col>
-                      </ion-row>
-                    </ion-grid>
-                    <!-- DATI NON PRESENTI -->
-                    <app-card-image
-                        *ngIf="listCorsiMioLivello.length === 0"
-                        src="assets/boysplaying_small.png"
-                        title="Guardando in archivio"
-                        subtitle="Non ho trovato nessun corso disponibile"
-                      >
-                    </app-card-image>  
-                  </div>
-                  
-                  <!-- CARICATI E IN ERRORE -->
-                  <div *ngIf="loadingCorsiComplete && loadingCorsiError">
-                    <app-card-image
-                      src="assets/boysplaying_small.png"
-                      title="Ops, spiacente"
-                      subtitle="Si, &egrave; verificato un errore nel recupero"
-                      >
-                    </app-card-image> 
-                  </div>                                  
-               </div>
+                  <app-card-course
+                      [myCorso]="itemCorso"
+                      [version]="versionList"
+                      [useIscrizioniColor]="enableIscrizioni"
+                      (clickDetail)="onClickCardDetail($event)"
+                      (clickIscrizione)="onClickIscrizione($event)">
+                  </app-card-course>
+
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+            <!-- NESSUN DATO -->
+            <div *ngIf="listCorsiMioLivello.length === 0" class="empty-state">
+              <div class="empty-illustration">
+                <div class="empty-icon-large">
+                  <ion-icon name="bar-chart-outline"></ion-icon>
+                </div>
+              </div>
+              <h2 class="empty-title">Nessun corso adatto al tuo livello</h2>
+              <p class="empty-description">Al momento non ci sono corsi che corrispondono al tuo profilo. Prova a visualizzare tutti i corsi disponibili.</p>
+              <ion-button 
+                  class="empty-action"
+                  color="primary" 
+                  fill="outline"
+                  size="default"
+                  (click)="statoPagina = PageState.TUTTI">
+                <ion-icon name="school-outline" slot="start"></ion-icon>
+                Vedi tutti i corsi
+              </ion-button>
+            </div>
+
+          </div>
+
+          <!-- ERRORE DI CARICAMENTO -->
+          <div *ngIf="loadingCorsiError" class="error-state">
+            <div class="error-icon">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+            </div>
+            <h3>Errore di caricamento</h3>
+            <p>Si è verificato un problema durante il caricamento dei corsi.</p>
+            <ion-button 
+                color="danger" 
+                fill="outline"
+                (click)="requestCorsi()">
+              <ion-icon name="refresh" slot="start"></ion-icon>
+              Riprova
+            </ion-button>
+          </div>
+
+        </div>
+
       </ion-col>
     </ion-row>
-    <!-- SPAZIO FINALE -->
-    <ion-row style="min-height: 200px;height: 200px;">
-      <ion-col sizeXs="12" 
-               sizeSm="12" 
-               sizeMd="12"
-               sizeLg="8" offsetLg="2"
-               sizeXl="8" offsetXl="2">
-      </ion-col>
-    </ion-row>    
   </ion-grid>
 
 </ion-content>

@@ -73,47 +73,58 @@ export class SportScrollComponent implements OnInit {
     this.swiper?.slideTo(indexSlideZeroBased);
   }
 
-
-onChangeSport(newSport: Sport) {
-  // Emetti l'evento
-  this.sportChanged.emit(newSport);
-  
-  // Scroll automatico alla chip selezionata
-  this.scrollToSelectedChip(newSport);
-}
-
-private scrollToSelectedChip(sport: Sport) {
-  setTimeout(() => {
-    const index = this.getIndexSport(sport);
-    const wrapper = document.querySelector('.chips-wrapper');
-    const chips = document.querySelectorAll('.sport-chip');
+  /**
+   * Evento cambio sport con scroll automatico
+   * @param newSport Nuovo sport selezionato
+   */
+  onChangeSport(newSport: Sport) {
+    // Emetti l'evento
+    this.sportChanged.emit(newSport);
     
-    if (wrapper && chips[index]) {
-      const chip = chips[index] as HTMLElement;
-      const chipOffset = chip.offsetLeft;
-      const chipWidth = chip.offsetWidth;
-      const wrapperWidth = wrapper.clientWidth;
-      
-      // Centra la chip
-      const scrollPosition = chipOffset - (wrapperWidth / 2) + (chipWidth / 2);
-      
-      wrapper.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-      });
-    }
-  }, 100);
-}
+    // Scroll automatico al bottone selezionato
+    this.scrollToSelectedSport(newSport);
+  }
 
+  /**
+   * Scrolla automaticamente al bottone sport selezionato
+   * @param sport Sport da centrare
+   */
+  private scrollToSelectedSport(sport: Sport): void {
+    setTimeout(() => {
+      const index = this.getIndexSport(sport);
+      
+      if (index !== -1) {
+        // Trova tutti i bottoni sport
+        const buttons = document.querySelectorAll('.sport-btn');
+        
+        if (buttons && buttons[index]) {
+          const button = buttons[index] as HTMLElement;
+          
+          // Scrolla il bottone in vista (centrato)
+          button.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+          });
+        }
+      }
+    }, 100); // Piccolo delay per assicurarsi che il DOM sia aggiornato
+  }
 
-  // Helper: verifica se sport è selezionato
+  /**
+   * Helper: verifica se sport è selezionato
+   */
   isSelected(sport: Sport): boolean {
     return this.selectedSport && sport && this.selectedSport.ID === sport.ID;
   }
 
+  /**
+   * Ricerca uno sport nell'Array e ne torna l'indice
+   * @param mySport Sport da cercare
+   */
   getIndexSport(mySport: Sport): number {
     let myPos = -1;
-    if (mySport) {
+    if (mySport && this._listAvailableSports) {
       myPos = this._listAvailableSports.findIndex(el => el.ID === mySport.ID);
     }
     return myPos;

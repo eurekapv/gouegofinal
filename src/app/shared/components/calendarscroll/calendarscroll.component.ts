@@ -45,6 +45,9 @@ export class CalendarscrollComponent implements OnInit {
         dateValue: dateValue
       });
     }
+
+    // Scroll automatico al giorno attivo dopo aver preparato la lista
+    this.scrollToActiveDay();
   }
 
   // =====================================================
@@ -75,6 +78,28 @@ export class CalendarscrollComponent implements OnInit {
     this._activeDay = newDate;
     this.prepareListDays();
     this.onChangeActiveDay.emit(newDate);
+  }
+
+  // =====================================================
+  // SCROLL AUTOMATICO
+  // =====================================================
+  /**
+   * Scrolla automaticamente al giorno attivo
+   */
+  private scrollToActiveDay(): void {
+    setTimeout(() => {
+      // Trova il bottone del giorno attivo
+      const activeButton = document.querySelector('.day-button--active');
+      
+      if (activeButton) {
+        // Scrolla il bottone in vista (centrato)
+        activeButton.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        });
+      }
+    }, 150); // Delay leggermente maggiore per assicurarsi che il DOM sia completamente aggiornato
   }
 
   // =====================================================

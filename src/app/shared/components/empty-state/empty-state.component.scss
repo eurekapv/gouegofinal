@@ -1,0 +1,102 @@
+// =====================================================
+// EMPTY STATE - MODERN DESIGN
+// =====================================================
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: white;
+  border-radius: 16px;
+  margin: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--ion-color-light);
+  animation: fadeIn 0.4s ease-out;
+
+  &--warning {
+    background: linear-gradient(to bottom, white, rgba(249, 201, 89, 0.05));
+    border-color: var(--ion-color-warning);
+  }
+
+  &--error {
+    background: linear-gradient(to bottom, white, rgba(223, 65, 58, 0.05));
+    border-color: var(--ion-color-danger);
+  }
+}
+
+.empty-state__icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: var(--ion-color-light);
+  border-radius: 50%;
+  margin-bottom: 24px;
+
+  ion-icon {
+    font-size: 48px;
+  }
+}
+
+.empty-state__content {
+  max-width: 400px;
+}
+
+.empty-state__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+.empty-state__message {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ion-color-mediumlight);
+  margin: 0;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+@media (max-width: 576px) {
+  .empty-state {
+    padding: 36px 20px;
+    margin: 12px;
+  }
+
+  .empty-state__icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 20px;
+
+    ion-icon {
+      font-size: 40px;
+    }
+  }
+
+  .empty-state__title {
+    font-size: 1.15rem;
+  }
+
+  .empty-state__message {
+    font-size: 0.95rem;
+  }
+}

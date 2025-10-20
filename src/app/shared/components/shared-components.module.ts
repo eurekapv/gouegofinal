@@ -49,6 +49,7 @@ import { CartItemRowComponent } from './cart-item-row/cart-item-row.component';
 import { NumericInputUpDownComponent } from './numeric-input-up-down/numeric-input-up-down.component';
 import { DailyCourseItemListComponent } from './course/daily-course-item-list/daily-course-item-list.component';
 import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
+import { EmptyStateComponent } from './empty-state/empty-state.component';
 
 
 
@@ -78,6 +79,7 @@ import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
         ImpegniCollaboratoriComponent,
         ImpegniCustodiComponent,
         ItemCalendarioComponent,
+        EmptyStateComponent,
         NewsEventiComponent,
         PaymentChooseComponent,
         PaymentModeComponent,
@@ -114,6 +116,7 @@ import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
         CircularComponent,
         FootbookedComponent,
         HorTimelineComponent,
+        EmptyStateComponent,
         ImpegniComponent,
         ImpegniCollaboratoriComponent,
         ImpegniCustodiComponent,

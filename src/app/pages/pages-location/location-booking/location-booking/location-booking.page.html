@@ -89,30 +89,35 @@
                       </ion-grid>    
                   </ion-col>
                 </ion-row>
+
                 <!-- RIGA 2 CARD AVVISO (PRENOTAZIONI DISABILITATE PER GIORNATA CHIUSA)-->
+                <!-- EMPTY STATE - GIORNATA CHIUSA -->
                 <ion-row *ngIf="flagDatiRicevuti && flagPrenotazioneDisponibile && !actualSlotDay.APERTOCHIUSO">
                   <ion-col>
-                    <app-card-image
-                    src="assets/boysplaying_small.png"
-                    title="Spiacenti"
-                    subtitle="Prenotazione non effettuabile"
-                    [text]="'Le prenotazioni non risultano disponibili presso ' + selectedLocation?.DENOMINAZIONE + ', con i parametri inseriti.  ' + 'Modificare Data/Centro per ricercare slot liberi'"
-                    ></app-card-image>
+                    <app-empty-state
+                      icon="calendar-outline"
+                      type="warning"
+                      title="Giornata chiusa"
+                      [message]="'Il centro ' + selectedLocation?.DENOMINAZIONE + ' non è disponibile per prenotazioni nella data selezionata. Scegli un\'altra data o contatta la struttura per maggiori informazioni.'">
+                    </app-empty-state>
                   </ion-col>
                 </ion-row>
+
       
                 <!-- RIGA 2 CARD AVVISO (PRENOTAZIONI DISABILITATE)-->
-                <ion-row  *ngIf="!flagPrenotazioneDisponibile"
-                    class="ion-no-margin">
-                    <ion-col>
-                      <app-card-image
-                        src="assets/boysplaying_small.png"
-                        title="Spiacenti"
-                        subtitle="Prenotazione non disponibile"
-                        [text]="'Le prenotazioni non risultano abilitate presso ' + selectedLocation?.DENOMINAZIONE + '.  ' + 'Modificare Data/Centro per ricercare slot liberi'"
-                        ></app-card-image>
-                    </ion-col>
-                </ion-row>                
+                <!-- EMPTY STATE - PRENOTAZIONI NON DISPONIBILI -->
+                <ion-row *ngIf="!flagPrenotazioneDisponibile" class="ion-no-margin">
+                  <ion-col>
+                    <app-empty-state
+                      icon="alert-circle-outline"
+                      type="info"
+                      title="Prenotazioni non disponibili"
+                      [message]="'Il centro ' + selectedLocation?.DENOMINAZIONE + ' non ha campi disponibili per l\'attività selezionata. Prova a cambiare sport o centro.'">
+                    </app-empty-state>
+                  </ion-col>
+                </ion-row>    
+
+
                 
               </ion-grid>
 

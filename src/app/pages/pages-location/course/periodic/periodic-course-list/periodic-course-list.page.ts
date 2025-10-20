@@ -296,8 +296,8 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
       .create({
         component: PeriodicCourseListFilterPage,
         cssClass: 'bottom-sheet-modal',
-        breakpoints: [0, 0.5, 0.75, 1],  // Altezze: 50%, 75%, 100%
-        initialBreakpoint: 0.75,          // Inizia al 75%
+        breakpoints: [0, 0.6, 0.85, 1],  // Modificato: parte da 60%
+        initialBreakpoint: 0.85,          // Inizia all'85%
         handle: true,                     // Mostra la "maniglia" per trascinare
         componentProps: {
           'myFilter': this.filtroCorsi

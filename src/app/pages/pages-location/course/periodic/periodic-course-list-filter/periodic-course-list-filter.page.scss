@@ -2,9 +2,16 @@
 // FILTER MODAL - BOTTOM SHEET STYLE
 // =====================================================
 
+// In periodic-course-list-filter.page.scss
 ion-content {
-    min-height: 700px;
+  min-height: 60vh;
+  max-height: 85vh;
   --background: #f8f9fa;
+}
+
+// Assicura che il contenuto sia scrollabile
+.filters-container {
+  padding: 0 16px 80px 16px; // Padding bottom extra per il footer
 }
 
 // =====================================================

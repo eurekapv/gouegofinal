@@ -15,10 +15,14 @@ export class SmartInterfaceService {
   * Crea un semplice messaggio con l'uso dell'AlertController
   * La presentazione del messaggio è a carico del chiamante
   * @param message Messaggio
+  * @param myTitle: Titolo
+  * @param myButtons: Button da mostrare
+  * @param subTitle: Sottotitolo
   */
   showMessage(myMessage: string | ErrorEvent | Error, 
               myTitle?: string, 
-              myButtons?: (AlertButton | string)[]): Promise<HTMLIonAlertElement> {
+              myButtons?: (AlertButton | string)[],
+              subTitle?: string): Promise<HTMLIonAlertElement> {
 
     let finalMessage = '';
 
@@ -42,6 +46,7 @@ export class SmartInterfaceService {
 
     return this.alertController.create({
       header: myTitle,
+      subHeader: subTitle ? subTitle:'',
       message: finalMessage,
       buttons: myButtons
     });

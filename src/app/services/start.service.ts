@@ -2984,14 +2984,16 @@ getUrlPageActiveCart(): string[] {
  * @param myMessage Messaggio
  * @param myTitle Titolo
  * @param myButtons Eventuali Button
+ * @param subTitle Eventuale Sottotitolo
  * @returns void
  */
 presentAlertMessage(myMessage: string | ErrorEvent, 
                     myTitle?: string, 
-                    myButtons?: (AlertButton | string)[]) {
+                    myButtons?: (AlertButton | string)[], 
+                    subTitle?: string) {
   
   this.srvSmartInterface
-      .showMessage(myMessage, myTitle, myButtons)
+      .showMessage(myMessage, myTitle, myButtons, subTitle)
       .then(elMessage => {
         elMessage.present();
       })

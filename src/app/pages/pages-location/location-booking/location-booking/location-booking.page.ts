@@ -593,11 +593,78 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     }
     
   }
+  
+  /**
+ * Mostra un alert moderno per contattare la struttura
+ */
+showAlertContattaStruttura() {
+  let myButtons = [];
+  let myMessage = '';
+  let mySubTitle = '';
 
+  const phoneNumber = this.selectedLocation?.TELEFONO;
+  const locationName = this.selectedLocation?.DENOMINAZIONE || 'la struttura';
+
+  // Messaggio principale
+  myMessage = `Per prenotare questo orario è necessario contattare direttamente ${locationName}.`;
+
+  // Se c'è il numero di telefono
+  if (phoneNumber && phoneNumber.length > 0) {
+    mySubTitle = `📞 ${phoneNumber}`;
+
+    // Se NON è desktop, mostra il bottone "Chiama ora"
+    if (!this.startService.isDesktop) {
+      myButtons = [
+        {
+          text: 'Annulla',
+          role: 'cancel',
+          cssClass: 'alert-button-cancel'
+        },
+        {
+          text: '📞 Chiama ora',
+          cssClass: 'alert-button-call',
+          handler: () => {
+            // Apri il dialer del telefono
+            window.location.href = `tel:${phoneNumber}`;
+          }
+        }
+      ];
+    } else {
+      // Se è desktop, mostra solo OK
+      myButtons = [
+        {
+          text: 'Ho capito',
+          role: 'cancel',
+          cssClass: 'alert-button-primary'
+        }
+      ];
+    }
+  } else {
+    // Nessun numero disponibile
+    myMessage = `Per prenotare questo orario è necessario contattare direttamente ${locationName}.`;
+    mySubTitle = 'Numero di telefono non disponibile';
+    
+    myButtons = [
+      {
+        text: 'Ho capito',
+        role: 'cancel',
+        cssClass: 'alert-button-primary'
+      }
+    ];
+  }
+
+  // Mostra l'alert con i nuovi stili
+  this.startService.presentAlertMessage(
+    myMessage,
+    'Contatto richiesto',
+    myButtons,
+    mySubTitle
+  );
+}
   /**
    * Mostra un alert per contattare la struttura
    */
-  showAlertContattaStruttura() {
+  showAlertContattaStrutturaOld() {
     let myButton = [];
     let myMessage = ''
 

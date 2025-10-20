@@ -193,3 +193,51 @@
     }
   }
 }
+
+// =====================================================
+// BOTTONI SPECIALI PER CHIAMATA
+// =====================================================
+
+.alert-button-call {
+  color: var(--ion-color-success) !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+
+  &:hover {
+    background: rgba(44, 179, 97, 0.1) !important;
+  }
+
+  &:active {
+    background: rgba(44, 179, 97, 0.2) !important;
+  }
+}
+
+.alert-button-primary {
+  color: var(--ion-color-primary) !important;
+  font-weight: 700 !important;
+
+  &:hover {
+    background: rgba(25, 35, 51, 0.05) !important;
+  }
+}
+
+.alert-button-cancel {
+  color: var(--ion-color-mediumlight) !important;
+  font-weight: 600 !important;
+
+  &:hover {
+    background: var(--ion-color-extralight) !important;
+  }
+}
+
+// =====================================================
+// STILE NUMERO TELEFONO NEL SUBTITLE
+// =====================================================
+.alert-sub-title.sc-ion-alert-ios,
+.alert-sub-title.sc-ion-alert-md {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  color: var(--ion-color-success) !important;
+  margin-top: 12px !important;
+}

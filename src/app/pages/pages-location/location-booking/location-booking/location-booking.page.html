@@ -54,7 +54,6 @@
                       <app-campi-scroll 
                             [selectedCampo]="selectedCampo" 
                             [campiList]="availableFields" 
-                            [direction]="directionSliderSportCampi"
                             [canChoose]="flagDatiRicevuti && flagPrenotazioneDisponibile"
                             [selectedLocation]="selectedLocation"
                             (campoChanged)="onChangeCampo($event)">
@@ -71,18 +70,6 @@
                       <!-- VISUALIZZO GLI SLOT TIME SE E' APERTO-->
                         <ion-grid 
                               class="ion-no-margin ion-no-padding">
-                          <ion-row>
-                            <ion-col>
-                                <ion-item 
-                                    color="success">
-                                    <ion-label class="ion-no-padding ion-text-bold">
-                                          {{descriptionScelta}}
-                                    </ion-label>
-                                    <ion-spinner slot="end" name="circular" color="primary" *ngIf="actualSlotDay._TEMPLATELOCK"></ion-spinner>
-                                </ion-item>
-      
-                            </ion-col>
-                          </ion-row>
                         <ion-row>
                           <ion-col
                               class="ion-no-margin ion-no-padding" 

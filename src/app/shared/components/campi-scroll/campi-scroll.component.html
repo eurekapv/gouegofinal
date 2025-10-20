@@ -1,6 +1,6 @@
-<ion-grid class="campi-inline-container ion-no-margin ion-no-padding">
+<!-- <ion-grid class="campi-inline-container ion-no-margin ion-no-padding"> -->
   <!-- Messaggio se non ci sono campi -->
-  <ion-row 
+  <!-- <ion-row 
     class="ion-text-center ion-align-items-center"
     *ngIf="!_flagAvailableCampi">
     <ion-col>
@@ -11,28 +11,11 @@
           non dispone di campi prenotabili
         </p>
       </div>
-    </ion-col>
-  </ion-row>
-
-  <!-- Header con icona + nome campo selezionato -->
-  <!-- <ion-row *ngIf="_flagAvailableCampi" class="campo-header-row">
-    <ion-col size="12">
-      <div class="campo-selected-header">
-        <div class="header-icon-circle">
-          <ion-icon name="location"></ion-icon>
-        </div>
-        <div class="header-info">
-          <h3 class="campo-title">{{ selectedCampo?.DENOMINAZIONE || 'Seleziona un campo' }}</h3>
-          <p class="campo-subtitle" *ngIf="selectedLocation">
-            {{ selectedLocation.DENOMINAZIONE }}
-          </p>
-        </div>
-      </div>
-    </ion-col>
+    </ion-col> 
   </ion-row> -->
 
   <!-- Lista campi scrollabile -->
-  <ion-row *ngIf="_flagAvailableCampi" class="campi-list-row">
+  <!-- <ion-row *ngIf="_flagAvailableCampi" class="campi-list-row">
     <ion-col size="12">
       <div class="campi-scroll">
         <div 
@@ -51,35 +34,42 @@
           
         </div>
 
-        <!-- <button
-          *ngFor="let campo of _listAvailableCampi"
-          class="campo-chip"
-          [class.campo-chip--active]="isSelected(campo)"
-          [class.campo-chip--disabled]="!canChoose"
-          [disabled]="!canChoose"
-          (click)="onChangeCampo(campo)">
-          
-          <ion-icon name="location-outline" class="chip-icon"></ion-icon>
-          <span class="chip-label">{{ campo.DENOMINAZIONE }}</span>
-        </button> -->
+
       </div>
     </ion-col>
-  </ion-row>   
-  <!-- <ion-row *ngIf="_flagAvailableCampi" class="campi-list-row">
-    <ion-col size="12">
-      <div class="campi-scroll">
-        <button
-          *ngFor="let campo of _listAvailableCampi"
-          class="campo-chip"
-          [class.campo-chip--active]="isSelected(campo)"
-          [class.campo-chip--disabled]="!canChoose"
-          [disabled]="!canChoose"
-          (click)="onChangeCampo(campo)">
-          
-          <ion-icon name="location-outline" class="chip-icon"></ion-icon>
-          <span class="chip-label">{{ campo.DENOMINAZIONE }}</span>
-        </button>
+  </ion-row>    -->
+
+<!-- </ion-grid> -->
+
+<div class="campi-compact-container">
+  <!-- Messaggio vuoto -->
+  <div class="empty-message" *ngIf="!_flagAvailableCampi">
+    <ion-icon name="location-outline"></ion-icon>
+    <span>Nessun campo disponibile</span>
+  </div>
+
+  <!-- Campi scrollabili -->
+  <div class="campi-scroll" *ngIf="_flagAvailableCampi">
+    <button
+      *ngFor="let campo of _listAvailableCampi"
+      class="campo-btn"
+      [class.campo-btn--active]="isSelected(campo)"
+      [class.campo-btn--disabled]="!canChoose"
+      [disabled]="!canChoose"
+      (click)="onChangeCampo(campo)">
+      
+      <!-- Icona location -->
+      <div class="campo-icon-circle">
+        <ion-icon name="location"></ion-icon>
       </div>
-    </ion-col>
-  </ion-row> -->
-</ion-grid>
+
+      <!-- Info campo -->
+      <div class="campo-info">
+        <h3 class="campo-name">{{ campo.DENOMINAZIONE }}</h3>
+        <p class="campo-location" *ngIf="selectedLocation">
+          {{ selectedLocation.DENOMINAZIONE }}
+        </p>
+      </div>
+    </button>
+  </div>
+</div>

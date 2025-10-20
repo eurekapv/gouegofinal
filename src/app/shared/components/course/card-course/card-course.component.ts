@@ -13,8 +13,17 @@ import { StartService } from 'src/app/services/start.service'
 export class CardCourseComponent implements OnInit {
 
   constructor(private startService: StartService) { }
+  _myCorso: Corso = new Corso(true);
+  _myTempoCorso: Tempistica = Tempistica.IN_CORSO;
+  _myTempoIscrizioni: Tempistica = Tempistica.PASSATO;
+  _flagIscrizioni: boolean = false;
+  _useIscrizioniColor: boolean = false;
+  _labelSettimanaCorso: string = '';
 
-  @Input() set version(value: number) {
+  _version: 'card'|'short' = 'card'; //Versione 1 o 2 del componente
+
+
+  @Input() set version(value: 'card'|'short') {
     this._version = value;
   }
 
@@ -46,14 +55,7 @@ export class CardCourseComponent implements OnInit {
 
 
 
-  _myCorso: Corso = new Corso(true);
-  _myTempoCorso: Tempistica = Tempistica.IN_CORSO;
-  _myTempoIscrizioni: Tempistica = Tempistica.PASSATO;
-  _flagIscrizioni: boolean = false;
-  _useIscrizioniColor: boolean = false;
-  _labelSettimanaCorso: string = '';
 
-  _version: number = 1; //Versione 1 o 2 del componente
 
 
   @Output() clickDetail = new EventEmitter<Corso>();

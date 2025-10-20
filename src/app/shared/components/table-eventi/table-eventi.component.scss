@@ -125,6 +125,13 @@
     font-size: 18px;
     color: var(--ion-color-primary);
   }
+
+  .sport-icon {
+    font-size: 18px;
+    font-family: "sports";
+    color: var(--ion-color-primary);
+    transition: color 0.2s ease;
+  }
 }
 
 .event-countdown {

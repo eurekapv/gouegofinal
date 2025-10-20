@@ -1,137 +1,773 @@
+// =====================================================
+// CARD CORSO - VERSIONE MODERNA CON COLORI CHIARI (v2)
+// =====================================================
 
-.contentLezioni {
+.modern-course-card {
+  background: white;
+  margin: 0 16px 16px 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  // HEADER
+  .course-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #dee2e6;
+
+    &.enrollment-active {
+      background: linear-gradient(135deg, #d1f4e0 0%, #a8e6cf 100%);
+      border-bottom-color: var(--ion-color-success);
+    }
+
+    .header-badge {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .badge-type {
+        background: var(--ion-color-warning);
+        color: var(--ion-color-warning-contrast);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .badge-sport {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ion-color-primary);
+
+        .sport-icon {
+          font-family: "sports";
+          font-size: 22px;
+          display: flex;
+          align-items: center;
+        }
+
+        .sport-name {
+          font-size: 0.95rem;
+          font-weight: 700;
+        }
+      }
+    }
+
+    .enroll-btn {
+      background: var(--ion-color-success);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 3px 10px rgba(46, 204, 113, 0.3);
+
+      ion-icon {
+        font-size: 20px;
+      }
+
+      &:hover {
+        background: var(--ion-color-success-shade);
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  // BODY
+  .course-body {
+    padding: 20px 16px;
+    background: white;
+
+    .course-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--ion-color-primary);
+      margin: 0 0 20px 0;
+      line-height: 1.3;
+    }
+
+    // TIMING SECTION
+    .timing-section {
+      margin-bottom: 20px;
+
+      .date-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+
+        .date-box {
+          flex: 1;
+          min-width: 140px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 14px;
+          border-radius: 12px;
+          border: 2px solid;
+          background: white;
+
+          &.future {
+            border-color: var(--ion-color-success);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+
+            ion-icon {
+              color: var(--ion-color-success);
+              font-size: 24px;
+            }
+
+            .date-value {
+              color: var(--ion-color-success);
+            }
+          }
+
+          &.in-progress {
+            border-color: var(--ion-color-warning);
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+
+            ion-icon {
+              color: var(--ion-color-warning);
+              font-size: 24px;
+            }
+
+            .date-value {
+              color: var(--ion-color-warning-shade);
+            }
+          }
+
+          &.past {
+            border-color: var(--ion-color-medium);
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+
+            ion-icon {
+              color: var(--ion-color-medium);
+              font-size: 24px;
+            }
+
+            .date-value {
+              color: var(--ion-color-medium);
+            }
+          }
+
+          .date-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .date-label {
+              font-size: 0.75rem;
+              font-weight: 600;
+              color: var(--ion-color-mediumlight);
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+
+            .date-value {
+              font-size: 0.95rem;
+              font-weight: 800;
+            }
+          }
+        }
+
+        .lessons-badge {
+          padding: 8px 16px;
+          background: var(--ion-color-primary);
+          color: white;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 700;
+          white-space: nowrap;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      .time-duration {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+
+        .time-item,
+        .duration-item {
+          padding: 14px;
+          background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+          border-radius: 12px;
+          border: 1px solid #bfdbfe;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          ion-icon {
+            font-size: 20px;
+            color: var(--ion-color-primary);
+          }
+
+          .time-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ion-color-mediumlight);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .time-value {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--ion-color-primary);
+          }
+        }
+      }
+    }
+
+    // GIORNI SETTIMANA
+    .weekly-schedule {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+      border-radius: 12px;
+      border: 1px solid #fde047;
+
+      .schedule-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        color: var(--ion-color-dark);
+        font-weight: 700;
+        font-size: 0.9rem;
+
+        ion-icon {
+          font-size: 20px;
+          color: var(--ion-color-warning-shade);
+        }
+      }
+
+      .days-grid {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+
+        .day-chip {
+          width: 38px;
+          height: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 10px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          background: white;
+          border: 2px solid #e5e7eb;
+          color: var(--ion-color-mediumlight);
+          transition: all 0.3s ease;
+
+          &.active {
+            background: var(--ion-color-primary);
+            border-color: var(--ion-color-primary);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.3);
+          }
+        }
+      }
+    }
+
+    // INFO SETTIMANALE
+    .weekly-note {
+      font-size: 0.85rem;
+      color: var(--ion-color-dark);
+      margin-bottom: 20px;
+      padding: 12px;
+      background: #f0f9ff;
+      border-radius: 10px;
+      border-left: 4px solid var(--ion-color-primary);
+    }
+
+    // CARATTERISTICHE
+    .course-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: var(--ion-color-primary);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-icon {
+          width: 42px;
+          height: 42px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+          border-radius: 10px;
+          flex-shrink: 0;
+
+          ion-icon {
+            font-size: 22px;
+            color: var(--ion-color-primary);
+          }
+        }
+
+        .info-text {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+
+          .info-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ion-color-mediumlight);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .info-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ion-color-dark);
+          }
+        }
+      }
+    }
+  }
+
+  // FOOTER
+  .course-footer {
+    padding: 16px;
+    background: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .price-section {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .price-free {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 1.1rem;
+          font-weight: 800;
+          color: var(--ion-color-success);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+
+          ion-icon {
+            font-size: 24px;
+          }
+        }
+
+        .price-paid {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 1.2rem;
+          font-weight: 800;
+          color: var(--ion-color-primary);
+
+          ion-icon {
+            font-size: 22px;
+          }
+        }
+      }
+
+      .status-indicator {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &.status-10 { // FUTURO
+          background: #dcfce7;
+          color: #166534;
+        }
+
+        &.status-20 { // IN_CORSO
+          background: #fef3c7;
+          color: #92400e;
+        }
+
+        &.status-30 { // PASSATO
+          background: #f3f4f6;
+          color: #6b7280;
+        }
+      }
+    }
+  }
+}
+
+// =====================================================
+// ITEM COMPATTO - VERSIONE 3
+// =====================================================
+
+.compact-course-item {
+  --background: white;
+  --border-radius: 14px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 12px;
+  margin: 0 16px 12px 16px;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--ion-color-primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .item-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    width: 100%;
+
+    // COLONNA ICONA E TIPO
+    .item-icon-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+
+      .item-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-radius: 12px;
+        font-size: 28px;
+        color: var(--ion-color-primary);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+        
+        .sport-icon {
+          font-family: "sports";
+          font-size: 22px;
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .item-type-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        background: var(--ion-color-primary);
+        color: white;
+        white-space: nowrap;
+
+        &.is-prova {
+          background: var(--ion-color-warning);
+          color: var(--ion-color-warning-contrast);
+        }
+      }
+    }
+
+    // COLONNA PRINCIPALE
+    .item-main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .item-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--ion-color-primary);
+        margin: 0;
+        line-height: 1.3;
+      }
+
+      .item-sport {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--ion-color-mediumlight);
+        margin: 0;
+      }
+
+      .item-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+
+        .detail-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 0.8rem;
+          color: var(--ion-color-dark);
+          font-weight: 600;
+
+          ion-icon {
+            font-size: 16px;
+            color: var(--ion-color-primary);
+          }
+        }
+      }
+
+      .item-days-compact {
+        margin-top: 2px;
+      }
+
+      // PREZZO SOTTO
+      .item-price-bottom {
+        margin-top: 8px;
+        padding-top: 10px;
+        border-top: 1px solid #e5e7eb;
+
+        .price-label {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.95rem;
+          font-weight: 800;
+          padding: 8px 14px;
+          border-radius: 12px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+          ion-icon {
+            font-size: 18px;
+          }
+
+          &.free {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            color: var(--ion-color-success-shade);
+            border: 1px solid var(--ion-color-success);
+          }
+
+          &.paid {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: var(--ion-color-primary);
+            border: 1px solid var(--ion-color-primary);
+          }
+        }
+      }
+    }
+  }
+}
+
+// =====================================================
+// VERSIONE 1 - LEGACY (mantenuta per compatibilità)
+// =====================================================
+
+.version-1 {
+  --background: var(--ion-color-light-alpha);
+
+  ion-card-header {
+    --background: var(--ion-color-light-tint);
+    
+    &.special {
+      --background: var(--ion-color-success-tint);
+    }
+  }
+
+  ion-card-title {
+    font-size: 18px;
+  }
+
+  ion-card-content {
+    ion-grid {
+      padding: 0px 5px 0px 5px;
+    }
+  }
+
+  .div-giornate {
+    padding: 8px 8px 8px 8px;
+  }
+
+  .contentLezioni {
     display: flex;
     justify-content: flex-end;
-    
-}
+  }
 
-.div-giornate {
-    padding: 8px 8px 8px 8px;
-}
+  ion-footer {
+    background-color: var(--ion-color-light-tint);
+    padding: 4px 16px 4px 16px;
 
+    ion-row {
+      ion-col {
+        padding: 0px 5px 0px 5px;
 
-
-ion-card {
-    
-    &.version-1 {
-
-        --background: var(--ion-color-light-alpha);
-    
-        ion-card-header {
-            --background: var(--ion-color-light-tint);
-        }    
-    
-        ion-card-header.special {
-            --background: var(--ion-color-success-tint);
-        } 
-
-        ion-card-title{
-            font-size:18px;
+        ion-button,
+        ion-label {
+          --background: var(--ion-color-success-tint);
+          --color: var(--ion-color-dark);
+          --color-activated: var(--ion-color-dark);
+          font-weight: bold;
         }
-
-        ion-card-content {
-            ion-grid {
-                padding: 0px 5px 0px 5px;
-            }
-        }
-    
-        ion-footer {
-            
-            background-color: var(--ion-color-light-tint);
-    
-            padding: 4px 16px 4px 16px;
-    
-            ion-row {
-                ion-col {
-                    padding: 0px 5px 0px 5px;
-    
-                    ion-button, ion-label {
-                        --background: var(--ion-color-success-tint); 
-                        --color: var(--ion-color-dark);
-                        --color-activated: var(--ion-color-dark);
-                        font-weight: bold;
-                    }
-                }
-            }
-            p{
-                text-align: center;
-                font-size: 18;
-                font-weight: 600;
-            }
-        }
+      }
     }
 
-    &.version-2 {
-        /*max-height: 300px;*/
-
-        ion-card-header {
-            /*background-image: url(../../../../assets/boysbeach_3_2_small.png);
-            background-repeat: no-repeat;
-            background-size: cover;*/
-            // min-height: 90px;
-            // max-height: 90px;
-            border-bottom-style: dashed;
-            border-bottom-color: var(--ion-color-mediumlight);  
-            
-        }
-
-        ion-card-content {
-
-            padding-bottom: 0px; 
-
-            h1 {
-                color: var(--ion-color-primary);
-            }
-
-            ion-button {
-                &.orario {
-                    --border-color: var(--ion-color-success);
-                    --border-style: solid;
-                    --border-width: 2px;
-                }
-            }
-
-
-        }
-
-        .overlay {
-            position: absolute; 
-        }
-          
-        .overlay_0 {
-            right: 5px;
-            bottom: 25px;
-            padding: 0px;
-            margin: 0px;
-        }
-
-        ion-footer {
-            background-color: var(--ion-color-light);
-            // min-height: 45px;
-            // max-height: 45px;
-
-            &.success {
-                background-color: var(--ion-color-success);
-                color: var(--ion-color-success-contrast);
-            }
-            &.danger {
-                background-color: var(--ion-color-danger);
-                color: var(--ion-color-danger-contrast);
-            }
-            &.light {
-                background-color: var(--ion-color-light);
-                color: var(--ion-color-light-contrast);
-            }
-        }
+    p {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
     }
-    
+  }
 }
 
+// =====================================================
+// ICON SPORT (generale)
+// =====================================================
 
-
-i.icon-sport
-{
-    font-size: 30px;
-    font-weight: 600;
+i.icon-sport {
+  font-size: 30px;
+  font-weight: 600;
 }
 
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+@media (min-width: 768px) {
+  .modern-course-card {
+    margin: 0 0 20px 0;
+
+    .course-header {
+      padding: 20px;
+    }
+
+    .course-body {
+      padding: 24px 20px;
+
+      .course-title {
+        font-size: 1.5rem;
+      }
+
+      .timing-section {
+        .time-duration {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .weekly-schedule {
+        padding: 20px;
+
+        .days-grid {
+          .day-chip {
+            width: 42px;
+            height: 42px;
+          }
+        }
+      }
+    }
+
+    .course-footer {
+      padding: 20px;
+    }
+  }
+
+  .compact-course-item {
+    margin: 0 0 16px 0;
+
+    .item-content {
+      padding: 20px;
+
+      .item-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .modern-course-card {
+    &:hover {
+      .enroll-btn {
+        transform: translateX(4px) scale(1.05);
+      }
+    }
+  }
+
+  .compact-course-item:hover {
+    transform: translateY(-3px);
+  }
+}
+
+// =====================================================
+// ANIMAZIONI
+// =====================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modern-course-card,
+.compact-course-item {
+  animation: slideUp 0.4s ease;
+}

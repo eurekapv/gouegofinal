@@ -64,7 +64,7 @@
         <ion-label>
           Cambia visualizzazione in
         </ion-label>
-        <ion-badge color="success">{{listVersion == 2 ? 'Elenco' : 'Card'}}</ion-badge>
+        <ion-badge color="success">{{versionList == 'card' ? 'Ridotta' : 'Estesa'}}</ion-badge>
       </ion-item>
       </ion-col>
     </ion-row>
@@ -86,12 +86,12 @@
                                   sizeXs="12" 
                                   sizeSm="12"  
                                   sizeMd="12"
-                                  [sizeLg]="listVersion==2 ? 6: 12"
-                                  [sizeXl]="listVersion==2 ? 6: 12"
+                                  [sizeLg]="versionList=='card' ? 6: 12"
+                                  [sizeXl]="versionList=='card' ? 6: 12"
                                   >
                   
                               <app-card-course 
-                                [version]="listVersion"
+                                [version]="versionList"
                                 [myCorso]="itemCorso" 
                                 [useIscrizioniColor]="enableIscrizioni"
                                 (clickDetail)="onClickCardDetail($event)"
@@ -130,11 +130,11 @@
                               sizeXs="12" 
                               sizeSm="12"  
                               sizeMd="12"
-                              [sizeLg]="listVersion==2 ? 6: 12"
-                              [sizeXl]="listVersion==2 ? 6: 12"
+                              [sizeLg]="versionList=='card' ? 6: 12"
+                              [sizeXl]="versionList=='card' ? 6: 12"
                                   >
                               <app-card-course 
-                                  [version]="listVersion"
+                                  [version]="versionList"
                                   [myCorso]="corso" 
                                   [useIscrizioniColor]="enableIscrizioni"
                                   (clickDetail)="onClickCardDetail($event)"

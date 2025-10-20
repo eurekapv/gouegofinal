@@ -17,7 +17,7 @@
       <!-- Header -->
       <div class="event-header">
         <div class="event-sport">
-          <ion-icon [name]="getSportIcon(item['_DENOMINAZIONE_Sport'])"></ion-icon>
+          <i class="sport-icon" [innerHTML]="getSportIcon(item['_DENOMINAZIONE_Sport'])"></i> 
           <span>{{ item['_DENOMINAZIONE_Sport'] || 'Evento' }}</span>
         </div>
         

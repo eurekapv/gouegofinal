@@ -54,7 +54,8 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
   showTabs = true;
   cardNewTemplateMode = true; //Disegno le Card corsi nella nuova modalità
 
-  listVersion = 2; //Versione delle Liste (2 = Card / 3 = Item)
+  //Versione della Lista con Card Estese o Short
+  versionList:'card'|'short' = 'card';
 
   //Gestione Abilitazione Iscrizioni
   listenSelectedArea:Subscription;
@@ -270,15 +271,19 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Cambia la versione della lista da 2 a 3 e viceversa
+   * Cambia la versione da Card a Short e viceversa
    */
   onChangeVersionList(): void {
-    if (this.listVersion == 2) {
-      this.listVersion = 3;
+    switch(this.versionList) {
+      case 'card':
+        this.versionList = 'short';
+        break;
+
+      case 'short':
+        this.versionList = 'card';
+        break;
     }
-    else {
-      this.listVersion = 2;
-    }
+
   }  
 
   /**

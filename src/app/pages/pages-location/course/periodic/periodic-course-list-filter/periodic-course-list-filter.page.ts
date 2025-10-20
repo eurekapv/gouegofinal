@@ -281,4 +281,35 @@ export class PeriodicCourseListFilterPage implements OnInit, OnDestroy {
 
     this._myFilter.DATAFINE = new Date();
   }
+
+
+  /**
+   * Ritorna una Icona se un valore1 è uguale a valore2, oppure un'altra icona
+   * @param value1 
+   * @param value2 
+   * @param type Tipo del valore restituito
+   * @returns 
+   */
+  getIconItem(value1:any, value2:any, type:'name'|'color'): string {
+    let valueItem = '';
+
+    if (type == 'name') {
+      if (value1 == value2) {
+        valueItem = 'checkmark-circle-outline';
+      }
+      else {
+        valueItem = 'ellipse-outline';
+      }
+    }
+    else {
+      if (value1 == value2) {
+        valueItem = 'success';
+      }
+      else {
+        valueItem = 'primary';
+      }
+    }
+
+    return valueItem;
+  }
 }

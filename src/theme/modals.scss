@@ -116,14 +116,30 @@ ion-modal {
   }
 }
 
-// Nel global.scss o nel file scss della modale
+// =====================================================
+// BOTTOM SHEET MODAL STYLES
+// Da aggiungere nel file src/global.scss
+// =====================================================
+
 .bottom-sheet-modal {
   --height: auto;
   --border-radius: 20px 20px 0 0;
-  --box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+  --box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
   
-  ion-modal {
-    align-items: flex-end;
+  &::part(backdrop) {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  &::part(handle) {
+    background: #d1d5db;
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    top: 8px;
+  }
+
+  ion-content {
+    --padding-top: 16px;
   }
 }
 

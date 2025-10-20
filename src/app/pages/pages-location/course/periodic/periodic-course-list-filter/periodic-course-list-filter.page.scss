@@ -1,3 +1,254 @@
-ion-select {
-    max-width: 100% !important;
+// =====================================================
+// FILTER MODAL - BOTTOM SHEET STYLE
+// =====================================================
+
+ion-content {
+    min-height: 700px;
+  --background: #f8f9fa;
+}
+
+// =====================================================
+// MODAL HEADER (Custom dentro content)
+// =====================================================
+
+.modal-header {
+  background: white;
+  padding: 16px 16px 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  .back-button,
+  .clear-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--ion-color-dark);
+
+    ion-icon {
+      font-size: 24px;
+    }
+
+    &:hover {
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .modal-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--ion-color-dark);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// =====================================================
+// INFO MESSAGE
+// =====================================================
+
+.info-message {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 14px;
+  margin: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    flex: 1;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ion-color-dark);
+  }
+}
+
+// =====================================================
+// FILTERS CONTAINER
+// =====================================================
+
+.filters-container {
+  padding: 0 16px 16px 16px;
+
+  ion-accordion-group {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  // ACCORDION HEADER
+  .accordion-header {
+    --background: white;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --min-height: 56px;
+    font-weight: 600;
+
+    ion-label {
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+
+    ion-badge {
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+  }
+
+  // ACCORDION CONTENT
+  .accordion-content {
+    padding: 8px 0;
+
+    .filter-option {
+      --background: white;
+      --padding-start: 24px;
+      --padding-end: 16px;
+      --min-height: 48px;
+      margin: 2px 8px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        --background: rgba(var(--ion-color-primary-rgb), 0.05);
+      }
+
+      ion-label {
+        font-size: 0.95rem;
+        color: var(--ion-color-dark);
+      }
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+// =====================================================
+// MODAL FOOTER
+// =====================================================
+
+.modal-footer {
+  background: white;
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+
+  .search-button {
+    --border-radius: 12px;
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    height: 52px;
+
+    ion-icon {
+      font-size: 22px;
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+@media (min-width: 768px) {
+  .modal-header {
+    padding: 20px 20px 16px 20px;
+
+    .back-button,
+    .clear-button {
+      width: 44px;
+      height: 44px;
+
+      ion-icon {
+        font-size: 26px;
+      }
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+    }
+  }
+
+  .info-message {
+    margin: 20px;
+    padding: 16px;
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .filters-container {
+    padding: 0 20px 20px 20px;
+
+    .accordion-header {
+      --min-height: 60px;
+      --padding-start: 20px;
+      --padding-end: 20px;
+
+      ion-badge {
+        font-size: 0.8rem;
+        padding: 8px 14px;
+      }
+    }
+
+    .accordion-content {
+      .filter-option {
+        --padding-start: 28px;
+        --padding-end: 20px;
+        --min-height: 52px;
+        margin: 3px 12px;
+
+        ion-label {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  .modal-footer {
+    padding: 20px;
+
+    .search-button {
+      height: 56px;
+      font-size: 1.05rem;
+    }
+  }
 }

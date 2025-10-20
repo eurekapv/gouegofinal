@@ -394,8 +394,7 @@ closeModalAddedItem() {
       flagDisponibile = false;
     }
 
-    console.log(this.articoloDoc.GESTIONESCORTE)
-    console.log(this.articoloDoc.QUANTITAMAGAZZINO)
+
 
     return flagDisponibile;
   }

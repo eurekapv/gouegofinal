@@ -290,19 +290,26 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
    * Mostra la pagina dei Filtri
    */
   goToFilter() {
+
+    /**/
     this.mdlController
       .create({
         component: PeriodicCourseListFilterPage,
+        cssClass: 'bottom-sheet-modal',
+        breakpoints: [0, 0.5, 0.75, 1],  // Altezze: 50%, 75%, 100%
+        initialBreakpoint: 0.75,          // Inizia al 75%
+        handle: true,                     // Mostra la "maniglia" per trascinare
         componentProps: {
           'myFilter': this.filtroCorsi
         }
       })
-      .then(formModal => {
-        formModal.present();
+      .then(objModal => {
+        //Presento la form
+        objModal.present();
 
-        formModal.onWillDismiss().then((objReceived)=> {
+        objModal.onWillDismiss().then((objReceived)=> {
           
-          if (objReceived.data.dismissFilter) {
+          if (objReceived.data && objReceived.data.dismissFilter) {
             //Mi è arrivato un filtro da applicare
             this.onModalNewFilter(objReceived.data.dismissFilter);
           }

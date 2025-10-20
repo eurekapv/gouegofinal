@@ -4,7 +4,7 @@ import { Share, ShareOptions } from '@capacitor/share';
 
 import { StartConfiguration } from 'src/app/models/start-configuration.model';
 import { Area } from 'src/app/models/struttura/area.model';
-import { PageType } from 'src/app/models/zsupport/valuelist.model'
+import { CustomAlertClass, PageType } from 'src/app/models/zsupport/valuelist.model'
 
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 
@@ -53,6 +53,8 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
   //i metodi di pagamento possibili
   arPayments : AreaPaymentSetting[] = [];
 
+  // Gestione Tab - NUOVA AGGIUNTA
+  activeTab: 'dettagli' | 'pagamento' = 'dettagli';
 
 
   /**
@@ -133,7 +135,7 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
   }
 
   //#region RICHIESTE
-    /**
+  /**
    * Richiedo le informazioni con historyID
    * @param historyId HistoryId
    */
@@ -242,7 +244,12 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
           .then(() => {
             //Chiudo l'accordion
             const nativeEl = this.accordionGroup;
-            
+            if (nativeEl) {
+              nativeEl.value = undefined;
+            }
+          })
+          .catch(error => {
+            this.showMessage(error);
           })
     }
 
@@ -332,130 +339,103 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
         messaggio += ' presso '+this.startConfig.companyName;
       }
   
-      if (docPianificazione['_INDIRIZZO_Location']){
-        messaggio += ' '+docPianificazione['_INDIRIZZO_Location'];
-      }
-  
       if (docPianificazione['_DENOMINAZIONE_Campo']){
-        messaggio += ' (Campo: '+docPianificazione['_DENOMINAZIONE_Campo'];
+        messaggio += ' per il campo '+docPianificazione['_DENOMINAZIONE_Campo'];
       }
-  
-      if (docPianificazione['_DENOMINAZIONE_Sport']){
-        messaggio += ', Attività: '+docPianificazione['_DENOMINAZIONE_Sport']+')';
+
+      oggetto=this.startConfig.companyName+' - Prenotazione';
+     
+      let shareOptions:ShareOptions={
+        title: oggetto,
+        text: messaggio,
+        url: webUrlArea,
+        dialogTitle: 'Condividi la prenotazione'
       }
-  
-      //Compongo l'oggetto
-      oggetto='Prenotazione ' + docPianificazione.PROGRESSIVO;
-  
-      //Se posso condividere
-      Share.canShare()
-          .then(result => {
-            if (result.value) {
-              //Effettuo la condivisione
-              Share.share({
-                title: oggetto,
-                text: messaggio,
-                url: webUrlArea,
-              });
-              
-            }
-          });
-    }
-    else{
-      this.showMessage('Errore nella condivisione');
-    }
 
-  }  
+      Share.share(shareOptions);
+    }
+  }
 
-    /**
-   * Utente ha premuto per la cancellazione della data pianificata
-   * @param docPianificazione Prenotazione Pianificazione
+  /**
+   * Click sul pulsante Elimina
+   * @param docPianificazione 
    */
-   onClickTrash(docPianificazione: PrenotazionePianificazione): void {
+  onClickTrash(docPianificazione:PrenotazionePianificazione){
 
-      let myMessage = '';
-      let alertButton: AlertButton[] = [];
+    let arrayButtons:AlertButton[]=[];
+    let msgPrinc='';
+    let subHeader='';
 
-      if (docPianificazione) {
+    //Preparo i Pulsanti
+    let btnAnnulla:AlertButton={
+      text:'Annulla',
+      role:'cancel',
+    }
 
-        //Pulsanti operativi
-        alertButton = [
-          {
-            text: 'Conferma',
-            handler: () => {
-                            this.execDeletePianificazione(docPianificazione.ID)
-                           }
-          },
-          {
-            text: 'Annulla',
-            role: 'cancel'
-          }
-        ]
-
-        myMessage = '<p>Stai tentando la cancellazione della data del </p>';
-        myMessage += `<p class="ion-text-bold">${MyDateTime.formatDate(docPianificazione.DATAORAINIZIO, 'dd/MM/yyyy')}</p>`;
-        myMessage += `<p class="ion-text-bold">alle ore ${MyDateTime.formatDate(docPianificazione.DATAORAINIZIO, 'HH:mm')}</p>`;
-        myMessage += `<p>Contatto il centro per verificare se l'operazione è possibile</p>`;
-        myMessage += '<p class="ion-text-bold">Vuoi proseguire ?</p>';
-
-        //Mostro la domanda
-        this.startService.presentAlertMessage(myMessage, 'Sei sicuro ?', alertButton);
-
+    let btnConferma:AlertButton={
+      text:'Conferma',
+      role:'confirm',
+      handler: ()=>{
+        this.onDeletePianificazione(docPianificazione);
       }
     }
 
-    /**
-     * Eseguo la cancellazione della data Pianificata (Si tenta la cancellazione)
-     * @param idPianificazione 
-     */
-    execDeletePianificazione(idPianificazione: string){
+    arrayButtons.push(btnAnnulla);
+    arrayButtons.push(btnConferma);
 
-      this.loadingController.create({
-        message: 'Cancellazione...',
-        spinner: 'circular',
-        backdropDismiss: true
-      })
-      .then(loading => {
-        return loading.present();
-      })
-      .then(() => {
-        //faccio richiesta cancellazione 
-        return this.startService.requestDeletePianificazione(idPianificazione)
-      })
-      .then(resp => {
-        //Chiudo il Loading Controller
-        this.loadingController.dismiss();
-        
-        //Visualizzo il messaggio
-        this.showMessage(resp.message);
-  
-        //Se è andato tutto bene
-        if(resp.result) {
-          
-          //Torno Indietro
-          this.onGoToBack();          
-        }
-  
-      })
-      .catch(resp => {
-        this.loadingController.dismiss();
-        this.showMessage(resp.message);
-      })
-      
+    //Messaggio
+    msgPrinc='Confermi di voler eliminare la prenotazione del '+docPianificazione.DATAORAINIZIO.toLocaleDateString()+' alle '+docPianificazione.DATAORAINIZIO.toLocaleTimeString()+'?';
+    
+    if (this.numDatePianificate>1){
+      subHeader='La prenotazione ha più date pianificate';
     }
 
-  //#endregion
-/**
- * Visualizza un messaggio
- * @param message Messaggio da mostrare
- */
-  showMessage(message: string, type:'alert' | 'toast' = 'alert') {
+    this.startService.presentAlertMessage(msgPrinc, 'Eliminazione Prenotazione', arrayButtons, subHeader, CustomAlertClass.subtitleWarning);
 
-    if (type == 'alert') {
+  }
+
+  /**
+   * Eliminazione della Pianificazione
+   * @param docPianificazione 
+   */
+  onDeletePianificazione(docPianificazione:PrenotazionePianificazione){
+    
+    this.loadingController.create({
+      message:'Eliminazione in corso',
+      spinner:'circular',
+      backdropDismiss:false
+    })
+    .then(elLoading=>{
+      elLoading.present();
+
+      this.startService.requestDeletePianificazione(docPianificazione.ID)
+                       .then(()=>{
+                          elLoading.dismiss();
+                          this.showMessage('Prenotazione eliminata correttamente','toast');
+                          //Torno indietro
+                          this.onGoToBack();
+                       })
+                       .catch(error=>{
+                          elLoading.dismiss();
+                          this.showMessage(error);
+                       })
+    })
+  }
+
+  /**
+   * Mostra un messaggio all'utente
+   * @param message 
+   * @param type 
+   */
+  showMessage(message:string, type:'alert'|'toast'='alert'){
+    if (type=='alert'){
       this.startService.presentAlertMessage(message);
     }
-    else if (type == 'toast') {
+    else if (type=='toast'){
       this.startService.presentToastMessage(message);
     }
   }
+
+  //#endregion
+
 }

@@ -1,56 +1,610 @@
-swiper-container {
-    --swiper-pagination-bullet-inactive-color: var(--ion-color-step-200, #cccccc);
-    --swiper-pagination-color: var(--ion-color-primary, #3880ff);
-    --swiper-pagination-progressbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.25);
-    --swiper-scrollbar-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
-    --swiper-scrollbar-drag-bg-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.5);
-    
-    .swiper-pagination-bullets{
-        bottom: initial;
-        top: 10px;
+// =====================================================
+// HISTORY BOOKING - VISTA CLIENTE MODERNA
+// =====================================================
+
+// Animazioni
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// =====================================================
+// MAIN CONTAINER
+// =====================================================
+.booking-container {
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease;
+}
+
+// =====================================================
+// HERO HEADER CARD
+// =====================================================
+.booking-hero {
+  background: white;
+  margin-bottom: 16px;
+  animation: slideUp 0.6s ease;
+
+  // Data e Orario
+  .hero-datetime {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px;
+    background: var(--ion-color-extralight);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    .datetime-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--ion-color-primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 28px;
+        color: white;
+      }
     }
-    
+
+    .datetime-content {
+      flex: 1;
+
+      h3 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ion-color-mediumlight);
+        margin: 0 0 4px 0;
+        text-transform: capitalize;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--ion-color-primary);
+        margin: 0;
+      }
+    }
+
+    .duration-badge {
+      background: var(--ion-color-danger);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
   }
 
-.div-qr
-{
-    & {
-        background-color: var(--ion-color-light) ;
-        padding-top:3vh;
-        padding-bottom:3vh;
-    
+  // Cliente
+  .hero-customer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    .customer-avatar {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--ion-color-success) 0%, #1e9657 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 28px;
+        color: white;
+      }
     }
-    
-    h6{
-        margin: 0px;
-        margin-bottom: 8px;
-        color: var(--ion-color-primary);
+
+    .customer-info {
+      flex: 1;
+      min-width: 0;
+
+      h2 {
+        font-size: 1.2rem;
         font-weight: 700;
+        color: var(--ion-color-primary);
+        margin: 0 0 4px 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      p {
+        font-size: 0.9rem;
+        color: var(--ion-color-mediumlight);
+        margin: 0;
+      }
+    }
+  }
+
+  // Location
+  .hero-location {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px;
+
+    .location-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 28px;
+        color: var(--ion-color-primary);
+      }
     }
 
-    p {
-        font-size: 14px;
-        margin: 0px;
-        margin-top: 8px;
-        color: rgb(43, 43, 43);
-        padding-left: 25px;
-        padding-right: 25px;
+    .location-info {
+      flex: 1;
+
+      p {
+        margin: 0 0 6px 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--ion-color-primary);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      .location-name {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .sport-name {
+        color: var(--ion-color-mediumlight);
+      }
+    }
+  }
+}
+
+// =====================================================
+// DATES SECTION (Accordion)
+// =====================================================
+.dates-section {
+  padding: 0 16px 16px 16px;
+
+  .dates-accordion {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+    ion-item {
+      --background: var(--ion-color-warning);
+      --color: white;
+      font-weight: 700;
     }
 
-}
-    
+    .accordion-content {
+      padding: 12px 0;
 
+      .date-item {
+        --background: white;
+        margin: 4px 12px;
+        border-radius: 10px;
+        
+        ion-radio {
+          width: 100%;
+          
+          .date-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--ion-color-primary);
+            margin: 8px 0;
+          }
+        }
+      }
+    }
+  }
+}
 
-.div-btns
-{
-    border-bottom-style: solid;
-    border-bottom-color: rgb(228, 228, 228);
-    border-bottom-width:1px;
+// =====================================================
+// TAB NAVIGATION
+// =====================================================
+.tab-navigation {
+  padding: 0 16px 16px 16px;
+
+  .tab-buttons {
+    display: flex;
+    gap: 8px;
+    background: white;
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  .tab-button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ion-color-mediumlight);
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.active {
+      background: var(--ion-color-primary);
+      color: white;
+    }
+
+    &:hover:not(.active) {
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+    }
+  }
 }
-.btn-pay
-{
-    margin-top:4vh;
+
+// =====================================================
+// TAB CONTENT
+// =====================================================
+.tab-content {
+  padding: 0 16px 32px 16px;
 }
-i{
-    font-size: 30px
+
+// =====================================================
+// QR SECTION
+// =====================================================
+.qr-section {
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    margin: 0 0 12px 0;
+    padding: 0 4px;
+  }
+
+  .qr-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    margin-bottom: 24px;
+
+    .qr-id {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ion-color-primary);
+      margin: 0 0 16px 0;
+    }
+
+    .qr-code-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 16px 0;
+
+      qrcode {
+        display: block;
+      }
+    }
+
+    .qr-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 12px;
+      background: var(--ion-color-extralight);
+      border-radius: 10px;
+
+      ion-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      span {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+        text-align: left;
+      }
+    }
+  }
+}
+
+// =====================================================
+// DETAILS SECTION
+// =====================================================
+.details-section {
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    margin: 0 0 12px 0;
+    padding: 0 4px;
+  }
+
+  .data-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+
+    .data-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      .data-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(var(--ion-color-primary-rgb), 0.1);
+        border-radius: 10px;
+        font-size: 24px;
+        color: var(--ion-color-primary);
+        flex-shrink: 0;
+      }
+
+      .data-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .data-label {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: var(--ion-color-mediumlight);
+        }
+
+        .data-value {
+          font-size: 1rem;
+          font-weight: 700;
+          color: var(--ion-color-primary);
+        }
+      }
+    }
+  }
+}
+
+// =====================================================
+// ACTION SECTION
+// =====================================================
+.action-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+
+  .action-button {
+    background: white;
+    border: 2px solid;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+    ion-icon {
+      font-size: 28px;
+    }
+
+    span {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    &.delete-button {
+      border-color: var(--ion-color-danger);
+      color: var(--ion-color-danger);
+
+      &:hover {
+        background: var(--ion-color-danger);
+        color: white;
+      }
+    }
+
+    &.share-button {
+      border-color: var(--ion-color-primary);
+      color: var(--ion-color-primary);
+
+      &:hover {
+        background: var(--ion-color-primary);
+        color: white;
+      }
+    }
+  }
+}
+
+// =====================================================
+// PAYMENT SECTION
+// =====================================================
+.payment-section {
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    margin: 0 0 12px 0;
+    padding: 0 4px;
+  }
+
+  .payment-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+    &.outstanding {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+      border: 2px solid var(--ion-color-danger);
+    }
+
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .payment-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+      }
+
+      .payment-value {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--ion-color-primary);
+
+        &.total {
+          color: var(--ion-color-primary);
+        }
+
+        &.paid {
+          color: var(--ion-color-success);
+        }
+      }
+    }
+  }
+
+  .payment-status {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+    &.complete {
+      background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+      border: 2px solid var(--ion-color-success);
+
+      ion-icon {
+        font-size: 28px;
+        color: var(--ion-color-success);
+      }
+
+      span {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--ion-color-success);
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+@media (min-width: 768px) {
+  .booking-hero {
+    border-radius: 16px;
+    margin: 16px;
+
+    .hero-datetime {
+      padding: 24px;
+
+      .datetime-icon {
+        width: 56px;
+        height: 56px;
+
+        ion-icon {
+          font-size: 30px;
+        }
+      }
+
+      .datetime-content h2 {
+        font-size: 1.5rem;
+      }
+    }
+
+    .hero-customer {
+      padding: 24px;
+
+      .customer-avatar {
+        width: 56px;
+        height: 56px;
+
+        ion-icon {
+          font-size: 30px;
+        }
+      }
+
+      .customer-info h2 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .hero-location {
+      padding: 24px;
+
+      .location-icon {
+        width: 56px;
+        height: 56px;
+
+        ion-icon {
+          font-size: 30px;
+        }
+      }
+    }
+  }
+
+  .tab-navigation,
+  .tab-content {
+    padding: 0 20px 32px 20px;
+  }
+
+  .action-section {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// =====================================================
+// RESPONSIVE - DESKTOP
+// =====================================================
+@media (min-width: 1024px) {
+  .data-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .action-button:hover {
+    transform: translateY(-2px);
+  }
 }

@@ -5,38 +5,22 @@
       <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
     <ion-title>Prenota</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onClickButtonFixedHeaderCollapsed()">        
+        <ion-icon slot="icon-only" [name]="fixedHeaderCollapsed ? 'caret-down-outline' : 'caret-up-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>    
   </ion-toolbar>
 </ion-header>
 
-<!-- 
-<ion-content [scrollY]="false">
-
-  <div class="booking-layout" *ngIf="flagDatiRicevuti">
-    
-    SEZIONE FISSA IN ALTO (non scrolla) --
-    <div class="fixed-header">
-      !-- Metti qui i 3 componenti esistenti --
-      <app-sport-scroll ...></app-sport-scroll>
-      <app-calendarscroll ...></app-calendarscroll>
-      <app-campi-scroll ...></app-campi-scroll>
-    </div>
-
-    !-- SEZIONE SCROLLABILE (solo gli slot) --
-    <div class="scrollable-content">
-      !-- Metti qui il contenuto degli slot esistente --
-      <app-slottime *ngFor="..."></app-slottime>
-    </div>
-
-  </div>
-
-</ion-content>
--->
 
 <ion-content [scrollY]="false">
 
       <div class="booking-layout" *ngIf="flagDatiRicevuti">
         <!--SEZIONE FISSA IN ALTO (non scrolla) -->
-          <div class="fixed-header">
+          <div
+              *ngIf="!fixedHeaderCollapsed" 
+              class="fixed-header">
               <!-- RIGA COMPLESSA CON GLI SPORT-->
               <app-sport-scroll 
                   [selectedSport]="selectedSport" 
@@ -72,7 +56,7 @@
                     *ngFor="let slot of actualSlotDay.SLOTTIMES" 
                     [mySlot]="slot" 
                     [readOnly]="actualSlotDay._TEMPLATELOCK" 
-                    (clickSlot)="myClickSlot($event)">
+                    (clickSlot)="onClickSlot($event)">
                 </app-slottime>
             </div>
 
@@ -114,5 +98,5 @@
 <ion-footer *ngIf="visibleFooter()">
   <app-footbooked 
     [myPrenotaPianifica]="actualPlanning" 
-    (clickPrenota)="myClickPrenota($event)"></app-footbooked>
+    (clickPrenota)="onClickPrenota($event)"></app-footbooked>
 </ion-footer>

@@ -198,6 +198,23 @@
     margin-top: 2px;
   }
 
+  .days-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 16px 8px 16px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab; // 👈 Cursore "mano" per indicare che si può trascinare
+
+  &:active {
+    cursor: grabbing; // 👈 Cursore "mano chiusa" durante il drag
+  }
+
+
+}
+
   // =====================================================
   // RESPONSIVE
   // =====================================================

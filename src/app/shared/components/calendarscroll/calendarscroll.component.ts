@@ -13,6 +13,11 @@ export class CalendarscrollComponent implements OnInit {
   // Lista dei giorni da mostrare
   listDay: CalendarDay[] = [];
 
+  // Aggiungi queste proprietà
+  private isDragging = false;
+  private startX = 0;
+  private scrollLeft = 0;
+
   @Input() set activeDay(value: Date) {
     this._activeDay = value;
     this.prepareListDays();
@@ -35,6 +40,9 @@ export class CalendarscrollComponent implements OnInit {
   ngAfterViewInit() {
     // Attacca il listener per lo scroll infinito
     this.attachScrollListener();
+
+    // Aggiungi il drag scroll
+    this.attachDragScrollListener();
   }
 
   // =====================================================
@@ -134,6 +142,45 @@ export class CalendarscrollComponent implements OnInit {
   }
 
   /**
+ * Abilita lo scroll trascinando con il mouse
+ */
+  private attachDragScrollListener(): void {
+      if (!this.daysScrollContainer) {
+        return;
+      }
+
+      const scrollElement = this.daysScrollContainer.nativeElement;
+
+      // Mouse down - inizia il drag
+      scrollElement.addEventListener('mousedown', (e: MouseEvent) => {
+        this.isDragging = true;
+        scrollElement.style.cursor = 'grabbing';
+        this.startX = e.pageX - scrollElement.offsetLeft;
+        this.scrollLeft = scrollElement.scrollLeft;
+      });
+
+      // Mouse leave - ferma il drag
+      scrollElement.addEventListener('mouseleave', () => {
+        this.isDragging = false;
+        scrollElement.style.cursor = 'grab';
+      });
+
+      // Mouse up - ferma il drag
+      scrollElement.addEventListener('mouseup', () => {
+        this.isDragging = false;
+        scrollElement.style.cursor = 'grab';
+      });
+
+      // Mouse move - esegue lo scroll
+      scrollElement.addEventListener('mousemove', (e: MouseEvent) => {
+        if (!this.isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - scrollElement.offsetLeft;
+        const walk = (x - this.startX) * 2; // Velocità dello scroll
+        scrollElement.scrollLeft = this.scrollLeft - walk;
+      });
+  }
+  /**
    * Controlla se siamo vicini alla fine dello scroll
    * Se sì, carica automaticamente il mese successivo
    */
@@ -161,45 +208,47 @@ export class CalendarscrollComponent implements OnInit {
   /**
    * Carica automaticamente i giorni del mese successivo
    */
-  private loadNextMonthAutomatically(): void {
-    this.isLoadingNextMonth = true;
+private loadNextMonthAutomatically(): void {
+  this.isLoadingNextMonth = true;
 
-    // Trova l'ultimo giorno nella lista corrente
-    const lastDay = this.listDay[this.listDay.length - 1].dateValue;
-    
-    // Calcola il primo giorno del mese successivo
-    const nextMonth = new Date(lastDay);
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    nextMonth.setDate(1);
+  // Trova l'ultimo giorno nella lista corrente
+  const lastDay = this.listDay[this.listDay.length - 1].dateValue;
+  
+  // CORREZIONE: Crea il primo giorno del mese successivo in modo sicuro
+  const year = lastDay.getFullYear();
+  const month = lastDay.getMonth();
+  
+  // Crea direttamente il primo giorno del mese successivo
+  const nextMonthFirstDay = new Date(year, month + 1, 1);
 
-    // Aggiungi i giorni del mese successivo alla lista esistente
-    const year = nextMonth.getFullYear();
-    const month = nextMonth.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  // Aggiungi i giorni del mese successivo
+  const nextYear = nextMonthFirstDay.getFullYear();
+  const nextMonth = nextMonthFirstDay.getMonth();
+  const daysInMonth = new Date(nextYear, nextMonth + 1, 0).getDate();
 
-    console.log(`📅 CARICAMENTO MESE: ${nextMonth.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}`);
+  console.log(`📅 CARICAMENTO MESE: ${nextMonthFirstDay.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}`);
 
-    // Crea i nuovi giorni
-    const newDays: CalendarDay[] = [];
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateValue = new Date(year, month, day);
-      newDays.push({
-        dateValue: dateValue
-      });
-    }
-
-    // IMPORTANTE: Aggiorna l'array creando una nuova referenza
-    this.listDay = [...this.listDay, ...newDays];
-
-    // Forza Angular a rilevare i cambiamenti
-    this.cdr.detectChanges();
-
-    // Dopo un breve delay, consenti il caricamento del prossimo mese
-    setTimeout(() => {
-      this.isLoadingNextMonth = false;
-    }, 500);
+  // Crea i nuovi giorni
+  const newDays: CalendarDay[] = [];
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateValue = new Date(nextYear, nextMonth, day);
+    newDays.push({
+      dateValue: dateValue
+    });
   }
+
+  // Aggiorna l'array
+  this.listDay = [...this.listDay, ...newDays];
+
+  // Forza Angular a rilevare i cambiamenti
+  this.cdr.detectChanges();
+
+  // Dopo un breve delay, consenti il caricamento del prossimo mese
+  setTimeout(() => {
+    this.isLoadingNextMonth = false;
+  }, 500);
+}
 
   // =====================================================
   // NAVIGAZIONE MESI (Bottoni)

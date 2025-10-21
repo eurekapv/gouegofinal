@@ -68,6 +68,9 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   indexCount: number = 0;
   showExtraToolbar = true;
   isOnAppleSystem = false; //Sta girando su sistemi IOS (Introdotto per animare diversamente la toolbar Hide)
+
+  //Collasso la parte superiore di Header
+  fixedHeaderCollapsed:boolean = false;
   
   //Grid completa che contiene le 2 colonne o la colonna singola
   @ViewChild('gridcontainer', {read: ElementRef}) refGridContainer: ElementRef | undefined;
@@ -321,29 +324,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     return direction;
   }
 
-  /**
-   * Ritorna in formato stringa la scelta di
-   * Attività e Campo
-   */
-  get descriptionScelta(): string {
-    let value = '';
-    if (this.selectedSport) {
-      value = this.selectedSport.DENOMINAZIONE
-    }
-    if (this.selectedCampo) {
-      value = value + ` su ${this.selectedCampo.DENOMINAZIONE}`
-    }
-    if (this.selectedLocation) {
-      value = value + ` in ${this.selectedLocation.DENOMINAZIONE}`
-    }
-
-    if (value.length == 0) {
-      value = 'SCEGLI ORARIO: '
-    }
-
-    return value;
-  }
-
   /*
   Sottoscrivo alla ricezione di Location e Campi
   */
@@ -413,16 +393,6 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
                 //Chiedo di eseguire il refresh dell'Interfaccia, dove recupero i campi legati allo sport e le occupazioni
                 this.onRefresh();
             });
-  }
-
-
-
-  /**
-   * Manual o Auto
-   * @param value Modifica della versione
-   */
-  onChangeVersion(value: string) {
-    this.versionBooking = value;
   }
 
 
@@ -578,7 +548,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
    * E' stato cliccato uno slot tempo
    * @param slotClicked SlotTime Cliccato
    */
-  myClickSlot(slotClicked: SlotTime) {
+  onClickSlot(slotClicked: SlotTime) {
     
     if (slotClicked) {
       if (slotClicked.STATO == StatoSlot.contattare) {
@@ -662,51 +632,6 @@ showAlertContattaStruttura() {
     CustomAlertClass.subtitleSuccess
   );
 }
-  /**
-   * Mostra un alert per contattare la struttura
-   */
-  showAlertContattaStrutturaOld() {
-    let myButton = [];
-    let myMessage = ''
-
-    myMessage = 'Per la prenotazione dello slot è necessario contattare la struttura telefonicamente';
-    myButton = [
-      {
-        text: 'OK',
-        role: 'cancel'
-      }
-    ];
-
-
-     if (this.selectedLocation.TELEFONO && this.selectedLocation.TELEFONO.length > 0) {
-
-      myMessage = myMessage + ' al ' + this.selectedLocation.TELEFONO;
-
-      if (!this.startService.isDesktop) {
-
-        myButton = [
-          {
-            text: 'OK',
-            role: 'cancel'
-          },
-          {
-            text: 'Chiama',
-            handler: () => {
-              const number = this.selectedLocation.TELEFONO;
-              const link: HTMLAnchorElement = document.createElement('a');
-              link.setAttribute('href', `tel:${number}`);
-              link.click();
-  
-            }
-          }
-        ];
-
-      }
-      
-    }
-
-    this.startService.presentAlertMessage(myMessage, 'Contattare la struttura', myButton);
-  }
 
 
   /**
@@ -728,7 +653,7 @@ showAlertContattaStruttura() {
   /**
    * Evento Click sul pulsante di prenotazione presente nel footer
    */
-  myClickPrenota(docPianificazione: PrenotazionePianificazione) {
+  onClickPrenota(docPianificazione: PrenotazionePianificazione) {
     
     //Non solo loggato, devo loggarmi
     if (!this.userLogged) {
@@ -891,4 +816,11 @@ showAlertContattaStruttura() {
       return throwError('Si sono verificati errori. Riprovare AHIME.');
   };
 
+
+  /**
+   * Click sul pulsante di Collapsed Header Filtri
+   */
+  onClickButtonFixedHeaderCollapsed(): void {
+    this.fixedHeaderCollapsed = !this.fixedHeaderCollapsed;
+  }
 }

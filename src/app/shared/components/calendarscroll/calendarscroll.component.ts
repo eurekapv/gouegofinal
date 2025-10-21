@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-calendarscroll',
@@ -20,10 +20,21 @@ export class CalendarscrollComponent implements OnInit {
 
   @Output() onChangeActiveDay = new EventEmitter<Date>();
 
+  // Riferimento al container scrollabile
+  @ViewChild('daysScrollContainer', { read: ElementRef }) daysScrollContainer: ElementRef;
+
+  // Flag per evitare chiamate multiple durante lo scroll
+  private isLoadingNextMonth = false;
+
   constructor() {}
 
   ngOnInit() {
     this.prepareListDays();
+  }
+
+  ngAfterViewInit() {
+    // Attacca il listener per lo scroll infinito
+    this.attachScrollListener();
   }
 
   // =====================================================
@@ -51,7 +62,92 @@ export class CalendarscrollComponent implements OnInit {
   }
 
   // =====================================================
-  // NAVIGAZIONE MESI
+  // SCROLL INFINITO - PASSA AL MESE SUCCESSIVO
+  // =====================================================
+  
+  /**
+   * Attacca il listener per rilevare quando si arriva alla fine dello scroll
+   */
+  private attachScrollListener(): void {
+    if (!this.daysScrollContainer) {
+      return;
+    }
+
+    const scrollElement = this.daysScrollContainer.nativeElement;
+
+    scrollElement.addEventListener('scroll', () => {
+      this.checkIfNearEnd(scrollElement);
+    });
+  }
+
+  /**
+   * Controlla se siamo vicini alla fine dello scroll
+   * Se sì, carica automaticamente il mese successivo
+   */
+  private checkIfNearEnd(scrollElement: HTMLElement): void {
+    // Se stiamo già caricando, non fare nulla
+    if (this.isLoadingNextMonth) {
+      return;
+    }
+
+    const scrollLeft = scrollElement.scrollLeft;
+    const scrollWidth = scrollElement.scrollWidth;
+    const clientWidth = scrollElement.clientWidth;
+
+    // Calcola la distanza dalla fine (in pixel)
+    const distanceFromEnd = scrollWidth - (scrollLeft + clientWidth);
+
+    // Se siamo a meno di 100px dalla fine, carica il mese successivo
+    const THRESHOLD = 100;
+
+    if (distanceFromEnd < THRESHOLD) {
+      this.loadNextMonthAutomatically();
+    }
+  }
+
+  /**
+   * Carica automaticamente i giorni del mese successivo
+   */
+  private loadNextMonthAutomatically(): void {
+    this.isLoadingNextMonth = true;
+
+    // Calcola il primo giorno del mese successivo
+    const nextMonth = new Date(this._activeDay);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    nextMonth.setDate(1);
+
+    // Aggiungi i giorni del mese successivo alla lista esistente
+    const year = nextMonth.getFullYear();
+    const month = nextMonth.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    console.log(`📅 CARICAMENTO MESE: ${nextMonth.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}`);
+    console.log(`Prima: ${this.listDay.length} giorni`);
+
+    // Crea un nuovo array invece di fare push
+    const newDays: CalendarDay[] = [];
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateValue = new Date(year, month, day);
+      newDays.push({
+        dateValue: dateValue
+      });
+    }
+
+    // IMPORTANTE: Crea un nuovo array per far rilevare il cambio ad Angular
+    this.listDay = [...this.listDay, ...newDays];
+
+    console.log(`Dopo: ${this.listDay.length} giorni`);
+    console.log(`Ultimo giorno aggiunto: ${this.listDay[this.listDay.length - 1].dateValue.toLocaleDateString()}`);
+
+    // Dopo un breve delay, consenti il caricamento del prossimo mese
+    setTimeout(() => {
+      this.isLoadingNextMonth = false;
+    }, 500);
+  }
+
+  // =====================================================
+  // NAVIGAZIONE MESI (Bottoni)
   // =====================================================
   goToPreviousMonth() {
     const newDate = new Date(this._activeDay);
@@ -76,13 +172,35 @@ export class CalendarscrollComponent implements OnInit {
 
   private changeActiveDay(newDate: Date) {
     this._activeDay = newDate;
-    this.prepareListDays();
+    
+    // Se la nuova data è in un mese diverso, ricarica i giorni
+    if (this.isInDifferentMonth(newDate)) {
+      this.prepareListDays();
+    } else {
+      // Altrimenti fai solo scroll al giorno
+      this.scrollToActiveDay();
+    }
+    
     this.onChangeActiveDay.emit(newDate);
+  }
+
+  /**
+   * Verifica se la data è in un mese diverso dall'attuale lista
+   */
+  private isInDifferentMonth(date: Date): boolean {
+    if (this.listDay.length === 0) {
+      return true;
+    }
+
+    const firstDay = this.listDay[0].dateValue;
+    return date.getMonth() !== firstDay.getMonth() || 
+           date.getFullYear() !== firstDay.getFullYear();
   }
 
   // =====================================================
   // SCROLL AUTOMATICO
   // =====================================================
+  
   /**
    * Scrolla automaticamente al giorno attivo
    */
@@ -99,7 +217,7 @@ export class CalendarscrollComponent implements OnInit {
           inline: 'center'
         });
       }
-    }, 150); // Delay leggermente maggiore per assicurarsi che il DOM sia completamente aggiornato
+    }, 150);
   }
 
   // =====================================================
@@ -113,10 +231,57 @@ export class CalendarscrollComponent implements OnInit {
     return this.isSameDay(day.dateValue, new Date());
   }
 
+  /**
+   * Determina se mostrare il separatore del mese
+   * @param index Indice del giorno corrente
+   */
+  shouldShowMonthDivider(index: number): boolean {
+    // Sempre mostra all'inizio
+    if (index === 0) {
+      return true;
+    }
+
+    // Controllo di sicurezza
+    if (!this.listDay || !this.listDay[index] || !this.listDay[index - 1]) {
+      return false;
+    }
+
+    const currentDay = this.listDay[index].dateValue;
+    const previousDay = this.listDay[index - 1].dateValue;
+
+    // Verifica cambio mese
+    const currentMonth = currentDay.getMonth();
+    const previousMonth = previousDay.getMonth();
+    const currentYear = currentDay.getFullYear();
+    const previousYear = previousDay.getFullYear();
+
+    // Debug - rimuovi dopo il test
+    if (currentMonth !== previousMonth || currentYear !== previousYear) {
+      console.log(`SEPARATORE MESE: index=${index}, prev=${previousDay.toLocaleDateString()}, curr=${currentDay.toLocaleDateString()}`);
+    }
+
+    // Mostra se il mese O l'anno cambiano
+    return currentMonth !== previousMonth || currentYear !== previousYear;
+  }
+
   private isSameDay(date1: Date, date2: Date): boolean {
     return date1.getDate() === date2.getDate() &&
            date1.getMonth() === date2.getMonth() &&
            date1.getFullYear() === date2.getFullYear();
+  }
+
+  /**
+   * Ritorna il nome del mese corrente mostrato
+   */
+  getCurrentMonthName(): string {
+    if (this.listDay.length === 0) {
+      return '';
+    }
+    // Prendi il primo giorno della lista per il nome del mese
+    return this.listDay[0].dateValue.toLocaleDateString('it-IT', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
   }
 }
 

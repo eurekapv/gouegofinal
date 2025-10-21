@@ -27,19 +27,36 @@
   <!-- GIORNI SCROLLABILI -->
   <ion-row class="calendar-days">
     <ion-col size="12">
-      <div class="days-scroll">
-        <button
-          *ngFor="let day of listDay"
-          class="day-button"
-          [class.day-button--active]="isActiveDay(day)"
-          [class.day-button--today]="isToday(day)"
-          (click)="onClickDay(day)">
+      <!-- Aggiungi #daysScrollContainer qui -->
+      <div class="days-scroll" #daysScrollContainer>
+        
+        <ng-container *ngFor="let day of listDay; let i = index">
           
-          <span class="day-number">{{ day.dateValue | date: 'd' }}</span>
-          <span class="day-letter">{{ day.dateValue | date: 'EEE' | uppercase | slice:0:1 }}</span>
-        </button>
+          <!-- SEPARATORE MESE (quando cambia il mese) -->
+          <div *ngIf="shouldShowMonthDivider(i)" class="month-divider">
+            <div class="month-divider-line"></div>
+            <span class="month-divider-label">
+              {{ day.dateValue | date: 'MMM yyyy' | uppercase }}
+            </span>
+            <div class="month-divider-line"></div>
+          </div>
+
+          <!-- BOTTONE GIORNO -->
+          <button
+            class="day-button"
+            [class.day-button--active]="isActiveDay(day)"
+            [class.day-button--today]="isToday(day)"
+            (click)="onClickDay(day)">
+            
+            <span class="day-number">{{ day.dateValue | date: 'd' }}</span>
+            <span class="day-letter">{{ day.dateValue | date: 'EEE' | uppercase | slice:0:1 }}</span>
+          </button>
+
+        </ng-container>
+
       </div>
     </ion-col>
   </ion-row>
 
 </ion-grid>
+

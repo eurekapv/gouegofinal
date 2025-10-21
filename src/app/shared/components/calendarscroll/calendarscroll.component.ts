@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-calendarscroll',
@@ -26,7 +26,7 @@ export class CalendarscrollComponent implements OnInit {
   // Flag per evitare chiamate multiple durante lo scroll
   private isLoadingNextMonth = false;
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.prepareListDays();
@@ -59,6 +59,59 @@ export class CalendarscrollComponent implements OnInit {
 
     // Scroll automatico al giorno attivo dopo aver preparato la lista
     this.scrollToActiveDay();
+  }
+
+  // =====================================================
+  // CAMBIO DATA ATTIVA
+  // =====================================================
+  private changeActiveDay(newDate: Date) {
+    this._activeDay = newDate;
+    
+    // Se la nuova data è in un mese diverso, ricarica i giorni
+    if (this.isInDifferentMonth(newDate)) {
+      this.prepareListDays();
+    } else {
+      // Altrimenti fai solo scroll al giorno
+      this.scrollToActiveDay();
+    }
+    
+    this.onChangeActiveDay.emit(newDate);
+  }
+
+  /**
+   * Verifica se la data è in un mese diverso dall'attuale lista
+   */
+  private isInDifferentMonth(date: Date): boolean {
+    if (this.listDay.length === 0) {
+      return true;
+    }
+
+    const firstDay = this.listDay[0].dateValue;
+    return date.getMonth() !== firstDay.getMonth() || 
+           date.getFullYear() !== firstDay.getFullYear();
+  }
+
+  // =====================================================
+  // SCROLL AUTOMATICO
+  // =====================================================
+  
+  /**
+   * Scrolla automaticamente al giorno attivo
+   */
+  private scrollToActiveDay(): void {
+    setTimeout(() => {
+      // Trova il bottone del giorno attivo
+      const activeButton = document.querySelector('.day-button--active');
+      
+      if (activeButton) {
+        // Scrolla il bottone in vista (centrato)
+        activeButton.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        });
+      }
+    }, 150);
   }
 
   // =====================================================
@@ -111,8 +164,11 @@ export class CalendarscrollComponent implements OnInit {
   private loadNextMonthAutomatically(): void {
     this.isLoadingNextMonth = true;
 
+    // Trova l'ultimo giorno nella lista corrente
+    const lastDay = this.listDay[this.listDay.length - 1].dateValue;
+    
     // Calcola il primo giorno del mese successivo
-    const nextMonth = new Date(this._activeDay);
+    const nextMonth = new Date(lastDay);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
     nextMonth.setDate(1);
 
@@ -122,9 +178,8 @@ export class CalendarscrollComponent implements OnInit {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     console.log(`📅 CARICAMENTO MESE: ${nextMonth.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })}`);
-    console.log(`Prima: ${this.listDay.length} giorni`);
 
-    // Crea un nuovo array invece di fare push
+    // Crea i nuovi giorni
     const newDays: CalendarDay[] = [];
     
     for (let day = 1; day <= daysInMonth; day++) {
@@ -134,11 +189,11 @@ export class CalendarscrollComponent implements OnInit {
       });
     }
 
-    // IMPORTANTE: Crea un nuovo array per far rilevare il cambio ad Angular
+    // IMPORTANTE: Aggiorna l'array creando una nuova referenza
     this.listDay = [...this.listDay, ...newDays];
 
-    console.log(`Dopo: ${this.listDay.length} giorni`);
-    console.log(`Ultimo giorno aggiunto: ${this.listDay[this.listDay.length - 1].dateValue.toLocaleDateString()}`);
+    // Forza Angular a rilevare i cambiamenti
+    this.cdr.detectChanges();
 
     // Dopo un breve delay, consenti il caricamento del prossimo mese
     setTimeout(() => {
@@ -152,14 +207,14 @@ export class CalendarscrollComponent implements OnInit {
   goToPreviousMonth() {
     const newDate = new Date(this._activeDay);
     newDate.setMonth(newDate.getMonth() - 1);
-    newDate.setDate(1); // Vai al primo giorno del mese
+    newDate.setDate(1);
     this.changeActiveDay(newDate);
   }
 
   goToNextMonth() {
     const newDate = new Date(this._activeDay);
     newDate.setMonth(newDate.getMonth() + 1);
-    newDate.setDate(1); // Vai al primo giorno del mese
+    newDate.setDate(1);
     this.changeActiveDay(newDate);
   }
 
@@ -168,56 +223,6 @@ export class CalendarscrollComponent implements OnInit {
   // =====================================================
   onClickDay(day: CalendarDay) {
     this.changeActiveDay(day.dateValue);
-  }
-
-  private changeActiveDay(newDate: Date) {
-    this._activeDay = newDate;
-    
-    // Se la nuova data è in un mese diverso, ricarica i giorni
-    if (this.isInDifferentMonth(newDate)) {
-      this.prepareListDays();
-    } else {
-      // Altrimenti fai solo scroll al giorno
-      this.scrollToActiveDay();
-    }
-    
-    this.onChangeActiveDay.emit(newDate);
-  }
-
-  /**
-   * Verifica se la data è in un mese diverso dall'attuale lista
-   */
-  private isInDifferentMonth(date: Date): boolean {
-    if (this.listDay.length === 0) {
-      return true;
-    }
-
-    const firstDay = this.listDay[0].dateValue;
-    return date.getMonth() !== firstDay.getMonth() || 
-           date.getFullYear() !== firstDay.getFullYear();
-  }
-
-  // =====================================================
-  // SCROLL AUTOMATICO
-  // =====================================================
-  
-  /**
-   * Scrolla automaticamente al giorno attivo
-   */
-  private scrollToActiveDay(): void {
-    setTimeout(() => {
-      // Trova il bottone del giorno attivo
-      const activeButton = document.querySelector('.day-button--active');
-      
-      if (activeButton) {
-        // Scrolla il bottone in vista (centrato)
-        activeButton.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center'
-        });
-      }
-    }, 150);
   }
 
   // =====================================================
@@ -232,36 +237,27 @@ export class CalendarscrollComponent implements OnInit {
   }
 
   /**
-   * Determina se mostrare il separatore del mese
-   * @param index Indice del giorno corrente
+   * Verifica se è il primo giorno del mese
    */
-  shouldShowMonthDivider(index: number): boolean {
-    // Sempre mostra all'inizio
+  isFirstDayOfMonth(day: CalendarDay): boolean {
+    return day.dateValue.getDate() === 1;
+  }
+
+  /**
+   * Determina se mostrare il nome del mese
+   * Mostra il mese per:
+   * - Il primo elemento della lista (index 0)
+   * - Il primo giorno di ogni mese (day = 1)
+   */
+  shouldShowMonth(index: number): boolean {
+    // Mostra sempre per il primo elemento
     if (index === 0) {
       return true;
     }
 
-    // Controllo di sicurezza
-    if (!this.listDay || !this.listDay[index] || !this.listDay[index - 1]) {
-      return false;
-    }
-
+    // Mostra se è il primo giorno del mese
     const currentDay = this.listDay[index].dateValue;
-    const previousDay = this.listDay[index - 1].dateValue;
-
-    // Verifica cambio mese
-    const currentMonth = currentDay.getMonth();
-    const previousMonth = previousDay.getMonth();
-    const currentYear = currentDay.getFullYear();
-    const previousYear = previousDay.getFullYear();
-
-    // Debug - rimuovi dopo il test
-    if (currentMonth !== previousMonth || currentYear !== previousYear) {
-      console.log(`SEPARATORE MESE: index=${index}, prev=${previousDay.toLocaleDateString()}, curr=${currentDay.toLocaleDateString()}`);
-    }
-
-    // Mostra se il mese O l'anno cambiano
-    return currentMonth !== previousMonth || currentYear !== previousYear;
+    return currentDay.getDate() === 1;
   }
 
   private isSameDay(date1: Date, date2: Date): boolean {
@@ -271,17 +267,10 @@ export class CalendarscrollComponent implements OnInit {
   }
 
   /**
-   * Ritorna il nome del mese corrente mostrato
+   * TrackBy function per ottimizzare il rendering
    */
-  getCurrentMonthName(): string {
-    if (this.listDay.length === 0) {
-      return '';
-    }
-    // Prendi il primo giorno della lista per il nome del mese
-    return this.listDay[0].dateValue.toLocaleDateString('it-IT', { 
-      month: 'long', 
-      year: 'numeric' 
-    });
+  trackByDayFn(index: number, item: CalendarDay): string {
+    return `${item.dateValue.getTime()}-${index}`;
   }
 }
 

@@ -27,26 +27,22 @@
   <!-- GIORNI SCROLLABILI -->
   <ion-row class="calendar-days">
     <ion-col size="12">
-      <!-- Aggiungi #daysScrollContainer qui -->
       <div class="days-scroll" #daysScrollContainer>
         
-        <ng-container *ngFor="let day of listDay; let i = index">
-          
-          <!-- SEPARATORE MESE (quando cambia il mese) -->
-          <div *ngIf="shouldShowMonthDivider(i)" class="month-divider">
-            <div class="month-divider-line"></div>
-            <span class="month-divider-label">
-              {{ day.dateValue | date: 'MMM yyyy' | uppercase }}
-            </span>
-            <div class="month-divider-line"></div>
-          </div>
+        <ng-container *ngFor="let day of listDay; let i = index; trackBy: trackByDayFn">
 
           <!-- BOTTONE GIORNO -->
           <button
             class="day-button"
             [class.day-button--active]="isActiveDay(day)"
             [class.day-button--today]="isToday(day)"
+            [class.day-button--first-of-month]="isFirstDayOfMonth(day)"
             (click)="onClickDay(day)">
+            
+            <!-- MESE (solo se è il primo giorno del mese O se è il primo della lista) -->
+            <span class="day-month" *ngIf="shouldShowMonth(i)">
+              {{ day.dateValue | date: 'MMM' | uppercase }}
+            </span>
             
             <span class="day-number">{{ day.dateValue | date: 'd' }}</span>
             <span class="day-letter">{{ day.dateValue | date: 'EEE' | uppercase | slice:0:1 }}</span>
@@ -59,4 +55,3 @@
   </ion-row>
 
 </ion-grid>
-

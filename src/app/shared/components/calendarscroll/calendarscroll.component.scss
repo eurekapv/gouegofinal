@@ -73,7 +73,7 @@
   // GIORNI SCROLLABILI
   // =====================================================
   .calendar-days {
-    padding: 0px 0;
+    padding: 0;
   }
 
   .days-scroll {
@@ -103,9 +103,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 2px;
     width: 60px;
-    height: 60px;
     min-width: 60px;
     background: white;
     border: 2px solid var(--ion-color-light-shade);
@@ -113,7 +112,12 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
-    padding: 8px;
+    padding: 6px 4px;
+    position: relative;
+
+    // Altezza dinamica: più alta se ha il mese
+    min-height: 60px;
+    height: auto;
 
     &:hover {
       transform: scale(1.1);
@@ -132,7 +136,8 @@
       box-shadow: 0 4px 12px rgba(25, 35, 51, 0.3);
 
       .day-number,
-      .day-letter {
+      .day-letter,
+      .day-month {
         color: white;
       }
 
@@ -151,8 +156,29 @@
         font-weight: 700;
       }
     }
+
+    // Giorno con mese - stile speciale
+    &--first-of-month:not(&--active) {
+      border-color: var(--ion-color-success);
+      background: linear-gradient(180deg, var(--ion-color-success-tint) 0%, white 40%);
+    }
   }
 
+  // NOME MESE (in alto)
+  .day-month {
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: var(--ion-color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1;
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-radius: 4px;
+  }
+
+  // NUMERO GIORNO
   .day-number {
     font-size: 1.1rem;
     font-weight: 600;
@@ -161,13 +187,15 @@
     transition: color 0.3s ease;
   }
 
+  // LETTERA GIORNO SETTIMANA
   .day-letter {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--ion-color-medium);
     text-transform: uppercase;
     line-height: 1;
     transition: color 0.3s ease;
+    margin-top: 2px;
   }
 
   // =====================================================
@@ -203,8 +231,13 @@
 
     .day-button {
       width: 56px;
-      height: 56px;
       min-width: 56px;
+      min-height: 56px;
+    }
+
+    .day-month {
+      font-size: 0.5rem;
+      padding: 1px 3px;
     }
 
     .day-number {
@@ -212,7 +245,7 @@
     }
 
     .day-letter {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
     }
   }
 
@@ -223,110 +256,24 @@
 
     .day-button {
       width: 64px;
-      height: 64px;
       min-width: 64px;
+      min-height: 64px;
 
       &:hover {
         transform: scale(1.15);
       }
     }
 
+    .day-month {
+      font-size: 0.6rem;
+    }
+
     .day-number {
       font-size: 1.15rem;
     }
-  }
-}
 
-// =====================================================
-// AGGIUNGI QUESTI STILI AL TUO FILE SCSS ESISTENTE
-// =====================================================
-
-// =====================================================
-// MONTH DIVIDER (Separatore Mese)
-// =====================================================
-
-.month-divider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 140px;
-  padding: 0 8px;
-  margin: 0 4px;
-
-  .month-divider-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(
-      to right, 
-      transparent, 
-      var(--ion-color-primary-tint), 
-      transparent
-    );
-    min-width: 20px;
-  }
-
-  .month-divider-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--ion-color-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    padding: 4px 8px;
-    background: var(--ion-color-light);
-    border-radius: 8px;
-    border: 1px solid var(--ion-color-primary-tint);
-  }
-}
-
-// =====================================================
-// RESPONSIVE - Tablet
-// =====================================================
-@media (min-width: 768px) {
-  .month-divider {
-    min-width: 160px;
-    gap: 10px;
-
-    .month-divider-label {
-      font-size: 0.75rem;
-      padding: 5px 10px;
+    .day-letter {
+      font-size: 0.7rem;
     }
   }
 }
-
-// =====================================================
-// VARIANTE ALTERNATIVA (più compatta)
-// =====================================================
-
-// Se vuoi una versione ancora più compatta, usa questa:
-/*
-.month-divider {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 50px;
-  height: 60px;
-  background: var(--ion-color-light);
-  border: 2px solid var(--ion-color-primary-tint);
-  border-radius: 10px;
-  margin: 0 4px;
-
-  .month-divider-line {
-    display: none;
-  }
-
-  .month-divider-label {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--ion-color-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    text-align: center;
-    line-height: 1.2;
-    background: transparent;
-    border: none;
-    padding: 0;
-  }
-}
-*/

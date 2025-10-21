@@ -244,11 +244,11 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
    * Apre la lista degli allegati del corso
    */
   async onClickAllegati() {
+    
     const modal = await this.mdlController.create({
       component: AllegatilistPage,
       componentProps: {
-        idRef: this.myCorso.ID,
-        typeRef: 'corso'
+        myCorso: this.myCorso
       }
     });
 

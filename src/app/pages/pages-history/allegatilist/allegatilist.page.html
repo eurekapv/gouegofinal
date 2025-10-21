@@ -17,20 +17,45 @@
   </ion-refresher>
 
   <!-- NESSUN DOCUMENTO PRESENTE -->
-  <div *ngIf="listAllegati.length === 0" class="nofind-cnt">
-    <ion-label>Nessun allegato</ion-label>
-    <ion-label>disponibile</ion-label>
+  <div *ngIf="listAllegati.length === 0" class="empty-state">
+    <div class="empty-illustration">
+      <div class="empty-icon-large">
+        <ion-icon name="document-outline"></ion-icon>
+      </div>
+    </div>
+    <h2 class="empty-title">Nessun allegato disponibile</h2>
+    <p class="empty-description">Al momento non sono presenti materiali allegati per questo corso.</p>
   </div>
 
-
   <!-- DOCUMENTI PRESENTI -->
-  <ion-list *ngIf="listAllegati.length > 0">
-    <ion-item *ngFor="let allegato of listAllegati" button (click)="downloadAllegato(allegato)">
-      <ion-icon slot="start" class="" color ="" [name]="allegato.fileTypeIconName"></ion-icon>
-        <ion-label>
-          <h3>{{allegato.DESCRIZIONE}}</h3>
-        </ion-label>
-        <ion-icon slot="end" color="primary" name="cloud-download-outline"></ion-icon>
-    </ion-item>
-  </ion-list>
+  <ion-grid *ngIf="listAllegati.length > 0" class="allegati-grid">
+    <ion-row>
+      <ion-col 
+        sizeXs="12" 
+        sizeSm="12" 
+        sizeMd="6" 
+        sizeLg="4" 
+        sizeXl="4"
+        *ngFor="let allegato of listAllegati">
+        
+        <div class="allegato-card" (click)="downloadAllegato(allegato)">
+          <div class="allegato-icon-wrapper">
+            <div class="allegato-icon-circle">
+              <ion-icon [name]="allegato.fileTypeIconName"></ion-icon>
+            </div>
+          </div>
+          
+          <div class="allegato-content">
+            <h3 class="allegato-title">{{allegato.DESCRIZIONE}}</h3>
+            <div class="allegato-action">
+              <ion-icon name="cloud-download-outline"></ion-icon>
+              <span>Scarica</span>
+            </div>
+          </div>
+        </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>

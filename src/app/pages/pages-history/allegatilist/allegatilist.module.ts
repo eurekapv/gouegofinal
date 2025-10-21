@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { AllegatilistPageRoutingModule } from './allegatilist-routing.module';
 
 import { AllegatilistPage } from './allegatilist.page';
+import { SharedComponentsModule } from 'src/app/shared/components/shared-components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AllegatilistPageRoutingModule
+    AllegatilistPageRoutingModule,
+    SharedComponentsModule
   ],
   declarations: [AllegatilistPage]
 })

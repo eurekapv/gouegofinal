@@ -45,5 +45,31 @@ ion-footer {
   background-color: white;
 }
 
+// Layout principale
+.booking-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+// Sezione fissa (non scrolla)
+.fixed-header {
+  flex-shrink: 0;  // Non si riduce mai
+  background: white;
+  border-bottom: 2px solid var(--ion-color-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+// Sezione scrollabile (solo slot)
+.scrollable-content {
+  flex: 1;  // Prende tutto lo spazio rimanente
+  overflow-y: auto;  // Scroll verticale
+  overflow-x: hidden;
+  background: var(--ion-color-light-tint);
+  padding: 12px 0;
+}
+
+
 
 

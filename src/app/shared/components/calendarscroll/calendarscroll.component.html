@@ -40,7 +40,7 @@
             (click)="onClickDay(day)">
             
             <!-- MESE (solo se è il primo giorno del mese O se è il primo della lista) -->
-            <span class="day-month" *ngIf="shouldShowMonth(i)">
+            <span class="day-month" *ngIf="isFirstDayOfMonth(day)">
               {{ day.dateValue | date: 'MMM' | uppercase }}
             </span>
             

@@ -243,22 +243,6 @@ export class CalendarscrollComponent implements OnInit {
     return day.dateValue.getDate() === 1;
   }
 
-  /**
-   * Determina se mostrare il nome del mese
-   * Mostra il mese per:
-   * - Il primo elemento della lista (index 0)
-   * - Il primo giorno di ogni mese (day = 1)
-   */
-  shouldShowMonth(index: number): boolean {
-    // Mostra sempre per il primo elemento
-    if (index === 0) {
-      return true;
-    }
-
-    // Mostra se è il primo giorno del mese
-    const currentDay = this.listDay[index].dateValue;
-    return currentDay.getDate() === 1;
-  }
 
   private isSameDay(date1: Date, date2: Date): boolean {
     return date1.getDate() === date2.getDate() &&

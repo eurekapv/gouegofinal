@@ -1,0 +1,202 @@
+
+  .livelli-compact-container {
+  padding: 8px 12px;
+  background: white;
+
+  // =====================================================
+  // MESSAGGIO VUOTO
+  // =====================================================
+  .empty-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--ion-color-light);
+    border-radius: 12px;
+    color: var(--ion-color-medium);
+    font-size: 0.9rem;
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-danger);
+    }
+  }
+
+  // =====================================================
+  // LIVELLI SCROLL
+  // =====================================================
+  .livelli-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 0 4px 0;
+
+    // Scrollbar minimal
+    &::-webkit-scrollbar {
+      height: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--ion-color-light-shade);
+      border-radius: 1px;
+    }
+  }
+
+  // =====================================================
+  // BOTTONE LIVELLO
+  // =====================================================
+  .livello-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border: 2px solid var(--ion-color-success);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    font-family: inherit;
+    text-align: left;
+    min-width: 300px;
+    max-width: 320px;
+
+    &:hover:not(&--disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(44, 179, 97, 0.2);
+    }
+
+    &:active:not(&--disabled) {
+      transform: scale(0.98);
+    }
+
+    // Attivo - VERDE PIENO
+    &--active {
+      background: linear-gradient(135deg, var(--ion-color-success), #3ac979);
+      border-color: var(--ion-color-success-shade);
+      box-shadow: 0 2px 12px rgba(44, 179, 97, 0.25);
+
+      .livello-icon-circle {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.3);
+
+        ion-icon {
+          color: white;
+        }
+      }
+
+      .livello-name,
+      .livello-location {
+        color: white;
+      }
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(44, 179, 97, 0.35);
+      }
+    }
+
+    // Disabilitato
+    &--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+
+      &:hover {
+        transform: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  // =====================================================
+  // ICONA LIVELLO
+  // =====================================================
+  .livello-icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    background: var(--ion-color-light);
+    border-radius: 50%;
+    border: 2px solid var(--ion-color-success);
+    transition: all 0.2s ease;
+
+    ion-icon {
+      font-size: 28px;
+      color: var(--ion-color-success);
+      transition: color 0.2s ease;
+    }
+  }
+
+  // =====================================================
+  // INFO LIVELLO
+  // =====================================================
+  .livello-info {
+    flex: 1;
+    min-width: 0; // Per ellipsis
+  }
+
+  .livello-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+    transition: color 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .livello-location {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ion-color-medium);
+    margin: 0;
+    transition: color 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // =====================================================
+  // RESPONSIVE
+  // =====================================================
+  @media (max-width: 576px) {
+    padding: 6px 8px;
+
+    .livelli-scroll {
+      gap: 10px;
+    }
+
+    .livello-btn {
+      padding: 10px 14px;
+      gap: 10px;
+      min-width: 280px;
+      max-width: 300px;
+    }
+
+    .livello-icon-circle {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+
+    .livello-name {
+      font-size: 1rem;
+    }
+
+    .livello-location {
+      font-size: 0.8rem;
+    }
+  }
+}

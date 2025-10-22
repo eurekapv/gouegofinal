@@ -50,6 +50,7 @@ import { NumericInputUpDownComponent } from './numeric-input-up-down/numeric-inp
 import { DailyCourseItemListComponent } from './course/daily-course-item-list/daily-course-item-list.component';
 import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
+import { LevelScrollComponent } from './level-scroll/level-scroll.component';
 
 
 
@@ -104,7 +105,8 @@ import { EmptyStateComponent } from './empty-state/empty-state.component';
         CartItemRowComponent,
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
-        ItemPresenzaComponent
+        ItemPresenzaComponent,
+        LevelScrollComponent
     ],
     exports: [
         AdvertisingComponent,
@@ -145,7 +147,8 @@ import { EmptyStateComponent } from './empty-state/empty-state.component';
         CartItemRowComponent,
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
-        ItemPresenzaComponent
+        ItemPresenzaComponent,
+        LevelScrollComponent
     ]
 })
 export class SharedComponentsModule {}

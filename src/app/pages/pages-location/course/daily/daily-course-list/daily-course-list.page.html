@@ -20,211 +20,150 @@
   <ion-refresher slot="fixed" (ionRefresh)="onRefreshData($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-grid 
-        class="ion-no-margin ion-no-padding"
-        #gridcontainer>
 
-        <!-- PAGINA IN ERRORE -->
-        <ion-row 
-            *ngIf="loadedData && errorLoadingData">
-          <ion-col 
-            sizeXs="12" 
-            sizeSm="12" 
-            sizeMd="12"
-            sizeLg="8" offsetLg="2"
-            sizeXl="8" offsetXl="2">
+  <div class="booking-layout">
+    <!-- ERRORE CARICAMENTO DATI -->
+    <div class="ion-no-margin" *ngIf="loadedData && errorLoadingData">
+      <app-empty-state
+          icon="alert-circle-outline"
+          type="error"
+          title="Qualcosa non va"
+          [message]="messageErrorPage">
+      </app-empty-state>
+    </div>
 
-            <!-- ERRORE CARICAMENTO -->
-            <app-card-image
-              src="assets/boysplaying_small.png"
-              title="Spiacenti, qualcosa non va"
-              [subtitle]="messageErrorPage"
-            >
-            </app-card-image>    
-          </ion-col>
-        </ion-row>
+    <!-- CARICAMENTO CORRETTO -->
+    <div class="ion-no-margin" *ngIf="loadedData && !errorLoadingData">
 
-        
-        <!-- MODALITA' A GIORNATA -->
-        <ion-row 
-            *ngIf="loadedData && !errorLoadingData && elencoMode == false">
-          <!-- COLONNA A SINISTRA -->
-          <ion-col
-              
-              sizeXs="12" 
-              sizeSm="12" 
-              sizeMd="4" 
-              sizeLg="4" 
-              sizeXl="4">
-              <ion-grid 
-                  class="ion-no-margin ion-no-padding">
-                <!-- RIGA COMPLESSA CON GLI SPORT-->
-                <ion-row>
-                  <ion-col>
-                    <app-sport-scroll 
-                        [selectedSport]="selectedSport" 
-                        [sportList]="listLocationSport" 
-                        [direction]="directionSliderSportCampi"
-                        (sportChanged)="onChangeSport($event)" >
-                    </app-sport-scroll>
-                  </ion-col>                  
-                </ion-row>
+      <!-- MODALITA CARD SEZIONE -->
+      <div class="ion-no-margin" *ngIf="!elencoMode">
+        <!-- SEZIONE FISSA IN ALTO -->
+        <div class="fixed-header ion-no-margin">
+          <!-- SCROLLER SPORT -->
+          <app-sport-scroll 
+              [selectedSport]="selectedSport" 
+              [sportList]="listLocationSport" 
+              [direction]="directionSliderSportCampi"
+              (sportChanged)="onChangeSport($event)" >
+          </app-sport-scroll>
+  
+          <!-- CALENDARIO SCROLL -->
+          <app-calendarscroll 
+            [activeDay]="selectedDate"
+            (onChangeActiveDay)="onChangeBookDay($event)">
+          </app-calendarscroll> 
+          
+          <!-- RIGA CON ELENCO DEI LIVELLI -->
+          <app-level-scroll
+            [selectedLivello]="selectedLivello"
+            (livelloChanged)="onChangeLivello($event)"
+            *ngIf="selectedSport"
+            [addAllLevelItem]="true"
+            [livelliList]="livelliList">
+          </app-level-scroll>          
+        </div>
 
-                <!-- SCELTA LIVELLO -->
-                <ion-row *ngIf="selectedSport">
-                  <ion-col>
-                    <ion-accordion-group #accordionsportlevel>
-                      <ion-accordion 
-                            class="ion-padding-horizontal"
-                            value="sportlevel">
-                        <ion-item slot="header" color="light">
-                          <ion-label>{{selectedLivello ? selectedLivello.DENOMINAZIONE : 'Tutti i livelli'}}</ion-label>
-                        </ion-item>
-                  
-                        <div class="ion-no-padding" slot="content">
-                          <ion-list>
-                            <ion-item 
-                                detail="false"
-                                button="true"
-                                (click)="onChangeLivello()">
-                              <ion-label>Tutti i livelli</ion-label>
-                              <ion-icon 
-                                  color="success"
-                                  *ngIf="!selectedLivello" name="checkmark-outline" slot="end"></ion-icon>
-                            </ion-item>
-                  
-                            <ion-item 
-                                    (click)="onChangeLivello(itemLevel)"
-                                    *ngFor="let itemLevel of selectedSport.LIVELLO">
-                                <ion-label>{{itemLevel.DENOMINAZIONE}}</ion-label>
-                                <ion-icon 
-                                    color="success"
-                                    *ngIf="selectedLivello && selectedLivello.ID == itemLevel.ID" 
-                                    name="checkmark-outline" 
-                                    slot="end"></ion-icon>
-                            </ion-item>
-                  
-                          </ion-list>
-                        </div>
-                      </ion-accordion>
-                    </ion-accordion-group>
+        <!-- SEZIONE SCROLLABILE-->
+        <div class="scrollable-content">
+          <!-- RIGA CON L'ELENCO DEI CORSI -->
+          <ion-row *ngIf="listCorsi && listCorsi.length != 0">
+            <ion-col>
+              <ion-list>
+                  <ion-list-header mode="ios" class="ion-padding-vertical">Corsi in programma</ion-list-header>
 
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
+                  <app-daily-course-item-list
+                    *ngFor="let itemCorso of listCorsi; index as i"
+                    (OnClickItem)="onClickItem(itemCorso)"
+                    [dailyCorsoDoc]="itemCorso"
+                    [index]="i"
+                    [alternateColor]="true"
+                  >
+                  </app-daily-course-item-list>
+              </ion-list>
+
             </ion-col>
-
-              <!-- COLONNA A DESTRA -->
-              <ion-col
-                  sizeXs="12" 
-                  sizeSm="12" 
-                  sizeMd="8" 
-                  sizeLg="8" 
-                  sizeXl="8">
-
-                  <!-- ITEM DEL CALENDARIO  -->
-                  <ion-grid 
-                          class="ion-no-margin ion-no-padding">
-
-                    <!-- RIGA 1 CALENDAR SCROLL -->
-                    <ion-row class="ion-no-margin">
-                      <ion-col>
-                        <app-calendarscroll 
-                          [activeDay]="selectedDate"
-                          (onChangeActiveDay)="onChangeBookDay($event)"></app-calendarscroll>
-                      </ion-col>
-                    </ion-row>
-
-                    <!-- RIGA CON L'ELENCO DEI CORSI -->
-                    <ion-row *ngIf="listCorsi && listCorsi.length != 0">
-                      <ion-col>
-                        <ion-list>
-                            <ion-list-header mode="ios" class="ion-padding-vertical">Corsi in programma</ion-list-header>
-
-                            <app-daily-course-item-list
-                              *ngFor="let itemCorso of listCorsi; index as i"
-                              (OnClickItem)="onClickItem(itemCorso)"
-                              [dailyCorsoDoc]="itemCorso"
-                              [index]="i"
-                              [alternateColor]="true"
-                            >
-                            </app-daily-course-item-list>
-                        </ion-list>
-
-                      </ion-col>
-                    </ion-row>
-                    <!-- NON CI SONO CORSI NELLA GIORNATA -->
-                    <ion-row *ngIf="listCorsi && listCorsi.length == 0">
-                      <ion-col>
-                        <app-card-image
-                        *ngIf="listCorsi.length === 0"
-                        src="assets/boysplaying_small.png"
-                        title="Nessuna lezione trovata"
-                        subtitle="modifica data, attivit&agrave; o livello per cercare altre lezioni"
-                        >
-                      </app-card-image> 
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
-              </ion-col>
-        </ion-row>
-      
-        <div>
-          <!-- MODALITA' ELENCO -->
-          <ion-row 
-              *ngIf="loadedData && !errorLoadingData && elencoMode">
-              <ion-col 
-                sizeXs="12" 
-                sizeSm="12" 
-                sizeMd="12"
-                sizeLg="8" offsetLg="2"
-                sizeXl="8" offsetXl="2">
-                <ion-list>
-                  <ion-list-header mode="ios" class="ion-padding-vertical">Prossime Lezioni</ion-list-header>
-                      <!-- DATI NON PRESENTI -->
-                      <app-card-image
-                        *ngIf="listGroupedCorsi.length === 0"
-                        src="assets/boysplaying_small.png"
-                        subtitle="Guardando in archivio"
-                        title="nessuna lezione trovata"
-                      >
-                      </app-card-image> 
-                  <div *ngFor="let itemGrouped of listGroupedCorsi">
-                    <ion-item-divider class="ion-padding-vertical">
-                      <ion-label>{{itemGrouped.DATEFILTER | date: 'EEEE dd/MM/yyyy' | titlecase}}</ion-label>
-                      <ion-button 
-                          (click)="onClickRequestAllGroupedCorsi(itemGrouped)"
-                          slot="end" 
-                          color="success" 
-                          *ngIf="itemGrouped.ALLREQUESTED == false">tutti</ion-button>
-                    </ion-item-divider>
-
-                    <app-daily-course-item-list
-                      *ngFor="let itemCorso of itemGrouped.LISTCORSI; index as i"
-                      (OnClickItem)="onClickItem(itemCorso)"
-                      [dailyCorsoDoc]="itemCorso"
-                      [index]="i"
-                      [alternateColor]="true"
-                      [extendedInfo]="true"
-                    >
-                  </app-daily-course-item-list>                
-
-                  </div>
-                </ion-list>
-              </ion-col>
           </ion-row>
+
+          <!-- NON CI SONO CORSI NELLA GIORNATA -->
+          <div class="ion-no-margin" *ngIf="!existListCorsi">
+            <app-empty-state
+                icon="alert-circle-outline"
+                type="info"
+                title="Nessuna lezione disponibile"
+                [message]="'modifica data, attivit&agrave; o livello per cercare altre lezioni'">
+            </app-empty-state>
+          </div>
+         
+        </div>
+
+
+
+      </div>
+
+      <!-- MODALITA ELENCO -->
+      <div class="ion-no-margin" *ngIf="elencoMode">
+        <!-- SEZIONE SCROLLABILE-->
+        <div class="scrollable-content">
+
+          <!-- NON CI SONO CORSI IN CALENDARIO -->
+          <div class="ion-no-margin" *ngIf="!existListCorsiGrouped">
+            <app-empty-state
+                icon="alert-circle-outline"
+                type="info"
+                title="Nessuna lezione disponibile"
+                [message]="'non sono previste prossime lezioni in calendario'">
+            </app-empty-state>
+          </div>
+
+          <!-- SONO PRESENTI CORSI IN CALENDARIO -->
+          <ion-list *ngIf="existListCorsiGrouped">
+            <ion-list-header 
+                mode="ios" 
+                class="ion-padding-vertical">
+                Prossime Lezioni
+            </ion-list-header>
+
+            <div *ngFor="let itemGrouped of listGroupedCorsi">
+              <ion-item-divider class="ion-padding-vertical">
+                <ion-label>{{itemGrouped.DATEFILTER | date: 'EEEE dd/MM/yyyy' | titlecase}}</ion-label>
+                <ion-button 
+                    (click)="onClickRequestAllGroupedCorsi(itemGrouped)"
+                    slot="end" 
+                    color="success" 
+                    *ngIf="itemGrouped.ALLREQUESTED == false">tutti</ion-button>
+              </ion-item-divider>
+
+              <app-daily-course-item-list
+                *ngFor="let itemCorso of itemGrouped.LISTCORSI; index as i"
+                (OnClickItem)="onClickItem(itemCorso)"
+                [dailyCorsoDoc]="itemCorso"
+                [index]="i"
+                [alternateColor]="true"
+                [extendedInfo]="true"
+              >
+            </app-daily-course-item-list>                
+
+            </div>
+          </ion-list>
+
           <!-- INFINITE SCROLL -->
           <ion-infinite-scroll
               threshold="100px"
               (ionInfinite)="requestListGroupedCorsi($event)"
               >
-          <ion-infinite-scroll-content oading-spinner="bubbles" loadingText="Attendere..."></ion-infinite-scroll-content>
-      </ion-infinite-scroll>  
-
+              <ion-infinite-scroll-content 
+                  loading-spinner="bubbles" 
+                  loadingText="Attendere...">
+              </ion-infinite-scroll-content>
+          </ion-infinite-scroll>           
         </div>
-    
-  </ion-grid>
-          
+      </div>
+
+    </div>
+
+  </div>
+
+
 
 
 </ion-content>

@@ -1,0 +1,29 @@
+<div class="livelli-compact-container">
+  <!-- Messaggio vuoto -->
+  <div class="empty-message" *ngIf="!_flagAvailableLivelli">
+    <ion-icon name="bar-chart-outline"></ion-icon>
+    <span>Nessun livello disponibile</span>
+  </div>
+
+  <!-- Livelli scrollabili -->
+  <div class="livelli-scroll" *ngIf="_flagAvailableLivelli">
+    <button
+      *ngFor="let livello of _listAvailableLivelli"
+      class="livello-btn"
+      [class.livello-btn--active]="isSelected(livello)"
+      [class.livello-btn--disabled]="!_canChoose"
+      [disabled]="!_canChoose"
+      (click)="onChangeLivello(livello)">
+      
+      <!-- Icona location -->
+      <div class="livello-icon-circle">
+        <ion-icon name="bar-chart-outline"></ion-icon>
+      </div>
+
+      <!-- Info livello -->
+      <div class="livello-info">
+        <h3 class="livello-name">{{ livello.DENOMINAZIONE }}</h3>
+      </div>
+    </button>
+  </div>
+</div>

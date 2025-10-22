@@ -49,6 +49,9 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
 
   eventIonInfinit: any; //Eventuale evento IonInfinity
 
+  //Collasso la parte superiore di Header
+  fixedHeaderCollapsed:boolean = false;
+
 
   //Grid completa che contiene le 2 colonne o la colonna singola
   @ViewChild('gridcontainer', {read: ElementRef}) refGridContainer: ElementRef | undefined;
@@ -75,6 +78,39 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
     
     return direction;
   }
+
+  /**
+   * Ritorna una lista dei livelli dello sport selezionato
+   */
+  get livelliList(): Livello[] {
+    let listLevel: Livello[] = [];
+
+    if (this.selectedSport && this.selectedSport.LIVELLO) {
+      if (this.selectedSport.LIVELLO.length != 0) {
+        listLevel = this.selectedSport.LIVELLO;
+      }
+    }
+
+    return listLevel;
+  }
+
+  /**
+   * @returns TRUE se la Lista Corsi ha elementi
+   */
+  get existListCorsi(): boolean {
+
+    return (this.listCorsi && this.listCorsi.length != 0);
+
+  }
+
+  /**
+   * @returns TRUE se la Lista Grouped Corsi ha elementi
+   */
+  get existListCorsiGrouped(): boolean {
+    
+    return (this.listGroupedCorsi && this.listGroupedCorsi.length != 0);
+
+  }  
 
   constructor(private startService: StartService,
               private router: ActivatedRoute,

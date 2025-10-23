@@ -68,18 +68,14 @@
           <!-- RIGA CON L'ELENCO DEI CORSI -->
           <ion-row *ngIf="listCorsi && listCorsi.length != 0">
             <ion-col>
-              <ion-list>
-                  <ion-list-header mode="ios" class="ion-padding-vertical">Corsi in programma</ion-list-header>
-
-                  <app-daily-course-item-list
-                    *ngFor="let itemCorso of listCorsi; index as i"
-                    (OnClickItem)="onClickItem(itemCorso)"
-                    [dailyCorsoDoc]="itemCorso"
-                    [index]="i"
-                    [alternateColor]="true"
-                  >
-                  </app-daily-course-item-list>
-              </ion-list>
+              <app-daily-course-item-list
+                *ngFor="let itemCorso of listCorsi; index as i"
+                (OnClickItem)="onClickItem(itemCorso)"
+                [dailyCorsoDoc]="itemCorso"
+                [index]="i"
+                [alternateColor]="true"
+              >
+              </app-daily-course-item-list>
 
             </ion-col>
           </ion-row>

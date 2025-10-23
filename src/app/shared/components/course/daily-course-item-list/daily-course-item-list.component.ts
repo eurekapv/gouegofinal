@@ -124,11 +124,25 @@ export class DailyCourseItemListComponent implements OnInit {
   }
 
   /**
+   * Calcola la percentuale di posti occupati
+   */
+  getAvailabilityPercentage(): number {
+    if (!this._dailyCorsoDoc.MAXPARTECIPANTI || this._dailyCorsoDoc.MAXPARTECIPANTI === 0) {
+      return 0;
+    }
+    
+    const numIscritti = this._dailyCorsoDoc.NUMISCRITTI || 0;
+    const percentage = (numIscritti / this._dailyCorsoDoc.MAXPARTECIPANTI) * 100;
+    
+    return Math.min(100, Math.max(0, percentage));
+  }
+
+  /**
   * Click sull'elemento (giro il click al chiamante)
   */
   onClickElement() {
       
     this.OnClickItem.emit(this._dailyCorsoDoc);
     
-}  
+  }  
 }

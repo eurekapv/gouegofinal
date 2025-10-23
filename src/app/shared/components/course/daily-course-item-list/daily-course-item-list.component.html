@@ -1,46 +1,72 @@
-<ion-item
-    [color]="_colorItem"
-    (click)="onClickElement()"
-    button="true">
-    <!-- PORZIONE ICONA -->
-    <ion-icon 
-      [name]="iconName" 
-      slot="start"
-      [color]="iconColor">
-    </ion-icon>
-
-<ion-label 
-    class="ion-text-wrap">
-
-    <h2 class="ion-text-bold ion-text-wrap">{{_dailyCorsoDoc.DENOMINAZIONE}}</h2>
-    <p *ngIf="_extendedInfo && _containSport">
-      <ion-badge color="warning">{{_dailyCorsoDoc.DENOMINAZIONESPORT}}</ion-badge>
-    </p>
-
-    <p class="ion-text-bold" *ngIf="_containOre || _containCampo">
-      <span *ngIf="_containOre">{{_dailyCorsoDoc?.ORELEZIONE| labelNumeroOre : 'long'}}</span>
-      <span *ngIf="_containCampo" class="ion-text-small">
-        &nbsp;presso {{_dailyCorsoDoc?.DENOMINAZIONECAMPO}}
-      </span>
-    </p>
+<div class="daily-course-card" 
+     [class.card-alternate]="_alternateColor && _index % 2 != 0"
+     (click)="onClickElement()">
   
-  <h4 
-    class="ion-text-wrap"
-    *ngIf="_containLivello">
-    Livello {{_dailyCorsoDoc.DENOMINAZIONELIVELLO}} 
-  </h4>
+  <!-- COLONNA SINISTRA: ICONA E ORARIO -->
+  <div class="card-left">
 
-    <p 
-      class="ion-text-wrap"
-      *ngIf="_containTrainers">
-      con {{_dailyCorsoDoc.LISTTRAINERS}}
-    </p>
-</ion-label> 
+    <div class="course-icon-wrapper">
+      <ion-icon [name]="iconName" [color]="iconColor"></ion-icon>
+    </div>
 
-<ion-chip 
-  [color]="iconColor">
-  {{_dailyCorsoDoc.DATAORAINIZIO | date: 'HH:mm'}}
-  <ion-icon name="time-outline"></ion-icon>
-</ion-chip>
+    <!-- Box Orario -->
+    <div class="time-box" [class.time-success]="iconColor === 'success'" [class.time-danger]="iconColor === 'danger'">
+      <ion-icon name="time-outline"></ion-icon>
+      <span class="time-value">{{_dailyCorsoDoc.DATAORAINIZIO | date: 'HH:mm'}}</span>
+    </div>
+  </div>
 
-</ion-item>
+  <!-- COLONNA CENTRALE: INFORMAZIONI CORSO -->
+  <div class="card-content">
+    <!-- Titolo Corso -->
+    <h3 class="course-title">{{_dailyCorsoDoc.DENOMINAZIONE}}</h3>
+
+    <!-- Badge Sport (solo in extendedInfo) -->
+    <div class="course-badges" *ngIf="_extendedInfo && _containSport">
+      <span class="badge badge-sport">{{_dailyCorsoDoc.DENOMINAZIONESPORT}}</span>
+    </div>
+
+    <!-- Durata e Campo -->
+    <div class="course-details" *ngIf="_containOre || _containCampo">
+      <div class="detail-item" *ngIf="_containOre">
+        <ion-icon name="hourglass-outline"></ion-icon>
+        <span>{{_dailyCorsoDoc.ORELEZIONE | labelNumeroOre : 'short'}}</span>
+      </div>
+      <div class="detail-item" *ngIf="_containCampo">
+        <ion-icon name="location-outline"></ion-icon>
+        <span>{{_dailyCorsoDoc.DENOMINAZIONECAMPO}}</span>
+      </div>
+    </div>
+
+    <!-- Livello -->
+    <div class="course-level" *ngIf="_containLivello">
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <span>Livello {{_dailyCorsoDoc.DENOMINAZIONELIVELLO}}</span>
+    </div>
+
+    <!-- Trainers -->
+    <div class="course-trainers" *ngIf="_containTrainers">
+      <ion-icon name="person-outline"></ion-icon>
+      <span>{{_dailyCorsoDoc.LISTTRAINERS}}</span>
+    </div>
+
+    <!-- Posti disponibili (se presente MAXPARTECIPANTI e NUMISCRITTI) -->
+    <div class="course-availability" *ngIf="_dailyCorsoDoc.MAXPARTECIPANTI && _dailyCorsoDoc.MAXPARTECIPANTI > 0">
+      <ion-icon name="people-outline"></ion-icon>
+      <span>
+        {{_dailyCorsoDoc.NUMISCRITTI || 0}}/{{_dailyCorsoDoc.MAXPARTECIPANTI}} iscritti
+      </span>
+      <div class="availability-bar">
+        <div class="availability-fill" 
+             [style.width.%]="getAvailabilityPercentage()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLONNA DESTRA: ICONA FRECCIA -->
+  <div class="card-right">
+    <ion-icon name="chevron-forward-outline"></ion-icon>
+  </div>
+
+</div>

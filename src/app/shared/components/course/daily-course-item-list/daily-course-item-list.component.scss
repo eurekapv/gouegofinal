@@ -1,17 +1,516 @@
-ion-item {
+// =====================================================
+// DAILY COURSE ITEM LIST - MODERN CARD DESIGN
+// =====================================================
 
-    >ion-icon {
-        font-size: 40px;
+.daily-course-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 16px;
+  margin: 0 16px 12px 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  // Hover effect
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border-color: var(--ion-color-primary);
+  }
+
+  // Active/pressed effect
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  // Colore alternato
+  &.card-alternate {
+    background: #f9fafb;
+  }
+
+  // =====================================================
+  // COLONNA SINISTRA: ICONE E ORARIO
+  // =====================================================
+  .card-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+
+    // Wrapper Icona Sport
+    .sport-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      .sport-icon {
+        font-family: "sports";
+        font-size: 32px;
+        color: var(--ion-color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
+
+    // Wrapper Icona Corso Generica
+    .course-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+      ion-icon {
+        font-size: 32px;
+      }
+    }
+
+    // Box Orario
+    .time-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 10px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      border: 2px solid #d1d5db;
+      min-width: 56px;
+      transition: all 0.3s ease;
+
+      ion-icon {
+        font-size: 16px;
+        color: var(--ion-color-medium);
+      }
+
+      .time-value {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--ion-color-dark);
+        line-height: 1;
+      }
+
+      // Stati colorati
+      &.time-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border-color: var(--ion-color-success);
+
+        ion-icon {
+          color: var(--ion-color-success);
+        }
+
+        .time-value {
+          color: var(--ion-color-success-shade);
+        }
+      }
+
+      &.time-danger {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-color: var(--ion-color-danger);
+
+        ion-icon {
+          color: var(--ion-color-danger);
+        }
+
+        .time-value {
+          color: var(--ion-color-danger-shade);
+        }
+      }
+    }
+  }
+
+  // =====================================================
+  // COLONNA CENTRALE: CONTENUTO
+  // =====================================================
+  .card-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    // Titolo Corso
+    .course-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--ion-color-dark);
+      margin: 0;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    // Badge Container
+    .course-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+
+        &.badge-sport {
+          background: var(--ion-color-warning);
+          color: var(--ion-color-warning-contrast);
+        }
+      }
+    }
+
+    // Dettagli Corso (durata, campo)
+    .course-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+
+      .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: var(--ion-color-medium);
+        font-weight: 600;
+
+        ion-icon {
+          font-size: 18px;
+          color: var(--ion-color-primary);
+        }
+
+        span {
+          line-height: 1;
+        }
+      }
+    }
+
+    // Livello Corso
+    .course-level {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: var(--ion-color-secondary);
+      font-weight: 700;
+
+      ion-icon {
+        font-size: 18px;
+      }
+    }
+
+    // Trainers
+    .course-trainers {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--ion-color-medium);
+      font-weight: 500;
+      font-style: italic;
+
+      ion-icon {
+        font-size: 16px;
+        color: var(--ion-color-tertiary);
+      }
+
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    // Disponibilità Posti
+    .course-availability {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--ion-color-medium);
+      font-weight: 600;
+
+      ion-icon {
+        font-size: 18px;
+        color: var(--ion-color-success);
+      }
+
+      span {
+        white-space: nowrap;
+      }
+
+      .availability-bar {
+        flex: 1;
+        height: 6px;
+        background: #e5e7eb;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-left: 4px;
+
+        .availability-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--ion-color-success) 0%, var(--ion-color-success-shade) 100%);
+          border-radius: 3px;
+          transition: width 0.5s ease;
+        }
+      }
+    }
+  }
+
+  // =====================================================
+  // COLONNA DESTRA: FRECCIA
+  // =====================================================
+  .card-right {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-medium);
+      transition: all 0.3s ease;
+    }
+  }
+
+  // Animazione freccia su hover
+  &:hover .card-right ion-icon {
+    color: var(--ion-color-primary);
+    transform: translateX(4px);
+  }
 }
 
-ion-label {
-    p {
-        color: var(--ion-accent-contrast);
+// =====================================================
+// RESPONSIVE - MOBILE
+// =====================================================
+@media (max-width: 576px) {
+  .daily-course-card {
+    gap: 12px;
+    padding: 12px;
+    margin: 0 12px 10px 12px;
+
+    .card-left {
+      gap: 8px;
+
+      .sport-icon-wrapper,
+      .course-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 12px;
+
+        .sport-icon {
+          font-size: 28px;
+        }
+
+        ion-icon {
+          font-size: 28px;
+        }
+      }
+
+      .time-box {
+        padding: 5px 8px;
+        min-width: 48px;
+
+        ion-icon {
+          font-size: 14px;
+        }
+
+        .time-value {
+          font-size: 0.75rem;
+        }
+      }
     }
+
+    .card-content {
+      gap: 6px;
+
+      .course-title {
+        font-size: 1rem;
+      }
+
+      .course-badges .badge {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+      }
+
+      .course-details .detail-item {
+        font-size: 0.85rem;
+
+        ion-icon {
+          font-size: 16px;
+        }
+      }
+
+      .course-level {
+        font-size: 0.85rem;
+
+        ion-icon {
+          font-size: 16px;
+        }
+      }
+
+      .course-trainers {
+        font-size: 0.8rem;
+
+        ion-icon {
+          font-size: 14px;
+        }
+      }
+
+      .course-availability {
+        font-size: 0.8rem;
+
+        ion-icon {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .card-right ion-icon {
+      font-size: 20px;
+    }
+  }
 }
 
-ion-chip {
-    font-size: large;
-    font-weight: 800;
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+@media (min-width: 768px) and (max-width: 1024px) {
+  .daily-course-card {
+    margin: 0 20px 14px 20px;
+    padding: 18px;
+
+    .card-left {
+      .sport-icon-wrapper,
+      .course-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+
+        .sport-icon {
+          font-size: 36px;
+        }
+
+        ion-icon {
+          font-size: 36px;
+        }
+      }
+    }
+
+    .card-content {
+      .course-title {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - DESKTOP
+// =====================================================
+@media (min-width: 1025px) {
+  .daily-course-card {
+    margin: 0 24px 16px 24px;
+    padding: 20px;
+    gap: 20px;
+
+    .card-left {
+      gap: 12px;
+
+      .sport-icon-wrapper,
+      .course-icon-wrapper {
+        width: 68px;
+        height: 68px;
+        min-width: 68px;
+
+        .sport-icon {
+          font-size: 38px;
+        }
+
+        ion-icon {
+          font-size: 38px;
+        }
+      }
+
+      .time-box {
+        min-width: 68px;
+      }
+    }
+
+    .card-content {
+      .course-title {
+        font-size: 1.25rem;
+      }
+
+      .course-details .detail-item {
+        font-size: 0.95rem;
+      }
+
+      .course-level {
+        font-size: 0.95rem;
+      }
+    }
+
+    .card-right ion-icon {
+      font-size: 28px;
+    }
+  }
+}
+
+// =====================================================
+// ANIMAZIONI
+// =====================================================
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.daily-course-card {
+  animation: fadeInUp 0.4s ease;
+  animation-fill-mode: both;
 }

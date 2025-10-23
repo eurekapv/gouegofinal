@@ -11,6 +11,7 @@ import { Utente } from 'src/app/models/utente/utente.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { ModalitaIscrizione, StatoIscrizione, TargetSesso } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
+import { CustomAlertClass } from 'src/app/models/zsupport/valuelist.model';
 
 @Component({
   selector: 'app-daily-course-subscribe',
@@ -456,32 +457,57 @@ get hasSufficientMinutes(): boolean {
 
   //#region ISCRIVITI
   
-  /**
+/**
    * Risposta al Click del Button Iscriviti
    */
   onClickIscriviti() {
     let myMessage = '';
+    let mySubTitle = '';
     let listButtons: AlertButton[];
 
     //Serve il doc di corso, l'utente
     if (this._corsoDoc && this.utenteDoc && this.flagIscrizioneAttiva) {
-      myMessage = `<p>Stai effettuando l'iscrizione alla lezione di</p>`;
-      myMessage += `<p class="ion-text-bold">${this._corsoDoc.DENOMINAZIONE}</p>`;
-      myMessage += `<p>programmata per</p>`
-      myMessage += `<p class="ion-text-bold">${MyDateTime.formatDate(this._corsoDoc.DATAORAINIZIO, 'EEEE dd/MM/yyyy')}</p>`;
-      myMessage += `<p>alle ore ${MyDateTime.formatDate(this._corsoDoc.DATAORAINIZIO, 'H:mm')}</p>`;
-      myMessage += `<p>Vuoi Iscriverti ?</p>`;
+      // SubTitle: Nome del corso in evidenza (verrà colorato di verde)
+      mySubTitle = this._corsoDoc.DENOMINAZIONE;
+      
+      // Formattazione data e ora in italiano (grazie alla locale it in MyDateTime)
+      const giornoDataCompleta = MyDateTime.formatDate(this._corsoDoc.DATAORAINIZIO, 'EEEE dd/MM/yyyy');
+      const ora = MyDateTime.formatTime(this._corsoDoc.DATAORAINIZIO, false);
+      
+      myMessage = `<p style="margin: 0px 0px 4px 0px;">Stai effettuando l'iscrizione alla lezione programmata per:</p>`;
+      myMessage += `<p style="margin: 0px 0px 4px 0px;"><strong>${giornoDataCompleta}</strong></p>`;
+      myMessage += `<p style="margin: 0px 0px 4px 0px;">alle ore <strong>${ora}</strong></p>`;
+      
+      // Info sui minuti utilizzati (solo se presenti)
+      if (this.minutiRichiestiLezione > 0) {
+        myMessage += `<p style="margin: 0px 0px 4px 0px; font-size: 0.9em; color: var(--ion-color-medium);">
+          Verranno utilizzati <br/><strong>${this.minutiRichiestiLezione} minuti</strong> del<br/>tuo pacchetto ore
+        </p>`;
+      }
+      
+      myMessage += `<p style="margin-top: 5px;">Vuoi confermare l'iscrizione?</p>`;
+      
+      // Bottoni con classi CSS personalizzate
       listButtons = [{
-        text: 'Si, procedi',
+        text: 'Sì, procedi',
+        cssClass: 'alert-button-success',
         handler: ()=> {
           this.execIscrizione();
         }
         }, {
           text: 'No, aspetta',
-          role: 'cancel'
+          role: 'cancel',
+          cssClass: 'alert-button-cancel'
         }];
 
-      this.startService.presentAlertMessage(myMessage, 'Iscriviti', listButtons);
+      // Chiamata al metodo con tutti i parametri per sfruttare il custom-alert.scss
+      this.startService.presentAlertMessage(
+        myMessage, 
+        'Conferma Iscrizione', 
+        listButtons, 
+        mySubTitle,
+        CustomAlertClass.subtitleSuccess  // Subtitle verde per il nome del corso
+      );
     }
   }
 

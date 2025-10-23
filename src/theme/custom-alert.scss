@@ -227,13 +227,30 @@
   }
 }
 
-.alert-button-cancel {
-  color: var(--ion-color-mediumlight) !important;
-  font-weight: 600 !important;
-  background: transparent !important;
+.alert-button-success {
+  color: var(--ion-color-success) !important;
+  font-weight: 700 !important;
+  background: rgba(44, 179, 97, 0.1) !important;
 
   &:hover {
-    background: var(--ion-color-extralight) !important;
+    background: rgba(44, 179, 97, 0.15) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(44, 179, 97, 0.2) !important;
+  }
+
+  &:active {
+    background: rgba(44, 179, 97, 0.25) !important;
+    transform: scale(0.96) !important;
+  }
+}
+
+.alert-button-cancel {
+  color: var(--ion-color-danger-contrast) !important;
+  font-weight: 600 !important;
+  background: var(--ion-color-danger-tint) !important;
+
+  &:hover {
+    background: var(--ion-color-danger-tint) !important;
     transform: translateY(-1px) !important;
   }
 
@@ -279,26 +296,26 @@ ion-backdrop.backdrop-no-tappable {
 // =====================================================
 
 // Subtitle verde (per numeri di telefono, successo)
-.alert-sub-title.subtitle-success {
+.custom-alert.subtitle-success {
   color: var(--ion-color-success) !important;
 }
 
 // Subtitle rosso (per errori)
-.alert-sub-title.subtitle-danger {
+.custom-alert.subtitle-danger {
   color: var(--ion-color-danger) !important;
 }
 
 // Subtitle giallo (per warning)
-.alert-sub-title.subtitle-warning {
+.custom-alert.subtitle-warning {
   color: var(--ion-color-warning) !important;
 }
 
 // Subtitle blu (per info)
-.alert-sub-title.subtitle-info {
+.custom-alert.subtitle-info {
   color: var(--ion-color-secondary) !important;
 }
 
 // Subtitle grigio (default)
-.alert-sub-title.subtitle-default {
+.custom-alert.subtitle-default {
   color: var(--ion-color-mediumlight) !important;
 }

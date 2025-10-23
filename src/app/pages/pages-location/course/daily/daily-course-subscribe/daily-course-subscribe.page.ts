@@ -5,6 +5,7 @@ import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
 import { IscrizioneCorso } from 'src/app/models/corso/iscrizione-corso.model';
 import { Area } from 'src/app/models/struttura/area.model';
+import { Location } from 'src/app/models/struttura/location.model';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
@@ -24,6 +25,8 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
 
   _areaDoc: Area;
   subArea: Subscription;
+  _locationDoc: Location;
+  subLocation: Subscription;
   
   idCorso: string;
   _corsoDoc: CorsoGiornaliero = new CorsoGiornaliero();
@@ -70,6 +73,7 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
 
   ngOnInit() {
       this.onListenArea();
+      this.onListenLocation();
       this.onListenUtente();
   }
 
@@ -84,14 +88,34 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
 
     if (this.subArea) {
       this.subArea.unsubscribe();
+    }   
+    
+    if (this.subLocation) {
+      this.subLocation.unsubscribe();
     }    
   }
+
+
+  /**
+  * Calcola i minuti richiesti dalla lezione (ore * 60)
+  */
+  get minutiRichiestiLezione(): number {
+    return this._corsoDoc.ORELEZIONE ? this._corsoDoc.ORELEZIONE * 60 : 0;
+  }
+
+/**
+ * Verifica se l'utente ha abbastanza minuti per iscriversi
+ */
+get hasSufficientMinutes(): boolean {
+  return this.minutiValue >= this.minutiRichiestiLezione;
+}
 
 /**
  * Imposta il documento del corso
  * @param value 
  */
   setCorsoDoc(value: CorsoGiornaliero) {
+    console.log(value);
     if (value) {
       this._corsoDoc = value;
       this.loadedData = true;
@@ -314,6 +338,15 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
     let urlPage = this.startService.getUrlPageBasic('shop');
     this.closeModal(urlPage);
   }
+
+
+  /**
+  * Click su Acquista Minuti - va allo shop
+  */
+  onClickAcquistaMinuti() {
+    let urlPage = this.startService.getUrlPageBasic('shop');
+    this.closeModal(urlPage);
+}
   
   //#endregion 
   
@@ -372,6 +405,17 @@ export class DailyCourseSubscribePage implements OnInit, OnDestroy {
       }
     })
 
+  }
+
+  onListenLocation(): void {
+    this.subLocation = this.startService.activeLocation$.subscribe({
+      next: (dataReceived)=> {
+        this._locationDoc = dataReceived;
+      },
+      error: (err) => {
+        LogApp.consoleLog(err, "error");
+      }
+    })
   }
 
 

@@ -31,13 +31,13 @@ export class LabelNumeroOrePipe implements PipeTransform {
 
     if (valueIs == 'ore') {
   
-      if (value < 1) {
+      if (value <= 1) {
         minuti = Math.round(value * 60);
         retValue = minuti + ' ' + lblMin[minuti==1 ? sing : plur];
       }
-      else if (value == 1) {
-        retValue = value + ' ' + lblOre[0];
-      }
+      // else if (value == 1) {
+      //   retValue = value + ' ' + lblOre[0];
+      // }
       else {
         ore = Math.trunc(value);
         minuti = Math.round((value - ore) * 60);

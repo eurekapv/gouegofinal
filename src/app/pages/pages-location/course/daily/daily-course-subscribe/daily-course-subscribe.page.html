@@ -1,290 +1,346 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="closeModal()">
-        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      <ion-button (click)="closeModal([])">
+        <ion-icon name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>
-      Lezione
-    </ion-title>
+    <ion-title>Dettagli Lezione</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
+<ion-content class="course-subscribe-content">
+  
   <ion-refresher slot="fixed" (ionRefresh)="onRefreshData($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid 
-        #gridcontainer>
+  <div class="content-wrapper">
 
-        <!-- PAGINA IN ERRORE -->
-        <ion-row 
-            *ngIf="loadedData && errorLoadingData">
-          <ion-col 
-            sizeXs="12" 
-            sizeSm="12" 
-            sizeMd="12"
-            sizeLg="12"
-            sizeXl="12">
+<!-- ========================================== -->
+<!-- HERO SECTION - DATA E CORSO -->
+<!-- ========================================== -->
+<div class="hero-section" [class.already-subscribed]="existIscrizione">
 
-            <!-- ERRORE CARICAMENTO -->
-            <app-card-image
-              src="assets/boysplaying_small.png"
-              title="Spiacenti, qualcosa non va"
-              [subtitle]="messageErrorPage"
-            >
-            </app-card-image>    
-          </ion-col>
-        </ion-row>
-
-        <!-- DATI CARICATI CORRETTAMENTE -->
-        <ion-row 
-          *ngIf="loadedData && !errorLoadingData">
-          <ion-col>
-
-          <!-- GRID CONTENT -->
-          <ion-grid class="ion-no-margin ion-no-padding">
-            <ion-row class="ion-align-items-center">
-              <ion-col
-                  sizeXl="6"
-                  sizeLg="6"
-                  sizeMd="12"
-                  sizeXs="12"
-                  sizeSm="12" 
-                  class="header">
-
-                <ion-item lines="none" color="light">
-                  <ion-icon 
-                      slot="start" 
-                      [name]="iconHeader" 
-                      color="success">
-                  </ion-icon>
-
-                  <ion-label class="ion-text-wrap">
-                    <h2>{{_corsoDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy '}}</h2>
-                    <h2 class="ion-text-bold">{{_corsoDoc.DATAORAINIZIO | date: 'H.mm'}} - {{_corsoDoc.DATAORAFINE | date: 'H.mm'}}</h2>
-                    <h1>{{_corsoDoc.DENOMINAZIONE}}</h1>
-                    <p class="ion-text-bold">{{(_corsoDoc.DENOMINAZIONECAMPO | titlecase)}}</p>
-                    <p class="ion-text-bold">{{_corsoDoc.DENOMINAZIONESPORT}}</p>
-                  </ion-label>
-                  </ion-item>
-
-              </ion-col>
-              
-              <ion-col
-                  sizeXl="6"
-                  sizeLg="6"
-                  sizeMd="12"
-                  sizeXs="12"
-                  sizeSm="12" 
-                  class="header ion-padding"
-                  *ngIf="flagUserLogged">
-                  <ion-button
-                    *ngIf="minutiValue != 0 && flagIscrizioneAttiva && !existIscrizione"
-                    (click)="onClickIscriviti()" 
-                    color="success"
-                    size="small"
-                    expand="full">
-                    ISCRIVITI
-                  </ion-button>
-
-                  <ion-button
-                    *ngIf="minutiValue == 0 || (!flagIscrizioneAttiva && !existIscrizione)"
-                    color="danger"
-                    size="small"
-                    expand="full">
-                    {{(!flagIscrizioneAttiva && !existIscrizione) ? 'ISCRIZIONE NON ABILITATA' : 'PACCHETTO ORE ESAURITO'}}
-                  </ion-button>                  
-
-                  <ion-button
-                    *ngIf="existIscrizione"
-                    color="warning"
-                    size="small"
-                    expand="full">
-                    SEI GIA' ISCRITTO
-                  </ion-button>
-              </ion-col>
-
-            </ion-row>
-
-
-
-
-            <ion-row>
-              <ion-col
-                class="ion-padding-horizontal"
-                sizeXl="6"
-                sizeLg="6"
-                sizeMd="6"
-                sizeXs="12"
-                sizeSm="12">
-                <ion-list>
-                  <!-- ADATTO A -->
-                  <ion-item-group class="ion-padding-bottom">
-                    <ion-item-divider color="success">
-                      <ion-label>
-                        <h2>Rivolto a</h2>
-                      </ion-label>
-                    </ion-item-divider>
-      
-                    <ion-item>
-                      <ion-icon name="stats-chart-outline" slot="start" color="danger"></ion-icon>
-                      <ion-label>{{labelLivello | titlecase}}</ion-label>
-                    </ion-item>
-      
-                    <ion-item>
-                      <ion-icon name="transgender-outline" slot="start" color="warning"></ion-icon>
-                      <ion-label>{{labelSesso | titlecase}}</ion-label>
-                    </ion-item>
-
-                  </ion-item-group>              
-                </ion-list>
-                </ion-col>
-
-                <ion-col
-                    class="ion-padding-horizontal"
-                    sizeXl="6"
-                    sizeLg="6"
-                    sizeMd="6"
-                    sizeXs="12"
-                    sizeSm="12">
-
-                  <ion-list>
-                    <ion-item-group class="ion-padding-bottom">
-                      <ion-item-divider color="success">
-                        <ion-label>
-                          <h2>Lezione</h2>
-                        </ion-label>
-                      </ion-item-divider>
-        
-                      <ion-item *ngIf="_corsoDoc.LISTTRAINERS && _corsoDoc.LISTTRAINERS.length != 0">                      
-                        <ion-icon name="barbell-outline" slot="start" color="primary"></ion-icon>
-                        <ion-label class="ion-text-wrap">
-                          <h6>{{_corsoDoc.LISTTRAINERS}}</h6>
-                          <p>chi troveremo al corso</p>
-                        </ion-label>
-                      </ion-item>
-        
-                      <ion-item *ngIf="flagIscrizioneAttiva && !existIscrizione">
-                        <ion-icon name="person-circle-outline" slot="start" color="warning"></ion-icon>
-                        <ion-label>
-                          <h6>Posti disponibili</h6>
-                          <p class="ion-text-bold ion-text-danger" *ngIf="numPostiResidui != 0">affrettati a iscriverti</p>
-                          <p class="ion-text-bold ion-text-primary" *ngIf="numPostiResidui == 0">i posti sono esauriti</p>
-                        </ion-label>
-                        <ion-badge class="ion-padding-horizontal" [color]="numPostiResidui == 0 ? 'danger' : 'success'">{{numPostiResidui}}</ion-badge>
-                      </ion-item>
   
-                    </ion-item-group>    
-                  </ion-list>
+  <div class="hero-content">
+      <div class="hero-details">
+        <div class="hero-detail-item color-success" *ngIf="_corsoDoc.DENOMINAZIONESPORT">
+          <ion-icon name="trophy-outline"></ion-icon>
+          <span>{{_corsoDoc.DENOMINAZIONESPORT}}</span>
+        </div>
+      </div>  
+      
+    <!-- Data -->
+    <p class="hero-date">{{_corsoDoc.DATA | date: 'EEEE dd MMMM yyyy' | titlecase}}</p>
+    
+    <!-- Orario con Badge Durata -->
+    <div class="hero-time-wrapper">
+      <h1 class="hero-time">
+        {{_corsoDoc.DATAORAINIZIO | date: 'HH:mm'}} 
+        <span class="time-separator">-</span> 
+        {{_corsoDoc.DATAORAFINE | date: 'HH:mm'}}
+      </h1>
+      
+      <!-- Badge Durata -->
+      <div class="duration-badge">
+        <ion-icon name="hourglass-outline"></ion-icon>
+        <span>{{_corsoDoc.ORELEZIONE | labelNumeroOre: 'short' : 'ore'}}</span>
+      </div>
+    </div>
+    
+    <!-- Nome Corso -->
+    <h2 class="hero-course-name">{{_corsoDoc.DENOMINAZIONE}}</h2>
+    
+    <!-- Location e Campo -->
+    <div class="hero-details">
+      <div class="hero-detail-item" *ngIf="_locationDoc?.DENOMINAZIONE">
+        <ion-icon name="location-outline"></ion-icon>
+        <span>{{_locationDoc?.DENOMINAZIONE}}</span>
+      </div>
+      <div class="hero-detail-item" *ngIf="_corsoDoc.DENOMINAZIONECAMPO">
+        <ion-icon name="location-outline"></ion-icon>
+        <span>{{_corsoDoc.DENOMINAZIONECAMPO}}</span>
+      </div>
+    </div>
+  </div>
 
-                  <ion-note
-                    *ngIf="existIscrizione"
-                    color="medium" 
-                    class="ion-margin-horizontal ion-padding-vertical"
-                    >Ti aspettiamo qualche minuto prima dell'inizio della lezione presso il centro
-                  </ion-note>
-                </ion-col>
-
-              </ion-row>
-
-            <ion-row 
-                *ngIf="numPostiResidui != 0 && flagFuture"
-                class="ion-margin-top">
-              <ion-col class="ion-text-center">
-                <ion-note 
-                    color="medium" 
-                    class="ion-margin-horizontal">
-                  Per poter partecipare alla lezione &egrave; necessario aver un residuo positivo di <strong>PACCHETTI ORE</strong>
-                </ion-note>
-              </ion-col>
-            </ion-row>  
-
-            <ion-row 
-              *ngIf="numPostiResidui != 0 && flagFuture"
-              class="ion-margin-top">
-              <ion-col class="ion-text-center">
-                <ion-note 
-                    *ngIf="!flagUserLogged"
-                    color="medium" 
-                    class="ion-margin-horizontal">
-                    Per poter acquistare pacchetti orari, ed iscriversi alla lezione, è necessario <strong>accedere o registrare un profilo utente</strong>
-                </ion-note>
-
-                <ion-note 
-                    *ngIf="flagUserLogged && minutiValue != 0"
-                    color="medium" 
-                    class="ion-margin-horizontal">
-                    Il tuo residuo disponibile è di <ion-text color="danger" class="ion-text-bold">{{minutiValue | labelNumeroOre: 'long':'minuti'}}</ion-text>
-                </ion-note>                               
-              </ion-col>
-            </ion-row>  
-
-            <ion-row 
-              *ngIf="numPostiResidui != 0 && flagFuture && flagUserLogged && minutiValue == 0"
-              class="ion-margin-top">
-              <ion-col class="ion-text-center">
-                <ion-item
-                  (click)="onGotoShop()"
-                  [detail]="true"
-                  [button]="true"
-                  lines="none">
-                  <ion-thumbnail slot="start">
-                    <img alt="shop" src="assets/commercial/shopmobilelogo.png" />
-                  </ion-thumbnail>
-                  
-                    <ion-note 
-                      color="medium" 
-                      class="ion-margin-horizontal">
-                        <h6>
-                          Non hai disponibile <ion-text color="danger" class="ion-text-bold">nessuna ora</ion-text> per effettuare l'iscrizione alla lezione.
-                        </h6>
-                        <h5>
-                          Vai allo Shop ed effettua un acquisto
-                        </h5>
-                    </ion-note> 
-                  
-                </ion-item>      
-              </ion-col>
-            </ion-row>              
-
-            <!-- PULSANTE PER EFFETTUARE L'ACCESSO -->
-            <ion-row 
-              *ngIf="numPostiResidui != 0 && flagFuture && !flagUserLogged"
-              class="ion-margin-top">
-              <ion-col class="ion-text-center">
-                <ion-button 
-                  (click)="onGotoLogin()"
-                  expand="full"
-                  color="danger">Accedi o registrati</ion-button>                 
-              </ion-col>
-            </ion-row> 
+  <!-- Badge Già Iscritto -->
+  <div class="subscribed-badge" *ngIf="existIscrizione">
+    <ion-icon name="checkmark-circle"></ion-icon>
+    <span>Sei già iscritto</span>
+  </div>
+</div>
 
 
-            <!-- UTENTE LOGGATO -->
-            <ion-row
-                class="ion-margin"
-                *ngIf="flagUserLogged && minutiValue != 0 && !flagIscrizioneAttiva"
-                  >
-              <ion-col>
-                <ion-item (click)="onClickDebug()">
-                  <ion-icon slot="start" color="danger" name="ban-outline">
+    <!-- ========================================== -->
+    <!-- SEZIONE DISPONIBILITÀ POSTI -->
+    <!-- ========================================== -->
+    <div class="availability-section">
+      <h3 class="section-title">
+        <ion-icon name="person-outline"></ion-icon>
+        Disponibilità Posti
+      </h3>
 
-                  </ion-icon>
-                  <ion-label class="ion-text-wrap">
-                    <h6>Non è possibile effettuare l'iscrizione alla lezione direttamente dall'applicazione.</h6>
-                    <p>Contattare la segreteria del centro.</p>
-                  </ion-label>
-                </ion-item>                  
-              </ion-col>
-            </ion-row>            
+      <!-- Posti Disponibili -->
+      <div class="availability-card" [class.no-seats]="numPostiResidui === 0">
+        <div class="availability-header">
+          <div class="availability-info">
+            <ion-icon [name]="numPostiResidui > 0 ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            <div class="availability-text">
+              <p class="availability-label">Posti disponibili</p>
+              <p class="availability-value" *ngIf="numPostiResidui > 0">
+                {{numIscritti}}/{{numMaxPartecipanti}} occupati
+              </p>
+              <p class="availability-value" *ngIf="numPostiResidui === 0">
+                Posti esauriti
+              </p>
+            </div>
+          </div>
+          <div class="availability-badge" [class.danger]="numPostiResidui === 0">
+            {{numPostiResidui}}
+          </div>
+        </div>
 
-          </ion-grid>
-          </ion-col>
-        </ion-row>
-  </ion-grid>
+        <!-- Barra progressiva -->
+        <div class="availability-bar" *ngIf="numMaxPartecipanti > 0">
+          <div class="availability-fill" 
+               [style.width.%]="(numIscritti / numMaxPartecipanti) * 100"
+               [class.full]="numPostiResidui === 0">
+          </div>
+        </div>
 
-        
+        <!-- Messaggio -->
+        <p class="availability-message" *ngIf="numPostiResidui > 0 && numPostiResidui <= 3">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          Affrettati! {{numPostiResidui === 1 ? 'Rimane' : 'Rimangono'}} solo {{numPostiResidui}} {{numPostiResidui === 1 ? 'posto' : 'posti'}}
+        </p>
+      </div>
+    </div>
+
+  <!-- SEZIONE MINUTI UTENTE (solo se loggato) -->
+  <div class="minutes-section" *ngIf="flagUserLogged">
+    <h3 class="section-title">
+      <ion-icon name="time-outline"></ion-icon>
+      Il tuo Pacchetto Ore
+    </h3>
+
+    <!-- Card Minuti -->
+    <div class="minutes-card" [class.no-minutes]="!hasSufficientMinutes">
+      <div class="minutes-icon">
+        <ion-icon [name]="hasSufficientMinutes ? 'wallet-outline' : 'alert-circle-outline'"></ion-icon>
+      </div>
+      <div class="minutes-content">
+        <p class="minutes-label">Minuti disponibili</p>
+        <p class="minutes-value" [class.zero]="!hasSufficientMinutes">
+          {{minutiValue | labelNumeroOre: 'long' : 'minuti'}}
+        </p>
+      </div>
+    </div>
+
+    <!-- Messaggio e bottone acquisto (se minuti insufficienti) -->
+    <div class="buy-minutes-box" *ngIf="!hasSufficientMinutes">
+      <div class="alert-box error">
+        <ion-icon name="cart-outline"></ion-icon>
+        <div class="alert-content">
+          <p class="alert-title" *ngIf="minutiValue === 0">Pacchetto ore esaurito</p>
+          <p class="alert-title" *ngIf="minutiValue > 0">Minuti insufficienti</p>
+          <p class="alert-message" *ngIf="minutiValue === 0">
+            Non hai minuti disponibili per iscriverti a questa lezione. Acquista un nuovo pacchetto ore!
+          </p>
+          <p class="alert-message" *ngIf="minutiValue > 0">
+            Hai solo <strong>{{minutiValue}} minuti</strong> ma questa lezione richiede <strong>{{minutiRichiestiLezione}} minuti</strong>. Acquista altro tempo!
+          </p>
+        </div>
+      </div>
+      <ion-button 
+          expand="block" 
+          color="primary"
+          size="large"
+          class="buy-button"
+          (click)="onClickAcquistaMinuti()">
+        <ion-icon name="cart" slot="start"></ion-icon>
+        Acquista Pacchetto Ore
+      </ion-button>
+    </div>
+
+    <!-- Info costo lezione (se ha minuti sufficienti) -->
+    <div class="lesson-cost-info" *ngIf="hasSufficientMinutes">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <span>Questa lezione utilizza <strong>{{minutiRichiestiLezione}} minuti</strong> del tuo pacchetto</span>
+    </div>
+  </div>
+
+    <!-- ========================================== -->
+    <!-- MESSAGGIO INFORMATIVO (pacchetto ore necessario) -->
+    <!-- ========================================== -->
+    <div class="info-box" *ngIf="numPostiResidui > 0 && flagFuture && !hasSufficientMinutes">
+      <ion-icon name="information-circle"></ion-icon>
+      <p>Per partecipare alla lezione è necessario avere un residuo positivo di <strong>Pacchetto Ore</strong></p>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MESSAGGIO NON LOGGATO -->
+    <!-- ========================================== -->
+    <div class="login-section" *ngIf="!flagUserLogged && numPostiResidui > 0 && flagFuture">
+      <div class="alert-box warning">
+        <ion-icon name="log-in-outline"></ion-icon>
+        <div class="alert-content">
+          <p class="alert-title">Accesso richiesto</p>
+          <p class="alert-message">Per iscriverti alla lezione devi prima accedere o registrare un profilo utente</p>
+        </div>
+      </div>
+      <ion-button 
+          expand="block" 
+          color="danger"
+          size="large"
+          (click)="onGotoLogin()">
+        <ion-icon name="log-in" slot="start"></ion-icon>
+        Accedi o Registrati
+      </ion-button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MESSAGGIO ISCRIZIONE NON ABILITATA -->
+    <!-- ========================================== -->
+    <div class="alert-box error" *ngIf="flagUserLogged && minutiValue > 0 && !flagIscrizioneAttiva && !existIscrizione">
+      <ion-icon name="ban-outline"></ion-icon>
+      <div class="alert-content">
+        <p class="alert-title">Iscrizione non disponibile</p>
+        <p class="alert-message">Non è possibile effettuare l'iscrizione alla lezione direttamente dall'applicazione. Contattare la segreteria del centro.</p>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MESSAGGIO GIÀ ISCRITTO -->
+    <!-- ========================================== -->
+    <div class="subscribed-info-box" *ngIf="existIscrizione">
+      <ion-icon name="checkmark-circle"></ion-icon>
+      <div class="subscribed-content">
+        <p class="subscribed-title">Sei già iscritto a questa lezione</p>
+        <p class="subscribed-message">Ti aspettiamo qualche minuto prima dell'inizio presso il centro</p>
+      </div>
+    </div>
+
+    <!-- PULSANTE ISCRIVITI -->
+    <div class="action-section" *ngIf="flagUserLogged && !existIscrizione">
+      <ion-button 
+          *ngIf="hasSufficientMinutes && flagIscrizioneAttiva && numPostiResidui > 0"
+          expand="block" 
+          color="success"
+          size="large"
+          class="subscribe-button"
+          (click)="onClickIscriviti()">
+        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+        Iscriviti alla Lezione
+      </ion-button>
+    </div>    
+
+
+
+    <!-- ========================================== -->
+    <!-- SEZIONE A CHI È RIVOLTO -->
+    <!-- ========================================== -->
+    <div class="target-section">
+      <h3 class="section-title">
+        <ion-icon name="people-outline"></ion-icon>
+        A chi è rivolto
+      </h3>
+
+      <div class="target-items">
+        <!-- Livello -->
+        <div class="target-item">
+          <div class="target-icon" style="background: #fef3c7;">
+            <ion-icon name="bar-chart-outline" style="color: #d97706;"></ion-icon>
+          </div>
+          <div class="target-content">
+            <p class="target-label">Livello</p>
+            <p class="target-value">{{labelLivello | titlecase}}</p>
+          </div>
+        </div>
+
+        <!-- Sesso -->
+        <div class="target-item">
+          <div class="target-icon" style="background: #e0e7ff;">
+            <ion-icon name="transgender-outline" style="color: #6366f1;"></ion-icon>
+          </div>
+          <div class="target-content">
+            <p class="target-label">Genere</p>
+            <p class="target-value">{{labelSesso | titlecase}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- SEZIONE INFORMAZIONI LEZIONE -->
+    <!-- ========================================== -->
+    <div class="info-section">
+      <h3 class="section-title">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Informazioni Lezione
+      </h3>
+
+      <div class="info-cards">
+        <!-- Card Durata -->
+        <div class="info-card">
+          <div class="info-card-icon" style="background: #dbeafe; color: #2563eb;">
+            <ion-icon name="hourglass-outline"></ion-icon>
+          </div>
+          <div class="info-card-content">
+            <p class="info-card-label">Durata</p>
+            <p class="info-card-value">{{_corsoDoc.ORELEZIONE | labelNumeroOre: 'long' : 'ore'}}</p>
+          </div>
+        </div>
+
+        <!-- Card Orario Inizio -->
+        <div class="info-card">
+          <div class="info-card-icon" style="background: #dcfce7; color: #16a34a;">
+            <ion-icon name="play-circle-outline"></ion-icon>
+          </div>
+          <div class="info-card-content">
+            <p class="info-card-label">Inizio</p>
+            <p class="info-card-value">{{_corsoDoc.DATAORAINIZIO | date: 'HH:mm'}}</p>
+          </div>
+        </div>
+
+        <!-- Card Orario Fine -->
+        <div class="info-card">
+          <div class="info-card-icon" style="background: #fee2e2; color: #dc2626;">
+            <ion-icon name="stop-circle-outline"></ion-icon>
+          </div>
+          <div class="info-card-content">
+            <p class="info-card-label">Fine</p>
+            <p class="info-card-value">{{_corsoDoc.DATAORAFINE | date: 'HH:mm'}}</p>
+          </div>
+        </div>
+
+        <!-- Card Campo (se presente) -->
+        <div class="info-card" *ngIf="_corsoDoc.DENOMINAZIONECAMPO">
+          <div class="info-card-icon" style="background: #fef3c7; color: #d97706;">
+            <ion-icon name="location-outline"></ion-icon>
+          </div>
+          <div class="info-card-content">
+            <p class="info-card-label">Campo</p>
+            <p class="info-card-value">{{_corsoDoc.DENOMINAZIONECAMPO}}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trainers (se presenti) -->
+      <div class="trainers-box" *ngIf="_corsoDoc.LISTTRAINERS && _corsoDoc.LISTTRAINERS.length > 0">
+        <div class="trainers-icon">
+          <ion-icon name="barbell-outline"></ion-icon>
+        </div>
+        <div class="trainers-content">
+          <p class="trainers-label">Istruttori</p>
+          <p class="trainers-value">{{_corsoDoc.LISTTRAINERS}}</p>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
 </ion-content>

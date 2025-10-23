@@ -1,11 +1,943 @@
-ion-col.header{
-    
-    >ion-item{
-        >ion-icon{
-           
-            margin-right: 15px;
-            font-size: 50px;
-            
-        }
+// =====================================================
+// DAILY COURSE SUBSCRIBE - MODERN CLEAN DESIGN
+// =====================================================
+
+.course-subscribe-content {
+  --background: #f5f6f8;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+// =====================================================
+// HERO SECTION
+// =====================================================
+.hero-section {
+  background: white;
+  padding: 32px 20px;
+  margin-bottom: 16px;
+  border-bottom: 3px solid var(--ion-color-primary);
+  position: relative;
+
+  &.already-subscribed {
+    border-bottom-color: var(--ion-color-success);
+  }
+
+  .hero-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ion-color-primary);
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(41, 116, 217, 0.3);
+
+    ion-icon {
+      font-size: 36px;
+      color: white;
     }
+  }
+
+  .hero-content {
+    text-align: center;
+
+    .hero-date {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ion-color-medium);
+      margin: 0 0 8px 0;
+      text-transform: capitalize;
+    }
+
+    // WRAPPER ORARIO + BADGE DURATA
+    .hero-time-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+
+      .hero-time {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--ion-color-dark);
+        margin: 0;
+        line-height: 1;
+
+        .time-separator {
+          color: var(--ion-color-primary);
+          margin: 0 8px;
+        }
+      }
+
+      // BADGE DURATA
+      .duration-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background: var(--ion-color-warning);
+        color: var(--ion-color-warning-contrast);
+        border-radius: 20px;
+        font-size: 0.95rem;
+        font-weight: 800;
+        box-shadow: 0 3px 10px rgba(217, 119, 6, 0.3);
+        white-space: nowrap;
+
+        ion-icon {
+          font-size: 22px;
+        }
+
+        span {
+          line-height: 1;
+        }
+      }
+    }
+
+    .hero-course-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--ion-color-primary);
+      margin: 0 0 16px 0;
+      line-height: 1.2;
+    }
+
+    .hero-details {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+
+      .hero-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: var(--ion-color-light);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+
+        ion-icon {
+          font-size: 20px;
+          color: var(--ion-color-primary);
+        }
+      }
+
+      .hero-detail-item.color-success {
+        background: var(--ion-color-success);
+        color: var(--ion-color-success-contrast);
+
+        ion-icon {
+            color: var(--ion-color-success-contrast);
+        }
+      }
+    }
+  }
+
+  .subscribed-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--ion-color-success);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - MOBILE
+// =====================================================
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 24px 16px;
+
+    .hero-icon {
+      width: 56px;
+      height: 56px;
+
+      ion-icon {
+        font-size: 32px;
+      }
+    }
+
+    .hero-content {
+      .hero-time-wrapper {
+        flex-direction: column;
+        gap: 12px;
+
+        .hero-time {
+          font-size: 1.7rem;
+        }
+
+        .duration-badge {
+          padding: 8px 14px;
+          font-size: 0.9rem;
+
+          ion-icon {
+            font-size: 20px;
+          }
+        }
+      }
+
+      .hero-course-name {
+        font-size: 1.3rem;
+      }
+
+      .hero-details .hero-detail-item {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+      }
+    }
+
+    .subscribed-badge {
+      position: static;
+      margin-top: 16px;
+      justify-content: center;
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET & DESKTOP
+// =====================================================
+@media (min-width: 768px) {
+  .hero-section {
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-section {
+    padding: 40px 32px;
+
+    .hero-content {
+      .hero-time-wrapper {
+        .hero-time {
+          font-size: 2.5rem;
+        }
+
+        .duration-badge {
+          padding: 12px 20px;
+          font-size: 1.05rem;
+
+          ion-icon {
+            font-size: 24px;
+          }
+        }
+      }
+
+      .hero-course-name {
+        font-size: 1.8rem;
+      }
+    }
+  }
+}
+
+// =====================================================
+// SECTION TITLE
+// =====================================================
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ion-color-dark);
+  margin: 0 0 16px 0;
+  padding: 0 20px;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-primary);
+  }
+}
+
+// =====================================================
+// INFO SECTION
+// =====================================================
+.info-section {
+  background: white;
+  padding: 24px 0;
+  margin-bottom: 16px;
+
+  .info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .info-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--ion-color-light);
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+
+    .info-card-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+
+      ion-icon {
+        font-size: 26px;
+      }
+    }
+
+    .info-card-content {
+      flex: 1;
+      min-width: 0;
+
+      .info-card-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ion-color-medium);
+        margin: 0 0 4px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .info-card-value {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--ion-color-dark);
+        margin: 0;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .trainers-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 20px 0;
+    padding: 16px;
+    background: var(--ion-color-light);
+    border-radius: 12px;
+    border: 2px solid var(--ion-color-primary);
+
+    .trainers-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--ion-color-primary);
+      border-radius: 12px;
+
+      ion-icon {
+        font-size: 26px;
+        color: white;
+      }
+    }
+
+    .trainers-content {
+      flex: 1;
+      min-width: 0;
+
+      .trainers-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ion-color-medium);
+        margin: 0 0 4px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .trainers-value {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+        margin: 0;
+        line-height: 1.3;
+      }
+    }
+  }
+}
+
+// =====================================================
+// TARGET SECTION
+// =====================================================
+.target-section {
+  background: white;
+  padding: 24px 0;
+  margin-bottom: 16px;
+
+  .target-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .target-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+
+    .target-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+
+      ion-icon {
+        font-size: 26px;
+      }
+    }
+
+    .target-content {
+      flex: 1;
+
+      .target-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ion-color-medium);
+        margin: 0 0 4px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .target-value {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--ion-color-dark);
+        margin: 0;
+      }
+    }
+  }
+}
+
+// =====================================================
+// AVAILABILITY SECTION
+// =====================================================
+.availability-section {
+  background: white;
+  padding: 24px 0;
+  margin-bottom: 16px;
+
+  .availability-card {
+    margin: 0 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    border: 2px solid var(--ion-color-success);
+
+    &.no-seats {
+      border-color: var(--ion-color-danger);
+    }
+
+    .availability-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+
+      .availability-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+
+        > ion-icon {
+          font-size: 32px;
+          color: var(--ion-color-success);
+        }
+
+        .availability-text {
+          .availability-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ion-color-medium);
+            margin: 0 0 4px 0;
+          }
+
+          .availability-value {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--ion-color-dark);
+            margin: 0;
+          }
+        }
+      }
+
+      .availability-badge {
+        min-width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--ion-color-success);
+        color: white;
+        border-radius: 12px;
+        font-size: 1.3rem;
+        font-weight: 900;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+
+        &.danger {
+          background: var(--ion-color-danger);
+          box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+        }
+      }
+    }
+
+    &.no-seats {
+      .availability-info > ion-icon {
+        color: var(--ion-color-danger);
+      }
+    }
+
+    .availability-bar {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 12px;
+
+      .availability-fill {
+        height: 100%;
+        background: var(--ion-color-success);
+        border-radius: 5px;
+        transition: width 0.5s ease;
+
+        &.full {
+          background: var(--ion-color-danger);
+        }
+      }
+    }
+
+    .availability-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ion-color-warning-shade);
+      margin: 0;
+      padding: 10px;
+      background: #fef3c7;
+      border-radius: 8px;
+
+      ion-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+// =====================================================
+// MINUTES SECTION
+// =====================================================
+.minutes-section {
+  background: white;
+  padding: 24px 0;
+  margin-bottom: 16px;
+
+  .minutes-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    border: 2px solid var(--ion-color-primary);
+
+    &.no-minutes {
+      border-color: var(--ion-color-danger);
+    }
+
+    .minutes-icon {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--ion-color-primary);
+      border-radius: 12px;
+
+      ion-icon {
+        font-size: 32px;
+        color: white;
+      }
+    }
+
+    &.no-minutes .minutes-icon {
+      background: var(--ion-color-danger);
+    }
+
+    .minutes-content {
+      flex: 1;
+
+      .minutes-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--ion-color-medium);
+        margin: 0 0 6px 0;
+      }
+
+      .minutes-value {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--ion-color-primary);
+        margin: 0;
+
+        &.zero {
+          color: var(--ion-color-danger);
+        }
+      }
+    }
+  }
+
+  .buy-minutes-box {
+    margin: 16px 20px 0;
+
+    .buy-button {
+      margin-top: 12px;
+      --border-radius: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .lesson-cost-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 16px 20px 0;
+    padding: 12px;
+    background: #dbeafe;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #1e40af;
+    line-height: 1.5;
+
+    ion-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    strong {
+      font-weight: 800;
+    }
+  }
+}
+
+// =====================================================
+// ALERT BOXES
+// =====================================================
+.alert-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 20px 16px;
+  padding: 16px;
+  background: #fef3c7;
+  border-left: 4px solid var(--ion-color-warning);
+  border-radius: 8px;
+
+  &.warning {
+    background: #fee2e2;
+    border-left-color: var(--ion-color-danger);
+  }
+
+  &.error {
+    background: #fee2e2;
+    border-left-color: var(--ion-color-danger);
+  }
+
+  > ion-icon {
+    font-size: 28px;
+    color: var(--ion-color-warning-shade);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &.warning > ion-icon,
+  &.error > ion-icon {
+    color: var(--ion-color-danger);
+  }
+
+  .alert-content {
+    flex: 1;
+
+    .alert-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--ion-color-dark);
+      margin: 0 0 6px 0;
+    }
+
+    .alert-message {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ion-color-medium);
+      margin: 0;
+      line-height: 1.5;
+
+      strong {
+        font-weight: 800;
+        color: var(--ion-color-dark);
+      }
+    }
+  }
+}
+
+// =====================================================
+// INFO BOX
+// =====================================================
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 20px 16px;
+  padding: 14px;
+  background: #dbeafe;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #1e40af;
+  line-height: 1.5;
+
+  ion-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  strong {
+    font-weight: 800;
+  }
+}
+
+// =====================================================
+// SUBSCRIBED INFO BOX
+// =====================================================
+.subscribed-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 20px 16px;
+  padding: 20px;
+  background: white;
+  border: 2px solid var(--ion-color-success);
+  border-radius: 12px;
+
+  > ion-icon {
+    font-size: 32px;
+    color: var(--ion-color-success);
+    flex-shrink: 0;
+  }
+
+  .subscribed-content {
+    flex: 1;
+
+    .subscribed-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ion-color-success-shade);
+      margin: 0 0 6px 0;
+    }
+
+    .subscribed-message {
+      font-size: 0.85rem;
+      color: var(--ion-color-medium);
+      margin: 0;
+      line-height: 1.5;
+    }
+  }
+}
+
+// =====================================================
+// LOGIN & ACTION SECTIONS
+// =====================================================
+.login-section,
+.action-section {
+  padding: 0 20px;
+
+  ion-button {
+    --border-radius: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+}
+
+// =====================================================
+// RESPONSIVE - MOBILE
+// =====================================================
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 24px 16px;
+
+    .hero-icon {
+      width: 56px;
+      height: 56px;
+
+      ion-icon {
+        font-size: 32px;
+      }
+    }
+
+    .hero-content {
+      .hero-time {
+        font-size: 1.7rem;
+      }
+
+      .hero-course-name {
+        font-size: 1.3rem;
+      }
+
+      .hero-details .hero-detail-item {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+      }
+    }
+
+    .subscribed-badge {
+      position: static;
+      margin-top: 16px;
+      justify-content: center;
+    }
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+    padding: 0 16px;
+  }
+
+  .info-section {
+    .info-cards {
+      grid-template-columns: 1fr;
+      padding: 0 16px;
+    }
+
+    .trainers-box {
+      margin: 16px 16px 0;
+    }
+  }
+
+  .target-section .target-items {
+    grid-template-columns: 1fr;
+    padding: 0 16px;
+  }
+
+  .availability-section .availability-card {
+    margin: 0 16px;
+  }
+
+  .minutes-section .minutes-card {
+    margin: 0 16px;
+  }
+
+  .buy-minutes-box {
+    margin: 16px 16px 0 !important;
+  }
+
+  .lesson-cost-info {
+    margin: 16px 16px 0 !important;
+  }
+
+  .alert-box,
+  .info-box,
+  .subscribed-info-box {
+    margin: 0 16px 16px !important;
+  }
+
+  .login-section,
+  .action-section {
+    padding: 0 16px;
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET & DESKTOP
+// =====================================================
+@media (min-width: 768px) {
+  .content-wrapper {
+    padding: 20px;
+  }
+
+  .hero-section {
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+
+  .info-section,
+  .target-section,
+  .availability-section,
+  .minutes-section {
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+
+  .info-section .info-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-section {
+    padding: 40px 32px;
+
+    .hero-content {
+      .hero-time {
+        font-size: 2.5rem;
+      }
+
+      .hero-course-name {
+        font-size: 1.8rem;
+      }
+    }
+  }
+
+  .info-section .info-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .target-section .target-items {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

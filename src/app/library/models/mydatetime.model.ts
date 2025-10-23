@@ -1,6 +1,7 @@
 import { Tempistica, TipoChiusura } from 'src/app/models/zsupport/valuelist.model';
 import { TypeDefinition } from './descriptor.model';
 import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addQuarters, addSeconds, addWeeks, addYears, differenceInMinutes, differenceInSeconds, differenceInYears, endOfMonth, endOfWeek, format, formatISO, isAfter, isBefore, isDate, isEqual, isSameDay, isSameMinute, startOfMonth, startOfWeek, subDays, subHours, subMilliseconds, subMinutes, subMonths, subQuarters, subSeconds, subWeeks, subYears } from "date-fns";
+import { it } from 'date-fns/locale'
 
 export class MyDateTime {
 
@@ -200,7 +201,7 @@ static formatTime(data: Date, withSeconds:boolean =false): string {
 static formatDate(dateValue: Date, maskFormat: string): string {
     let dateFormatted = '';
 
-    dateFormatted = format(dateValue, maskFormat);
+    dateFormatted = format(dateValue, maskFormat, {locale:it});
 
     return dateFormatted;
 }

@@ -20,7 +20,7 @@ import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 })
 export class DailyCourseListPage implements OnInit, OnDestroy {
 
-  elencoMode: boolean = false;
+  showAllLessons: boolean = true;
   listLocationSport: Sport[] = [];  //Lista Sport presenti sulla Location
   selectedSport: Sport; //lo sport selezionato
   
@@ -165,7 +165,7 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
                                 .then(() => {
                                   //Caricamento concluso
                                   this.loadedData = true;
-                                  if (this.elencoMode) {
+                                  if (this.showAllLessons) {
                                     return this.requestListGroupedCorsi();
                                   }
                                   else {
@@ -303,7 +303,7 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
       this.startLoading();
     }
     else {
-      if (this.elencoMode) {
+      if (this.showAllLessons) {
         //Reimposto la data cosi li recupera tutti di nuovo
         this.lastMaxDateCorsiProgressive = new Date();
         //Recupero i corsi con la modalità in elenco
@@ -430,7 +430,7 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
   //#region MODALITA ELENCO
 
   onClickSwitchElencoMode(): void {
-    this.elencoMode = !this.elencoMode;
+    this.showAllLessons = !this.showAllLessons;
     //Ricarico di dati
     this.onRefreshData();
   }
@@ -489,6 +489,19 @@ export class DailyCourseListPage implements OnInit, OnDestroy {
 
   }
 
+    /**
+   * Controlla se la data passata è oggi
+   */
+  isToday(date: Date): boolean {
+    if (!date) return false;
+    
+    const today = new Date();
+    const checkDate = new Date(date);
+    
+    return checkDate.getDate() === today.getDate() &&
+          checkDate.getMonth() === today.getMonth() &&
+          checkDate.getFullYear() === today.getFullYear();
+  }
   
   //#endregion
 

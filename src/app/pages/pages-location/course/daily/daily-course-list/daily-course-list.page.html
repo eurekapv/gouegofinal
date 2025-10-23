@@ -7,10 +7,11 @@
       Lezioni
     </ion-title>
     <ion-buttons slot="end">
+      <ion-icon slot="start" [name]="showAllLessons ? 'search-outline' : 'calendar-outline'"></ion-icon>
       <ion-button 
           (click)="onClickSwitchElencoMode()"
           fill="clear">
-          {{elencoMode ? 'Giornate' : 'Elenco'}}
+          {{showAllLessons ? 'Ricerca' : 'Tutte'}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -36,7 +37,7 @@
     <div class="ion-no-margin" *ngIf="loadedData && !errorLoadingData">
 
       <!-- MODALITA CARD SEZIONE -->
-      <div class="ion-no-margin" *ngIf="!elencoMode">
+      <div class="ion-no-margin" *ngIf="!showAllLessons">
         <!-- SEZIONE FISSA IN ALTO -->
         <div class="fixed-header ion-no-margin">
           <!-- SCROLLER SPORT -->
@@ -97,63 +98,90 @@
       </div>
 
       <!-- MODALITA ELENCO -->
-      <div class="ion-no-margin" *ngIf="elencoMode">
-        <!-- SEZIONE SCROLLABILE-->
-        <div class="scrollable-content">
+    <div class="ion-no-margin" *ngIf="showAllLessons">
+      <!-- SEZIONE SCROLLABILE-->
+      <div class="scrollable-content">
 
-          <!-- NON CI SONO CORSI IN CALENDARIO -->
-          <div class="ion-no-margin" *ngIf="!existListCorsiGrouped">
-            <app-empty-state
-                icon="alert-circle-outline"
-                type="info"
-                title="Nessuna lezione disponibile"
-                [message]="'non sono previste prossime lezioni in calendario'">
-            </app-empty-state>
+        <!-- NON CI SONO CORSI IN CALENDARIO -->
+        <div class="ion-no-margin" *ngIf="!existListCorsiGrouped">
+          <app-empty-state
+              icon="alert-circle-outline"
+              type="info"
+              title="Nessuna lezione disponibile"
+              [message]="'non sono previste prossime lezioni in calendario'">
+          </app-empty-state>
+        </div>
+
+        <!-- SONO PRESENTI CORSI IN CALENDARIO -->
+        <div *ngIf="existListCorsiGrouped" class="grouped-courses-container">
+          
+          <!-- Header Sezione -->
+          <div class="section-header">
+            <h2 class="section-title">Prossime Lezioni</h2>
           </div>
 
-          <!-- SONO PRESENTI CORSI IN CALENDARIO -->
-          <ion-list *ngIf="existListCorsiGrouped">
-            <ion-list-header 
-                mode="ios" 
-                class="ion-padding-vertical">
-                Prossime Lezioni
-            </ion-list-header>
+          <!-- Gruppo per ogni giornata -->
+          <div *ngFor="let itemGrouped of listGroupedCorsi; let groupIndex = index" class="day-group">
+            
+            <!-- HEADER GIORNATA - DESIGN MODERNO -->
+            <div class="day-header" [class.is-today]="isToday(itemGrouped.DATEFILTER)">
+              <div class="day-header-left">
+                <!-- Box Data -->
+                <div class="date-box">
+                  <span class="date-day">{{itemGrouped.DATEFILTER | date: 'dd'}}</span>
+                  <span class="date-month">{{itemGrouped.DATEFILTER | date: 'MMM' | uppercase}}</span>
+                </div>
+                
+                <!-- Info Giornata -->
+                <div class="date-info">
+                  <h3 class="date-weekday">{{itemGrouped.DATEFILTER | date: 'EEEE' | titlecase}}</h3>
+                  <p class="date-full">{{itemGrouped.DATEFILTER | date: 'dd MMMM yyyy'}}</p>
+                  <span class="lessons-count">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{itemGrouped.LISTCORSI?.length || 0}} {{itemGrouped.LISTCORSI?.length === 1 ? 'lezione' : 'lezioni'}}
+                  </span>
+                </div>
+              </div>
 
-            <div *ngFor="let itemGrouped of listGroupedCorsi">
-              <ion-item-divider class="ion-padding-vertical">
-                <ion-label>{{itemGrouped.DATEFILTER | date: 'EEEE dd/MM/yyyy' | titlecase}}</ion-label>
-                <ion-button 
-                    (click)="onClickRequestAllGroupedCorsi(itemGrouped)"
-                    slot="end" 
-                    color="success" 
-                    *ngIf="itemGrouped.ALLREQUESTED == false">tutti</ion-button>
-              </ion-item-divider>
+              <!-- Bottone "Tutti" (se non sono stati caricati tutti) -->
+              <div class="day-header-right">
+                <button 
+                    *ngIf="itemGrouped.ALLREQUESTED == false"
+                    class="load-all-btn"
+                    (click)="onClickRequestAllGroupedCorsi(itemGrouped)">
+                  <ion-icon name="add-circle-outline"></ion-icon>
+                  <span>Mostra tutti</span>
+                </button>
+              </div>
+            </div>
 
+            <!-- LISTA CORSI DELLA GIORNATA -->
+            <div class="day-courses-list">
               <app-daily-course-item-list
                 *ngFor="let itemCorso of itemGrouped.LISTCORSI; index as i"
                 (OnClickItem)="onClickItem(itemCorso)"
                 [dailyCorsoDoc]="itemCorso"
                 [index]="i"
-                [alternateColor]="true"
-                [extendedInfo]="true"
-              >
-            </app-daily-course-item-list>                
-
+                [alternateColor]="false"
+                [extendedInfo]="true">
+              </app-daily-course-item-list>
             </div>
-          </ion-list>
 
-          <!-- INFINITE SCROLL -->
-          <ion-infinite-scroll
-              threshold="100px"
-              (ionInfinite)="requestListGroupedCorsi($event)"
-              >
-              <ion-infinite-scroll-content 
-                  loading-spinner="bubbles" 
-                  loadingText="Attendere...">
-              </ion-infinite-scroll-content>
-          </ion-infinite-scroll>           
+          </div>
         </div>
+
+        <!-- INFINITE SCROLL -->
+        <ion-infinite-scroll
+            threshold="100px"
+            (ionInfinite)="requestListGroupedCorsi($event)">
+            <ion-infinite-scroll-content 
+                loading-spinner="bubbles" 
+                loadingText="Attendere...">
+            </ion-infinite-scroll-content>
+        </ion-infinite-scroll>           
       </div>
+    </div>
+
 
     </div>
 

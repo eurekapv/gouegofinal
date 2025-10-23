@@ -73,3 +73,461 @@ ion-footer {
 
 
 
+//
+// =====================================================
+// GROUPED COURSES - MODERN DESIGN
+// =====================================================
+
+.grouped-courses-container {
+  padding: 16px 0;
+}
+
+// =====================================================
+// SECTION HEADER
+// =====================================================
+.section-header {
+  padding: 0 16px 16px 16px;
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ion-color-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 28px;
+      background: linear-gradient(180deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+      border-radius: 2px;
+    }
+  }
+}
+
+// =====================================================
+// DAY GROUP
+// =====================================================
+.day-group {
+  margin-bottom: 24px;
+  animation: fadeInUp 0.4s ease;
+
+  &:last-child {
+    margin-bottom: 80px; // Spazio per l'infinite scroll
+  }
+}
+
+// =====================================================
+// DAY HEADER - DESIGN MODERNO
+// =====================================================
+.day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  margin: 0 16px 12px 16px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  // Effetto gradiente sottile
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+  }
+
+  // Oggi - Evidenziato
+  &.is-today {
+    border-color: var(--ion-color-success);
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    
+    &::before {
+      background: linear-gradient(90deg, var(--ion-color-success) 0%, var(--ion-color-success-shade) 100%);
+      height: 4px;
+    }
+
+    .date-box {
+      background: var(--ion-color-success);
+      border-color: var(--ion-color-success-shade);
+
+      .date-day,
+      .date-month {
+        color: white;
+      }
+    }
+
+    .date-weekday {
+      color: var(--ion-color-success-shade);
+    }
+  }
+}
+
+// =====================================================
+// DAY HEADER LEFT - DATA E INFO
+// =====================================================
+.day-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+// Box Data (giorno e mese)
+.date-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  height: 64px;
+  background: var(--ion-color-primary);
+  border-radius: 12px;
+  border: 2px solid var(--ion-color-primary-shade);
+  box-shadow: 0 2px 8px rgba(41, 116, 217, 0.3);
+  flex-shrink: 0;
+
+  .date-day {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .date-month {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+}
+
+// Info Giornata
+.date-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+
+  .date-weekday {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ion-color-dark);
+    margin: 0;
+    line-height: 1.2;
+    text-transform: capitalize;
+  }
+
+  .date-full {
+    font-size: 0.85rem;
+    color: var(--ion-color-medium);
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+
+  .lessons-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--ion-color-primary);
+    font-weight: 700;
+    margin-top: 2px;
+
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+}
+
+// =====================================================
+// DAY HEADER RIGHT - BOTTONE
+// =====================================================
+.day-header-right {
+  flex-shrink: 0;
+}
+
+.load-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--ion-color-success);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background: var(--ion-color-success-shade);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// =====================================================
+// DAY COURSES LIST
+// =====================================================
+.day-courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0; // I componenti hanno già il loro margin
+
+  // Rimuovo il margine laterale dalle card interne
+  app-daily-course-item-list {
+    ::ng-deep .daily-course-card {
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - MOBILE
+// =====================================================
+@media (max-width: 576px) {
+  .grouped-courses-container {
+    padding: 12px 0;
+  }
+
+  .section-header {
+    padding: 0 12px 12px 12px;
+
+    .section-title {
+      font-size: 1.3rem;
+
+      &::before {
+        height: 24px;
+      }
+    }
+  }
+
+  .day-group {
+    margin-bottom: 20px;
+  }
+
+  .day-header {
+    padding: 12px;
+    margin: 0 12px 10px 12px;
+    border-radius: 14px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .day-header-left {
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .date-box {
+    min-width: 56px;
+    height: 56px;
+    border-radius: 10px;
+
+    .date-day {
+      font-size: 1.3rem;
+    }
+
+    .date-month {
+      font-size: 0.65rem;
+    }
+  }
+
+  .date-info {
+    .date-weekday {
+      font-size: 1rem;
+    }
+
+    .date-full {
+      font-size: 0.8rem;
+    }
+
+    .lessons-count {
+      font-size: 0.75rem;
+
+      ion-icon {
+        font-size: 13px;
+      }
+    }
+  }
+
+  .load-all-btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    flex: 0 0 100%; // Va a capo su mobile se serve
+    justify-content: center;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+
+  .day-courses-list {
+    app-daily-course-item-list {
+      ::ng-deep .daily-course-card {
+        margin-left: 12px;
+        margin-right: 12px;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+@media (min-width: 768px) and (max-width: 1024px) {
+  .day-header {
+    padding: 18px;
+    margin: 0 20px 14px 20px;
+
+    .date-box {
+      min-width: 72px;
+      height: 72px;
+
+      .date-day {
+        font-size: 1.7rem;
+      }
+
+      .date-month {
+        font-size: 0.75rem;
+      }
+    }
+
+    .date-info {
+      .date-weekday {
+        font-size: 1.25rem;
+      }
+
+      .date-full {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .day-courses-list {
+    app-daily-course-item-list {
+      ::ng-deep .daily-course-card {
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - DESKTOP
+// =====================================================
+@media (min-width: 1025px) {
+  .grouped-courses-container {
+    padding: 20px 0;
+  }
+
+  .section-header {
+    padding: 0 24px 20px 24px;
+
+    .section-title {
+      font-size: 1.7rem;
+    }
+  }
+
+  .day-header {
+    padding: 20px;
+    margin: 0 24px 16px 24px;
+
+    .date-box {
+      min-width: 80px;
+      height: 80px;
+
+      .date-day {
+        font-size: 1.9rem;
+      }
+
+      .date-month {
+        font-size: 0.8rem;
+      }
+    }
+
+    .date-info {
+      .date-weekday {
+        font-size: 1.3rem;
+      }
+
+      .date-full {
+        font-size: 0.95rem;
+      }
+
+      .lessons-count {
+        font-size: 0.85rem;
+
+        ion-icon {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .day-courses-list {
+    app-daily-course-item-list {
+      ::ng-deep .daily-course-card {
+        margin-left: 24px;
+        margin-right: 24px;
+      }
+    }
+  }
+}
+
+// =====================================================
+// ANIMAZIONI
+// =====================================================
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Animazione staggered per i gruppi
+.day-group {
+  animation-fill-mode: both;
+
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.15s; }
+  &:nth-child(3) { animation-delay: 0.2s; }
+  &:nth-child(4) { animation-delay: 0.25s; }
+  &:nth-child(5) { animation-delay: 0.3s; }
+}

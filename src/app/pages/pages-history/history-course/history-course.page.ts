@@ -18,7 +18,7 @@ import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model
 import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
 import { Area } from 'src/app/models/struttura/area.model';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
-
+import { Share } from '@capacitor/share';
 
 @Component({
   selector: 'app-history-course',
@@ -57,6 +57,9 @@ export class HistoryCoursePage implements OnInit {
   modalitaIscrizione: typeof ModalitaIscrizione = ModalitaIscrizione;
 
   titleForm = '';
+
+  // NUOVA PROPRIETÀ PER I TAB
+  activeTab: 'dettagli' | 'pagamento' = 'dettagli';
 
   //La Label contenente il programma po' essere ristretta o allargata
   expandProgramma: boolean = false;
@@ -497,27 +500,28 @@ export class HistoryCoursePage implements OnInit {
   //#endregion
 
   //#region METODI INTERFACCIA
+  
   /**
-   * chiama il servizio passandogli l'id dell'oggetto corso, e restituisce la stringa dell'icona
-   * @param corso l'oggetto corso per cui si richiede l'icona
+   * Ritorna Icona dello Sport abbinata
+   * @param idSport 
+   * @returns 
    */
-  getIcon(corso:Corso): string
+  getIconSport(idSport: string): string
   {
-    let myIdSport = '';
-    if (corso) {
-      myIdSport = corso.IDSPORT;
-    }
-    return this.startService.getSportIcon(myIdSport);
+        return this.startService.getSportIcon(idSport);
   }
 
+  /**
+   * 
+   * @returns Classe da applicare al programma
+   */
   getClassLabelProgramma(): string {
     let myClass = '';
     if (this.expandProgramma) {
-      myClass = 'ion-text-wrap';
+      myClass = 'expanded';  // Prima era 'ion-text-wrap'
     }
-
     return myClass;
-  }  
+  }
   //#endregion
 
   //#region METODI CLICK
@@ -621,6 +625,14 @@ export class HistoryCoursePage implements OnInit {
                                          //Non va in catch
 
                      })
+  }
+
+
+ /**
+ * NUOVO METODO: Condividi iscrizione
+ */
+  async onClickShare() {
+    // ... codice per condividere
   }
 
   //TODO: pagamento non abilitato

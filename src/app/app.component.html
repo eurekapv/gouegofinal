@@ -11,8 +11,9 @@
     <div class="sk-cube sk-cube9"></div>
   </div>
 </div>
+
 <!-- SONO IN ERRORE -->
-<div *ngIf="actaulStateApplication == stateApplication.onError">
+<div *ngIf="actaulStateApplication == stateApplication.onError" class="error-container">
   <ion-grid>
     <ion-row>
       <ion-col 
@@ -22,63 +23,76 @@
           sizeLg="8" offsetLg="2"
           sizeXl="6" offsetXl="3"> 
         
-            <ion-card 
-                class="ion-text-center">
-                <ion-item
-                      (click)="onClickSwitchCaptionError()"
-                      class="ion-padding-bottom" 
-                      button="true"
-                      detail="false"
-                      lines="none" 
-                      color="danger">
-                  <ion-icon name="bug-outline" slot="start"></ion-icon>
-                  <ion-label>{{captionCardError}}</ion-label>
-                  <ion-badge>{{versioneApp}}</ion-badge>
-                </ion-item>
-                <img alt="players" src="assets/boysplaying_small.png">
-                <ion-card-header>
-                    <ion-card-title>Spiacenti</ion-card-title>
-                    <ion-card-subtitle>Qualcosa è andato storto</ion-card-subtitle>
-                </ion-card-header>
-                    <ion-card-content>
-                      <ion-grid>
-                        <ion-row>
-                          <ion-col>
-                            Non riesco a collegarmi per recuperare i dati. Verifica la rete e riprova.
-                          </ion-col>
-                        </ion-row>
-                        <ion-row>
-                          <ion-col>
-                            <ion-button
-                                (click)="onStartApplication()" 
-                                expand="full"
-                                fill="outline"
-                                color="danger">
-                              Riprova
-                            </ion-button>
-                          </ion-col>
-                        </ion-row>
+        <!-- ERROR CARD MODERNA -->
+        <div class="error-card">
+          
+          <!-- Header con Badge Versione -->
+          <div 
+              class="error-card__header"
+              (click)="onClickSwitchCaptionError()">
+            <div class="error-card__header-content">
+              <div class="error-card__icon-wrapper">
+                <ion-icon name="cloud-offline-outline"></ion-icon>
+              </div>
+              <div class="error-card__header-text">
+                <h4>{{captionCardError}}</h4>
+                <ion-badge class="version-badge">v{{versioneApp}}</ion-badge>
+              </div>
+            </div>
+            <ion-icon 
+                name="bug-outline" 
+                class="debug-icon"
+                [class.active]="switchErrorMessage">
+            </ion-icon>
+          </div>
 
-                        <ion-row *ngIf="switchErrorMessage">
-                          <ion-col>
-                            <ion-item lines="none">
-                              <ion-label 
-                                  class="ion-text-wrap"
-                                  *ngIf="errorMessage.length != 0">{{errorMessage}}</ion-label>
-                              <ion-label 
-                                  class="ion-text-wrap"
-                                  *ngIf="errorMessage.length == 0">non sono presenti messaggi di errore aggiuntivi</ion-label>
-                            </ion-item>
-                          </ion-col>
-                        </ion-row>
-                      </ion-grid>
+          <!-- Immagine -->
+          <div class="error-card__image">
+            <img alt="Connection Error" src="assets/boysplaying_small.png">
+          </div>
 
-                    </ion-card-content>
-            </ion-card>
+          <!-- Content -->
+          <div class="error-card__content">
+            <h1 class="error-card__title">Spiacenti</h1>
+            <h2 class="error-card__subtitle">Qualcosa è andato storto</h2>
+            
+            <div class="error-card__message">
+              <ion-icon name="wifi-outline"></ion-icon>
+              <p>Non riesco a collegarmi per recuperare i dati. Verifica la rete e riprova.</p>
+            </div>
+
+            <!-- Pulsante Riprova -->
+            <ion-button
+                (click)="onStartApplication()" 
+                expand="block"
+                size="large"
+                class="retry-button">
+              <ion-icon slot="start" name="refresh-outline"></ion-icon>
+              Riprova
+            </ion-button>
+
+            <!-- Messaggio Errore Tecnico (Espandibile) -->
+            <div class="error-card__technical" *ngIf="switchErrorMessage">
+              <div class="technical-message">
+                <ion-icon name="information-circle-outline"></ion-icon>
+                <div class="technical-message__content">
+                  <h5>Dettagli Tecnici</h5>
+                  <p *ngIf="errorMessage.length != 0">{{errorMessage}}</p>
+                  <p *ngIf="errorMessage.length == 0" class="no-details">
+                    Non sono presenti messaggi di errore aggiuntivi
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </ion-col>
     </ion-row>
   </ion-grid>
 </div>
+
 <!-- PUO' PARTIRE L'APP -->
 <ion-app *ngIf="actaulStateApplication == stateApplication.started"> 
     <ion-router-outlet></ion-router-outlet> 

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, LoadingController, ModalController, ActionSheetController} from '@ionic/angular';
+import { NavController, LoadingController, ModalController, ActionSheetController, IonContent} from '@ionic/angular';
 import { Location } from 'src/app/models/struttura/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -71,6 +71,12 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
   //Collasso la parte superiore di Header
   fixedHeaderCollapsed:boolean = false;
+
+  // Nuove proprietà per lo scroll collapsible
+  @ViewChild(IonContent, { static: false }) content: IonContent;
+  isHeaderCollapsed = false;
+  lastScrollTop = 0;
+  scrollThreshold = 50; // Pixels da scrollare prima di collassare
   
   //Grid completa che contiene le 2 colonne o la colonna singola
   @ViewChild('gridcontainer', {read: ElementRef}) refGridContainer: ElementRef | undefined;
@@ -272,6 +278,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
 
   }
+  
 
 
   //#region PULSANTE BACK

@@ -14,39 +14,40 @@
 </ion-header>
 
 
-<ion-content [scrollY]="false">
+<ion-content [scrollY]="true">
 
       <div class="booking-layout" *ngIf="flagDatiRicevuti">
-        <!--SEZIONE FISSA IN ALTO (non scrolla) -->
-          <div
-              *ngIf="!fixedHeaderCollapsed" 
-              class="fixed-header">
-              <!-- RIGA COMPLESSA CON GLI SPORT-->
-              <app-sport-scroll 
-                  [selectedSport]="selectedSport" 
-                  [sportList]="listLocationSport" 
-                  [direction]="directionSliderSportCampi"
-                  (sportChanged)="onChangeSport($event)" >
-              </app-sport-scroll>
-
-              <!-- RIGA CALENDAR SCROLL -->
-              <app-calendarscroll 
-                      [activeDay]="actualBookDay"
-                      (onChangeActiveDay)="onChangeBookDay($event)">
-              </app-calendarscroll>
-
-              <!-- RIGA CON I CAMPI-->
-              <app-campi-scroll 
-                    [selectedCampo]="selectedCampo" 
-                    [campiList]="availableFields" 
-                    [canChoose]="flagDatiRicevuti && flagPrenotazioneDisponibile"
-                    [selectedLocation]="selectedLocation"
-                    (campoChanged)="onChangeCampo($event)">
-              </app-campi-scroll>              
-          </div>
-
-          <!-- SEZIONE SCROLLABILE (solo gli slot) -->
-          <div class="scrollable-content">
+        
+        <!-- SEZIONE SCROLLABILE (solo gli slot) -->
+        <div class="scrollable-content">
+          
+            <!--SEZIONE FISSA IN ALTO (non scrolla) -->
+              <div
+                  *ngIf="!fixedHeaderCollapsed" 
+                  class="fixed-header">
+                  <!-- RIGA COMPLESSA CON GLI SPORT-->
+                  <app-sport-scroll 
+                      [selectedSport]="selectedSport" 
+                      [sportList]="listLocationSport" 
+                      [direction]="directionSliderSportCampi"
+                      (sportChanged)="onChangeSport($event)" >
+                  </app-sport-scroll>
+    
+                  <!-- RIGA CALENDAR SCROLL -->
+                  <app-calendarscroll 
+                          [activeDay]="actualBookDay"
+                          (onChangeActiveDay)="onChangeBookDay($event)">
+                  </app-calendarscroll>
+    
+                  <!-- RIGA CON I CAMPI-->
+                  <app-campi-scroll 
+                        [selectedCampo]="selectedCampo" 
+                        [campiList]="availableFields" 
+                        [canChoose]="flagDatiRicevuti && flagPrenotazioneDisponibile"
+                        [selectedLocation]="selectedLocation"
+                        (campoChanged)="onChangeCampo($event)">
+                  </app-campi-scroll>              
+              </div>
 
             <!-- RIGA SLOT DISPONIBILITA (PRENOTAZIONI ABILITATE)-->
             <div

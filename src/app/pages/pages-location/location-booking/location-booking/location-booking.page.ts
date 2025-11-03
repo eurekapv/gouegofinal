@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, LoadingController, ModalController, ActionSheetController, IonContent} from '@ionic/angular';
+import { NavController, LoadingController, ModalController, IonContent} from '@ionic/angular';
 import { Location } from 'src/app/models/struttura/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -73,10 +73,12 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   fixedHeaderCollapsed:boolean = false;
 
   // Nuove proprietà per lo scroll collapsible
-  @ViewChild(IonContent, { static: false }) content: IonContent;
-  isHeaderCollapsed = false;
-  lastScrollTop = 0;
-  scrollThreshold = 50; // Pixels da scrollare prima di collassare
+  @ViewChild(IonContent) content: IonContent;
+  // Proprietà per gestire il collapsing
+  isHeaderHidden = false;
+  private lastScrollTop = 0;
+  private readonly scrollThreshold = 80; // pixel da scrollare prima di nascondere
+
   
   //Grid completa che contiene le 2 colonne o la colonna singola
   @ViewChild('gridcontainer', {read: ElementRef}) refGridContainer: ElementRef | undefined;
@@ -280,6 +282,21 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
   }
   
 
+  // Metodo per gestire lo scroll
+  handleScroll(event: any) {
+    const scrollTop = event.detail.scrollTop;
+    
+    // Se scrollo verso il basso oltre la soglia -> nascondo
+    if (scrollTop > this.lastScrollTop && scrollTop > this.scrollThreshold) {
+      this.isHeaderHidden = true;
+    } 
+    // Se scrollo verso l'alto -> mostro
+    else if (scrollTop < this.lastScrollTop - 10) { // piccola isteresi
+      this.isHeaderHidden = false;
+    }
+    
+    this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+  }
 
   //#region PULSANTE BACK
   /**

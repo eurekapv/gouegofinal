@@ -1,0 +1,103 @@
+<ion-header #headBook>
+
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button  [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Prenota</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onClickButtonFixedHeaderCollapsed()">        
+        <ion-icon slot="icon-only" [name]="fixedHeaderCollapsed ? 'caret-down-outline' : 'caret-up-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>    
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [scrollY]="true">
+
+      <div class="booking-layout" *ngIf="flagDatiRicevuti">
+        
+        <!-- SEZIONE SCROLLABILE (solo gli slot) -->
+        <div class="scrollable-content">
+          
+            <!--SEZIONE FISSA IN ALTO (non scrolla) -->
+              <div
+                  *ngIf="!fixedHeaderCollapsed" 
+                  class="fixed-header">
+                  <!-- RIGA COMPLESSA CON GLI SPORT-->
+                  <app-sport-scroll 
+                      [selectedSport]="selectedSport" 
+                      [sportList]="listLocationSport" 
+                      [direction]="directionSliderSportCampi"
+                      (sportChanged)="onChangeSport($event)" >
+                  </app-sport-scroll>
+    
+                  <!-- RIGA CALENDAR SCROLL -->
+                  <app-calendarscroll 
+                          [activeDay]="actualBookDay"
+                          (onChangeActiveDay)="onChangeBookDay($event)">
+                  </app-calendarscroll>
+    
+                  <!-- RIGA CON I CAMPI-->
+                  <app-campi-scroll 
+                        [selectedCampo]="selectedCampo" 
+                        [campiList]="availableFields" 
+                        [canChoose]="flagDatiRicevuti && flagPrenotazioneDisponibile"
+                        [selectedLocation]="selectedLocation"
+                        (campoChanged)="onChangeCampo($event)">
+                  </app-campi-scroll>              
+              </div>
+
+            <!-- RIGA SLOT DISPONIBILITA (PRENOTAZIONI ABILITATE)-->
+            <div
+                class="ion-no-margin" 
+                *ngIf="flagDatiRicevuti && flagPrenotazioneDisponibile && actualSlotDay.APERTOCHIUSO">
+                <app-slottime 
+                    *ngFor="let slot of actualSlotDay.SLOTTIMES" 
+                    [mySlot]="slot" 
+                    [readOnly]="actualSlotDay._TEMPLATELOCK" 
+                    (clickSlot)="onClickSlot($event)">
+                </app-slottime>
+            </div>
+
+            <!-- EMPTY STATE - GIORNATA CHIUSA -->
+            <!-- RIGA CARD AVVISO (PRENOTAZIONI DISABILITATE PER GIORNATA CHIUSA)-->
+            <div 
+              class="ion-no-margin"
+              *ngIf="flagDatiRicevuti && flagPrenotazioneDisponibile && !actualSlotDay.APERTOCHIUSO">
+                <app-empty-state
+                  icon="calendar-outline"
+                  type="warning"
+                  title="Giornata chiusa"
+                  [message]="'Il centro ' + selectedLocation?.DENOMINAZIONE + ' non è disponibile per prenotazioni nella data selezionata. Scegli un\'altra data o contatta la struttura per maggiori informazioni.'">
+                </app-empty-state>
+            </div>
+
+            <!-- RIGA 2 CARD AVVISO (PRENOTAZIONI DISABILITATE)-->
+            <!-- EMPTY STATE - PRENOTAZIONI NON DISPONIBILI -->            
+            <div
+              *ngIf="!flagPrenotazioneDisponibile"
+              class="ion-no-margin"
+              >
+                <app-empty-state
+                  icon="alert-circle-outline"
+                  type="info"
+                  title="Prenotazioni non disponibili"
+                  [message]="'Il centro ' + selectedLocation?.DENOMINAZIONE + ' non ha campi disponibili per l\'attività selezionata. Prova a cambiare sport o centro.'">
+                </app-empty-state>
+            </div>
+
+          </div>
+      </div>
+
+
+
+
+</ion-content>
+<!-- PRENOTAZIONE SELEZIONATA -->
+<ion-footer *ngIf="visibleFooter()">
+  <app-footbooked 
+    [myPrenotaPianifica]="actualPlanning" 
+    (clickPrenota)="onClickPrenota($event)"></app-footbooked>
+</ion-footer>

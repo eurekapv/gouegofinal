@@ -87,7 +87,7 @@
           <div class="detail-duration">
             <ion-icon name="hourglass-outline"></ion-icon>
             <span>Durata:</span>
-            <strong>{{giornata.ORELEZIONE}} {{giornata.ORELEZIONE > 1 ? 'ore' : 'ora'}}</strong>
+            <strong>{{giornata.ORELEZIONE | labelNumeroOre:'short'}}</strong>
           </div>
 
           <!-- BADGE STATUS -->

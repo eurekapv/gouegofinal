@@ -48,6 +48,11 @@
               (sportChanged)="onChangeSport($event)" >
           </app-sport-scroll>
   
+        </div>
+        
+        <!-- SEZIONE SCROLLABILE-->
+        <div class="scrollable-content">
+          
           <!-- CALENDARIO SCROLL -->
           <app-calendarscroll 
             [activeDay]="selectedDate"
@@ -62,10 +67,7 @@
             [addAllLevelItem]="true"
             [livelliList]="livelliList">
           </app-level-scroll>          
-        </div>
 
-        <!-- SEZIONE SCROLLABILE-->
-        <div class="scrollable-content">
           <!-- RIGA CON L'ELENCO DEI CORSI -->
           <ion-row *ngIf="listCorsi && listCorsi.length != 0">
             <ion-col>

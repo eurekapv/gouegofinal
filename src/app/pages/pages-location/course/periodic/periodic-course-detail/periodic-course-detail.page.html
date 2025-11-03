@@ -116,7 +116,7 @@
               <ion-icon name="hourglass-outline" color="primary"></ion-icon>
               <div class="time-info">
                 <span class="time-label">Durata</span>
-                <strong class="time-value">{{myCorso.ORELEZIONE}} {{myCorso.ORELEZIONE > 1 ? 'Ore' : 'Ora'}}</strong>
+                <strong class="time-value">{{myCorso.ORELEZIONE | labelNumeroOre:'short'}}</strong>
               </div>
             </div>
           </div>
@@ -127,7 +127,11 @@
           </div>
 
           <!-- GIORNI SETTIMANA -->
-          <app-settimana-block [listDays]="myCorso._SETTIMANA"></app-settimana-block>
+          <app-settimana-block 
+              [showOnlySelected]="true"
+              colorSelected="success"
+              [size]="'auto'"
+              [listDays]="myCorso._SETTIMANA"></app-settimana-block>
 
           <ion-button 
               expand="block" 
@@ -136,7 +140,7 @@
               class="action-btn"
               (click)="onClickCalendario()">
             <ion-icon slot="start" name="calendar-outline"></ion-icon>
-            Calendario
+            Calendario Giornate
           </ion-button>
           
         </ion-card-content>

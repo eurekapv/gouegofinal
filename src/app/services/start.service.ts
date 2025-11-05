@@ -30,7 +30,7 @@ import { ModalController, Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './archivi/codicefiscale.service';
 import { CodiceFiscale } from '../models/zsupport/codicefiscale.model';
-import { CustomAlertClass, Mansione, PaymentEnvironment, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
+import { CustomAlertClass, Mansione, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/utente/accountregistration.model';
 import { OccupazioniService } from './struttura/occupazioni.service';
 
@@ -93,8 +93,7 @@ import { ShopCarrello } from '../models/shop/shop-carrello.model';
 import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
 import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso-giornaliero.model';
-import { StripemanagerService } from './zsupport/stripemanager.service';
-import { StripePaymentIntent } from '../models/zsupport/stripe-payment-intent';
+import { StripePaymentService } from './payment/stripe-payment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -233,7 +232,8 @@ export class StartService {
     private tipoPagamentoService: TipoPagamentoService,
     private fileService: FileService,
     private shopService: ShoppingService,
-    private stripeManagerService: StripemanagerService
+    private stripePayment: StripePaymentService,
+    
     ) { 
 
       //Ogni volta che cambia la configurazione la invio 
@@ -340,6 +340,9 @@ export class StartService {
    * L'applicazione è partita
    */
   onAfterStartApplication(): void {
+
+      //Inizializzo Stripe
+      this.initializeStripe();
 
       //Adesso ho tutto e posso sottoscrivermi al cambio Area
       // Mi iscrivo alle modifiche dell'Area Selezionata
@@ -2284,18 +2287,15 @@ shopNewCart(): void {
 //#region STRIPE MANAGER 
 
 /**
- * Comunica con Stripe Manager su Google Cloud per una richiesta di intenzione di pagamento
-* @param mode {PaymentEnvironment} 
-* @param amount 
- * @param currency 
- * @param idAccountConnected 
+ * Inizializza il componente Stripe 
+ * Chiamato in app.component
  * @returns 
  */
-requestStripeIntentPayment(mode: PaymentEnvironment, amount: number, currency: string = 'eur', idAccountConnected: string = ''): Promise<StripePaymentIntent> {
-
-  return this.stripeManagerService.requestIntentPayment(mode, amount, currency, idAccountConnected);
-  
+initializeStripe():Promise<void> {
+  return this.stripePayment.initialize();
 }
+
+
 //#endregion
 
 

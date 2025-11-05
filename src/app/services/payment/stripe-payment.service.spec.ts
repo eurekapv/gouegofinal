@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { StripemanagerService } from './stripemanager.service';
+import { StripePaymentService } from './stripe-payment.service';
 
-describe('StripemanagerService', () => {
-  let service: StripemanagerService;
+describe('StripePaymentService', () => {
+  let service: StripePaymentService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(StripemanagerService);
+    service = TestBed.inject(StripePaymentService);
   });
 
   it('should be created', () => {

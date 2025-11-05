@@ -43,7 +43,8 @@ export const environment = {
     }
   },  
   additionalConfig: {
-    defaultShopImage: 'assets/commercial/basketarticoli_small.png'
+    defaultShopImage: 'assets/commercial/basketarticoli_small.png',
+    stripePublishableKey: 'pk_live_51Ic8tPIe0jXIfPKjtAwn6GMbSruoMnLoCpkT5KewlNsuNzBW7sBqHU1tzyPaTlysVOXoc2O9uqi2x2cagvmbQ7oo00fwAoC7QN'
   }   
 
 };

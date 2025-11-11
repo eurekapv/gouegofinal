@@ -1,6 +1,6 @@
 import { IDDocument } from '../../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model';
-import { PaymentChannel, PaymentEnvironment, PaymentMode, SettorePagamentiAttivita, ValueList } from '../zsupport/valuelist.model';
+import { ModeIncassoConfig, PaymentChannel, PaymentEnvironment, PaymentMode, SettoreAttivita, SettorePagamentiAttivita, ValueList } from '../zsupport/valuelist.model';
 
 
 export class AreaPaymentSetting extends IDDocument {
@@ -12,12 +12,8 @@ export class AreaPaymentSetting extends IDDocument {
     PPCLIENTIDSANDBOX:      string;
     PPCLIENTIDPRODUCTION:   string;
     SETTORI:                string;
-    TEXTUTILIZZATO:         string;
-    STPUBLICKEY:            string;
-    STPUBLICKEYTEST:        string;
-    STENVIRONMENT:          PaymentEnvironment;
     STIDACCOUNT:            string;
-    STIDACCOUNTTEST:        string;
+    STFLAGSTATUS:           boolean;
 
 
     constructor(onlyInstance?:boolean) {
@@ -35,14 +31,10 @@ export class AreaPaymentSetting extends IDDocument {
                       'PPCLIENTIDPRODUCTION',
                       'PPCLIENTSECRET',
                       'SETTORI',
-                      'STPUBLICKEY',
-                      'STPUBLICKEYTEST',
-                      'STIDACCOUNT',
-                      'STIDACCOUNTTEST',
-                      'TEXTUTILIZZATO'
+                      'STIDACCOUNT'
                     ];
-      let arNumber = ['TIPOPAYMENT','PPENVIRONMENT','STENVIRONMENT'];
-      let arBoolean = [];
+      let arNumber = ['TIPOPAYMENT','PPENVIRONMENT'];
+      let arBoolean = ['STFLAGSTATUS'];
       let arDate = [];
       let arDateTime =[];
       let arTime = [];
@@ -100,6 +92,53 @@ export class AreaPaymentSetting extends IDDocument {
       return incluso;
     }
 
+    /**
+     * 
+     * @param listConfiguration ELenco delle configurazioni disponibili
+     * @param modeIncasso Come devo incassare ?
+     * @param settore Per quale settore
+     * @returns 
+     */
+    static findConfigIncassoFor(
+                                  listConfiguration: AreaPaymentSetting[], 
+                                  modeIncasso: ModeIncassoConfig,
+                                  settorePagamento: SettorePagamentiAttivita) {
+
+      let areaPaymentFounded: AreaPaymentSetting = null;
+
+      if (listConfiguration) {
+
+        for (let index = 0; index < listConfiguration.length; index++) {
+          //Recupero la configurazione
+          const element = listConfiguration[index];
+
+          //E' relativo al Settore richiesto (Corso, Evento, Prenotazione, Shop)
+          if (element.SETTORI && element.SETTORI.includes(settorePagamento.toString())) {
+            if (modeIncasso == ModeIncassoConfig.incassoContanti) {
+              if (element.TIPOPAYMENT == PaymentChannel.onSite) {
+                  areaPaymentFounded = element;
+                  break;
+              }
+            }
+            else if (modeIncasso == ModeIncassoConfig.incassoBonifico) {
+              if (element.TIPOPAYMENT == PaymentChannel.bonifico) {
+                  areaPaymentFounded = element;
+                  break;
+              }
+            }
+            else if (modeIncasso == ModeIncassoConfig.incassoCard) {
+              if (element.TIPOPAYMENT == PaymentChannel.paypal || 
+                  element.TIPOPAYMENT == PaymentChannel.stripe) {
+                    areaPaymentFounded = element;
+                    break;
+              }
+            }
+          }
+        }
+      }
+
+      return areaPaymentFounded;
+    }
 
    /**
    * Ritorna una Icon a seconda del channel
@@ -193,14 +232,6 @@ export class AreaPaymentSetting extends IDDocument {
               break;
 
           case PaymentChannel.bonifico:
-              inApp = false;
-              break;
-
-          case PaymentChannel.applePay:
-              inApp = false;
-              break;
-
-          case PaymentChannel.googlePay:
               inApp = false;
               break;
 

@@ -10,7 +10,7 @@ import { PrenotazionePianificazione } from 'src/app/models/prenotazioni/prenotaz
 import { Campo } from 'src/app/models/struttura/campo.model';
 import { Gruppo } from 'src/app/models/struttura/gruppo.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
-import { PageType, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
+import { ModeIncassoConfig, PageType, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 
 import { AlertController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
@@ -68,6 +68,19 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
   myListPayment: AreaPaymentSetting[];
   mySelectedPayment: AreaPaymentSetting;
   myPaymentMode: PaymentMode;
+
+  
+  /* NUOVE PROPRIETA */
+  // Creo le variabili per ognuna modalita di incasso (Contanti/Bonifico/Mobile)
+  //Queste variabili vengono popolate una volta che ho l'elenco delle modalità di pagamento
+  configIncassoContanti: AreaPaymentSetting;
+  configIncassoBonifico: AreaPaymentSetting;
+  configIncassoMobile: AreaPaymentSetting;
+
+  /* FINE NUOVE PROPRIETA */
+
+
+  
 
 
   subPaymentResult: Subscription;
@@ -375,14 +388,34 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
    */  
   setListPayment() {
 
-    //Svuota l'array
-    this.myListPayment = [];
+    let listConfigIncassi: AreaPaymentSetting[];
+
+    //Azzero le configurazioni
+    this.configIncassoContanti = null;
+    this.configIncassoBonifico = null;
+    this.configIncassoMobile = null;
 
 
     //Ho il documento dell'Area
     if (this.docArea) {
-      
-      this.myListPayment = this.docArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
+      //Recupero le modalità
+      listConfigIncassi = this.docArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+      //Recupero la modalità per il pagamento in contanti (se presente)
+      this.configIncassoContanti = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                          ModeIncassoConfig.incassoContanti, 
+                                                                          SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+      //Recupero la modalità per il pagamento in bonifico (se presente)
+      this.configIncassoBonifico = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                          ModeIncassoConfig.incassoBonifico, 
+                                                                          SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+      //Recupero la modalità per il pagamento in mobile (se presente)
+      this.configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                          ModeIncassoConfig.incassoCard, 
+                                                                          SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
 
       if (this.myListPayment && this.myListPayment.length != 0) {
         this.mySelectedPayment = this.myListPayment[0];
@@ -394,6 +427,8 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
     }
 
   }
+
+
 
   /**
    * Ricezione pagamento da utilizzare

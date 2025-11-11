@@ -93,3 +93,10 @@
   </div>
 
 </ion-content>
+
+<!-- PRENOTAZIONE SELEZIONATA -->
+<ion-footer *ngIf="visibleFooter()">
+  <app-footbooked 
+    [myPrenotaPianifica]="actualPlanning" 
+    (clickPrenota)="onClickPrenota($event)"></app-footbooked>
+</ion-footer>

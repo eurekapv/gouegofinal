@@ -18,6 +18,13 @@ export enum SettorePagamentiAttivita {
     settorePagamentoShop = 40
 }
 
+//Questi sono i 3 possibili modi con cui si puo' incassare
+export enum ModeIncassoConfig {
+    incassoContanti = 10,
+    incassoBonifico = 20,
+    incassoCard = 30
+}
+
 export enum TipoCampo {
     campo = 10,
     aulaIndividuale = 100,

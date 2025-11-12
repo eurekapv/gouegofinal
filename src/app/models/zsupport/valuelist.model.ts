@@ -22,7 +22,7 @@ export enum SettorePagamentiAttivita {
 export enum ModeIncassoConfig {
     incassoContanti = 10,
     incassoBonifico = 20,
-    incassoCard = 30
+    incassoCreditCard = 30
 }
 
 export enum TipoCampo {

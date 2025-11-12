@@ -10,16 +10,17 @@ import { PrenotazionePianificazione } from 'src/app/models/prenotazioni/prenotaz
 import { Campo } from 'src/app/models/struttura/campo.model';
 import { Gruppo } from 'src/app/models/struttura/gruppo.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
-import { ModeIncassoConfig, PageType, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
+import { ModeIncassoConfig, PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 
 import { AlertController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { Area } from 'src/app/models/struttura/area.model';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
-import { PaymentPage } from 'src/app/pages/payment/payment.page';
+
 import { AreaLink } from 'src/app/models/struttura/arealink.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PrenotaTesseramento } from 'src/app/models/prenotazioni/prenota_tesseramento.model';
+
 
 @Component({
   selector: 'app-location-booking-finalize',
@@ -61,14 +62,6 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
   //accettazione delle condizioni di vendita
   disclaimer: boolean =true;
-
-
-
-  //Configurazioni di pagamento
-  myListPayment: AreaPaymentSetting[];
-  mySelectedPayment: AreaPaymentSetting;
-  myPaymentMode: PaymentMode;
-
   
   /* NUOVE PROPRIETA */
   // Creo le variabili per ognuna modalita di incasso (Contanti/Bonifico/Mobile)
@@ -77,23 +70,18 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
   _configIncassoBonifico: AreaPaymentSetting;
   _configIncassoMobile: AreaPaymentSetting;
 
+  _selectedPaymentMode: ModeIncassoConfig;
+  _selectedPaymentConfig: AreaPaymentSetting;
+
   /* FINE NUOVE PROPRIETA */
 
-
-  
-
-
-  subPaymentResult: Subscription;
-
-  
+    
   
   constructor(private startService:StartService,
               private navController: NavController,
               private loadingController: LoadingController,
-              private toastCtrl: ToastController,
               private navParams: NavParams, 
               private modalController: ModalController,
-              private alertCtrl: AlertController
               ) {
 
     
@@ -188,10 +176,6 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
       this.subDocUtente.unsubscribe();
     }
 
-    if (this.subPaymentResult) {
-      this.subPaymentResult.unsubscribe();
-    }
-
   }
 
   /**
@@ -265,7 +249,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
    */
   onBookIdWrong() {
 
-    this.showMessage('Errore dati prenotazione');
+    this.startService.showToastMessage('Errore dati prenotazione');
     this.closeModal();
 
   }
@@ -314,13 +298,13 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
                             //Se non è valida visualizzo un messsaggio
                           if (!newPrenotazione.ISVALID) {
-                            this.showMessage(newPrenotazione.MSGINVALID);
+                            this.startService.showAlertMessage(newPrenotazione.MSGINVALID);
                           }
                       },
                       error: (err) => {
                           //Chiudo il loading
                           elLoading.dismiss();
-                          this.showMessage(err);
+                          this.startService.showAlertMessage(err);
                       }
                      })
 
@@ -361,7 +345,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
    */
   onAfterSavePrenotazione()
   {
-    this.showMessage('Prenotazione confermata');
+    this.startService.showToastMessage('Prenotazione confermata');
 
     //1) Chiudere la modale
     this.modalController.dismiss()
@@ -384,16 +368,21 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
   /**
    * Recupera i metodi di pagamento sulla base dell'Area e popola 
-   * l'array myListPayment e l'elemento mySelectedPayament
+   * le variabili con la configurazione
    */  
   setListPayment() {
 
     let listConfigIncassi: AreaPaymentSetting[];
 
+    console.log('Imposto Lista Metodi Pagamento');
+      
     //Azzero le configurazioni
     this._configIncassoContanti = null;
     this._configIncassoBonifico = null;
     this._configIncassoMobile = null;
+    //Questo è il modo di pagamento scelto
+    this._selectedPaymentMode = null;
+    this._selectedPaymentConfig = null;
 
 
     //Ho il documento dell'Area
@@ -413,7 +402,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
       //Recupero la modalità per il pagamento in mobile (se presente)
       this._configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
-                                                                          ModeIncassoConfig.incassoCard, 
+                                                                          ModeIncassoConfig.incassoCreditCard, 
                                                                           SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
       console.log('Contanti');
@@ -423,37 +412,36 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
       console.log('Mobile');
       console.log(this._configIncassoMobile);
 
-
-      if (this.myListPayment && this.myListPayment.length != 0) {
-        this.mySelectedPayment = this.myListPayment[0];
-      }
-      else {
-        this.mySelectedPayment = null;
-      }
-
     }
 
   }
 
 
-
   /**
-   * Ricezione pagamento da utilizzare
-   * @param value Valore Pagamento
+   * Selezionato un valore per il metodo di pagamento
+   * @param value 
    */
-  onPaymentSelected(value) {
-    this.mySelectedPayment = value;
+  onSelectPaymentConfig(value: ModeIncassoConfig) {
+
+    this._selectedPaymentMode = value;
+
+    switch (this._selectedPaymentMode) {
+      case ModeIncassoConfig.incassoContanti:
+          this._selectedPaymentConfig = this._configIncassoContanti;
+        break;
+      case ModeIncassoConfig.incassoBonifico:
+          this._selectedPaymentConfig = this._configIncassoBonifico;
+        break;
+      case ModeIncassoConfig.incassoCreditCard:
+          this._selectedPaymentConfig = this._configIncassoMobile;
+        break;        
+    
+      default:
+        break;
+    }
   }
 
-  /**
-   * Cambiato il modo di pagamento
-   * @param valPaymentMode Modo di pagamento
-   */
-  onPaymentModeSelected(valPaymentMode: PaymentMode) {
-    this.myPaymentMode = valPaymentMode;
-  }
-
-
+  
   /**
    * Richiesta di esecuzione del pagamento di qualsiasi tipologia
    * 1) Se onSite conclude subito dicendo che va bene
@@ -462,107 +450,108 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
    */
   onExecPayment() {
 
-    let arModes:PaymentMode[]=[PaymentMode.pagaAdesso, PaymentMode.pagaBonifico, PaymentMode.pagaStruttura];
-
     //Presente un totale da pagare
     if (this.activePrenotazione.TOTALE != 0) {
 
-      //L'utente ha selezionato come pagare
-      if (arModes.includes(this.myPaymentMode)) {
-  
-        //Pagamento non dentro all'App
-        if (this.myPaymentMode == PaymentMode.pagaBonifico || this.myPaymentMode == PaymentMode.pagaStruttura) {
-  
+      //Metodo di pagamento che non prevede altri passaggi 
+      if (this._selectedPaymentMode == ModeIncassoConfig.incassoContanti) {
+
           //Creo il risultato del pagamento, passando la modalità
-          let docPaymentResult = new PaymentProcess(this.myPaymentMode);
+          let docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
           // Essendo una modalita che non prevede interazioni app
           // viene impostato automaticamento il channelPayment 
           // e il processResult = TRUE
           
           //Passo subito al Success
-          this.onPaymentSuccess(docPaymentResult);
-  
-        }
-        else {
-          
-          //Qui invece bisogna gestire il pagamento
-  
-          //Preparo un oggetto per processare il pagamento
-          let myCheckoutPayment = new PaymentProcess(this.myPaymentMode);
-          
-          myCheckoutPayment.amount = this.activePrenotazione.RESIDUO;
-          myCheckoutPayment.description = 'Pagamento Prenotazione';
-          myCheckoutPayment.currency = 'EUR';
-  
-          //il channelPayment viene impostato nel componente
-          //esterno che si preoccupa del pagamento
-          //Passo alla modale in paymentData = myCheckoutPayment
-          this.modalController.create({
-            component: PaymentPage,
-            componentProps: {
-              paymentData: myCheckoutPayment,
-              listAreaPaymentSettings: this.myListPayment,
-              areaDoc: this.docArea
-            }
-          })
-          .then(elModal => {
-            elModal.present();
-  
-            return elModal.onDidDismiss()
-          })
-          .then((returnData) => {
-  
-            //recupero il risultato del pagamento
-            let myPaymentResult: PaymentProcess = returnData['data'];
-
-            if (myPaymentResult) {
-
-              //Il Risultato del processo di pagamento è TRUE, posso proseguire
-              if (myPaymentResult.processResult) {
-                
-                //Pagamento avvenuto correttamente
-                this.onPaymentSuccess(myPaymentResult); 
-  
-              }
-              else {
-  
-                //Pagamento Fallito
-                this.onPaymentFailed(myPaymentResult);
-  
-              }
-            }
-            else {
-              
-              //Stranamente non mi ha tornato nulla, quindi il pagamento è fallito
-              myPaymentResult = new PaymentProcess(this.myPaymentMode);
-              myPaymentResult.processResult = false;
-              myPaymentResult.messageResult = 'Pagamento fallito';
-
-              //Pagamento Fallito
-              this.onPaymentFailed(myPaymentResult);
-
-            }
-          })
-  
-  
-        }
-  
+          this.onPaymentSuccess(docPaymentResult);        
       }
-      else {
-        //Pagamento non selezionato
-        this.showMessage('E\' necessario selezionare un pagamento');
+      else if (this._selectedPaymentMode == ModeIncassoConfig.incassoBonifico) {
+
+          //Creo il risultato del pagamento, passando la modalità
+          let docPaymentResult = new PaymentProcess(PaymentMode.pagaBonifico);
+          // Essendo una modalita che non prevede interazioni app
+          // viene impostato automaticamento il channelPayment 
+          // e il processResult = TRUE
+          
+          //Passo subito al Success
+          this.onPaymentSuccess(docPaymentResult);        
+      }
+      else if (this._selectedPaymentMode == ModeIncassoConfig.incassoCreditCard) {
+
+        //*********** Pagamento tramite Stripe *********************
+        if (this._selectedPaymentConfig.TIPOPAYMENT == PaymentChannel.stripe) {
+            //Chiamo il metodo per il pagamento
+            this.payWithStripe()
+                .then(paymentResultDoc => {
+                  //Pagamento avvenuto correttamente
+                  //Passo subito al Success
+                  this.onPaymentSuccess(paymentResultDoc);
+                })
+                .catch(error => {
+                  if (error instanceof Error) {
+                    //Errore pagamento
+                    this.startService.showAlertMessage(error.message, 'Pagamento fallito');
+                  }
+                  else if (typeof error == 'string') {
+                    this.startService.showAlertMessage(error, 'Pagamento fallito');
+                  }
+                  else {
+                    this.startService.showAlertMessage(error.toString(), 'Pagamento fallito');
+                  }
+                })
+        }
       }
       
     }
     else {
-      this.showMessage('Contattare la struttura. Prenotazioni gratuite concluse');
+      this.startService.showAlertMessage('Contattare la struttura. Prenotazioni gratuite concluse');
     }
 
 
 
   }
 
+  /**
+   * Si chiede il pagamento tramite Stripe
+   */
+  payWithStripe(): Promise<PaymentProcess> {
+    return new Promise<PaymentProcess>((resolve, reject) => {
+      
+      const amount = this.activePrenotazione.TOTALE * 100; // Totale in centesimi
+      const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT; // ID del centro sportivo
+      let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
 
+      this.startService.presentPaymentOptions(
+                        amount,
+                        'EUR',
+                        centroAccountId)
+        .then(result => {
+
+          if (result.success) {
+
+            //Preparo il documento da inviare al server
+            paymentResultDoc.modePayment = PaymentMode.pagaAdesso
+            paymentResultDoc.channelPayment = PaymentChannel.stripe;
+            paymentResultDoc.amount = amount / 100;
+            paymentResultDoc.currency = 'EUR';
+            paymentResultDoc.description = 'Pagamento Prenotazione';
+            paymentResultDoc.idElectronicResult = result.paymentIntentId;
+            paymentResultDoc.processResult = true;
+
+            console.log('✅ Pagamento completato!', result.paymentIntentId);
+            resolve(paymentResultDoc);
+
+          }
+          else {
+            console.error('❌ Errore:', result.error);
+            reject(result.error);
+          }
+        })
+        .catch(error => {
+          reject(error);
+        });
+    })
+  }
 
 
   /**
@@ -629,7 +618,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
                     //Se non è valida visualizzo un messsaggio
                   if (!docPrenotazione.ISVALID) {
   
-                    this.showMessage(docPrenotazione.MSGINVALID);
+                    this.startService.showAlertMessage(docPrenotazione.MSGINVALID);
   
                   }
                   else {
@@ -646,7 +635,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
                 .catch(errMessage => {
                       //Chiudo il loader
                       elLoading.dismiss();
-                      this.showMessage(errMessage);
+                      this.startService.showAlertMessage(errMessage);
                   });  
                 
           });
@@ -660,68 +649,10 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
   }
 
-  /**
-   * Si sono verificati errori nel pagamento
-   * @param resultPayment Risultato Pagamento Fallito
-   */
-  onPaymentFailed(resultPayment?: PaymentProcess) {
-    let message = 'Si sono verificati errori nel pagamento';
-    let title = 'Pagamento Fallito';
-
-    if (resultPayment) {
-      if (resultPayment.messageResult) {
-        message = resultPayment.messageResult;
-      }
-    }
-
-    //Visualizzo il messaggio
-    this.showAlert(message, title);
-    
-  }
 
   //#endregion
 
-     /**
-   * Visualizza un messaggio come Toast
-   * @param message Messaggio da mostrare
-   */
-  showMessage(message: string) {
-
-    //Creo un messaggio
-    this.toastCtrl.create({
-      message: message,
-      duration: 3000
-    })
-    .then(tstMsg => {
-      tstMsg.present();
-    });
-
-  }
-
-
-  /**
-   * Visualizza un alert con un pulsante Ok se !buttons, oppure con i bottoni dell'array
-   * @param messaggio Messaggio
-   * @param titolo Titolo
-   */
-  showAlert(messaggio:string, titolo?:string, bottoni?:string[]) {
-
-    if (!bottoni || bottoni.length == 0) {
-      bottoni = [];
-      bottoni.push('Ok');
-    }
-
-    //Mostro l'alert richiesto
-    this.alertCtrl.create({      
-      header: (titolo?titolo:'Attenzione'),      
-      message: messaggio,
-      buttons: bottoni
-    })
-    .then(elAlert => {
-      elAlert.present();
-    })
-  }
-  
+ 
 
   openLink(url:string)
   {

@@ -72,11 +72,11 @@
             </div>
 
             <!-- LINK CONDIZIONI VENDITA -->
-            <div class="terms-section" (click)="onClickCondizioniVendita()">
+            <!-- <div class="terms-section" (click)="onClickCondizioniVendita()">
               <ion-icon name="document-text-outline"></ion-icon>
               <span>Procedendo con l'acquisto si accettano le <strong>condizioni di vendita</strong></span>
               <ion-badge color="success">LEGGI</ion-badge>
-            </div>
+            </div> -->
 
             <!-- ACCORDION TESSERE (se presenti) -->
             <ion-accordion-group *ngIf="showGroupTesseramenti" class="tessere-accordion">
@@ -108,13 +108,10 @@
 
             <!-- METODI DI PAGAMENTO -->
             <div class="payment-methods-section">
-              <!-- <h4>Scegli come pagare</h4>
-              <app-payment-mode
-                [iconMode]="true"
-                [arPayment]="myListPayment"
-                (onPaymentModeChoosed)="onPaymentModeSelected($event)">
-              </app-payment-mode> -->
+
               <app-choose-payment-mode
+                (selectedConfig)="onSelectPaymentConfig($event)"
+                (clickCondizioniVendita)="onClickCondizioniVendita()"
                 [configContanti]="_configIncassoContanti"
                 [configBonifico]="_configIncassoBonifico"
                 [configMobile]="_configIncassoMobile"
@@ -139,7 +136,7 @@
       expand="block"
       size="large"
       class="confirm-button"
-      [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !mySelectedPayment"
+      [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !_selectedPaymentConfig"
       (click)="onConfirm()">
       <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
       Conferma Prenotazione

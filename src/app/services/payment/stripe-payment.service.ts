@@ -84,22 +84,23 @@ export class StripePaymentService {
     }
   }
 
+  
   /**
    * Verifica se Apple Pay è disponibile (solo iOS)
    */
-  async isApplePayAvailable(): Promise<boolean> {
+  isApplePayAvailable(): boolean {
     // Su iOS, assumiamo che Apple Pay sia disponibile
-    // Il plugin gestirà l'errore se l'utente non ha carte configurate
-    return this.platform.is('ios');
+    // Il plugin gestirà l'errore se l'utente non ha carte configurate    
+    return this.platform.is('ios') && this.platform.is('capacitor');
   }
 
   /**
    * Verifica se Google Pay è disponibile (solo Android)
    */
-  async isGooglePayAvailable(): Promise<boolean> {
+  isGooglePayAvailable(): boolean {
     // Su Android, assumiamo che Google Pay sia disponibile
     // Il plugin gestirà l'errore se l'utente non ha carte configurate
-    return this.platform.is('android');
+    return this.platform.is('android') && this.platform.is('capacitor');
   }
 
   /**
@@ -113,7 +114,7 @@ export class StripePaymentService {
   ): Promise<PaymentResult> {
     try {
       // Verifica disponibilità
-      const isAvailable = await this.isApplePayAvailable();
+      const isAvailable = this.isApplePayAvailable();
       if (!isAvailable) {
         throw new Error('Apple Pay non disponibile');
       }
@@ -172,7 +173,7 @@ export class StripePaymentService {
   ): Promise<PaymentResult> {
     try {
       // Verifica disponibilità
-      const isAvailable = await this.isGooglePayAvailable();
+      const isAvailable = this.isGooglePayAvailable();
       if (!isAvailable) {
         throw new Error('Google Pay non disponibile');
       }
@@ -229,6 +230,9 @@ export class StripePaymentService {
     idAccountConnected: string = '',
     merchantName: string = environment.additionalConfig.merchantName
   ): Promise<PaymentResult> {
+
+    console.log('Start Pay With Card');
+
     try {
       // Crea Payment Intent
       const paymentIntent = await this.createPaymentIntent(
@@ -277,16 +281,18 @@ export class StripePaymentService {
   ): Promise<PaymentResult> {
     
     // Su iOS, prova prima Apple Pay
-    if (this.platform.is('ios')) {
-      const applePayAvailable = await this.isApplePayAvailable();
+    if (this.isApplePayAvailable()) {
+      console.log('Apple Pay');
+      const applePayAvailable = this.isApplePayAvailable();
       if (applePayAvailable) {
         return this.payWithApplePay(amount, currency, idAccountConnected, merchantName);
       }
     }
 
     // Su Android, prova prima Google Pay
-    if (this.platform.is('android')) {
-      const googlePayAvailable = await this.isGooglePayAvailable();
+    if (this.isGooglePayAvailable()) {
+      console.log('Google Pay');
+      const googlePayAvailable = this.isGooglePayAvailable();
       if (googlePayAvailable) {
         return this.payWithGooglePay(amount, currency, idAccountConnected, merchantName);
       }

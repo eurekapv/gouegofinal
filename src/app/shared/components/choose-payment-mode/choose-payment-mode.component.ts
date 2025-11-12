@@ -23,7 +23,9 @@ export class ChoosePaymentModeComponent  implements OnInit {
     this._configMobile = value;
   }
 
-  @Output() onSelectedConfig= new EventEmitter<AreaPaymentSetting>();
+  @Output() selectedConfig= new EventEmitter<ModeIncassoConfig>();
+  @Output() clickCondizioniVendita = new EventEmitter<void>();
+
 
   constructor() { }
 
@@ -50,7 +52,7 @@ export class ChoosePaymentModeComponent  implements OnInit {
       else if (this._configBonifico && modeConfig == ModeIncassoConfig.incassoBonifico) {
             flagResult = true;
       } 
-      else if (this._configMobile && modeConfig == ModeIncassoConfig.incassoCard) {
+      else if (this._configMobile && modeConfig == ModeIncassoConfig.incassoCreditCard) {
             flagResult = true;
       } 
 
@@ -62,8 +64,20 @@ export class ChoosePaymentModeComponent  implements OnInit {
     return flagResult;
   }
 
+  /**
+   * Invio il metodo scelto
+   * @param modeConfig 
+   */
   onSelectMode(modeConfig:ModeIncassoConfig) {
+    this.selectedConfig.emit(modeConfig);
+  }
 
+  /**
+   * Click effettuato sulle condizioni di vendita
+   */
+  onClickCondizioniVendita() {
+    //Avviso del click sulle condizioni di vendita
+    this.clickCondizioniVendita.emit();
   }
 
   ngOnInit() {}

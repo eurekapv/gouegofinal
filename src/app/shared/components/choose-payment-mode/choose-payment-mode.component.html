@@ -39,9 +39,9 @@
 
     <!-- PAGA SUBITO -->
     <div class="payment-button" 
-         *ngIf="existConfiguration(modeIncassoConfig.incassoBonifico)"
-         [class.active]="_selectedMode === modeIncassoConfig.incassoBonifico"
-         (click)="onSelectMode(modeIncassoConfig.incassoCard)">
+         *ngIf="existConfiguration(modeIncassoConfig.incassoCreditCard)"
+         [class.active]="_selectedMode === modeIncassoConfig.incassoCreditCard"
+         (click)="onSelectMode(modeIncassoConfig.incassoCreditCard)">
       <div class="button-icon">
         <ion-icon name="card-outline"></ion-icon>
       </div>
@@ -55,6 +55,12 @@
     </div>
 
   </div>
+  <!-- LINK CONDIZIONI VENDITA -->
+  <div class="terms-section" (click)="onClickCondizioniVendita()">
+    <ion-icon name="document-text-outline"></ion-icon>
+    <span>Procedendo con l'acquisto si accettano le <strong>condizioni di vendita</strong></span>
+    <ion-badge color="success">LEGGI</ion-badge>
+  </div>  
 </div>
 
 <!-- NO PAYMENT METHODS -->

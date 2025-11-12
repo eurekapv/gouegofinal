@@ -126,7 +126,7 @@ export class AreaPaymentSetting extends IDDocument {
                   break;
               }
             }
-            else if (modeIncasso == ModeIncassoConfig.incassoCard) {
+            else if (modeIncasso == ModeIncassoConfig.incassoCreditCard) {
               //Modalità Paypal
               if (element.TIPOPAYMENT == PaymentChannel.paypal) {
                 if (element.PPCLIENTIDPRODUCTION && element.PPCLIENTIDPRODUCTION.length != 0) {

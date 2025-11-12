@@ -93,7 +93,7 @@ import { ShopCarrello } from '../models/shop/shop-carrello.model';
 import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
 import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso-giornaliero.model';
-import { StripePaymentService } from './payment/stripe-payment.service';
+import { PaymentResult, StripePaymentService } from './payment/stripe-payment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -2293,6 +2293,21 @@ shopNewCart(): void {
  */
 initializeStripe():Promise<void> {
   return this.stripePayment.initialize();
+}
+
+/**
+ * Metodo universale: sceglie automaticamente il metodo migliore
+ * @param amount 
+ * @param currency 
+ * @param idAccountConnected 
+ * @param merchantName 
+ * @returns 
+ */
+presentPaymentOptions(amount: number,
+    currency: string = 'EUR',
+    idAccountConnected: string = '',
+    merchantName: string = environment.additionalConfig.merchantName):Promise<PaymentResult> {
+      return this.stripePayment.presentPaymentOptions(amount, currency, idAccountConnected, merchantName);
 }
 
 

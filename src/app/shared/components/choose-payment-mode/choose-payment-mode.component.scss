@@ -6,13 +6,10 @@
 }
 
 .payment-mode-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: row;
   gap: 10px;
 
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 // =====================================================
@@ -155,6 +152,49 @@
     line-height: 1.4;
   }
 }
+
+
+  .terms-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 16px;
+    background: var(--ion-color-extralight);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-primary);
+      flex-shrink: 0;
+    }
+
+    span {
+      flex: 1;
+      font-size: 0.85rem;
+      color: var(--ion-color-mediumlight);
+      line-height: 1.4;
+
+      strong {
+        color: var(--ion-color-primary);
+        font-weight: 700;
+      }
+    }
+
+    ion-badge {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: var(--ion-color-light);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
 
 // =====================================================
 // RESPONSIVE - MOBILE SMALL

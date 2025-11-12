@@ -1,0 +1,184 @@
+// =====================================================
+// PAYMENT MODE CONTAINER
+// =====================================================
+.payment-mode-container {
+  margin: 12px 0;
+}
+
+.payment-mode-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// =====================================================
+// PAYMENT BUTTON
+// =====================================================
+.payment-button {
+  background: white;
+  border: 2px solid var(--ion-color-light);
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  min-height: 120px;
+  justify-content: center;
+
+  &:hover {
+    border-color: var(--ion-color-success);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    border-color: var(--ion-color-success);
+    background: rgba(var(--ion-color-success-rgb), 0.05);
+    box-shadow: 0 4px 16px rgba(44, 179, 97, 0.15);
+
+    .button-icon ion-icon {
+      color: var(--ion-color-success);
+    }
+
+    .button-radio .radio-dot {
+      background: var(--ion-color-success);
+      border-color: var(--ion-color-success);
+    }
+
+    .button-content h4 {
+      color: var(--ion-color-success);
+    }
+  }
+
+  .button-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--ion-color-extralight);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 26px;
+      color: var(--ion-color-mediumlight);
+      transition: all 0.3s ease;
+    }
+  }
+
+  .button-content {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+      margin: 0;
+      transition: all 0.3s ease;
+      line-height: 1.2;
+    }
+
+    p {
+      font-size: 0.8rem;
+      color: var(--ion-color-mediumlight);
+      margin: 0;
+    }
+  }
+
+  .button-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--ion-color-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+    .radio-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+  }
+}
+
+// =====================================================
+// NO PAYMENT
+// =====================================================
+.no-payment-container {
+  margin: 12px 0;
+}
+
+.no-payment-card {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+  border: 2px solid var(--ion-color-danger);
+  border-radius: 14px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 48px;
+    color: var(--ion-color-danger);
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-danger);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: var(--ion-color-mediumlight);
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+// =====================================================
+// RESPONSIVE - MOBILE SMALL
+// =====================================================
+@media (max-width: 380px) {
+  .payment-button {
+    min-height: 110px;
+    padding: 12px 10px;
+
+    .button-icon {
+      width: 40px;
+      height: 40px;
+
+      ion-icon {
+        font-size: 22px;
+      }
+    }
+
+    .button-content h4 {
+      font-size: 0.85rem;
+    }
+
+    .button-content p {
+      font-size: 0.75rem;
+    }
+  }
+}

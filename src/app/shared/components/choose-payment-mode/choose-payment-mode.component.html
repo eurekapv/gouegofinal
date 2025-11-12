@@ -1,3 +1,69 @@
-<p>
-  choose-payment-mode works!
-</p>
+<!-- PAYMENT MODE SELECTOR -->
+<div class="payment-mode-container" 
+    *ngIf="existConfiguration()">
+  <div class="payment-mode-grid">
+    
+    <!-- PAGA IN STRUTTURA -->
+    <div class="payment-button" 
+         *ngIf="existConfiguration(modeIncassoConfig.incassoContanti)"
+         [class.active]="_selectedMode === modeIncassoConfig.incassoContanti"
+         (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
+      <div class="button-icon">
+        <ion-icon name="cash-outline"></ion-icon>
+      </div>
+      <div class="button-content">
+        <h4>Paga in Struttura</h4>
+        <p>In sede</p>
+      </div>
+      <div class="button-radio">
+        <div class="radio-dot"></div>
+      </div>
+    </div>
+
+    <!-- PAGA CON BONIFICO -->
+    <div class="payment-button" 
+         *ngIf="existConfiguration(modeIncassoConfig.incassoBonifico)"
+         [class.active]="_selectedMode === modeIncassoConfig.incassoBonifico"
+         (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
+      <div class="button-icon">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </div>
+      <div class="button-content">
+        <h4>Paga con Bonifico</h4>
+        <p>Bancario</p>
+      </div>
+      <div class="button-radio">
+        <div class="radio-dot"></div>
+      </div>
+    </div>
+
+    <!-- PAGA SUBITO -->
+    <div class="payment-button" 
+         *ngIf="existConfiguration(modeIncassoConfig.incassoBonifico)"
+         [class.active]="_selectedMode === modeIncassoConfig.incassoBonifico"
+         (click)="onSelectMode(modeIncassoConfig.incassoCard)">
+      <div class="button-icon">
+        <ion-icon name="card-outline"></ion-icon>
+      </div>
+      <div class="button-content">
+        <h4>Paga Subito</h4>
+        <p>Online</p>
+      </div>
+      <div class="button-radio">
+        <div class="radio-dot"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NO PAYMENT METHODS -->
+
+  <div class="no-payment-container" *ngIf="!existConfiguration()">
+    <div class="no-payment-card">
+      <ion-icon name="close-circle-outline"></ion-icon>
+      <h4>Pagamento Non Supportato</h4>
+      <p>Nessun metodo di pagamento disponibile per questo acquisto</p>
+    </div>
+  </div>
+

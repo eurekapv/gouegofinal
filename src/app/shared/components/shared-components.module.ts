@@ -51,6 +51,7 @@ import { DailyCourseItemListComponent } from './course/daily-course-item-list/da
 import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
 import { LevelScrollComponent } from './level-scroll/level-scroll.component';
+import { ChoosePaymentModeComponent } from './choose-payment-mode/choose-payment-mode.component';
 
 
 
@@ -106,7 +107,8 @@ import { LevelScrollComponent } from './level-scroll/level-scroll.component';
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
         ItemPresenzaComponent,
-        LevelScrollComponent
+        LevelScrollComponent,
+        ChoosePaymentModeComponent
     ],
     exports: [
         AdvertisingComponent,
@@ -148,7 +150,8 @@ import { LevelScrollComponent } from './level-scroll/level-scroll.component';
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
         ItemPresenzaComponent,
-        LevelScrollComponent
+        LevelScrollComponent,
+        ChoosePaymentModeComponent
     ]
 })
 export class SharedComponentsModule {}

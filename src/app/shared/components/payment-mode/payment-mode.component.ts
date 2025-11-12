@@ -17,6 +17,7 @@ export class PaymentModeComponent implements OnInit {
       this._arPaymentModeList = AreaPaymentSetting.prepareArPaymentMode(this._arPayment);
       this.chooseStartPayment();
     }
+    
   }
   //Modalità ad Icone e non con Alert Popup
   @Input() set iconMode(value:boolean) {

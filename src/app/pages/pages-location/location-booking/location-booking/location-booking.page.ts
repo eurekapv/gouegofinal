@@ -522,7 +522,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     
     //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata (TRUE-> Chiedo di aggiornare la data su tutti i record figli SLOTTIME)
     this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
-    console.log(this.actualSlotDay)
+    
       
     LogApp.consoleLog('Richiesta Slot Occupazioni');
     

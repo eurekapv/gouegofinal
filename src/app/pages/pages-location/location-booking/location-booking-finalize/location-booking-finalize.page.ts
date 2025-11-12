@@ -73,9 +73,9 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
   /* NUOVE PROPRIETA */
   // Creo le variabili per ognuna modalita di incasso (Contanti/Bonifico/Mobile)
   //Queste variabili vengono popolate una volta che ho l'elenco delle modalità di pagamento
-  configIncassoContanti: AreaPaymentSetting;
-  configIncassoBonifico: AreaPaymentSetting;
-  configIncassoMobile: AreaPaymentSetting;
+  _configIncassoContanti: AreaPaymentSetting;
+  _configIncassoBonifico: AreaPaymentSetting;
+  _configIncassoMobile: AreaPaymentSetting;
 
   /* FINE NUOVE PROPRIETA */
 
@@ -391,9 +391,9 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
     let listConfigIncassi: AreaPaymentSetting[];
 
     //Azzero le configurazioni
-    this.configIncassoContanti = null;
-    this.configIncassoBonifico = null;
-    this.configIncassoMobile = null;
+    this._configIncassoContanti = null;
+    this._configIncassoBonifico = null;
+    this._configIncassoMobile = null;
 
 
     //Ho il documento dell'Area
@@ -402,19 +402,26 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
       listConfigIncassi = this.docArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
       //Recupero la modalità per il pagamento in contanti (se presente)
-      this.configIncassoContanti = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+      this._configIncassoContanti = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
                                                                           ModeIncassoConfig.incassoContanti, 
                                                                           SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
       //Recupero la modalità per il pagamento in bonifico (se presente)
-      this.configIncassoBonifico = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+      this._configIncassoBonifico = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
                                                                           ModeIncassoConfig.incassoBonifico, 
                                                                           SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
       //Recupero la modalità per il pagamento in mobile (se presente)
-      this.configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+      this._configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
                                                                           ModeIncassoConfig.incassoCard, 
                                                                           SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+      console.log('Contanti');
+      console.log(this._configIncassoContanti);
+      console.log('Bonifico');
+      console.log(this._configIncassoBonifico);
+      console.log('Mobile');
+      console.log(this._configIncassoMobile);
 
 
       if (this.myListPayment && this.myListPayment.length != 0) {

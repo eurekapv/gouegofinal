@@ -127,8 +127,18 @@ export class AreaPaymentSetting extends IDDocument {
               }
             }
             else if (modeIncasso == ModeIncassoConfig.incassoCard) {
-              if (element.TIPOPAYMENT == PaymentChannel.paypal || 
-                  element.TIPOPAYMENT == PaymentChannel.stripe) {
+              //Modalità Paypal
+              if (element.TIPOPAYMENT == PaymentChannel.paypal) {
+                if (element.PPCLIENTIDPRODUCTION && element.PPCLIENTIDPRODUCTION.length != 0) {
+                    areaPaymentFounded = element;
+                    break;
+                }
+                else if (element.PPCLIENTIDSANDBOX && element.PPCLIENTIDSANDBOX.length != 0) {
+                    areaPaymentFounded = element;
+                    break;
+                }
+              }  
+              else if (element.TIPOPAYMENT == PaymentChannel.stripe && element.STFLAGSTATUS == true) {
                     areaPaymentFounded = element;
                     break;
               }

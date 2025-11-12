@@ -108,12 +108,19 @@
 
             <!-- METODI DI PAGAMENTO -->
             <div class="payment-methods-section">
-              <h4>Scegli come pagare</h4>
+              <!-- <h4>Scegli come pagare</h4>
               <app-payment-mode
                 [iconMode]="true"
                 [arPayment]="myListPayment"
                 (onPaymentModeChoosed)="onPaymentModeSelected($event)">
-              </app-payment-mode>
+              </app-payment-mode> -->
+              <app-choose-payment-mode
+                [configContanti]="_configIncassoContanti"
+                [configBonifico]="_configIncassoBonifico"
+                [configMobile]="_configIncassoMobile"
+                >
+
+              </app-choose-payment-mode>
             </div>
 
           </div>

@@ -6,7 +6,7 @@
     <!-- PAGA IN STRUTTURA -->
     <div class="payment-button" 
          *ngIf="existConfiguration(modeIncassoConfig.incassoContanti)"
-         [class.active]="_selectedMode === modeIncassoConfig.incassoContanti"
+         [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoContanti}"
          (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
       <div class="button-icon">
         <ion-icon name="cash-outline"></ion-icon>
@@ -23,7 +23,7 @@
     <!-- PAGA CON BONIFICO -->
     <div class="payment-button" 
          *ngIf="existConfiguration(modeIncassoConfig.incassoBonifico)"
-         [class.active]="_selectedMode === modeIncassoConfig.incassoBonifico"
+         [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoBonifico}"
          (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
       <div class="button-icon">
         <ion-icon name="document-text-outline"></ion-icon>
@@ -39,8 +39,8 @@
 
     <!-- PAGA SUBITO -->
     <div class="payment-button" 
-         *ngIf="existConfiguration(modeIncassoConfig.incassoCreditCard)"
-         [class.active]="_selectedMode === modeIncassoConfig.incassoCreditCard"
+         *ngIf="existConfiguration(modeIncassoConfig.incassoCreditCard)"         
+         [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoCreditCard}"
          (click)="onSelectMode(modeIncassoConfig.incassoCreditCard)">
       <div class="button-icon">
         <ion-icon name="card-outline"></ion-icon>

@@ -71,12 +71,6 @@
               <div class="price">{{ activePrenotazione?.TOTALE | currency: "EUR" }}</div>
             </div>
 
-            <!-- LINK CONDIZIONI VENDITA -->
-            <!-- <div class="terms-section" (click)="onClickCondizioniVendita()">
-              <ion-icon name="document-text-outline"></ion-icon>
-              <span>Procedendo con l'acquisto si accettano le <strong>condizioni di vendita</strong></span>
-              <ion-badge color="success">LEGGI</ion-badge>
-            </div> -->
 
             <!-- ACCORDION TESSERE (se presenti) -->
             <ion-accordion-group *ngIf="showGroupTesseramenti" class="tessere-accordion">
@@ -127,7 +121,29 @@
     </ion-grid>
 
   </div>
+
+  <!-- Aggiungi PRIMA di </ion-content> -->
+<div *ngIf="showStripeForm" class="stripe-payment-container">
+  <div class="stripe-form-wrapper">
+    <h3>Inserisci i dati della carta</h3>
+    <div id="payment-element"></div>
+    <ion-button 
+      expand="block" 
+      class="confirm-payment-btn"
+      (click)="confirmStripePayment()">
+      Conferma Pagamento
+    </ion-button>
+    <ion-button 
+      expand="block" 
+      fill="outline"
+      (click)="cancelStripePayment()">
+      Annulla
+    </ion-button>
+  </div>
+</div>
 </ion-content>
+
+
 
 <!-- FOOTER CON BOTTONE CONFERMA -->
 <ion-footer>

@@ -69,6 +69,7 @@ export class ChoosePaymentModeComponent  implements OnInit {
    * @param modeConfig 
    */
   onSelectMode(modeConfig:ModeIncassoConfig) {
+    this._selectedMode = modeConfig;
     this.selectedConfig.emit(modeConfig);
   }
 

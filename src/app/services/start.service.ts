@@ -2310,6 +2310,17 @@ presentPaymentOptions(amount: number,
       return this.stripePayment.presentPaymentOptions(amount, currency, idAccountConnected, merchantName);
 }
 
+/**
+ * Conferma del pagamento su Browser
+ * @returns 
+ */
+confirmBrowserPayment() {
+  return this.stripePayment.confirmBrowserPayment();
+}
+
+mountPaymentElement() {
+  return this.stripePayment.mountPaymentElement();
+}
 
 //#endregion
 

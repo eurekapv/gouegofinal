@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PickerController } from '@ionic/angular';
-import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption } from '@ionic/core';
+import { AlertController, PickerController } from '@ionic/angular';
+import { PickerOptions, PickerButton, PickerColumn, PickerColumnOption, AlertOptions, AlertButton } from '@ionic/core';
 
 
 
@@ -19,8 +19,12 @@ export class PlayerNumberComponent implements OnInit {
   @Output() changeNumPlayer= new EventEmitter<Number>();
    
   icone : number[] = [];
+  infoMessage: string = '';
   
-  constructor(private pickerController: PickerController) {
+  constructor(private pickerController: PickerController, 
+              private alertController: AlertController
+              ) {
+                this.infoMessage = 'Eventuali maggiorazioni per un numero superiore di giocatori verranno applicate prima dell\'incontro.';
   }
   
   ngOnInit() {
@@ -99,7 +103,20 @@ export class PlayerNumberComponent implements OnInit {
 
   }
 
-  
+  /**
+   * Mostra il messaggio informativo
+   */
+  showInfoMessage() {
+    
+    let myButtons: AlertButton[] = [];
+
+    myButtons.push({role:'cancel', text: 'Conferma'});
+    
+    this.alertController.create({message: this.infoMessage, buttons: myButtons})
+                        .then(objAlert => {
+                          objAlert.present();
+                        })
+  }
   
 }
 

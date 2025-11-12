@@ -73,6 +73,12 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
   _selectedPaymentMode: ModeIncassoConfig;
   _selectedPaymentConfig: AreaPaymentSetting;
 
+  showStripeForm = false;
+
+  // Variabili per gestire la promise
+  private currentPaymentResolve: any;
+  private currentPaymentReject: any;
+
   /* FINE NUOVE PROPRIETA */
 
     
@@ -82,6 +88,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
               private loadingController: LoadingController,
               private navParams: NavParams, 
               private modalController: ModalController,
+              private platform: Platform
               ) {
 
     
@@ -298,13 +305,13 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
                             //Se non è valida visualizzo un messsaggio
                           if (!newPrenotazione.ISVALID) {
-                            this.startService.showAlertMessage(newPrenotazione.MSGINVALID);
+                            this.startService.presentAlertMessage(newPrenotazione.MSGINVALID);
                           }
                       },
                       error: (err) => {
                           //Chiudo il loading
                           elLoading.dismiss();
-                          this.startService.showAlertMessage(err);
+                          this.startService.presentAlertMessage(err);
                       }
                      })
 
@@ -375,7 +382,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
     let listConfigIncassi: AreaPaymentSetting[];
 
     console.log('Imposto Lista Metodi Pagamento');
-      
+
     //Azzero le configurazioni
     this._configIncassoContanti = null;
     this._configIncassoBonifico = null;
@@ -490,13 +497,13 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
                 .catch(error => {
                   if (error instanceof Error) {
                     //Errore pagamento
-                    this.startService.showAlertMessage(error.message, 'Pagamento fallito');
+                    this.startService.presentAlertMessage(error.message, 'Pagamento fallito');
                   }
                   else if (typeof error == 'string') {
-                    this.startService.showAlertMessage(error, 'Pagamento fallito');
+                    this.startService.presentAlertMessage(error, 'Pagamento fallito');
                   }
                   else {
-                    this.startService.showAlertMessage(error.toString(), 'Pagamento fallito');
+                    this.startService.presentAlertMessage(error.toString(), 'Pagamento fallito');
                   }
                 })
         }
@@ -504,54 +511,135 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
       
     }
     else {
-      this.startService.showAlertMessage('Contattare la struttura. Prenotazioni gratuite concluse');
+      this.startService.presentAlertMessage('Contattare la struttura. Prenotazioni gratuite concluse');
     }
 
 
 
   }
 
-  /**
-   * Si chiede il pagamento tramite Stripe
-   */
-  payWithStripe(): Promise<PaymentProcess> {
-    return new Promise<PaymentProcess>((resolve, reject) => {
-      
-      const amount = this.activePrenotazione.TOTALE * 100; // Totale in centesimi
-      const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT; // ID del centro sportivo
-      let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
+  //#region STRIPE PAYMENT
 
-      this.startService.presentPaymentOptions(
-                        amount,
-                        'EUR',
-                        centroAccountId)
-        .then(result => {
+// Modifica il metodo payWithStripe
+/**
+ * Si chiede il pagamento tramite Stripe
+ */
+payWithStripe(): Promise<PaymentProcess> {
+  return new Promise<PaymentProcess>((resolve, reject) => {
+    
+    const amount = this.activePrenotazione.TOTALE * 100;
+    const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
 
-          if (result.success) {
+    this.startService.presentPaymentOptions(
+                      amount,
+                      'EUR',
+                      centroAccountId)
+      .then(result => {
 
-            //Preparo il documento da inviare al server
-            paymentResultDoc.modePayment = PaymentMode.pagaAdesso
-            paymentResultDoc.channelPayment = PaymentChannel.stripe;
-            paymentResultDoc.amount = amount / 100;
-            paymentResultDoc.currency = 'EUR';
-            paymentResultDoc.description = 'Pagamento Prenotazione';
-            paymentResultDoc.idElectronicResult = result.paymentIntentId;
-            paymentResultDoc.processResult = true;
+        if (result.success) {
 
-            console.log('✅ Pagamento completato!', result.paymentIntentId);
-            resolve(paymentResultDoc);
-
+          // Su browser, mostra il form e monta Stripe Elements
+          if (!this.platform.is('capacitor')) {
+            console.log('🌐 Browser: mostro form pagamento');
+            this.showStripeForm = true;
+            this.currentPaymentResolve = resolve;
+            this.currentPaymentReject = reject;
+            
+            // Aspetta che Angular renderizzi il DOM, poi monta Stripe
+            setTimeout(() => {
+              this.mountStripeElement();
+            }, 100);
+            return;
           }
-          else {
-            console.error('❌ Errore:', result.error);
-            reject(result.error);
-          }
-        })
-        .catch(error => {
-          reject(error);
-        });
-    })
+
+          // Su mobile, procedi direttamente
+          let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
+          paymentResultDoc.modePayment = PaymentMode.pagaAdesso;
+          paymentResultDoc.channelPayment = PaymentChannel.stripe;
+          paymentResultDoc.amount = amount / 100;
+          paymentResultDoc.currency = 'EUR';
+          paymentResultDoc.description = 'Pagamento Prenotazione';
+          paymentResultDoc.idElectronicResult = result.paymentIntentId;
+          paymentResultDoc.processResult = true;
+
+          console.log('✅ Pagamento completato!', result.paymentIntentId);
+          resolve(paymentResultDoc);
+
+        }
+        else {
+          console.error('❌ Errore:', result.error);
+          reject(result.error);
+        }
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+/**
+ * Monta l'elemento Stripe nel DOM
+ */
+async mountStripeElement() {
+  try {
+    await this.startService.mountPaymentElement();
+    console.log('✅ Stripe Element montato nel DOM');
+  } catch (error) {
+    console.error('❌ Errore montaggio Stripe Element:', error);
+    this.showStripeForm = false;
+    if (this.currentPaymentReject) {
+      this.currentPaymentReject('Errore caricamento form pagamento');
+    }
   }
+}
+
+/**
+ * Conferma il pagamento su browser
+ */
+async confirmStripePayment() {
+  try {
+    const result = await this.startService.confirmBrowserPayment();
+    
+    this.showStripeForm = false;
+
+    if (result.success) {
+      const amount = this.activePrenotazione.TOTALE * 100;
+      let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
+      
+      paymentResultDoc.modePayment = PaymentMode.pagaAdesso;
+      paymentResultDoc.channelPayment = PaymentChannel.stripe;
+      paymentResultDoc.amount = amount / 100;
+      paymentResultDoc.currency = 'EUR';
+      paymentResultDoc.description = 'Pagamento Prenotazione';
+      paymentResultDoc.idElectronicResult = result.paymentIntentId || '';
+      paymentResultDoc.processResult = true;
+
+      if (this.currentPaymentResolve) {
+        this.currentPaymentResolve(paymentResultDoc);
+      }
+    } else {
+      if (this.currentPaymentReject) {
+        this.currentPaymentReject(result.error);
+      }
+    }
+  } catch (error: any) {
+    this.showStripeForm = false;
+    if (this.currentPaymentReject) {
+      this.currentPaymentReject(error.message || error);
+    }
+  }
+}
+
+/**
+ * Annulla il pagamento su browser
+ */
+cancelStripePayment() {
+  this.showStripeForm = false;
+  if (this.currentPaymentReject) {
+    this.currentPaymentReject('Pagamento annullato dall\'utente');
+  }
+}
+  //#endregion
 
 
   /**
@@ -560,6 +648,8 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
    */
   onPaymentSuccess(resultPayment?: PaymentProcess) {
 
+    console.log(resultPayment);
+    
     //Pagamento corretto
     if (resultPayment && resultPayment.processResult)  {
 
@@ -618,7 +708,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
                     //Se non è valida visualizzo un messsaggio
                   if (!docPrenotazione.ISVALID) {
   
-                    this.startService.showAlertMessage(docPrenotazione.MSGINVALID);
+                    this.startService.presentAlertMessage(docPrenotazione.MSGINVALID);
   
                   }
                   else {
@@ -635,7 +725,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
                 .catch(errMessage => {
                       //Chiudo il loader
                       elLoading.dismiss();
-                      this.startService.showAlertMessage(errMessage);
+                      this.startService.presentAlertMessage(errMessage);
                   });  
                 
           });

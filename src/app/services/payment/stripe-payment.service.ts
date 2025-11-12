@@ -28,6 +28,10 @@ export class StripePaymentService {
   
   private readonly STRIPE_BACKEND_URL = environment.externalUrl.stripemanager;
   private isInitialized = false;
+  
+  private stripeJs: any = null;
+  private elements: any = null;
+  private currentPaymentIntentId: string | null = null;
 
   constructor(
     private http: HttpClient,
@@ -56,6 +60,7 @@ export class StripePaymentService {
     }
   }
 
+  //#region RICHIESTA INTENT PAYMENT AL SERVER 
   /**
    * Richiede un Payment Intent al backend Node.js
    */
@@ -84,7 +89,159 @@ export class StripePaymentService {
     }
   }
 
+  //#endregion
+
+  //#region MODALITA BROWSER
+
+
+/**
+ * Carica dinamicamente Stripe.js (solo per browser)
+ */
+private async loadStripeJs(): Promise<any> {
+  if (this.stripeJs) {
+    return this.stripeJs;
+  }
+
+  return new Promise((resolve, reject) => {
+    if ((window as any).Stripe) {
+      this.stripeJs = (window as any).Stripe(environment.additionalConfig.stripePublishableKey);
+      resolve(this.stripeJs);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/';
+    script.onload = () => {
+      this.stripeJs = (window as any).Stripe(environment.additionalConfig.stripePublishableKey);
+      resolve(this.stripeJs);
+    };
+    script.onerror = () => reject(new Error('Failed to load Stripe.js'));
+    document.head.appendChild(script);
+  });
+}
+/**
+ * Paga con Carta su Browser (Stripe.js) - SOLO creazione PaymentIntent
+ */
+async payWithCardBrowser(
+  amount: number,
+  currency: string = 'EUR',
+  idAccountConnected: string = '',
+  merchantName: string = environment.additionalConfig.merchantName
+): Promise<PaymentResult> {
+  try {
+    console.log('💳 Avvio pagamento su browser...');
+
+    // Carica Stripe.js
+    const stripe = await this.loadStripeJs();
+
+    // Crea Payment Intent
+    const paymentIntent = await this.createPaymentIntent(
+      amount,
+      currency.toLowerCase(),
+      idAccountConnected
+    );
+
+    console.log('✅ PaymentIntent creato:', paymentIntent.id);
+    // ✅ MEMORIZZA L'ID PER USARLO DOPO
+    this.currentPaymentIntentId = paymentIntent.id;
+
+    // Prepara gli Elements ma NON montarli ancora
+    const appearance = {
+      theme: 'stripe' as const,
+      variables: {
+        colorPrimary: '#0066cc',
+      },
+    };
+
+    this.elements = stripe.elements({
+      clientSecret: paymentIntent.clientSecret,
+      appearance
+    });
+
+    // Restituisci success - il montaggio avverrà dopo nella pagina
+    return {
+      success: true,
+      paymentIntentId: paymentIntent.id
+    };
+
+  } catch (error: any) {
+    console.error('❌ Browser payment error:', error);
+    return {
+      success: false,
+      error: error.message || 'Errore durante il pagamento su browser'
+    };
+  }
+}
+
+/**
+ * Monta il Payment Element nel DOM (chiamato DOPO che il container è visibile)
+ */
+async mountPaymentElement(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!this.elements) {
+      reject(new Error('Elements non inizializzato'));
+      return;
+    }
+
+    const paymentElement = this.elements.create('payment');
+    
+    // Verifica che il container esista
+    const container = document.getElementById('payment-element');
+    if (!container) {
+      reject(new Error('Container #payment-element non trovato'));
+      return;
+    }
+    
+    paymentElement.mount('#payment-element');
+    console.log('✅ Payment Element montato');
+    resolve();
+  });
+}
+
+/**
+ * Conferma il pagamento su browser
+ */
+async confirmBrowserPayment(): Promise<PaymentResult> {
+  try {
+    if (!this.elements || !this.stripeJs) {
+      throw new Error('Elements non inizializzato');
+    }
+
+    const { error } = await this.stripeJs.confirmPayment({
+      elements: this.elements,
+      confirmParams: {
+        return_url: window.location.href,
+      },
+      redirect: 'if_required'
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    console.log('✅ Pagamento confermato su browser');
+    // ✅ RESTITUISCI IL PAYMENT INTENT ID
+    const paymentIntentId = this.currentPaymentIntentId;
+    
+    // Reset dopo aver usato
+    this.currentPaymentIntentId = null;
+
+    return {
+      success: true,
+      paymentIntentId: paymentIntentId 
+    };
+
+  } catch (error: any) {
+    console.error('❌ Errore conferma pagamento:', error);
+    return {
+      success: false,
+      error: error.message || 'Errore durante la conferma del pagamento'
+    };
+  }
+}
+  //#endregion
   
+  //#region MODALITA MOBILE
   /**
    * Verifica se Apple Pay è disponibile (solo iOS)
    */
@@ -270,35 +427,40 @@ export class StripePaymentService {
     }
   }
 
+  //#endregion
+
   /**
-   * Metodo universale: sceglie automaticamente il metodo migliore
-   */
-  async presentPaymentOptions(
-    amount: number,
-    currency: string = 'EUR',
-    idAccountConnected: string = '',
-    merchantName: string = environment.additionalConfig.merchantName
-  ): Promise<PaymentResult> {
-    
-    // Su iOS, prova prima Apple Pay
-    if (this.isApplePayAvailable()) {
-      console.log('Apple Pay');
-      const applePayAvailable = this.isApplePayAvailable();
-      if (applePayAvailable) {
-        return this.payWithApplePay(amount, currency, idAccountConnected, merchantName);
-      }
-    }
-
-    // Su Android, prova prima Google Pay
-    if (this.isGooglePayAvailable()) {
-      console.log('Google Pay');
-      const googlePayAvailable = this.isGooglePayAvailable();
-      if (googlePayAvailable) {
-        return this.payWithGooglePay(amount, currency, idAccountConnected, merchantName);
-      }
-    }
-
-    // Fallback: carta tradizionale
-    return this.payWithCard(amount, currency, idAccountConnected, merchantName);
+  * Metodo universale: sceglie automaticamente il metodo migliore
+  */
+async presentPaymentOptions(
+  amount: number,
+  currency: string = 'EUR',
+  idAccountConnected: string = '',
+  merchantName: string = environment.additionalConfig.merchantName
+): Promise<PaymentResult> {
+  
+  // 🌐 BROWSER: usa Stripe.js
+  if (!this.platform.is('capacitor')) {
+    console.log('💻 Browser detected - using Stripe.js');
+    return this.payWithCardBrowser(amount, currency, idAccountConnected, merchantName);
   }
+
+  // 📱 MOBILE: usa Stripe Native
+  
+  // Su iOS, prova prima Apple Pay
+  if (this.isApplePayAvailable()) {
+    console.log('🍎 Apple Pay');
+    return this.payWithApplePay(amount, currency, idAccountConnected, merchantName);
+  }
+
+  // Su Android, prova prima Google Pay
+  if (this.isGooglePayAvailable()) {
+    console.log('📱 Google Pay');
+    return this.payWithGooglePay(amount, currency, idAccountConnected, merchantName);
+  }
+
+  // Fallback: carta tradizionale
+  return this.payWithCard(amount, currency, idAccountConnected, merchantName);
+}
+
 }

@@ -380,30 +380,15 @@
                         <ion-row *ngIf="corsoDoc?.isAPagamento()" 
                             class="ion-no-padding ion-no-margin">
                           <ion-col>
-                            <app-payment-mode
-                              [iconMode]="true"
-                              [arPayment]="myListModePayment"
-                              (onPaymentModeChoosed)="onPaymentModeSelected($event)">
-                            </app-payment-mode>
+                              <app-choose-payment-mode
+                                  (selectedConfig)="onSelectPaymentConfig($event)"
+                                  (clickCondizioniVendita)="onClickCondizioniVendita()"
+                                  [configContanti]="_configIncassoContanti"
+                                  [configBonifico]="_configIncassoBonifico"
+                                  [configMobile]="_configIncassoMobile"
+                                >
+                            </app-choose-payment-mode>
                           </ion-col>
-                        </ion-row>
-
-                        <!-- LEGGI CONDIZIONI DI VENDITA -->
-                        <ion-row 
-                            class="ion-padding-top"
-                            >
-                            <ion-col>
-                              <ion-item 
-                                  (click)="onClickCondizioniVendita()"
-                                  lines="none"
-                                  detail="true"
-                                  button="true"
-                                  >
-                                <ion-label class="ion-text-wrap">
-                                  <p class="ion-text-bold"><small>prima di continuare &egrave; necessario leggere ed accettare le condizioni di vendita</small></p>
-                                </ion-label>
-                              </ion-item>
-                            </ion-col>
                         </ion-row>
 
                         <!-- FLAG CONDIZIONI VENDITA -->
@@ -442,6 +427,26 @@
 
         </ion-row>
       </ion-grid>
+  </div>
+
+  <!-- Aggiungi PRIMA di </ion-content> -->
+  <div *ngIf="showStripeForm" class="stripe-payment-container">
+    <div class="stripe-form-wrapper">
+      <h3>Inserisci i dati della carta</h3>
+      <div id="payment-element"></div>
+      <ion-button 
+        expand="block" 
+        class="confirm-payment-btn"
+        (click)="confirmStripePayment()">
+        Conferma Pagamento
+      </ion-button>
+      <ion-button 
+        expand="block" 
+        fill="outline"
+        (click)="cancelStripePayment()">
+        Annulla
+      </ion-button>
+    </div>
   </div>
 
 </ion-content>

@@ -12,15 +12,18 @@
 <ion-content>
   <div class="checkout-container">
 
-    <!-- BANNER "ASPETTA, VOGLIO MODIFICARE" -->
-    <div class="warning-banner" (click)="closeModal()">
-      <ion-icon name="arrow-back-circle-outline"></ion-icon>
-      <span>Aspetta, voglio modificare</span>
-    </div>
 
     <ion-grid class="main-grid">
       <ion-row>
-        <ion-col size="12" size-xl="6" size-lg="6">
+        <ion-col 
+            size="12" 
+            size-md="8" 
+            offset-md="2"
+            size-lg="8" 
+            offset-lg="2"
+            size-xl="8" 
+            offset-xl="2"
+          >
           
           <!-- CARD INFO PRENOTAZIONE -->
           <div class="booking-info-card">
@@ -58,10 +61,6 @@
             (changeNumPlayer)="onChangedNumPlayer($event)">
           </app-player-number>
 
-        </ion-col>
-
-        <ion-col size="12" size-xl="6" size-lg="6">
-          
           <!-- CARD TOTALE E PAGAMENTO -->
           <div class="payment-card">
             
@@ -70,8 +69,8 @@
               <h3>Totale Prenotazione</h3>
               <div class="price">{{ activePrenotazione?.TOTALE | currency: "EUR" }}</div>
             </div>
-
-
+  
+  
             <!-- ACCORDION TESSERE (se presenti) -->
             <ion-accordion-group *ngIf="showGroupTesseramenti" class="tessere-accordion">
               <ion-accordion value="notes">
@@ -99,10 +98,10 @@
                 </div>
               </ion-accordion>
             </ion-accordion-group>
-
+  
             <!-- METODI DI PAGAMENTO -->
             <div class="payment-methods-section">
-
+  
               <app-choose-payment-mode
                 (selectedConfig)="onSelectPaymentConfig($event)"
                 (clickCondizioniVendita)="onClickCondizioniVendita()"
@@ -110,10 +109,34 @@
                 [configBonifico]="_configIncassoBonifico"
                 [configMobile]="_configIncassoMobile"
                 >
-
+  
               </app-choose-payment-mode>
             </div>
-
+  
+            <div class="action-button-section">
+              <ion-button
+                class="undo-button"
+                expand="block"
+                size="large"
+                (click)="closeModal()"
+                >
+                <ion-icon name="arrow-back-circle-outline" slot="start"></ion-icon>
+                Annulla
+              </ion-button>
+  
+              <ion-button 
+                expand="block"
+                size="large"
+                class="confirm-button"
+                [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !_selectedPaymentConfig"
+                (click)="onConfirm()">
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                Conferma
+              </ion-button>
+            </div>
+  
+  
+  
           </div>
 
         </ion-col>
@@ -122,7 +145,7 @@
 
   </div>
 
-  <!-- Aggiungi PRIMA di </ion-content> -->
+<!-- Form per il pagamnto -->
 <div *ngIf="showStripeForm" class="stripe-payment-container">
   <div class="stripe-form-wrapper">
     <h3>Inserisci i dati della carta</h3>
@@ -142,20 +165,3 @@
   </div>
 </div>
 </ion-content>
-
-
-
-<!-- FOOTER CON BOTTONE CONFERMA -->
-<ion-footer>
-  <div class="footer-container">
-    <ion-button 
-      expand="block"
-      size="large"
-      class="confirm-button"
-      [disabled]="!disclaimer || !activePrenotazione?.ISVALID || !_selectedPaymentConfig"
-      (click)="onConfirm()">
-      <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
-      Conferma Prenotazione
-    </ion-button>
-  </div>
-</ion-footer>

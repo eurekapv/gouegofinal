@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LoadingController, ModalController, NavController, NavParams, ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, NavController, NavParams, Platform, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { Area } from 'src/app/models/struttura/area.model';
@@ -7,7 +7,7 @@ import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.
 import { Corso } from 'src/app/models/corso/corso.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
-import { PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoCorso, TipoRigoIncasso, TipoScadenza, ZOrderIncasso } from 'src/app/models/zsupport/valuelist.model';
+import { ModeIncassoConfig, PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita, TipoCorso, TipoRigoIncasso, TipoScadenza, ZOrderIncasso } from 'src/app/models/zsupport/valuelist.model';
 import { PaymentPage } from 'src/app/pages/payment/payment.page';
 import { StartService } from 'src/app/services/start.service';
 import { AreaLink } from 'src/app/models/struttura/arealink.model';
@@ -15,7 +15,6 @@ import { Settimana } from 'src/app/models/zsupport/settimana.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
 import { IscrizioneCorso } from 'src/app/models/corso/iscrizione-corso.model';
-import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
 import { TipoPagamento } from 'src/app/models/archivi/tipopagamento.model';
 import { IscrizioneTesseramento } from 'src/app/models/corso/iscrizione-tesseramento';
 import { LogApp } from 'src/app/models/zsupport/log.model';
@@ -56,7 +55,7 @@ export class PeriodicCourseSubscribePage implements OnInit, OnDestroy {
 
   //Configurazioni di pagamento
   myListModePayment: AreaPaymentSetting[];
-  mySelectedModePayment: AreaPaymentSetting;
+  
   myModePayment: PaymentMode;
 
   subPaymentResult: Subscription;
@@ -73,12 +72,33 @@ export class PeriodicCourseSubscribePage implements OnInit, OnDestroy {
   modalitaSaldo: 'unico' | 'rateale' = 'unico';
   flagCondizioni = true;
 
+
+    /* NUOVE PROPRIETA */
+    // Creo le variabili per ognuna modalita di incasso (Contanti/Bonifico/Mobile)
+    //Queste variabili vengono popolate una volta che ho l'elenco delle modalità di pagamento
+    _configIncassoContanti: AreaPaymentSetting;
+    _configIncassoBonifico: AreaPaymentSetting;
+    _configIncassoMobile: AreaPaymentSetting;
+  
+    _selectedPaymentMode: ModeIncassoConfig;
+    _selectedPaymentConfig: AreaPaymentSetting;
+  
+    showStripeForm = false;
+  
+    // Variabili per gestire la promise
+    private currentPaymentResolve: any;
+    private currentPaymentReject: any;
+  
+    /* FINE NUOVE PROPRIETA */
+
   constructor(private startService: StartService,
               private navParams: NavParams,
               private loadingController: LoadingController,
               private modalCtrl: ModalController,
               private docStructureService : DocstructureService,
-              private navCtrl: NavController) {
+              private navCtrl: NavController,
+              private platform: Platform
+            ) {
 
               //Ascolto cambiamenti dell'Area per l'abilitazione delle iscrizioni
               this.onListenSelectedArea();
@@ -198,27 +218,32 @@ ngOnDestroy() {
  * In ascolto dell'area selezionata, per capire se solo abilitate le iscrizioni
  */
  onListenSelectedArea() {
+
   this.listenSelectedArea = this.startService.areaSelected$
-   .subscribe(elArea => {
+                           .subscribe({
+                              next: (elArea) => {
+                                //Imposto l'area di riferimento
+                                this.selectedArea = elArea;
 
-    //Imposto l'area di riferimento
-     this.selectedArea = elArea;
+                                //Impostazione tipologie pagamento
+                                this.setListPayment();
 
-    //Impostazione tipologie pagamento
-    this.setListPayment();
+                                //Controllo se nell'area sono abilitate le iscrizioni
+                                if (this.selectedArea.APPISCRIZIONI == true) {
+                                  this.enableIscrizioni = true;
 
-     //Controllo se nell'area sono abilitate le iscrizioni
-     if (this.selectedArea.APPISCRIZIONI == true) {
-       this.enableIscrizioni = true;
+                                }
+                                else {
+                                  this.enableIscrizioni = false;
+                                }
+                              },
+                              error: (error) => {
+                                LogApp.consoleLog(error,'error');
+                                this.enableIscrizioni = false;
+                              }
+                            });
 
-     }
-     else {
-       this.enableIscrizioni = false;
-     }
- }, error => {
-   this.enableIscrizioni = false;
- })
-}
+  }
 
 /**
  * Ascolto il cambiamento dell'utente
@@ -226,20 +251,31 @@ ngOnDestroy() {
 onListenSelectedUser() {
   //Controllo se l'utente è loggato
   this.listenerUserLogged = this.startService.flagUtenteIsLoggato$
-                            .subscribe(element => {
+                            .subscribe({
+                              next: (element) => {
                                     this.userLogged = element;
+                              },
+                              error: (error) => {
+                                LogApp.consoleLog(error,'error');
+                              }
                             });
 
   //Sottoscrivo al documento Utente
-  this.listenerUserDoc = this.startService.activeUtenteDoc$.subscribe(elUser => {
-      this.userDoc = elUser;
+  this.listenerUserDoc = this.startService.activeUtenteDoc$
+                        .subscribe({
+                          next: (elUser) => {
+                              this.userDoc = elUser;
 
-      //Se ho tutti i dati preparo l'iscrizione
-      if (this.loadingComplete) {
-        //Riconfiguro il documento di Iscrizione
-        this.prepareDocIscrizione(this.corsoDoc, this.userDoc);
-      }
-  })
+                              //Se ho tutti i dati preparo l'iscrizione
+                              if (this.loadingComplete) {
+                                //Riconfiguro il documento di Iscrizione
+                                this.prepareDocIscrizione(this.corsoDoc, this.userDoc);
+                              }
+                          }, 
+                          error: (error) => {
+                                LogApp.consoleLog(error,'error');
+                              }
+                          });
 }
 
 /**
@@ -665,52 +701,80 @@ onSelectDefaultTypePayment(): Promise<void> {
   //#region METODI GESTIONE MODALITA PAGAMENTO
 
   /**
-   * Recupera i metodi di pagamento sulla base dell'Area e popola
-   * l'array myListPayment e l'elemento mySelectedPayament
-   */
-   setListPayment() {
+   * Recupera i metodi di pagamento sulla base dell'Area e popola 
+   * le variabili con la configurazione
+   */  
+  setListPayment() {
 
-    //Svuota l'array
-    this.myListModePayment = [];
+    let listConfigIncassi: AreaPaymentSetting[];
+
+    LogApp.consoleLog('Imposto Lista Metodi Pagamento');
+
+    //Azzero le configurazioni
+    this._configIncassoContanti = null;
+    this._configIncassoBonifico = null;
+    this._configIncassoMobile = null;
+    //Questo è il modo di pagamento scelto
+    this._selectedPaymentMode = null;
+    this._selectedPaymentConfig = null;
 
 
     //Ho il documento dell'Area
     if (this.selectedArea) {
+      //Recupero le modalità
+      listConfigIncassi = this.selectedArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
-      this.myListModePayment = this.selectedArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoCorso);
+      //Recupero la modalità per il pagamento in contanti (se presente)
+      this._configIncassoContanti = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                          ModeIncassoConfig.incassoContanti, 
+                                                                          SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
-      if (this.myListModePayment && this.myListModePayment.length != 0) {
+      //Recupero la modalità per il pagamento in bonifico (se presente)
+      this._configIncassoBonifico = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                          ModeIncassoConfig.incassoBonifico, 
+                                                                          SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
-        this.mySelectedModePayment = this.myListModePayment[0];
+      //Recupero la modalità per il pagamento in mobile (se presente)
+      this._configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                          ModeIncassoConfig.incassoCreditCard, 
+                                                                          SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
-      }
-      else {
-
-        this.mySelectedModePayment = null;
-
-      }
-
+      LogApp.consoleLog('Contanti');
+      LogApp.consoleLog(this._configIncassoContanti);
+      LogApp.consoleLog('Bonifico');
+      LogApp.consoleLog(this._configIncassoBonifico);
+      LogApp.consoleLog('Mobile');
+      LogApp.consoleLog(this._configIncassoMobile);
 
     }
 
   }
 
-  /**
-   * Ricezione pagamento da utilizzare
-   * @param value Valore Pagamento
-   */
-   onPaymentSelected(value) {
-    this.mySelectedModePayment = value;
-  }
 
   /**
-   * Cambiato il modo di pagamento
-   * @param valPaymentMode Modo di pagamento
+   * Selezionato un valore per il metodo di pagamento
+   * @param value 
    */
-   onPaymentModeSelected(valPaymentMode: PaymentMode) {
-    this.myModePayment = valPaymentMode;
+  onSelectPaymentConfig(value: ModeIncassoConfig) {
 
-  }
+    this._selectedPaymentMode = value;
+
+    switch (this._selectedPaymentMode) {
+      case ModeIncassoConfig.incassoContanti:
+          this._selectedPaymentConfig = this._configIncassoContanti;
+        break;
+      case ModeIncassoConfig.incassoBonifico:
+          this._selectedPaymentConfig = this._configIncassoBonifico;
+        break;
+      case ModeIncassoConfig.incassoCreditCard:
+          this._selectedPaymentConfig = this._configIncassoMobile;
+        break;        
+    
+      default:
+        break;
+    }
+  }  
+
 
 
   /**
@@ -742,6 +806,259 @@ onSelectDefaultTypePayment(): Promise<void> {
    *
    */
    onExecPayment() {
+
+    let paymentAmount: TotaleScadenze;
+    let docPaymentResult: PaymentProcess;
+    
+
+    if (this.iscrizioneDoc) {
+
+      //Chiediamo quanto devo pagare adesso
+      paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
+
+      if (paymentAmount.totale == 0) {
+        // Potrei essere in una prova gratuita, oppure aver scelto 
+        // un pagamento che non
+        // prevede un immediato esborso
+
+        //Creo il risultato del pagamento, passando la modalità
+        docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
+        // Essendo una modalita che non prevede interazioni app
+        // viene impostato automaticamento il channelPayment
+        // e il processResult = TRUE
+
+        //Passo subito al Success
+        this.onPaymentSuccess(docPaymentResult);
+
+      }
+      else if (this._selectedPaymentMode == ModeIncassoConfig.incassoContanti) {
+        //Modalità di pagamento in struttura
+        //Creo il risultato del pagamento, passando la modalità
+        docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
+        // Essendo una modalita che non prevede interazioni app
+        // viene impostato automaticamento il channelPayment
+        // e il processResult = TRUE
+
+        //Passo subito al Success
+        this.onPaymentSuccess(docPaymentResult);
+
+      }
+      else if (this._selectedPaymentMode == ModeIncassoConfig.incassoBonifico) {
+        //Modalità di pagamento in struttura
+        //Creo il risultato del pagamento, passando la modalità
+        docPaymentResult = new PaymentProcess(PaymentMode.pagaBonifico);
+        // Essendo una modalita che non prevede interazioni app
+        // viene impostato automaticamento il channelPayment
+        // e il processResult = TRUE
+
+        //Passo subito al Success
+        this.onPaymentSuccess(docPaymentResult);
+
+      }
+      else if (this._selectedPaymentMode == ModeIncassoConfig.incassoCreditCard) {
+          
+        //*********** Pagamento tramite Stripe *********************
+          if (this._selectedPaymentConfig.TIPOPAYMENT == PaymentChannel.stripe) {
+              //Chiamo il metodo per il pagamento
+            this.payWithStripe()
+                .then(paymentResultDoc => {
+                  //Pagamento avvenuto correttamente
+                  //Passo subito al Success
+                  this.onPaymentSuccess(paymentResultDoc);
+                })
+                .catch(error => {
+                  if (error instanceof Error) {
+                    //Errore pagamento
+                    this.startService.presentAlertMessage(error.message, 'Pagamento fallito');
+                  }
+                  else if (typeof error == 'string') {
+                    this.startService.presentAlertMessage(error, 'Pagamento fallito');
+                  }
+                  else {
+                    this.startService.presentAlertMessage(error.toString(), 'Pagamento fallito');
+                  }
+                });
+          }
+      }
+      
+    }
+    else {
+      LogApp.consoleLog('Tentativo di pagamento senza iscrizione');
+    }
+
+  }
+
+  
+  //#region STRIPE PAYMENT
+
+
+  /**
+   * Si chiede il pagamento tramite Stripe
+   */
+  payWithStripe(): Promise<PaymentProcess> {
+    return new Promise<PaymentProcess>((resolve, reject) => {
+
+      let paymentAmount: TotaleScadenze;
+      let paymentDescription: string = '';
+
+      //Chiediamo quanto devo pagare adesso
+      paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
+
+      //Compilo la descrizione del pagamento
+      paymentDescription = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
+
+      if (this.selectedTipoPagamento.isRateale()) {
+        if (paymentAmount.numeroRate == 1) {
+          paymentDescription += ` (Rata 1 di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
+        }
+        else {
+          paymentDescription += ` (${paymentAmount.numeroRate} Rate di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
+        }
+      }
+
+
+      //Valore in centesimi
+      const amount = paymentAmount.totale * 100;
+      const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
+
+
+      this.startService.presentPaymentOptions(
+                        amount,
+                        'EUR',
+                        centroAccountId)
+        .then(result => {
+
+          if (result.success) {
+
+            // Su browser, mostra il form e monta Stripe Elements
+            if (!this.platform.is('capacitor')) {
+              console.log('🌐 Browser: mostro form pagamento');
+              this.showStripeForm = true;
+              this.currentPaymentResolve = resolve;
+              this.currentPaymentReject = reject;
+              
+              // Aspetta che Angular renderizzi il DOM, poi monta Stripe
+              setTimeout(() => {
+                this.mountStripeElement();
+              }, 100);
+              return;
+            }
+
+            // Su mobile, procedi direttamente
+            let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
+            paymentResultDoc.modePayment = PaymentMode.pagaAdesso;
+            paymentResultDoc.channelPayment = PaymentChannel.stripe;
+            paymentResultDoc.amount = amount / 100;
+            paymentResultDoc.currency = 'EUR';
+            paymentResultDoc.description = paymentDescription;
+            paymentResultDoc.idElectronicResult = result.paymentIntentId;
+            paymentResultDoc.processResult = true;
+
+            console.log('✅ Pagamento completato!', result.paymentIntentId);
+            resolve(paymentResultDoc);
+
+          }
+          else {
+            console.error('❌ Errore:', result.error);
+            reject(result.error);
+          }
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   * Monta l'elemento Stripe nel DOM
+   */
+  async mountStripeElement() {
+    try {
+      await this.startService.mountPaymentElement();
+      console.log('✅ Stripe Element montato nel DOM');
+    } catch (error) {
+      console.error('❌ Errore montaggio Stripe Element:', error);
+      this.showStripeForm = false;
+      if (this.currentPaymentReject) {
+        this.currentPaymentReject('Errore caricamento form pagamento');
+      }
+    }
+  }
+
+  /**
+   * Conferma il pagamento su browser
+   */
+  async confirmStripePayment() {
+    try {
+      const result = await this.startService.confirmBrowserPayment();
+      let paymentAmount: TotaleScadenze;
+      let paymentDescription: string = '';
+
+      //Chiediamo quanto devo pagare adesso
+      paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
+
+      //Compilo la descrizione del pagamento
+      paymentDescription = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
+
+      if (this.selectedTipoPagamento.isRateale()) {
+        if (paymentAmount.numeroRate == 1) {
+          paymentDescription += ` (Rata 1 di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
+        }
+        else {
+          paymentDescription += ` (${paymentAmount.numeroRate} Rate di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
+        }
+      }
+
+      this.showStripeForm = false;
+
+      if (result.success) {
+        
+        let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
+        
+        paymentResultDoc.modePayment = PaymentMode.pagaAdesso;
+        paymentResultDoc.channelPayment = PaymentChannel.stripe;
+        paymentResultDoc.amount = paymentAmount.totale;
+        paymentResultDoc.currency = 'EUR';
+        paymentResultDoc.description = paymentDescription;
+        paymentResultDoc.idElectronicResult = result.paymentIntentId || '';
+        paymentResultDoc.processResult = true;
+
+        if (this.currentPaymentResolve) {
+          this.currentPaymentResolve(paymentResultDoc);
+        }
+      } else {
+        if (this.currentPaymentReject) {
+          this.currentPaymentReject(result.error);
+        }
+      }
+    } catch (error: any) {
+      this.showStripeForm = false;
+      if (this.currentPaymentReject) {
+        this.currentPaymentReject(error.message || error);
+      }
+    }
+  }
+
+  /**
+   * Annulla il pagamento su browser
+   */
+  cancelStripePayment() {
+    this.showStripeForm = false;
+    if (this.currentPaymentReject) {
+      this.currentPaymentReject('Pagamento annullato dall\'utente');
+    }
+  }
+  //#endregion
+
+
+
+  /**
+   * Richiesta di esecuzione del pagamento di qualsiasi tipologia
+   * 1) Se onSite conclude subito dicendo che va bene
+   * 2) Per altre tipologie viene aperta la pagina del pagamento
+   * @deprecated
+   */
+   onExecPayment2() {
 
     // let arModes:PaymentMode[]=[PaymentMode.pagaAdesso,
     //                            PaymentMode.pagaBonifico,
@@ -1007,239 +1324,6 @@ onSelectDefaultTypePayment(): Promise<void> {
     //#endregion
 
 
-
-
-  }
-
-    /**
-   * Pagamento andato a buon fine
-   * @param resultPayment Risultato del pagamento
-   */
-    onPaymentSuccess_old(resultPayment: PaymentProcess) {
-
-      let myDocRata: IscrizioneIncasso;
-
-
-      if (resultPayment) {
-        //Ha pagato il dovuto
-        if (resultPayment.modePayment == PaymentMode.pagaAdesso) {
-          //Marchio le scadenze come incassate
-          this.iscrizioneDoc.setScadenzePayedFor(new Date(), resultPayment);
-        }
-      }
-
-      //Preparo i dati da includere come rata di incasso
-      myDocRata = new IscrizioneIncasso();
-
-      //Step del pagamento Effettuato (Potrebbe avere effettivamente pagato,
-      //oppure non pagato e rimandato in struttura)
-      if (resultPayment && resultPayment.processResult)  {
-
-        //Se non è avvenuta nessuna transazione Elettronica
-        //vuol dire che ha scelto di pagare successivamente
-        if (resultPayment.idElectronicResult.length == 0) {
-
-          //Se il corso è a pagamento, dovrà effettivamente pagare
-          if (this.corsoDoc.isAPagamento()) {
-
-            //E' a pagamento, in qualche modo dovrà pagare
-            //Creo una scadenza
-            myDocRata.IDTRANSACTION = '';
-            myDocRata.IDORDER = '';
-            myDocRata.MODALITA = resultPayment.channelPayment;
-            myDocRata.TIPORIGO = TipoRigoIncasso.scadenza;
-            myDocRata.ZORDER = ZOrderIncasso.daIncassare;
-            //Data operazione non viene valorizzata ma solo DataScadenza
-            myDocRata.DATASCADENZA = this.corsoDoc.DATAINIZIO;
-            myDocRata.IMPORTO = this.iscrizioneDoc.TOTALE;
-
-          }
-          else {
-
-            //E' un corso gratuito, non c'e' nulla da pagare
-            myDocRata.IDTRANSACTION = '';
-            myDocRata.IDORDER = '';
-            myDocRata.MODALITA = PaymentChannel.onSite;
-            myDocRata.TIPORIGO = TipoRigoIncasso.incassato;
-            myDocRata.ZORDER = ZOrderIncasso.incassato;
-            myDocRata.DATAOPERAZIONE = this.iscrizioneDoc.DATAISCRIZIONE;
-            //Non c'e' nessuna scadenza
-            myDocRata.IMPORTO = 0;
-          }
-        }
-        else {
-
-          //Transazione avvenuta
-          myDocRata.IDTRANSACTION = '';
-          myDocRata.IDORDER = resultPayment.idElectronicResult;
-          myDocRata.MODALITA = resultPayment.channelPayment;
-          myDocRata.TIPORIGO = TipoRigoIncasso.incassato;
-          myDocRata.ZORDER = ZOrderIncasso.incassato
-          myDocRata.DATAOPERAZIONE = this.iscrizioneDoc.DATAISCRIZIONE;
-          //Non c'e' nessuna scadenza
-          myDocRata.IMPORTO = this.iscrizioneDoc.TOTALE;
-
-        }
-
-        //Aggiungo le informaioni del pagamento
-        this.iscrizioneDoc.ISCRIZIONEINCASSO.push(myDocRata);
-
-        this.startService.showLoadingMessage('Richiesta Iscrizione','bubbles',false)
-                          .then(elLoading => {
-
-                            //Creo il loading
-                            elLoading.present();
-
-                            //Procedo con il salvataggio Iscrizione
-                            this.startService.requestSaveIscrizioneCorso(this.iscrizioneDoc)
-                                            .then((response: PostResponse) => {
-
-                                              elLoading.dismiss();
-
-                                              //Iscrizione salvata correttamente
-                                              if (response.result && response.code && response.code.length != 0) {
-                                                //Mi dirigo alla scheda dell'Iscrizione Corso e concludo la modale
-                                                this.onAfterSaveIscrizione(response.code);
-                                              }
-                                              else {
-                                                //Si sono verificati problemi
-                                                this.startService.presentAlertMessage(response.message,'Iscrizione Fallita');
-                                              }
-                                            })
-                                            .catch(error => {
-
-                                              elLoading.dismiss();
-
-                                              //Si sono verificati problemi
-                                              this.startService.presentAlertMessage(error.message,'Iscrizione Fallita');
-                                            })
-
-                          });
-
-
-      }
-
-
-
-
-
-    }
-
-
-  onExecPayment_old() {
-
-    let arModes:PaymentMode[]=[PaymentMode.pagaAdesso,
-                               PaymentMode.pagaBonifico,
-                               PaymentMode.pagaStruttura];
-
-
-
-    //Presente un totale da pagare
-    if (this.corsoDoc.isAPagamento()) {
-
-      //L'utente ha selezionato come pagare
-      if (arModes.includes(this.myModePayment)) {
-
-        //Pagamento non dentro all'App
-        if (this.myModePayment == PaymentMode.pagaBonifico || this.myModePayment == PaymentMode.pagaStruttura) {
-
-          //Creo il risultato del pagamento, passando la modalità
-          let docPaymentResult = new PaymentProcess(this.myModePayment);
-          // Essendo una modalita che non prevede interazioni app
-          // viene impostato automaticamento il channelPayment
-          // e il processResult = TRUE
-
-          //Passo subito al Success
-          this.onPaymentSuccess(docPaymentResult);
-
-        }
-        else {
-
-          //Qui invece dovrei gestire il pagamento
-          if (this.selectedTipoPagamento.isRateale()) {
-
-          }
-          else {
-
-          }
-          //Preparo un oggetto per processare il pagamento
-          let myCheckoutPayment = new PaymentProcess(this.myModePayment);
-
-          myCheckoutPayment.amount = this.iscrizioneDoc.TOTALE;
-          myCheckoutPayment.description = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
-          myCheckoutPayment.currency = 'EUR';
-
-          //il channelPayment viene impostato nel componente
-          //esterno che si preoccupa del pagamento
-          //Passo alla modale in paymentData = myCheckoutPayment
-          this.modalCtrl.create({
-            component: PaymentPage,
-            componentProps: {
-              paymentData: myCheckoutPayment,
-              listAreaPaymentSettings: this.myListModePayment
-            }
-          })
-          .then(elModal => {
-            elModal.present();
-
-            return elModal.onDidDismiss()
-          })
-          .then((returnData) => {
-
-            //recupero il risultato del pagamento
-            let myPaymentResult: PaymentProcess = returnData['data'];
-
-            if (myPaymentResult) {
-
-              //Il Risultato del processo di pagamento è TRUE, posso proseguire
-              if (myPaymentResult.processResult) {
-
-                //Pagamento avvenuto correttamente
-                this.onPaymentSuccess(myPaymentResult);
-
-              }
-              else {
-
-                //Pagamento Fallito
-                this.onPaymentFailed(myPaymentResult);
-
-              }
-            }
-            else {
-
-              //Stranamente non mi ha tornato nulla, quindi il pagamento è fallito
-              myPaymentResult = new PaymentProcess(this.myModePayment);
-              myPaymentResult.processResult = false;
-              myPaymentResult.messageResult = 'Pagamento fallito';
-
-              //Pagamento Fallito
-              this.onPaymentFailed(myPaymentResult);
-
-            }
-          })
-
-
-        }
-
-      }
-      else {
-        //Pagamento non selezionato
-        this.startService.presentAlertMessage('E\' necessario selezionare un pagamento');
-      }
-
-    }
-    else {
-      //E' un corso gratuito ?
-
-      //Creo il risultato del pagamento, passando la modalità
-      let docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
-      // Essendo una modalita che non prevede interazioni app
-      // viene impostato automaticamento il channelPayment
-      // e il processResult = TRUE
-
-      //Passo subito al Success
-      this.onPaymentSuccess(docPaymentResult);
-    }
 
 
   }

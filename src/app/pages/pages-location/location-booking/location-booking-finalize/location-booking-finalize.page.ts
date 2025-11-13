@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, LoadingController, ToastController, NavParams, ModalController, Platform } from '@ionic/angular';
+import { NavController, LoadingController, NavParams, ModalController, Platform } from '@ionic/angular';
 
 import { Subscription } from 'rxjs';
 import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
@@ -12,7 +12,6 @@ import { Gruppo } from 'src/app/models/struttura/gruppo.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
 import { ModeIncassoConfig, PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 
-import { AlertController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 import { Area } from 'src/app/models/struttura/area.model';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
@@ -42,7 +41,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
   selectedCampo: Campo;
 
   //Area selezionata
-  docArea: Area;
+  selectedArea: Area;
   listenArea: Subscription;
   
   userLogged: boolean;      //TRUE-FALSE: Utente Loggato
@@ -93,7 +92,7 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
     
       //Recupero dell'area selezionata
-      this.docArea = this.startService.areaSelected;
+      this.selectedArea = this.startService.areaSelected;
       
       //Impostazione tipologie pagamento
       this.setListPayment();
@@ -381,7 +380,8 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
     let listConfigIncassi: AreaPaymentSetting[];
 
-    console.log('Imposto Lista Metodi Pagamento');
+    LogApp.consoleLog('Imposto Lista Metodi Pagamento');
+
 
     //Azzero le configurazioni
     this._configIncassoContanti = null;
@@ -393,9 +393,9 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
 
     //Ho il documento dell'Area
-    if (this.docArea) {
+    if (this.selectedArea) {
       //Recupero le modalità
-      listConfigIncassi = this.docArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
+      listConfigIncassi = this.selectedArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
       //Recupero la modalità per il pagamento in contanti (se presente)
       this._configIncassoContanti = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
@@ -412,12 +412,12 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
                                                                           ModeIncassoConfig.incassoCreditCard, 
                                                                           SettorePagamentiAttivita.settorePagamentoPrenotazione)
 
-      console.log('Contanti');
-      console.log(this._configIncassoContanti);
-      console.log('Bonifico');
-      console.log(this._configIncassoBonifico);
-      console.log('Mobile');
-      console.log(this._configIncassoMobile);
+      LogApp.consoleLog('Contanti');
+      LogApp.consoleLog(this._configIncassoContanti);
+      LogApp.consoleLog('Bonifico');
+      LogApp.consoleLog(this._configIncassoBonifico);
+      LogApp.consoleLog('Mobile');
+      LogApp.consoleLog(this._configIncassoMobile);
 
     }
 
@@ -757,9 +757,9 @@ cancelStripePayment() {
     let link: AreaLink;
 
 
-    if (this.docArea) {
+    if (this.selectedArea) {
 
-      link = this.docArea.findAreaLinkByPageType(PageType.condizioniVenditaPrenotazioni);
+      link = this.selectedArea.findAreaLinkByPageType(PageType.condizioniVenditaPrenotazioni);
   
       if (link && link.REFERURL) {
 

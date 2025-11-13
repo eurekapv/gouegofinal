@@ -413,6 +413,11 @@ export enum OperationAuthUserMobile {
     requestChangePassword = 20
 }
 
+export enum ModalPageCSS {
+    modalXl = 'modal-xl-class',
+    modalFullScreen = 'modal-fullscreen-class'
+}
+
 
 export class ValueList {
 

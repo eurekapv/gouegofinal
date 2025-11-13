@@ -15,7 +15,7 @@ import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LocationBookingFinalizePage } from '../location-booking-finalize/location-booking-finalize.page';
 import { Sport } from 'src/app/models/archivi/sport.model';
-import { CustomAlertClass, StatoSlot } from 'src/app/models/zsupport/valuelist.model';
+import { CustomAlertClass, ModalPageCSS, StatoSlot } from 'src/app/models/zsupport/valuelist.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 
 
@@ -793,10 +793,11 @@ showAlertContattaStruttura() {
    * E' tutto a posto e posso spostarmi alla pagina di Finalizza Prenotazione
    */
   goToFinalizza() {
-    /* VERSIONE MODALE */
+    /* VERSIONE MODALE FULLSCREEN */
+    
     this.modalCtrl.create({
       component: LocationBookingFinalizePage,
-      cssClass: 'modal-xl-class',
+      cssClass: ModalPageCSS.modalFullScreen,
       componentProps: {
         bookId: this.activePrenotazione.ID,
         locationId : this.selectedLocation.ID

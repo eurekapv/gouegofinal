@@ -8,7 +8,7 @@ import { Location } from 'src/app/models/struttura/location.model';
 import { PeriodicCourseDetailCalendarPage } from '../periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { Area } from 'src/app/models/struttura/area.model';
 import { Utente } from 'src/app/models/utente/utente.model';
-import { Tempistica, TipoCorso } from 'src/app/models/zsupport/valuelist.model';
+import { ModalPageCSS, Tempistica, TipoCorso } from 'src/app/models/zsupport/valuelist.model';
 import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/allegatilist.page';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PeriodicCourseSubscribePage } from '../periodic-course-subscribe/periodic-course-subscribe.page';
@@ -45,7 +45,7 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
     private startService: StartService,
     private actRouter: ActivatedRoute,
     private navController: NavController,
-    private mdlController: ModalController,
+    private modalController: ModalController,
     private loadingController: LoadingController
   ) {
     // Sottoscrizione per l'area selezionata
@@ -230,7 +230,7 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
    * Apre il modal con il calendario del corso
    */
   async onClickCalendario() {
-    const modal = await this.mdlController.create({
+    const modal = await this.modalController.create({
       component: PeriodicCourseDetailCalendarPage,
       componentProps: {
         myCorso: this.myCorso
@@ -245,7 +245,7 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
    */
   async onClickAllegati() {
     
-    const modal = await this.mdlController.create({
+    const modal = await this.modalController.create({
       component: AllegatilistPage,
       componentProps: {
         myCorso: this.myCorso
@@ -264,17 +264,18 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
       return;
     }
 
-    const modal = await this.mdlController.create({
+    const modalIscrizione = await this.modalController.create({
       component: PeriodicCourseSubscribePage,
+      cssClass: ModalPageCSS.modalFullScreen,
       componentProps: {
         idCorso: this.myCorso.ID
       }
     });
 
-    await modal.present();
+    await modalIscrizione.present();
 
     // Quando il modal si chiude, ricarica i dati per verificare se l'iscrizione è avvenuta
-    const { data } = await modal.onWillDismiss();
+    const { data } = await modalIscrizione.onWillDismiss();
     if (data && data.success) {
       this.retrieveIscrizioneCorso();
     }

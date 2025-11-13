@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Utente } from 'src/app/models/utente/utente.model';
-import { ModalitaIscrizione, SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
+import { ModalitaIscrizione, ModalPageCSS, SegmentCorsi, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model';
 import { ModalController, NavController, LoadingController } from '@ionic/angular';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
@@ -401,7 +401,7 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
                                 //Posso procedere con la pagina di prenotazione
                                 this.mdlController.create({
                                   component: PeriodicCourseSubscribePage,
-                                  cssClass: 'modal-xl-class',
+                                  cssClass: ModalPageCSS.modalFullScreen,
                                   componentProps: {
                                     idCorso: selectedCorso.ID
                                   }

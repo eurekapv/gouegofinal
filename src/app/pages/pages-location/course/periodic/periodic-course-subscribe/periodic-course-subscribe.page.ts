@@ -551,6 +551,32 @@ onSelectDefaultTypePayment(): Promise<void> {
   }
 
   /**
+   * Importo totale della iscrizione
+   * @returns 
+   */
+  getTotaleIscrizione() {
+    let totIscrizione = 0;
+    if (this.iscrizioneDoc) {
+      totIscrizione = this.iscrizioneDoc.TOTALE;
+    }
+    return totIscrizione;
+  }
+
+  getTotaleTesseramenti() {
+    let totTessere = 0;
+
+    if (this.collTesseramenti) {
+      this.collTesseramenti.forEach(elTessera => {
+        if (elTessera.GRATUITA == false) {
+          totTessere += elTessera.IMPONIBILE
+        }
+      })
+    }
+
+    return totTessere;
+  }
+
+  /**
  * Recupera il link per le condizioni di vendita Corso e apre il browser
  */
   onClickCondizioniVendita(): void {

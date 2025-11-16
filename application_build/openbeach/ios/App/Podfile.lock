@@ -1,51 +1,57 @@
 PODS:
-  - Capacitor (6.1.2):
+  - Capacitor (7.4.4):
     - CapacitorCordova
-  - CapacitorBarcodeScanner (1.0.1):
+  - CapacitorBarcodeScanner (2.2.0):
     - Capacitor
-    - OSBarcodeLib (~> 1.1.0)
-  - CapacitorBrowser (6.0.2):
+    - OSBarcodeLib (= 2.0.1)
+  - CapacitorBrowser (7.0.2):
     - Capacitor
-  - CapacitorCamera (6.0.2):
+  - CapacitorCamera (7.0.2):
     - Capacitor
-  - CapacitorCommunityFileOpener (6.0.0):
+  - CapacitorCommunityFileOpener (7.0.1):
     - Capacitor
-  - CapacitorCommunityStripe (6.2.1):
+  - CapacitorCommunityStripe (7.2.1):
     - Capacitor
-    - StripeApplePay (~> 23.29.0)
-    - StripePaymentSheet (~> 23.29.0)
-  - CapacitorCordova (6.1.2)
-  - CapacitorGeolocation (6.0.1):
+    - StripeApplePay (~> 24.16.1)
+    - StripePaymentSheet (~> 24.16.1)
+  - CapacitorCordova (7.4.4)
+  - CapacitorFilesystem (7.1.4):
     - Capacitor
-  - CapacitorPreferences (6.0.2):
+    - IONFilesystemLib (~> 1.0.1)
+  - CapacitorGeolocation (7.1.5):
     - Capacitor
-  - CapacitorShare (6.0.2):
+    - IONGeolocationLib (= 1.0.1)
+  - CapacitorPreferences (7.0.2):
     - Capacitor
-  - CapawesomeCapacitorFilePicker (6.1.0):
+  - CapacitorShare (7.0.2):
     - Capacitor
-  - CordovaPlugins (6.1.2):
+  - CapawesomeCapacitorFilePicker (7.2.0):
+    - Capacitor
+  - CordovaPlugins (7.4.4):
     - CapacitorCordova
   - CordovaPluginsResources (0.0.105)
-  - OSBarcodeLib (1.1.2)
-  - StripeApplePay (23.29.2):
-    - StripeCore (= 23.29.2)
-  - StripeCore (23.29.2)
-  - StripePayments (23.29.2):
-    - StripeCore (= 23.29.2)
-    - StripePayments/Stripe3DS2 (= 23.29.2)
-  - StripePayments/Stripe3DS2 (23.29.2):
-    - StripeCore (= 23.29.2)
-  - StripePaymentSheet (23.29.2):
-    - StripeApplePay (= 23.29.2)
-    - StripeCore (= 23.29.2)
-    - StripePayments (= 23.29.2)
-    - StripePaymentsUI (= 23.29.2)
-  - StripePaymentsUI (23.29.2):
-    - StripeCore (= 23.29.2)
-    - StripePayments (= 23.29.2)
-    - StripeUICore (= 23.29.2)
-  - StripeUICore (23.29.2):
-    - StripeCore (= 23.29.2)
+  - IONFilesystemLib (1.0.1)
+  - IONGeolocationLib (1.0.1)
+  - OSBarcodeLib (2.0.1)
+  - StripeApplePay (24.16.2):
+    - StripeCore (= 24.16.2)
+  - StripeCore (24.16.2)
+  - StripePayments (24.16.2):
+    - StripeCore (= 24.16.2)
+    - StripePayments/Stripe3DS2 (= 24.16.2)
+  - StripePayments/Stripe3DS2 (24.16.2):
+    - StripeCore (= 24.16.2)
+  - StripePaymentSheet (24.16.2):
+    - StripeApplePay (= 24.16.2)
+    - StripeCore (= 24.16.2)
+    - StripePayments (= 24.16.2)
+    - StripePaymentsUI (= 24.16.2)
+  - StripePaymentsUI (24.16.2):
+    - StripeCore (= 24.16.2)
+    - StripePayments (= 24.16.2)
+    - StripeUICore (= 24.16.2)
+  - StripeUICore (24.16.2):
+    - StripeCore (= 24.16.2)
 
 DEPENDENCIES:
   - "Capacitor (from `../../../../node_modules/@capacitor/ios`)"
@@ -55,6 +61,7 @@ DEPENDENCIES:
   - "CapacitorCommunityFileOpener (from `../../../../node_modules/@capacitor-community/file-opener`)"
   - "CapacitorCommunityStripe (from `../../../../node_modules/@capacitor-community/stripe`)"
   - "CapacitorCordova (from `../../../../node_modules/@capacitor/ios`)"
+  - "CapacitorFilesystem (from `../../../../node_modules/@capacitor/filesystem`)"
   - "CapacitorGeolocation (from `../../../../node_modules/@capacitor/geolocation`)"
   - "CapacitorPreferences (from `../../../../node_modules/@capacitor/preferences`)"
   - "CapacitorShare (from `../../../../node_modules/@capacitor/share`)"
@@ -64,6 +71,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - IONFilesystemLib
+    - IONGeolocationLib
     - OSBarcodeLib
     - StripeApplePay
     - StripeCore
@@ -87,6 +96,8 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/@capacitor-community/stripe"
   CapacitorCordova:
     :path: "../../../../node_modules/@capacitor/ios"
+  CapacitorFilesystem:
+    :path: "../../../../node_modules/@capacitor/filesystem"
   CapacitorGeolocation:
     :path: "../../../../node_modules/@capacitor/geolocation"
   CapacitorPreferences:
@@ -101,27 +112,30 @@ EXTERNAL SOURCES:
     :path: "../capacitor-cordova-ios-plugins"
 
 SPEC CHECKSUMS:
-  Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
-  CapacitorBarcodeScanner: 3057910347ab6c3db06e1a38bdf688a6a469227a
-  CapacitorBrowser: 83ec661a9ccd56c28a6851e4dd1ac33b181227ec
-  CapacitorCamera: ed022171dbf3853e68eec877b4d78995378af6b7
-  CapacitorCommunityFileOpener: 4e0086fac78b4ccaaf64956abe34d3443db5767a
-  CapacitorCommunityStripe: b14501c11292faed000526671538891ba24c9d31
-  CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
-  CapacitorGeolocation: 39dca51d755f08ed1d43e51be55291a402cdc64f
-  CapacitorPreferences: e8284bf740cf8c6d3f25409af3c01df87dfeb5a1
-  CapacitorShare: 591ae4693d85686ceb590db8e8b44aa014ec6490
-  CapawesomeCapacitorFilePicker: abd66735806935246403855cbe62fee8e299cdc5
-  CordovaPlugins: 209525db2a3801c92c2b660986d6fe462d0a9412
-  CordovaPluginsResources: 0c211f770ed91763a179ebcd9b9346e120b70662
-  OSBarcodeLib: 4bb4cc0b9850451fe71ba4953c1c934368e767df
-  StripeApplePay: dff104aeee493627a649576a0014d76eadabceee
-  StripeCore: 9edec1b15faa6bb7f46def319cc689dc37a8d233
-  StripePayments: f1465ee56d5589630ffaf4ad873d400d8752f8f8
-  StripePaymentSheet: 3ac22717a234352d83e936d8b1fe8c5fdb9a9286
-  StripePaymentsUI: 6b182240135130d5d61cd8a9c48717264ac203ec
-  StripeUICore: 5f21b736a399dff66d6c8ca7e2ce3e4fd02c40fd
+  Capacitor: 09d9ff8e9618e8c4b3cab2bbee34a17215dd2fef
+  CapacitorBarcodeScanner: 8de3b13b681ff3b92e21b286e9847ee525f44796
+  CapacitorBrowser: 45c681e7abc3b4384e54eb52bafeef1347d98fa8
+  CapacitorCamera: 6e18d54c8ab30d7dc7b8cd93d96f9b4f57e9202a
+  CapacitorCommunityFileOpener: 9611c9d1595de7b50571717d443bb718a304b5eb
+  CapacitorCommunityStripe: 1d73dcf7984c05ad790132fa582bc761454ec92e
+  CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
+  CapacitorFilesystem: ac0a386949ed6c295a3dffa129ecd26b881ae5be
+  CapacitorGeolocation: b96474c3259dd4a294227ea8ec19140b1837cceb
+  CapacitorPreferences: b583b5deb74e564c35968189d25d32c0fd41200d
+  CapacitorShare: 051c3ceee0ddf3bb54574851a622bbb317eed5bd
+  CapawesomeCapacitorFilePicker: 005c33082078c1dd528ba9204aa49e97d62b68b7
+  CordovaPlugins: 1dfab3910edfa53cf9b42b1b00d299d3128b78cb
+  CordovaPluginsResources: da93847212bf7b16ba770e4d6c3e7dba820174c7
+  IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
+  IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
+  OSBarcodeLib: 57987d2eb1f916f701f4554e20e349b3cb83f023
+  StripeApplePay: 66dc43ec1284904a2cf4c5a0906f86296d23afbd
+  StripeCore: f3a62397cecaf4da1827bcf07de7312ec1f3b96e
+  StripePayments: b3e7817d821ceedd469008d17d94a1494ff1b624
+  StripePaymentSheet: f4f5b71cef665f05a185c29b2d4b59e7dd8c117d
+  StripePaymentsUI: d489e73bf790da1c74e642021475b1a09a4a4500
+  StripeUICore: 723e5024c83acb5ba5e71335e110a471b182a74d
 
-PODFILE CHECKSUM: cd4edf35bb7f364990f1ca78725c160def444ef5
+PODFILE CHECKSUM: e2d22a5fa1481bc995fe2313d3ede8b62e3b9d22
 
 COCOAPODS: 1.14.2

@@ -32,6 +32,8 @@
 	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To Record Audio With Video</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

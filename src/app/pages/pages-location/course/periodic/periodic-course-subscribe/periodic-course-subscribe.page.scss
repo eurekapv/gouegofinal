@@ -370,8 +370,9 @@ ion-card {
 
   .action-button-section {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
+    margin-bottom: 50px;
     ion-button {
       flex: 1;
        height: 56px;

@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
-
-
 import { AdvertisingComponent } from './advertising/advertising.component'
 import { ApertureComponent } from './aperture/aperture.component'
 import { ButtonCardComponent } from './button-card/button-card.component'
@@ -16,7 +14,6 @@ import { HorTimelineComponent } from './hor-timeline/hor-timeline.component'
 import { ImpegniComponent } from './impegni/impegni.component'
 import { ItemCalendarioComponent } from './item-calendario/item-calendario.component'
 import { NewsEventiComponent } from './news-eventi/news-eventi.component'
-import { PaymentChooseComponent } from './payment-choose/payment-choose.component'
 import { PlayerNumberComponent } from './player-number/player-number.component'
 import { SlottimeComponent } from './slottime/slottime.component'
 import { SportScrollComponent } from './sport-scroll/sport-scroll.component'
@@ -24,7 +21,7 @@ import { UploadComponent } from './upload/upload.component'
 import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prezzo.component';
 import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
 import { HideHeaderDirective } from '../directives/hide-header.directive';
-import { PaymentModeComponent } from './payment-mode/payment-mode.component';
+
 import { SettimanaBlockComponent } from './settimana-block/settimana-block.component';
 import { LevelSetterComponent } from './level-setter/level-setter.component';
 import { ItemTrainerCorsoComponent } from './item-corso-trainer/item-trainer-corso.component';
@@ -51,6 +48,7 @@ import { DailyCourseItemListComponent } from './course/daily-course-item-list/da
 import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
 import { LevelScrollComponent } from './level-scroll/level-scroll.component';
+import { ChoosePaymentModeComponent } from './choose-payment-mode/choose-payment-mode.component';
 
 
 
@@ -82,8 +80,6 @@ import { LevelScrollComponent } from './level-scroll/level-scroll.component';
         ItemCalendarioComponent,
         EmptyStateComponent,
         NewsEventiComponent,
-        PaymentChooseComponent,
-        PaymentModeComponent,
         PlayerNumberComponent,
         SlottimeComponent,
         SportScrollComponent,
@@ -106,7 +102,8 @@ import { LevelScrollComponent } from './level-scroll/level-scroll.component';
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
         ItemPresenzaComponent,
-        LevelScrollComponent
+        LevelScrollComponent,
+        ChoosePaymentModeComponent
     ],
     exports: [
         AdvertisingComponent,
@@ -124,8 +121,6 @@ import { LevelScrollComponent } from './level-scroll/level-scroll.component';
         ImpegniCustodiComponent,
         ItemCalendarioComponent,
         NewsEventiComponent,
-        PaymentChooseComponent,
-        PaymentModeComponent,
         PlayerNumberComponent,
         SlottimeComponent,
         SportScrollComponent,
@@ -148,7 +143,8 @@ import { LevelScrollComponent } from './level-scroll/level-scroll.component';
         NumericInputUpDownComponent,
         DailyCourseItemListComponent,
         ItemPresenzaComponent,
-        LevelScrollComponent
+        LevelScrollComponent,
+        ChoosePaymentModeComponent
     ]
 })
 export class SharedComponentsModule {}

@@ -1,100 +1,516 @@
-.griglia-principale{
-    ion-row{
-
-        ion-col{
-            
-            padding:0px;
-        }
-    }
-
+ion-content {
+  --background: #f5f5f5;
 }
 
-h6
-{
-    margin-top: 5px;
-    margin-bottom: 4px;
-    font-size: 14px;
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 20px;
 }
 
-h4
-{
-    margin-top: 4px;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
+// Status Card
+.status-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 16px;
 
-
-.left-col
-{
-    border-right-style: solid;
-    border-width: thin;
-    border-color: #eff1f8;
-}
-
-
-p {
-    font-size: 13px;
-}
-
-
-
-
-ion-button.full-buttons{
-    margin-left:10px;
-    margin-right:10px;
-
-}
-
-#item-totale {
-    ion-label {
-        &.title {
-            font-size: 18px;
-        }
-        p {
-            font-size: 10px;
-            font-weight: bold;
-        }
-    }
-}
-
-
-ion-chip.wide {
-    width: 100%;
-    
-    justify-content: center;
+  ion-icon {
+    font-size: 24px;
   }
 
-  .big-badge {
-    font-size: 1.5em;
+  &.available {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+
+    ion-icon {
+      color: #28a745;
+    }
   }
 
-  ion-radio::part(container) {
-    width: 30px;
-    height: 30px;
-  
+  &.full {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+
+    ion-icon {
+      color: #dc3545;
+    }
+  }
+}
+
+// Cards
+ion-card {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin: 0 0 16px 0;
+
+  ion-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+
+    .card-header-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+
+      ion-card-title {
+        flex: 1;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+      }
+
+      ion-badge {
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 20px;
+      }
+    }
+  }
+
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+// Course Info Card
+.course-info-card {
+  .course-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    .sport-icon {
+      font-family: "sports";
+      font-size: 48px;
+      color: var(--ion-color-primary);
+      line-height: 1;
+    }
+
+    .course-title-section {
+      flex: 1;
+
+      h2 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 4px 0;
+      }
+
+      .sport-name {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+      }
+    }
+  }
+
+  .course-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .date-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+
+      ion-icon {
+        font-size: 20px;
+        color: var(--ion-color-primary);
+        margin-top: 2px;
+      }
+
+      div {
+        flex: 1;
+        line-height: 1.5;
+
+        strong {
+          display: block;
+          font-weight: 600;
+          color: #1a1a1a;
+          margin-bottom: 2px;
+        }
+
+        span {
+          font-size: 14px;
+          color: #666;
+        }
+      }
+    }
+  }
+}
+
+// Lessons Card
+.lessons-card {
+  .days-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    ion-chip {
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+
+  .info-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    background: #e7f3ff;
     border-radius: 8px;
-    border: 2px solid #ddd;
+    border-left: 3px solid var(--ion-color-primary);
+
+    ion-icon {
+      font-size: 18px;
+      margin-top: 2px;
+    }
+
+    span {
+      flex: 1;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.4;
+    }
   }
-  
-  ion-radio::part(mark) {
-    background: none;
-    transition: none;
-    transform: none;
-    border-radius: 0;
+}
+
+// Target Card
+.target-card,
+.location-card {
+  .target-info-item,
+  .location-info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    ion-icon {
+      font-size: 20px;
+    }
+
+    span, a {
+      flex: 1;
+      font-size: 15px;
+      color: #333;
+    }
+
+    a {
+      color: var(--ion-color-primary);
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
-  
-  ion-radio.radio-checked::part(container) {
-    background: var(--ion-color-success);
-    border-color: transparent;
+}
+
+// Total Card
+.total-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+
+  .total-section {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 500;
+      color: #666;
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .total-amount {
+      .amount {
+        font-size: 36px;
+        font-weight: 700;
+        color: #28a745;
+      }
+    }
   }
-  
-  ion-radio.radio-checked::part(mark) {
-    width: 6px;
-    height: 10px;
-  
-    border-width: 0px 2px 2px 0px;
-    border-style: solid;
-    border-color: #fff;
-  
-    transform: rotate(45deg);
-  }  
+
+  .cost-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    .cost-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+
+      span {
+        &:first-child {
+          font-size: 14px;
+          color: #666;
+        }
+
+        &:last-child {
+          font-size: 16px;
+          font-weight: 600;
+          color: #1a1a1a;
+        }
+      }
+    }
+  }
+
+  .membership-section {
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    .membership-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+
+      span {
+        flex: 1;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+    }
+
+    .membership-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .membership-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        background: #fff;
+        border-radius: 6px;
+
+        .membership-name {
+          flex: 1;
+          font-size: 14px;
+          color: #333;
+        }
+
+        .membership-price {
+          font-weight: 600;
+          color: #1a1a1a;
+        }
+      }
+    }
+  }
+
+  .payment-section {
+    margin-bottom: 20px;
+  }
+
+  .conditions-section {
+    .conditions-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: #fff;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+
+      ion-checkbox {
+        margin: 0;
+      }
+
+      .conditions-link {
+        flex: 1;
+        font-size: 14px;
+        color: var(--ion-color-primary);
+        cursor: pointer;
+        text-decoration: underline;
+
+        &:hover {
+          color: var(--ion-color-primary-shade);
+        }
+      }
+    }
+  }
+
+  .action-button-section {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    ion-button {
+      flex: 1;
+       height: 56px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0;
+      transition: all 0.3s ease;
+
+      ion-icon {
+        font-size: 24px;
+        margin-right: 8px;
+      }
+    }
+
+    .confirm-button {
+      --background: var(--ion-color-tertiary);
+      --color: var(--ion-color-dark);
+      --border-radius: 14px;
+      --box-shadow: 0 4px 16px rgba(249, 201, 89, 0.4);
+
+      &:not([disabled]):hover {
+        --box-shadow: 0 6px 20px rgba(249, 201, 89, 0.5);
+        transform: translateY(-2px);
+      }
+
+      &:not([disabled]):active {
+        transform: scale(0.98);
+      }
+
+      &[disabled] {
+        --background: var(--ion-color-light);
+        --color: var(--ion-color-mediumlight);
+        opacity: 0.6;
+      }
+    }
+
+    .undo-button {
+      --background: var(--ion-color-danger);
+      --color: var(--ion-color-danger-contrast);
+      --border-radius: 14px;
+      --box-shadow: 0 4px 16px rgba(249, 89, 110, 0.4);
+
+      &:not([disabled]):hover {
+        --box-shadow: 0 6px 20px rgba(249, 89, 110, 0.4);
+        transform: translateY(-2px);
+      }
+
+      &:not([disabled]):active {
+        transform: scale(0.98);
+      }
+
+      &[disabled] {
+        --background: var(--ion-color-light);
+        --color: var(--ion-color-mediumlight);
+        opacity: 0.6;
+      }
+    }    
+  }
+}
+
+// Stripe Payment
+.stripe-payment-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+
+  .stripe-form-wrapper {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+
+    h3 {
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+      text-align: center;
+    }
+
+    #payment-element {
+      margin-bottom: 20px;
+    }
+
+    ion-button {
+      margin: 8px 0 0 0;
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+// Footer
+ion-footer {
+  ion-toolbar {
+    --background: #fff;
+    --border-width: 1px 0 0 0;
+    --border-color: #e9ecef;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+  }
+
+
+}
+
+// Responsive
+@media (min-width: 768px) {
+  .content-wrapper {
+    padding: 20px;
+  }
+
+  ion-card {
+    margin-bottom: 20px;
+  }
+
+  .course-info-card {
+    .course-dates {
+      .date-info {
+        padding: 16px;
+      }
+    }
+  }
+}
+
+// Sport Icon
+.sport-icon {
+  font-family: "sports";
+}

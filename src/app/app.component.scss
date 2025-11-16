@@ -1,4 +1,443 @@
+// =====================================================
+// APP COMPONENT - ERROR STATE & SPLASH SCREEN
+// =====================================================
 
+// =====================================================
+// SPLASH SCREEN (LOADING INIZIALE)
+// =====================================================
+.splash {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ion-back-splash);
+}
+
+.sk-cube-grid {
+  width: 120px;
+  height: 120px;
+  margin: 100px auto;
+
+  .sk-cube {
+    width: 33%;
+    height: 33%;
+    background-color: var(--ion-color-primary);
+    float: left;
+    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+    animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+  }
+
+  .sk-cube1 { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; }
+  .sk-cube2 { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; }
+  .sk-cube3 { -webkit-animation-delay: 0.4s; animation-delay: 0.4s; }
+  .sk-cube4 { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; }
+  .sk-cube5 { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; }
+  .sk-cube6 { -webkit-animation-delay: 0.3s; animation-delay: 0.3s; }
+  .sk-cube7 { -webkit-animation-delay: 0s; animation-delay: 0s; }
+  .sk-cube8 { -webkit-animation-delay: 0.1s; animation-delay: 0.1s; }
+  .sk-cube9 { -webkit-animation-delay: 0.2s; animation-delay: 0.2s; }
+}
+
+@-webkit-keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
+  }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+  }
+}
+
+@keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
+  }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+  }
+}
+
+// =====================================================
+// ERROR CONTAINER
+// =====================================================
+.error-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+// =====================================================
+// ERROR CARD - DESIGN MODERNO
+// =====================================================
+.error-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideUp 0.5s ease-out;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+// Header con Badge
+.error-card__header {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.error-card__header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.error-card__icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  ion-icon {
+    font-size: 28px;
+    color: white;
+  }
+}
+
+.error-card__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  h4 {
+    margin: 0;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+}
+
+.version-badge {
+  --background: rgba(255, 255, 255, 0.25);
+  --color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.debug-icon {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+
+  &.active {
+    color: white;
+    transform: rotate(360deg);
+  }
+}
+
+// Immagine
+.error-card__image {
+  padding: 40px 24px 20px;
+  text-align: center;
+  background: linear-gradient(to bottom, white, #f8f9fa);
+
+  img {
+    max-width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    opacity: 0.9;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+  }
+}
+
+// Content
+.error-card__content {
+  padding: 24px 24px 32px;
+  text-align: center;
+}
+
+.error-card__title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--ion-color-dark);
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.error-card__subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+
+.error-card__message {
+  background: #f8f9fa;
+  border-left: 4px solid var(--ion-color-danger);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-danger);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-dark);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+}
+
+// Pulsante Riprova
+.retry-button {
+  --background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  --background-hover: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+  --background-activated: linear-gradient(135deg, #bd2130 0%, #a71d2a 100%);
+  --box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+  --border-radius: 14px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+  margin: 0;
+  text-transform: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    --box-shadow: 0 12px 28px rgba(220, 53, 69, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+// Messaggio Tecnico
+.error-card__technical {
+  margin-top: 24px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.technical-message {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+
+  ion-icon {
+    font-size: 22px;
+    color: #ff9800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
+.technical-message__content {
+  flex: 1;
+
+  h5 {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #856404;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #664d03;
+    line-height: 1.5;
+    font-family: 'Courier New', monospace;
+    word-break: break-word;
+
+    &.no-details {
+      font-family: inherit;
+      font-style: italic;
+      opacity: 0.8;
+    }
+  }
+}
+
+// =====================================================
+// ANIMATIONS
+// =====================================================
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+@media (max-width: 576px) {
+  .error-container {
+    padding: 16px;
+  }
+
+  .error-card {
+    border-radius: 20px;
+  }
+
+  .error-card__header {
+    padding: 16px 20px;
+  }
+
+  .error-card__icon-wrapper {
+    width: 45px;
+    height: 45px;
+
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+
+  .error-card__header-text h4 {
+    font-size: 1.1rem;
+  }
+
+  .error-card__image {
+    padding: 32px 20px 16px;
+
+    img {
+      max-height: 160px;
+    }
+  }
+
+  .error-card__content {
+    padding: 20px 20px 28px;
+  }
+
+  .error-card__title {
+    font-size: 1.5rem;
+  }
+
+  .error-card__subtitle {
+    font-size: 1rem;
+  }
+
+  .error-card__message {
+    padding: 14px;
+
+    ion-icon {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 0.95rem;
+    }
+  }
+
+  .retry-button {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    font-size: 1rem;
+  }
+}
+
+// Tablet Landscape
+@media (min-width: 768px) and (max-width: 1024px) {
+  .error-card {
+    max-width: 650px;
+  }
+}
+
+// Desktop Large
+@media (min-width: 1200px) {
+  .error-card {
+    max-width: 700px;
+  }
+
+  .error-card__image img {
+    max-height: 240px;
+  }
+}
+
+// =====================================================
+// ROUTER OUTLET (LEGACY STYLES)
+// =====================================================
+ion-router-outlet.scanner-active {
+  display: none;
+}
+
+// =====================================================
+// LEGACY TITLE ICON (se ancora utilizzato)
+// =====================================================
 .titleicon {
   display: flex;
   flex-direction: column;
@@ -7,97 +446,12 @@
   align-content: center;
   padding: 0;
   margin: 0px 0px 0px 0px;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
   width: 100%;
   height: 150px;
-  text-align:center;
+  text-align: center;
 
   img {
-      max-width: 300px;
-      max-height: 150px;
+    max-width: 300px;
+    max-height: 150px;
   }
 }
-
-.splash {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--ion-back-splash);
-}
-
-.sk-cube-grid {
-    width: 120px;
-    height: 120px;
-    margin: 100px auto;
-  }
-  
-  .sk-cube-grid .sk-cube {
-    width: 33%;
-    height: 33%;
-    background-color: var(--ion-color-primary);
-    float: left;
-    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-            animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; 
-  }
-  .sk-cube-grid .sk-cube1 {
-    -webkit-animation-delay: 0.2s;
-            animation-delay: 0.2s; }
-  .sk-cube-grid .sk-cube2 {
-    -webkit-animation-delay: 0.3s;
-            animation-delay: 0.3s; }
-  .sk-cube-grid .sk-cube3 {
-    -webkit-animation-delay: 0.4s;
-            animation-delay: 0.4s; }
-  .sk-cube-grid .sk-cube4 {
-    -webkit-animation-delay: 0.1s;
-            animation-delay: 0.1s; }
-  .sk-cube-grid .sk-cube5 {
-    -webkit-animation-delay: 0.2s;
-            animation-delay: 0.2s; }
-  .sk-cube-grid .sk-cube6 {
-    -webkit-animation-delay: 0.3s;
-            animation-delay: 0.3s; }
-  .sk-cube-grid .sk-cube7 {
-    -webkit-animation-delay: 0s;
-            animation-delay: 0s; }
-  .sk-cube-grid .sk-cube8 {
-    -webkit-animation-delay: 0.1s;
-            animation-delay: 0.1s; }
-  .sk-cube-grid .sk-cube9 {
-    -webkit-animation-delay: 0.2s;
-            animation-delay: 0.2s; }
-  
-  @-webkit-keyframes sk-cubeGridScaleDelay {
-    0%, 70%, 100% {
-      -webkit-transform: scale3D(1, 1, 1);
-              transform: scale3D(1, 1, 1);
-    } 35% {
-      -webkit-transform: scale3D(0, 0, 1);
-              transform: scale3D(0, 0, 1); 
-    }
-  }
-  
-  @keyframes sk-cubeGridScaleDelay {
-    0%, 70%, 100% {
-      -webkit-transform: scale3D(1, 1, 1);
-              transform: scale3D(1, 1, 1);
-    } 35% {
-      -webkit-transform: scale3D(0, 0, 1);
-              transform: scale3D(0, 0, 1);
-    } 
-  }
-
-  ion-router-outlet.scanner-active {
-    display: none;
-  }
-
-
-
-

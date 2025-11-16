@@ -289,11 +289,11 @@
           transition: all 0.3s ease;
 
           &.active {
-            background: var(--ion-color-primary);
-            border-color: var(--ion-color-primary);
+            background: var(--ion-color-success);
+            border-color: var(--ion-color-success);
             color: white;
             transform: scale(1.1);
-            box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.3);
+            box-shadow: 0 2px 8px rgba(var(--ion-color-success-rgb), 0.3);
           }
         }
       }

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StartService } from 'src/app/services/start.service';
-import { NavController, LoadingController, ModalController, ActionSheetController} from '@ionic/angular';
+import { NavController, LoadingController, ModalController, IonContent} from '@ionic/angular';
 import { Location } from 'src/app/models/struttura/location.model';
 import { throwError, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LocationBookingFinalizePage } from '../location-booking-finalize/location-booking-finalize.page';
 import { Sport } from 'src/app/models/archivi/sport.model';
-import { CustomAlertClass, StatoSlot } from 'src/app/models/zsupport/valuelist.model';
+import { CustomAlertClass, ModalPageCSS, StatoSlot } from 'src/app/models/zsupport/valuelist.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 
 
@@ -71,6 +71,14 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
   //Collasso la parte superiore di Header
   fixedHeaderCollapsed:boolean = false;
+
+  // Nuove proprietà per lo scroll collapsible
+  @ViewChild(IonContent) content: IonContent;
+  // Proprietà per gestire il collapsing
+  isHeaderHidden = false;
+  private lastScrollTop = 0;
+  private readonly scrollThreshold = 80; // pixel da scrollare prima di nascondere
+
   
   //Grid completa che contiene le 2 colonne o la colonna singola
   @ViewChild('gridcontainer', {read: ElementRef}) refGridContainer: ElementRef | undefined;
@@ -272,7 +280,23 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
 
 
   }
+  
 
+  // Metodo per gestire lo scroll
+  handleScroll(event: any) {
+    const scrollTop = event.detail.scrollTop;
+    
+    // Se scrollo verso il basso oltre la soglia -> nascondo
+    if (scrollTop > this.lastScrollTop && scrollTop > this.scrollThreshold) {
+      this.isHeaderHidden = true;
+    } 
+    // Se scrollo verso l'alto -> mostro
+    else if (scrollTop < this.lastScrollTop - 10) { // piccola isteresi
+      this.isHeaderHidden = false;
+    }
+    
+    this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+  }
 
   //#region PULSANTE BACK
   /**
@@ -498,7 +522,7 @@ export class LocationBookingPage implements OnInit,  OnDestroy {
     
     //Step a) Chiedo al TemplateWeek una copia del Template di una Giornata (TRUE-> Chiedo di aggiornare la data su tutti i record figli SLOTTIME)
     this.actualSlotDay = this.templateWeekSlot.getCopySlotDay(this.actualBookDay, true);
-    console.log(this.actualSlotDay)
+    
       
     LogApp.consoleLog('Richiesta Slot Occupazioni');
     
@@ -769,10 +793,11 @@ showAlertContattaStruttura() {
    * E' tutto a posto e posso spostarmi alla pagina di Finalizza Prenotazione
    */
   goToFinalizza() {
-    /* VERSIONE MODALE */
+    /* VERSIONE MODALE FULLSCREEN */
+    
     this.modalCtrl.create({
       component: LocationBookingFinalizePage,
-      cssClass: 'modal-xl-class',
+      cssClass: ModalPageCSS.modalFullScreen,
       componentProps: {
         bookId: this.activePrenotazione.ID,
         locationId : this.selectedLocation.ID

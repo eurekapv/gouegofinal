@@ -1,14 +1,38 @@
 ion-content {
-    --background: var(--ion-color-light-tint);
-    > ion-grid {
-      --background: var(--ion-color-light-tint);
-    }
-  }
-
-ion-segment {
-  --background: white;
+  --background: var(--ion-color-light-tint);
 }
 
+// Sezione che si nasconde (sport + calendar)
+.collapsible-section {
+  background: white;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+  transform: translateY(0);
+  opacity: 1;
+  
+  &.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    position: absolute;
+    pointer-events: none; // non intercetta eventi quando nascosta
+  }
+}
+
+// Sezione sticky (campi - sempre visibile)
+.sticky-section {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &.elevated {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-bottom: 3px solid var(--ion-color-primary);
+  }
+}
+
+// Mantieni gli altri stili esistenti
 .item-campo, .item-transparent {
   --background: var(--ion-color-light-tint);
 
@@ -17,13 +41,7 @@ ion-segment {
   }
 }
 
-ion-slide {
-  ion-item {
-    width: 100%;
-  }
-}
-.label-header
-{
+.label-header {
   margin-top: 5px;
   margin-bottom: 5px;
 }
@@ -32,44 +50,10 @@ app-sport-scroll {
   --background: white;
 }
 
-.nofind-cnt{
+.nofind-cnt {
   padding-top: 15px;
 }
 
 ion-footer {
   border-top: var(--ion-color-tertiary) solid 2px;
 }
-
-
-.custom-toolbar{
-  background-color: white;
-}
-
-// Layout principale
-.booking-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-// Sezione fissa (non scrolla)
-.fixed-header {
-  flex-shrink: 0;  // Non si riduce mai
-  background: white;
-  border-bottom: 2px solid var(--ion-color-light);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  z-index: 10;
-}
-
-// Sezione scrollabile (solo slot)
-.scrollable-content {
-  flex: 1;  // Prende tutto lo spazio rimanente
-  overflow-y: auto;  // Scroll verticale
-  overflow-x: hidden;
-  background: var(--ion-color-light-tint);
-  padding: 12px 0;
-}
-
-
-
-

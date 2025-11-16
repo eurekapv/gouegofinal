@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AlertButton, IonModal, LoadingController, ModalController, NavController } from '@ionic/angular';
+import { AlertButton, IonModal, LoadingController, ModalController, NavController, Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { Area } from 'src/app/models/struttura/area.model';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
-import { PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
+import { ModeIncassoConfig, PaymentChannel, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { PaymentPage } from '../../payment/payment.page';
-import { ErrorDoc } from 'src/app/library/models/error-doc.model';
 import { PostResponse } from 'src/app/library/models/post-response.model';
+import { LogApp } from 'src/app/models/zsupport/log.model';
 
 @Component({
   selector: 'app-cart-checkout',
@@ -36,7 +36,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
   subUserDoc: Subscription; 
 
   //Area selezionata
-  docArea: Area;
+  selectedArea: Area;
   subAreaDoc: Subscription;  
 
   //accettazione delle condizioni di vendita
@@ -50,13 +50,32 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
   subPaymentResult: Subscription;  
 
+  /* NUOVE PROPRIETA */
+  // Creo le variabili per ognuna modalita di incasso (Contanti/Bonifico/Mobile)
+  //Queste variabili vengono popolate una volta che ho l'elenco delle modalità di pagamento
+  _configIncassoContanti: AreaPaymentSetting;
+  _configIncassoBonifico: AreaPaymentSetting;
+  _configIncassoMobile: AreaPaymentSetting;
+
+  _selectedPaymentMode: ModeIncassoConfig;
+  _selectedPaymentConfig: AreaPaymentSetting;
+
+  showStripeForm = false;
+
+  // Variabili per gestire la promise
+  private currentPaymentResolve: any;
+  private currentPaymentReject: any;
+
+  /* FINE NUOVE PROPRIETA */
+
 
   
   constructor(    
     private startService: StartService,
     private loadingController: LoadingController,
     private modalController: ModalController,
-    private navController: NavController) { 
+    private navController: NavController,
+    private platform: Platform) { 
 
         //Svuota l'array
         this.myListPayment = [];
@@ -189,7 +208,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
       this.subAreaDoc = this.startService.areaSelected$.subscribe({
         next: (dataArea) => {
           if (dataArea) {
-            this.docArea = dataArea;
+            this.selectedArea = dataArea;
             resolve();
           }
           else {
@@ -208,6 +227,13 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
     //Procedo con il pagamento
     this.onExecPayment();
   }
+
+  /**
+   * Dovrei mostrare le condizioni di vendita
+   */
+  onClickCondizioniVendita() {
+
+  }
   //#endregion
 
   
@@ -221,32 +247,80 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
     return new Promise<void>((resolve) => {
 
-      //Svuota l'array
-      this.myListPayment = [];
-      //Imposto la lista
-      this.myListPayment = this.docArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoShop);
-      //Seleziono un metodo di pagamento
-      this.mySelectedPayment = (this.myListPayment && this.myListPayment.length != 0 ? this.myListPayment[0]: null);      
+    let listConfigIncassi: AreaPaymentSetting[];
 
-      resolve();
+    LogApp.consoleLog('Imposto Lista Metodi Pagamento');
+
+
+    //Azzero le configurazioni
+    this._configIncassoContanti = null;
+    this._configIncassoBonifico = null;
+    this._configIncassoMobile = null;
+    //Questo è il modo di pagamento scelto
+    this._selectedPaymentMode = null;
+    this._selectedPaymentConfig = null;
+
+
+    //Ho il documento dell'Area
+    if (this.selectedArea) {
+          //Recupero le modalità
+          listConfigIncassi = this.selectedArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+          //Recupero la modalità per il pagamento in contanti (se presente)
+          this._configIncassoContanti = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                              ModeIncassoConfig.incassoContanti, 
+                                                                              SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+          //Recupero la modalità per il pagamento in bonifico (se presente)
+          this._configIncassoBonifico = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                              ModeIncassoConfig.incassoBonifico, 
+                                                                              SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+          //Recupero la modalità per il pagamento in mobile (se presente)
+          this._configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                              ModeIncassoConfig.incassoCreditCard, 
+                                                                              SettorePagamentiAttivita.settorePagamentoPrenotazione)
+
+          LogApp.consoleLog('Contanti');
+          LogApp.consoleLog(this._configIncassoContanti);
+          LogApp.consoleLog('Bonifico');
+          LogApp.consoleLog(this._configIncassoBonifico);
+          LogApp.consoleLog('Mobile');
+          LogApp.consoleLog(this._configIncassoMobile);
+
+          resolve();
+      }
+      else {
+        //Anche se sono in errore continuo
+        resolve();
+      }
     })
 
   }
 
-  /**
-   * Ricezione pagamento da utilizzare
-   * @param value Valore Pagamento
-   */
-  onPaymentSelected(value) {
-    this.mySelectedPayment = value;
-  }
 
-  /**
-   * Cambiato il modo di pagamento
-   * @param valPaymentMode Modo di pagamento
+    /**
+   * Selezionato un valore per il metodo di pagamento
+   * @param value 
    */
-  onPaymentModeSelected(valPaymentMode: PaymentMode) {
-    this.myPaymentMode = valPaymentMode;
+  onSelectPaymentConfig(value: ModeIncassoConfig) {
+
+    this._selectedPaymentMode = value;
+
+    switch (this._selectedPaymentMode) {
+      case ModeIncassoConfig.incassoContanti:
+          this._selectedPaymentConfig = this._configIncassoContanti;
+        break;
+      case ModeIncassoConfig.incassoBonifico:
+          this._selectedPaymentConfig = this._configIncassoBonifico;
+        break;
+      case ModeIncassoConfig.incassoCreditCard:
+          this._selectedPaymentConfig = this._configIncassoMobile;
+        break;        
+    
+      default:
+        break;
+    }
   }
 
 
@@ -265,90 +339,53 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
     //Presente un totale da pagare
     if (this.carrelloDoc.TOTRESIDUO != 0) {
 
-      //L'utente ha selezionato come pagare
-      if (arModes.includes(this.myPaymentMode)) {
-  
-        //Pagamento non dentro all'App
-        if (this.myPaymentMode == PaymentMode.pagaBonifico || this.myPaymentMode == PaymentMode.pagaStruttura) {
-  
+      //Metodo di pagamento che non prevede altri passaggi 
+      if (this._selectedPaymentMode == ModeIncassoConfig.incassoContanti) {
+
           //Creo il risultato del pagamento, passando la modalità
-          let docPaymentResult = new PaymentProcess(this.myPaymentMode);
+          let docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
           // Essendo una modalita che non prevede interazioni app
           // viene impostato automaticamento il channelPayment 
           // e il processResult = TRUE
           
           //Passo subito al Success
-          this.onPaymentSuccess(docPaymentResult);
-  
-        }
-        else {
-          
-          //Qui invece bisogna gestire il pagamento
-  
-          //Preparo un oggetto per processare il pagamento
-          let myCheckoutPayment = new PaymentProcess(this.myPaymentMode);
-          
-          myCheckoutPayment.amount = this.carrelloDoc.TOTRESIDUO;
-          myCheckoutPayment.description = 'Pagamento Shop';
-          myCheckoutPayment.currency = 'EUR';
-  
-          //il channelPayment viene impostato nel componente
-          //esterno che si preoccupa del pagamento
-          //Passo alla modale in paymentData = myCheckoutPayment
-          this.modalController.create({
-            component: PaymentPage,
-            componentProps: {
-              paymentData: myCheckoutPayment,
-              listAreaPaymentSettings: this.myListPayment,
-              areaDoc: this.docArea
-            }
-          })
-          .then(elModal => {
-            elModal.present();
-  
-            return elModal.onDidDismiss()
-          })
-          .then((returnData) => {
-  
-            //recupero il risultato del pagamento
-            let myPaymentResult: PaymentProcess = returnData['data'];
-
-            if (myPaymentResult) {
-
-              //Il Risultato del processo di pagamento è TRUE, posso proseguire
-              if (myPaymentResult.processResult) {
-                
-                //Pagamento avvenuto correttamente
-                this.onPaymentSuccess(myPaymentResult); 
-  
-              }
-              else {
-  
-                //Pagamento Fallito
-                this.onPaymentFailed(myPaymentResult);
-  
-              }
-            }
-            else {
-              
-              //Stranamente non mi ha tornato nulla, quindi il pagamento è fallito
-              myPaymentResult = new PaymentProcess(this.myPaymentMode);
-              myPaymentResult.processResult = false;
-              myPaymentResult.messageResult = 'Pagamento fallito';
-
-              //Pagamento Fallito
-              this.onPaymentFailed(myPaymentResult);
-
-            }
-          })
-  
-  
-        }
-  
+          this.onPaymentSuccess(docPaymentResult);        
       }
-      else {
-        //Pagamento non selezionato
-        this.startService.presentAlertMessage('E\' necessario selezionare un pagamento');        
+      else if (this._selectedPaymentMode == ModeIncassoConfig.incassoBonifico) {
+
+          //Creo il risultato del pagamento, passando la modalità
+          let docPaymentResult = new PaymentProcess(PaymentMode.pagaBonifico);
+          // Essendo una modalita che non prevede interazioni app
+          // viene impostato automaticamento il channelPayment 
+          // e il processResult = TRUE
+          
+          //Passo subito al Success
+          this.onPaymentSuccess(docPaymentResult);        
+      }
+      else if (this._selectedPaymentMode == ModeIncassoConfig.incassoCreditCard) {
+
+        //*********** Pagamento tramite Stripe *********************
+        if (this._selectedPaymentConfig.TIPOPAYMENT == PaymentChannel.stripe) {
+            //Chiamo il metodo per il pagamento
+            this.payWithStripe()
+                .then(paymentResultDoc => {
+                  //Pagamento avvenuto correttamente
+                  //Passo subito al Success
+                  this.onPaymentSuccess(paymentResultDoc);
+                })
+                .catch(error => {
+                  if (error instanceof Error) {
+                    //Errore pagamento
+                    this.startService.presentAlertMessage(error.message, 'Pagamento fallito');
+                  }
+                  else if (typeof error == 'string') {
+                    this.startService.presentAlertMessage(error, 'Pagamento fallito');
+                  }
+                  else {
+                    this.startService.presentAlertMessage(error.toString(), 'Pagamento fallito');
+                  }
+                })
+        }
       }
       
     }
@@ -357,6 +394,131 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
     }
 
   }
+
+
+  //#region STRIPE PAYMENT
+
+  // Modifica il metodo payWithStripe
+  /**
+   * Si chiede il pagamento tramite Stripe
+   */
+  payWithStripe(): Promise<PaymentProcess> {
+    return new Promise<PaymentProcess>((resolve, reject) => {
+      
+      const amount = this.carrelloDoc.TOTRESIDUO * 100;
+      const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
+
+      this.startService.presentPaymentOptions(
+                        amount,
+                        'EUR',
+                        centroAccountId)
+        .then(result => {
+
+          if (result.success) {
+
+            // Su browser, mostra il form e monta Stripe Elements
+            if (!this.platform.is('capacitor')) {
+              console.log('🌐 Browser: mostro form pagamento');
+              this.showStripeForm = true;
+              this.currentPaymentResolve = resolve;
+              this.currentPaymentReject = reject;
+              
+              // Aspetta che Angular renderizzi il DOM, poi monta Stripe
+              setTimeout(() => {
+                this.mountStripeElement();
+              }, 100);
+              return;
+            }
+
+            // Su mobile, procedi direttamente
+            let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
+            paymentResultDoc.modePayment = PaymentMode.pagaAdesso;
+            paymentResultDoc.channelPayment = PaymentChannel.stripe;
+            paymentResultDoc.amount = amount / 100;
+            paymentResultDoc.currency = 'EUR';
+            paymentResultDoc.description = 'Pagamento Ordine';
+            paymentResultDoc.idElectronicResult = result.paymentIntentId;
+            paymentResultDoc.processResult = true;
+
+            console.log('✅ Pagamento completato!', result.paymentIntentId);
+            resolve(paymentResultDoc);
+
+          }
+          else {
+            console.error('❌ Errore:', result.error);
+            reject(result.error);
+          }
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   * Monta l'elemento Stripe nel DOM
+   */
+  async mountStripeElement() {
+    try {
+      await this.startService.mountPaymentElement();
+      console.log('✅ Stripe Element montato nel DOM');
+    } catch (error) {
+      console.error('❌ Errore montaggio Stripe Element:', error);
+      this.showStripeForm = false;
+      if (this.currentPaymentReject) {
+        this.currentPaymentReject('Errore caricamento form pagamento');
+      }
+    }
+  }
+
+  /**
+   * Conferma il pagamento su browser
+   */
+  async confirmStripePayment() {
+    try {
+      const result = await this.startService.confirmBrowserPayment();
+      
+      this.showStripeForm = false;
+
+      if (result.success) {
+        const amount = this.carrelloDoc.TOTRESIDUO * 100;
+        let paymentResultDoc = new PaymentProcess(PaymentMode.pagaAdesso);
+        
+        paymentResultDoc.modePayment = PaymentMode.pagaAdesso;
+        paymentResultDoc.channelPayment = PaymentChannel.stripe;
+        paymentResultDoc.amount = amount / 100;
+        paymentResultDoc.currency = 'EUR';
+        paymentResultDoc.description = 'Pagamento Ordine';
+        paymentResultDoc.idElectronicResult = result.paymentIntentId || '';
+        paymentResultDoc.processResult = true;
+
+        if (this.currentPaymentResolve) {
+          this.currentPaymentResolve(paymentResultDoc);
+        }
+      } else {
+        if (this.currentPaymentReject) {
+          this.currentPaymentReject(result.error);
+        }
+      }
+    } catch (error: any) {
+      this.showStripeForm = false;
+      if (this.currentPaymentReject) {
+        this.currentPaymentReject(error.message || error);
+      }
+    }
+  }
+
+  /**
+   * Annulla il pagamento su browser
+   */
+  cancelStripePayment() {
+    this.showStripeForm = false;
+    if (this.currentPaymentReject) {
+      this.currentPaymentReject('Pagamento annullato dall\'utente');
+    }
+  }
+  //#endregion
+
 
 
   /**

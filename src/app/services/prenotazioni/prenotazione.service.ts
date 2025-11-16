@@ -372,32 +372,35 @@ export class PrenotazioneService {
           //Chiamo per il salvataggio                      
           this.apiService
                 .httpPost(myUrl,myHeaders, myParams, myBody)
-                .subscribe(elPrenotazione => {
-
-                  let receivedPrenotazione = Prenotazione.getPrenotazioneFromJson(elPrenotazione);
-                  
-                  if (receivedPrenotazione.ISVALID == true) {
-                    resolve(receivedPrenotazione);
-                  }
-                  else {
-                    let errMessage = '';
-                    if (receivedPrenotazione.MSGINVALID && receivedPrenotazione.MSGINVALID.length != 0) {
-                      errMessage = receivedPrenotazione.MSGINVALID;
+                .subscribe(
+                  {
+                    next:(elPrenotazione) => {
+  
+                      let receivedPrenotazione = Prenotazione.getPrenotazioneFromJson(elPrenotazione);
+                      
+                      if (receivedPrenotazione.ISVALID == true) {
+                        resolve(receivedPrenotazione);
+                      }
+                      else {
+                        let errMessage = '';
+                        if (receivedPrenotazione.MSGINVALID && receivedPrenotazione.MSGINVALID.length != 0) {
+                          errMessage = receivedPrenotazione.MSGINVALID;
+                        }
+                        else {
+                          errMessage = 'Salvataggio Fallito';
+                        }
+    
+                        reject(errMessage);
+                      }
+  
+                    }, 
+                    error: (error) => {
+                      LogApp.consoleLog(error,'error');
+                      let errMessage = 'Errore di connessione';
+                      reject(errMessage);
                     }
-                    else {
-                      errMessage = 'Salvataggio Fallito';
-                    }
-
-                    reject(errMessage);
                   }
-
-                }, error => {
-                  
-                  LogApp.consoleLog(error,'error');
-                  let errMessage = 'Errore di connessione';
-                  reject(errMessage);
-                  
-                });
+                );
 
       });
 

@@ -31,11 +31,10 @@
   </div>
 
   <!-- MESSAGGIO INFORMATIVO -->
-  <div class="info-message">
+  <div class="info-message" (click)="showInfoMessage()">
     <ion-icon name="information-circle-outline"></ion-icon>
     <span>
-      Nel caso venga comunicato un numero inferiore rispetto ai giocatori che effettivamente parteciperanno, 
-      il sovrapprezzo verrà comunicato ed applicato in sede prima della partita.
+      {{infoMessage}}
     </span>
   </div>
 </div>

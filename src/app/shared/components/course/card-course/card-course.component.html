@@ -75,13 +75,13 @@
       <div class="time-duration">
         <div class="time-item">
           <ion-icon name="time-outline"></ion-icon>
-          <span class="time-label">Orario</span>
+          <span class="time-label">Orario Inizio</span>
           <span class="time-value">{{_myCorso.ORAINIZIO | date:'HH:mm'}}</span>
         </div>
         <div class="duration-item">
           <ion-icon name="hourglass-outline"></ion-icon>
           <span class="time-label">Durata</span>
-          <span class="time-value">{{_myCorso.ORELEZIONE}} {{_myCorso.ORELEZIONE > 1 ? 'ore' : 'ora'}}</span>
+          <span class="time-value">{{_myCorso.ORELEZIONE | labelNumeroOre:'short'}}</span>
         </div>
       </div>
     </div>
@@ -90,14 +90,15 @@
     <div class="weekly-schedule">
       <div class="schedule-label">
         <ion-icon name="calendar"></ion-icon>
-        <span>Giorni della settimana</span>
+        <span>Effettuato nelle giornate di</span>
       </div>
       <div class="days-grid">
         <div 
-            *ngFor="let giorno of _myCorso._SETTIMANA" 
-            class="day-chip"
-            [class.active]="giorno.selected">
-          {{giorno.xsLabel | uppercase}}
+            *ngFor="let giorno of _myCorso.getArrayGiorniCorso()" 
+                class="day-chip"
+                
+                [class.active]="giorno.selected">
+                {{giorno.smallLabel | uppercase}}
         </div>
       </div>
     </div>

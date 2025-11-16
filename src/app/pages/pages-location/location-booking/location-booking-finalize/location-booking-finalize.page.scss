@@ -273,6 +273,71 @@ ion-header {
       margin: 0 0 12px 0;
     }
   }
+
+  .action-button-section {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    ion-button {
+      flex: 1;
+       height: 56px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0;
+      transition: all 0.3s ease;
+
+      ion-icon {
+        font-size: 24px;
+        margin-right: 8px;
+      }
+    }
+
+    .confirm-button {
+      --background: var(--ion-color-tertiary);
+      --color: var(--ion-color-dark);
+      --border-radius: 14px;
+      --box-shadow: 0 4px 16px rgba(249, 201, 89, 0.4);
+
+      &:not([disabled]):hover {
+        --box-shadow: 0 6px 20px rgba(249, 201, 89, 0.5);
+        transform: translateY(-2px);
+      }
+
+      &:not([disabled]):active {
+        transform: scale(0.98);
+      }
+
+      &[disabled] {
+        --background: var(--ion-color-light);
+        --color: var(--ion-color-mediumlight);
+        opacity: 0.6;
+      }
+    }
+
+    .undo-button {
+      --background: var(--ion-color-danger);
+      --color: var(--ion-color-danger-contrast);
+      --border-radius: 14px;
+      --box-shadow: 0 4px 16px rgba(249, 89, 110, 0.4);
+
+      &:not([disabled]):hover {
+        --box-shadow: 0 6px 20px rgba(249, 89, 110, 0.4);
+        transform: translateY(-2px);
+      }
+
+      &:not([disabled]):active {
+        transform: scale(0.98);
+      }
+
+      &[disabled] {
+        --background: var(--ion-color-light);
+        --color: var(--ion-color-mediumlight);
+        opacity: 0.6;
+      }
+    }    
+  }
 }
 
 // =====================================================
@@ -354,53 +419,6 @@ ion-header {
   }
 }
 
-// =====================================================
-// FOOTER CON BOTTONE
-// =====================================================
-ion-footer {
-  background: white;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
-  border-top: 2px solid var(--ion-color-success);
-
-  .footer-container {
-    padding: 16px;
-  }
-
-  .confirm-button {
-    --background: var(--ion-color-tertiary);
-    --color: var(--ion-color-dark);
-    --border-radius: 14px;
-    --box-shadow: 0 4px 16px rgba(249, 201, 89, 0.4);
-    
-    height: 56px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 0;
-    transition: all 0.3s ease;
-
-    ion-icon {
-      font-size: 24px;
-      margin-right: 8px;
-    }
-
-    &:not([disabled]):hover {
-      --box-shadow: 0 6px 20px rgba(249, 201, 89, 0.5);
-      transform: translateY(-2px);
-    }
-
-    &:not([disabled]):active {
-      transform: scale(0.98);
-    }
-
-    &[disabled] {
-      --background: var(--ion-color-light);
-      --color: var(--ion-color-mediumlight);
-      opacity: 0.6;
-    }
-  }
-}
 
 // =====================================================
 // ANIMAZIONI
@@ -451,7 +469,7 @@ ion-footer {
     }
 
     .time-section {
-      flex-direction: column;
+      flex-direction: row;
       align-items: flex-start;
       gap: 10px;
 
@@ -481,8 +499,46 @@ ion-footer {
     }
   }
 
-  ion-footer .confirm-button {
-    height: 52px;
-    font-size: 1rem;
+}
+
+//#region STRIPE 
+//======================= DA AGGIUNGERE PER STRIPE 
+.stripe-payment-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.stripe-form-wrapper {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  #payment-element {
+    margin-bottom: 16px;
+  }
+
+  .confirm-payment-btn {
+    margin-bottom: 8px;
   }
 }
+//=====================================================
+//#endregion
+

@@ -7,6 +7,7 @@ import { register } from 'swiper/element/bundle';
 import { StateApplication } from './models/zsupport/valuelist.model';
 import { environment } from 'src/environments/environment';
 
+
 //we need to call Swiper's register function to globally register Swiper's custom elements
 register();
 
@@ -77,6 +78,7 @@ export class AppComponent {
     //Eseguo le operazioni per la partenza
     this.startService.startApplication()
                      .then(() => {
+
                         //L'applicazione è partita
                         this.actaulStateApplication = StateApplication.started;
                         //Eseguo altre operazioni 

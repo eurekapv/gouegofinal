@@ -7,6 +7,7 @@ import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { StartService } from 'src/app/services/start.service';
 import { CartCheckoutPage } from '../cart-checkout/cart-checkout.page';
+import { ModalPageCSS } from 'src/app/models/zsupport/valuelist.model';
 
 @Component({
   selector: 'app-display-active-cart',
@@ -269,7 +270,7 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
     //Apro la videata modale
     this.modalController.create({
       component: CartCheckoutPage,
-      cssClass: 'modal-xl-class'
+      cssClass: ModalPageCSS.modalFullScreen
     })
     .then(elModal => {
       elModal.present();

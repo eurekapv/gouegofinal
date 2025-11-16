@@ -22,6 +22,7 @@ export class ChoosePaymentModeComponent  implements OnInit {
   @Input() set configMobile(value: AreaPaymentSetting) {
     this._configMobile = value;
   }
+  
 
   @Output() selectedConfig= new EventEmitter<ModeIncassoConfig>();
   @Output() clickCondizioniVendita = new EventEmitter<void>();

@@ -55,6 +55,30 @@
     </div>
 
   </div>
+
+  <div class="action-button-section">
+      <ion-button
+        class="undo-button"
+        expand="block"
+        size="large"
+        (click)="onUndo()"
+        >
+        <ion-icon name="arrow-back-circle-outline" slot="start"></ion-icon>
+        Annulla
+      </ion-button>
+
+      <ion-button 
+        expand="block"
+        size="large"
+        class="confirm-button"
+        [disabled]="!isConfirmEnabled"
+        (click)="onConfirm()">
+        <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+        Conferma
+      </ion-button>
+</div>
+
+
   <!-- LINK CONDIZIONI VENDITA
   <div class="terms-section" (click)="onClickCondizioniVendita()">
     <ion-icon name="document-text-outline"></ion-icon>

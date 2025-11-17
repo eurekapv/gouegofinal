@@ -42,7 +42,7 @@
     "@awesome-cordova-plugins/core": "6.4.0",
     "@awesome-cordova-plugins/file": "6.4.0",
     "@capacitor-community/file-opener": "^7.0.1",
-    "@capacitor-community/stripe": "^7.2.0",
+    "@capacitor-community/stripe": "^7.2.1",
     "@capacitor/android": "^7.4.3",
     "@capacitor/barcode-scanner": "^2.0.4",
     "@capacitor/browser": "^7.0.2",

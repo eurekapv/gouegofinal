@@ -22,10 +22,16 @@ export class ChoosePaymentModeComponent  implements OnInit {
   @Input() set configMobile(value: AreaPaymentSetting) {
     this._configMobile = value;
   }
+
+  @Input() set canEnableConfirm(value: boolean) {
+    this._canEnableConfirm = value;
+  }
   
 
   @Output() selectedConfig= new EventEmitter<ModeIncassoConfig>();
   @Output() clickCondizioniVendita = new EventEmitter<void>();
+  @Output() clickButtonConfirm = new EventEmitter<void>();
+  @Output() clickButtonUndo = new EventEmitter<void>();
 
 
   constructor() { }
@@ -38,6 +44,9 @@ export class ChoosePaymentModeComponent  implements OnInit {
 
   //Usare enum in Html
   modeIncassoConfig: typeof ModeIncassoConfig = ModeIncassoConfig;
+
+  //Dall'esterno mi dicono se posso abilitare il pulsante
+  _canEnableConfirm: boolean = false;
 
   /**
    * Torna TRUE se esiste la modalità passata o se ne esistesse almeno una
@@ -80,6 +89,27 @@ export class ChoosePaymentModeComponent  implements OnInit {
   onClickCondizioniVendita() {
     //Avviso del click sulle condizioni di vendita
     this.clickCondizioniVendita.emit();
+  }
+
+  /** utente ha fatto clic sul pulsante di conferma */
+  onConfirm() {
+    this.clickButtonConfirm.emit();
+  }
+
+  /** utente ha fatto clic sul pulsante di annulla */
+  onUndo() {
+    this.clickButtonUndo.emit();
+  }
+
+
+  /**
+   * Specifica se il pulsante di conferma è abilitato
+   */
+  get isConfirmEnabled(): boolean {
+    if (this._canEnableConfirm && this._selectedMode != null) {
+      return true;
+    }
+    return false;
   }
 
   ngOnInit() {}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Platform } from '@ionic/angular';
+import { LoadingController, Platform } from '@ionic/angular';
 import { Stripe, PaymentSheetEventsEnum, ApplePayEventsEnum, GooglePayEventsEnum } from '@capacitor-community/stripe';
 import { firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -28,6 +28,7 @@ export class StripePaymentService {
   
   private readonly STRIPE_BACKEND_URL = environment.externalUrl.stripemanager;
   private isInitialized = false;
+  private applePayPreloaded = false;
   
   private stripeJs: any = null;
   private elements: any = null;
@@ -35,7 +36,8 @@ export class StripePaymentService {
 
   constructor(
     private http: HttpClient,
-    private platform: Platform
+    private platform: Platform,
+    private loadingController: LoadingController
   ) {}
 
   /**
@@ -44,6 +46,7 @@ export class StripePaymentService {
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) {
+      console.log('⚠️ Stripe already initialized');
       return;
     }
 
@@ -54,9 +57,51 @@ export class StripePaymentService {
       
       this.isInitialized = true;
       console.log('✅ Stripe initialized');
+
+      // AGGIUNGI: Preload Apple Pay su iOS
+      if (this.platform.is('ios')) {
+        await this.preloadApplePay();
+      }
     } catch (error) {
       console.error('❌ Error initializing Stripe:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Preload Apple Pay per evitare il bug di concurrency alla prima chiamata
+   */
+  private async preloadApplePay(): Promise<void> {
+    if (this.applePayPreloaded) {
+      return;
+    }
+
+    try {
+      console.log('🍎 Preloading Apple Pay...');
+      
+      // Aspetta un attimo per dare tempo al sistema
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Crea un fake Apple Pay sheet per "scaldare" il sistema
+      // Questo fallirà, ma prepara Apple Pay per le chiamate successive
+      await Stripe.createApplePay({
+        paymentIntentClientSecret: 'pi_fake_secret_for_preload_only',
+        paymentSummaryItems: [{
+          label: 'Preload',
+          amount: 0.01
+        }],
+        merchantIdentifier: environment.additionalConfig?.merchantAppleIdentifier || 'merchant.com.gouego.app',
+        countryCode: 'IT',
+        currency: 'EUR'
+      });
+
+      this.applePayPreloaded = true;
+      console.log('✅ Apple Pay preloaded successfully');
+
+    } catch (error) {
+      // Errore atteso perché usiamo un fake payment intent
+      console.log('✅ Apple Pay preload completed (error expected)');
+      this.applePayPreloaded = true;
     }
   }
 
@@ -260,10 +305,125 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
     return this.platform.is('android') && this.platform.is('capacitor');
   }
 
+   /**
+   * Paga con Apple Pay - CON RETRY AUTOMATICO
+   */
+  async payWithApplePay(
+    amount: number,
+    currency: string = 'EUR',
+    idAccountConnected: string = '',
+    merchantName: string = environment.additionalConfig.merchantName,
+    retryCount: number = 0 // ← AGGIUNGI parametro interno
+  ): Promise<PaymentResult> {
+    
+    if (!this.platform.is('ios')) {
+      return {
+        success: false,
+        error: 'Apple Pay è disponibile solo su dispositivi iOS'
+      };
+    }
+
+      // Mostra loading
+    const loading = await this.loadingController.create({
+      message: 'Preparazione Apple Pay...',
+      duration: 1000 // Si chiude dopo 1 secondo
+    });
+    await loading.present();
+    
+    // Aspetta che si chiuda (dà tempo al sistema)
+    await loading.onDidDismiss();
+
+    try {
+      console.log(`🍎 [Attempt ${retryCount + 1}] Starting Apple Pay...`);
+
+      // Aspetta un attimo prima della chiamata (aiuta con il concurrency)
+      if (retryCount === 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      // Crea Payment Intent
+      const paymentIntent = await this.createPaymentIntent(
+        amount, 
+        currency.toLowerCase(),
+        idAccountConnected
+      );
+      console.log('✅ Payment Intent created:', paymentIntent.id);
+
+      // Crea Apple Pay sheet
+      console.log('🍎 Creating Apple Pay sheet...');
+      await Stripe.createApplePay({
+        paymentIntentClientSecret: paymentIntent.clientSecret,
+        paymentSummaryItems: [
+          {
+            label: merchantName,
+            amount: amount / 100
+          }
+        ],
+        merchantIdentifier: environment.additionalConfig?.merchantAppleIdentifier || 'merchant.com.gouego.app',
+        countryCode: 'IT',
+        currency: currency
+      });
+      console.log('✅ Apple Pay sheet created');
+
+      // Presenta Apple Pay
+      console.log('🍎 Presenting Apple Pay...');
+      const result = await Stripe.presentApplePay();
+      console.log('📱 Apple Pay result:', result);
+      
+      if (result.paymentResult === ApplePayEventsEnum.Completed) {
+        console.log('✅ Payment completed!');
+        return {
+          success: true,
+          paymentIntentId: paymentIntent.id
+        };
+      } else if (result.paymentResult === 'applePayCanceled') {
+        return {
+          success: false,
+          error: 'Pagamento annullato dall\'utente'
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Pagamento non completato'
+        };
+      }
+
+    } catch (error: any) {
+      console.error(`❌ Apple Pay error (attempt ${retryCount + 1}):`, error);
+      
+      // RETRY AUTOMATICO se è il primo tentativo e sembra un errore di concurrency
+      if (retryCount === 0) {
+        console.log('🔄 Retrying Apple Pay (concurrency workaround)...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return this.payWithApplePay(amount, currency, idAccountConnected, merchantName, 1);
+      }
+      
+      // Gestisci errori specifici
+      let errorMessage = 'Errore durante il pagamento con Apple Pay';
+      
+      if (error.message) {
+        const msg = error.message.toLowerCase();
+        if (msg.includes('not available') || msg.includes('not supported')) {
+          errorMessage = 'Apple Pay non è disponibile su questo dispositivo';
+        } else if (msg.includes('no cards') || msg.includes('no payment')) {
+          errorMessage = 'Nessuna carta configurata in Apple Pay. Apri Wallet per aggiungerne una.';
+        } else if (msg.includes('cancel')) {
+          errorMessage = 'Pagamento annullato';
+        } else if (msg.includes('merchant')) {
+          errorMessage = 'Configurazione Apple Pay non valida. Contatta il supporto.';
+        }
+      }
+      
+      return {
+        success: false,
+        error: errorMessage
+      };
+    }
+  }
   /**
    * Paga con Apple Pay
    */
-  async payWithApplePay(
+  async payWithApplePayOLD(
     amount: number,
     currency: string = 'EUR',
     idAccountConnected: string = '',

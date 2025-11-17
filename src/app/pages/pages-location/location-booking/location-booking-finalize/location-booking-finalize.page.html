@@ -105,6 +105,9 @@
               <app-choose-payment-mode
                 (selectedConfig)="onSelectPaymentConfig($event)"
                 (clickCondizioniVendita)="onClickCondizioniVendita()"
+                (clickButtonConfirm)="onConfirm()"
+                (clickButtonUndo)="closeModal()"
+                [canEnableConfirm]="activePrenotazione?.ISVALID && disclaimer"
                 [configContanti]="_configIncassoContanti"
                 [configBonifico]="_configIncassoBonifico"
                 [configMobile]="_configIncassoMobile"
@@ -113,7 +116,7 @@
               </app-choose-payment-mode>
             </div>
   
-            <div class="action-button-section">
+            <!-- <div class="action-button-section">
               <ion-button
                 class="undo-button"
                 expand="block"
@@ -133,7 +136,7 @@
                 <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
                 Conferma
               </ion-button>
-            </div>
+            </div> -->
   
   
   

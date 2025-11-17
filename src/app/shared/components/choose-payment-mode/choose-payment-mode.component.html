@@ -57,15 +57,6 @@
   </div>
 
   <div class="action-button-section">
-      <ion-button
-        class="undo-button"
-        expand="block"
-        size="large"
-        (click)="onUndo()"
-        >
-        <ion-icon name="arrow-back-circle-outline" slot="start"></ion-icon>
-        Annulla
-      </ion-button>
 
       <ion-button 
         expand="block"
@@ -73,8 +64,8 @@
         class="confirm-button"
         [disabled]="!isConfirmEnabled"
         (click)="onConfirm()">
-        <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
-        Conferma
+        <ion-icon [name]="_iconConfirm" slot="start"></ion-icon>
+        {{_labelConfirm}}
       </ion-button>
 </div>
 
@@ -92,6 +83,29 @@
     <p>Procedendo si accettano integralmente le nostre condizioni generali di vendita. Prendi visione della nostra informativa sulla privacy</p>
     <ion-button size="small">Visualizza</ion-button>
   </div>
+
+    <div class="action-button-section">
+          
+      <ion-button
+        *ngIf="_showContattaButton"
+        (click)="onClickContattaStruttura()"
+        expand="block"
+        class="undo-button"
+        size="large">
+        <ion-icon name="call-outline" slot="start"></ion-icon>
+        Contatta la struttura
+      </ion-button>
+
+      <ion-button
+        class="undo-button"
+        expand="block"
+        size="large"
+        (click)="onUndo()"
+        >
+        <ion-icon [name]="_iconUndo" slot="start"></ion-icon>
+        {{_labelUndo}}
+      </ion-button>
+</div>
 
 </div>
 

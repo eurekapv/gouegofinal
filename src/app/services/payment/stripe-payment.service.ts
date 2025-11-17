@@ -351,6 +351,12 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
 
       // Crea Apple Pay sheet
       console.log('🍎 Creating Apple Pay sheet...');
+
+      // ⬇️ AGGIUNGI QUESTO LOG
+      const merchantId = environment.additionalConfig?.merchantAppleIdentifier || 'merchant.com.gouego.app';
+      console.log('🔑 Merchant Identifier:', merchantId);
+
+
       await Stripe.createApplePay({
         paymentIntentClientSecret: paymentIntent.clientSecret,
         paymentSummaryItems: [

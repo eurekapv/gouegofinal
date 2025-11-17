@@ -176,35 +176,21 @@
           <app-choose-payment-mode
             (selectedConfig)="onSelectPaymentConfig($event)"
             (clickCondizioniVendita)="onClickCondizioniVendita()"
+            (clickButtonConfirm)="onClickConfirmIscrizione()"
+            (clickButtonUndo)="closeModal()"
+            [showContattaButton]="!flagPostiDisponibili"
+            (clickContattaStruttura)="onClickContattaStruttura()"
+            [labelConfirm]="'Iscriviti'"
+            [canEnableConfirm]="flagPostiDisponibili"
             [configContanti]="_configIncassoContanti"
             [configBonifico]="_configIncassoBonifico"
             [configMobile]="_configIncassoMobile">
           </app-choose-payment-mode>
         </div>
 
-        <!-- Condizioni di Vendita -->
-        <div class="conditions-section">
-          <div class="conditions-checkbox">
-            <ion-checkbox
-              [(ngModel)]="flagCondizioni"
-              [checked]="flagCondizioni">
-            </ion-checkbox>
-            <span (click)="onClickCondizioniVendita()" class="conditions-link">
-              Accetto le condizioni di vendita
-            </span>
-          </div>
-        </div>
+
 
         <div class="action-button-section">
-          <ion-button
-            class="undo-button"
-            expand="block"
-            size="large"
-            (click)="closeModal()"
-            >
-            <ion-icon name="arrow-back-circle-outline" slot="start"></ion-icon>
-            Annulla
-          </ion-button>
 
           <!-- Posti Esauriti -->
           <ion-button
@@ -217,16 +203,6 @@
             Contatta la struttura
           </ion-button>
 
-          <!-- Iscrizione Possibile -->
-          <ion-button
-            *ngIf="flagPostiDisponibili"
-            (click)="onClickConfirmIscrizione()"
-            expand="block"
-            class="confirm-button"
-            size="large">
-            <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
-            Iscriviti
-          </ion-button>
 
 
         </div>

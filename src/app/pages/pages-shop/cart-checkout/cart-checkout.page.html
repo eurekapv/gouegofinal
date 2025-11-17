@@ -1,9 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
+    <ion-buttons slot="end">
       <ion-button (click)="closeModal()" fill="clear">
-        <ion-icon name="close"></ion-icon>
-        Annulla
+        <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>Checkout</ion-title>
@@ -104,6 +103,11 @@
               <app-choose-payment-mode
                 (selectedConfig)="onSelectPaymentConfig($event)"
                 (clickCondizioniVendita)="onClickCondizioniVendita()"
+                (clickButtonConfirm)="onClickAcquista()"
+                (clickButtonUndo)="closeModal()"
+                [labelConfirm]="'Acquista Ora'"
+                [iconConfirm]="'card'"
+                [canEnableConfirm]="true"
                 [configContanti]="_configIncassoContanti"
                 [configBonifico]="_configIncassoBonifico"
                 [configMobile]="_configIncassoMobile"
@@ -115,15 +119,6 @@
           </div>
         </div>
 
-            <!-- Bottone Acquista -->
-    <ion-button
-          class="checkout-button"
-          expand="block"
-          size="large"
-          (click)="onClickAcquista()">
-      <ion-icon name="card" slot="start"></ion-icon>
-      Acquista Ora
-    </ion-button>
 
       </div>
 

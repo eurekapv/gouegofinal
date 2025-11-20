@@ -17,19 +17,11 @@
       </div>
     </div>
     
-    <!-- ENROLLMENT BUTTON (se iscrizioni aperte) -->
-    <button 
-        *ngIf="_flagIscrizioni" 
-        class="enroll-btn"
-        (click)="onClickIscrizione(); $event.stopPropagation()">
-      <ion-icon name="arrow-forward-circle"></ion-icon>
-      ISCRIVITI
-    </button>
+
   </div>
 
   <!-- BODY CARD -->
   <ion-card-content class="course-body">
-    
     <!-- TITOLO CORSO -->
     <h2 class="course-title">{{_myCorso.DENOMINAZIONE}}</h2>
 
@@ -87,7 +79,15 @@
     </div>
 
     <!-- GIORNI SETTIMANA -->
-    <div class="weekly-schedule">
+
+    <!-- GIORNI SETTIMANA -->
+    <app-settimana-block 
+    [showOnlySelected]="true"
+    colorSelected="success"
+    [size]="'auto'"
+    [listDays]="_myCorso.getArrayGiorniCorso()">
+  </app-settimana-block>
+    <!-- <div class="weekly-schedule">
       <div class="schedule-label">
         <ion-icon name="calendar"></ion-icon>
         <span>Effettuato nelle giornate di</span>
@@ -101,53 +101,71 @@
                 {{giorno.smallLabel | uppercase}}
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <!-- ETICHETTA GIORNATE SETTIMANALI (se presente) -->
-    <div 
-        *ngIf="_labelSettimanaCorso && _labelSettimanaCorso.length != 0"
-        class="weekly-note"
-        [innerHTML]="_labelSettimanaCorso | safeHtml">
-    </div>
+    
+    @if(_showAdditionalFields) {
+      
+      <!-- ETICHETTA GIORNATE SETTIMANALI (se presente) -->
+      <div 
+          *ngIf="_labelSettimanaCorso && _labelSettimanaCorso.length != 0"
+          class="weekly-note"
+          [innerHTML]="_labelSettimanaCorso | safeHtml">
+      </div>
 
-    <!-- CARATTERISTICHE CORSO -->
-    <div class="course-info">
-      <div class="info-item">
-        <div class="info-icon">
-          <ion-icon name="bar-chart-outline"></ion-icon>
+      <!-- CARATTERISTICHE CORSO -->
+      <div class="course-info">
+        <div class="info-item">
+          <div class="info-icon">
+            <ion-icon name="bar-chart-outline"></ion-icon>
+          </div>
+          <div class="info-text">
+            <span class="info-label">Livello</span>
+            <span class="info-value">{{_myCorso['_DENOMINAZIONE_Livello'] ? _myCorso['_DENOMINAZIONE_Livello'] : 'Tutti i livelli'}}</span>
+          </div>
         </div>
-        <div class="info-text">
-          <span class="info-label">Livello</span>
-          <span class="info-value">{{_myCorso['_DENOMINAZIONE_Livello'] ? _myCorso['_DENOMINAZIONE_Livello'] : 'Tutti i livelli'}}</span>
+        
+        <div class="info-item">
+          <div class="info-icon">
+            <ion-icon name="people-outline"></ion-icon>
+          </div>
+          <div class="info-text">
+            <span class="info-label">Età</span>
+            <span class="info-value">{{_myCorso.IDCATEGORIEETA ? _myCorso['_DESCTOOLTIP_CategoriaEta'] : 'Tutte le età'}}</span>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon">
+            <ion-icon name="transgender-outline"></ion-icon>
+          </div>
+          <div class="info-text">
+            <span class="info-label">Sesso</span>
+            <span class="info-value">{{getLabelTargetSesso()}}</span>
+          </div>
         </div>
       </div>
-      
-      <div class="info-item">
-        <div class="info-icon">
-          <ion-icon name="people-outline"></ion-icon>
-        </div>
-        <div class="info-text">
-          <span class="info-label">Età</span>
-          <span class="info-value">{{_myCorso.IDCATEGORIEETA ? _myCorso['_DESCTOOLTIP_CategoriaEta'] : 'Tutte le età'}}</span>
-        </div>
-      </div>
-      
-      <div class="info-item">
-        <div class="info-icon">
-          <ion-icon name="transgender-outline"></ion-icon>
-        </div>
-        <div class="info-text">
-          <span class="info-label">Sesso</span>
-          <span class="info-value">{{getLabelTargetSesso()}}</span>
-        </div>
-      </div>
-    </div>
+    }
 
   </ion-card-content>
 
   <!-- FOOTER CARD -->
   <div class="course-footer">
     <div class="footer-content">
+
+      @if(_flagIscrizioni) {
+        <!-- ENROLLMENT BUTTON (se iscrizioni aperte) 
+         class="enroll-btn"-->
+        <!-- <button 
+            color="success" 
+            
+            (click)="onClickIscrizione(); $event.stopPropagation()">
+          <ion-icon name="arrow-forward-circle"></ion-icon>
+          ISCRIZIONI APERTE
+        </button> -->
+        <ion-chip>ISCRIZIONI APERTE</ion-chip>
+      }
+
       <div class="price-section">
         <span *ngIf="_myCorso.isAPagamento() == false" class="price-free">
           <ion-icon name="checkmark-circle"></ion-icon>
@@ -159,11 +177,7 @@
         </span>
       </div>
       
-      <div class="status-indicator" [class]="'status-' + _myTempoCorso">
-        <span *ngIf="_myTempoCorso == tempoCorso.FUTURO">Prossimamente</span>
-        <span *ngIf="_myTempoCorso == tempoCorso.IN_CORSO">In corso</span>
-        <span *ngIf="_myTempoCorso == tempoCorso.PASSATO">Concluso</span>
-      </div>
+
     </div>
   </div>
 

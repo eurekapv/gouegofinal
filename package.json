@@ -27,6 +27,7 @@
     "devMD": "chrome://inspect",
     "newMD": "npx cap add android",
     "newIOS": "npx cap add ios",
+    "simulateIOS": "ionic cap run ios -l --external",
     "prepareOB": "node prepareBuild.mjs --customer openbeach",
     "prepareBF": "node prepareBuild.mjs --customer beachforfun",
     "preparePR": "node prepareBuild.mjs --customer progettorieduca",

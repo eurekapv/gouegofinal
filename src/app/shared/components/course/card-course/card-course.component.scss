@@ -374,8 +374,14 @@
   // FOOTER
   .course-footer {
     padding: 16px;
-    background: #f8f9fa;
-    border-top: 2px solid #dee2e6;
+    background: linear-gradient(135deg, #d1f4e0 0%, #a8e6cf 100%);
+    // background: #f8f9fa;
+    border-top: 2px solid var(--ion-color-success);
+
+    ion-chip {
+      --background: #00213f;
+      --color: #ffffff;
+    }
 
     .footer-content {
       display: flex;

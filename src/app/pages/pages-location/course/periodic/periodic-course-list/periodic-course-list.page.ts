@@ -257,8 +257,23 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * Cambio de toggle con Tutti i corsi / Solo i miei 
+   */
+  onChangeToggle() {
+    switch (this.statoPagina) {
+      case PageState.MIEI:
+          this.statoPagina = PageState.TUTTI
+        break;
 
-
+      case PageState.TUTTI:
+          this.statoPagina = PageState.MIEI
+        break;
+    
+      default:
+        break;
+    }
+  }
         
   /**
    * Modifica del Segment per la scelta dei corsi

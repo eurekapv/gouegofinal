@@ -19,6 +19,7 @@ export class CardCourseComponent implements OnInit {
   _flagIscrizioni: boolean = false;
   _useIscrizioniColor: boolean = false;
   _labelSettimanaCorso: string = '';
+  _showAdditionalFields: boolean = true;
 
   _version: 'card'|'short' = 'card'; //Versione 1 o 2 del componente
 

@@ -23,8 +23,9 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- SEGMENT TABS (solo se utente loggato) -->
-  <div class="tabs-container" *ngIf="showTabs && userLogged">
+
+
+  <!-- <div class="tabs-container" *ngIf="showTabs && userLogged">
     <div class="tabs-wrapper">
       <button 
           class="tab-button"
@@ -41,10 +42,10 @@
         <span>TUTTI</span>
       </button>
     </div>
-  </div>
+  </div> -->
 
   <!-- CAMBIO VISUALIZZAZIONE -->
-  <div class="view-switcher" *ngIf="(statoPagina==PageState.TUTTI && listCorsi.length !== 0) || (statoPagina==PageState.MIEI && listCorsiMioLivello.length !== 0)">
+  <!-- <div class="view-switcher" *ngIf="(statoPagina==PageState.TUTTI && listCorsi.length !== 0) || (statoPagina==PageState.MIEI && listCorsiMioLivello.length !== 0)">
     <button 
         class="switch-button"
         (click)="onChangeVersionList()">
@@ -53,7 +54,7 @@
         {{versionList == 'card' ? 'Ridotta' : 'Estesa'}}
       </span>
     </button>
-  </div>
+  </div> -->
 
   <ion-grid>
     <ion-row>
@@ -65,6 +66,20 @@
           offsetLg="2"
           sizeXl="8" 
           offsetXl="2">
+
+            <!-- SEGMENT TABS (solo se utente loggato) -->
+          @if(showTabs && userLogged) {
+              <ion-list>
+                <ion-item lines="none">
+                  <ion-toggle 
+                    (ionChange) = "onChangeToggle()"
+                    [helperText]="statoPagina == PageState.MIEI ? 'corsi pensati per il tuo livello':'corsi di tutti i livelli'"
+                    [checked]="statoPagina == PageState.MIEI">
+                    Mostra corsi adatti a me
+                  </ion-toggle>
+                </ion-item>
+              </ion-list>
+          }
         
         <!-- ========================================== -->
         <!-- VISUALIZZAZIONE TUTTI -->

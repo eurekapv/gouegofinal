@@ -49,6 +49,7 @@ export class PeriodicCourseListPage implements OnInit, OnDestroy {
   userLogged= false;
   listenUserLogged: Subscription;
 
+  statoDettagli: boolean = false;
   statoPagina = PageState.TUTTI;
 
   showTabs = true;

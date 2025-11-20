@@ -53,6 +53,11 @@ export class CardCourseComponent implements OnInit {
     this.setAdditionalPropUI();
   }
 
+  //Se impostato a TRUE mostra i dettagli estesi del corso nella card
+  @Input() set showDetails(value: boolean) {
+    this._showAdditionalFields = value;
+  }
+
 
 
 

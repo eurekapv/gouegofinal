@@ -444,6 +444,71 @@
 }
 
 // =====================================================
+// VIEW OPTIONS ACCORDION
+// =====================================================
+
+.view-options-accordion {
+  margin: 0 0 16px 0;
+
+  ion-accordion {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    .accordion-header {
+      --background: white;
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --min-height: 48px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+
+      ion-icon {
+        color: var(--ion-color-primary);
+        font-size: 20px;
+        margin-right: 4px;
+      }
+
+      ion-label {
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+    }
+
+    .accordion-content {
+      background: #f8f9fa;
+      padding: 8px 0;
+
+      ion-list {
+        background: transparent;
+        padding: 0;
+
+        ion-item {
+          --background: transparent;
+          --padding-start: 16px;
+          --padding-end: 16px;
+          --min-height: 56px;
+
+          ion-toggle {
+            --handle-width: 26px;
+            --handle-height: 26px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+
+            &::part(label) {
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: var(--ion-color-dark);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// =====================================================
 // ION-CONTENT BACKGROUND
 // =====================================================
 

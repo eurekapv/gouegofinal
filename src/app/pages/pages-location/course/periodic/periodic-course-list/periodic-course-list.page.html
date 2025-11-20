@@ -67,19 +67,40 @@
           sizeXl="8" 
           offsetXl="2">
 
-            <!-- SEGMENT TABS (solo se utente loggato) -->
-          @if(showTabs && userLogged) {
-              <ion-list>
-                <ion-item lines="none">
-                  <ion-toggle 
-                    (ionChange) = "onChangeToggle()"
-                    [helperText]="statoPagina == PageState.MIEI ? 'corsi pensati per il tuo livello':'corsi di tutti i livelli'"
-                    [checked]="statoPagina == PageState.MIEI">
-                    Mostra corsi adatti a me
-                  </ion-toggle>
+            <!-- OPZIONI VISUALIZZAZIONE -->
+            <ion-accordion-group class="view-options-accordion">
+              <ion-accordion value="options">
+                <ion-item slot="header" lines="none" class="accordion-header">
+                  <ion-icon name="eye-outline" slot="start"></ion-icon>
+                  <ion-label>Opzioni visualizzazione</ion-label>
                 </ion-item>
-              </ion-list>
-          }
+                
+                <div slot="content" class="accordion-content">
+                  <ion-list>
+                    @if(showTabs && userLogged) {
+                    <ion-item lines="none">
+                      <ion-toggle
+                      (ionChange)="onChangeToggle()"
+                      [helperText]="statoPagina == PageState.MIEI ? 'corsi pensati per il tuo livello':'corsi di tutti i livelli'"
+                          [checked]="statoPagina == PageState.MIEI">
+                          Mostra corsi adatti a me
+                        </ion-toggle>
+                      </ion-item>
+                    }
+
+                      <ion-item lines="none">
+                        <ion-toggle
+                          [(ngModel)]="statoDettagli"
+                          helperText="visualizza informazioni estese delle card">
+                          Mostra dettagli corso
+                        </ion-toggle>
+                      </ion-item>
+                      
+                    </ion-list>
+                  </div>
+                </ion-accordion>
+              </ion-accordion-group>
+
         
         <!-- ========================================== -->
         <!-- VISUALIZZAZIONE TUTTI -->
@@ -104,6 +125,7 @@
                       [myCorso]="itemCorso"
                       [version]="versionList"
                       [useIscrizioniColor]="enableIscrizioni"
+                      [showDetails]="statoDettagli"
                       (clickDetail)="onClickCardDetail($event)"
                       (clickIscrizione)="onClickIscrizione($event)">
                   </app-card-course>
@@ -175,6 +197,7 @@
                       [myCorso]="itemCorso"
                       [version]="versionList"
                       [useIscrizioniColor]="enableIscrizioni"
+                      [showDetails]="statoDettagli"
                       (clickDetail)="onClickCardDetail($event)"
                       (clickIscrizione)="onClickIscrizione($event)">
                   </app-card-course>

@@ -47,7 +47,8 @@ export const environment = {
     //stripePublishableKey: 'pk_live_51Ic8tPIe0jXIfPKjtAwn6GMbSruoMnLoCpkT5KewlNsuNzBW7sBqHU1tzyPaTlysVOXoc2O9uqi2x2cagvmbQ7oo00fwAoC7QN',
     stripePublishableKey: 'pk_test_51S4IRkIHJIjc2k4Vj39amaoHAuqDUFrIiU06kP94Tlj1EqQ0B3rJJfjpk6unehqlfgT3EGN6T8VRMf5dfWo7stu000XvjRA9qJ',
     merchantAppleIdentifier: 'merchant.com.gouego.app',
-    merchantName: 'Gouego'
+    merchantName: 'Gouego',
+    pexelsApiKey: '0XajEaMhkj3MuXcGAi45ZT1hn1zyM2LNoKEcS5pDBLTVtMJNjsLisUIk' // Sostituisci con la tua API key di Pexels
   }   
 
 };

@@ -46,7 +46,8 @@ export const environment = {
     defaultShopImage: 'assets/commercial/basketarticoli_small.png',
     stripePublishableKey: 'pk_live_51Ic8tPIe0jXIfPKjtAwn6GMbSruoMnLoCpkT5KewlNsuNzBW7sBqHU1tzyPaTlysVOXoc2O9uqi2x2cagvmbQ7oo00fwAoC7QN',
     merchantAppleIdentifier: 'merchant.com.gouego.app',
-    merchantName: 'Gouego'
+    merchantName: 'Gouego',
+    pexelsApiKey: '0XajEaMhkj3MuXcGAi45ZT1hn1zyM2LNoKEcS5pDBLTVtMJNjsLisUIk' // Sostituisci con la tua API key di Pexels
   }   
 
 };

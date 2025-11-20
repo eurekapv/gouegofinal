@@ -13,6 +13,8 @@ import { AllegatilistPage } from 'src/app/pages/pages-history/allegatilist/alleg
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PeriodicCourseSubscribePage } from '../periodic-course-subscribe/periodic-course-subscribe.page';
 import { IscrizioneCorso } from 'src/app/models/corso/iscrizione-corso.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-periodic-course-detail',
@@ -47,7 +49,8 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
     private actRouter: ActivatedRoute,
     private navController: NavController,
     private modalController: ModalController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private http: HttpClient
   ) {
     // Sottoscrizione per l'area selezionata
     this.listenSelectedArea = this.startService.areaSelected$.subscribe(element => {
@@ -329,55 +332,57 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Ritorna l'URL di un'immagine Unsplash in base al nome dello sport
+   * Ritorna l'URL di un'immagine da Pexels in base al nome dello sport
+   * Usa Pexels API per ottenere immagini reali e pertinenti
    * @param sportName Nome dello sport
    */
   getSportImageUrl(sportName: string): string {
-    // Mappa degli sport con query Unsplash specifiche
+    // Mappa delle query di ricerca per ogni sport
     const sportQueries: { [key: string]: string } = {
-      'calcio': 'soccer-field',
-      'tennis': 'tennis-court',
+      'calcio': 'soccer field',
+      'tennis': 'tennis court',
       'pallavolo': 'volleyball',
-      'basket': 'basketball-court',
-      'nuoto': 'swimming-pool',
-      'yoga': 'yoga-class',
-      'pilates': 'pilates-studio',
-      'fitness': 'gym-fitness',
-      'running': 'running-track',
-      'danza': 'dance-studio',
-      'karate': 'martial-arts',
-      'judo': 'judo-dojo',
-      'boxe': 'boxing-gym',
-      'palestra': 'gym-workout',
-      'spinning': 'spinning-bike',
-      'crossfit': 'crossfit-gym',
-      'arrampicata': 'rock-climbing',
-      'golf': 'golf-course',
-      'sci': 'skiing-snow',
+      'basket': 'basketball court',
+      'nuoto': 'swimming pool',
+      'yoga': 'yoga class',
+      'pilates': 'pilates',
+      'fitness': 'gym fitness',
+      'running': 'running track',
+      'danza': 'dance studio',
+      'karate': 'karate martial arts',
+      'judo': 'judo',
+      'boxe': 'boxing',
+      'palestra': 'gym',
+      'spinning': 'spinning bike',
+      'crossfit': 'crossfit',
+      'arrampicata': 'rock climbing',
+      'golf': 'golf course',
+      'sci': 'skiing snow',
       'snowboard': 'snowboarding',
-      'pattinaggio': 'ice-skating',
-      'equitazione': 'horse-riding',
-      'scherma': 'fencing-sport',
-      'atletica': 'athletics-track',
-      'ciclismo': 'cycling-road',
+      'pattinaggio': 'ice skating',
+      'equitazione': 'horse riding',
+      'scherma': 'fencing',
+      'atletica': 'athletics track',
+      'ciclismo': 'cycling',
       'ginnastica': 'gymnastics',
-      'rugby': 'rugby-field',
-      'hockey': 'hockey-field',
-      'baseball': 'baseball-field',
-      'badminton': 'badminton-court',
-      'squash': 'squash-court',
-      'padel': 'padel-court',
-      'ping pong': 'table-tennis',
-      'tennistavolo': 'table-tennis',
-      'beachvolley': 'beach-volley'
+      'rugby': 'rugby',
+      'hockey': 'hockey',
+      'baseball': 'baseball',
+      'badminton': 'badminton',
+      'squash': 'squash',
+      'padel': 'padel',
+      'pingpong': 'table tennis',
+      'tennistavolo': 'table tennis',
+      'beachvolley': 'beach volleyball'
     };
 
-    // Cerca la query corrispondente allo sport (case-insensitive)
-    let query = 'sports-activity'; // Default generico
+    // Fallback image generica
+    const defaultImage = 'https://images.pexels.com/photos/461049/pexels-photo-461049.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop';
+
+    let query = 'sports';
 
     if (sportName) {
-      const sportLower = sportName.toLowerCase().replace(/\s/g,'') || '';
-      console.log(sportLower);
+      const sportLower = sportName.toLowerCase().replace(/\s/g, '');
 
       // Cerca corrispondenza esatta
       if (sportQueries[sportLower]) {
@@ -393,11 +398,34 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
       }
     }
 
-    console.log(query);
-    
+    // Chiamata API Pexels per ottenere immagine dinamica
+    const apiKey = environment.additionalConfig.pexelsApiKey;
 
-    // Unsplash Source API con dimensioni ottimizzate e query specifica
-    // Dimensioni: 1200x600 per hero section responsive
-    return `https://source.unsplash.com/1200x600/?${query}`;
+    if (!apiKey || apiKey === 'TUA_API_KEY_QUI') {
+      console.warn('Pexels API key non configurata. Usando immagine di fallback.');
+      return defaultImage;
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': apiKey
+    });
+
+    // Effettua la chiamata API
+    this.http.get(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1&orientation=landscape`, { headers })
+      .subscribe({
+        next: (response: any) => {
+          if (response.photos && response.photos.length > 0) {
+            const photo = response.photos[0];
+            // Usa l'immagine large con dimensioni 1200x600
+            this.sportImageUrl = photo.src.large2x || photo.src.large;
+          }
+        },
+        error: (error) => {
+          console.error('Errore nel caricamento immagine Pexels:', error);
+        }
+      });
+
+    // Ritorna temporaneamente l'immagine di default mentre carica
+    return defaultImage;
   }
 }

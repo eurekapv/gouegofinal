@@ -11,29 +11,35 @@
 
 <ion-content class="course-detail-content">
   
-  <!-- HERO SECTION CON IMMAGINE/ICONA SPORT -->
-  <div class="course-hero" [class.past]="myCorso.tempoCorso() == tempoCorso.PASSATO">
-    <div class="hero-overlay"></div>
+  <!-- HERO SECTION CON IMMAGINE DINAMICA SPORT -->
+  <div class="course-hero"
+       [class.past]="myCorso.tempoCorso() == tempoCorso.PASSATO"
+       [style.background-image]="'url(' + sportImageUrl + ')'">
+
+    <!-- Gradient overlay per leggibilità -->
+    <div class="hero-gradient-overlay"></div>
+
     <div class="hero-content">
-      <div class="sport-icon-wrapper">
-        <!-- <span class="sport-icon" [innerHTML]="myCorso['_ICON_Sport']"></span> -->
+      <!-- Icona sport piccola e discreta -->
+      <div class="sport-icon-badge">
         <span class="sport-icon" [innerHTML]="getSportIcon(myCorso)"></span>
       </div>
+
       <h1 class="course-name">{{myCorso.DENOMINAZIONE}}</h1>
       <p class="course-sport">{{myCorso['_DENOMINAZIONE_Sport']}}</p>
-    </div>
-    
-    <!-- STATUS BADGE -->
-    <div class="status-badge" 
-         [class.future]="myCorso.tempoCorso() == tempoCorso.FUTURO"
-         [class.in-progress]="myCorso.tempoCorso() == tempoCorso.IN_CORSO"
-         [class.past]="myCorso.tempoCorso() == tempoCorso.PASSATO">
-      <ion-icon [name]="myCorso.tempoCorso() == tempoCorso.FUTURO ? 'time-outline' : 
-                        myCorso.tempoCorso() == tempoCorso.IN_CORSO ? 'play-circle-outline' : 
-                        'checkmark-circle-outline'"></ion-icon>
-      <span>{{myCorso.tempoCorso() == tempoCorso.FUTURO ? 'In Arrivo' : 
-              myCorso.tempoCorso() == tempoCorso.IN_CORSO ? 'In Corso' : 
-              'Concluso'}}</span>
+
+      <!-- STATUS BADGE inline con il contenuto -->
+      <div class="status-chip"
+           [class.future]="myCorso.tempoCorso() == tempoCorso.FUTURO"
+           [class.in-progress]="myCorso.tempoCorso() == tempoCorso.IN_CORSO"
+           [class.past]="myCorso.tempoCorso() == tempoCorso.PASSATO">
+        <ion-icon [name]="myCorso.tempoCorso() == tempoCorso.FUTURO ? 'time-outline' :
+                          myCorso.tempoCorso() == tempoCorso.IN_CORSO ? 'play-circle-outline' :
+                          'checkmark-circle-outline'"></ion-icon>
+        <span>{{myCorso.tempoCorso() == tempoCorso.FUTURO ? 'In Arrivo' :
+                myCorso.tempoCorso() == tempoCorso.IN_CORSO ? 'In Corso' :
+                'Concluso'}}</span>
+      </div>
     </div>
   </div>
 

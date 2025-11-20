@@ -40,6 +40,7 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
   tempoCorso: typeof Tempistica = Tempistica;
   tipoCorso: typeof TipoCorso = TipoCorso;
   _labelNumeroGiorni = ''; // Etichetta con il numero dei giorni corso per settimana
+  sportImageUrl = ''; // URL immagine dinamica dello sport
 
   constructor(
     private startService: StartService,
@@ -108,6 +109,9 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
           myElLoading.dismiss();
           // Ho tutti i dati necessari
           this.myLocation = itemLocation;
+
+          // Imposto l'URL dell'immagine dello sport
+          this.sportImageUrl = this.getSportImageUrl(this.myCorso['_DENOMINAZIONE_Sport']);
 
           // Recupero una eventuale Iscrizione Corso
           this.retrieveIscrizioneCorso();
@@ -314,14 +318,86 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
     }
   }
 
-    /**
+  /**
    * Dato un oggetto corso, ritorna la stringa dell'icona corrispondente
    * @param corso L'oggetto corso
    */
-    getSportIcon (corso: Corso)
-    {
-      if (corso){
-        return this.startService.getSportIcon(corso.IDSPORT);
+  getSportIcon(corso: Corso) {
+    if (corso) {
+      return this.startService.getSportIcon(corso.IDSPORT);
+    }
+  }
+
+  /**
+   * Ritorna l'URL di un'immagine Unsplash in base al nome dello sport
+   * @param sportName Nome dello sport
+   */
+  getSportImageUrl(sportName: string): string {
+    // Mappa degli sport con query Unsplash specifiche
+    const sportQueries: { [key: string]: string } = {
+      'calcio': 'soccer-field',
+      'tennis': 'tennis-court',
+      'pallavolo': 'volleyball',
+      'basket': 'basketball-court',
+      'nuoto': 'swimming-pool',
+      'yoga': 'yoga-class',
+      'pilates': 'pilates-studio',
+      'fitness': 'gym-fitness',
+      'running': 'running-track',
+      'danza': 'dance-studio',
+      'karate': 'martial-arts',
+      'judo': 'judo-dojo',
+      'boxe': 'boxing-gym',
+      'palestra': 'gym-workout',
+      'spinning': 'spinning-bike',
+      'crossfit': 'crossfit-gym',
+      'arrampicata': 'rock-climbing',
+      'golf': 'golf-course',
+      'sci': 'skiing-snow',
+      'snowboard': 'snowboarding',
+      'pattinaggio': 'ice-skating',
+      'equitazione': 'horse-riding',
+      'scherma': 'fencing-sport',
+      'atletica': 'athletics-track',
+      'ciclismo': 'cycling-road',
+      'ginnastica': 'gymnastics',
+      'rugby': 'rugby-field',
+      'hockey': 'hockey-field',
+      'baseball': 'baseball-field',
+      'badminton': 'badminton-court',
+      'squash': 'squash-court',
+      'padel': 'padel-court',
+      'ping pong': 'table-tennis',
+      'tennistavolo': 'table-tennis',
+      'beachvolley': 'beach-volley'
+    };
+
+    // Cerca la query corrispondente allo sport (case-insensitive)
+    let query = 'sports-activity'; // Default generico
+
+    if (sportName) {
+      const sportLower = sportName.toLowerCase().replace(/\s/g,'') || '';
+      console.log(sportLower);
+
+      // Cerca corrispondenza esatta
+      if (sportQueries[sportLower]) {
+        query = sportQueries[sportLower];
+      } else {
+        // Cerca per parola chiave parziale
+        for (const key in sportQueries) {
+          if (sportLower.includes(key) || key.includes(sportLower)) {
+            query = sportQueries[key];
+            break;
+          }
+        }
       }
     }
+
+    console.log(query);
+    
+
+    // Unsplash Source API con dimensioni ottimizzate e query specifica
+    // Dimensioni: 1200x600 per hero section responsive
+    return `https://source.unsplash.com/1200x600/?${query}`;
+  }
 }

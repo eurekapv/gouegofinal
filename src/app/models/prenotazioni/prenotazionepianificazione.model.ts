@@ -160,22 +160,75 @@ export class PrenotazionePianificazione extends IDDocument {
         return flagReturn;
     }
 
-      /**
-       * Ritorna il QRCODE della Data Pianificata
-       */
-      getQrCode(): string {
-        let myQrCode: string = '';
-        let flagCreation: boolean;
-        let objQrCode: GeneratorQrcode;
+    /**
+     * Ritorna il QRCODE della Data Pianificata
+     */
+    getQrCode(): string {
+    let myQrCode: string = '';
+    let flagCreation: boolean;
+    let objQrCode: GeneratorQrcode;
 
-        objQrCode = new GeneratorQrcode();
-        objQrCode.tipo = SettoreQrCode.qrCodePrenotazione;
-        objQrCode.keyOne = this.IDPRENOTAZIONE;
-        objQrCode.keyTwo = this.ID;
-        flagCreation = objQrCode.setQrCodeFor();
+    objQrCode = new GeneratorQrcode();
+    objQrCode.tipo = SettoreQrCode.qrCodePrenotazione;
+    objQrCode.keyOne = this.IDPRENOTAZIONE;
+    objQrCode.keyTwo = this.ID;
+    flagCreation = objQrCode.setQrCodeFor();
 
-        myQrCode = objQrCode.qrCode;
+    myQrCode = objQrCode.qrCode;
 
-        return myQrCode;
-      }    
+    return myQrCode;
+    }    
+
+        /**
+     * Specifica se la lezione è prevista nel futuro
+     */
+    isInFuture(): boolean {
+        let flagResult: boolean = false;
+        flagResult = MyDateTime.isSameOrAfter(this.DATAORAFINE,new Date(), "minute");
+        return flagResult;
+    }
+
+    /**
+     * Ritorna una icona sulla base del periodo
+     */
+    getIconForPeriod(): string {
+        let iconName: string = '';
+        //Non iniziato: enter-outline
+        //In corso: code-download-outline
+        //Terminato: exit-otline
+        //Non iniziato
+        if (MyDateTime.isBefore(new Date(), this.DATAORAINIZIO)) {
+        iconName = 'enter-outline';
+        }
+        else if (MyDateTime.isAfter(new Date(), this.DATAORAFINE)) {
+        iconName = 'exit-outline';
+        }
+        else {
+        iconName = 'code-download-oultine';
+        }
+
+        return iconName;
+    }
+
+    /**
+     * Ritorna un testo sulla base del periodo
+     */
+    getTextForPeriod(): string {
+        let textPeriod: string = '';
+        //Non iniziato
+        //In corso
+        //Terminato
+        //Non iniziato
+        if (MyDateTime.isBefore(new Date(), this.DATAORAINIZIO)) {
+        textPeriod = 'In programma';
+        }
+        else if (MyDateTime.isAfter(new Date(), this.DATAORAFINE)) {
+        textPeriod = 'Completata';
+        }
+        else {
+        textPeriod = 'In corso';
+        }
+
+        return textPeriod;
+    }  
 }

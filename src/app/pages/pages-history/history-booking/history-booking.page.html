@@ -136,7 +136,10 @@
         
         <div class="data-card">
           <div class="data-row">
-            <ion-icon name="{{getIcon(activePianificazione.IDSPORT)}}" class="data-icon"></ion-icon>
+            <div class="data-icon">
+              <i class="sport-icon" [innerHTML]="getIcon(activePianificazione.IDSPORT)"></i>
+            </div>
+            
             <div class="data-content">
               <span class="data-label">Sport</span>
               <span class="data-value">{{activePianificazione['_DENOMINAZIONE_Sport']}}</span>
@@ -167,14 +170,18 @@
 
       <!-- ACTION BUTTONS -->
       <div class="action-section">
-        <button class="action-button delete-button" (click)="onClickTrash(activePianificazione)">
-          <ion-icon name="trash-outline"></ion-icon>
-          <span>Elimina</span>
-        </button>
-        <button class="action-button share-button" (click)="onShare(activePianificazione)">
-          <ion-icon name="share-social-outline"></ion-icon>
-          <span>Condividi</span>
-        </button>
+        @if(activePianificazione.isInFuture()) {
+          <button class="action-button delete-button" (click)="onClickTrash(activePianificazione)">
+            <ion-icon name="trash-outline"></ion-icon>
+            <span>Elimina</span>
+          </button>
+
+          <button class="action-button share-button" (click)="onShare(activePianificazione)">
+            <ion-icon name="share-social-outline"></ion-icon>
+            <span>Condividi</span>
+          </button>
+
+        }
       </div>
 
     </div>

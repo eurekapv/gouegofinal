@@ -8,7 +8,7 @@ import { CustomAlertClass, PageType } from 'src/app/models/zsupport/valuelist.mo
 
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 
-import { Swiper, SwiperOptions, Navigation, Pagination } from 'swiper';
+import { Swiper, Navigation, Pagination } from 'swiper';
 import { Prenotazione } from 'src/app/models/prenotazioni/prenotazione.model';
 import { Subscription } from 'rxjs';
 import { AlertButton, IonAccordionGroup, LoadingController, NavController } from '@ionic/angular';

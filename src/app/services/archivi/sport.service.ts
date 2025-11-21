@@ -228,6 +228,7 @@ export class SportService {
 
     if(listSport){
 
+      console.log(listSport)
       //Cerco lo Sport nella collection
       docSport = listSport.find(el => {
         return el.ID == idSport
@@ -241,6 +242,7 @@ export class SportService {
 
       //Ricavo l'icona
       icona = docSport.htmlIconHex
+      console.log(icona)
       
     }
     return icona;

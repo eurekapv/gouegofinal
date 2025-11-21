@@ -370,6 +370,10 @@
         font-size: 24px;
         color: var(--ion-color-primary);
         flex-shrink: 0;
+
+        .sport-icon {
+          font-family: "sports";
+        }
       }
 
       .data-content {

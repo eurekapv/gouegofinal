@@ -1,6 +1,6 @@
 import { Tempistica, TipoChiusura } from 'src/app/models/zsupport/valuelist.model';
 import { TypeDefinition } from './descriptor.model';
-import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addQuarters, addSeconds, addWeeks, addYears, differenceInMinutes, differenceInSeconds, differenceInYears, endOfMonth, endOfWeek, format, formatISO, isAfter, isBefore, isDate, isEqual, isSameDay, isSameMinute, startOfMonth, startOfWeek, subDays, subHours, subMilliseconds, subMinutes, subMonths, subQuarters, subSeconds, subWeeks, subYears } from "date-fns";
+import { addDays, addHours, addMilliseconds, addMinutes, addMonths, addQuarters, addSeconds, addWeeks, addYears, differenceInMinutes, differenceInSeconds, differenceInYears, endOfMonth, endOfWeek, format, formatISO, isAfter, isBefore, isDate, isFuture, isEqual, isSameDay, isSameMinute, startOfMonth, startOfWeek, subDays, subHours, subMilliseconds, subMinutes, subMonths, subQuarters, subSeconds, subWeeks, subYears } from "date-fns";
 import { it } from 'date-fns/locale'
 
 export class MyDateTime {
@@ -46,7 +46,23 @@ export class MyDateTime {
         }
 
         return flagResult;
-    }    
+    }   
+    
+
+    /**
+     * Controlla se una data è nel futuro
+     * @param date 
+     * @returns 
+     */
+    static isNextFuture(date: number | Date): boolean {
+        let flagResult = false;
+        if (date) {
+            flagResult = isFuture(date);
+        }
+
+        return flagResult;
+    }
+
 
     /**
      * Is the FirstDate After the Second Date ???
@@ -833,6 +849,7 @@ static datePartFrom(dateValue: Date): Date {
 static today(): Date {
     return MyDateTime.datePartFrom(new Date());
 }
+
 
 
 /**

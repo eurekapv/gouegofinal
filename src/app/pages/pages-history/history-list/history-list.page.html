@@ -58,12 +58,13 @@
         <!-- LISTA CORSI -->
         <div class="timeline-list" *ngIf="listUtenteCorsi?.length > 0">
           <div class="timeline-item" 
-               *ngFor="let corso of listUtenteCorsi; let i = index"
+               *ngFor="let iscrizioneDoc of listUtenteCorsi; let i = index"
                [style.animation-delay]="(i * 0.05) + 's'"
-               (click)="onClickCorso(corso)">
+               (click)="onClickCorso(iscrizioneDoc)">
             
             <!-- Timeline Dot -->
-            <div class="timeline-dot" [class.active]="corso.DATAFINE > today && corso.DATAINIZIO < today">
+            <div class="timeline-dot" 
+                  [class.active]="iscrizioneDoc.isInFuture() ">
               <ion-icon name="school"></ion-icon>
             </div>
 
@@ -74,36 +75,39 @@
               <div class="card-header">
                 <div class="date-badge">
                   <ion-icon name="calendar-outline"></ion-icon>
-                  <span *ngIf="corso.isLezioneSingola()">
-                    {{corso.DATAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase}}
+                  <span *ngIf="iscrizioneDoc.isLezioneSingola()">
+                    {{iscrizioneDoc.DATAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase}}
                   </span>
-                  <span *ngIf="!corso.isLezioneSingola()">
-                    dal {{corso.DATAINIZIO | date: 'dd/MM/yy'}} al {{corso.DATAFINE | date: 'dd/MM/yy'}}
+                  <span *ngIf="!iscrizioneDoc.isLezioneSingola()">
+                    dal {{iscrizioneDoc.DATAINIZIO | date: 'dd/MM/yy'}} al {{iscrizioneDoc.DATAFINE | date: 'dd/MM/yy'}}
                   </span>
                 </div>
-                <div class="time-chip" [class.active]="corso.DATAFINE > today && corso.DATAINIZIO < today">
+                <div class="time-chip" 
+                      [class.active]="iscrizioneDoc.isInFuture()">
                   <ion-icon name="time-outline"></ion-icon>
-                  {{corso.ORAINIZIO | date: 'HH:mm'}}
+                  {{iscrizioneDoc.ORAINIZIO | date: 'HH:mm'}}
                 </div>
               </div>
 
               <!-- Body -->
               <div class="card-body">
-                <h3>{{corso.DENOMINAZIONESPORT}}</h3>
+                <h3>{{iscrizioneDoc.DENOMINAZIONESPORT}}</h3>
                 <p class="location">
                   <ion-icon name="location-outline"></ion-icon>
-                  {{corso.DENOMINAZIONELOCATION}}
+                  {{iscrizioneDoc.DENOMINAZIONELOCATION}}
                 </p>
                 <p class="schedule">
                   <ion-icon name="calendar-outline"></ion-icon>
-                  {{corso.GIORNIPREVISTI | giorniPrevisti: lingua | titlecase}}
+                  {{iscrizioneDoc.GIORNIPREVISTI | giorniPrevisti: lingua | titlecase}}
                 </p>
               </div>
 
               <!-- Status Badge -->
-              <div class="status-badge" [class.active]="corso.DATAFINE > today && corso.DATAINIZIO < today">
-                <ion-icon [name]="corso.DATAFINE > today && corso.DATAINIZIO < today ? 'checkmark-circle' : 'time-outline'"></ion-icon>
-                <span>{{corso.DATAFINE > today && corso.DATAINIZIO < today ? 'In Corso' : 'Terminato'}}</span>
+              <div class="status-badge" 
+                    [class.active]="iscrizioneDoc.isInFuture()">
+                <ion-icon 
+                  [name]="iscrizioneDoc.getIconForPeriod()"></ion-icon>
+                <span>{{iscrizioneDoc.getTextForPeriod()}}</span>
               </div>
 
               <!-- Arrow -->
@@ -153,12 +157,12 @@
         <!-- LISTA PRENOTAZIONI -->
         <div class="timeline-list" *ngIf="listUtentePrenotazione?.length > 0">
           <div class="timeline-item" 
-               *ngFor="let prenotazione of listUtentePrenotazione; let i = index"
+               *ngFor="let prenotazioneDoc of listUtentePrenotazione; let i = index"
                [style.animation-delay]="(i * 0.05) + 's'"
-               (click)="onClickPrenotazione(prenotazione)">
+               (click)="onClickPrenotazione(prenotazioneDoc)">
             
             <!-- Timeline Dot -->
-            <div class="timeline-dot" [class.active]="prenotazione.DATAORAFINE > today">
+            <div class="timeline-dot" [class.active]="prenotazioneDoc.isInFuture()">
               <ion-icon name="calendar"></ion-icon>
             </div>
 
@@ -169,36 +173,36 @@
               <div class="card-header">
                 <div class="date-badge">
                   <ion-icon name="calendar-outline"></ion-icon>
-                  <span>{{prenotazione.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase}}</span>
+                  <span>{{prenotazioneDoc.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase}}</span>
                 </div>
-                <div class="time-chip" [class.active]="prenotazione.DATAORAFINE > today">
+                <div class="time-chip" [class.active]="prenotazioneDoc.isInFuture()">
                   <ion-icon name="time-outline"></ion-icon>
-                  {{prenotazione.DATAORAINIZIO | date: 'HH:mm'}}
+                  {{prenotazioneDoc.DATAORAINIZIO | date: 'HH:mm'}}
                 </div>
               </div>
 
               <!-- Body -->
               <div class="card-body">
-                <h3>{{prenotazione.DENOMINAZIONESPORT}}</h3>
+                <h3>{{prenotazioneDoc.DENOMINAZIONESPORT}}</h3>
                 <p class="location">
                   <ion-icon name="location-outline"></ion-icon>
-                  {{prenotazione.COMUNELOCATION | titlecase}}
-                  <span *ngIf="prenotazione.COMUNELOCATION && prenotazione.INDIRIZZOLOCATION">, </span>
-                  {{prenotazione.INDIRIZZOLOCATION | titlecase}}
+                  {{prenotazioneDoc.COMUNELOCATION | titlecase}}
+                  <span *ngIf="prenotazioneDoc.COMUNELOCATION && prenotazioneDoc.INDIRIZZOLOCATION">, </span>
+                  {{prenotazioneDoc.INDIRIZZOLOCATION | titlecase}}
                 </p>
               </div>
 
               <!-- Duration Badge -->
               <div class="duration-badge">
                 <ion-icon name="timer-outline"></ion-icon>
-                {{prenotazione.DURATAORE > 1 ? prenotazione.DURATAORE : prenotazione.DURATAORE*60}} 
-                {{prenotazione.DURATAORE > 1 ? 'Ore' : 'Min.'}}
+                {{prenotazioneDoc.DURATAORE > 1 ? prenotazioneDoc.DURATAORE : prenotazioneDoc.DURATAORE*60}} 
+                {{prenotazioneDoc.DURATAORE > 1 ? 'Ore' : 'Min.'}}
               </div>
 
               <!-- Status Badge -->
-              <div class="status-badge" [class.active]="prenotazione.DATAORAFINE > today">
-                <ion-icon [name]="prenotazione.DATAORAFINE > today ? 'checkmark-circle' : 'time-outline'"></ion-icon>
-                <span>{{prenotazione.DATAORAFINE > today ? 'Attiva' : 'Completata'}}</span>
+              <div class="status-badge" [class.active]="prenotazioneDoc.isInFuture()">
+                <ion-icon [name]="prenotazioneDoc.getIconForPeriod()"></ion-icon>
+                <span>{{prenotazioneDoc.getTextForPeriod()}}</span>
               </div>
 
               <!-- Arrow -->

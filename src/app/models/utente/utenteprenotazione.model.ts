@@ -1,5 +1,6 @@
 import { IDDocument } from '../../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 
 
 export class UtentePrenotazione extends IDDocument {
@@ -94,5 +95,60 @@ export class UtentePrenotazione extends IDDocument {
         
         return objDescriptor;
     }
+
+
+
+    /**
+     * Specifica se la lezione è prevista nel futuro
+     */
+    isInFuture(): boolean {
+        let flagResult: boolean = false;
+        flagResult = MyDateTime.isSameOrAfter(this.DATAORAFINE,new Date(), "minute");
+        return flagResult;
+    }
+
+    /**
+     * Ritorna una icona sulla base del periodo
+     */
+    getIconForPeriod(): string {
+        let iconName: string = '';
+        //Non iniziato: enter-outline
+        //In corso: code-download-outline
+        //Terminato: exit-otline
+        //Non iniziato
+        if (MyDateTime.isBefore(new Date(), this.DATAORAINIZIO)) {
+        iconName = 'enter-outline';
+        }
+        else if (MyDateTime.isAfter(new Date(), this.DATAORAFINE)) {
+        iconName = 'exit-outline';
+        }
+        else {
+        iconName = 'code-download-oultine';
+        }
+
+        return iconName;
+    }
+
+    /**
+     * Ritorna un testo sulla base del periodo
+     */
+    getTextForPeriod(): string {
+        let textPeriod: string = '';
+        //Non iniziato
+        //In corso
+        //Terminato
+        //Non iniziato
+        if (MyDateTime.isBefore(new Date(), this.DATAORAINIZIO)) {
+        textPeriod = 'In programma';
+        }
+        else if (MyDateTime.isAfter(new Date(), this.DATAORAFINE)) {
+        textPeriod = 'Completata';
+        }
+        else {
+        textPeriod = 'In corso';
+        }
+
+        return textPeriod;
+    }  
 }
 

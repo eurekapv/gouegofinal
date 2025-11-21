@@ -150,6 +150,7 @@
         <div class="data-card" *ngIf="!isLezioneSingola">
           <app-settimana-block
             size="md"
+            [showOnlySelected]="true"
             [listDays]="corsoDoc._SETTIMANA">
           </app-settimana-block>
         </div>

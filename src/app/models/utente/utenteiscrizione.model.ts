@@ -2,6 +2,7 @@ import { IDDocument } from '../../library/models/iddocument.model';
 import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model';
 import {  ModalitaIscrizione, SettoreQrCode, StatoPagamento, TipoCorso } from '../zsupport/valuelist.model';
 import { GeneratorQrcode } from '../imdb/generator-qrcode.model';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
 
 export class UtenteIscrizione extends IDDocument {
 
@@ -41,12 +42,63 @@ export class UtenteIscrizione extends IDDocument {
             super(onlyInstance);
         }
 
-        /**
-         * E' una lezione singola quando la modalita di iscrizione è a giornata
-         */
-        isLezioneSingola(): boolean {
-          return this.MODALITAISCRIZIONE == ModalitaIscrizione.ModalitaAGiornata;
-        }
+
+    /**
+     * Specifica se la lezione è prevista nel futuro
+     */
+    isInFuture(): boolean {
+      return MyDateTime.isNextFuture(this.DATAFINE);
+    }
+
+    /**
+     * Ritorna una icona sulla base del periodo
+     */
+    getIconForPeriod(): string {
+      let iconName: string = '';
+      //Non iniziato: enter-outline
+      //In corso: code-download-outline
+      //Terminato: exit-otline
+      //Non iniziato
+      if (MyDateTime.isBefore(MyDateTime.today(), this.DATAINIZIO)) {
+        iconName = 'enter-outline';
+      }
+      else if (MyDateTime.isAfter(MyDateTime.today(), this.DATAFINE)) {
+        iconName = 'exit-outline';
+      }
+      else {
+        iconName = 'code-download-oultine';
+      }
+
+      return iconName;
+    }
+
+    /**
+     * Ritorna un testo sulla base del periodo
+     */
+    getTextForPeriod(): string {
+      let textPeriod: string = '';
+      //Non iniziato
+      //In corso
+      //Terminato
+      //Non iniziato
+      if (MyDateTime.isBefore(MyDateTime.today(), this.DATAINIZIO)) {
+        textPeriod = 'Non iniziato';
+      }
+      else if (MyDateTime.isAfter(MyDateTime.today(), this.DATAFINE)) {
+        textPeriod = 'Terminato';
+      }
+      else {
+        textPeriod = 'In corso';
+      }
+
+      return textPeriod;
+    }    
+    /** 
+     * E' una lezione singola quando la modalita di iscrizione è a giornata
+     */
+    isLezioneSingola(): boolean {
+      return this.MODALITAISCRIZIONE == ModalitaIscrizione.ModalitaAGiornata;
+    }
     /**
      * Ritorna il descrittore della Struttura Campi
      */

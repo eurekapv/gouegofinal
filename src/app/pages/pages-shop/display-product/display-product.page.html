@@ -65,6 +65,22 @@
       </div>
     </div>
 
+
+    <!-- ========================================== -->
+    <!-- ADD TO CART BUTTON -->
+    <!-- ========================================== -->
+    <div class="add-to-cart-section" *ngIf="isDisponibile()">
+      <ion-button
+          (click)="onAddToCart()"
+          expand="block"
+          color="success"
+          size="large"
+          class="add-to-cart-button">
+        <ion-icon name="cart" slot="start"></ion-icon>
+        Aggiungi al carrello
+      </ion-button>
+    </div> 
+
     <!-- ========================================== -->
     <!-- PRODUCT INFO -->
     <!-- ========================================== -->
@@ -95,6 +111,7 @@
       </div>
 
     </div>
+   
 
     <!-- ========================================== -->
     <!-- DESCRIPTION -->
@@ -197,44 +214,28 @@
       </div>
     </div>
 
-    <!-- Spacer for fixed button -->
-    <div class="bottom-spacer"></div>
 
-  </div>
 
-  <!-- ========================================== -->
-  <!-- FIXED ADD TO CART BUTTON -->
-  <!-- ========================================== -->
-  <div class="fixed-cta" *ngIf="isDisponibile()">
-    <ion-button 
-        (click)="onAddToCart()"
-        expand="block"
-        color="success"
-        size="large"
-        class="add-to-cart-button">
-      <ion-icon name="cart" slot="start"></ion-icon>
-      Aggiungi al carrello
-    </ion-button>
   </div>
 
 <!-- ========================================== -->
 <!-- MODAL ADDED TO CART -->
 <!-- ========================================== -->
-<ion-modal 
-    [isOpen]="isOpenModalAddedItem" 
-    [initialBreakpoint]="0.35" 
-    [breakpoints]="[0, 0.35, 0.5]"
+<ion-modal
+    [isOpen]="isOpenModalAddedItem"
+    [initialBreakpoint]="0.5"
+    [breakpoints]="[0, 0.5, 0.75]"
     class="added-modal">
   <ng-template>
     <ion-content class="modal-content">
-      
-      <!-- Header -->
-      <div class="modal-header">
-        <div class="modal-success-icon">
-          <ion-icon name="checkmark-circle"></ion-icon>
-        </div>
-        <h2 class="modal-title">Aggiunto al carrello!</h2>
+
+      <!-- Success Icon -->
+      <div class="modal-success-icon">
+        <ion-icon name="checkmark-circle"></ion-icon>
       </div>
+
+      <!-- Title -->
+      <h2 class="modal-title">Aggiunto al carrello!</h2>
 
       <!-- Product Info -->
       <div class="modal-product">
@@ -243,14 +244,14 @@
         </div>
         <div class="modal-product-info">
           <h3>{{articoloDoc.DESCR}}</h3>
-          <div class="modal-product-details">
-            <span *ngIf="selectedColor">
-              <ion-icon name="color-palette"></ion-icon>
-              {{selectedColor.DESCRIZIONE}}
-            </span>
+          <div class="modal-product-details" *ngIf="selectedColor || selectedTaglia">
             <span *ngIf="selectedTaglia">
               <ion-icon name="resize"></ion-icon>
               {{selectedTaglia.DESCRIZIONE}}
+            </span>
+            <span *ngIf="selectedColor">
+              <ion-icon name="color-palette"></ion-icon>
+              {{selectedColor.DESCRIZIONE}}
             </span>
           </div>
           <div class="modal-product-price">
@@ -261,23 +262,14 @@
 
       <!-- Actions -->
       <div class="modal-actions">
-        <ion-button 
+        <ion-button
             (click)="closeModalAddedItem()"
             expand="block"
             color="success"
             size="large">
           <ion-icon name="checkmark" slot="start"></ion-icon>
-          FATTO
+          Continua acquisti
         </ion-button>
-        <!-- <ion-button 
-            (click)="clickCarrello(); closeModalAddedItem()"
-            expand="block"
-            fill="outline"
-            color="primary"
-            size="large">
-          <ion-icon name="cart" slot="start"></ion-icon>
-          Vai al carrello
-        </ion-button> -->
       </div>
 
     </ion-content>

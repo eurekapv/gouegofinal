@@ -228,3 +228,17 @@ ion-modal {
     max-width: 600px;
   }
 }
+
+// =====================================================
+// WELCOME MODAL - FULLSCREEN
+// =====================================================
+.welcome-modal-full {
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+  --box-shadow: none;
+
+  &::part(backdrop) {
+    display: none;
+  }
+}

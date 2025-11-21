@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { Platform, ModalController } from '@ionic/angular';
 import { StartConfiguration } from './models/start-configuration.model';
 import { StartService } from './services/start.service';
 import { Subscription } from 'rxjs';
 import { register } from 'swiper/element/bundle';
 import { StateApplication } from './models/zsupport/valuelist.model';
 import { environment } from 'src/environments/environment';
+import { OnboardingService } from './services/onboarding/onboarding.service';
+import { WelcomeModalComponent } from './shared/components/welcome-modal/welcome-modal.component';
 
 
 //we need to call Swiper's register function to globally register Swiper's custom elements
@@ -32,9 +34,11 @@ export class AppComponent {
 
   constructor(
     private platform: Platform,
-    private startService: StartService
+    private startService: StartService,
+    private modalController: ModalController,
+    private onboardingService: OnboardingService
   ) {
-    this.initializeApp();  
+    this.initializeApp();
   }
 
   /**
@@ -77,12 +81,15 @@ export class AppComponent {
 
     //Eseguo le operazioni per la partenza
     this.startService.startApplication()
-                     .then(() => {
+                     .then(async () => {
 
                         //L'applicazione è partita
                         this.actaulStateApplication = StateApplication.started;
-                        //Eseguo altre operazioni 
+                        //Eseguo altre operazioni
                         this.startService.onAfterStartApplication();
+
+                        //Mostro la welcome modal se è la prima volta
+                        await this.showWelcomeModalIfNeeded();
                      })
                      .catch(error => {
                         if (typeof error == 'string') {
@@ -97,6 +104,29 @@ export class AppComponent {
                         //Purtroppo sono in errore
                         this.actaulStateApplication = StateApplication.onError;
                      })
+  }
+
+  /**
+   * Mostra la welcome modal se è la prima volta che l'utente apre l'app dopo il redesign
+   */
+  async showWelcomeModalIfNeeded(): Promise<void> {
+    try {
+      const hasSeenRedesign = this.onboardingService.hasSeenRedesign();
+
+      if (!hasSeenRedesign) {
+        const modal = await this.modalController.create({
+          component: WelcomeModalComponent,
+          cssClass: 'welcome-modal-full',
+          backdropDismiss: false
+        });
+
+        await modal.present();
+        await modal.onDidDismiss();
+        this.onboardingService.markRedesignAsSeen();
+      }
+    } catch (error) {
+      console.error('Errore nella welcome modal:', error);
+    }
   }
 
   //#region GESTIONE ERRORI

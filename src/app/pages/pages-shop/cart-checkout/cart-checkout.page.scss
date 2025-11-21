@@ -1,262 +1,233 @@
-// ========================================
-// CONTENT BACKGROUND
-// ========================================
-ion-content {
-  --background: #f4f5f8;
+// =====================================================
+// CHECKOUT PAGE - MODERN DESIGN
+// =====================================================
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-// ========================================
-// PAGE CONTAINER
-// ========================================
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 15px;
-
-  @media (min-width: 768px) {
-    padding: 30px 20px;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  @media (min-width: 1024px) {
-    padding: 40px 30px;
-  }
-}
-
-// ========================================
-// INFO BOX
-// ========================================
-.info-box {
-  background: #fef9e7;
-  border-left: 4px solid var(--ion-color-tertiary);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  animation: fadeInDown 0.4s ease;
-
-  .info-icon {
-    color: var(--ion-color-tertiary);
-    font-size: 24px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  p {
-    margin: 0;
-    color: var(--ion-color-primary);
-    line-height: 1.5;
-    font-size: 13px;
-    font-weight: 500;
-  }
-}
-
-// ========================================
-// CHECKOUT BUTTON
-// ========================================
-.checkout-button {
-  --background: var(--ion-color-tertiary);
-  --color: var(--ion-color-primary);
-  --border-radius: 12px;
-  --padding-top: 18px;
-  --padding-bottom: 18px;
-  --box-shadow: 0 4px 16px rgba(250, 212, 122, 0.3);
-  margin-bottom: 30px;
-  font-weight: 700;
-  font-size: 17px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  animation: fadeInUp 0.5s ease;
-
-  ion-icon {
-    font-size: 24px;
-  }
-
-  &:hover {
-    --background: var(--ion-color-tertiary-shade);
-    transform: translateY(-2px);
-    --box-shadow: 0 6px 20px rgba(250, 212, 122, 0.4);
-  }
-
-  &:active {
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
-// ========================================
-// CHECKOUT GRID (Layout Responsive)
-// ========================================
-.checkout-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-
-  @media (min-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
   }
-
-  @media (min-width: 1024px) {
-    gap: 30px;
+  to {
+    transform: scale(1);
   }
 }
 
-.checkout-column {
+// =====================================================
+// CONTENT
+// =====================================================
+ion-content {
+  --background: #f8f9fa;
+}
+
+// =====================================================
+// CONTAINER
+// =====================================================
+.checkout-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  animation: fadeIn 0.4s ease;
+}
+
+// =====================================================
+// TOTAL CARD (CARD GRANDE CON TOTALE)
+// =====================================================
+.checkout-total-card {
+  background: linear-gradient(135deg, var(--ion-color-success) 0%, #1e9657 100%);
+  border-radius: 20px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(44, 179, 97, 0.25);
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 20px;
-}
+  animation: slideUp 0.5s ease;
 
-// ========================================
-// SECTION CARD
-// ========================================
-.section-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  animation: fadeInUp 0.5s ease;
-
-  .section-header {
-    background: linear-gradient(135deg, 
-      var(--ion-color-warning) 0%, 
-      var(--ion-color-warning-shade) 100%);
-    padding: 20px;
+  .total-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: center;
+    flex-shrink: 0;
 
-    // Variante per Ritiro (verde)
-    &.pickup-header {
-      background: linear-gradient(135deg, 
-        var(--ion-color-success) 0%, 
-        var(--ion-color-success-shade) 100%);
+    ion-icon {
+      font-size: 36px;
+      color: white;
+    }
+  }
+
+  .total-info {
+    flex: 1;
+
+    .total-label {
+      margin: 0 0 4px 0;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    // Variante per Pagamento (blu scuro)
-    &.payment-header {
-      background: linear-gradient(135deg, 
-        var(--ion-color-primary) 0%, 
-        var(--ion-color-primary-shade) 100%);
+    .total-amount {
+      margin: 0 0 4px 0;
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1.1;
     }
 
-    .header-icon {
-      width: 48px;
-      height: 48px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+    .total-items {
+      margin: 0;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 500;
+    }
+  }
+}
 
-      ion-icon {
-        font-size: 26px;
-        color: white;
-      }
+// =====================================================
+// SEZIONI CHECKOUT
+// =====================================================
+.checkout-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  animation: slideUp 0.5s ease;
+
+  &:nth-child(2) { animation-delay: 0.1s; }
+  &:nth-child(3) { animation-delay: 0.2s; }
+  &:nth-child(4) { animation-delay: 0.3s; }
+
+  // Titolo Sezione
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    ion-icon {
+      font-size: 24px;
+      color: var(--ion-color-primary);
     }
 
     h3 {
-      color: white;
-      font-size: 18px;
-      font-weight: 600;
       margin: 0;
-      letter-spacing: 0.3px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ion-color-primary);
     }
-  }
-
-  .section-body {
-    padding: 20px;
   }
 }
 
-// ========================================
-// ORDER ROWS (righe riepilogo ordine)
-// ========================================
-.order-row {
+// =====================================================
+// SUMMARY ROWS (Righe Riepilogo)
+// =====================================================
+.summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
 
-  .order-label {
-    color: var(--ion-color-mediumlight);
-    font-size: 15px;
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .row-label {
+    font-size: 0.95rem;
+    color: var(--ion-color-medium);
     font-weight: 500;
   }
 
-  .order-value {
-    color: var(--ion-color-primary);
-    font-size: 16px;
+  .row-value {
+    font-size: 1rem;
+    color: var(--ion-color-dark);
     font-weight: 600;
-  }
 
-  // Row Totale
-  &.total {
-    margin-top: 8px;
-
-    .order-label {
-      color: var(--ion-color-primary);
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    .order-value {
+    &.success {
       color: var(--ion-color-success);
-      font-size: 20px;
       font-weight: 700;
+      font-size: 0.9rem;
     }
   }
 }
 
-// Separatore ordine
-.order-divider {
-  height: 1px;
-  background: var(--ion-color-light);
-  margin: 8px 0;
-}
-
-// ========================================
-// PICKUP INFO (informazioni ritiro)
-// ========================================
-.pickup-info {
+// =====================================================
+// PICKUP CARD (Card Ritiro)
+// =====================================================
+.pickup-card {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 12px;
-  background: rgba(44, 179, 97, 0.08);
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 12px;
+  border-left: 4px solid var(--ion-color-primary);
 
-  .pickup-icon {
-    font-size: 48px;
-    color: var(--ion-color-success);
+  .pickup-badge-icon {
+    font-size: 40px;
+    color: var(--ion-color-primary);
     flex-shrink: 0;
   }
 
-  .pickup-content {
+  .pickup-details {
     flex: 1;
 
-    .pickup-label {
-      font-size: 12px;
-      color: var(--ion-color-mediumlight);
-      margin: 0 0 4px 0;
+    .pickup-method {
+      margin: 0 0 8px 0;
+      font-size: 0.75rem;
+      color: var(--ion-color-medium);
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
-    .pickup-name {
-      font-size: 16px;
-      color: var(--ion-color-primary);
+    .pickup-person {
       margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      color: var(--ion-color-dark);
       font-weight: 600;
+
+      ion-icon {
+        font-size: 20px;
+        color: var(--ion-color-primary);
+      }
     }
   }
 }
 
-// ========================================
+// =====================================================
 // MODAL STYLES
-// ========================================
+// =====================================================
 ion-modal.order-modal {
   --width: 90%;
   --max-width: 500px;
@@ -281,8 +252,8 @@ ion-modal.order-modal {
 
     // Success variant
     &.success {
-      background: linear-gradient(135deg, 
-        var(--ion-color-success) 0%, 
+      background: linear-gradient(135deg,
+        var(--ion-color-success) 0%,
         var(--ion-color-success-shade) 100%);
 
       .success-icon-wrapper {
@@ -305,8 +276,8 @@ ion-modal.order-modal {
 
     // Error variant
     &.error {
-      background: linear-gradient(135deg, 
-        var(--ion-color-danger) 0%, 
+      background: linear-gradient(135deg,
+        var(--ion-color-danger) 0%,
         var(--ion-color-danger-shade) 100%);
 
       .error-icon-wrapper {
@@ -318,7 +289,7 @@ ion-modal.order-modal {
         align-items: center;
         justify-content: center;
         margin: 0 auto 20px auto;
-        animation: shake 0.5s ease;
+        animation: scaleIn 0.5s ease;
 
         ion-icon {
           font-size: 50px;
@@ -363,9 +334,9 @@ ion-modal.order-modal {
   }
 }
 
-// ========================================
-// ORDER DETAIL ROWS (dettagli ordine in modal)
-// ========================================
+// =====================================================
+// ORDER DETAIL ROWS (Dettagli Ordine nella Modal)
+// =====================================================
 .order-detail-row {
   display: flex;
   align-items: center;
@@ -461,149 +432,91 @@ ion-modal.order-modal {
   }
 }
 
-// ========================================
-// ANIMAZIONI
-// ========================================
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+// =====================================================
+// STRIPE PAYMENT FORM
+// =====================================================
+.stripe-payment-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.stripe-form-wrapper {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.4s ease;
+
+  h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    text-align: center;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  #payment-element {
+    margin-bottom: 20px;
+  }
+
+  ion-button {
+    --border-radius: 12px;
+    margin-top: 12px;
+    font-weight: 600;
+  }
+
+  .confirm-payment-btn {
+    --background: var(--ion-color-success);
+    --box-shadow: 0 4px 16px rgba(44, 179, 97, 0.3);
   }
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-
-// Delay progressivo per le card
-.section-card:nth-child(1) { animation-delay: 0.1s; }
-.section-card:nth-child(2) { animation-delay: 0.2s; }
-.section-card:nth-child(3) { animation-delay: 0.3s; }
-
-// ========================================
+// =====================================================
 // RESPONSIVE - TABLET
-// ========================================
+// =====================================================
 @media (min-width: 768px) {
-  
-  .section-card {
-    .section-header {
-      padding: 25px;
+  .checkout-container {
+    padding: 30px 24px;
+  }
 
-      .header-icon {
-        width: 52px;
-        height: 52px;
+  .checkout-total-card {
+    padding: 32px 28px;
 
-        ion-icon {
-          font-size: 28px;
-        }
+    .total-icon {
+      width: 72px;
+      height: 72px;
+
+      ion-icon {
+        font-size: 40px;
       }
+    }
 
+    .total-info {
+      .total-amount {
+        font-size: 2.4rem;
+      }
+    }
+  }
+
+  .checkout-section {
+    padding: 24px;
+
+    .section-title {
       h3 {
-        font-size: 20px;
+        font-size: 1.2rem;
       }
-    }
-
-    .section-body {
-      padding: 25px;
-    }
-  }
-
-  .order-row {
-    padding: 14px 0;
-
-    .order-label {
-      font-size: 16px;
-    }
-
-    .order-value {
-      font-size: 17px;
-    }
-
-    &.total {
-      .order-label {
-        font-size: 18px;
-      }
-
-      .order-value {
-        font-size: 22px;
-      }
-    }
-  }
-
-  .pickup-info {
-    padding: 16px;
-
-    .pickup-icon {
-      font-size: 56px;
-    }
-
-    .pickup-content {
-      .pickup-label {
-        font-size: 13px;
-      }
-
-      .pickup-name {
-        font-size: 18px;
-      }
-    }
-  }
-
-  .checkout-button {
-    font-size: 18px;
-  }
-}
-
-// ========================================
-// RESPONSIVE - DESKTOP
-// ========================================
-@media (min-width: 1024px) {
-  
-  .section-card {
-    .section-header {
-      padding: 28px 30px;
-
-      .header-icon {
-        width: 56px;
-        height: 56px;
-
-        ion-icon {
-          font-size: 30px;
-        }
-      }
-
-      h3 {
-        font-size: 22px;
-      }
-    }
-
-    .section-body {
-      padding: 30px;
     }
   }
 }

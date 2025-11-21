@@ -28,8 +28,8 @@ export class StripePaymentService {
   
   private readonly STRIPE_BACKEND_URL = environment.externalUrl.stripemanager;
   private isInitialized = false;
-  private applePayPreloaded = false;
-  
+  private applePayReady = false; // Flag per sapere se è la prima chiamata ad Apple Pay
+
   private stripeJs: any = null;
   private elements: any = null;
   private currentPaymentIntentId: string | null = null;
@@ -57,53 +57,12 @@ export class StripePaymentService {
       
       this.isInitialized = true;
       console.log('✅ Stripe initialized');
-
-      // AGGIUNGI: Preload Apple Pay su iOS
-      if (this.platform.is('ios')) {
-        await this.preloadApplePay();
-      }
     } catch (error) {
       console.error('❌ Error initializing Stripe:', error);
       throw error;
     }
   }
 
-  /**
-   * Preload Apple Pay per evitare il bug di concurrency alla prima chiamata
-   */
-  private async preloadApplePay(): Promise<void> {
-    if (this.applePayPreloaded) {
-      return;
-    }
-
-    try {
-      console.log('🍎 Preloading Apple Pay...');
-      
-      // Aspetta un attimo per dare tempo al sistema
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Crea un fake Apple Pay sheet per "scaldare" il sistema
-      // Questo fallirà, ma prepara Apple Pay per le chiamate successive
-      await Stripe.createApplePay({
-        paymentIntentClientSecret: 'pi_fake_secret_for_preload_only',
-        paymentSummaryItems: [{
-          label: 'Preload',
-          amount: 0.01
-        }],
-        merchantIdentifier: environment.additionalConfig?.merchantAppleIdentifier || 'merchant.com.gouego.app',
-        countryCode: 'IT',
-        currency: 'EUR'
-      });
-
-      this.applePayPreloaded = true;
-      console.log('✅ Apple Pay preloaded successfully');
-
-    } catch (error) {
-      // Errore atteso perché usiamo un fake payment intent
-      console.log('✅ Apple Pay preload completed (error expected)');
-      this.applePayPreloaded = true;
-    }
-  }
 
   //#region RICHIESTA INTENT PAYMENT AL SERVER 
   /**
@@ -306,16 +265,15 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
   }
 
    /**
-   * Paga con Apple Pay - CON RETRY AUTOMATICO
+   * Paga con Apple Pay - VERSIONE CORRETTA CON DELAY INIZIALE
    */
   async payWithApplePay(
     amount: number,
     currency: string = 'EUR',
     idAccountConnected: string = '',
-    merchantName: string = environment.additionalConfig.merchantName,
-    retryCount: number = 0 // ← AGGIUNGI parametro interno
+    merchantName: string = environment.additionalConfig.merchantName
   ): Promise<PaymentResult> {
-    
+
     if (!this.platform.is('ios')) {
       return {
         success: false,
@@ -323,27 +281,19 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       };
     }
 
-      // Mostra loading
-    const loading = await this.loadingController.create({
-      message: 'Preparazione Apple Pay...',
-      duration: 1000 // Si chiude dopo 1 secondo
-    });
-    await loading.present();
-    
-    // Aspetta che si chiuda (dà tempo al sistema)
-    await loading.onDidDismiss();
-
     try {
-      console.log(`🍎 [Attempt ${retryCount + 1}] Starting Apple Pay...`);
+      console.log('🍎 Starting Apple Pay...');
 
-      // Aspetta un attimo prima della chiamata (aiuta con il concurrency)
-      if (retryCount === 0) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      // 🔥 FIX: Delay SOLO alla prima chiamata per evitare Swift concurrency issue
+      if (!this.applePayReady) {
+        console.log('⏳ First Apple Pay call - adding delay for Swift concurrency...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        this.applePayReady = true;
       }
 
       // Crea Payment Intent
       const paymentIntent = await this.createPaymentIntent(
-        amount, 
+        amount,
         currency.toLowerCase(),
         idAccountConnected
       );
@@ -352,10 +302,8 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       // Crea Apple Pay sheet
       console.log('🍎 Creating Apple Pay sheet...');
 
-      // ⬇️ AGGIUNGI QUESTO LOG
       const merchantId = environment.additionalConfig?.merchantAppleIdentifier || 'merchant.com.gouego.app';
       console.log('🔑 Merchant Identifier:', merchantId);
-
 
       await Stripe.createApplePay({
         paymentIntentClientSecret: paymentIntent.clientSecret,
@@ -365,17 +313,18 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
             amount: amount / 100
           }
         ],
-        merchantIdentifier: environment.additionalConfig?.merchantAppleIdentifier || 'merchant.com.gouego.app',
+        merchantIdentifier: merchantId,
         countryCode: 'IT',
         currency: currency
       });
+
       console.log('✅ Apple Pay sheet created');
 
       // Presenta Apple Pay
       console.log('🍎 Presenting Apple Pay...');
       const result = await Stripe.presentApplePay();
       console.log('📱 Apple Pay result:', result);
-      
+
       if (result.paymentResult === ApplePayEventsEnum.Completed) {
         console.log('✅ Payment completed!');
         return {
@@ -395,18 +344,14 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       }
 
     } catch (error: any) {
-      console.error(`❌ Apple Pay error (attempt ${retryCount + 1}):`, error);
-      
-      // RETRY AUTOMATICO se è il primo tentativo e sembra un errore di concurrency
-      if (retryCount === 0) {
-        console.log('🔄 Retrying Apple Pay (concurrency workaround)...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return this.payWithApplePay(amount, currency, idAccountConnected, merchantName, 1);
-      }
-      
+      console.error('❌ Apple Pay error:', error);
+
+      // Reset del flag in caso di errore, per riprovare con delay
+      this.applePayReady = false;
+
       // Gestisci errori specifici
       let errorMessage = 'Errore durante il pagamento con Apple Pay';
-      
+
       if (error.message) {
         const msg = error.message.toLowerCase();
         if (msg.includes('not available') || msg.includes('not supported')) {
@@ -419,7 +364,7 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
           errorMessage = 'Configurazione Apple Pay non valida. Contatta il supporto.';
         }
       }
-      
+
       return {
         success: false,
         error: errorMessage

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { AdvertisingComponent } from './advertising/advertising.component'
 import { ApertureComponent } from './aperture/aperture.component'
 import { ButtonCardComponent } from './button-card/button-card.component'
@@ -49,6 +50,7 @@ import { ItemPresenzaComponent } from './item-presenza/item-presenza.component';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
 import { LevelScrollComponent } from './level-scroll/level-scroll.component';
 import { ChoosePaymentModeComponent } from './choose-payment-mode/choose-payment-mode.component';
+import { WelcomeModalComponent } from './welcome-modal/welcome-modal.component';
 
 
 
@@ -60,6 +62,7 @@ import { ChoosePaymentModeComponent } from './choose-payment-mode/choose-payment
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        HttpClientModule,
         MaskitoModule,
         PipesModule
     ],
@@ -103,7 +106,8 @@ import { ChoosePaymentModeComponent } from './choose-payment-mode/choose-payment
         DailyCourseItemListComponent,
         ItemPresenzaComponent,
         LevelScrollComponent,
-        ChoosePaymentModeComponent
+        ChoosePaymentModeComponent,
+        WelcomeModalComponent
     ],
     exports: [
         AdvertisingComponent,
@@ -144,7 +148,8 @@ import { ChoosePaymentModeComponent } from './choose-payment-mode/choose-payment
         DailyCourseItemListComponent,
         ItemPresenzaComponent,
         LevelScrollComponent,
-        ChoosePaymentModeComponent
+        ChoosePaymentModeComponent,
+        WelcomeModalComponent
     ]
 })
 export class SharedComponentsModule {}

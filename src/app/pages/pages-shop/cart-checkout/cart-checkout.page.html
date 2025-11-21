@@ -10,118 +10,92 @@
 </ion-header>
 
 <ion-content>
-  
-  <div class="page-container">
 
-    <!-- Info Box Disclaimer -->
-    <div class="info-box">
-      <ion-icon name="information-circle" class="info-icon"></ion-icon>
-      <p>Confermando il tuo ordine accetti integralmente le nostre condizioni generali di vendita. Prendi visione della nostra informativa sulla privacy</p>
+  <div class="checkout-container">
+
+    <!-- ========================================== -->
+    <!-- HEADER TOTALE PROMINENTE -->
+    <!-- ========================================== -->
+    <div class="checkout-total-card">
+      <div class="total-icon">
+        <ion-icon name="cart"></ion-icon>
+      </div>
+      <div class="total-info">
+        <p class="total-label">Totale da pagare</p>
+        <h2 class="total-amount">{{carrelloDoc.TOTDOCUMENTO | currency : 'EUR'}}</h2>
+        <p class="total-items">{{numProdotti}} {{numProdotti === 1 ? 'articolo' : 'articoli'}}</p>
+      </div>
     </div>
 
-
-
-    <!-- Container Responsive -->
-    <div class="checkout-grid">
-
-      <!-- ========== COLONNA SINISTRA: ORDINE + RITIRO ========== -->
-      <div class="checkout-column">
-
-        <!-- SEZIONE 1: RIEPILOGO ORDINE -->
-        <div class="section-card">
-          <div class="section-header">
-            <div class="header-icon">
-              <ion-icon name="cart"></ion-icon>
-            </div>
-            <h3>Riepilogo Ordine</h3>
-          </div>
-
-          <div class="section-body">
-            
-            <!-- Articoli -->
-            <div class="order-row">
-              <span class="order-label">Articoli</span>
-              <span class="order-value">{{carrelloDoc.TOTINTERMEDIO | currency : 'EUR'}}</span>
-            </div>
-
-            <!-- Costo Spedizione -->
-            <div class="order-row">
-              <span class="order-label">Costo di Spedizione</span>
-              <span class="order-value">{{carrelloDoc.SPESETRASPORTO | currency : 'EUR'}}</span>
-            </div>
-
-            <!-- Separatore -->
-            <div class="order-divider"></div>
-
-            <!-- Totale Ordine -->
-            <div class="order-row total">
-              <span class="order-label">Totale Ordine</span>
-              <span class="order-value">{{carrelloDoc.TOTDOCUMENTO | currency : 'EUR'}}</span>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- SEZIONE 2: RITIRO PRESSO IL CENTRO -->
-        <div class="section-card">
-          <div class="section-header pickup-header">
-            <div class="header-icon">
-              <ion-icon name="location"></ion-icon>
-            </div>
-            <h3>Ritiro presso il centro</h3>
-          </div>
-
-          <div class="section-body">
-            
-            <div class="pickup-info">
-              <ion-icon name="person-circle" class="pickup-icon"></ion-icon>
-              <div class="pickup-content">
-                <p class="pickup-label">A nome di</p>
-                <p class="pickup-name">{{carrelloDoc.NOMINATIVO}}</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
+    <!-- ========================================== -->
+    <!-- RIEPILOGO ORDINE -->
+    <!-- ========================================== -->
+    <div class="checkout-section">
+      <div class="section-title">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <h3>Riepilogo</h3>
       </div>
 
-      <!-- ========== COLONNA DESTRA: PAGAMENTO ========== -->
-      <div class="checkout-column">
-
-        <!-- SEZIONE 3: MODALITÀ DI PAGAMENTO -->
-        <div class="section-card">
-          <div class="section-header payment-header">
-            <div class="header-icon">
-              <ion-icon name="card"></ion-icon>
-            </div>
-            <h3>Modalità di Pagamento</h3>
-          </div>
-
-          <div class="section-body">
-            
-              <app-choose-payment-mode
-                (selectedConfig)="onSelectPaymentConfig($event)"
-                (clickCondizioniVendita)="onClickCondizioniVendita()"
-                (clickButtonConfirm)="onClickAcquista()"
-                (clickButtonUndo)="closeModal()"
-                [labelConfirm]="'Acquista Ora'"
-                [iconConfirm]="'card'"
-                [canEnableConfirm]="true"
-                [configContanti]="_configIncassoContanti"
-                [configBonifico]="_configIncassoBonifico"
-                [configMobile]="_configIncassoMobile"
-                >
-  
-            </app-choose-payment-mode>            
-
-
-          </div>
+      <div class="summary-rows">
+        <div class="summary-row">
+          <span class="row-label">Articoli</span>
+          <span class="row-value">{{carrelloDoc.TOTINTERMEDIO | currency : 'EUR'}}</span>
         </div>
 
+        <div class="summary-row" *ngIf="carrelloDoc.SPESETRASPORTO > 0">
+          <span class="row-label">Spedizione</span>
+          <span class="row-value">{{carrelloDoc.SPESETRASPORTO | currency : 'EUR'}}</span>
+        </div>
 
+        <div class="summary-row" *ngIf="carrelloDoc.SPESETRASPORTO === 0">
+          <span class="row-label">Spedizione</span>
+          <span class="row-value success">GRATUITA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- RITIRO -->
+    <!-- ========================================== -->
+    <div class="checkout-section">
+      <div class="section-title">
+        <ion-icon name="location-outline"></ion-icon>
+        <h3>Ritiro</h3>
       </div>
 
+      <div class="pickup-card">
+        <ion-icon name="storefront" class="pickup-badge-icon"></ion-icon>
+        <div class="pickup-details">
+          <p class="pickup-method">Ritiro presso il centro</p>
+          <p class="pickup-person">
+            <ion-icon name="person"></ion-icon>
+            {{carrelloDoc.NOMINATIVO}}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- METODO DI PAGAMENTO -->
+    <!-- ========================================== -->
+    <div class="checkout-section">
+      <div class="section-title">
+        <ion-icon name="card-outline"></ion-icon>
+        <h3>Metodo di pagamento</h3>
+      </div>
+
+      <app-choose-payment-mode
+        (selectedConfig)="onSelectPaymentConfig($event)"
+        (clickCondizioniVendita)="onClickCondizioniVendita()"
+        (clickButtonConfirm)="onClickAcquista()"
+        (clickButtonUndo)="closeModal()"
+        [labelConfirm]="'Conferma Ordine'"
+        [iconConfirm]="'checkmark-circle'"
+        [canEnableConfirm]="true"
+        [configContanti]="_configIncassoContanti"
+        [configBonifico]="_configIncassoBonifico"
+        [configMobile]="_configIncassoMobile">
+      </app-choose-payment-mode>
     </div>
 
   </div>

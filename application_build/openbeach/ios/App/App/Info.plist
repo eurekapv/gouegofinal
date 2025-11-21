@@ -22,17 +22,17 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
 	<key>LSMinimumSystemVersion</key>
 	<string>12.0.0</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>L'applicazione richiede accesso alla fotocamera o alla libreria foto per importare immagini nel proprio profilo utente od eventualmente leggere barcode relativi alle prenotazioni</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Abilitando la localizzazione, all'apertura dell'applicazione, potrai visualizzare il nostro Centro sportivo più vicino</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To Record Audio With Video</string>

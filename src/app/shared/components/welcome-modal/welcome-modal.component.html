@@ -1,0 +1,60 @@
+<div class="welcome-modal">
+
+  <!-- Background Image -->
+  <div class="modal-background"
+       [style.background-image]="backgroundImageUrl ? 'url(' + backgroundImageUrl + ')' : 'none'">
+    <div class="background-overlay"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="modal-content">
+
+    <!-- Icon -->
+    <div class="welcome-icon">
+      <ion-icon name="sparkles"></ion-icon>
+    </div>
+
+    <!-- Title -->
+    <h1 class="welcome-title">Nuovo Look!</h1>
+
+    <!-- Subtitle -->
+    <p class="welcome-subtitle">
+      Abbiamo rinnovato completamente l'app per offrirti un'esperienza migliore
+    </p>
+
+    <!-- Features List -->
+    <div class="features-list">
+      <div class="feature-item">
+        <ion-icon name="color-palette" class="feature-icon"></ion-icon>
+        <span>Design moderno e intuitivo</span>
+      </div>
+
+      <div class="feature-item">
+        <ion-icon [name]="paymentFeature.icon" class="feature-icon"></ion-icon>
+        <span>{{paymentFeature.label}}</span>
+      </div>
+
+      <div class="feature-item">
+        <ion-icon name="cart" class="feature-icon"></ion-icon>
+        <span>Checkout semplificato</span>
+      </div>
+
+      <div class="feature-item">
+        <ion-icon name="images" class="feature-icon"></ion-icon>
+        <span>Card corsi con immagini</span>
+      </div>
+    </div>
+
+    <!-- CTA Button -->
+    <ion-button
+        expand="block"
+        size="large"
+        class="welcome-button"
+        (click)="closeModal()">
+      <ion-icon name="rocket" slot="start"></ion-icon>
+      Inizia l'esperienza
+    </ion-button>
+
+  </div>
+
+</div>

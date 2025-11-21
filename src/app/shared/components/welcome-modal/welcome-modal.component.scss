@@ -1,0 +1,243 @@
+// =====================================================
+// WELCOME MODAL - REDESIGN ANNOUNCEMENT
+// =====================================================
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.welcome-modal {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top, 20px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+// =====================================================
+// BACKGROUND
+// =====================================================
+.modal-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-color: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+  animation: fadeIn 0.6s ease;
+}
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(44, 179, 97, 0.92) 0%, 
+    rgba(30, 150, 87, 0.95) 100%);
+  backdrop-filter: blur(8px);
+}
+
+// =====================================================
+// CONTENT
+// =====================================================
+.modal-content {
+  position: relative;
+  z-index: 10;
+  max-width: 420px;
+  width: 88%;
+  padding: 32px 24px;
+  text-align: center;
+  animation: slideUp 0.7s ease;
+  max-height: calc(100vh - env(safe-area-inset-top, 20px) - env(safe-area-inset-bottom, 20px) - 40px);
+  overflow-y: auto;
+}
+
+// =====================================================
+// ICON
+// =====================================================
+.welcome-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  animation: scaleIn 0.6s ease 0.3s backwards;
+
+  ion-icon {
+    font-size: 36px;
+    color: white;
+  }
+}
+
+// =====================================================
+// TITLE & SUBTITLE
+// =====================================================
+.welcome-title {
+  margin: 0 0 12px 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  animation: slideUp 0.7s ease 0.4s backwards;
+}
+
+.welcome-subtitle {
+  margin: 0 0 24px 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.4;
+  font-weight: 500;
+  animation: slideUp 0.7s ease 0.5s backwards;
+}
+
+// =====================================================
+// FEATURES LIST
+// =====================================================
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+  animation: slideUp 0.7s ease 0.6s backwards;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(5px);
+  }
+
+  .feature-icon {
+    font-size: 22px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: 0.88rem;
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    flex: 1;
+  }
+}
+
+// =====================================================
+// BUTTON
+// =====================================================
+.welcome-button {
+  --background: white;
+  --color: var(--ion-color-success);
+  --border-radius: 14px;
+  --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  height: 50px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  letter-spacing: 0.3px;
+  margin: 0;
+  animation: slideUp 0.7s ease 0.7s backwards;
+
+  ion-icon {
+    font-size: 20px;
+    margin-right: 6px;
+  }
+
+  &:hover {
+    --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+@media (min-width: 768px) {
+  .modal-content {
+    padding: 40px 36px;
+    max-width: 480px;
+  }
+
+  .welcome-icon {
+    width: 80px;
+    height: 80px;
+
+    ion-icon {
+      font-size: 44px;
+    }
+  }
+
+  .welcome-title {
+    font-size: 2.2rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.05rem;
+  }
+
+  .features-list {
+    gap: 12px;
+  }
+
+  .feature-item {
+    padding: 13px 18px;
+
+    .feature-icon {
+      font-size: 26px;
+    }
+
+    span {
+      font-size: 0.95rem;
+    }
+  }
+
+  .welcome-button {
+    height: 54px;
+    font-size: 1.05rem;
+  }
+}

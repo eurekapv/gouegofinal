@@ -1,189 +1,169 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header class="ion-no-border">
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button 
-          (click)="close()">
-          <ion-icon name="arrow-back-outline"></ion-icon>
-    </ion-button>
-  </ion-buttons>
-  <ion-title>Carica documento</ion-title>
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Carica documento</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!-- <div class="icon-container">
-    <ion-icon name="cloud-upload-outline"></ion-icon>  
-  </div> -->
+<ion-content class="upload-content">
 
-  <div class="title-image">
-    <img src="assets/img/image-upload-bro.png"/>
-  </div>  
-  
-  <ion-list>
+  <!-- HERO SECTION -->
+  <div class="upload-hero">
+    <div class="hero-icon">
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+    </div>
+    <h2>Invia un documento</h2>
+    <p class="hero-description">
+      Carica il tuo documento, scegli la tipologia e imposta una eventuale scadenza.
+      La segreteria verificherà la validità del documento ricevuto.
+    </p>
+  </div>
 
-    <!-- INFORMAZIONI -->
-    <div class="info">
-      <ion-item color="light" lines="none">
-        <ion-label>
-          <p class="ion-text-wrap">
-            <ion-icon name="information-circle-outline" color="primary"></ion-icon>
-            invia il tuo documento, scegliendo la tipologia ed impostando una data di scadenza in caso di certificati medici o documenti di identità; alla ricezione del documento la segreteria effettuerà un controllo di validità.
-        </ion-label>
-      </ion-item>
-    </div> 
- 
+  <div class="upload-form">
 
-    <!-- SE SONO SU MOBILE -->
-    <ion-item-group 
-          *ngIf="!isDesktop">
-  
-      <ion-item-divider 
-          class="ion-padding-vertical"  
-          color="light">
+    <!-- SEZIONE: SCEGLI SORGENTE (solo mobile) -->
+    <section class="form-section" *ngIf="!isDesktop">
+      <div class="section-header">
+        <ion-icon name="folder-outline" color="primary"></ion-icon>
+        <h3>Carica da</h3>
+      </div>
 
-        <ion-label >
-          <h2>Carica da</h2>
-        </ion-label>
-        </ion-item-divider>
+      <div class="source-buttons">
+        <button class="source-btn"
+                [class.selected]="sorgenteFile == TSorgenteFile.filesystem"
+                (click)="handleChangeMobSource(TSorgenteFile.filesystem)">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <span>Documenti</span>
+        </button>
 
+        <button class="source-btn"
+                [class.selected]="sorgenteFile == TSorgenteFile.takephoto"
+                (click)="handleChangeMobSource(TSorgenteFile.takephoto)">
+          <ion-icon name="camera-outline"></ion-icon>
+          <span>Fotocamera</span>
+        </button>
 
-          <ion-item 
-              [color]="sorgenteFile == TSorgenteFile.filesystem ? colorItemSelected : colorItemEmpty"
-              [detail]="true"
-              [button]="true"
-              (click)="handleChangeMobSource(TSorgenteFile.filesystem)">
-            <ion-icon slot="start" name="document-text-outline" size="small"></ion-icon>
-            <ion-label>Cartella Documenti</ion-label>
-          </ion-item>
+        <button class="source-btn"
+                [class.selected]="sorgenteFile == TSorgenteFile.fromgallery"
+                (click)="handleChangeMobSource(TSorgenteFile.fromgallery)">
+          <ion-icon name="images-outline"></ion-icon>
+          <span>Galleria</span>
+        </button>
+      </div>
+    </section>
 
-          <ion-item
-              [color]="sorgenteFile == TSorgenteFile.takephoto ? colorItemSelected : colorItemEmpty"
-              [detail]="true"
-              [button]="true"
-              (click)="handleChangeMobSource(TSorgenteFile.takephoto)">
-            <ion-icon slot="start" name="camera-outline" size="small"></ion-icon>
-            <ion-label>Scatta una foto</ion-label>
-          </ion-item>
+    <!-- SEZIONE: FILE CARICATO -->
+    <section class="form-section" *ngIf="fileLoaded || isDesktop">
+      <div class="section-header">
+        <ion-icon name="attach-outline" color="success"></ion-icon>
+        <h3>File selezionato</h3>
+      </div>
 
-          <ion-item
-            [color]="sorgenteFile == TSorgenteFile.fromgallery ? colorItemSelected : colorItemEmpty"
-            [detail]="true"
-            [button]="true"
-            (click)="handleChangeMobSource(TSorgenteFile.fromgallery)"
-              >
-            <ion-icon slot="start" name="images-outline" size="small"></ion-icon>
-            <ion-label>Libreria Foto</ion-label>
-          </ion-item>          
+      <!-- Desktop -->
+      <div class="file-picker-card" *ngIf="isDesktop" (click)="onDesktopSearch()">
+        <input accept=".pdf, image/*" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
+        <div class="file-icon">
+          <ion-icon [name]="fileLoaded ? 'document-outline' : 'add-outline'"></ion-icon>
+        </div>
+        <div class="file-info">
+          <span class="file-name" *ngIf="fileLoaded">{{fileNameShow}}</span>
+          <span class="file-placeholder" *ngIf="!fileLoaded">Clicca per scegliere un file</span>
+          <span class="file-hint">PDF, JPG, PNG (max 10MB)</span>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="file-arrow"></ion-icon>
+      </div>
 
-        
-    </ion-item-group>
+      <!-- Mobile -->
+      <div class="file-picker-card" *ngIf="!isDesktop" (click)="onMobileSearch()">
+        <div class="file-icon" [class.loaded]="fileLoaded">
+          <ion-icon [name]="fileLoaded ? 'checkmark-outline' : 'add-outline'"></ion-icon>
+        </div>
+        <div class="file-info">
+          <span class="file-name" *ngIf="fileLoaded">{{fileNameShow}}</span>
+          <span class="file-placeholder" *ngIf="!fileLoaded">Premi per selezionare</span>
+          <span class="file-hint">PDF, JPG, PNG (max 10MB)</span>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="file-arrow"></ion-icon>
+      </div>
+    </section>
 
+    <!-- SEZIONE: TIPO DOCUMENTO -->
+    <section class="form-section">
+      <div class="section-header">
+        <ion-icon name="pricetag-outline" color="tertiary"></ion-icon>
+        <h3>Tipo di documento</h3>
+      </div>
 
-    <!-- mostro solo se sono su desktop oppure ho il file caricato-->
-    <ion-item-group 
-            *ngIf="fileLoaded || isDesktop"
-            class="ion-margin-vertical">
-      <ion-item-divider 
-          class="ion-padding-vertical"  
-          color="light">
-        <ion-label>
-          <h2>Documento caricato</h2>
-        </ion-label>
-        </ion-item-divider> 
+      <div class="doc-type-chips">
+        <button class="doc-chip"
+                *ngFor="let myTypeDoc of docTypeList"
+                [class.selected]="myTypeDoc.ID == idDocTypeSelected"
+                (click)="handleChangeDocType(myTypeDoc.ID)">
+          <ion-icon name="checkmark-outline" *ngIf="myTypeDoc.ID == idDocTypeSelected"></ion-icon>
+          <span>{{myTypeDoc.DENOMINAZIONE}}</span>
+        </button>
+      </div>
+    </section>
 
-        <!-- SE  SIAMO SU DESKTOP -->
-        <ion-item  *ngIf="isDesktop" button (click)="onDesktopSearch()">
-            <input accept=".pdf, image/*" hidden id="myInput" type="file" (change)="onChangedDesktopFile($event)">
-            <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-            <ion-label *ngIf="!loadedDesktopFile" class="myPlaceholder">Fai clic e scegli il file</ion-label>
-            <p>{{fileNameShow}}</p>
-        </ion-item>
-    
-        <!-- SE  SIAMO SU MOBILE -->
-        <ion-item *ngIf="!isDesktop" button (click)="onMobileSearch()">
-          <ion-icon slot="start" name="folder-open-outline"></ion-icon>
-          <ion-label *ngIf="!fileLoaded" class="myPlaceholder">premi per scegliere</ion-label>
-          {{fileNameShow}}
-        </ion-item>
+    <!-- SEZIONE: DETTAGLI -->
+    <section class="form-section">
+      <div class="section-header">
+        <ion-icon name="information-circle-outline" color="medium"></ion-icon>
+        <h3>Dettagli (opzionale)</h3>
+      </div>
 
+      <ion-card class="form-card">
+        <ion-card-content>
+          <!-- Descrizione -->
+          <div class="form-field">
+            <ion-label>Descrizione</ion-label>
+            <ion-textarea
+              [autoGrow]="true"
+              placeholder="Inserisci una nota..."
+              [(ngModel)]="docDescription"
+              maxlength="50"
+              rows="2">
+            </ion-textarea>
+          </div>
 
-    </ion-item-group> 
+          <!-- Toggle Scadenza -->
+          <div class="form-field toggle-field">
+            <ion-toggle [(ngModel)]="flagDocScadenza">
+              Documento con scadenza
+            </ion-toggle>
+          </div>
 
-    <!-- COSA STA CARICANDO -->
+          <!-- Data Scadenza -->
+          <div class="form-field" *ngIf="flagDocScadenza">
+            <ion-label>Data di scadenza</ion-label>
+            <app-dtinput
+              title="Data Scadenza"
+              itemLines="none"
+              itemDetail="true"
+              iconName="calendar-outline"
+              iconColor="primary"
+              maskFormat="dddd dd/MM/yyyy"
+              calendarMode="date"
+              [(actualDate)]="docScadenza">
+            </app-dtinput>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </section>
 
-
-    <!-- RADIO GROUP CON ELENCO -->
-    <ion-item-group class="ion-margin-vertical">
-      <ion-item-divider 
-          class="ion-padding-vertical"  
-          color="light">
-        <ion-label>
-          <h2>COSA CONTIENE</h2>
-        </ion-label>
-        </ion-item-divider> 
-
-        <ion-item 
-            (click)="handleChangeDocType(myTypeDoc.ID)"
-            [color]="myTypeDoc.ID == idDocTypeSelected ? colorItemSelected : colorItemEmpty"
-            [detail]="false"
-            [button]="true"
-            *ngFor="let myTypeDoc of docTypeList">
-            <ion-icon 
-                slot="end" 
-                name="checkmark-outline" 
-                *ngIf="myTypeDoc.ID == idDocTypeSelected">
-            </ion-icon>
-            <ion-label>{{myTypeDoc.DENOMINAZIONE}}</ion-label>
-        </ion-item>
-
-        <!-- DESCRIZIONE -->
-        <ion-item>
-          <ion-icon slot="start" name="information-circle-outline"></ion-icon>
-          <ion-textarea 
-                [autoGrow]="true"
-                placeholder="Inserisci una descrizione"  
-                [(ngModel)]="docDescription" 
-                maxlength="50"></ion-textarea>      
-        </ion-item>
-   
-        <!-- FLAG SCADENZA -->
-        <ion-item 
-              (click)="flagDocScadenza=!flagDocScadenza">
-            <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
-            <ion-label>con scadenza</ion-label>
-            <ion-icon slot="end" [name]="flagDocScadenza ? 'radio-button-on-outline' : 'radio-button-off-outline'"></ion-icon>
-        </ion-item>
-     
-        <!-- data scadenza -->
-        <app-dtinput
-            *ngIf="flagDocScadenza"
-            title="Data Scadenza Documento"
-            itemLines="full"
-            itemDetail="true"
-            iconName="calendar-outline"
-            iconColor="primary"
-            maskFormat="dddd dd/MM/yyyy"
-            calendarMode="date"
-            [(actualDate)]="docScadenza"
-          >
-          </app-dtinput>               
-
-    </ion-item-group>
-        
-    <div class="spacer"></div>
-
-
-  </ion-list>
-
-
+  </div>
 
 </ion-content>
 
-<ion-footer>
-  <ion-button  
-        color="success"
-        expand = "block" (click)="onClickCarica()">
-    <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
-      Carica
-  </ion-button>
+<ion-footer class="upload-footer">
+  <ion-toolbar>
+    <ion-button expand="block" color="success" size="large" (click)="onClickCarica()">
+      <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+      Carica Documento
+    </ion-button>
+  </ion-toolbar>
 </ion-footer>

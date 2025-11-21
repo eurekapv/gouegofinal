@@ -180,10 +180,7 @@
             <ion-icon [name]="!myCorso.flagIscrizioniAperte() ? 'close-circle-outline' : 'information-circle-outline'" 
                       [color]="!myCorso.flagIscrizioniAperte() ? 'danger' : 'medium'"></ion-icon>
             <p *ngIf="!myCorso.flagIscrizioniAperte()">
-              Purtroppo le iscrizioni al corso sono chiuse
-            </p>
-            <p *ngIf="myCorso.flagIscrizioniAperte()">
-              <strong>Contatta la struttura</strong> per verificare la disponibilità e l'inserimento in corsi equivalenti
+              Purtroppo le iscrizioni al corso sono chiuse; <strong>Contatta la struttura</strong> per verificare la disponibilità e l'inserimento in corsi equivalenti
             </p>
           </div>
 

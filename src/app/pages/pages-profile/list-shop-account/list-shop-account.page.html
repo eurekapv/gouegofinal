@@ -1,0 +1,104 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
+    </ion-buttons>
+    <ion-title>I miei ordini</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="orders-content" [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- HERO SECTION -->
+  <div class="orders-hero">
+    <div class="hero-icon">
+      <ion-icon name="bag-handle-outline"></ion-icon>
+    </div>
+    <h2>Storico Ordini</h2>
+    <p class="hero-subtitle">Consulta lo stato dei tuoi acquisti</p>
+  </div>
+
+  <div class="orders-container">
+
+    <!-- LOADING STATE -->
+    <div class="loading-state" *ngIf="inRichiesta">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Caricamento ordini...</p>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" *ngIf="!inRichiesta && listOrdini.length === 0">
+      <div class="empty-icon">
+        <ion-icon name="cart-outline"></ion-icon>
+      </div>
+      <h3>Nessun ordine</h3>
+      <p>Non hai ancora effettuato ordini.<br>Inizia a fare shopping!</p>
+    </div>
+
+    <!-- LISTA ORDINI -->
+    <div class="orders-list" *ngIf="!inRichiesta && listOrdini.length > 0">
+
+      <!-- RIEPILOGO -->
+      <div class="orders-summary">
+        <ion-icon name="receipt-outline" color="primary"></ion-icon>
+        <span>{{listOrdini.length}} {{listOrdini.length === 1 ? 'ordine' : 'ordini'}}</span>
+      </div>
+
+      <!-- CARD ORDINE -->
+      <div class="order-card" *ngFor="let ordine of listOrdini" (click)="onClickOrdine(ordine)">
+
+        <!-- HEADER CARD -->
+        <div class="order-header">
+          <div class="order-number">
+            <span class="label">Ordine</span>
+            <span class="value">#{{ordine.NUMEROSTAMPA || ordine.NUMERODOCUMENTO}}</span>
+          </div>
+          <div class="order-status"
+               [class.pending]="ordine.STATOCARRELLO === statoCarrello.nonEvaso"
+               [class.completed]="ordine.STATOCARRELLO === statoCarrello.evaso"
+               [class.partial]="ordine.STATOCARRELLO === statoCarrello.evasoParzialmente">
+            <ion-icon [name]="getStatusIcon(ordine.STATOCARRELLO)"></ion-icon>
+            <span>{{getStatusLabel(ordine.STATOCARRELLO)}}</span>
+          </div>
+        </div>
+
+        <!-- BODY CARD -->
+        <div class="order-body">
+          <!-- Data -->
+          <div class="order-info-row">
+            <ion-icon name="calendar-outline" color="medium"></ion-icon>
+            <span>{{ordine.DATADOCUMENTO | date:'dd MMMM yyyy':'':'it'}}</span>
+          </div>
+
+          <!-- Numero prodotti -->
+          <div class="order-info-row">
+            <ion-icon name="cube-outline" color="medium"></ion-icon>
+            <span>{{ordine.getNumProdotti()}} {{ordine.getNumProdotti() === 1 ? 'articolo' : 'articoli'}}</span>
+          </div>
+
+          <!-- Modalità ritiro/spedizione -->
+          <div class="order-info-row">
+            <ion-icon [name]="ordine.RITIROINSEDE ? 'storefront-outline' : 'car-outline'" color="medium"></ion-icon>
+            <span>{{ordine.RITIROINSEDE ? 'Ritiro in sede' : 'Spedizione'}}</span>
+          </div>
+        </div>
+
+        <!-- FOOTER CARD -->
+        <div class="order-footer">
+          <div class="order-total">
+            <span class="total-label">Totale</span>
+            <span class="total-value">{{ordine.TOTDOCUMENTO | currency:'EUR':'symbol':'1.2-2':'it'}}</span>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</ion-content>

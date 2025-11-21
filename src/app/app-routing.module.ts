@@ -5,6 +5,10 @@ const routes: Routes = [
   { 
     path: '', 
     loadChildren: () => import('./pages/appstart-home/appstart-home.module').then( m => m.AppstartHomePageModule)
+  },
+  {
+    path: 'list-shop-account',
+    loadChildren: () => import('./pages/pages-profile/list-shop-account/list-shop-account.module').then( m => m.ListShopAccountPageModule)
   }
 
  

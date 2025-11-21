@@ -1,0 +1,360 @@
+// =====================================================
+// LIST SHOP ACCOUNT - ORDINI
+// =====================================================
+
+.orders-content {
+  --background: #f5f6f8;
+}
+
+// =====================================================
+// HERO SECTION
+// =====================================================
+
+.orders-hero {
+  background: white;
+  padding: 32px 24px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+
+  .hero-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, var(--ion-color-primary-tint) 0%, var(--ion-color-primary) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 36px;
+      color: white;
+    }
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ion-color-dark);
+    margin: 0 0 8px 0;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+// =====================================================
+// CONTAINER
+// =====================================================
+
+.orders-container {
+  padding: 16px;
+}
+
+// =====================================================
+// LOADING STATE
+// =====================================================
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+// =====================================================
+// EMPTY STATE
+// =====================================================
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    background: #f3f4f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    ion-icon {
+      font-size: 40px;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+// =====================================================
+// ORDERS LIST
+// =====================================================
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// =====================================================
+// ORDERS SUMMARY
+// =====================================================
+
+.orders-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  margin-bottom: 4px;
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+}
+
+// =====================================================
+// ORDER CARD
+// =====================================================
+
+.order-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.99);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// =====================================================
+// ORDER HEADER
+// =====================================================
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #f3f4f6;
+
+  .order-number {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ion-color-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .value {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .order-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    ion-icon {
+      font-size: 16px;
+    }
+
+    // Stati
+    &.pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    &.completed {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    &.partial {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+  }
+}
+
+// =====================================================
+// ORDER BODY
+// =====================================================
+
+.order-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  ion-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: 0.9rem;
+    color: var(--ion-color-dark);
+  }
+}
+
+// =====================================================
+// ORDER FOOTER
+// =====================================================
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #f3f4f6;
+
+  .order-total {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .total-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ion-color-medium);
+      text-transform: uppercase;
+    }
+
+    .total-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--ion-color-success);
+    }
+  }
+
+  .arrow-icon {
+    font-size: 24px;
+    color: var(--ion-color-medium);
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+
+@media (min-width: 768px) {
+  .orders-hero {
+    padding: 40px 32px;
+
+    .hero-icon {
+      width: 88px;
+      height: 88px;
+
+      ion-icon {
+        font-size: 44px;
+      }
+    }
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+  }
+
+  .orders-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .order-header {
+    padding: 20px;
+
+    .order-number .value {
+      font-size: 1.2rem;
+    }
+
+    .order-status {
+      padding: 8px 16px;
+      font-size: 0.8rem;
+    }
+  }
+
+  .order-body {
+    padding: 20px;
+  }
+
+  .order-info-row span {
+    font-size: 0.95rem;
+  }
+
+  .order-footer {
+    padding: 20px;
+
+    .order-total .total-value {
+      font-size: 1.4rem;
+    }
+  }
+}

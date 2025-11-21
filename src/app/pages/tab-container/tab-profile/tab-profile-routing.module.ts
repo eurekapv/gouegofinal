@@ -13,6 +13,11 @@ const routes: Routes = [
     
     loadChildren: () => import('../../pages-profile/list-document-account/list-documents-account.module').then( m => m.ListDocumentsAccountPageModule)
   },
+    {
+    path: 'history-shop',
+    
+    loadChildren: () => import('../../pages-profile/list-shop-account/list-shop-account.module').then( m => m.ListShopAccountPageModule)
+  },
   {
     path: 'sportlevels',
     loadChildren: () => import('../../pages-profile/sport-levels-account/sport-levels-account.module').then( m => m.SportLevelsAccountPageModule)

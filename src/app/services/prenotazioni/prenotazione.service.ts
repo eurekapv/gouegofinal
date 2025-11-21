@@ -431,12 +431,14 @@ export class PrenotazioneService {
         .httpGet(myUrl, myHeaders, myParams)
         .subscribe({
             next: (data) => {
+              console.log(data);
               //creo l'oggetto con la risposta
               let response = new PostResponse();
               response.setFromResponse(data);
               resolve(response);
             },
             error: (err) => {
+              console.log(err);
               //creo comunque un postResponse fittizio
               let response = new PostResponse();
               response.result = false

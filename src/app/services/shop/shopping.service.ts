@@ -465,7 +465,7 @@ export class ShoppingService {
   }
 
 /**
-   * Effettuo la richiesta di un Evento
+   * Effettuo la richiesta di un Ordine
    * @param idShopCarrello 
    * @param numChild Profondità della richiesta
    * @param decodeAll Decodifica le chiavi esterne

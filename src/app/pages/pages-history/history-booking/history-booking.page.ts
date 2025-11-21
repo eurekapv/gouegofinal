@@ -408,12 +408,19 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
     .then(elLoading=>{
       elLoading.present();
 
+      //Chiedo al server di eliminare la piafinicazione
       this.startService.requestDeletePianificazione(docPianificazione.ID)
-                       .then(()=>{
+                       .then((data)=>{
                           elLoading.dismiss();
-                          this.showMessage('Prenotazione eliminata correttamente','toast');
-                          //Torno indietro
-                          this.onGoToBack();
+                          if (data.result) {
+                            this.showMessage('Prenotazione eliminata correttamente','toast');
+                            //Torno indietro
+                            this.onGoToBack();
+                          }
+                          else {
+                            this.showMessage(data.message, 'alert');
+                          }
+
                        })
                        .catch(error=>{
                           elLoading.dismiss();

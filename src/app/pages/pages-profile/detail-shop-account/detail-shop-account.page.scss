@@ -1,0 +1,489 @@
+// =====================================================
+// DETAIL SHOP ACCOUNT - ORDER DETAIL STYLES
+// =====================================================
+
+.order-detail-content {
+  --background: #f5f6f8;
+}
+
+// =====================================================
+// LOADING & ERROR STATES
+// =====================================================
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  .error-icon {
+    width: 64px;
+    height: 64px;
+    background: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    ion-icon {
+      font-size: 32px;
+      color: #dc2626;
+    }
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0 0 8px 0;
+  }
+
+  ion-button {
+    margin-top: 16px;
+  }
+}
+
+// =====================================================
+// ORDER HEADER SECTION
+// =====================================================
+
+.order-header-section {
+  background: white;
+  padding: 20px 16px;
+  border-bottom: 1px solid #e5e7eb;
+
+  .order-number-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .label {
+      font-size: 0.9rem;
+      color: var(--ion-color-medium);
+    }
+
+    .number {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .order-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+
+    &.pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    &.completed {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    &.partial {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+  }
+
+  .order-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--ion-color-dark);
+    margin: 0;
+
+    ion-icon {
+      font-size: 18px;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+
+// =====================================================
+// CONTAINER
+// =====================================================
+
+.order-details-container {
+  padding: 16px;
+}
+
+// =====================================================
+// SECTION CARDS
+// =====================================================
+
+.detail-section {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+
+    ion-icon {
+      font-size: 22px;
+    }
+
+    h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      flex: 1;
+    }
+
+    ion-badge {
+      --padding-start: 10px;
+      --padding-end: 10px;
+      --padding-top: 4px;
+      --padding-bottom: 4px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+  }
+}
+
+// =====================================================
+// PRODUCTS LIST
+// =====================================================
+
+.products-list {
+  padding: 0;
+}
+
+.product-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .product-image {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f3f4f6;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .product-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .product-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin: 0 0 6px 0;
+      line-height: 1.3;
+    }
+
+    .product-details {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+
+      .product-qty {
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+      }
+
+      .product-price {
+        font-size: 0.85rem;
+        color: var(--ion-color-medium);
+      }
+    }
+
+    .product-total {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+// =====================================================
+// INFO CARDS
+// =====================================================
+
+.info-card {
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  ion-card-content {
+    padding: 16px;
+  }
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  ion-icon {
+    font-size: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  span, .info-text {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--ion-color-dark);
+    line-height: 1.4;
+  }
+
+  .info-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+// =====================================================
+// DELIVERY INFO
+// =====================================================
+
+.delivery-info {
+  .info-row {
+    padding: 0;
+    border: none;
+  }
+}
+
+.pickup-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f0fdf4;
+  border-radius: 12px;
+
+  ion-icon {
+    font-size: 24px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-success-shade);
+  }
+}
+
+.notes-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+
+  ion-icon {
+    font-size: 20px;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+    font-style: italic;
+  }
+}
+
+// =====================================================
+// TOTALS CARD
+// =====================================================
+
+.totals-card {
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  ion-card-content {
+    padding: 16px;
+  }
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .label {
+    font-size: 0.9rem;
+    color: var(--ion-color-medium);
+  }
+
+  .value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+
+    &.discount {
+      color: var(--ion-color-success);
+    }
+  }
+
+  &.grand-total {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 2px solid #e5e7eb;
+    border-bottom: none;
+
+    .label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+    }
+
+    .value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+// =====================================================
+// RESPONSIVE - TABLET
+// =====================================================
+
+@media (min-width: 768px) {
+  .order-header-section {
+    padding: 24px;
+
+    .order-number-badge {
+      .number {
+        font-size: 1.25rem;
+      }
+    }
+
+    .order-date {
+      font-size: 1rem;
+    }
+  }
+
+  .order-details-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .detail-section {
+    border-radius: 20px;
+
+    .section-header {
+      padding: 20px;
+
+      h3 {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .product-card {
+    padding: 20px;
+    gap: 16px;
+
+    .product-image {
+      width: 88px;
+      height: 88px;
+    }
+
+    .product-info {
+      .product-name {
+        font-size: 1rem;
+      }
+
+      .product-total {
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .info-card ion-card-content,
+  .totals-card ion-card-content {
+    padding: 20px;
+  }
+
+  .total-row {
+    &.grand-total {
+      .value {
+        font-size: 1.4rem;
+      }
+    }
+  }
+}

@@ -9,6 +9,10 @@ const routes: Routes = [
   {
     path: 'list-shop-account',
     loadChildren: () => import('./pages/pages-profile/list-shop-account/list-shop-account.module').then( m => m.ListShopAccountPageModule)
+  },
+  {
+    path: 'detail-shop-account/:orderId',
+    loadChildren: () => import('./pages/pages-profile/detail-shop-account/detail-shop-account.module').then( m => m.DetailShopAccountPageModule)
   }
 
  

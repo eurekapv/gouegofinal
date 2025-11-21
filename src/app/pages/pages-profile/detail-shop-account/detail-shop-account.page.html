@@ -1,0 +1,196 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Dettaglio Ordine</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="order-detail-content" [fullscreen]="true">
+
+  <!-- LOADING STATE -->
+  <div class="loading-state" *ngIf="inRichiesta">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Caricamento ordine...</p>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div class="error-state" *ngIf="loadError && !inRichiesta">
+    <div class="error-icon">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+    </div>
+    <h3>Errore</h3>
+    <p>Impossibile caricare i dettagli dell'ordine</p>
+    <ion-button fill="outline" (click)="goBack()">
+      Torna indietro
+    </ion-button>
+  </div>
+
+  <!-- CONTENUTO ORDINE -->
+  <ng-container *ngIf="ordine && !inRichiesta && !loadError">
+
+    <!-- HEADER ORDINE -->
+    <div class="order-header-section">
+      <div class="order-number-badge">
+        <span class="label">Ordine</span>
+        <span class="number">#{{ordine.NUMEROSTAMPA || ordine.NUMERODOCUMENTO}}</span>
+      </div>
+
+      <div class="order-status-badge"
+           [class.pending]="ordine.STATOCARRELLO === statoCarrello.nonEvaso"
+           [class.completed]="ordine.STATOCARRELLO === statoCarrello.evaso"
+           [class.partial]="ordine.STATOCARRELLO === statoCarrello.evasoParzialmente">
+        <ion-icon [name]="getStatusIcon(ordine.STATOCARRELLO)"></ion-icon>
+        <span>{{getStatusLabel(ordine.STATOCARRELLO)}}</span>
+      </div>
+
+      <p class="order-date">
+        <ion-icon name="calendar-outline"></ion-icon>
+        {{ordine.DATADOCUMENTO | date:'EEEE dd MMMM yyyy':'':'it' | titlecase}}
+      </p>
+    </div>
+
+    <div class="order-details-container">
+
+      <!-- SEZIONE PRODOTTI -->
+      <section class="detail-section">
+        <div class="section-header">
+          <ion-icon name="cube-outline" color="primary"></ion-icon>
+          <h3>Articoli ordinati</h3>
+          <ion-badge color="primary">{{getRigheProdotti().length}}</ion-badge>
+        </div>
+
+        <div class="products-list">
+          <div class="product-card" *ngFor="let riga of getRigheProdotti()">
+            <div class="product-image">
+              <img [src]="getImageUrl(riga.PATHCOVERIMAGE)"
+                   [alt]="riga.DESCR"
+                   (error)="$any($event.target).src='assets/commercial/basketarticoli_small.png'">
+            </div>
+            <div class="product-info">
+              <h4 class="product-name">{{riga.DESCR}}</h4>
+              <div class="product-details">
+                <span class="product-qty">Qtà: {{riga.QUANTITA}}</span>
+                <span class="product-price">{{riga.PREZZONETTO | currency:'EUR':'symbol':'1.2-2':'it'}}</span>
+              </div>
+              <div class="product-total">
+                {{riga.IMPONIBILE | currency:'EUR':'symbol':'1.2-2':'it'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEZIONE CONSEGNA -->
+      <section class="detail-section">
+        <div class="section-header">
+          <ion-icon [name]="ordine.RITIROINSEDE ? 'storefront-outline' : 'car-outline'" color="tertiary"></ion-icon>
+          <h3>{{ordine.RITIROINSEDE ? 'Ritiro in sede' : 'Spedizione'}}</h3>
+        </div>
+
+        <ion-card class="info-card">
+          <ion-card-content>
+            <!-- Indirizzo di spedizione (se non ritiro in sede) -->
+            <div class="delivery-info" *ngIf="!ordine.RITIROINSEDE && (ordine.INDIRIZZODESTINAZIONE || ordine.COMUNEDESTINAZIONE)">
+              <div class="info-row">
+                <ion-icon name="location-outline" color="medium"></ion-icon>
+                <div class="info-text">
+                  <span *ngIf="ordine.INDIRIZZODESTINAZIONE">{{ordine.INDIRIZZODESTINAZIONE}}</span>
+                  <span *ngIf="ordine.CAPDESTINAZIONE || ordine.COMUNEDESTINAZIONE">
+                    {{ordine.CAPDESTINAZIONE}} {{ordine.COMUNEDESTINAZIONE}}
+                  </span>
+                  <span *ngIf="ordine.PROVINCIADESTINAZIONE">({{ordine.PROVINCIADESTINAZIONE}})</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Messaggio ritiro in sede -->
+            <div class="pickup-info" *ngIf="ordine.RITIROINSEDE">
+              <ion-icon name="checkmark-circle-outline" color="success"></ion-icon>
+              <p>Potrai ritirare il tuo ordine presso la struttura</p>
+            </div>
+
+            <!-- Note destinazione -->
+            <div class="notes-info" *ngIf="ordine.NOTESDESTINAZIONE">
+              <ion-icon name="document-text-outline" color="medium"></ion-icon>
+              <p>{{ordine.NOTESDESTINAZIONE}}</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </section>
+
+      <!-- SEZIONE INTESTATARIO -->
+      <section class="detail-section">
+        <div class="section-header">
+          <ion-icon name="person-outline" color="secondary"></ion-icon>
+          <h3>Intestatario</h3>
+        </div>
+
+        <ion-card class="info-card">
+          <ion-card-content>
+            <div class="info-row">
+              <ion-icon name="person-outline" color="medium"></ion-icon>
+              <span>{{ordine.NOMINATIVO}}</span>
+            </div>
+            <div class="info-row" *ngIf="ordine.EMAIL">
+              <ion-icon name="mail-outline" color="medium"></ion-icon>
+              <span>{{ordine.EMAIL}}</span>
+            </div>
+            <div class="info-row" *ngIf="ordine.INDIRIZZO || ordine.COMUNE">
+              <ion-icon name="location-outline" color="medium"></ion-icon>
+              <span>
+                {{ordine.INDIRIZZO}}
+                <ng-container *ngIf="ordine.CAP || ordine.COMUNE">
+                  - {{ordine.CAP}} {{ordine.COMUNE}}
+                </ng-container>
+              </span>
+            </div>
+            <div class="info-row" *ngIf="ordine.CODICEFISCALE">
+              <ion-icon name="card-outline" color="medium"></ion-icon>
+              <span>CF: {{ordine.CODICEFISCALE}}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </section>
+
+      <!-- SEZIONE RIEPILOGO TOTALI -->
+      <section class="detail-section">
+        <div class="section-header">
+          <ion-icon name="receipt-outline" color="success"></ion-icon>
+          <h3>Riepilogo</h3>
+        </div>
+
+        <ion-card class="totals-card">
+          <ion-card-content>
+            <div class="total-row">
+              <span class="label">Imponibile</span>
+              <span class="value">{{ordine.TOTIMPONIBILE | currency:'EUR':'symbol':'1.2-2':'it'}}</span>
+            </div>
+            <div class="total-row">
+              <span class="label">IVA</span>
+              <span class="value">{{ordine.TOTIMPOSTA | currency:'EUR':'symbol':'1.2-2':'it'}}</span>
+            </div>
+            <div class="total-row" *ngIf="ordine.SPESETRASPORTO > 0">
+              <span class="label">Spese di spedizione</span>
+              <span class="value">{{ordine.SPESETRASPORTO | currency:'EUR':'symbol':'1.2-2':'it'}}</span>
+            </div>
+            <div class="total-row" *ngIf="ordine.SCONTOFINALE > 0">
+              <span class="label">Sconto</span>
+              <span class="value discount">-{{ordine.SCONTOFINALE | currency:'EUR':'symbol':'1.2-2':'it'}}</span>
+            </div>
+            <div class="total-row grand-total">
+              <span class="label">Totale Ordine</span>
+              <span class="value">{{ordine.TOTDOCUMENTO | currency:'EUR':'symbol':'1.2-2':'it'}}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </section>
+
+    </div>
+
+  </ng-container>
+
+</ion-content>

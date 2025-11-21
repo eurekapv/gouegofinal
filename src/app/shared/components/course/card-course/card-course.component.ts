@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Corso } from '../../../../models/corso/corso.model'
 import { ValueList, TargetSesso, TipoCorso, Tempistica } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service'
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 //https://ionicthemes.com/templates/ionic5-full-starter-app/screenshots
 
@@ -12,7 +14,7 @@ import { StartService } from 'src/app/services/start.service'
 })
 export class CardCourseComponent implements OnInit {
 
-  constructor(private startService: StartService) { }
+  constructor(private startService: StartService, private http: HttpClient) { }
   _myCorso: Corso = new Corso(true);
   _myTempoCorso: Tempistica = Tempistica.IN_CORSO;
   _myTempoIscrizioni: Tempistica = Tempistica.PASSATO;
@@ -20,6 +22,7 @@ export class CardCourseComponent implements OnInit {
   _useIscrizioniColor: boolean = false;
   _labelSettimanaCorso: string = '';
   _showAdditionalFields: boolean = true;
+  sportImageUrl: string = '';
 
   _version: 'card'|'short' = 'card'; //Versione 1 o 2 del componente
 
@@ -34,6 +37,8 @@ export class CardCourseComponent implements OnInit {
       this._myTempoCorso = this._myCorso.tempoCorso();
       this._myTempoIscrizioni = this._myCorso.tempoIscrizioni();
       this._labelSettimanaCorso = this._myCorso.getLabelNumeroGiornateSettimanali();
+      // Carica l'immagine dello sport
+      this.getSportImageUrl();
     }
     else {
       this._myTempoCorso = Tempistica.IN_CORSO;
@@ -217,5 +222,73 @@ export class CardCourseComponent implements OnInit {
     if (corso){
       return this.startService.getSportIcon(corso.IDSPORT);
     }
+  }
+
+  /**
+   * Carica l'immagine dello sport da Pexels
+   */
+  getSportImageUrl() {
+    if (!this._myCorso || !this._myCorso['_DENOMINAZIONE_Sport']) {
+      return;
+    }
+
+    const sportName = this._myCorso['_DENOMINAZIONE_Sport'];
+    const searchQuery = this.mapSportToSearchQuery(sportName);
+
+    const pexelsUrl = `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=1&orientation=landscape`;
+
+    this.http.get(pexelsUrl, {
+      headers: {
+        'Authorization': environment.additionalConfig.pexelsApiKey
+      }
+    }).subscribe({
+      next: (response: any) => {
+        if (response.photos && response.photos.length > 0) {
+          this.sportImageUrl = response.photos[0].src.large;
+        }
+      },
+      error: (error) => {
+        console.error('Errore nel caricamento immagine Pexels:', error);
+      }
+    });
+  }
+
+  /**
+   * Mappa il nome dello sport in italiano a una query di ricerca in inglese
+   */
+  mapSportToSearchQuery(sportName: string): string {
+    const sportMap: { [key: string]: string } = {
+      'Calcio': 'soccer football',
+      'Pallavolo': 'volleyball',
+      'Beach Volley': 'beach volleyball',
+      'Tennis': 'tennis',
+      'Padel': 'padel tennis',
+      'Basket': 'basketball',
+      'Nuoto': 'swimming',
+      'Ginnastica': 'gymnastics',
+      'Danza': 'dance',
+      'Yoga': 'yoga',
+      'Pilates': 'pilates',
+      'Fitness': 'fitness gym',
+      'CrossFit': 'crossfit',
+      'Arti Marziali': 'martial arts',
+      'Karate': 'karate',
+      'Judo': 'judo',
+      'Boxe': 'boxing',
+      'Rugby': 'rugby',
+      'Atletica': 'athletics running',
+      'Ciclismo': 'cycling',
+      'Equitazione': 'horse riding',
+      'Golf': 'golf',
+      'Sci': 'skiing',
+      'Snowboard': 'snowboarding',
+      'Pattinaggio': 'ice skating',
+      'Arrampicata': 'rock climbing',
+      'Vela': 'sailing',
+      'Surf': 'surfing',
+      'Scherma': 'fencing'
+    };
+
+    return sportMap[sportName] || `${sportName} sport`;
   }
 }

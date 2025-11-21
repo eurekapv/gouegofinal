@@ -17,23 +17,40 @@
 
   // HEADER
   .course-header {
+    position: relative;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background-size: cover;
+    background-position: center;
     padding: 16px;
+    min-height: 140px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     border-bottom: 2px solid #dee2e6;
+    overflow: hidden;
 
-    &.enrollment-active {
-      background: linear-gradient(135deg, #d1f4e0 0%, #a8e6cf 100%);
-      border-bottom-color: var(--ion-color-success);
+    // Overlay leggero solo in basso per leggibilità badge
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.3) 0%, transparent 50%);
+      z-index: 1;
+    }
+
+    // Contenuto sopra l'overlay
+    .header-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
     }
 
     .header-badge {
-      flex: 1;
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
 
       .badge-type {
         background: var(--ion-color-warning);
@@ -44,25 +61,30 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       }
 
       .badge-sport {
         display: flex;
         align-items: center;
         gap: 8px;
-        color: var(--ion-color-primary);
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
         .sport-icon {
           font-family: "sports";
           font-size: 22px;
           display: flex;
           align-items: center;
+          color: var(--ion-color-primary);
         }
 
         .sport-name {
           font-size: 0.95rem;
           font-weight: 700;
+          color: var(--ion-color-primary);
         }
       }
     }
@@ -688,6 +710,7 @@ i.icon-sport {
 
     .course-header {
       padding: 20px;
+      min-height: 160px;
     }
 
     .course-body {

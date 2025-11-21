@@ -8,16 +8,19 @@
     [class.with-enrollment]="_flagIscrizioni">
   
   <!-- HEADER CARD -->
-  <div class="course-header" [class.enrollment-active]="_flagIscrizioni">
-    <div class="header-badge">
-      <span class="badge-type">{{_myCorso.TIPO == tipoCorso.prova ? 'Prova' : 'Corso'}}</span>
-      <div class="badge-sport">
-        <span class="sport-icon" [innerHTML]="getSportIcon(_myCorso)"></span>
-        <span class="sport-name">{{_myCorso['_DENOMINAZIONE_Sport']}}</span>
+  <div class="course-header"
+       [class.enrollment-active]="_flagIscrizioni"
+       [style.background-image]="sportImageUrl ? 'url(' + sportImageUrl + ')' : 'none'">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <div class="header-badge">
+        <span class="badge-type">{{_myCorso.TIPO == tipoCorso.prova ? 'Prova' : 'Corso'}}</span>
+        <div class="badge-sport">
+          <span class="sport-icon" [innerHTML]="getSportIcon(_myCorso)"></span>
+          <span class="sport-name">{{_myCorso['_DENOMINAZIONE_Sport']}}</span>
+        </div>
       </div>
     </div>
-    
-
   </div>
 
   <!-- BODY CARD -->

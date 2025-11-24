@@ -292,9 +292,13 @@ export class PeriodicCourseDetailPage implements OnInit, OnDestroy {
    * Visualizza i dettagli dell'iscrizione attiva
    */
   onClickVisualizzaIscrizione() {
+
     if (this.activeIscrizione) {
-      this.navController.navigateForward(`/iscrizione/${this.activeIscrizione.ID}`);
-    }
+      let historyId = this.activeIscrizione.ID;
+      let urlPath = [];
+      urlPath = this.startService.getUrlPageHistoryPersonal('course', historyId);
+      this.navController.navigateForward(urlPath);
+    } 
   }
 
   /**

@@ -371,64 +371,7 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       };
     }
   }
-  /**
-   * Paga con Apple Pay
-   */
-  async payWithApplePayOLD(
-    amount: number,
-    currency: string = 'EUR',
-    idAccountConnected: string = '',
-    merchantName: string = environment.additionalConfig.merchantName
-  ): Promise<PaymentResult> {
-    try {
-      // Verifica disponibilità
-      const isAvailable = this.isApplePayAvailable();
-      if (!isAvailable) {
-        throw new Error('Apple Pay non disponibile');
-      }
 
-      // Crea Payment Intent
-      const paymentIntent = await this.createPaymentIntent(
-        amount, 
-        currency.toLowerCase(),
-        idAccountConnected
-      );
-
-      // Crea il payment sheet per Apple Pay
-      await Stripe.createApplePay({
-        paymentIntentClientSecret: paymentIntent.clientSecret,
-        paymentSummaryItems: [
-          {
-            label: merchantName,
-            amount: (amount / 100) // Converti centesimi in euro
-          }
-        ],
-        merchantIdentifier: environment.additionalConfig.merchantAppleIdentifier, 
-        countryCode: 'IT',
-        currency: currency
-      });
-
-      // Presenta Apple Pay
-      const result = await Stripe.presentApplePay();
-      
-      if (result.paymentResult === ApplePayEventsEnum.Completed) {
-        console.log('✅ Apple Pay payment completed');
-        return {
-          success: true,
-          paymentIntentId: paymentIntent.id
-        };
-      } else {
-        throw new Error('Apple Pay payment failed or cancelled');
-      }
-
-    } catch (error: any) {
-      console.error('❌ Apple Pay error:', error);
-      return {
-        success: false,
-        error: error.message || 'Errore durante il pagamento con Apple Pay'
-      };
-    }
-  }
 
   /**
    * Paga con Google Pay

@@ -59,13 +59,18 @@ export class HistoryListPage implements OnInit {
   ionViewDidEnter() {
     //Richiesta utente attuale
     this.subDocUtente = this.startService.activeUtenteDoc$
-                          .subscribe  (elDocUtente => {
+                          .subscribe({
+                            next: (elDocUtente) => {
                               this.docUtente = elDocUtente;
                               //Utente arrivato
                               if (this.docUtente) {
                                 this.requestPrenotazioni();
                               }
+                            },
 
+                            error: (err) => {
+                              console.log(err);
+                            }
                           });
   }
 
@@ -180,9 +185,14 @@ export class HistoryListPage implements OnInit {
   sottoscrizioneIscrizioni() {
       
       this.subListUtenteIscrizioni = this.startService.listUtenteIscrizioni
-                                          .subscribe(collIscrizioni => {
-                                              this.listUtenteCorsi = collIscrizioni;                                
-                                          }, error => {});
+                                         .subscribe({
+                                          next: (collIscrizioni) => {
+                                              this.listUtenteCorsi = collIscrizioni;
+                                          },
+                                          error: (err) => {
+                                            console.log(err);
+                                          }
+                                         });
   }
 
   //#endregion

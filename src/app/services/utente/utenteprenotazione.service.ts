@@ -62,8 +62,8 @@ export class UtenteprenotazioneService {
               return arReturn;
             
         }))
-        .subscribe (resultData => {
-  
+        .subscribe({
+          next: (resultData)=> {
             resultData.forEach(element => {
               let newUtentePrenotazione = new UtentePrenotazione();
               newUtentePrenotazione.setJSONProperty(element);
@@ -72,11 +72,12 @@ export class UtenteprenotazioneService {
 
             //Al termine ritorno la nuova lista
             resolve(this._listUtentePrenotazione);
-
-        }, error=>{
-          reject (error);
-        })
-      
+          },
+          error: (err) => {
+            reject (err);
+          }
+        });
+  
     });
   }
 

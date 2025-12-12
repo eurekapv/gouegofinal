@@ -7,8 +7,8 @@ android {
         applicationId "com.gouego"
         minSdk 32
         targetSdk 35
-        versionCode 25
-        versionName '2.8'
+        versionCode 26
+        versionName '3.2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

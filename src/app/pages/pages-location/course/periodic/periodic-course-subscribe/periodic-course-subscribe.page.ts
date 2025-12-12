@@ -1386,7 +1386,9 @@ onSelectDefaultTypePayment(): Promise<void> {
         myMessage += '</p>';
       }
 
-      goToPath = this.startService.getUrlPageHistoryPersonal('course', idIscrizione);
+      //Lo mandiamo alla home e buonanotte a tutto
+      goToPath = this.startService.getUrlPageBasic('home');
+      //goToPath = this.startService.getUrlPageHistoryPersonal('course', idIscrizione);
 
      //Chiudo la modale
      this.closeModal(myMessage, myTitle, goToPath);

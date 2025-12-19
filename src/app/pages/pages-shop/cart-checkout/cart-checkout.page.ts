@@ -8,7 +8,6 @@ import { Utente } from 'src/app/models/utente/utente.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
 import { ModeIncassoConfig, PaymentChannel, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
-import { PaymentPage } from '../../payment/payment.page';
 import { PostResponse } from 'src/app/library/models/post-response.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 

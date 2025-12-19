@@ -90,7 +90,7 @@ export class LevelScrollComponent  implements OnInit {
       this._flagAvailableLivelli = (this._listAvailableLivelli?.length != 0);
     }
     
-    console.log(this._listAvailableLivelli);
+    
   }
 
   ngOnInit() {}
@@ -103,7 +103,7 @@ export class LevelScrollComponent  implements OnInit {
     if (!this._canChoose) return;
 
     this._selectedLivello = newLivello;
-    console.log(newLivello)
+    
 
     if (newLivello && newLivello.ID == 'all') {
       this.livelloChanged.emit(null);  

@@ -5,7 +5,7 @@ import { DetailCarrello } from "./detail-carrello.model";
 import { RiepilogoCarrello } from "./riepilogo-carrello.model";
 
 export class ShopCarrello extends IDDocument {
-
+ 
     IDAREAOPERATIVA: string;
     IDVALUTA: string;
     DECIMALIDOC: number;
@@ -27,13 +27,14 @@ export class ShopCarrello extends IDDocument {
     PARTITAIVA: string;
     CODDESTINATARIOPEC: string;
     EMAIL: string;
-    NOTESDESTINAZIONE: string;
+    RITIROINSEDE: boolean;
+    NOMEDESTINAZIONE: string;
     INDIRIZZODESTINAZIONE: string;
     COMUNEDESTINAZIONE: string;
     CAPDESTINAZIONE: string;
     PROVINCIADESTINAZIONE: string;
     STATODESTINAZIONE: string;
-    RITIROINSEDE: boolean;
+    NOTESDESTINAZIONE: string;
     TOTIMPONIBILE: number;
     TOTIMPOSTA: number;
     TOTINTERMEDIO: number;

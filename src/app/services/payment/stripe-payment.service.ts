@@ -29,6 +29,7 @@ export class StripePaymentService {
   private readonly STRIPE_BACKEND_URL = environment.externalUrl.stripemanager;
   private isInitialized = false;
   private applePayReady = false; // Flag per sapere se è la prima chiamata ad Apple Pay
+  private googlePayReady = false; // Flag per sapere se è la prima chiamata a Google Pay
 
   private stripeJs: any = null;
   private elements: any = null;
@@ -51,10 +52,16 @@ export class StripePaymentService {
     }
 
     try {
+      // 🔥 FIX: Delay su Android per evitare problemi di inizializzazione
+      if (this.platform.is('android') && this.platform.is('capacitor')) {
+        console.log('⏳ Android detected - adding initialization delay...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
       await Stripe.initialize({
         publishableKey: environment.additionalConfig.stripePublishableKey,
       });
-      
+
       this.isInitialized = true;
       console.log('✅ Stripe initialized');
     } catch (error) {
@@ -259,9 +266,18 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
    * Verifica se Google Pay è disponibile (solo Android)
    */
   isGooglePayAvailable(): boolean {
-    // Su Android, assumiamo che Google Pay sia disponibile
-    // Il plugin gestirà l'errore se l'utente non ha carte configurate
-    return this.platform.is('android') && this.platform.is('capacitor');
+    // Verifica base: deve essere Android + Capacitor
+    if (!this.platform.is('android') || !this.platform.is('capacitor')) {
+      return false;
+    }
+
+    // Verifica che Stripe sia inizializzato
+    if (!this.isInitialized) {
+      console.warn('⚠️ Stripe not initialized - Google Pay may not work');
+      return false;
+    }
+
+    return true;
   }
 
    /**
@@ -382,22 +398,82 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
     idAccountConnected: string = '',
     merchantName: string = environment.additionalConfig.merchantName
   ): Promise<PaymentResult> {
+
+    console.log('=== GOOGLE PAY DEBUG START ===');
+    console.log('📱 [1/10] Entering payWithGooglePay method');
+    console.log('📱 Parameters:', { amount, currency, idAccountConnected, merchantName });
+
+    // Verifica piattaforma
+    console.log('📱 [2/10] Checking platform...');
+    console.log('📱 Platform info:', {
+      isAndroid: this.platform.is('android'),
+      isCapacitor: this.platform.is('capacitor'),
+      isIOS: this.platform.is('ios'),
+      platforms: this.platform.platforms()
+    });
+
+    if (!this.platform.is('android')) {
+      console.error('❌ [2/10] NOT Android platform - STOPPING');
+      return {
+        success: false,
+        error: 'Google Pay è disponibile solo su dispositivi Android'
+      };
+    }
+    console.log('✅ [2/10] Platform check passed - is Android');
+
     try {
-      // Verifica disponibilità
-      const isAvailable = this.isGooglePayAvailable();
-      if (!isAvailable) {
-        throw new Error('Google Pay non disponibile');
+      console.log('📱 [3/10] Starting Google Pay flow...');
+
+      // 🔥 FIX: Delay SOLO alla prima chiamata per evitare problemi di concorrenza su Android
+      console.log('📱 [4/10] Checking googlePayReady flag:', this.googlePayReady);
+      if (!this.googlePayReady) {
+        console.log('⏳ [4/10] First Google Pay call - adding delay for Android initialization...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        this.googlePayReady = true;
+        console.log('✅ [4/10] Delay completed, flag set to true');
+      } else {
+        console.log('✅ [4/10] Already ready, skipping delay');
       }
 
+      // Verifica disponibilità base (piattaforma e inizializzazione)
+      console.log('📱 [5/10] Checking Google Pay availability...');
+      console.log('📱 isInitialized:', this.isInitialized);
+      const isPlatformAvailable = this.isGooglePayAvailable();
+      console.log('📱 isPlatformAvailable result:', isPlatformAvailable);
+
+      if (!isPlatformAvailable) {
+        console.error('❌ [5/10] Platform not available - STOPPING');
+        throw new Error('Google Pay non disponibile su questa piattaforma');
+      }
+      console.log('✅ [5/10] Availability check passed');
+
+      // Verifica effettiva: tenta di verificare se Google Pay è configurato
+      console.log('📱 [6/10] Verifying Google Pay configuration on device...');
+
       // Crea Payment Intent
+      console.log('📱 [7/10] Creating Payment Intent...');
+      console.log('📱 Calling backend:', this.STRIPE_BACKEND_URL);
+
       const paymentIntent = await this.createPaymentIntent(
         amount,
         currency.toLowerCase(),
         idAccountConnected
       );
 
+      console.log('✅ [7/10] Payment Intent created successfully');
+      console.log('📱 Payment Intent details:', {
+        id: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        status: paymentIntent.status
+      });
+
       // Crea il payment request per Google Pay
-      await Stripe.createGooglePay({
+      console.log('📱 [8/10] Creating Google Pay sheet...');
+
+      // NOTA: merchantIdentifier per Google Pay deve corrispondere al merchantName
+      // configurato nel Google Pay Business Console (non il package name Android)
+      const googlePayConfig = {
         paymentIntentClientSecret: paymentIntent.clientSecret,
         paymentSummaryItems: [
           {
@@ -408,26 +484,120 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
         merchantIdentifier: merchantName,
         countryCode: 'IT',
         currency: currency
-      });
+      };
 
-      // Presenta Google Pay
+      console.log('📱 [8/10] Google Pay config prepared:', JSON.stringify(googlePayConfig, null, 2));
+      console.log('📱 [8/10] Calling Stripe.createGooglePay()...');
+
+      // 🔥 FIX: createGooglePay e presentGooglePay devono essere chiamati INSIEME
+      // senza interruzioni, altrimenti il launcher interno viene garbage collected
+      await Stripe.createGooglePay(googlePayConfig);
+      console.log('✅ [8/10] Stripe.createGooglePay() completed successfully');
+
+      // Presenta Google Pay IMMEDIATAMENTE dopo la creazione
+      console.log('📱 [9/10] Presenting Google Pay IMMEDIATELY...');
       const result = await Stripe.presentGooglePay();
-      
+      console.log('✅ [9/10] Stripe.presentGooglePay() returned');
+      console.log('📱 [9/10] Google Pay result:', JSON.stringify(result, null, 2));
+
+      console.log('📱 [10/10] Processing payment result...');
+      console.log('📱 Checking result.paymentResult:', result.paymentResult);
+      console.log('📱 GooglePayEventsEnum.Completed:', GooglePayEventsEnum.Completed);
+
       if (result.paymentResult === GooglePayEventsEnum.Completed) {
-        console.log('✅ Google Pay payment completed');
+        console.log('✅ [10/10] Payment completed successfully!');
+        console.log('=== GOOGLE PAY DEBUG END - SUCCESS ===');
         return {
           success: true,
           paymentIntentId: paymentIntent.id
         };
+      } else if (result.paymentResult === GooglePayEventsEnum.Canceled) {
+        console.log('⚠️ [10/10] Payment canceled by user');
+        console.log('=== GOOGLE PAY DEBUG END - CANCELED ===');
+        return {
+          success: false,
+          error: 'Pagamento annullato dall\'utente'
+        };
+      } else if (result.paymentResult === GooglePayEventsEnum.Failed) {
+        console.log('❌ [10/10] Payment failed');
+        console.log('=== GOOGLE PAY DEBUG END - FAILED ===');
+        return {
+          success: false,
+          error: 'Pagamento fallito'
+        };
       } else {
-        throw new Error('Google Pay payment failed or cancelled');
+        console.log('⚠️ [10/10] Payment not completed - unknown result:', result.paymentResult);
+        console.log('=== GOOGLE PAY DEBUG END - UNKNOWN ===');
+        return {
+          success: false,
+          error: 'Pagamento non completato'
+        };
       }
 
     } catch (error: any) {
-      console.error('❌ Google Pay error:', error);
+      console.error('=== GOOGLE PAY DEBUG - ERROR CAUGHT ===');
+      console.error('❌ Google Pay error occurred');
+      console.error('❌ Error type:', typeof error);
+      console.error('❌ Error object:', error);
+      console.error('❌ Error message:', error.message);
+      console.error('❌ Error name:', error.name);
+      console.error('❌ Error stack:', error.stack);
+
+      // Reset del flag in caso di errore, per riprovare con delay
+      this.googlePayReady = false;
+      console.log('🔄 googlePayReady flag reset to false');
+
+      // Gestisci errori specifici
+      let errorMessage = 'Errore durante il pagamento con Google Pay';
+
+      if (error.message) {
+        const msg = error.message.toLowerCase();
+        console.log('📝 Analyzing error message:', msg);
+
+        // Errori di disponibilità
+        if (msg.includes('not available') || msg.includes('not supported') || msg.includes('unavailable')) {
+          errorMessage = 'Google Pay non è disponibile su questo dispositivo. Verifica di avere Google Play Services aggiornato.';
+        }
+        // Errori di configurazione carte
+        else if (msg.includes('no cards') || msg.includes('no payment') || msg.includes('no card')) {
+          errorMessage = 'Nessuna carta configurata in Google Pay. Apri Google Pay per aggiungerne una.';
+        }
+        // Errori di cancellazione
+        else if (msg.includes('cancel') || msg.includes('user cancel')) {
+          errorMessage = 'Pagamento annullato';
+        }
+        // Errori di configurazione merchant
+        else if (msg.includes('merchant') || msg.includes('configuration') || msg.includes('invalid')) {
+          errorMessage = 'Configurazione Google Pay non valida. Contatta il supporto.';
+        }
+        // Errori di rete
+        else if (msg.includes('network') || msg.includes('connection') || msg.includes('timeout')) {
+          errorMessage = 'Errore di connessione. Verifica la tua connessione internet.';
+        }
+        // Errori di inizializzazione
+        else if (msg.includes('not initialized') || msg.includes('initialization')) {
+          errorMessage = 'Stripe non è stato inizializzato correttamente. Riavvia l\'app.';
+        }
+        // Errori Google Play Services
+        else if (msg.includes('play services') || msg.includes('google play')) {
+          errorMessage = 'Google Play Services non disponibile o non aggiornato. Aggiorna Google Play Services.';
+        }
+        // Per errori non riconosciuti, mostra il messaggio originale
+        else {
+          errorMessage = `Errore Google Pay: ${error.message}`;
+          console.log('⚠️ Unknown error pattern, using original message');
+        }
+
+        console.log('📝 Final error message:', errorMessage);
+      } else {
+        console.log('⚠️ No error.message available');
+      }
+
+      console.error('=== GOOGLE PAY DEBUG END - ERROR ===');
+
       return {
         success: false,
-        error: error.message || 'Errore durante il pagamento con Google Pay'
+        error: errorMessage
       };
     }
   }
@@ -492,28 +662,38 @@ async presentPaymentOptions(
   idAccountConnected: string = '',
   merchantName: string = environment.additionalConfig.merchantName
 ): Promise<PaymentResult> {
-  
+
+  console.log('=== PRESENT PAYMENT OPTIONS DEBUG START ===');
+  console.log('💳 presentPaymentOptions called with:', { amount, currency, idAccountConnected, merchantName });
+  console.log('💳 Platform info:', {
+    isCapacitor: this.platform.is('capacitor'),
+    isAndroid: this.platform.is('android'),
+    isIOS: this.platform.is('ios'),
+    platforms: this.platform.platforms()
+  });
+
   // 🌐 BROWSER: usa Stripe.js
   if (!this.platform.is('capacitor')) {
     console.log('💻 Browser detected - using Stripe.js');
     return this.payWithCardBrowser(amount, currency, idAccountConnected, merchantName);
   }
 
+  console.log('📱 Mobile detected - checking payment methods...');
+
   // 📱 MOBILE: usa Stripe Native
-  
+
   // Su iOS, prova prima Apple Pay
-  if (this.isApplePayAvailable()) {
-    console.log('🍎 Apple Pay');
+  const applePayAvailable = this.isApplePayAvailable();
+  console.log('🍎 Apple Pay available?', applePayAvailable);
+  if (applePayAvailable) {
+    console.log('🍎 Using Apple Pay');
     return this.payWithApplePay(amount, currency, idAccountConnected, merchantName);
   }
 
-  // Su Android, prova prima Google Pay
-  if (this.isGooglePayAvailable()) {
-    console.log('📱 Google Pay');
-    return this.payWithGooglePay(amount, currency, idAccountConnected, merchantName);
-  }
-
-  // Fallback: carta tradizionale
+  // Su Android, usa Payment Sheet (include Google Pay automaticamente)
+  // NOTA: Disabilitato Google Pay nativo per bug nel plugin v7.2.2
+  // (NullPointerException in GooglePayExecutor.kt:66)
+  console.log('📱 Android detected - using Payment Sheet (includes Google Pay option)');
   return this.payWithCard(amount, currency, idAccountConnected, merchantName);
 }
 

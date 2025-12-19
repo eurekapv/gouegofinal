@@ -839,10 +839,15 @@ onSelectDefaultTypePayment(): Promise<void> {
 
     if (this.iscrizioneDoc) {
 
-      //Chiediamo quanto devo pagare adesso
-      paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
 
-      if (paymentAmount.totale == 0) {
+
+
+      //Chiediamo quanto devo pagare adesso
+      //paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
+
+      //Il corso è gratuito o è una prova
+      if (this.iscrizioneDoc.TOTALE == 0) {
+        console.log('Totale a ZERO');
         // Potrei essere in una prova gratuita, oppure aver scelto 
         // un pagamento che non
         // prevede un immediato esborso
@@ -858,6 +863,7 @@ onSelectDefaultTypePayment(): Promise<void> {
 
       }
       else if (this._selectedPaymentMode == ModeIncassoConfig.incassoContanti) {
+        console.log('Modalita contanti');
         //Modalità di pagamento in struttura
         //Creo il risultato del pagamento, passando la modalità
         docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
@@ -870,6 +876,7 @@ onSelectDefaultTypePayment(): Promise<void> {
 
       }
       else if (this._selectedPaymentMode == ModeIncassoConfig.incassoBonifico) {
+        console.log('Modalità Bonifico');
         //Modalità di pagamento in struttura
         //Creo il risultato del pagamento, passando la modalità
         docPaymentResult = new PaymentProcess(PaymentMode.pagaBonifico);
@@ -882,12 +889,14 @@ onSelectDefaultTypePayment(): Promise<void> {
 
       }
       else if (this._selectedPaymentMode == ModeIncassoConfig.incassoCreditCard) {
-          
+          console.log('Modalità Stripe');
         //*********** Pagamento tramite Stripe *********************
           if (this._selectedPaymentConfig.TIPOPAYMENT == PaymentChannel.stripe) {
               //Chiamo il metodo per il pagamento
             this.payWithStripe()
                 .then(paymentResultDoc => {
+                  //Siccome ho pagato con la carta l'intero importo devo cambiare la collection con gli incassi
+                  
                   //Pagamento avvenuto correttamente
                   //Passo subito al Success
                   this.onPaymentSuccess(paymentResultDoc);
@@ -927,15 +936,20 @@ onSelectDefaultTypePayment(): Promise<void> {
       let paymentAmount: TotaleScadenze;
       let paymentDescription: string = '';
 
-      //Chiediamo quanto devo pagare adesso
-      paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
+      console.log('**************************************************');
+      console.log('***                   STRIPE                   ***');
+      console.log('**************************************************');
+
+
+      //Devo pagare tutto in 1 rata
+      paymentAmount = {totale: this.iscrizioneDoc.TOTALE, numeroRate: 1};
 
       //Compilo la descrizione del pagamento
       paymentDescription = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
 
       if (this.selectedTipoPagamento.isRateale()) {
         if (paymentAmount.numeroRate == 1) {
-          paymentDescription += ` (Rata 1 di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
+          paymentDescription += ` (Pagamento complessivo)`
         }
         else {
           paymentDescription += ` (${paymentAmount.numeroRate} Rate di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
@@ -947,7 +961,7 @@ onSelectDefaultTypePayment(): Promise<void> {
       const amount = paymentAmount.totale * 100;
       const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
 
-
+      //Presenta le Opzioni del pagamento
       this.startService.presentPaymentOptions(
                         amount,
                         'EUR',
@@ -1272,6 +1286,9 @@ onSelectDefaultTypePayment(): Promise<void> {
 
           //E' a pagamento, in qualche modo dovrà pagare
           //Creo una scadenza
+          console.log('🔍 DEBUG: TipoRigoIncasso object:', TipoRigoIncasso);
+          console.log('🔍 DEBUG: TipoRigoIncasso.scadenza value:', TipoRigoIncasso.scadenza);
+
           myDocRata.IDTRANSACTION = '';
           myDocRata.IDORDER = '';
           myDocRata.MODALITA = resultPayment.channelPayment;

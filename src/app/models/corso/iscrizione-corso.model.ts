@@ -214,12 +214,13 @@ export class IscrizioneCorso extends IDDocument {
       let sumValue: number = 0;
       let numRate: number = 0;
       let objResult: TotaleScadenze;
+      const TipoIncassoScadenza = 20;
 
       if (dateRequest && this.ISCRIZIONEINCASSO && this.ISCRIZIONEINCASSO.length != 0) {
         for (let index = 0; index < this.ISCRIZIONEINCASSO.length; index++) {
           const rowIncasso = this.ISCRIZIONEINCASSO[index];
 
-          if (rowIncasso.TIPORIGO == TipoRigoIncasso.scadenza && 
+          if (rowIncasso.TIPORIGO == TipoIncassoScadenza && 
               MyDateTime.isSameOrBefore(rowIncasso.DATASCADENZA, dateRequest, "minute")) {
                 sumValue += rowIncasso.IMPORTO;
                 numRate++;
@@ -240,12 +241,15 @@ export class IscrizioneCorso extends IDDocument {
      * @param resultPayment 
      */
     setScadenzePayedFor(dateRequest: Date, resultPayment: PaymentProcess): void {
+      const TipoRigoScadenza = 20;
+      const TipoRigoIncassato = 10;
+      
       if (dateRequest && this.ISCRIZIONEINCASSO && this.ISCRIZIONEINCASSO.length != 0) {
 
         for (let index = 0; index < this.ISCRIZIONEINCASSO.length; index++) {
           const rowIncasso = this.ISCRIZIONEINCASSO[index];
 
-          if (rowIncasso.TIPORIGO == TipoRigoIncasso.scadenza && 
+          if (rowIncasso.TIPORIGO == TipoRigoScadenza && 
               MyDateTime.isSameOrBefore(rowIncasso.DATASCADENZA, dateRequest, "minute")) {
                 rowIncasso.IDTRANSACTION = '';
                 if (resultPayment.idElectronicResult && resultPayment.idElectronicResult.length != 0) {
@@ -255,7 +259,7 @@ export class IscrizioneCorso extends IDDocument {
                   rowIncasso.IDORDER = 'UNKNOW';
                 }
                 rowIncasso.MODALITA = resultPayment.channelPayment;
-                rowIncasso.TIPORIGO = TipoRigoIncasso.incassato;
+                rowIncasso.TIPORIGO = TipoRigoIncassato;
                 rowIncasso.ZORDER = ZOrderIncasso.incassato;
                 rowIncasso.DATAOPERAZIONE = dateRequest;
               }

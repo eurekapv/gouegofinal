@@ -12,7 +12,19 @@
   margin-top: 20px;
   margin-bottom: 20px;
 
+  // Se c'è un solo elemento, occupa tutta la larghezza
+  &:has(.payment-button:only-child) {
+    .payment-button {
+      flex: 1;
+      max-width: 100%;
+    }
+  }
 
+  // Altrimenti distribuisci equamente
+  .payment-button {
+    flex: 1;
+    min-width: 0; // Permette al flex di ridursi sotto la min-width del contenuto
+  }
 }
 
 // =====================================================
@@ -227,6 +239,60 @@
     line-height: 1.5;
     font-size: 13px;
     font-weight: 500;
+  }
+}
+
+// ========================================
+// TERMS ACCEPTANCE (Checkbox Condizioni)
+// ========================================
+.terms-acceptance {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--ion-color-primary-tint);
+    background: #ffffff;
+  }
+
+  ion-checkbox {
+    --size: 24px;
+    --checkbox-background-checked: var(--ion-color-success);
+    --border-color-checked: var(--ion-color-success);
+    --checkmark-color: white;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .terms-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ion-color-dark);
+    line-height: 1.6;
+    flex: 1;
+
+    .terms-link {
+      color: var(--ion-color-primary);
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: var(--ion-color-primary-shade);
+        text-decoration: none;
+      }
+
+      &:active {
+        color: var(--ion-color-primary-tint);
+      }
+    }
   }
 }
 

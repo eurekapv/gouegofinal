@@ -89,6 +89,9 @@ export class ChoosePaymentModeComponent  implements OnInit {
   //Indica se mostrare ik pulsante Contatta la struttura
   _showContattaButton: boolean = false;
 
+  //Flag per accettazione condizioni di vendita
+  termsAccepted: boolean = false;
+
 
   /**
    * Torna TRUE se esiste la modalità passata o se ne esistesse almeno una
@@ -154,7 +157,7 @@ export class ChoosePaymentModeComponent  implements OnInit {
    * Specifica se il pulsante di conferma è abilitato
    */
   get isConfirmEnabled(): boolean {
-    if (this._canEnableConfirm && this._selectedMode != null) {
+    if (this._canEnableConfirm && this._selectedMode != null && this.termsAccepted) {
       return true;
     }
     return false;

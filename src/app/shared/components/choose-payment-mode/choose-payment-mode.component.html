@@ -1,121 +1,127 @@
 <!-- PAYMENT MODE SELECTOR -->
-<div class="payment-mode-container" 
-    *ngIf="existConfiguration()">
-  <div class="payment-mode-grid">
-    
-    <!-- PAGA IN STRUTTURA -->
-    <div class="payment-button" 
-         *ngIf="existConfiguration(modeIncassoConfig.incassoContanti)"
-         [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoContanti}"
-         (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
-      <div class="button-icon">
-        <ion-icon name="cash-outline"></ion-icon>
-      </div>
-      <div class="button-content">
-        <h4>Paga in Struttura</h4>
-        <p>In sede</p>
-      </div>
-      <div class="button-radio">
-        <div class="radio-dot"></div>
-      </div>
+@if (existConfiguration()) {
+  <div class="payment-mode-container">
+    <div class="payment-mode-grid">
+
+      <!-- PAGA IN STRUTTURA -->
+      @if (existConfiguration(modeIncassoConfig.incassoContanti)) {
+        <div class="payment-button"
+             [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoContanti}"
+             (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
+          <div class="button-icon">
+            <ion-icon name="cash-outline"></ion-icon>
+          </div>
+          <div class="button-content">
+            <h4>Paga in Struttura</h4>
+            <p>In sede</p>
+          </div>
+          <div class="button-radio">
+            <div class="radio-dot"></div>
+          </div>
+        </div>
+      }
+
+      <!-- PAGA CON BONIFICO -->
+      @if (existConfiguration(modeIncassoConfig.incassoBonifico)) {
+        <div class="payment-button"
+             [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoBonifico}"
+             (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
+          <div class="button-icon">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+          <div class="button-content">
+            <h4>Paga con Bonifico</h4>
+            <p>Bancario</p>
+          </div>
+          <div class="button-radio">
+            <div class="radio-dot"></div>
+          </div>
+        </div>
+      }
+
+      <!-- PAGA SUBITO -->
+      @if (existConfiguration(modeIncassoConfig.incassoCreditCard)) {
+        <div class="payment-button"
+             [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoCreditCard}"
+             (click)="onSelectMode(modeIncassoConfig.incassoCreditCard)">
+          <div class="button-icon">
+            <ion-icon name="card-outline"></ion-icon>
+          </div>
+          <div class="button-content">
+            <h4>Paga Subito</h4>
+            <p>Online</p>
+          </div>
+          <div class="button-radio">
+            <div class="radio-dot"></div>
+          </div>
+        </div>
+      }
+
     </div>
 
-    <!-- PAGA CON BONIFICO -->
-    <div class="payment-button" 
-         *ngIf="existConfiguration(modeIncassoConfig.incassoBonifico)"
-         [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoBonifico}"
-         (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
-      <div class="button-icon">
-        <ion-icon name="document-text-outline"></ion-icon>
-      </div>
-      <div class="button-content">
-        <h4>Paga con Bonifico</h4>
-        <p>Bancario</p>
-      </div>
-      <div class="button-radio">
-        <div class="radio-dot"></div>
-      </div>
+    <!-- Accettazione Condizioni di Vendita -->
+    <div class="terms-acceptance ion-margin-vertical">
+      <ion-checkbox [(ngModel)]="termsAccepted"></ion-checkbox>
+      <p class="terms-text">
+        Accetto le
+        <a (click)="onClickCondizioniVendita(); $event.stopPropagation()" class="terms-link">
+          condizioni di vendita
+        </a>
+        e l'informativa sulla privacy
+      </p>
     </div>
 
-    <!-- PAGA SUBITO -->
-    <div class="payment-button" 
-         *ngIf="existConfiguration(modeIncassoConfig.incassoCreditCard)"         
-         [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoCreditCard}"
-         (click)="onSelectMode(modeIncassoConfig.incassoCreditCard)">
-      <div class="button-icon">
-        <ion-icon name="card-outline"></ion-icon>
-      </div>
-      <div class="button-content">
-        <h4>Paga Subito</h4>
-        <p>Online</p>
-      </div>
-      <div class="button-radio">
-        <div class="radio-dot"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="action-button-section">
-
-      <ion-button 
-        expand="block"
-        size="large"
-        class="confirm-button"
-        [disabled]="!isConfirmEnabled"
-        (click)="onConfirm()">
-        <ion-icon [name]="_iconConfirm" slot="start"></ion-icon>
-        {{_labelConfirm}}
-      </ion-button>
-</div>
-
-
-  <!-- LINK CONDIZIONI VENDITA
-  <div class="terms-section" (click)="onClickCondizioniVendita()">
-    <ion-icon name="document-text-outline"></ion-icon>
-    <span>Procedendo con l'acquisto si accettano le <strong>condizioni di vendita</strong></span>
-    <ion-badge color="success">LEGGI</ion-badge>
-  </div>   -->
-
-  <!-- Info Box Disclaimer -->
-  <div class="info-box ion-margin-vertical" (click)="onClickCondizioniVendita()">
-    <ion-icon name="information-circle" class="info-icon"></ion-icon>
-    <p>Procedendo si accettano integralmente le nostre condizioni generali di vendita. Prendi visione della nostra informativa sulla privacy</p>
-    <ion-button size="small">Visualizza</ion-button>
-  </div>
-
+    <!-- CONFERMA DELL'ACQUISTO -->
     <div class="action-button-section">
-          
-      <ion-button
-        *ngIf="_showContattaButton"
-        (click)="onClickContattaStruttura()"
-        expand="block"
-        class="undo-button"
-        size="large">
-        <ion-icon name="call-outline" slot="start"></ion-icon>
-        Contatta la struttura
-      </ion-button>
+
+        <ion-button
+          expand="block"
+          size="large"
+          class="confirm-button"
+          [disabled]="!isConfirmEnabled"
+          (click)="onConfirm()">
+          <ion-icon [name]="_iconConfirm" slot="start"></ion-icon>
+          {{_labelConfirm}}
+        </ion-button>
+    </div>
+
+
+
+    <!-- CONTATTA LA STRUTTURA -->
+    <div class="action-button-section">
+
+      @if (_showContattaButton) {
+        <ion-button
+          (click)="onClickContattaStruttura()"
+          expand="block"
+          class="undo-button"
+          size="large">
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          Contatta la struttura
+        </ion-button>
+      }
 
       <ion-button
         class="undo-button"
         expand="block"
         size="large"
-        (click)="onUndo()"
-        >
+        (click)="onUndo()">
         <ion-icon [name]="_iconUndo" slot="start"></ion-icon>
         {{_labelUndo}}
       </ion-button>
-</div>
+    </div>
 
-</div>
+  </div>
+}
 
 
 <!-- NO PAYMENT METHODS -->
-<div class="no-payment-container" *ngIf="!existConfiguration()">
+@if (!existConfiguration()) {
+  <div class="no-payment-container">
     <div class="no-payment-card">
       <ion-icon name="close-circle-outline"></ion-icon>
       <h4>Pagamento Non Supportato</h4>
       <p>Nessun metodo di pagamento disponibile per questo acquisto</p>
     </div>
   </div>
-
+}

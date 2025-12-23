@@ -179,6 +179,46 @@ ion-content {
 }
 
 // =====================================================
+// DELIVERY MODE SEGMENT
+// =====================================================
+ion-segment {
+  margin-bottom: 20px;
+  --background: #f1f3f5;
+  border-radius: 12px;
+  padding: 4px;
+
+  ion-segment-button {
+    --background: transparent;
+    --background-checked: white;
+    --color: var(--ion-color-medium);
+    --color-checked: var(--ion-color-primary);
+    --indicator-color: transparent;
+    --border-radius: 10px;
+    min-height: 48px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+
+    ion-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    ion-label {
+      margin-top: 4px;
+    }
+
+    &::part(native) {
+      border-radius: 10px;
+    }
+
+    &.segment-button-checked {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// =====================================================
 // PICKUP CARD (Card Ritiro)
 // =====================================================
 .pickup-card {
@@ -189,6 +229,7 @@ ion-content {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 12px;
   border-left: 4px solid var(--ion-color-primary);
+  animation: fadeIn 0.3s ease;
 
   .pickup-badge-icon {
     font-size: 40px;
@@ -220,6 +261,112 @@ ion-content {
       ion-icon {
         font-size: 20px;
         color: var(--ion-color-primary);
+      }
+    }
+  }
+}
+
+// =====================================================
+// SHIPPING FORM (Form Spedizione)
+// =====================================================
+.shipping-form {
+  animation: fadeIn 0.3s ease;
+
+  ion-list {
+    background: transparent;
+    padding: 0;
+  }
+
+  ion-item {
+    --background: #f8f9fa;
+    --border-radius: 12px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --inner-padding-end: 0;
+    --min-height: 56px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+
+    ion-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--ion-color-primary);
+      margin-bottom: 8px;
+    }
+
+    ion-input,
+    ion-textarea {
+      --padding-start: 0;
+      --padding-end: 0;
+      font-size: 1rem;
+      color: var(--ion-color-dark);
+
+      &::part(native) {
+        padding: 0 !important;
+      }
+    }
+  }
+
+  ion-row {
+    margin-bottom: 0;
+
+    ion-col {
+      padding: 0 6px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+// Shipping Cost Info
+.shipping-cost-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%);
+  border-radius: 12px;
+  border-left: 4px solid #ffc107;
+  margin-top: 16px;
+  animation: fadeIn 0.3s ease;
+
+  ion-icon {
+    font-size: 24px;
+    color: #f57c00;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #795548;
+    font-weight: 500;
+
+    strong {
+      color: #e65100;
+      font-weight: 700;
+    }
+  }
+
+  &.success {
+    background: linear-gradient(135deg, #d4edda 0%, #e8f5e9 100%);
+    border-left-color: var(--ion-color-success);
+
+    ion-icon {
+      color: var(--ion-color-success);
+    }
+
+    p {
+      color: #2e7d32;
+
+      strong {
+        color: var(--ion-color-success);
       }
     }
   }

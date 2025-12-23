@@ -67,6 +67,9 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
   /* FINE NUOVE PROPRIETA */
 
+  // Modalità di consegna
+  deliveryMode: 'pickup' | 'shipping' = 'pickup';
+
 
   
   constructor(    
@@ -106,12 +109,14 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
           return this.setListPayment();
         })
         .then(() => {
+          //Inizializzo la modalità di consegna in base al carrello
+          this.initDeliveryMode();
           //Chiudo il Loading e mi fermo sulla pagina
           loadingItem.dismiss();
         })
         .catch(error => {
           let listButtons: AlertButton[] = [{
-                  text:'Chiudi', 
+                  text:'Chiudi',
                   handler: () => {this.closeModal();
                   }}];
 
@@ -221,8 +226,136 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
     })
   }
 
+  //#region MODALITÀ DI CONSEGNA
+
+  /**
+   * Inizializza la modalità di consegna in base al valore RITIROINSEDE del carrello
+   */
+  initDeliveryMode() {
+    // Se RITIROINSEDE è true o undefined, imposta pickup, altrimenti shipping
+    this.deliveryMode = (this.carrelloDoc.RITIROINSEDE === false) ? 'shipping' : 'pickup';
+  }
+
+  /**
+   * Gestisce il cambio di modalità di consegna
+   */
+  onDeliveryModeChange() {
+    if (this.deliveryMode === 'pickup') {
+      // Ritiro in sede
+      this.carrelloDoc.RITIROINSEDE = true;
+      // Azzero i campi di spedizione
+      this.clearShippingFields();
+      // Azzero le spese di trasporto
+      this.carrelloDoc.SPESETRASPORTO = 0;
+    } else {
+      // Spedizione
+      this.carrelloDoc.RITIROINSEDE = false;
+      // Inizializzo i campi con i dati dell'utente se disponibili
+      this.initShippingFields();
+      // Calcolo le spese di trasporto (da implementare con la logica backend)
+      this.calculateShippingCost();
+    }
+
+    // Ricalcola il totale
+    this.recalculateTotal();
+  }
+
+  /**
+   * Azzera i campi di spedizione
+   */
+  clearShippingFields() {
+    this.carrelloDoc.NOMEDESTINAZIONE = null;
+    this.carrelloDoc.INDIRIZZODESTINAZIONE = null;
+    this.carrelloDoc.COMUNEDESTINAZIONE = null;
+    this.carrelloDoc.CAPDESTINAZIONE = null;
+    this.carrelloDoc.PROVINCIADESTINAZIONE = null;
+    this.carrelloDoc.STATODESTINAZIONE = null;
+    this.carrelloDoc.NOTESDESTINAZIONE = null;
+  }
+
+  /**
+   * Inizializza i campi di spedizione con i dati dell'utente
+   */
+  initShippingFields() {
+    if (this.userDoc) {
+      this.carrelloDoc.NOMEDESTINAZIONE = this.carrelloDoc.NOMINATIVO || this.userDoc.NOMINATIVO;
+      this.carrelloDoc.INDIRIZZODESTINAZIONE = this.userDoc.INDIRIZZO || null;
+      this.carrelloDoc.COMUNEDESTINAZIONE = this.userDoc.COMUNE || null;
+      this.carrelloDoc.CAPDESTINAZIONE = this.userDoc.CAP || null;
+      this.carrelloDoc.PROVINCIADESTINAZIONE = this.userDoc.PROVINCIA || null;
+      this.carrelloDoc.STATODESTINAZIONE = 'Italia';
+    } else {
+      this.carrelloDoc.STATODESTINAZIONE = 'Italia';
+    }
+  }
+
+  /**
+   * Calcola le spese di trasporto in base al valore del carrello
+   * TODO: Implementare chiamata al backend per calcolo dinamico
+   */
+  calculateShippingCost() {
+    const cartValue = this.carrelloDoc.TOTINTERMEDIO || 0;
+
+    // Logica basata sul valore del carrello (come da README_TRASPORTO.md)
+    if (cartValue >= 80) {
+      this.carrelloDoc.SPESETRASPORTO = 0; // Gratis sopra 80€
+    } else if (cartValue >= 40) {
+      this.carrelloDoc.SPESETRASPORTO = 2.90; // 2.90€ tra 40€ e 79.99€
+    } else {
+      this.carrelloDoc.SPESETRASPORTO = 4.90; // 4.90€ sotto 40€
+    }
+  }
+
+  /**
+   * Ricalcola il totale del documento
+   */
+  recalculateTotal() {
+    this.carrelloDoc.TOTDOCUMENTO = this.carrelloDoc.TOTINTERMEDIO +
+                                     (this.carrelloDoc.SPESETRASPORTO || 0) +
+                                     (this.carrelloDoc.TOTARROTONDAMENTO || 0);
+
+    // Aggiorna anche il residuo se non è stato ancora pagato
+    if (this.carrelloDoc.TOTRESIDUO === this.carrelloDoc.TOTDOCUMENTO - this.carrelloDoc.SPESETRASPORTO) {
+      this.carrelloDoc.TOTRESIDUO = this.carrelloDoc.TOTDOCUMENTO;
+    }
+  }
+
+  /**
+   * Valida i campi di spedizione prima di procedere con il pagamento
+   */
+  validateShippingFields(): boolean {
+    if (this.deliveryMode === 'shipping') {
+      const requiredFields = [
+        { field: this.carrelloDoc.NOMEDESTINAZIONE, name: 'Nome Destinatario' },
+        { field: this.carrelloDoc.INDIRIZZODESTINAZIONE, name: 'Indirizzo' },
+        { field: this.carrelloDoc.COMUNEDESTINAZIONE, name: 'Città' },
+        { field: this.carrelloDoc.CAPDESTINAZIONE, name: 'CAP' },
+        { field: this.carrelloDoc.PROVINCIADESTINAZIONE, name: 'Provincia' },
+        { field: this.carrelloDoc.STATODESTINAZIONE, name: 'Stato' }
+      ];
+
+      for (const item of requiredFields) {
+        if (!item.field || item.field.trim().length === 0) {
+          this.startService.presentAlertMessage(
+            `Il campo "${item.name}" è obbligatorio per la spedizione`,
+            'Dati Incompleti'
+          );
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  //#endregion
+
   //#region ACQUISTO
   onClickAcquista() {
+    // Valida i campi di spedizione prima di procedere
+    if (!this.validateShippingFields()) {
+      return;
+    }
+
     //Procedo con il pagamento
     this.onExecPayment();
   }

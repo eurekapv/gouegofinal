@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-calendarscroll',
   templateUrl: './calendarscroll.component.html',
   styleUrls: ['./calendarscroll.component.scss']
 })
-export class CalendarscrollComponent implements OnInit {
+export class CalendarscrollComponent implements OnInit, OnDestroy {
 
   // Giorno selezionato
   _activeDay: Date = new Date();
@@ -17,6 +17,7 @@ export class CalendarscrollComponent implements OnInit {
   private isDragging = false;
   private startX = 0;
   private scrollLeft = 0;
+  private intersectionObserver: IntersectionObserver;
 
   @Input() set activeDay(value: Date) {
     this._activeDay = value;
@@ -43,6 +44,9 @@ export class CalendarscrollComponent implements OnInit {
 
     // Aggiungi il drag scroll
     this.attachDragScrollListener();
+
+    // Osserva i cambiamenti di visibilità del componente
+    this.observeVisibility();
   }
 
   // =====================================================
@@ -180,6 +184,41 @@ export class CalendarscrollComponent implements OnInit {
         scrollElement.scrollLeft = this.scrollLeft - walk;
       });
   }
+
+  // =====================================================
+  // OSSERVATORE VISIBILITÀ
+  // =====================================================
+
+  /**
+   * Osserva quando il componente diventa visibile e ricentra sul giorno attivo
+   */
+  private observeVisibility(): void {
+    if (!this.daysScrollContainer) {
+      return;
+    }
+
+    const scrollElement = this.daysScrollContainer.nativeElement;
+
+    // Crea un IntersectionObserver per rilevare quando il componente diventa visibile
+    this.intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Se il componente è diventato visibile
+          if (entry.isIntersecting && entry.intersectionRatio > 0) {
+            // Ricentra il calendario sul giorno attivo
+            this.scrollToActiveDay();
+          }
+        });
+      },
+      {
+        threshold: 0.1 // Trigger quando almeno il 10% del componente è visibile
+      }
+    );
+
+    // Inizia ad osservare il container
+    this.intersectionObserver.observe(scrollElement);
+  }
+
   /**
    * Controlla se siamo vicini alla fine dello scroll
    * Se sì, carica automaticamente il mese successivo
@@ -304,6 +343,16 @@ private loadNextMonthAutomatically(): void {
    */
   trackByDayFn(index: number, item: CalendarDay): string {
     return `${item.dateValue.getTime()}-${index}`;
+  }
+
+  /**
+   * Cleanup quando il componente viene distrutto
+   */
+  ngOnDestroy() {
+    // Disconnetti l'IntersectionObserver per evitare memory leaks
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
   }
 }
 

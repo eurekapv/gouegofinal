@@ -99,16 +99,44 @@
         {{articoloDoc.DESCRADDITIONAL}}
       </p>
 
-      <!-- Price Section -->
-      <div class="price-section">
-        <div class="price-main">
-          <span class="price-label">Prezzo</span>
-          <span class="price-value">{{articoloDoc.PREZZONETTO | currency: 'EUR'}}</span>
+      <!-- Price Section con sconto -->
+      @if(articoloDoc.existSconto()) {
+        <div class="price-section">
+          <div class="price-main">
+            <span class="price-label">Prezzo</span>
+            @if(articoloDoc.TIPOPREZZO == tipoPrezzo.alNettoDiImposta) {  
+            <span class="price-value">{{articoloDoc.PREZZOFINALE | currency: 'EUR'}} + IVA</span>
+            }
+            @else {
+              <span class="price-value">{{articoloDoc.PREZZOFINALE | currency: 'EUR'}}</span>
+            }
+          </div>
+          
+          @if(articoloDoc.TIPOPREZZO == tipoPrezzo.alNettoDiImposta) {
+            <div class="price-old">
+              <span>{{articoloDoc.PREZZONETTO | currency: 'EUR'}}</span>
+            </div>
+          }
+          @else {
+            <div class="price-old">
+              <span>{{articoloDoc.PREZZOLORDO | currency: 'EUR'}}</span>
+            </div>
+          }
         </div>
-        <div class="price-old" *ngIf="articoloDoc.PREZZOLORDO && articoloDoc.PREZZOLORDO > articoloDoc.PREZZONETTO">
-          <span>{{articoloDoc.PREZZOLORDO | currency: 'EUR'}}</span>
+      }
+      @else {
+        <div class="price-section">
+          <div class="price-main">
+            <span class="price-label">Prezzo</span>
+            @if(articoloDoc.TIPOPREZZO == tipoPrezzo.alNettoDiImposta) {  
+            <span class="price-value">{{articoloDoc.PREZZOFINALE | currency: 'EUR'}} + IVA</span>
+            }
+            @else {
+              <span class="price-value">{{articoloDoc.PREZZOFINALE | currency: 'EUR'}}</span>
+            }
+          </div>
         </div>
-      </div>
+      }
 
     </div>
    

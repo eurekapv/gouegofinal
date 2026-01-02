@@ -17,6 +17,7 @@ export class Articolo extends IDDocument{
     VALIDOFINO: Date;
     PREZZONETTO: number;
     PREZZOLORDO: number;
+    PREZZOFINALE: number;
     SCONTOTEXT: string;
     CATEGORIA: string;
     DESCRHTML: string;
@@ -62,7 +63,7 @@ export class Articolo extends IDDocument{
             'PATHCOVERIMAGE',
             'DESCRADDITIONAL'
         ];
-        let arNumber = ['PREZZONETTO', 'PREZZOLORDO', 'TIPOARTICOLO', 'TIPOPREZZO','QUANTITAMAGAZZINO'];
+        let arNumber = ['PREZZONETTO', 'PREZZOLORDO','PREZZOFINALE' ,'TIPOARTICOLO', 'TIPOPREZZO','QUANTITAMAGAZZINO'];
         let arBoolean = ['FLAGTAGLIEMISURE', 'FLAGCOLORI', 'FLAGSHOPONLINE','GESTIONESCORTE', 'FLAGSHOPACQUISTABILE'];
         let arDate = [];
         let arDateTime =['VALIDOFINO'];
@@ -183,5 +184,19 @@ export class Articolo extends IDDocument{
         }
 
         return myUrl;
+    }
+
+
+    /**
+     * Torna TRUE se esiste uno sconto
+     * @returns 
+     */
+    existSconto(): boolean {
+
+        if (this.SCONTOTEXT && this.SCONTOTEXT.length != 0) {
+            return true;
+        }
+
+        return false;
     }
 }

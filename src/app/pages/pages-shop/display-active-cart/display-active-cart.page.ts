@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { AlertButton, AnimationController, LoadingController, ModalController, NavController } from '@ionic/angular';
+import { AlertButton, LoadingController, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { DetailCarrello } from 'src/app/models/shop/detail-carrello.model';
 import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
@@ -16,8 +15,7 @@ import { ModalPageCSS } from 'src/app/models/zsupport/valuelist.model';
 })
 export class DisplayActiveCartPage implements OnInit, OnDestroy {
 
-  constructor(private router: ActivatedRoute,
-    private animatioCntrl: AnimationController,
+  constructor(
     private startService: StartService,
     private loadingController: LoadingController,
     private modalController: ModalController,

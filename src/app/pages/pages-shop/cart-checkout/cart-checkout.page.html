@@ -42,15 +42,17 @@
           <span class="row-value">{{carrelloDoc.TOTINTERMEDIO | currency : 'EUR'}}</span>
         </div>
 
-        <div class="summary-row" *ngIf="carrelloDoc.SPESETRASPORTO > 0">
-          <span class="row-label">Spedizione</span>
-          <span class="row-value">{{carrelloDoc.SPESETRASPORTO | currency : 'EUR'}}</span>
-        </div>
-
-        <div class="summary-row" *ngIf="carrelloDoc.SPESETRASPORTO === 0">
-          <span class="row-label">Spedizione</span>
-          <span class="row-value success">GRATUITA</span>
-        </div>
+        @if(deliveryMode == 'shipping') {
+          <div class="summary-row" *ngIf="carrelloDoc.SPESETRASPORTO > 0">
+            <span class="row-label">Spedizione</span>
+            <span class="row-value">{{carrelloDoc.SPESETRASPORTO | currency : 'EUR'}}</span>
+          </div>
+  
+          <div class="summary-row" *ngIf="carrelloDoc.SPESETRASPORTO === 0">
+            <span class="row-label">Spedizione</span>
+            <span class="row-value success">GRATUITA</span>
+          </div>
+        }
       </div>
     </div>
 

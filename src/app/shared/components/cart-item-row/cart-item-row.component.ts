@@ -19,7 +19,7 @@ export class CartItemRowComponent implements OnInit {
     if (value.PATHCOVERIMAGE && value.PATHCOVERIMAGE.length != 0) {
       this.srcImage = value.PATHCOVERIMAGE;
       this.flagWithImage = true;
-    }
+    } 
     else {
       this.srcImage = '';
       this.flagWithImage = false;

@@ -8,7 +8,7 @@ import SwiperCore, { Navigation, Pagination  } from 'swiper';
 import { ImageModalPage } from '../../image-modal/image-modal.page';
 import { ArticoloTaglieMisura } from 'src/app/models/shop/articolotagliemisura.model';
 import { ArticoloColore } from 'src/app/models/shop/articolocolore.model';
-import { TipoArticolo } from 'src/app/models/zsupport/valuelist.model';
+import { TipoArticolo, TipoPrezzo } from 'src/app/models/zsupport/valuelist.model';
 import { Subscription } from 'rxjs';
 
 SwiperCore.use([Pagination, Navigation]);
@@ -35,6 +35,8 @@ export class DisplayProductPage implements OnInit, OnDestroy {
   isOpenModalAddedItem = false; //Switch per l'apertura della modale sotto
   subListenCarrello: Subscription;
   numProdotti: number = 0;
+  tipoPrezzo: typeof TipoPrezzo = TipoPrezzo;
+
 
 
   constructor(private router: ActivatedRoute,

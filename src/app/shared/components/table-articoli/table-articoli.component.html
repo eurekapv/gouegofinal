@@ -83,15 +83,38 @@
       <div class="card-footer">
         
         <!-- Price -->
-        <div class="card-price">
-          <span class="price-label">Prezzo</span>
-          <div class="price-value">
-            <span class="price-main">{{articolo.PREZZONETTO | currency: 'EUR'}}</span>
-            <span class="price-old" *ngIf="articolo.PREZZOLORDO && articolo.PREZZOLORDO > articolo.PREZZONETTO">
-              {{articolo.PREZZOLORDO | currency: 'EUR'}}
-            </span>
-          </div>
-        </div>
+         @if(articolo.existSconto()) {
+           <div class="card-price">
+             <span class="price-label">Prezzo</span>
+             <div class="price-value">
+               @if(articolo.TIPOPREZZO == tipoPrezzo.alNettoDiImposta) {
+                 <span class="price-main">{{articolo.PREZZOFINALE | currency: 'EUR'}} + IVA</span>
+                 <span class="price-old">
+                   {{articolo.PREZZONETTO | currency: 'EUR'}}
+                 </span>
+               }
+               @else {
+                <span class="price-main">{{articolo.PREZZOFINALE | currency: 'EUR'}}</span>
+                 <span class="price-old">
+                   {{articolo.PREZZOLORDO | currency: 'EUR'}}
+                 </span>
+               }
+             </div>
+           </div>
+         }
+         @else {
+          <div class="card-price">
+             <span class="price-label">Prezzo</span>
+             <div class="price-value">
+              @if(articolo.TIPOPREZZO == tipoPrezzo.alNettoDiImposta) {
+               <span class="price-main">{{articolo.PREZZOFINALE | currency: 'EUR'}} + IVA</span>
+              }
+              @else {
+                <span class="price-main">{{articolo.PREZZOFINALE | currency: 'EUR'}}</span>
+              }
+             </div>
+           </div>
+         }
 
         <!-- Add Button -->
         <ion-button 

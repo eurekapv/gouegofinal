@@ -245,19 +245,17 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
       this.carrelloDoc.RITIROINSEDE = true;
       // Azzero i campi di spedizione
       this.clearShippingFields();
-      // Azzero le spese di trasporto
-      this.carrelloDoc.SPESETRASPORTO = 0;
     } else {
       // Spedizione
       this.carrelloDoc.RITIROINSEDE = false;
       // Inizializzo i campi con i dati dell'utente se disponibili
       this.initShippingFields();
-      // Calcolo le spese di trasporto (da implementare con la logica backend)
-      this.calculateShippingCost();
     }
+    
+    // Calcolo le spese di trasporto (da implementare con la logica backend)
+    //Richiamare il server per ottenere le informazioni di spedizione
+    this.calculateShippingCost();
 
-    // Ricalcola il totale
-    this.recalculateTotal();
   }
 
   /**
@@ -294,16 +292,14 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
    * TODO: Implementare chiamata al backend per calcolo dinamico
    */
   calculateShippingCost() {
-    const cartValue = this.carrelloDoc.TOTINTERMEDIO || 0;
-
-    // Logica basata sul valore del carrello (come da README_TRASPORTO.md)
-    if (cartValue >= 80) {
-      this.carrelloDoc.SPESETRASPORTO = 0; // Gratis sopra 80€
-    } else if (cartValue >= 40) {
-      this.carrelloDoc.SPESETRASPORTO = 2.90; // 2.90€ tra 40€ e 79.99€
-    } else {
-      this.carrelloDoc.SPESETRASPORTO = 4.90; // 4.90€ sotto 40€
-    }
+      //Effettuo la chiamata al server per il ricalcolo del carrello
+      this.startService.shopRecalcCart()
+                       .then(()=> {
+                          this.startService.presentToastMessage('Aggiornamento totale carrello')
+                       })
+                       .catch(error => {
+                        this.startService.presentAlertMessage('Si sono verificati errori nel calcolo del totale');
+                       });
   }
 
   /**

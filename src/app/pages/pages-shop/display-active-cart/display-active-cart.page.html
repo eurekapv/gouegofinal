@@ -57,7 +57,7 @@
             <span class="summary-label">
               {{numProdotti === 1 ? '1 articolo' : numProdotti + ' articoli'}}
             </span>
-            <h2 class="summary-total">{{carrelloDoc.TOTDOCUMENTO | currency: 'EUR'}}</h2>
+            <h2 class="summary-total">{{carrelloDoc.getTotaleSenzaSpedizione() | currency: 'EUR'}}</h2>
           </div>
           <ion-icon name="cart" class="summary-icon"></ion-icon>
         </div>
@@ -91,7 +91,7 @@
   <div class="fixed-checkout" *ngIf="numProdotti !== 0">
     <div class="checkout-info">
       <span class="checkout-label">Totale</span>
-      <span class="checkout-total">{{carrelloDoc.TOTDOCUMENTO | currency: 'EUR'}}</span>
+      <span class="checkout-total">{{carrelloDoc.getTotaleSenzaSpedizione() | currency: 'EUR'}}</span>
     </div>
     <ion-button 
         (click)="onClickOrdina()"

@@ -58,6 +58,7 @@ export class ShopCarrello extends IDDocument {
         super(onlyInstance);
         
         this.RITIROINSEDE = true;
+        this.SPESETRASPORTO = 0;
 
         this.DETAILCARRELLO = [];
         this.RIEPILOGOCARRELLO = [];
@@ -229,5 +230,16 @@ export class ShopCarrello extends IDDocument {
         }
 
         return numProdotti;
+    }
+
+
+    /**
+     * Ritorna un valore totale senza spese spedizione
+     */
+    getTotaleSenzaSpedizione(): number {
+        let finalValue: number = 0;
+        finalValue = (this.TOTDOCUMENTO || 0) - (this.SPESETRASPORTO || 0)
+        
+        return finalValue;
     }
 }

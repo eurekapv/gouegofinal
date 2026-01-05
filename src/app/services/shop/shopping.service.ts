@@ -154,6 +154,7 @@ export class ShoppingService {
           itemCart.IDARTICOLO = articoloDoc.ID;
           itemCart.IDARTICOLOCOLORE = idArticoloColor;
           itemCart.IDARTICOLOTAGLIA = idArticoloTaglia;
+          itemCart.TIPOARTICOLO = articoloDoc.TIPOARTICOLO;
           itemCart.QUANTITA = 1;
     
           //Recupero il carrello attivo

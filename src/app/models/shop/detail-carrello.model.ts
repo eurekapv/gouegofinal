@@ -1,5 +1,5 @@
 import { IDDocument } from "src/app/library/models/iddocument.model";
-import { StatoRigoDetailCarrello, TipoRigoDetailCarrello } from "../zsupport/valuelist.model";
+import { StatoRigoDetailCarrello, TipoArticolo, TipoRigoDetailCarrello } from "../zsupport/valuelist.model";
 import { Descriptor, TypeDefinition } from "src/app/library/models/descriptor.model";
 
 export class DetailCarrello extends IDDocument {
@@ -10,6 +10,7 @@ export class DetailCarrello extends IDDocument {
     IDARTICOLO: string;
     IDARTICOLOCOLORE: string;
     IDARTICOLOTAGLIA: string;
+    TIPOARTICOLO: TipoArticolo;
     DESCR: string;
     QUANTITA: number;
     PREZZO: number;
@@ -51,6 +52,7 @@ export class DetailCarrello extends IDDocument {
                         'PATHCOVERIMAGE'
                         ];
         let arNumber = ['TIPORIGO',
+                        'TIPOARTICOLO',
                         'STATORIGO',
                         'QUANTITA',
                         'PREZZO',

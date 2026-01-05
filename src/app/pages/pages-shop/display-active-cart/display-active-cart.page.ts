@@ -96,7 +96,7 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
             if (dataCarrello) {
               //Mi tengo il carrello per mostrare nella pagina
               this.carrelloDoc = dataCarrello;
-              this.numProdotti = dataCarrello.getNumProdotti();
+              this.numProdotti = dataCarrello.getNumRigheArticoli();
               resolve();
             }
             else {

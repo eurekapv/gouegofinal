@@ -69,6 +69,9 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
   // Modalità di consegna
   deliveryMode: 'pickup' | 'shipping' = 'pickup';
+  
+  //Il carrello deve poter essere consegnato
+  enableDeliveryMode: boolean = true;
 
 
   
@@ -159,7 +162,8 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
             if (dataCarrello) {
               //Mi tengo il carrello per mostrare nella pagina
               this.carrelloDoc = dataCarrello;
-              this.numProdotti = dataCarrello.getNumProdotti();
+              this.numProdotti = dataCarrello.getNumRigheArticoli();
+              this.enableDeliveryMode = dataCarrello.getEnableDeliveryMode();
               resolve();
             }
             else {
@@ -167,6 +171,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
             }          
         },
         error: (err) => {
+          this.enableDeliveryMode = false;
           this.numProdotti = 0;
           reject(err)
         }

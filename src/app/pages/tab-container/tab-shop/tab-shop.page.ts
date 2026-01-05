@@ -104,7 +104,7 @@ export class TabShopPage implements OnInit {
     this.subListenCarrello = this.startService.activeCart$.subscribe({
       next: (carrelloDoc) => {
           if (carrelloDoc) {
-            this.numProdotti = carrelloDoc.getNumProdotti();
+            this.numProdotti = carrelloDoc.getNumRigheArticoli();
           }
       },
       error: () => {

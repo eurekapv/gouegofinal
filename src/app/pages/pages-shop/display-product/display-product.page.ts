@@ -82,7 +82,7 @@ export class DisplayProductPage implements OnInit, OnDestroy {
     this.subListenCarrello = this.startService.activeCart$.subscribe({
       next: (carrelloDoc) => {
           if (carrelloDoc) {
-            this.numProdotti = carrelloDoc.getNumProdotti();
+            this.numProdotti = carrelloDoc.getNumRigheArticoli();
           }
           else {
             this.numProdotti = 0;

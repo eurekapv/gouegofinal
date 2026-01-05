@@ -663,6 +663,8 @@ async presentPaymentOptions(
   merchantName: string = environment.additionalConfig.merchantName
 ): Promise<PaymentResult> {
 
+  //Sistemo eventuali errori di arrotondamento
+  amount = Math.round(amount);
   console.log('=== PRESENT PAYMENT OPTIONS DEBUG START ===');
   console.log('💳 presentPaymentOptions called with:', { amount, currency, idAccountConnected, merchantName });
   console.log('💳 Platform info:', {

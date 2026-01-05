@@ -1,6 +1,6 @@
 import { Descriptor, TypeDefinition } from "../../library/models/descriptor.model";
 import { IDDocument } from "../../library/models/iddocument.model";
-import { PaymentChannel, StatoCarrello, TipoPrezzo, TipoRigoDetailCarrello } from "../zsupport/valuelist.model";
+import { PaymentChannel, StatoCarrello, TipoArticolo, TipoPrezzo, TipoRigoDetailCarrello } from "../zsupport/valuelist.model";
 import { DetailCarrello } from "./detail-carrello.model";
 import { RiepilogoCarrello } from "./riepilogo-carrello.model";
 
@@ -220,16 +220,17 @@ export class ShopCarrello extends IDDocument {
     
     
     /**
-     * Conta il numero delle righe di tipo Prodotti
+     * Conta il numero delle righe che contengono articoli (Prodotti/Tesseramenti/Servizi)
+     * Non conta eventuali righe di descrittivo
      */
-    getNumProdotti(): number {
-        let numProdotti = 0;
+    getNumRigheArticoli(): number {
+        let numRigheArticoli = 0;
 
         if (this.DETAILCARRELLO) {
-            numProdotti = this.DETAILCARRELLO.filter(elRow => elRow.TIPORIGO == TipoRigoDetailCarrello.prodotti).length;
+            numRigheArticoli = this.DETAILCARRELLO.filter(elRow => elRow.TIPORIGO == TipoRigoDetailCarrello.prodotti).length;
         }
 
-        return numProdotti;
+        return numRigheArticoli;
     }
 
 
@@ -241,5 +242,19 @@ export class ShopCarrello extends IDDocument {
         finalValue = (this.TOTDOCUMENTO || 0) - (this.SPESETRASPORTO || 0)
         
         return finalValue;
+    }
+
+    /**
+     * Controllo gli articoli del carrello cosi da capire se devo mostrare la spedizione
+     * Solo se il tipo Articolo = Prodotto 
+     */
+    getEnableDeliveryMode(): boolean {
+        let numProdottiFisici = 0;
+
+        if (this.DETAILCARRELLO) {
+            numProdottiFisici = this.DETAILCARRELLO.filter(elRow => elRow.TIPOARTICOLO == TipoArticolo.prodotto).length;
+        }
+
+        return (numProdottiFisici != 0);
     }
 }

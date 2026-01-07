@@ -281,7 +281,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
    */
   initShippingFields() {
     if (this.userDoc) {
-      this.carrelloDoc.NOMEDESTINAZIONE = this.carrelloDoc.NOMINATIVO || this.userDoc.NOMINATIVO;
+      this.carrelloDoc.NOMEDESTINAZIONE = this.userDoc.NOMINATIVO;
       this.carrelloDoc.INDIRIZZODESTINAZIONE = this.userDoc.INDIRIZZO || null;
       this.carrelloDoc.COMUNEDESTINAZIONE = this.userDoc.COMUNE || null;
       this.carrelloDoc.CAPDESTINAZIONE = this.userDoc.CAP || null;

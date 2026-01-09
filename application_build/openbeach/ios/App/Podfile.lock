@@ -10,10 +10,10 @@ PODS:
     - Capacitor
   - CapacitorCommunityFileOpener (7.0.1):
     - Capacitor
-  - CapacitorCommunityStripe (7.2.1):
+  - CapacitorCommunityStripe (7.2.2):
     - Capacitor
-    - StripeApplePay (~> 24.16.1)
-    - StripePaymentSheet (~> 24.16.1)
+    - StripeApplePay (~> 25.1.0)
+    - StripePaymentSheet (~> 25.1.0)
   - CapacitorCordova (7.4.4)
   - CapacitorFilesystem (7.1.4):
     - Capacitor
@@ -33,25 +33,25 @@ PODS:
   - IONFilesystemLib (1.0.1)
   - IONGeolocationLib (1.0.1)
   - OSBarcodeLib (2.0.1)
-  - StripeApplePay (24.16.2):
-    - StripeCore (= 24.16.2)
-  - StripeCore (24.16.2)
-  - StripePayments (24.16.2):
-    - StripeCore (= 24.16.2)
-    - StripePayments/Stripe3DS2 (= 24.16.2)
-  - StripePayments/Stripe3DS2 (24.16.2):
-    - StripeCore (= 24.16.2)
-  - StripePaymentSheet (24.16.2):
-    - StripeApplePay (= 24.16.2)
-    - StripeCore (= 24.16.2)
-    - StripePayments (= 24.16.2)
-    - StripePaymentsUI (= 24.16.2)
-  - StripePaymentsUI (24.16.2):
-    - StripeCore (= 24.16.2)
-    - StripePayments (= 24.16.2)
-    - StripeUICore (= 24.16.2)
-  - StripeUICore (24.16.2):
-    - StripeCore (= 24.16.2)
+  - StripeApplePay (25.1.1):
+    - StripeCore (= 25.1.1)
+  - StripeCore (25.1.1)
+  - StripePayments (25.1.1):
+    - StripeCore (= 25.1.1)
+    - StripePayments/Stripe3DS2 (= 25.1.1)
+  - StripePayments/Stripe3DS2 (25.1.1):
+    - StripeCore (= 25.1.1)
+  - StripePaymentSheet (25.1.1):
+    - StripeApplePay (= 25.1.1)
+    - StripeCore (= 25.1.1)
+    - StripePayments (= 25.1.1)
+    - StripePaymentsUI (= 25.1.1)
+  - StripePaymentsUI (25.1.1):
+    - StripeCore (= 25.1.1)
+    - StripePayments (= 25.1.1)
+    - StripeUICore (= 25.1.1)
+  - StripeUICore (25.1.1):
+    - StripeCore (= 25.1.1)
 
 DEPENDENCIES:
   - "Capacitor (from `../../../../node_modules/@capacitor/ios`)"
@@ -117,7 +117,7 @@ SPEC CHECKSUMS:
   CapacitorBrowser: 45c681e7abc3b4384e54eb52bafeef1347d98fa8
   CapacitorCamera: 6e18d54c8ab30d7dc7b8cd93d96f9b4f57e9202a
   CapacitorCommunityFileOpener: 9611c9d1595de7b50571717d443bb718a304b5eb
-  CapacitorCommunityStripe: 1d73dcf7984c05ad790132fa582bc761454ec92e
+  CapacitorCommunityStripe: 9bced495e58f74d96016dc094167736061364c06
   CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
   CapacitorFilesystem: ac0a386949ed6c295a3dffa129ecd26b881ae5be
   CapacitorGeolocation: b96474c3259dd4a294227ea8ec19140b1837cceb
@@ -129,13 +129,13 @@ SPEC CHECKSUMS:
   IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
   IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
   OSBarcodeLib: 57987d2eb1f916f701f4554e20e349b3cb83f023
-  StripeApplePay: 66dc43ec1284904a2cf4c5a0906f86296d23afbd
-  StripeCore: f3a62397cecaf4da1827bcf07de7312ec1f3b96e
-  StripePayments: b3e7817d821ceedd469008d17d94a1494ff1b624
-  StripePaymentSheet: f4f5b71cef665f05a185c29b2d4b59e7dd8c117d
-  StripePaymentsUI: d489e73bf790da1c74e642021475b1a09a4a4500
-  StripeUICore: 723e5024c83acb5ba5e71335e110a471b182a74d
+  StripeApplePay: 4428e5826335017151eeff87e9d36f6688eaa593
+  StripeCore: 76440c9bf61bd84149014414ced3470b8d94eb8e
+  StripePayments: ace6def8949ed33434a5db2f8fdd184388636be5
+  StripePaymentSheet: ec3dadf54b470250a40b3c5f7164641a0f1063c3
+  StripePaymentsUI: 702926af8eae0901821907014ab90c72fc3eabab
+  StripeUICore: c3de64fb6ab7ef376128e862f6bc6817e0a964e9
 
-PODFILE CHECKSUM: e2d22a5fa1481bc995fe2313d3ede8b62e3b9d22
+PODFILE CHECKSUM: dfa8733485fbdc4d498b7e98a37988ac70bcdbf6
 
 COCOAPODS: 1.14.2

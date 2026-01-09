@@ -397,22 +397,22 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
     //Ho il documento dell'Area
     if (this.selectedArea) {
           //Recupero le modalità
-          listConfigIncassi = this.selectedArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoPrenotazione)
+          listConfigIncassi = this.selectedArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoShop)
 
           //Recupero la modalità per il pagamento in contanti (se presente)
           this._configIncassoContanti = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
                                                                               ModeIncassoConfig.incassoContanti, 
-                                                                              SettorePagamentiAttivita.settorePagamentoPrenotazione)
+                                                                              SettorePagamentiAttivita.settorePagamentoShop)
 
           //Recupero la modalità per il pagamento in bonifico (se presente)
           this._configIncassoBonifico = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
                                                                               ModeIncassoConfig.incassoBonifico, 
-                                                                              SettorePagamentiAttivita.settorePagamentoPrenotazione)
+                                                                              SettorePagamentiAttivita.settorePagamentoShop)
 
           //Recupero la modalità per il pagamento in mobile (se presente)
           this._configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
                                                                               ModeIncassoConfig.incassoCreditCard, 
-                                                                              SettorePagamentiAttivita.settorePagamentoPrenotazione)
+                                                                              SettorePagamentiAttivita.settorePagamentoShop)
 
           LogApp.consoleLog('Contanti');
           LogApp.consoleLog(this._configIncassoContanti);

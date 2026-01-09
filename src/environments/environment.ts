@@ -19,9 +19,9 @@ export const environment = {
     stripemanager: 'https://stripemanager.oa.r.appspot.com',
   },
   connection: {
-    mode: ConnectionMode.local,
+    mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor ',
-    activeId: 'demo',
+    activeId: 'openbeach',
     customer: {
       openbeach: {
         name: 'openbeach',

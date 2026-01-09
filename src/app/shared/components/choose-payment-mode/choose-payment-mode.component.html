@@ -49,7 +49,14 @@
           </div>
           <div class="button-content">
             <h4>Paga Subito</h4>
-            <p>Online</p>
+            <p>
+              @if(stripeLiveMode) {
+                <span>Online</span>
+              }
+              @else {
+                <span>TEST APPLE PAY</span>
+              }
+            </p>
           </div>
           <div class="button-radio">
             <div class="radio-dot"></div>
@@ -58,6 +65,8 @@
       }
 
     </div>
+
+
 
     <!-- Accettazione Condizioni di Vendita -->
     <div class="terms-acceptance ion-margin-vertical">

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { environment } from 'application_model/beachforfun/environment.prod';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { ModeIncassoConfig } from 'src/app/models/zsupport/valuelist.model';
@@ -92,6 +93,8 @@ export class ChoosePaymentModeComponent  implements OnInit {
   //Flag per accettazione condizioni di vendita
   termsAccepted: boolean = false;
 
+  //Stripe Live Mode
+  stripeLiveMode: boolean = environment.additionalConfig.stripeLiveMode;
 
   /**
    * Torna TRUE se esiste la modalità passata o se ne esistesse almeno una

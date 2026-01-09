@@ -34,12 +34,21 @@ export class StripePaymentService {
   private stripeJs: any = null;
   private elements: any = null;
   private currentPaymentIntentId: string | null = null;
+  private stripeKey: string;
 
   constructor(
     private http: HttpClient,
     private platform: Platform,
     private loadingController: LoadingController
-  ) {}
+  ) {
+    //Metto la chiave di test
+    this.stripeKey = environment.additionalConfig.stripePublishableKeyTest;
+
+    if (environment.additionalConfig.stripeLiveMode) {
+      //Se sono in live mode cambio
+      this.stripeKey = environment.additionalConfig.stripePublishableKeyLive;
+    }
+  }
 
   /**
    * Inizializza Stripe con la publishable key
@@ -59,7 +68,7 @@ export class StripePaymentService {
       }
 
       await Stripe.initialize({
-        publishableKey: environment.additionalConfig.stripePublishableKey,
+        publishableKey: this.stripeKey,
       });
 
       this.isInitialized = true;
@@ -115,7 +124,7 @@ private async loadStripeJs(): Promise<any> {
 
   return new Promise((resolve, reject) => {
     if ((window as any).Stripe) {
-      this.stripeJs = (window as any).Stripe(environment.additionalConfig.stripePublishableKey);
+      this.stripeJs = (window as any).Stripe(this.stripeKey);
       resolve(this.stripeJs);
       return;
     }
@@ -123,7 +132,7 @@ private async loadStripeJs(): Promise<any> {
     const script = document.createElement('script');
     script.src = 'https://js.stripe.com/v3/';
     script.onload = () => {
-      this.stripeJs = (window as any).Stripe(environment.additionalConfig.stripePublishableKey);
+      this.stripeJs = (window as any).Stripe(this.stripeKey);
       resolve(this.stripeJs);
     };
     script.onerror = () => reject(new Error('Failed to load Stripe.js'));

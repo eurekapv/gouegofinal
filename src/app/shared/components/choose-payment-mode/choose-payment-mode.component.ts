@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { environment } from 'application_model/beachforfun/environment.prod';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
-import { Location } from 'src/app/models/struttura/location.model';
 import { ModeIncassoConfig } from 'src/app/models/zsupport/valuelist.model';
+import { environment } from 'src/environments/environment';
 
 
 @Component({

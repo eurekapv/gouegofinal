@@ -11,6 +11,10 @@ import { environment } from 'src/environments/environment';
 })
 export class ChoosePaymentModeComponent  implements OnInit {
 
+  //TODO: Quando si entra ed esce dall'ordine potrebbe succedere che se la spedizione 
+  //è impostata non viene fatta la selezione corretta del metodo pagamento
+  //rimane contanti quando anche è invisibile.....
+  //ps. se voglio eliminare il carrello ????
   @Input() set configContanti(value: AreaPaymentSetting) {
     this._configContanti = value;
     if (!this._selectedMode && value) {
@@ -150,7 +154,7 @@ export class ChoosePaymentModeComponent  implements OnInit {
    * Invio il metodo scelto
    * @param modeConfig 
    */
-  onSelectMode(modeConfig:ModeIncassoConfig) {
+  onSelectMode(modeConfig?:ModeIncassoConfig) {
     this._selectedMode = modeConfig;
     this.selectedConfig.emit(modeConfig);
   }
@@ -181,22 +185,29 @@ export class ChoosePaymentModeComponent  implements OnInit {
    * Sistema le variabili di enable a seconda del delivery Mode
    */
   syncEnableButton() {
+    //Come sta pagando ora (Apple, Contanti)
+    let actualPayment = this._selectedMode;
+
+    //Se ritiro in sede allora paga come vuoi
     if (this._deliveryMode == 'pickup') {
       this._enableBonifico = true;
       this._enableContanti = true;
       this._enableMobile = true;
     }
     else {
+      //Spedizione (Puoi pagare solo in Mobile)
       this._enableBonifico = false;
       this._enableContanti = false;
       this._enableMobile = true;
 
       if (this._selectedMode !== ModeIncassoConfig.incassoCreditCard) {
         if (this._configMobile) {
-          this._selectedMode = ModeIncassoConfig.incassoCreditCard;
+          this.onSelectMode(ModeIncassoConfig.incassoCreditCard);
+          console.log('Carta di credito')
         }
         else {
-          this._selectedMode = null;
+          this.onSelectMode();
+          console.log('NULL')
         }
       }
     }

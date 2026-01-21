@@ -1,19 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, NavController } from '@ionic/angular';
-import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { DetailCarrello } from 'src/app/models/shop/detail-carrello.model';
+import { ShopCarrello } from 'src/app/models/shop/shop-carrello.model';
 import { StatoCarrello, TipoRigoDetailCarrello } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-detail-shop-account',
-  templateUrl: './detail-shop-account.page.html',
-  styleUrls: ['./detail-shop-account.page.scss'],
+  selector: 'app-order-success',
+  templateUrl: './order-success.page.html',
+  styleUrls: ['./order-success.page.scss'],
 })
-export class DetailShopAccountPage implements OnInit {
+export class OrderSuccessPage implements OnInit {
 
+  constructor(private startService: StartService,
+      private actRouter: ActivatedRoute,
+      private navController: NavController,
+      private loadingController: LoadingController) { }
+
+  // URL base per le immagini
+  baseImageUrl = '';
   ordine: ShopCarrello;
   inRichiesta = true;
   loadError = false; 
@@ -22,18 +29,6 @@ export class DetailShopAccountPage implements OnInit {
   statoCarrello = StatoCarrello;
   tipoRigo = TipoRigoDetailCarrello;
 
-  // URL base per le immagini
-  baseImageUrl = '';
-
-  constructor(
-    private startService: StartService,
-    private actRouter: ActivatedRoute,
-    private navController: NavController,
-    private loadingController: LoadingController
-  ) {
-    // Imposta URL base immagini
-    this.baseImageUrl = environment.connection.urlLocation.production.urlFileServer;
-  }
 
   ngOnInit() {
     this.actRouter.paramMap.subscribe(param => { 
@@ -50,7 +45,7 @@ export class DetailShopAccountPage implements OnInit {
    * Ritorna un Array con il percorso di ritorno
    */
   get backPathArray(): string[] {
-    return ['/', 'appstart-home', 'tab-profile', 'list-shop-account'];
+    return ['/', 'appstart-home', 'tab-shop'];
   }
 
   /**
@@ -64,10 +59,10 @@ export class DetailShopAccountPage implements OnInit {
    * Torna indietro
    */
   goBack() {
-    this.navController.back();
-  }
+    this.navController.navigateBack(this.backPathArray);
+  }  
 
-  /**
+    /**
    * Richiede i dettagli dell'ordine
    */
   requestOrdine(idOrdine: string) {
@@ -121,8 +116,8 @@ export class DetailShopAccountPage implements OnInit {
       default:
         return 'hourglass-outline';
     }
-  }
-
+  } 
+  
   /**
    * Ritorna l'etichetta in base allo stato dell'ordine
    */
@@ -136,7 +131,7 @@ export class DetailShopAccountPage implements OnInit {
       default:
         return ritiroInSede ? 'Da ritirare' : 'In consegna';
     }
-  } 
+  }  
 
   /**
    * Costruisce l'URL completo dell'immagine prodotto
@@ -150,4 +145,5 @@ export class DetailShopAccountPage implements OnInit {
     }
     return `https://${this.baseImageUrl}/${path}`;
   }
+
 }

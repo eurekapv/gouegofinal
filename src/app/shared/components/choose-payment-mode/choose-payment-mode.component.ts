@@ -58,6 +58,10 @@ export class ChoosePaymentModeComponent  implements OnInit {
     this._iconUndo = value;
   }
   
+  @Input() set deliveryMode(value: 'pickup' | 'shipping') {
+    this._deliveryMode = value;
+    this.syncEnableButton();
+  }
 
 
 
@@ -73,12 +77,17 @@ export class ChoosePaymentModeComponent  implements OnInit {
   _configContanti: AreaPaymentSetting;
   _configBonifico: AreaPaymentSetting;
   _configMobile: AreaPaymentSetting;
+  _enableContanti: boolean = true;
+  _enableBonifico: boolean = true;
+  _enableMobile: boolean = true;
+
   _selectedMode: ModeIncassoConfig;
   _labelConfirm: string = "Conferma";
   _iconConfirm: string = "checkmark-circle-outline";
 
    _labelUndo: string = "Annulla";
   _iconUndo: string = "arrow-back-circle-outline"; 
+  _deliveryMode: 'pickup' | 'shipping' = 'pickup';
 
   //Usare enum in Html
   modeIncassoConfig: typeof ModeIncassoConfig = ModeIncassoConfig;
@@ -94,6 +103,22 @@ export class ChoosePaymentModeComponent  implements OnInit {
 
   //Stripe Live Mode
   stripeLiveMode: boolean = environment.additionalConfig.stripeLiveMode;
+
+  /**
+   * Ritorna la label della conferma
+   * Se la scelta è pagare subito torna Para ora
+   * @returns 
+   */
+  getLabelConfirm():string {
+    let value = this._labelConfirm;
+
+    if (this._selectedMode == ModeIncassoConfig.incassoCreditCard) {
+      value = 'Paga ora'
+    }
+
+    return value;
+  }
+
 
   /**
    * Torna TRUE se esiste la modalità passata o se ne esistesse almeno una
@@ -152,6 +177,31 @@ export class ChoosePaymentModeComponent  implements OnInit {
     this.clickButtonUndo.emit();
   }
 
+  /**
+   * Sistema le variabili di enable a seconda del delivery Mode
+   */
+  syncEnableButton() {
+    if (this._deliveryMode == 'pickup') {
+      this._enableBonifico = true;
+      this._enableContanti = true;
+      this._enableMobile = true;
+    }
+    else {
+      this._enableBonifico = false;
+      this._enableContanti = false;
+      this._enableMobile = true;
+
+      if (this._selectedMode !== ModeIncassoConfig.incassoCreditCard) {
+        if (this._configMobile) {
+          this._selectedMode = ModeIncassoConfig.incassoCreditCard;
+        }
+        else {
+          this._selectedMode = null;
+        }
+      }
+    }
+
+  }
 
 
 

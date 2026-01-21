@@ -6,10 +6,12 @@ import { Area } from 'src/app/models/struttura/area.model';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { PaymentProcess } from 'src/app/models/zsupport/payment-process.model';
-import { ModeIncassoConfig, PaymentChannel, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
+import { ModeIncassoConfig, PageType, PaymentChannel, PaymentMode, SettorePagamentiAttivita } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { PostResponse } from 'src/app/library/models/post-response.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
+import { AreaLink } from 'src/app/models/struttura/arealink.model';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-cart-checkout',
@@ -263,6 +265,13 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
   }
 
+  /**Quando cambia Stato o Provincia ricalcolo il totale */
+  onShippingAddressChange() {
+    // Calcolo le spese di trasporto (da implementare con la logica backend)
+    //Richiamare il server per ottenere le informazioni di spedizione
+    this.calculateShippingCost();
+  }
+
   /**
    * Azzera i campi di spedizione
    */
@@ -307,38 +316,60 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
                        });
   }
 
-  /**
-   * Ricalcola il totale del documento
-   */
-  recalculateTotal() {
-    this.carrelloDoc.TOTDOCUMENTO = this.carrelloDoc.TOTINTERMEDIO +
-                                     (this.carrelloDoc.SPESETRASPORTO || 0) +
-                                     (this.carrelloDoc.TOTARROTONDAMENTO || 0);
+  // /**
+  //  * Ricalcola il totale del documento
+  //  */
+  // recalculateTotal() {
+  //   this.carrelloDoc.TOTDOCUMENTO = this.carrelloDoc.TOTINTERMEDIO +
+  //                                    (this.carrelloDoc.SPESETRASPORTO || 0) +
+  //                                    (this.carrelloDoc.TOTARROTONDAMENTO || 0);
 
-    // Aggiorna anche il residuo se non è stato ancora pagato
-    if (this.carrelloDoc.TOTRESIDUO === this.carrelloDoc.TOTDOCUMENTO - this.carrelloDoc.SPESETRASPORTO) {
-      this.carrelloDoc.TOTRESIDUO = this.carrelloDoc.TOTDOCUMENTO;
-    }
-  }
+  //   // Aggiorna anche il residuo se non è stato ancora pagato
+  //   if (this.carrelloDoc.TOTRESIDUO === this.carrelloDoc.TOTDOCUMENTO - this.carrelloDoc.SPESETRASPORTO) {
+  //     this.carrelloDoc.TOTRESIDUO = this.carrelloDoc.TOTDOCUMENTO;
+  //   }
+  // }
 
   /**
    * Valida i campi di spedizione prima di procedere con il pagamento
    */
   validateShippingFields(): boolean {
     if (this.deliveryMode === 'shipping') {
-      const requiredFields = [
+      // Campi sempre obbligatori per tutte le destinazioni
+      const baseRequiredFields = [
         { field: this.carrelloDoc.NOMEDESTINAZIONE, name: 'Nome Destinatario' },
         { field: this.carrelloDoc.INDIRIZZODESTINAZIONE, name: 'Indirizzo' },
         { field: this.carrelloDoc.COMUNEDESTINAZIONE, name: 'Città' },
-        { field: this.carrelloDoc.CAPDESTINAZIONE, name: 'CAP' },
-        { field: this.carrelloDoc.PROVINCIADESTINAZIONE, name: 'Provincia' },
         { field: this.carrelloDoc.STATODESTINAZIONE, name: 'Stato' }
       ];
 
-      for (const item of requiredFields) {
+      // Verifica campi base
+      for (const item of baseRequiredFields) {
         if (!item.field || item.field.trim().length === 0) {
           this.startService.presentAlertMessage(
             `Il campo "${item.name}" è obbligatorio per la spedizione`,
+            'Dati Incompleti'
+          );
+          return false;
+        }
+      }
+
+      // Verifica se la destinazione è Italia
+      const stato = (this.carrelloDoc.STATODESTINAZIONE || '').trim().toUpperCase();
+      const isItaly = ['IT', 'ITA', 'ITALIA', 'ITALY'].includes(stato);
+
+      // Per l'Italia, CAP e Provincia sono obbligatori
+      if (isItaly) {
+        if (!this.carrelloDoc.CAPDESTINAZIONE || this.carrelloDoc.CAPDESTINAZIONE.trim().length === 0) {
+          this.startService.presentAlertMessage(
+            'Il campo "CAP" è obbligatorio per le spedizioni in Italia',
+            'Dati Incompleti'
+          );
+          return false;
+        }
+        if (!this.carrelloDoc.PROVINCIADESTINAZIONE || this.carrelloDoc.PROVINCIADESTINAZIONE.trim().length === 0) {
+          this.startService.presentAlertMessage(
+            'Il campo "Provincia" è obbligatorio per le spedizioni in Italia',
             'Dati Incompleti'
           );
           return false;
@@ -365,7 +396,29 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
    * Dovrei mostrare le condizioni di vendita
    */
   onClickCondizioniVendita() {
+    let link: AreaLink;
 
+
+    if (this.selectedArea) {
+
+      link = this.selectedArea.findAreaLinkByPageType(PageType.condizioniVenditaShop);
+  
+      if (link && link.REFERURL && link.REFERURL.length != 0) {
+
+        //Apro il link
+        this.openLink(link.REFERURL);
+
+      }
+    }
+  }
+
+  /**
+   * Apre nel browser URL richiesto
+   * @param url 
+   */
+  openLink(url:string)
+  {
+    Browser.open({url:url})
   }
   //#endregion
 
@@ -519,6 +572,9 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
                   }
                 })
         }
+      }
+      else {
+        this.startService.presentAlertMessage("Nessuna modalità di pagamento selezionata", 'Procedura interrotta');
       }
       
     }
@@ -712,8 +768,11 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
             //Chiudo il loading
             myLoading.dismiss();
 
+            //Chiudo il checkout e chiedo di andare alla pagina del Order Success
+            this.closeModal(true);
+
             //Apro la modale che avviso
-            this.isOpenModalOrderSuccess = true;
+            //this.isOpenModalOrderSuccess = true;
           })
           .catch(error => {
             //Chiudo il loading
@@ -799,14 +858,17 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
   /**
    * Chiude la modale
    */
-  closeModal(goToShopHome: boolean = false) {
+  closeModal(goToOrderSuccess: boolean = false) {
 
     this.modalController
         .dismiss()
         .then(result => {
-          if (result && goToShopHome) {
+          if (result && goToOrderSuccess) {
             //Devo portare alla home
             let pathToGo = this.startService.getUrlPageBasic('shop');
+            pathToGo.push('order-success');
+            pathToGo.push(this.carrelloDoc.ID);
+
             this.navController.navigateRoot(pathToGo);
           }
         });

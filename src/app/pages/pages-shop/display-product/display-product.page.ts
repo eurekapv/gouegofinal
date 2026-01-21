@@ -334,6 +334,8 @@ closeModalAddedItem() {
   if (this.modalAddedItem) {
     this.modalAddedItem.dismiss();
     this.isOpenModalAddedItem = false;
+    //Tornare ai prodotti
+    this.onGoToBack();
   }
 }
 

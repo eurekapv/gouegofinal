@@ -24,9 +24,22 @@
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher> 
 
   <div class="shop-container">
+
+    @if(numProdotti != 0) {
+      <ion-button
+              (click)="clickCarrello()"
+              expand="block"
+              shape="round"
+              color="warning"
+              size="large">
+            <ion-icon name="cart" slot="start"></ion-icon>
+            <span class="cart-label">Vai al Carrello</span>
+            
+        </ion-button>
+    }
     
     <!-- Filter Chips -->
     <div class="filter-chips">

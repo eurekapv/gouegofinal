@@ -68,6 +68,7 @@ export class ListShopAccountPage implements OnInit {
                               this.inRichiesta = false;
                               elLoading.dismiss();
                               this.listOrdini = listItems;
+                              console.log(this.listOrdini);
                            })
                            .catch(error => {
                               console.log(error);
@@ -119,7 +120,7 @@ export class ListShopAccountPage implements OnInit {
   /**
    * Ritorna l'etichetta in base allo stato dell'ordine
    */
-  getStatusLabel(stato: StatoCarrello): string {
+  getStatusLabel(stato: StatoCarrello, ritiroInSede: boolean): string {
     switch (stato) {
       case StatoCarrello.evaso:
         return 'Completato';
@@ -127,7 +128,7 @@ export class ListShopAccountPage implements OnInit {
         return 'In lavorazione';
       case StatoCarrello.nonEvaso:
       default:
-        return 'In attesa';
+        return ritiroInSede ? 'Da ritirare' : 'In consegna';
     }
-  }
+  } 
 }

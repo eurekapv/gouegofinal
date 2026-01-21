@@ -138,6 +138,7 @@ export enum PageType {
     policyPrivacy = 20,
     condizioniVenditaPrenotazioni = 100,
     condizioniVenditaIscrizioni = 110,
+    condizioniVenditaShop = 120,
     facebook = 200,
     twitter = 210,
     instagram = 220,

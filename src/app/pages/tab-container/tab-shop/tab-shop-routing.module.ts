@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'display-active-cart',
     loadChildren: () => import('../../pages-shop/display-active-cart/display-active-cart.module').then( m => m.DisplayActiveCartPageModule)
+  },
+  {
+    path: 'order-success/:orderId',
+    loadChildren: () => import('../../pages-shop/order-success/order-success.module').then( m => m.OrderSuccessPageModule)
   }
 ];
 

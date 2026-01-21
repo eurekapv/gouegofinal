@@ -48,7 +48,9 @@
       </div>
 
       <!-- CARD ORDINE -->
-      <div class="order-card" *ngFor="let ordine of listOrdini" (click)="onClickOrdine(ordine)">
+
+      @for (ordine of listOrdini; track ordine.NUMERODOCUMENTO) {
+      <div class="order-card" (click)="onClickOrdine(ordine)">
 
         <!-- HEADER CARD -->
         <div class="order-header">
@@ -61,7 +63,7 @@
                [class.completed]="ordine.STATOCARRELLO === statoCarrello.evaso"
                [class.partial]="ordine.STATOCARRELLO === statoCarrello.evasoParzialmente">
             <ion-icon [name]="getStatusIcon(ordine.STATOCARRELLO)"></ion-icon>
-            <span>{{getStatusLabel(ordine.STATOCARRELLO)}}</span>
+            <span>{{getStatusLabel(ordine.STATOCARRELLO, ordine.RITIROINSEDE)}}</span>
           </div>
         </div>
 
@@ -73,11 +75,11 @@
             <span>{{ordine.DATADOCUMENTO | date:'dd MMMM yyyy':'':'it'}}</span>
           </div>
 
-          <!-- Numero prodotti -->
+          <!-- Numero prodotti
           <div class="order-info-row">
             <ion-icon name="cube-outline" color="medium"></ion-icon>
             <span>{{ordine.getNumProdotti()}} {{ordine.getNumProdotti() === 1 ? 'articolo' : 'articoli'}}</span>
-          </div>
+          </div> -->
 
           <!-- Modalità ritiro/spedizione -->
           <div class="order-info-row">
@@ -96,6 +98,7 @@
         </div>
 
       </div>
+      }
 
     </div>
 

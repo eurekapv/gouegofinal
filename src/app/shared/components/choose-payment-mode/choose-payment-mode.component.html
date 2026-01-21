@@ -4,7 +4,7 @@
     <div class="payment-mode-grid">
 
       <!-- PAGA IN STRUTTURA -->
-      @if (existConfiguration(modeIncassoConfig.incassoContanti)) {
+      @if (existConfiguration(modeIncassoConfig.incassoContanti) && _enableContanti) {
         <div class="payment-button"
              [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoContanti}"
              (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
@@ -22,7 +22,7 @@
       }
 
       <!-- PAGA CON BONIFICO -->
-      @if (existConfiguration(modeIncassoConfig.incassoBonifico)) {
+      @if (existConfiguration(modeIncassoConfig.incassoBonifico) && _enableBonifico) {
         <div class="payment-button"
              [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoBonifico}"
              (click)="onSelectMode(modeIncassoConfig.incassoContanti)">
@@ -40,7 +40,7 @@
       }
 
       <!-- PAGA SUBITO -->
-      @if (existConfiguration(modeIncassoConfig.incassoCreditCard)) {
+      @if (existConfiguration(modeIncassoConfig.incassoCreditCard) && _enableMobile) {
         <div class="payment-button"
              [ngClass]="{'active': _selectedMode === modeIncassoConfig.incassoCreditCard}"
              (click)="onSelectMode(modeIncassoConfig.incassoCreditCard)">
@@ -90,7 +90,7 @@
           [disabled]="!isConfirmEnabled"
           (click)="onConfirm()">
           <ion-icon [name]="_iconConfirm" slot="start"></ion-icon>
-          {{_labelConfirm}}
+          {{getLabelConfirm()}}
         </ion-button>
     </div>
 

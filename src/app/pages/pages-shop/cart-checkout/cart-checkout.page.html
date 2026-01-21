@@ -67,7 +67,9 @@
          </div>
    
          <!-- Scelta tra Ritiro e Spedizione -->
-         <ion-segment [(ngModel)]="deliveryMode" (ionChange)="onDeliveryModeChange()">
+         <ion-segment 
+            mode="md"
+            [(ngModel)]="deliveryMode" (ionChange)="onDeliveryModeChange()">
            <ion-segment-button value="pickup">
              <ion-icon name="storefront"></ion-icon>
              <ion-label>Ritiro in Sede</ion-label>
@@ -141,6 +143,7 @@
                  <ion-item>
                    <ion-label position="stacked">Provincia *</ion-label>
                    <ion-input
+                     (ionBlur)="onShippingAddressChange()"
                      [(ngModel)]="carrelloDoc.PROVINCIADESTINAZIONE"
                      placeholder="Es: RM"
                      type="text"
@@ -152,6 +155,7 @@
                  <ion-item>
                    <ion-label position="stacked">Stato *</ion-label>
                    <ion-input
+                    (ionBlur)="onShippingAddressChange()"
                      [(ngModel)]="carrelloDoc.STATODESTINAZIONE"
                      placeholder="Es: Italia"
                      type="text"
@@ -202,6 +206,7 @@
         (clickButtonUndo)="closeModal()"
         [labelConfirm]="'Conferma Ordine'"
         [iconConfirm]="'checkmark-circle'"
+        [deliveryMode]="deliveryMode"
         [canEnableConfirm]="true"
         [configContanti]="_configIncassoContanti"
         [configBonifico]="_configIncassoBonifico"

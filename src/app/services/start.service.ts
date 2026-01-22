@@ -2219,8 +2219,8 @@ requestListShopCarrelli():Promise<ShopCarrello[]> {
  * Imposta IdAnagrafica nel carrello
  * @param idAnagrafica 
  */
-shopSetIdAnagrafica(userDoc: Utente):Promise<void> {
-  return this.shopService.setIdAnagrafica(userDoc);
+shopSetIdAnagrafica(userDoc: Utente, deliveryMode: 'shipping' | 'pickup' | '' = ''):Promise<void> {
+  return this.shopService.setIdAnagrafica(userDoc, deliveryMode);
 }
 
 /**

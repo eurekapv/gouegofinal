@@ -4,6 +4,17 @@
       <ion-back-button [defaultHref]="backButtonHref"></ion-back-button>
     </ion-buttons>
     <ion-title>Carrello</ion-title>
+    @if(numProdotti != 0) {
+      <ion-buttons slot="end">
+        <ion-button (click)="clickDeleteCarrello()" class="cart-button">
+          <span class="cart-label">Svuota</span>
+          <ion-icon 
+              slot="end" 
+              name="trash-outline">
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>  
+    }
   </ion-toolbar>
 </ion-header>
 
@@ -14,6 +25,7 @@
     <!-- ========================================== -->
     <!-- EMPTY STATE -->
     <!-- ========================================== -->
+
     <div class="empty-cart" *ngIf="numProdotti === 0">
       
       <!-- Icon -->

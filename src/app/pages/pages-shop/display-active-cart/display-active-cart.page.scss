@@ -40,6 +40,32 @@
 }
 
 // =====================================================
+// CART BUTTON (HEADER)
+// =====================================================
+.cart-button {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  font-weight: 600;
+  
+  .cart-label {
+    margin-right: 6px;
+  }
+
+  ion-icon {
+    font-size: 22px;
+  }
+
+  .cart-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    animation: pulse 0.6s ease;
+  }
+}
+
+// =====================================================
 // EMPTY STATE
 // =====================================================
 .empty-cart {

@@ -160,12 +160,15 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
       
       this.subListenCarrello = this.startService.activeCart$.subscribe({
         next: (dataCarrello) => {
-            
-            if (dataCarrello) {
-              //Mi tengo il carrello per mostrare nella pagina
-              this.carrelloDoc = dataCarrello;
-              this.numProdotti = dataCarrello.getNumRigheArticoli();
-              this.enableDeliveryMode = dataCarrello.getEnableDeliveryMode();
+          if (dataCarrello) {
+            //Mi tengo il carrello per mostrare nella pagina
+            this.carrelloDoc = dataCarrello;
+            this.numProdotti = dataCarrello.getNumRigheArticoli();
+            this.enableDeliveryMode = dataCarrello.getEnableDeliveryMode();
+
+            console.log('RICEVUTO CARRELLO');
+            console.log(dataCarrello);
+
               resolve();
             }
             else {
@@ -247,21 +250,26 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
    * Gestisce il cambio di modalità di consegna
    */
   onDeliveryModeChange() {
-    if (this.deliveryMode === 'pickup') {
-      // Ritiro in sede
-      this.carrelloDoc.RITIROINSEDE = true;
-      // Azzero i campi di spedizione
-      this.clearShippingFields();
-    } else {
-      // Spedizione
-      this.carrelloDoc.RITIROINSEDE = false;
-      // Inizializzo i campi con i dati dell'utente se disponibili
-      this.initShippingFields();
-    }
+
+    //Reimposto Utente e Metodo di spedizione
+    this.startService.shopSetIdAnagrafica(this.userDoc, this.deliveryMode);
+                     
+
+    // if (this.deliveryMode === 'pickup') {
+    //   // Ritiro in sede
+    //   this.carrelloDoc.RITIROINSEDE = true;
+    //   // Azzero i campi di spedizione
+    //   this.clearShippingFields();
+    // } else {
+    //   // Spedizione
+    //   this.carrelloDoc.RITIROINSEDE = false;
+    //   // Inizializzo i campi con i dati dell'utente se disponibili
+    //   this.initShippingFields();
+    // }
     
-    // Calcolo le spese di trasporto (da implementare con la logica backend)
-    //Richiamare il server per ottenere le informazioni di spedizione
-    this.calculateShippingCost();
+    // // Calcolo le spese di trasporto (da implementare con la logica backend)
+    // //Richiamare il server per ottenere le informazioni di spedizione
+    // this.calculateShippingCost();
 
   }
 
@@ -272,34 +280,44 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
     this.calculateShippingCost();
   }
 
-  /**
-   * Azzera i campi di spedizione
-   */
-  clearShippingFields() {
-    this.carrelloDoc.NOMEDESTINAZIONE = null;
-    this.carrelloDoc.INDIRIZZODESTINAZIONE = null;
-    this.carrelloDoc.COMUNEDESTINAZIONE = null;
-    this.carrelloDoc.CAPDESTINAZIONE = null;
-    this.carrelloDoc.PROVINCIADESTINAZIONE = null;
-    this.carrelloDoc.STATODESTINAZIONE = null;
-    this.carrelloDoc.NOTESDESTINAZIONE = null;
-  }
+  // /**
+  //  * Azzera i campi di spedizione
+  //  */
+  // clearShippingFields() {
+  //   this.carrelloDoc.NOMEDESTINAZIONE = null;
+  //   this.carrelloDoc.INDIRIZZODESTINAZIONE = null;
+  //   this.carrelloDoc.COMUNEDESTINAZIONE = null;
+  //   this.carrelloDoc.CAPDESTINAZIONE = null;
+  //   this.carrelloDoc.PROVINCIADESTINAZIONE = null;
+  //   this.carrelloDoc.STATODESTINAZIONE = null;
+  //   this.carrelloDoc.NOTESDESTINAZIONE = null;
+  // }
 
-  /**
-   * Inizializza i campi di spedizione con i dati dell'utente
-   */
-  initShippingFields() {
-    if (this.userDoc) {
-      this.carrelloDoc.NOMEDESTINAZIONE = this.userDoc.NOMINATIVO;
-      this.carrelloDoc.INDIRIZZODESTINAZIONE = this.userDoc.INDIRIZZO || null;
-      this.carrelloDoc.COMUNEDESTINAZIONE = this.userDoc.COMUNE || null;
-      this.carrelloDoc.CAPDESTINAZIONE = this.userDoc.CAP || null;
-      this.carrelloDoc.PROVINCIADESTINAZIONE = this.userDoc.PROVINCIA || null;
-      this.carrelloDoc.STATODESTINAZIONE = 'Italia';
-    } else {
-      this.carrelloDoc.STATODESTINAZIONE = 'Italia';
-    }
-  }
+  // /**
+  //  * Inizializza i campi di spedizione con i dati dell'utente
+  //  */
+  // initShippingFields() {
+  //   if (this.userDoc) {
+  //     this.startService.shopSetIdAnagrafica()
+
+
+  //     this.carrelloDoc.NOMEDESTINAZIONE = this.userDoc.NOMINATIVO;
+  //     this.carrelloDoc.INDIRIZZODESTINAZIONE = this.userDoc.INDIRIZZO || null;
+  //     this.carrelloDoc.COMUNEDESTINAZIONE = this.userDoc.COMUNE || null;
+  //     this.carrelloDoc.CAPDESTINAZIONE = this.userDoc.CAP || null;
+  //     this.carrelloDoc.PROVINCIADESTINAZIONE = this.userDoc.PROVINCIA || null;
+  //     this.carrelloDoc.STATODESTINAZIONE = 'Italia';
+  //   } else {
+  //     this.carrelloDoc.STATODESTINAZIONE = 'Italia';
+  //   }
+
+  //   console.log('********** CARRELLO ')
+  //   console.log(this.carrelloDoc);
+  //   console.log(this.carrelloDoc.NOMEDESTINAZIONE);
+  //   console.log('********** UTENTE ')
+  //   console.log(this.userDoc);
+  //   console.log(this.userDoc.NOMINATIVO);
+  // }
 
   /**
    * Calcola le spese di trasporto in base al valore del carrello

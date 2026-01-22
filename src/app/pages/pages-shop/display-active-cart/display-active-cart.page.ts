@@ -274,6 +274,33 @@ export class DisplayActiveCartPage implements OnInit, OnDestroy {
       elModal.present();
     })
    }
+
+   /**
+    * Eliminare il carrello
+    */
+   clickDeleteCarrello() {
+
+    let message:string = '';
+    let buttons: AlertButton[] = [];
+
+     message = `<p>Vuoi rimuovere tutti i prodotti dal carrello ?</p>`
+     buttons = [{
+       text: 'Si, Elimina',
+       handler: ()=> {
+         //Eseguo la cancellazione reale
+         this.startService.shopNewCart();
+         //Torno indietro
+         this.onGoToBack();
+       }
+       },
+       {
+         text: 'No, mantieni',
+         role: 'cancel'
+       }]; 
+       
+      //Procedo con la richiesta
+      this.startService.presentAlertMessage(message, 'Eliminazione', buttons);
+   }
   
   
   //#region PULSANTE BACK

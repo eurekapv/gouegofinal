@@ -87,11 +87,13 @@ export class ShoppingService {
   }
 
   /**
-   * Imposta IDAnagrafica nel carrello
+   * Imposta Anagrafica e Meotodo di spedizione
    */
-  setIdAnagrafica(userDoc: Utente): Promise<void> {
+  setIdAnagrafica(userDoc: Utente, deliveryMode: 'shipping' | 'pickup' | '' = ''): Promise<void> {
+
     return new Promise<void>((resolve, reject) => {
       let cart: ShopCarrello;
+      let lastDeliveryMode : 'shipping' | 'pickup' = 'pickup';
 
       if (userDoc) {
         
@@ -99,19 +101,55 @@ export class ShoppingService {
         cart = this._activeCart.getValue();
 
         if (cart) {
+          //Memorizzo l'attuale modalita del carrello
+          lastDeliveryMode = cart.RITIROINSEDE ? 'pickup' : 'shipping';
+
+          //Se non mi passa il delivery Mode uso quello del carrello
+          if (deliveryMode == '') {
+            deliveryMode = lastDeliveryMode; 
+          }
 
           cart.IDANAGRAFICA = userDoc.ID;
+          cart.NOMINATIVO = userDoc.NOMINATIVO;
           cart.INDIRIZZO = userDoc.INDIRIZZO;
           cart.CAP = userDoc.CAP;
           cart.COMUNE = userDoc.COMUNE;
           cart.PROVINCIA = userDoc.PROVINCIA;
           cart.ISOSTATO = userDoc.ISOSTATO;
-          cart.INDIRIZZODESTINAZIONE = userDoc.INDIRIZZO;
-          cart.CAPDESTINAZIONE = userDoc.CAP;
-          cart.COMUNEDESTINAZIONE = userDoc.COMUNE;
-          cart.PROVINCIADESTINAZIONE = userDoc.PROVINCIA;
+          cart.CODICEFISCALE = userDoc.CODICEFISCALE;
+          cart.EMAIL = userDoc.EMAIL;
 
-          resolve();
+          if (deliveryMode == 'shipping') {
+            cart.RITIROINSEDE = false;
+            cart.NOMEDESTINAZIONE = userDoc.NOMINATIVO;
+            console.log('Adesso imposto il nome ' + userDoc.NOMINATIVO);
+            
+            cart.INDIRIZZODESTINAZIONE = userDoc.INDIRIZZO;
+            cart.CAPDESTINAZIONE = userDoc.CAP;
+            cart.PROVINCIADESTINAZIONE = userDoc.PROVINCIA;
+            cart.COMUNEDESTINAZIONE = userDoc.COMUNE;
+            cart.STATODESTINAZIONE = userDoc.ISOSTATO;
+          }
+          else {
+            cart.RITIROINSEDE = true;
+            cart.NOMEDESTINAZIONE = null;
+            cart.INDIRIZZODESTINAZIONE = null;
+            cart.CAPDESTINAZIONE = null;
+            cart.PROVINCIADESTINAZIONE = null;
+            cart.COMUNEDESTINAZIONE = null;
+            cart.STATODESTINAZIONE = null;
+          }
+
+          if (deliveryMode != lastDeliveryMode) {
+            //Devo ricalcolare il prezzo nel carrello
+            this.recalcCart();
+            //Non riemetto il carrelo perchè lo fa il recalc
+          }
+          else {
+            //Riemetto il carrello modificato
+            this._activeCart.next(cart);
+            resolve();
+          }
         }
         else {
           reject('Carrello non presente');
@@ -120,15 +158,24 @@ export class ShoppingService {
       else {
         //Svuoto i riferimenti
         cart.IDANAGRAFICA = null;
+        cart.NOMINATIVO = null;
         cart.INDIRIZZO = null;
         cart.CAP = null;
         cart.COMUNE = null;
         cart.PROVINCIA = null;
         cart.ISOSTATO = null;
+
+        cart.NOMEDESTINAZIONE = null;
         cart.INDIRIZZODESTINAZIONE = null;
         cart.CAPDESTINAZIONE = null;
-        cart.COMUNEDESTINAZIONE = null;
         cart.PROVINCIADESTINAZIONE = null;
+        cart.COMUNEDESTINAZIONE = null;
+        cart.STATODESTINAZIONE = null;
+
+        //Riemetto il carrello modificato
+        this._activeCart.next(cart);
+
+        resolve();
       }
     })
   }

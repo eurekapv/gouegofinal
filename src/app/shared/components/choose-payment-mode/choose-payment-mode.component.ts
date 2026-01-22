@@ -18,21 +18,24 @@ export class ChoosePaymentModeComponent  implements OnInit {
   @Input() set configContanti(value: AreaPaymentSetting) {
     this._configContanti = value;
     if (!this._selectedMode && value) {
-        this._selectedMode = ModeIncassoConfig.incassoContanti
+        this._selectedMode = ModeIncassoConfig.incassoContanti;
+        this.syncEnableButton();
     }
   }
 
   @Input() set configBonifico(value: AreaPaymentSetting) {
     this._configBonifico = value;
     if (!this._selectedMode && value) {
-        this._selectedMode = ModeIncassoConfig.incassoBonifico
+        this._selectedMode = ModeIncassoConfig.incassoBonifico;
+        this.syncEnableButton();
     }
   }
 
   @Input() set configMobile(value: AreaPaymentSetting) {
     this._configMobile = value;
     if (!this._selectedMode && value) {
-        this._selectedMode = ModeIncassoConfig.incassoCreditCard
+        this._selectedMode = ModeIncassoConfig.incassoCreditCard;
+        this.syncEnableButton();
     }
   }
 

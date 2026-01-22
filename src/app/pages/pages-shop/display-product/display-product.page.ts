@@ -8,8 +8,10 @@ import SwiperCore, { Navigation, Pagination  } from 'swiper';
 import { ImageModalPage } from '../../image-modal/image-modal.page';
 import { ArticoloTaglieMisura } from 'src/app/models/shop/articolotagliemisura.model';
 import { ArticoloColore } from 'src/app/models/shop/articolocolore.model';
-import { TipoArticolo, TipoPrezzo } from 'src/app/models/zsupport/valuelist.model';
+import { ModalPageCSS, TipoArticolo, TipoPrezzo } from 'src/app/models/zsupport/valuelist.model';
 import { Subscription } from 'rxjs';
+import { CartCheckoutPage } from '../cart-checkout/cart-checkout.page';
+import { Utente } from 'src/app/models/utente/utente.model';
 
 SwiperCore.use([Pagination, Navigation]);
 
@@ -36,6 +38,11 @@ export class DisplayProductPage implements OnInit, OnDestroy {
   subListenCarrello: Subscription;
   numProdotti: number = 0;
   tipoPrezzo: typeof TipoPrezzo = TipoPrezzo;
+
+  userDoc: Utente;
+  subUserDoc: Subscription; 
+  userLogged: boolean;      //TRUE-FALSE: Utente Loggato
+  subUserLogged: Subscription;  
 
 
 
@@ -93,6 +100,37 @@ export class DisplayProductPage implements OnInit, OnDestroy {
       }
     })
   }
+
+  /**
+   * Metto in ascolto dell'utente attivo
+   * @returns 
+   */
+  onListenUtente(): Promise<void> {
+    return new Promise<void>((resolve) => {
+
+      //Controllo dell'utente loggato
+      this.subUserLogged = this.startService.flagUtenteIsLoggato$
+          .subscribe({
+            next: (element: boolean) => {
+              this.userLogged = element;
+            }
+          });
+
+      //Richiedo lo User
+      this.subUserDoc = this.startService.activeUtenteDoc$
+          .subscribe({
+            next: (element: Utente) => {
+              //Utente loggato
+              this.userDoc = element;
+              if (this.userDoc) {
+                this.startService.shopSetIdAnagrafica(this.userDoc);
+              }
+            }
+          });  
+          
+      resolve();
+    })
+  }  
 
 /**
    * Viene effettuata la richiesta
@@ -317,6 +355,7 @@ onAddToCart() {
       
       //Posso aggiungere un articolo
       this.startService.shopAddItemToCart(this.articoloDoc, this.selectedTaglia?.ID, this.selectedColor?.ID)
+                       .then(() => this.onListenUtente())
                        .then(() => {
                           this.isOpenModalAddedItem = true;                          
                        })
@@ -338,6 +377,35 @@ closeModalAddedItem() {
     this.onGoToBack();
   }
 }
+
+/**
+ * Utente vuole andare subito al pagamento
+ */
+onGoToCheckout() {
+  //Chiudere la modale
+  if (this.modalAddedItem) {
+    this.modalAddedItem.dismiss();
+    this.isOpenModalAddedItem = false;
+    // //Tornare ai prodotti
+    // this.onGoToBack();
+
+    //Chiedo un ricalcolo del carrello
+    this.startService.shopRecalcCart()
+                      .then(() => {
+                        //ACrea la modale del Checkout
+                        return this.modalController.create({
+                           component: CartCheckoutPage,
+                           cssClass: ModalPageCSS.modalFullScreen
+                         })
+                        }
+                      )
+                      .then(elModal => {
+                        //Mostra la modale
+                        elModal.present();
+                      });
+  }  
+}
+
 
   /**
    * Richiesta la visualizzazione del carrello

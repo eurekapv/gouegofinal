@@ -56,12 +56,16 @@ export class ShopCarrello extends IDDocument {
     constructor(onlyInstance?:boolean) {
 
         super(onlyInstance);
-        
-        this.RITIROINSEDE = true;
-        this.SPESETRASPORTO = 0;
 
-        this.DETAILCARRELLO = [];
-        this.RIEPILOGOCARRELLO = [];
+        //Se non vuoi l'istanza imposto anche questi
+        if (!onlyInstance) {
+
+            this.RITIROINSEDE = true;
+            this.SPESETRASPORTO = 0;
+    
+            this.DETAILCARRELLO = [];
+            this.RIEPILOGOCARRELLO = [];
+        }
 
     }    
 

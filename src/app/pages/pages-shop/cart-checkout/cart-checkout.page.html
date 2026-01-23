@@ -1,8 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="end">
-      <ion-button (click)="closeModal()" fill="clear">
-        <ion-icon name="close" slot="icon-only"></ion-icon>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModalOrderFailed()" fill="clear">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+        Indietro
       </ion-button>
     </ion-buttons>
     <ion-title>Checkout</ion-title>
@@ -203,7 +204,7 @@
         (selectedConfig)="onSelectPaymentConfig($event)"
         (clickCondizioniVendita)="onClickCondizioniVendita()"
         (clickButtonConfirm)="onClickAcquista()"
-        (clickButtonUndo)="closeModal()"
+        (clickButtonUndo)="closeModalOrderFailed()"
         [labelConfirm]="'Conferma Ordine'"
         [iconConfirm]="'checkmark-circle'"
         [deliveryMode]="deliveryMode"

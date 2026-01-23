@@ -84,6 +84,7 @@ export class ShopCarrello extends IDDocument {
                         'PARTITAIVA',
                         'CODDESTINATARIOPEC',
                         'EMAIL',
+                        'NOMEDESTINAZIONE',
                         'NOTESDESTINAZIONE',
                         'INDIRIZZODESTINAZIONE',
                         'COMUNEDESTINAZIONE',

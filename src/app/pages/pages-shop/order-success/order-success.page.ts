@@ -34,6 +34,7 @@ export class OrderSuccessPage implements OnInit {
     this.actRouter.paramMap.subscribe(param => { 
       if (param.has('orderId')) {
         const idOrdine = param.get('orderId');
+        console.log('Ordine: ' + idOrdine);
         this.requestOrdine(idOrdine);
       } else {
         this.goBack();
@@ -82,6 +83,7 @@ export class OrderSuccessPage implements OnInit {
         .then((ordine: ShopCarrello) => {
           this.ordine = ordine;
           this.inRichiesta = false;
+          console.log(this.ordine);
           elLoading.dismiss();
         })
         .catch(error => {

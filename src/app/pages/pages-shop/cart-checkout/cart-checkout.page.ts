@@ -122,7 +122,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
         .catch(error => {
           let listButtons: AlertButton[] = [{
                   text:'Chiudi',
-                  handler: () => {this.closeModal();
+                  handler: () => {this.closeModalOrderFailed();
                   }}];
 
             //Chiudo il loading
@@ -787,10 +787,8 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
             myLoading.dismiss();
 
             //Chiudo il checkout e chiedo di andare alla pagina del Order Success
-            this.closeModal(true);
+            this.closeModalOrderSuccess();
 
-            //Apro la modale che avviso
-            //this.isOpenModalOrderSuccess = true;
           })
           .catch(error => {
             //Chiudo il loading
@@ -849,45 +847,45 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
   //#endregion
 
+
   /**
-   * Chiude la Modale che avverte del successo Ordine e 
-   * chiude anche la modale del Check out
+   * Annullo il checkout
    */
-  closeModalOrderSuccess() {
-
-    if (this.modalOrderSuccess) {
-
-      this.modalOrderSuccess.dismiss()
-                            .then(result => {
-                              if (result) {
-                                //Creo un nuovo ordine
-                                //Creo un nuovo ordine
-                                this.startService.shopNewCart();
-
-                                //Chiudo la modale principale ed torno allo shop
-                                this.closeModal(true);
-                              }
-                            })
-    }
-   
-
+  closeModalOrderFailed() {
+    this.modalController
+        .dismiss();
   }
 
   /**
-   * Chiude la modale
+   * Chiude la modale perchè ordine è andato a buon fine
    */
-  closeModal(goToOrderSuccess: boolean = false) {
+  closeModalOrderSuccess() {
+     let actualOrderId:string = '';
 
+    //Chiudo questa modale
     this.modalController
         .dismiss()
         .then(result => {
-          if (result && goToOrderSuccess) {
-            //Devo portare alla home
+          if (result) {
+            //Memorizzo ID Attuale
+            actualOrderId = this.carrelloDoc.ID;
+
+            //Smetto di seguire le modifiche del carrello
+            if (this.subListenCarrello) {
+              this.subListenCarrello.unsubscribe();
+            }
+            
+            //Creo un nuovo carrello
+            this.startService.shopNewCart();
+
+
+            //Mostro l'ordine finalizzato
             let pathToGo = this.startService.getUrlPageBasic('shop');
             pathToGo.push('order-success');
-            pathToGo.push(this.carrelloDoc.ID);
-
+            pathToGo.push(actualOrderId);
+  
             this.navController.navigateRoot(pathToGo);
+
           }
         });
   }

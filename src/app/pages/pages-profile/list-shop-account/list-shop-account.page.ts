@@ -20,7 +20,6 @@ export class ListShopAccountPage implements OnInit {
 
   constructor(private startService: StartService,
               private loadingController: LoadingController,
-              private docStructureService: DocstructureService,
               private navController: NavController
                 ) { }
 

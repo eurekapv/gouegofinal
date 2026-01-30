@@ -34,29 +34,33 @@ export class AreaService {
     return this._areaSelected.getValue();
   }
 
-  get stripeEnabled() {
+
+  //#region PARAMETRI STRIPE
+  get stripeEnabled$() {
     return this._stripeEnabled.asObservable();
   }
 
-  get stripeEnabled$() {
+  get stripeEnabled() {
     return this._stripeEnabled.getValue();
   }  
 
-  get stripeMode() {
+  get stripeMode$() {
     return this._stripeMode.asObservable();
   }
 
-  get stripeMode$() {
+  get stripeMode() {
     return this._stripeMode.getValue();
   }  
 
-  get stripeIdAccount() {
+  get stripeIdAccount$() {
     return this._stripeIdAccount.asObservable();
   }
 
-  get stripeIdAccount$() {
+  get stripeIdAccount() {
     return this._stripeIdAccount.getValue();
   }    
+
+  //#endregion 
 
   constructor(private docStructure: DocstructureService) { }
 
@@ -189,7 +193,7 @@ export class AreaService {
 
     console.log('Stripe Abilitato: ' + this.stripeEnabled$);
     console.log('Stripe Account: ' + this.stripeIdAccount$);
-    if (this.stripeMode$ == PaymentEnvironment.production) {
+    if (this.stripeMode == PaymentEnvironment.production) {
       console.log('Stripe Mode Production ');
     }
     else {

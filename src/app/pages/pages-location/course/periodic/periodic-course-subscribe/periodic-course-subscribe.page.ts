@@ -962,10 +962,7 @@ onSelectDefaultTypePayment(): Promise<void> {
       const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
 
       //Presenta le Opzioni del pagamento
-      this.startService.presentPaymentOptions(
-                        amount,
-                        'EUR',
-                        centroAccountId)
+      this.startService.presentPaymentOptions(amount,'EUR')
         .then(result => {
 
           if (result.success) {

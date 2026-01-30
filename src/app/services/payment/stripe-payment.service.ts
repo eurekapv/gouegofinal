@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { LoadingController, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { Stripe, PaymentSheetEventsEnum, ApplePayEventsEnum, GooglePayEventsEnum } from '@capacitor-community/stripe';
 import { firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { PaymentEnvironment } from 'src/app/models/zsupport/valuelist.model';
+import { HttpClient } from '@angular/common/http';
 
 
 export interface StripePaymentIntent {
@@ -36,10 +37,48 @@ export class StripePaymentService {
   private currentPaymentIntentId: string | null = null;
   private stripeKey: string;
 
+  private _stripeMode: PaymentEnvironment;
+  private _stripeEnabled: boolean;
+  private _stripeIdAccount: string;
+  private _stripeMerchantName: string;
+
+
+
+  //#region PROPRIETA' STRIPE
+  public get stripeMode() {
+    return this._stripeMode;
+  }
+  public set stripeMode(value) {
+    this._stripeMode = value;
+  }
+
+  public get stripeEnabled() {
+    return this._stripeEnabled;
+  }
+  public set stripeEnabled(value) {
+    this._stripeEnabled = value;
+  }
+
+  public get stripeIdAccount() {
+    return this._stripeIdAccount;
+  }
+  public set stripeIdAccount(value) {
+    this._stripeIdAccount = value;
+  }
+
+  public get stripeMerchantName() {
+    return this._stripeMerchantName;
+  }
+  public set stripeMerchantName(value) {
+    this._stripeMerchantName = value;
+  }
+  
+
+  //endregion
+  
   constructor(
-    private http: HttpClient,
     private platform: Platform,
-    private loadingController: LoadingController
+    private http: HttpClient
   ) {
     //Metto la chiave di test
     this.stripeKey = environment.additionalConfig.stripePublishableKeyTest;
@@ -85,9 +124,8 @@ export class StripePaymentService {
    * Richiede un Payment Intent al backend Node.js
    */
   async createPaymentIntent(
-    amount: number, 
-    currency: string = 'eur',
-    idAccountConnected: string = ''
+      amount: number, 
+      currency: string = 'eur'
   ): Promise<StripePaymentIntent> {
     try {
       const response = await firstValueFrom(
@@ -96,7 +134,8 @@ export class StripePaymentService {
           {
             amount: amount,
             currency: currency,
-            idAccountConnected: idAccountConnected
+            idAccountConnected: this._stripeIdAccount,
+            mode: this._stripeMode
           }
         )
       );
@@ -144,9 +183,7 @@ private async loadStripeJs(): Promise<any> {
  */
 async payWithCardBrowser(
   amount: number,
-  currency: string = 'EUR',
-  idAccountConnected: string = '',
-  merchantName: string = environment.additionalConfig.merchantName
+  currency: string = 'EUR'
 ): Promise<PaymentResult> {
   try {
     console.log('💳 Avvio pagamento su browser...');
@@ -157,8 +194,7 @@ async payWithCardBrowser(
     // Crea Payment Intent
     const paymentIntent = await this.createPaymentIntent(
       amount,
-      currency.toLowerCase(),
-      idAccountConnected
+      currency.toLowerCase()
     );
 
     console.log('✅ PaymentIntent creato:', paymentIntent.id);
@@ -295,9 +331,10 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
   async payWithApplePay(
     amount: number,
     currency: string = 'EUR',
-    idAccountConnected: string = '',
-    merchantName: string = environment.additionalConfig.merchantName
   ): Promise<PaymentResult> {
+
+    //Nome visualizzato nel pagamento
+    let merchantName: string = this._stripeMerchantName;
 
     if (!this.platform.is('ios')) {
       return {
@@ -319,8 +356,7 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       // Crea Payment Intent
       const paymentIntent = await this.createPaymentIntent(
         amount,
-        currency.toLowerCase(),
-        idAccountConnected
+        currency.toLowerCase()        
       );
       console.log('✅ Payment Intent created:', paymentIntent.id);
 
@@ -328,6 +364,7 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       console.log('🍎 Creating Apple Pay sheet...');
 
       const merchantId = environment.additionalConfig?.merchantAppleIdentifier || 'merchant.com.gouego.app';
+
       console.log('🔑 Merchant Identifier:', merchantId);
 
       await Stripe.createApplePay({
@@ -404,13 +441,13 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
   async payWithGooglePay(
     amount: number,
     currency: string = 'EUR',
-    idAccountConnected: string = '',
-    merchantName: string = environment.additionalConfig.merchantName
   ): Promise<PaymentResult> {
+
+    let merchantName: string = this._stripeMerchantName;
 
     console.log('=== GOOGLE PAY DEBUG START ===');
     console.log('📱 [1/10] Entering payWithGooglePay method');
-    console.log('📱 Parameters:', { amount, currency, idAccountConnected, merchantName });
+    console.log('📱 Parameters:', { amount, currency, merchantName });
 
     // Verifica piattaforma
     console.log('📱 [2/10] Checking platform...');
@@ -466,7 +503,6 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       const paymentIntent = await this.createPaymentIntent(
         amount,
         currency.toLowerCase(),
-        idAccountConnected
       );
 
       console.log('✅ [7/10] Payment Intent created successfully');
@@ -616,11 +652,11 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
    */
   async payWithCard(
     amount: number,
-    currency: string = 'EUR',
-    idAccountConnected: string = '',
-    merchantName: string = environment.additionalConfig.merchantName
+    currency: string = 'EUR'
   ): Promise<PaymentResult> {
 
+    let merchantName: string = this._stripeMerchantName;
+    
     console.log('Start Pay With Card');
 
     try {
@@ -628,7 +664,6 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       const paymentIntent = await this.createPaymentIntent(
         amount,
         currency.toLowerCase(),
-        idAccountConnected
       );
 
       // Crea Payment Sheet
@@ -664,18 +699,21 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
 
   /**
   * Metodo universale: sceglie automaticamente il metodo migliore
+  * @param amount Valore
+  * @param currency Striva Valuta
+  * @param idAccountConnected 
+  * @param mode Modalità
   */
 async presentPaymentOptions(
-  amount: number,
-  currency: string = 'EUR',
-  idAccountConnected: string = '',
-  merchantName: string = environment.additionalConfig.merchantName
+      amount: number,
+      currency: string = 'EUR',
 ): Promise<PaymentResult> {
 
+  
   //Sistemo eventuali errori di arrotondamento
   amount = Math.round(amount);
   console.log('=== PRESENT PAYMENT OPTIONS DEBUG START ===');
-  console.log('💳 presentPaymentOptions called with:', { amount, currency, idAccountConnected, merchantName });
+  console.log('💳 presentPaymentOptions called with:', { amount, currency });
   console.log('💳 Platform info:', {
     isCapacitor: this.platform.is('capacitor'),
     isAndroid: this.platform.is('android'),
@@ -686,7 +724,7 @@ async presentPaymentOptions(
   // 🌐 BROWSER: usa Stripe.js
   if (!this.platform.is('capacitor')) {
     console.log('💻 Browser detected - using Stripe.js');
-    return this.payWithCardBrowser(amount, currency, idAccountConnected, merchantName);
+    return this.payWithCardBrowser(amount, currency);
   }
 
   console.log('📱 Mobile detected - checking payment methods...');
@@ -698,14 +736,14 @@ async presentPaymentOptions(
   console.log('🍎 Apple Pay available?', applePayAvailable);
   if (applePayAvailable) {
     console.log('🍎 Using Apple Pay');
-    return this.payWithApplePay(amount, currency, idAccountConnected, merchantName);
+    return this.payWithApplePay(amount, currency);
   }
 
   // Su Android, usa Payment Sheet (include Google Pay automaticamente)
   // NOTA: Disabilitato Google Pay nativo per bug nel plugin v7.2.2
   // (NullPointerException in GooglePayExecutor.kt:66)
   console.log('📱 Android detected - using Payment Sheet (includes Google Pay option)');
-  return this.payWithCard(amount, currency, idAccountConnected, merchantName);
+  return this.payWithCard(amount, currency);
 }
 
 }

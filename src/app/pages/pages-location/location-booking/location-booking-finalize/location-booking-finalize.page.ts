@@ -528,12 +528,9 @@ payWithStripe(): Promise<PaymentProcess> {
   return new Promise<PaymentProcess>((resolve, reject) => {
     
     const amount = this.activePrenotazione.TOTALE * 100;
-    const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
+    
 
-    this.startService.presentPaymentOptions(
-                      amount,
-                      'EUR',
-                      centroAccountId)
+    this.startService.presentPaymentOptions(amount, 'EUR')
       .then(result => {
 
         if (result.success) {

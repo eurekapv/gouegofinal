@@ -141,7 +141,15 @@ export class AreaPaymentSetting extends IDDocument {
                     break;
                 }
               }  
-              else if (element.TIPOPAYMENT == PaymentChannel.stripe && element.STFLAGSTATUS == true) {
+              else if (element.TIPOPAYMENT == PaymentChannel.stripe 
+                        && element.STENVIRONMENT == PaymentEnvironment.production
+                        && element.STFLAGSTATUS == true) {
+                    areaPaymentFounded = element;
+                    break;
+              }
+              else if (element.TIPOPAYMENT == PaymentChannel.stripe 
+                        && element.STENVIRONMENT == PaymentEnvironment.test
+                        && element.STFLAGSTATUSTEST == true) {
                     areaPaymentFounded = element;
                     break;
               }

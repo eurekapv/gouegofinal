@@ -30,7 +30,7 @@ import { ModalController, Platform } from '@ionic/angular';
 
 import { CodicefiscaleService } from './archivi/codicefiscale.service';
 import { CodiceFiscale } from '../models/zsupport/codicefiscale.model';
-import { CustomAlertClass, Mansione, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
+import { CustomAlertClass, Mansione, PaymentEnvironment, RangeSearch, StateApplication, TimeTrainerCourse, TipoArticolo, TipoPrivateImage, TipoVerificaAccount, TypeUrlPageLocation } from 'src/app/models/zsupport/valuelist.model'
 import { AccountRequestCode, AccountOperationResponse, AccountVerifyCode } from '../models/utente/accountregistration.model';
 import { OccupazioniService } from './struttura/occupazioni.service';
 
@@ -113,7 +113,6 @@ export class StartService {
 
   private _forceIdAreaOnLogin = ''; //Se impostato è l'area da mantenere a seguito del login (Usata quando nella booking non sono loggatto, e al termine devo rimanere sull'area)
   
-
   /**
    * Stato dell'Applicazione
    */
@@ -733,6 +732,10 @@ export class StartService {
 
       this.areaService.areaSelected$
           .subscribe(newAreaSelected => {
+
+            //Aggiungo il nome del venditore al servizio Stripe
+            this.stripePayment.stripeMerchantName = newAreaSelected.DENOMINAZIONE;
+
             //Cambiando Area selezionata
             //Devo necessariamente recuperare le Location
             //Se il documento è in stato inserted non è ancora arrivato dal server
@@ -743,7 +746,34 @@ export class StartService {
 
             //Imposta la nuova Area nel servizio Shopping
             this.shopService.idArea = newAreaSelected.ID;
-          })
+          });
+
+      //Ascolto le modifiche Stripe
+      this.areaService.stripeMode$
+          .subscribe({
+            next: (elMode) => {
+              //Modifica della modalita di Stripe
+              this.stripePayment.stripeMode = elMode;
+            }
+          });
+
+      //Identificativo dell'account
+      this.areaService.stripeIdAccount$
+          .subscribe({
+            next: (idAccount) => {
+              //Modifica della modalita di Stripe
+              this.stripePayment.stripeIdAccount = idAccount;
+            }
+          });      
+
+      //Stripe Abilitato
+      this.areaService.stripeEnabled$
+          .subscribe({
+            next: (flagEnabled) => {
+              //Modifica della modalita di Stripe
+              this.stripePayment.stripeEnabled = flagEnabled;
+            }
+          });      
     }
 
     /**
@@ -2322,16 +2352,12 @@ initializeStripe():Promise<void> {
 /**
  * Metodo universale: sceglie automaticamente il metodo migliore
  * @param amount 
- * @param currency 
- * @param idAccountConnected 
- * @param merchantName 
+ * @param currency   
  * @returns 
  */
-presentPaymentOptions(amount: number,
-    currency: string = 'EUR',
-    idAccountConnected: string = '',
-    merchantName: string = environment.additionalConfig.merchantName):Promise<PaymentResult> {
-      return this.stripePayment.presentPaymentOptions(amount, currency, idAccountConnected, merchantName);
+presentPaymentOptions(amount: number, currency: string = 'EUR'):Promise<PaymentResult> {
+
+      return this.stripePayment.presentPaymentOptions(amount, currency);
 }
 
 /**

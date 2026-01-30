@@ -108,9 +108,6 @@ export class ChoosePaymentModeComponent  implements OnInit {
   //Flag per accettazione condizioni di vendita
   termsAccepted: boolean = false;
 
-  //Stripe Live Mode
-  stripeLiveMode: boolean = environment.additionalConfig.stripeLiveMode;
-
   /**
    * Ritorna la label della conferma
    * Se la scelta è pagare subito torna Para ora

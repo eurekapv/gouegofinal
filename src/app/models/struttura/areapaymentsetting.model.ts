@@ -8,12 +8,15 @@ export class AreaPaymentSetting extends IDDocument {
     IDAREAOPERATIVA:        string;
     TIPOPAYMENT:            PaymentChannel;
     PPENVIRONMENT:          PaymentEnvironment;
+    SETTORI:                string;
     PPACCOUNT:              string;
     PPCLIENTIDSANDBOX:      string;
     PPCLIENTIDPRODUCTION:   string;
-    SETTORI:                string;
+    STENVIRONMENT:          PaymentEnvironment;
     STIDACCOUNT:            string;
     STFLAGSTATUS:           boolean;
+    STIDACCOUNTTEST:            string;
+    STFLAGSTATUSTEST:           boolean;
 
 
     constructor(onlyInstance?:boolean) {
@@ -29,12 +32,12 @@ export class AreaPaymentSetting extends IDDocument {
                       'PPACCOUNT',
                       'PPCLIENTIDSANDBOX',
                       'PPCLIENTIDPRODUCTION',
-                      'PPCLIENTSECRET',
                       'SETTORI',
-                      'STIDACCOUNT'
+                      'STIDACCOUNT',
+                      'STIDACCOUNTTEST'
                     ];
-      let arNumber = ['TIPOPAYMENT','PPENVIRONMENT'];
-      let arBoolean = ['STFLAGSTATUS'];
+      let arNumber = ['TIPOPAYMENT','PPENVIRONMENT','STENVIRONMENT'];
+      let arBoolean = ['STFLAGSTATUS','STFLAGSTATUSTEST'];
       let arDate = [];
       let arDateTime =[];
       let arTime = [];

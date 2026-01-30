@@ -74,7 +74,7 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
   
   //Il carrello deve poter essere consegnato
   enableDeliveryMode: boolean = true;
-
+ 
 
   
   constructor(    
@@ -484,7 +484,6 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
           this._configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
                                                                               ModeIncassoConfig.incassoCreditCard, 
                                                                               SettorePagamentiAttivita.settorePagamentoShop)
-
           LogApp.consoleLog('Contanti');
           LogApp.consoleLog(this._configIncassoContanti);
           LogApp.consoleLog('Bonifico');

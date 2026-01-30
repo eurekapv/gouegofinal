@@ -4,6 +4,8 @@ import { Area } from '../../models/struttura/area.model';
 import { StartConfiguration } from '../../models/start-configuration.model';
 import { DocstructureService } from '../../library/services/docstructure.service';
 import { RequestParams } from '../../library/models/requestParams.model';
+import { PaymentChannel, PaymentEnvironment } from 'src/app/models/zsupport/valuelist.model';
+import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,11 @@ export class AreaService {
   //Elenco Aree
   private _listAree = new BehaviorSubject<Area[]>([]);
   private _areaSelected = new BehaviorSubject<Area>(new Area);
+
+  //Creo delle variabili per scoprire i pagamenti mobile
+  private _stripeEnabled = new BehaviorSubject<boolean>(true);
+  private _stripeMode = new BehaviorSubject<PaymentEnvironment>(PaymentEnvironment.production);
+  private _stripeIdAccount = new BehaviorSubject<string>('');
 
   get listAree$() {
     return this._listAree.asObservable();
@@ -26,6 +33,30 @@ export class AreaService {
   get areaSelected() {
     return this._areaSelected.getValue();
   }
+
+  get stripeEnabled() {
+    return this._stripeEnabled.asObservable();
+  }
+
+  get stripeEnabled$() {
+    return this._stripeEnabled.getValue();
+  }  
+
+  get stripeMode() {
+    return this._stripeMode.asObservable();
+  }
+
+  get stripeMode$() {
+    return this._stripeMode.getValue();
+  }  
+
+  get stripeIdAccount() {
+    return this._stripeIdAccount.asObservable();
+  }
+
+  get stripeIdAccount$() {
+    return this._stripeIdAccount.getValue();
+  }    
 
   constructor(private docStructure: DocstructureService) { }
 
@@ -110,8 +141,59 @@ export class AreaService {
     });
 
     if (elSelected) {
+      //Sincronizzo le proprietà Stripe
+      this.syncStripeProperty(elSelected);
+
       //Emetto la modifica
       this._areaSelected.next(elSelected);
+    }
+  }
+
+  /**
+   * Imposta le proprietà per Stripe
+   * @param area 
+   */
+  syncStripeProperty(areaSelected: Area) {
+    let objAreaStripe: AreaPaymentSetting = null;
+
+    if (areaSelected && areaSelected) {
+      if (areaSelected.AREAPAYMENTSETTINGS) {
+        //Recupero l'elemento di Stripe
+        objAreaStripe = areaSelected.AREAPAYMENTSETTINGS.find(elItem => elItem.TIPOPAYMENT == PaymentChannel.stripe)
+      }
+    }
+
+    if (objAreaStripe) {
+      console.log(objAreaStripe);
+
+      //Questa è la modalita Stripe
+      this._stripeMode.next(objAreaStripe.STENVIRONMENT);
+
+      switch(objAreaStripe.STENVIRONMENT) {
+        case PaymentEnvironment.production:
+          this._stripeEnabled.next(objAreaStripe.STFLAGSTATUS);
+          this._stripeIdAccount.next(objAreaStripe.STIDACCOUNT || '');
+          break;
+
+        case PaymentEnvironment.test:
+          this._stripeEnabled.next(objAreaStripe.STFLAGSTATUSTEST);
+          this._stripeIdAccount.next(objAreaStripe.STIDACCOUNTTEST || '');
+          break;
+
+      }
+    }
+    else {
+      this._stripeEnabled.next(false);
+      this._stripeIdAccount.next('');
+    }
+
+    console.log('Stripe Abilitato: ' + this.stripeEnabled$);
+    console.log('Stripe Account: ' + this.stripeIdAccount$);
+    if (this.stripeMode$ == PaymentEnvironment.production) {
+      console.log('Stripe Mode Production ');
+    }
+    else {
+      console.log('Stripe Mode Test');
     }
   }
 

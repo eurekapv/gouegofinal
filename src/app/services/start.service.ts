@@ -756,6 +756,30 @@ export class StartService {
     }
 
 
+    get stripeEnabled() {
+      return this.areaService.stripeEnabled;
+    }
+
+    get stripeEnabled$() {
+      return this.areaService.stripeEnabled$;
+    }  
+
+    get stripeMode() {
+      return this.areaService.stripeMode;
+    }
+
+    get stripeMode$() {
+      return this.areaService.stripeMode;
+    }  
+
+    get stripeIdAccount() {
+      return this.areaService.stripeIdAccount;
+    }
+
+    get stripeIdAccount$() {
+      return this.areaService.stripeIdAccount$;
+    }      
+
   //#endregion
 
   //#region LOCATIONS

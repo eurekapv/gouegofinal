@@ -37,7 +37,7 @@ export class StripePaymentService {
   private currentPaymentIntentId: string | null = null;
   private stripeKey: string;
 
-  private _stripeMode: PaymentEnvironment;
+  private _stripeMode: PaymentEnvironment = PaymentEnvironment.production;
   private _stripeEnabled: boolean;
   private _stripeIdAccount: string;
   private _stripeMerchantName: string;
@@ -48,8 +48,19 @@ export class StripePaymentService {
   public get stripeMode() {
     return this._stripeMode;
   }
+
   public set stripeMode(value) {
+    let reinitMode = false;
+    if (!this._stripeMode || value != this._stripeMode) {
+      reinitMode = true;
+    }
+
+    //Imposto la nuova modalità
     this._stripeMode = value;
+
+    //Io dovrei inizializzare qui stripe con la nuova chiave
+
+
   }
 
   public get stripeEnabled() {
@@ -80,10 +91,19 @@ export class StripePaymentService {
     private platform: Platform,
     private http: HttpClient
   ) {
+
+    //Imposto la chiave Stripe
+    this.setStripeKey();
+  }
+
+  /**
+   * Modifico la chiave a seconda della modalità
+   */
+  setStripeKey() {
     //Metto la chiave di test
     this.stripeKey = environment.additionalConfig.stripePublishableKeyTest;
 
-    if (environment.additionalConfig.stripeLiveMode) {
+    if (this._stripeMode == PaymentEnvironment.production) {
       //Se sono in live mode cambio
       this.stripeKey = environment.additionalConfig.stripePublishableKeyLive;
     }

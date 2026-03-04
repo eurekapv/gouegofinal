@@ -19,7 +19,6 @@ import { PlayerNumberComponent } from './player-number/player-number.component'
 import { SlottimeComponent } from './slottime/slottime.component'
 import { SportScrollComponent } from './sport-scroll/sport-scroll.component'
 import { UploadComponent } from './upload/upload.component'
-import { AlertInputPrezzoComponent } from './alert-input-prezzo/alert-input-prezzo.component';
 import { CampiScrollComponent } from './campi-scroll/campi-scroll.component';
 import { HideHeaderDirective } from '../directives/hide-header.directive';
 
@@ -87,7 +86,6 @@ import { WelcomeModalComponent } from './welcome-modal/welcome-modal.component';
         SlottimeComponent,
         SportScrollComponent,
         UploadComponent,
-        AlertInputPrezzoComponent,
         CampiScrollComponent,
         HideHeaderDirective,
         SettimanaBlockComponent,
@@ -128,7 +126,6 @@ import { WelcomeModalComponent } from './welcome-modal/welcome-modal.component';
         PlayerNumberComponent,
         SlottimeComponent,
         SportScrollComponent,
-        AlertInputPrezzoComponent,
         UploadComponent,
         CampiScrollComponent,
         HideHeaderDirective,

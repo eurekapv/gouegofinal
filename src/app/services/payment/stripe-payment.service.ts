@@ -50,17 +50,11 @@ export class StripePaymentService {
   }
 
   public set stripeMode(value) {
-    let reinitMode = false;
-    if (!this._stripeMode || value != this._stripeMode) {
-      reinitMode = true;
+    if (value !== this._stripeMode) {
+      this._stripeMode = value;
+      this.setStripeKey();
+      this.reinitialize();
     }
-
-    //Imposto la nuova modalità
-    this._stripeMode = value;
-
-    //Io dovrei inizializzare qui stripe con la nuova chiave
-
-
   }
 
   public get stripeEnabled() {
@@ -136,6 +130,18 @@ export class StripePaymentService {
       console.error('❌ Error initializing Stripe:', error);
       throw error;
     }
+  }
+
+  /**
+   * Re-inizializza Stripe con la chiave aggiornata (es. cambio modalità test/live)
+   */
+  async reinitialize(): Promise<void> {
+    this.isInitialized = false;
+    this.stripeJs = null;
+    this.applePayReady = false;
+    this.googlePayReady = false;
+
+    await this.initialize();
   }
 
 

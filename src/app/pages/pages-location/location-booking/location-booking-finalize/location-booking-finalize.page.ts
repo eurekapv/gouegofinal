@@ -61,6 +61,9 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
 
   //accettazione delle condizioni di vendita
   disclaimer: boolean =true;
+
+  //Abilita la possibilità di prenotazione senza costo
+  enableZeroPayment: boolean = true;
   
   /* NUOVE PROPRIETA */
   // Creo le variabili per ognuna modalita di incasso (Contanti/Bonifico/Mobile)
@@ -510,7 +513,18 @@ export class LocationBookingFinalizePage implements OnInit, OnDestroy {
       }
       
     }
-    else {
+    else if (this.enableZeroPayment) {
+
+          //Creo il risultato del pagamento, passando la modalità
+          let docPaymentResult = new PaymentProcess(PaymentMode.pagaStruttura);
+          // Essendo una modalita che non prevede interazioni app
+          // viene impostato automaticamento il channelPayment 
+          // e il processResult = TRUE
+          
+          //Passo subito al Success
+          this.onPaymentSuccess(docPaymentResult);       
+
+    } else {
       this.startService.presentAlertMessage('Contattare la struttura. Prenotazioni gratuite concluse');
     }
 
@@ -644,8 +658,6 @@ cancelStripePayment() {
    * @param resultPayment Risultato del pagamento
    */
   onPaymentSuccess(resultPayment?: PaymentProcess) {
-
-    console.log(resultPayment);
     
     //Pagamento corretto
     if (resultPayment && resultPayment.processResult)  {

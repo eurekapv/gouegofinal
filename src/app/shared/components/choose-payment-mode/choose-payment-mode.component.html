@@ -85,33 +85,31 @@
           <ion-icon [name]="_iconConfirm" slot="start"></ion-icon>
           {{getLabelConfirm()}}
         </ion-button>
-    </div>
 
-
-
-    <!-- CONTATTA LA STRUTTURA -->
-    <div class="action-button-section">
-
-      @if (_showContattaButton) {
+        @if (_showContattaButton) {
+          <ion-button
+            (click)="onClickContattaStruttura()"
+            expand="block"
+            class="undo-button"
+            size="large">
+            <ion-icon name="call-outline" slot="start"></ion-icon>
+            Contatta la struttura
+          </ion-button>
+        }
+    
         <ion-button
-          (click)="onClickContattaStruttura()"
-          expand="block"
           class="undo-button"
-          size="large">
-          <ion-icon name="call-outline" slot="start"></ion-icon>
-          Contatta la struttura
+          expand="block"
+          size="large"
+          (click)="onUndo()">
+          <ion-icon [name]="_iconUndo" slot="start"></ion-icon>
+          {{_labelUndo}}
         </ion-button>
-      }
 
-      <ion-button
-        class="undo-button"
-        expand="block"
-        size="large"
-        (click)="onUndo()">
-        <ion-icon [name]="_iconUndo" slot="start"></ion-icon>
-        {{_labelUndo}}
-      </ion-button>
     </div>
+
+
+
 
   </div>
 }

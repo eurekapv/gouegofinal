@@ -35,7 +35,7 @@ export class PrenotazionePianificazione extends IDDocument {
         super(onlyInstance);
 
         if (!onlyInstance) {
-            this.NUMPARTECIPANTI = 1;
+            this.NUMPARTECIPANTI = 4;
             this._DESCRCAMPO = '';
             this._DESCRSPORT = '';
         }

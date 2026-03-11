@@ -7,7 +7,7 @@ android {
         applicationId "com.gouego"
         minSdk 32
         targetSdk 35
-        versionCode 28
+        versionCode 29
         versionName '3.3'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

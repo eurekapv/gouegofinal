@@ -1,55 +1,54 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
-//#region OPENBEACH
-//Attenzione che appId è diverso per Android -> com.gouego e IOS -> com.gouego.openbeach
-//Credo sia utile solo la prima volta
+//#region PROGETTO RIEDUCA
 
 const config: CapacitorConfig = {
-    "appId": "com.gouego.openbeach",
-    "appName": "Open Beach",
-    "webDir": "www",
-    "backgroundColor": "#ffffffff",
-    "android": {
-      "path": 'application_build/openbeach/android'
-    },
-    "ios": {
-      "path": "application_build/openbeach/ios",
-      "cordovaLinkerFlags": [
-        "-ObjC"
-      ]
-    },
-    "plugins": {
-      "SplashScreen": {
-        "launchShowDuration": 0,
-        "launchAutoHide": true,
-        "backgroundColor": "#ffffffff",
-        "androidSplashResourceName": "splash",
-        "androidScaleType": "CENTER_CROP",
-        "showSpinner": false,
-        "splashFullScreen": true,
-        "SplashMaintainAspectRatio": "true",
-        "splashImmersive": true
-      }
-    },
-    "server": {
-      "allowNavigation": [
-        "gouego.com"
-      ]
-    },
-    "cordova": {
-      "preferences": {
-        "ScrollEnabled": "false",
-        "android-minSdkVersion": "19",
-        "BackupWebStorage": "none",
-        "SplashMaintainAspectRatio": "true",
-        "FadeSplashScreenDuration": "300",
-        "SplashShowOnlyFirstTime": "false",
-        "SplashScreen": "screen",
-        "SplashScreenDelay": "0",
-        "androidScaleType": "CENTER_CROP"
-      }
+  "appId": "com.gouego.progettorieduca",
+  "appName": "Progetto Rieduca",
+  "webDir": "www",
+  "backgroundColor": "#ffffffff",
+  "android": {
+    "path": "application_build/progettorieduca/android"
+  },
+  "ios": {
+    "path": "application_build/progettorieduca/ios",
+    "cordovaLinkerFlags": [
+      "-ObjC"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#ffffffff",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "SplashMaintainAspectRatio": "true",
+      "splashImmersive": true
     }
+  },
+  "server": {
+    "allowNavigation": [
+      "gouego.com"
+    ]
+  },
+  "cordova": {
+    "preferences": {
+      "ScrollEnabled": "false",
+      "android-minSdkVersion": "19",
+      "BackupWebStorage": "none",
+      "SplashMaintainAspectRatio": "true",
+      "FadeSplashScreenDuration": "300",
+      "SplashShowOnlyFirstTime": "false",
+      "SplashScreen": "screen",
+      "SplashScreenDelay": "0",
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
 };
+
 
 //#endregion
 

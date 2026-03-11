@@ -21,13 +21,13 @@ export const environment = {
   connection: {
     mode: ConnectionMode.external,
     comment: 'ActiveId e AppId viene utilizzata solo quando l\'app gira in localhost oppure dentro al Capacitor',
-    activeId: 'openbeach',
+    activeId: 'progettorieduca',
     customer: {
-      openbeach: {
-        name: 'openbeach',
-        appId: 'CCBA34A5-24F5-4C22-8485-D891823E3434',
-        urlId: 'openbeach.gouego.com',       
-      },
+      progettorieduca: {
+        name: 'progettorieduca',
+        appId: '130204BF-C4E7-4CF9-8101-C3B36E184D4B',
+        urlId: 'progettorieduca.gouego.com',    
+      },      
     },
     urlLocation: {
       local: {
@@ -45,10 +45,9 @@ export const environment = {
   additionalConfig: {
     defaultShopImage: 'assets/commercial/basketarticoli_small.png',
     stripePublishableKeyTest: 'pk_test_51S4IRkIHJIjc2k4Vj39amaoHAuqDUFrIiU06kP94Tlj1EqQ0B3rJJfjpk6unehqlfgT3EGN6T8VRMf5dfWo7stu000XvjRA9qJ',
-    stripePublishableKeyLive: 'pk_live_51Ic8tPIe0jXIfPKjtAwn6GMbSruoMnLoCpkT5KewlNsuNzBW7sBqHU1tzyPaTlysVOXoc2O9uqi2x2cagvmbQ7oo00fwAoC7QN',
-    stripeLiveMode: false,    
-    merchantAppleIdentifier: 'merchant.com.gouego.openbeach',
-    merchantName: 'Open Beach Group',
+    stripePublishableKeyLive: 'pk_live_51Ic8tPIe0jXIfPKjtAwn6GMbSruoMnLoCpkT5KewlNsuNzBW7sBqHU1tzyPaTlysVOXoc2O9uqi2x2cagvmbQ7oo00fwAoC7QN',  
+    merchantAppleIdentifier: 'merchant.com.gouego.progettorieduca',
+    merchantName: 'Progetto Rieduca',
     pexelsApiKey: '0XajEaMhkj3MuXcGAi45ZT1hn1zyM2LNoKEcS5pDBLTVtMJNjsLisUIk' // Sostituisci con la tua API key di Pexels
   }   
 

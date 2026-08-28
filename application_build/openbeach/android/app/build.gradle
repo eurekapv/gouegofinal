@@ -6,9 +6,9 @@ android {
     defaultConfig {
         applicationId "com.gouego"
         minSdk 32
-        targetSdk 35
-        versionCode 29
-        versionName '3.3'
+        targetSdk 37
+        versionCode 30
+        versionName '3.4'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

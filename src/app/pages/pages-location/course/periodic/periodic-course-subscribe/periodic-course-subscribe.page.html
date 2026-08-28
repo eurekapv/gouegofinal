@@ -172,22 +172,50 @@
         </div>
 
         <!-- Scelta Pagamento -->
-        <div class="payment-section" *ngIf="corsoDoc?.isAPagamento()">
-          <app-choose-payment-mode
-            (selectedConfig)="onSelectPaymentConfig($event)"
-            (clickCondizioniVendita)="onClickCondizioniVendita()"
-            (clickButtonConfirm)="onClickConfirmIscrizione()"
-            (clickButtonUndo)="closeModal()"
-            [showContattaButton]="!flagPostiDisponibili"
-            (clickContattaStruttura)="onClickContattaStruttura()"
-            [labelConfirm]="'Iscriviti'"
-            [canEnableConfirm]="flagPostiDisponibili"
-            [configContanti]="_configIncassoContanti"
-            [configBonifico]="_configIncassoBonifico"
-            [configMobile]="_configIncassoMobile">
-          </app-choose-payment-mode>
-        </div>
+         @if(corsoDoc?.isAPagamento()) {
 
+           <div class="payment-section">
+             <app-choose-payment-mode
+               (selectedConfig)="onSelectPaymentConfig($event)"
+               (clickCondizioniVendita)="onClickCondizioniVendita()"
+               (clickButtonConfirm)="onClickConfirmIscrizione()"
+               (clickButtonUndo)="closeModal()"
+               [showContattaButton]="!flagPostiDisponibili"
+               (clickContattaStruttura)="onClickContattaStruttura()"
+               [labelConfirm]="'Iscriviti'"
+               [canEnableConfirm]="flagPostiDisponibili"
+               [configContanti]="_configIncassoContanti"
+               [configBonifico]="_configIncassoBonifico"
+               [configMobile]="_configIncassoMobile">
+             </app-choose-payment-mode>
+           </div>
+         }
+         @else {
+
+           <div class="action-button-section">
+
+                  @if(flagPostiDisponibili) {
+                        <ion-button
+                          expand="block"
+                          size="large"
+                          class="confirm-button"
+                          (click)="onClickConfirmIscrizione()">
+                          Conferma Iscrizione
+                        </ion-button>
+                  }
+
+     
+                    
+                <ion-button
+                  class="undo-button"
+                  expand="block"
+                  size="large"
+                  (click)="closeModal()">
+                  Annulla
+                </ion-button>
+
+                    </div>            
+         }
 
 
         <div class="action-button-section">

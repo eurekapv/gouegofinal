@@ -473,7 +473,6 @@ export class Corso extends IDDocument {
         flagPagamento = true;
       }
 
-
       return flagPagamento;
     }
 

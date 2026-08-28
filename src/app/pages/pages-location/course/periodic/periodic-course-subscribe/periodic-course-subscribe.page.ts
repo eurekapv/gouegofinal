@@ -147,6 +147,7 @@ ngOnInit() {
 
                             //Mi servono le modalità dei Pagamenti
                             this.listTipiPagamento = listPayment;
+                            console.log(listPayment);
 
                             //Seleziono il pagamento default per i corsi
                             return this.onSelectDefaultTypePayment();
@@ -839,15 +840,16 @@ onSelectDefaultTypePayment(): Promise<void> {
 
     if (this.iscrizioneDoc) {
 
-
-
-
       //Chiediamo quanto devo pagare adesso
       //paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
 
       //Il corso è gratuito o è una prova
       if (this.iscrizioneDoc.TOTALE == 0) {
-        console.log('Totale a ZERO');
+
+        const tipoContanti = this.listTipiPagamento.find(elItem => elItem.MODALITA == 10);
+
+        this.iscrizioneDoc.IDTIPOPAGAMENTO = tipoContanti?.ID;
+        
         // Potrei essere in una prova gratuita, oppure aver scelto 
         // un pagamento che non
         // prevede un immediato esborso

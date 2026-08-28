@@ -31,8 +31,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false,
-    "strictPropertyInitialization": false,
-    "noImplicitAny": false
+    "strict": false
   },
   "allowedCommonJsDependencies": ["crypto"],
   "angularCompilerOptions": {

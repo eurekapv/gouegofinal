@@ -2,16 +2,15 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "es2020",
+    "module": "nodenext",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -21,11 +20,17 @@
       "ES2021.String"
     ],
     "paths": {
+      "src/*": [
+        "./src/*"
+      ],
+      "application_model/*": [
+        "./application_model/*"
+      ],
       "crypto": [
-        "node_modules/crypto-browserify"
+        "./node_modules/crypto-browserify"
       ],
       "stream": [
-        "node_modules/stream-browserify"
+        "./node_modules/stream-browserify"
       ]
     },
     "resolveJsonModule": true,

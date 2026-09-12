@@ -613,8 +613,14 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
       
       const amount = this.carrelloDoc.TOTRESIDUO * 100;
 
+      const paymentDescription = 'Pagamento Ordine Shop';
 
-      this.startService.presentPaymentOptions(amount,'EUR')
+      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, {
+        email: this.userDoc?.EMAIL,
+        customerName: this.userDoc?.NOMINATIVO,
+        device: this.platform.platforms().join(','),
+        productsType: 'shop'
+      })
         .then(result => {
 
           if (result.success) {

@@ -6,6 +6,12 @@ import { environment } from 'src/environments/environment';
 import { PaymentEnvironment } from 'src/app/models/zsupport/valuelist.model';
 import { HttpClient } from '@angular/common/http';
 
+export interface StripePaymentIntentMetadata {
+  email?: string;
+  customerName?: string;
+  device?: string;
+  productsType?: string;
+}
 
 export interface StripePaymentIntent {
   id: string;
@@ -14,6 +20,9 @@ export interface StripePaymentIntent {
   currency: string;
   status: string;
   testMode: boolean;
+  description?: string;
+  metadata?: StripePaymentIntentMetadata;
+
 }
 
 export interface PaymentResult {
@@ -150,8 +159,10 @@ export class StripePaymentService {
    * Richiede un Payment Intent al backend Node.js
    */
   async createPaymentIntent(
-      amount: number, 
-      currency: string = 'eur'
+      amount: number,
+      currency: string = 'eur',
+      description?: string,
+      metadata?: StripePaymentIntentMetadata
   ): Promise<StripePaymentIntent> {
     try {
       const response = await firstValueFrom(
@@ -161,11 +172,13 @@ export class StripePaymentService {
             amount: amount,
             currency: currency,
             idAccountConnected: this._stripeIdAccount,
-            mode: this._stripeMode
+            mode: this._stripeMode,
+            description: description,
+            metadata: metadata
           }
         )
       );
-      
+
       console.log('✅ Payment Intent created:', response);
       return response;
     } catch (error) {
@@ -209,7 +222,9 @@ private async loadStripeJs(): Promise<any> {
  */
 async payWithCardBrowser(
   amount: number,
-  currency: string = 'EUR'
+  currency: string = 'EUR',
+  description?: string,
+  metadata?: StripePaymentIntentMetadata
 ): Promise<PaymentResult> {
   try {
     console.log('💳 Avvio pagamento su browser...');
@@ -220,7 +235,9 @@ async payWithCardBrowser(
     // Crea Payment Intent
     const paymentIntent = await this.createPaymentIntent(
       amount,
-      currency.toLowerCase()
+      currency.toLowerCase(),
+      description,
+      metadata
     );
 
     console.log('✅ PaymentIntent creato:', paymentIntent.id);
@@ -357,6 +374,8 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
   async payWithApplePay(
     amount: number,
     currency: string = 'EUR',
+    description?: string,
+    metadata?: StripePaymentIntentMetadata
   ): Promise<PaymentResult> {
 
     //Nome visualizzato nel pagamento
@@ -382,7 +401,9 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       // Crea Payment Intent
       const paymentIntent = await this.createPaymentIntent(
         amount,
-        currency.toLowerCase()        
+        currency.toLowerCase(),
+        description,
+        metadata
       );
       console.log('✅ Payment Intent created:', paymentIntent.id);
 
@@ -467,6 +488,8 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
   async payWithGooglePay(
     amount: number,
     currency: string = 'EUR',
+    description?: string,
+    metadata?: StripePaymentIntentMetadata
   ): Promise<PaymentResult> {
 
     let merchantName: string = this._stripeMerchantName;
@@ -529,6 +552,8 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       const paymentIntent = await this.createPaymentIntent(
         amount,
         currency.toLowerCase(),
+        description,
+        metadata
       );
 
       console.log('✅ [7/10] Payment Intent created successfully');
@@ -678,11 +703,13 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
    */
   async payWithCard(
     amount: number,
-    currency: string = 'EUR'
+    currency: string = 'EUR',
+    description?: string,
+    metadata?: StripePaymentIntentMetadata
   ): Promise<PaymentResult> {
 
     let merchantName: string = this._stripeMerchantName;
-    
+
     console.log('Start Pay With Card');
 
     try {
@@ -690,6 +717,8 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
       const paymentIntent = await this.createPaymentIntent(
         amount,
         currency.toLowerCase(),
+        description,
+        metadata
       );
 
       // Crea Payment Sheet
@@ -733,6 +762,8 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
 async presentPaymentOptions(
       amount: number,
       currency: string = 'EUR',
+      description?: string,
+      metadata?: StripePaymentIntentMetadata
 ): Promise<PaymentResult> {
 
   
@@ -750,7 +781,7 @@ async presentPaymentOptions(
   // 🌐 BROWSER: usa Stripe.js
   if (!this.platform.is('capacitor')) {
     console.log('💻 Browser detected - using Stripe.js');
-    return this.payWithCardBrowser(amount, currency);
+    return this.payWithCardBrowser(amount, currency, description, metadata);
   }
 
   console.log('📱 Mobile detected - checking payment methods...');
@@ -762,14 +793,14 @@ async presentPaymentOptions(
   console.log('🍎 Apple Pay available?', applePayAvailable);
   if (applePayAvailable) {
     console.log('🍎 Using Apple Pay');
-    return this.payWithApplePay(amount, currency);
+    return this.payWithApplePay(amount, currency, description, metadata);
   }
 
   // Su Android, usa Payment Sheet (include Google Pay automaticamente)
   // NOTA: Disabilitato Google Pay nativo per bug nel plugin v7.2.2
   // (NullPointerException in GooglePayExecutor.kt:66)
   console.log('📱 Android detected - using Payment Sheet (includes Google Pay option)');
-  return this.payWithCard(amount, currency);
+  return this.payWithCard(amount, currency, description, metadata);
 }
 
 }

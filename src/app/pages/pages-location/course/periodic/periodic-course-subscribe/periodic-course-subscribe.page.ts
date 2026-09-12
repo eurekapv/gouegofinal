@@ -964,7 +964,12 @@ onSelectDefaultTypePayment(): Promise<void> {
       const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
 
       //Presenta le Opzioni del pagamento
-      this.startService.presentPaymentOptions(amount,'EUR')
+      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, {
+        email: this.userDoc?.EMAIL,
+        customerName: this.userDoc?.NOMINATIVO,
+        device: this.platform.platforms().join(','),
+        productsType: 'corso'
+      })
         .then(result => {
 
           if (result.success) {

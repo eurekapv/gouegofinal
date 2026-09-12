@@ -93,7 +93,7 @@ import { ShopCarrello } from '../models/shop/shop-carrello.model';
 import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
 import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso-giornaliero.model';
-import { PaymentResult, StripePaymentService } from './payment/stripe-payment.service';
+import { PaymentResult, StripePaymentIntentMetadata, StripePaymentService } from './payment/stripe-payment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -2355,9 +2355,14 @@ initializeStripe():Promise<void> {
  * @param currency   
  * @returns 
  */
-presentPaymentOptions(amount: number, currency: string = 'EUR'):Promise<PaymentResult> {
+presentPaymentOptions(
+  amount: number,
+  currency: string = 'EUR',
+  description?: string,
+  metadata?: StripePaymentIntentMetadata
+):Promise<PaymentResult> {
 
-      return this.stripePayment.presentPaymentOptions(amount, currency);
+      return this.stripePayment.presentPaymentOptions(amount, currency, description, metadata);
 }
 
 /**

@@ -542,9 +542,15 @@ payWithStripe(): Promise<PaymentProcess> {
   return new Promise<PaymentProcess>((resolve, reject) => {
     
     const amount = this.activePrenotazione.TOTALE * 100;
-    
 
-    this.startService.presentPaymentOptions(amount, 'EUR')
+    const paymentDescription = 'Pagamento Prenotazione ' + this.selectedLocation?.DENOMINAZIONE;
+
+    this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, {
+      email: this.docUtente?.EMAIL,
+      customerName: this.docUtente?.NOMINATIVO,
+      device: this.platform.platforms().join(','),
+      productsType: 'location'
+    })
       .then(result => {
 
         if (result.success) {

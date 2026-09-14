@@ -11,6 +11,7 @@ export interface StripePaymentIntentMetadata {
   customerName?: string;
   device?: string;
   productsType?: string;
+  guidPrimaryKey?: string;
 }
 
 export interface StripePaymentIntent {
@@ -178,6 +179,13 @@ export class StripePaymentService {
           }
         )
       );
+
+      // 🛡️ Guardia runtime: il tipo generico di http.post non valida la risposta reale.
+      // Senza id/clientSecret non possiamo né presentare il pagamento né verificarlo dopo.
+      if (!response || !response.id || !response.clientSecret) {
+        console.error('❌ Risposta PaymentIntent incompleta dal backend:', response);
+        throw new Error('Risposta del server incompleta: impossibile creare il pagamento');
+      }
 
       console.log('✅ Payment Intent created:', response);
       return response;

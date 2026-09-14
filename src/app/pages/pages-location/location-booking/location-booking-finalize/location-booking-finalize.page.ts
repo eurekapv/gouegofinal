@@ -549,7 +549,8 @@ payWithStripe(): Promise<PaymentProcess> {
       email: this.docUtente?.EMAIL,
       customerName: this.docUtente?.NOMINATIVO,
       device: this.platform.platforms().join(','),
-      productsType: 'location'
+      productsType: 'location',
+      guidPrimaryKey: this.activePrenotazione.ID
     })
       .then(result => {
 

@@ -266,6 +266,8 @@ export class IscrizioneCorso extends IDDocument {
           
         }
 
+        console.log(this.ISCRIZIONEINCASSO);
+
         //Ricalcolo Residuo Incassato
         this.recalcResiduoIncassato();
     }

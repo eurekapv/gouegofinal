@@ -619,7 +619,8 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
         email: this.userDoc?.EMAIL,
         customerName: this.userDoc?.NOMINATIVO,
         device: this.platform.platforms().join(','),
-        productsType: 'shop'
+        productsType: 'shop',
+        guidPrimaryKey: this.carrelloDoc.ID
       })
         .then(result => {
 

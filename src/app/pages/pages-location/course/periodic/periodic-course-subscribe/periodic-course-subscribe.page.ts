@@ -19,6 +19,7 @@ import { TipoPagamento } from 'src/app/models/archivi/tipopagamento.model';
 import { IscrizioneTesseramento } from 'src/app/models/corso/iscrizione-tesseramento';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { TotaleScadenze } from 'src/app/shared/interfaces/interfaces';
+import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
 
 
 @Component({
@@ -840,8 +841,7 @@ onSelectDefaultTypePayment(): Promise<void> {
 
     if (this.iscrizioneDoc) {
 
-      //Chiediamo quanto devo pagare adesso
-      //paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
+      console.log(this.iscrizioneDoc);
 
       //Il corso è gratuito o è una prova
       if (this.iscrizioneDoc.TOTALE == 0) {
@@ -894,6 +894,33 @@ onSelectDefaultTypePayment(): Promise<void> {
           console.log('Modalità Stripe');
         //*********** Pagamento tramite Stripe *********************
           if (this._selectedPaymentConfig.TIPOPAYMENT == PaymentChannel.stripe) {
+
+            let singleScadenza: IscrizioneIncasso;
+
+            //Con stripe pago tutto 
+            if (this.iscrizioneDoc.ISCRIZIONEINCASSO?.length >= 1) {
+              //Tengo una scadenza sola e la cambio
+              singleScadenza = this.iscrizioneDoc.ISCRIZIONEINCASSO[0];
+              singleScadenza.MODALITA = PaymentChannel.stripe;
+              singleScadenza.DATASCADENZA = new Date();
+              singleScadenza.TIPORIGO = TipoRigoIncasso.scadenza;
+              
+              //Metto solo questa scadenza
+              this.iscrizioneDoc.ISCRIZIONEINCASSO = [];
+              this.iscrizioneDoc.ISCRIZIONEINCASSO.push(singleScadenza);
+            }
+            else {
+              singleScadenza = new IscrizioneIncasso();
+              singleScadenza.IDISCRIZIONECORSO = this.iscrizioneDoc.ID;
+
+              singleScadenza.MODALITA = PaymentChannel.stripe;
+              singleScadenza.DATASCADENZA = new Date();
+              singleScadenza.TIPORIGO = TipoRigoIncasso.scadenza;
+              //Metto solo questa scadenza
+              this.iscrizioneDoc.ISCRIZIONEINCASSO = [];
+              this.iscrizioneDoc.ISCRIZIONEINCASSO.push(singleScadenza);
+            }
+
               //Chiamo il metodo per il pagamento
             this.payWithStripe()
                 .then(paymentResultDoc => {
@@ -948,27 +975,19 @@ onSelectDefaultTypePayment(): Promise<void> {
 
       //Compilo la descrizione del pagamento
       paymentDescription = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
-
-      if (this.selectedTipoPagamento.isRateale()) {
-        if (paymentAmount.numeroRate == 1) {
-          paymentDescription += ` (Pagamento complessivo)`
-        }
-        else {
-          paymentDescription += ` (${paymentAmount.numeroRate} Rate di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
-        }
-      }
-
+      paymentDescription += ` (Pagamento complessivo)`
 
       //Valore in centesimi
       const amount = paymentAmount.totale * 100;
-      const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
+      //const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
 
       //Presenta le Opzioni del pagamento
       this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, {
         email: this.userDoc?.EMAIL,
         customerName: this.userDoc?.NOMINATIVO,
         device: this.platform.platforms().join(','),
-        productsType: 'corso'
+        productsType: 'corso',
+        guidPrimaryKey: this.iscrizioneDoc.ID
       })
         .then(result => {
 
@@ -995,7 +1014,7 @@ onSelectDefaultTypePayment(): Promise<void> {
             paymentResultDoc.amount = amount / 100;
             paymentResultDoc.currency = 'EUR';
             paymentResultDoc.description = paymentDescription;
-            paymentResultDoc.idElectronicResult = result.paymentIntentId;
+            paymentResultDoc.idElectronicResult = result.paymentIntentId || '';
             paymentResultDoc.processResult = true;
 
             console.log('✅ Pagamento completato!', result.paymentIntentId);
@@ -1039,19 +1058,14 @@ onSelectDefaultTypePayment(): Promise<void> {
       let paymentDescription: string = '';
 
       //Chiediamo quanto devo pagare adesso
-      paymentAmount = this.iscrizioneDoc.sumScadenzeFor(new Date());
+      //Devo pagare tutto in 1 rata
+      paymentAmount = {totale: this.iscrizioneDoc.TOTALE, numeroRate: 1};
+
 
       //Compilo la descrizione del pagamento
       paymentDescription = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
+      paymentDescription += ` (Pagamento complessivo)`
 
-      if (this.selectedTipoPagamento.isRateale()) {
-        if (paymentAmount.numeroRate == 1) {
-          paymentDescription += ` (Rata 1 di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
-        }
-        else {
-          paymentDescription += ` (${paymentAmount.numeroRate} Rate di ${this.iscrizioneDoc.ISCRIZIONEINCASSO.length})`
-        }
-      }
 
       this.showStripeForm = false;
 
@@ -1233,7 +1247,7 @@ onSelectDefaultTypePayment(): Promise<void> {
     if (resultPayment) {
       //Ha pagato il dovuto
       if (resultPayment.modePayment == PaymentMode.pagaAdesso) {
-        //Marchio le scadenze come incassate
+        //Marchio tutte le scadenze come incassate adesso
         this.iscrizioneDoc.setScadenzePayedFor(new Date(), resultPayment);
       }
 
@@ -1392,7 +1406,7 @@ onSelectDefaultTypePayment(): Promise<void> {
       myMessage += `<p><strong>${this.corsoDoc.DENOMINAZIONE}</strong></p>`
       myMessage += `<p>&Egrave; stata completata con successo`;
 
-      if (this.corsoDoc.isAPagamento() && this.iscrizioneDoc.RESIDUO != 0) {
+      if (this.corsoDoc.isAPagamento() && this.iscrizioneDoc.RESIDUO || 0 != 0) {
 
         strResiduo = (this.iscrizioneDoc.RESIDUO).toLocaleString('it-IT', {minimumFractionDigits: 2})
         myMessage += `<p><strong>${strResiduo} €</strong></p>`;

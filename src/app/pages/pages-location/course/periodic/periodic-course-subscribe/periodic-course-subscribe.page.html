@@ -241,25 +241,27 @@
   </div>
 
   <!-- Stripe Payment Form -->
-  <div *ngIf="showStripeForm" class="stripe-payment-container">
-    <div class="stripe-form-wrapper">
-      <h3>Inserisci i dati della carta</h3>
-      <div id="payment-element"></div>
-      <ion-button 
-        expand="block" 
-        color="success"
-        class="confirm-payment-btn"
-        (click)="confirmStripePayment()">
-        Conferma Pagamento
-      </ion-button>
-      <ion-button 
-        expand="block" 
-        fill="outline"
-        color="medium"
-        (click)="cancelStripePayment()">
-        Annulla
-      </ion-button>
-    </div>
-  </div>
+   @if(showStripeForm) {
+     <div class="stripe-payment-container">
+       <div class="stripe-form-wrapper">
+         <h3>Inserisci i dati della carta</h3>
+         <div id="payment-element"></div>
+         <ion-button 
+           expand="block" 
+           color="success"
+           class="confirm-payment-btn"
+           (click)="confirmStripePayment()">
+           Conferma Pagamento
+         </ion-button>
+         <ion-button 
+           expand="block" 
+           fill="outline"
+           color="medium"
+           (click)="cancelStripePayment()">
+           Annulla
+         </ion-button>
+       </div>
+     </div>
+   }
 
 </ion-content>

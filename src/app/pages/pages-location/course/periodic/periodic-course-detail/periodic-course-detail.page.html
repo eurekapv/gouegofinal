@@ -136,7 +136,7 @@
           <app-settimana-block 
               [showOnlySelected]="true"
               colorSelected="success"
-              [size]="'auto'"
+              [size]="'sm'"
               [listDays]="myCorso._SETTIMANA"></app-settimana-block>
 
           <ion-button 
@@ -176,13 +176,16 @@
           </div>
 
           <!-- STATO ISCRIZIONI -->
-          <div class="enrollment-status">
-            <ion-icon [name]="!myCorso.flagIscrizioniAperte() ? 'close-circle-outline' : 'information-circle-outline'" 
-                      [color]="!myCorso.flagIscrizioniAperte() ? 'danger' : 'medium'"></ion-icon>
-            <p *ngIf="!myCorso.flagIscrizioniAperte()">
-              Purtroppo le iscrizioni al corso sono chiuse; <strong>Contatta la struttura</strong> per verificare la disponibilità e l'inserimento in corsi equivalenti
-            </p>
-          </div>
+           @if(!myCorso.flagIscrizioniAperte()) {
+
+             <div class="enrollment-status">
+               <ion-icon [name]="!myCorso.flagIscrizioniAperte() ? 'close-circle-outline' : 'information-circle-outline'" 
+                         [color]="!myCorso.flagIscrizioniAperte() ? 'danger' : 'medium'"></ion-icon>
+               <p>
+                 Le iscrizioni al corso sono chiuse; <strong>Contatta la struttura</strong> per verificare la disponibilità e l'inserimento in corsi equivalenti
+               </p>
+             </div>
+           }
 
           <!-- BOTTONE ISCRIZIONE -->
           <ion-button 

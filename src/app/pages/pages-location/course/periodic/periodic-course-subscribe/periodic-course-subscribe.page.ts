@@ -20,6 +20,7 @@ import { IscrizioneTesseramento } from 'src/app/models/corso/iscrizione-tesseram
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { TotaleScadenze } from 'src/app/shared/interfaces/interfaces';
 import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
+import { StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
 
 
 @Component({
@@ -981,14 +982,20 @@ onSelectDefaultTypePayment(): Promise<void> {
       const amount = paymentAmount.totale * 100;
       //const centroAccountId = this._selectedPaymentConfig.STIDACCOUNT;
 
-      //Presenta le Opzioni del pagamento
-      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, {
+      //Costruisco il metadata
+      const metadata: StripePaymentIntentMetadata = {
         email: this.userDoc?.EMAIL,
         customerName: this.userDoc?.NOMINATIVO,
         device: this.platform.platforms().join(','),
         productsType: 'corso',
-        guidPrimaryKey: this.iscrizioneDoc.ID
-      })
+        guidPrimaryKey: this.iscrizioneDoc.ID,
+        customerGuid: this.userDoc?.ID,
+        corsoGuid: this.iscrizioneDoc.IDCORSO,
+        campoGuid: ''
+      }
+
+      //Presenta le Opzioni del pagamento
+      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, metadata)
         .then(result => {
 
           if (result.success) {

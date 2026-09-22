@@ -12,6 +12,9 @@ export interface StripePaymentIntentMetadata {
   device?: string;
   productsType?: string;
   guidPrimaryKey?: string;
+  customerGuid?: string;
+  corsoGuid?: string;
+  campoGuid?: string;
 }
 
 export interface StripePaymentIntent {

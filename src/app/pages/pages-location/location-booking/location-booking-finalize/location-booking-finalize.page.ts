@@ -19,6 +19,7 @@ import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.
 import { AreaLink } from 'src/app/models/struttura/arealink.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PrenotaTesseramento } from 'src/app/models/prenotazioni/prenota_tesseramento.model';
+import { StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
 
 
 @Component({
@@ -542,16 +543,22 @@ payWithStripe(): Promise<PaymentProcess> {
   return new Promise<PaymentProcess>((resolve, reject) => {
     
     const amount = this.activePrenotazione.TOTALE * 100;
+    const idCampo = (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE && this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length != 0) ? this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0].IDCAMPO : '';
 
     const paymentDescription = 'Pagamento Prenotazione ' + this.selectedLocation?.DENOMINAZIONE;
-
-    this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, {
+    //Costruisco il metadata
+    const metadata: StripePaymentIntentMetadata = {
       email: this.docUtente?.EMAIL,
       customerName: this.docUtente?.NOMINATIVO,
       device: this.platform.platforms().join(','),
       productsType: 'location',
-      guidPrimaryKey: this.activePrenotazione.ID
-    })
+      guidPrimaryKey: this.activePrenotazione.ID,
+      customerGuid: this.docUtente?.ID,
+      corsoGuid: '',
+      campoGuid: idCampo
+    }
+
+    this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, metadata)
       .then(result => {
 
         if (result.success) {

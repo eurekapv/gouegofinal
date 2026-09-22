@@ -12,6 +12,7 @@ import { PostResponse } from 'src/app/library/models/post-response.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { AreaLink } from 'src/app/models/struttura/arealink.model';
 import { Browser } from '@capacitor/browser';
+import { StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
 
 @Component({
   selector: 'app-cart-checkout',
@@ -615,13 +616,19 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
 
       const paymentDescription = 'Pagamento Ordine Shop';
 
-      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, {
+      //Costruisco il metadata
+      const metadata: StripePaymentIntentMetadata = {
         email: this.userDoc?.EMAIL,
         customerName: this.userDoc?.NOMINATIVO,
         device: this.platform.platforms().join(','),
         productsType: 'shop',
-        guidPrimaryKey: this.carrelloDoc.ID
-      })
+        guidPrimaryKey: this.carrelloDoc.ID,
+        customerGuid: this.userDoc?.ID,
+        corsoGuid: '',
+        campoGuid: ''
+      }
+
+      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, metadata)
         .then(result => {
 
           if (result.success) {

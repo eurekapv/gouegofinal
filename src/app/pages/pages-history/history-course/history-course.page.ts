@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertButton, ModalController, NavController, Platform } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
 import { AreaPaymentSetting } from 'src/app/models/struttura/areapaymentsetting.model';
@@ -16,6 +16,7 @@ import { PaymentResult, StripePaymentIntentMetadata } from 'src/app/services/pay
 import { PeriodicCourseDetailCalendarPage } from '../../pages-location/course/periodic/periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
+import { StripeIntent } from 'src/app/models/pagamenti/stripe-intent';
 import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
 import { Area } from 'src/app/models/struttura/area.model';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
@@ -40,6 +41,7 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
   idIscrizione: string; 
   utenteIscrizioneDoc: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
   listSituazionePagamenti: IscrizioneIncasso[] = []; //Situazione dei pagamenti
+  listStripeIntents: StripeIntent[] = []; //Pagamenti Stripe avviati per l'iscrizione (stato aggiornato dal webhook)
 
   selectedArea: Area;
   corsoDoc: Corso = new Corso();
@@ -219,6 +221,12 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
                 this.titleForm = '';
                 break;
             }            
+            //Richiedo i pagamenti Stripe avviati (per sapere se ce ne sono in attesa di esito)
+            return this.requestStripeIntents();
+          })
+          .then(listIntents => {
+            this.listStripeIntents = listIntents;
+
             //Recupero l'area di riferimento (con le collection figlie, servono le modalità di pagamento)
             return this.startService.requestAreaById(this.locationDoc.IDAREAOPERATIVA, 2);
           })
@@ -456,6 +464,24 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
       }
       
     })
+  }
+
+  /**
+   * Richiede i pagamenti Stripe avviati per l'iscrizione.
+   * Un errore non blocca la pagina, si torna una lista vuota
+   * @returns
+   */
+  private requestStripeIntents(): Promise<StripeIntent[]> {
+    if (this.isLezioneSingola) {
+      //Nessuna scadenza da pagare
+      return Promise.resolve([]);
+    }
+
+    return firstValueFrom(this.startService.requestStripeIntentBy(this.idIscrizione))
+              .catch(error => {
+                LogApp.consoleLog(error, 'error');
+                return <StripeIntent[]>[];
+              });
   }
 
   /**
@@ -709,12 +735,25 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
   }
 
   /**
+   * TRUE se la scadenza ha un pagamento Stripe incassato o in attesa di esito,
+   * ma non risulta ancora registrato come pagato nell'iscrizione.
+   * Serve a non far pagare due volte la stessa scadenza
+   * (i metodi asincroni restano "processing" per un po')
+   * @param scadenza Scadenza da controllare
+   */
+  isPagamentoInAttesa(scadenza: IscrizioneIncasso): boolean {
+    return scadenza.requestPayment() &&
+           this.listStripeIntents.some(elIntent => elIntent.GUIDSECONDARYKEY == scadenza.ID &&
+                                                   elIntent.isSucceededOrProcessing());
+  }
+
+  /**
    * L'utente vuole pagare una scadenza
    * @param scadenza Scadenza da pagare
    */
   onClickPaga(scadenza: IscrizioneIncasso): void {
 
-    if (this.paymentInProgress || !this.canPayOnline || !scadenza || !scadenza.requestPayment()) {
+    if (this.paymentInProgress || !this.canPayOnline || !scadenza || !scadenza.requestPayment() || this.isPagamentoInAttesa(scadenza)) {
       return;
     }
 
@@ -747,7 +786,7 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
         .then(paymentResult => {
           //Se null l'utente ha annullato
           if (paymentResult) {
-            return this.onPaymentCompleted(scadenza.ID);
+            return this.onPaymentCompleted(scadenza.ID, paymentResult.paymentIntentId);
           }
         })
         .catch(error => {
@@ -856,19 +895,22 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
   }
 
   /**
-   * Attende che la scadenza risulti pagata, controllando il server ogni 3 secondi.
-   * Il pagamento viene registrato dal webhook di Stripe e potrebbe metterci qualche istante.
-   * Termina appena la scadenza è pagata, dopo il numero massimo di controlli o
-   * se la pagina viene chiusa
-   * @param idScadenza Scadenza appena pagata
+   * Attende l'esito del pagamento, controllando ogni 3 secondi lo stato dell'intent Stripe
+   * (aggiornato dal webhook). Termina quando lo stato è definitivo (succeeded, canceled)
+   * o "processing" (esito asincrono), dopo il numero massimo di controlli o se la pagina viene chiusa.
+   * Gli altri stati (es. requires_payment_method) sono quelli scritti alla creazione dell'intent:
+   * significa che il webhook non è ancora arrivato, quindi si continua ad attendere
+   * @param idScadenza Scadenza pagata
+   * @param idIntent Id del PaymentIntent appena pagato
+   * @returns L'intent aggiornato, null se non è arrivato nessun esito
    */
-  private waitScadenzaPagata(idScadenza: string): Promise<void> {
-    return new Promise<void>(resolve => {
+  private waitEsitoPagamento(idScadenza: string, idIntent?: string): Promise<StripeIntent | null> {
+    return new Promise<StripeIntent | null>(resolve => {
       let attempt = 0;
 
       const scheduleNext = () => {
         if (this.destroyed || attempt >= this.PAYMENT_CHECK_MAX_ATTEMPTS) {
-          resolve();
+          resolve(null);
         }
         else {
           this.paymentCheckTimer = setTimeout(check, this.PAYMENT_CHECK_INTERVAL_MS);
@@ -878,13 +920,13 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
       const check = () => {
         attempt++;
 
-        this.requestIncassiIscrizione(this.idIscrizione)
-            .then(listIncassi => {
-              const scadenza = listIncassi.find(elItem => elItem.ID == idScadenza);
+        firstValueFrom(this.startService.requestStripeIntentBy(this.idIscrizione, idScadenza))
+            .then(listIntents => {
+              const intent = idIntent ? listIntents.find(elItem => elItem.IDINTENT == idIntent)
+                                      : listIntents.find(elItem => elItem.isSucceededOrProcessing());
 
-              if (scadenza && !scadenza.requestPayment()) {
-                //Il server ha registrato il pagamento
-                resolve();
+              if (intent && (intent.isSucceededOrProcessing() || intent.isCanceled())) {
+                resolve(intent);
               }
               else {
                 scheduleNext();
@@ -903,16 +945,22 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
   }
 
   /**
-   * Pagamento riuscito: attendo la registrazione sul server, ricarico i dati e avviso l'utente.
-   * @param idScadenza Scadenza appena pagata
+   * Pagamento eseguito dall'utente: attendo l'esito dal server, ricarico i dati e avviso l'utente.
+   * @param idScadenza Scadenza pagata
+   * @param idIntent Id del PaymentIntent pagato
    */
-  private onPaymentCompleted(idScadenza: string): Promise<void> {
+  private onPaymentCompleted(idScadenza: string, idIntent?: string): Promise<void> {
+    let esitoIntent: StripeIntent | null = null;
+
     return this.startService.showLoadingMessage('Conferma del pagamento in corso')
               .then(elLoading => {
                 elLoading.present();
 
-                return this.waitScadenzaPagata(idScadenza)
-                           .then(() => this.onRequestAllData())
+                return this.waitEsitoPagamento(idScadenza, idIntent)
+                           .then(elIntent => {
+                              esitoIntent = elIntent;
+                              return this.onRequestAllData();
+                           })
                            .then(() => {
                               this.loadedData = true;
                               this.errorLoadingData = false;
@@ -931,13 +979,22 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
                 if (!this.errorLoadingData) {
                   const scadenzaAggiornata = this.listSituazionePagamenti.find(elItem => elItem.ID == idScadenza);
 
-                  if (scadenzaAggiornata && scadenzaAggiornata.requestPayment()) {
+                  if (scadenzaAggiornata && !scadenzaAggiornata.requestPayment()) {
+                    //La scadenza risulta pagata
+                    this.startService.presentAlertMessage('Il pagamento è stato completato con successo', 'Pagamento completato');
+                  }
+                  else if (esitoIntent && esitoIntent.isCanceled()) {
+                    this.startService.presentAlertMessage('<p>Il pagamento è stato annullato.</p><p>Puoi riprovare.</p>', 'Pagamento non riuscito');
+                  }
+                  else if (esitoIntent && esitoIntent.isProcessing()) {
+                    //Metodo asincrono, l'esito arriverà più tardi
+                    this.startService.presentAlertMessage('<p>Il pagamento è stato avviato ma non è ancora stato confermato.</p><p>La scadenza verrà aggiornata appena il pagamento sarà confermato.</p>',
+                                                          'Pagamento in attesa di conferma');
+                  }
+                  else {
                     //Il server non ha ancora registrato il pagamento
                     this.startService.presentAlertMessage('<p>Pagamento ricevuto.</p><p>La scadenza verrà aggiornata a breve, refresh della pagina per aggiornare.</p>',
                                                           'Pagamento in elaborazione');
-                  }
-                  else {
-                    this.startService.presentAlertMessage('Il pagamento è stato completato con successo', 'Pagamento completato');
                   }
                 }
               });

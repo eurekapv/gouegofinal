@@ -280,16 +280,22 @@
                       }
 
                     </div>
-                    <div class="payment-value" [class.paid]="!itemScadenza.requestPayment()" [class.unpaid]="itemScadenza.requestPayment()">
+                    <div class="payment-value"
+                         [class.paid]="!itemScadenza.requestPayment()"
+                         [class.unpaid]="itemScadenza.requestPayment() && !isPagamentoInAttesa(itemScadenza)"
+                         [class.pending]="isPagamentoInAttesa(itemScadenza)">
                       {{itemScadenza.IMPORTO | currency: 'EUR'}}
                     </div>
                   </div>
                   <div class="payment-footer">
-                    <div class="payment-status-badge" [class.badge-success]="!itemScadenza.requestPayment()" [class.badge-danger]="itemScadenza.requestPayment()">
-                      {{!itemScadenza.requestPayment() ? 'Pagato' : 'Da Pagare'}}
+                    <div class="payment-status-badge"
+                         [class.badge-success]="!itemScadenza.requestPayment()"
+                         [class.badge-warning]="isPagamentoInAttesa(itemScadenza)"
+                         [class.badge-danger]="itemScadenza.requestPayment() && !isPagamentoInAttesa(itemScadenza)">
+                      {{!itemScadenza.requestPayment() ? 'Pagato' : (isPagamentoInAttesa(itemScadenza) ? 'In attesa di conferma' : 'Da Pagare')}}
                     </div>
 
-                    @if(itemScadenza.requestPayment() && canPayOnline) {
+                    @if(itemScadenza.requestPayment() && canPayOnline && !isPagamentoInAttesa(itemScadenza)) {
                       <button
                           type="button"
                           class="pay-btn"

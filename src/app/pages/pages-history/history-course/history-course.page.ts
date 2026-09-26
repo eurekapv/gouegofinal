@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertButton, ModalController, NavController } from '@ionic/angular';
+import { AlertButton, ModalController, NavController, Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { RequestParams } from 'src/app/library/models/requestParams.model';
 import { DocstructureService } from 'src/app/library/services/docstructure.service';
@@ -10,8 +10,9 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
-import { CancellazioniIscrizioniGiornaliere, ModalitaIscrizione, ModeIncassoConfig, SettorePagamentiAttivita, StatoIscrizione, StatoPagamento, TipoCorso, ValueList } from 'src/app/models/zsupport/valuelist.model';
+import { CancellazioniIscrizioniGiornaliere, ModalitaIscrizione, ModeIncassoConfig, PaymentChannel, SettorePagamentiAttivita, StatoIscrizione, StatoPagamento, TipoCorso, ValueList } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
+import { PaymentResult, StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
 import { PeriodicCourseDetailCalendarPage } from '../../pages-location/course/periodic/periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
 import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
@@ -25,7 +26,7 @@ import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model'
   templateUrl: './history-course.page.html',
   styleUrls: ['./history-course.page.scss'],
 })
-export class HistoryCoursePage implements OnInit {
+export class HistoryCoursePage implements OnInit, OnDestroy {
 
   //Dati richiesti e caricati
   loadedData: boolean = false;
@@ -55,6 +56,19 @@ export class HistoryCoursePage implements OnInit {
   _selectedPaymentMode: ModeIncassoConfig;
   _selectedPaymentConfig: AreaPaymentSetting;
 
+  //Pagamento di una scadenza con Stripe
+  paymentInProgress: boolean = false; //Pagamento avviato, blocca i doppi click
+  showStripeForm: boolean = false; //Solo browser: form con i dati della carta
+  confirmingStripe: boolean = false; //Solo browser: conferma in corso
+  private currentPaymentResolve: (value: PaymentResult | null) => void;
+  private currentPaymentReject: (reason?: any) => void;
+
+  //Dopo il pagamento si attende che il webhook registri la scadenza come pagata
+  private readonly PAYMENT_CHECK_INTERVAL_MS = 3000; //Ogni quanto controllo
+  private readonly PAYMENT_CHECK_MAX_ATTEMPTS = 5; //Quanti controlli al massimo
+  private paymentCheckTimer: any;
+  private destroyed: boolean = false;
+
   isDesktop: boolean;
 
   //Enum Html
@@ -70,7 +84,8 @@ export class HistoryCoursePage implements OnInit {
               private startService: StartService,
               private navCtr: NavController,
               private modalController: ModalController,
-              private docstructrureService: DocstructureService
+              private docstructrureService: DocstructureService,
+              private platform: Platform
   ) { }
 
 
@@ -148,6 +163,14 @@ export class HistoryCoursePage implements OnInit {
     }
  
 
+  ngOnDestroy() {
+    this.destroyed = true;
+
+    if (this.paymentCheckTimer) {
+      clearTimeout(this.paymentCheckTimer);
+    }
+  }
+
   //#region RICHIESTE
 
   /**
@@ -196,11 +219,12 @@ export class HistoryCoursePage implements OnInit {
                 this.titleForm = '';
                 break;
             }            
-            //Recupero l'area di riferimento
-            return this.startService.requestAreaById(this.locationDoc.IDAREAOPERATIVA);
+            //Recupero l'area di riferimento (con le collection figlie, servono le modalità di pagamento)
+            return this.startService.requestAreaById(this.locationDoc.IDAREAOPERATIVA, 2);
           })
           .then(elAreaDoc => {
             this.selectedArea = elAreaDoc;
+            console.log(this.selectedArea);
             //Reimposto il canDelete
             this.setCanDelete();
             //Recupero le modalita di pagamento
@@ -224,6 +248,8 @@ export class HistoryCoursePage implements OnInit {
 
     LogApp.consoleLog('Imposto Lista Metodi Pagamento');
     this._configIncassoMobile = null;
+    this._selectedPaymentConfig = null;
+    this._selectedPaymentMode = null;
 
     //Ho il documento dell'area
     if (this.selectedArea) {
@@ -666,11 +692,278 @@ export class HistoryCoursePage implements OnInit {
     // ... codice per condividere
   }
 
-  //TODO: pagamento non abilitato
-  onClickPaga():void
-  {
+  //#region PAGAMENTO SCADENZE CON STRIPE
 
+  /**
+   * TRUE se l'utente può pagare online le scadenze.
+   * L'account Stripe usato dal servizio è quello dell'Area attualmente selezionata nell'app,
+   * quindi si abilita solo se l'iscrizione appartiene proprio a quell'Area
+   */
+  get canPayOnline(): boolean {
+    return !this.isLezioneSingola &&
+           !!this._selectedPaymentConfig &&
+           this._selectedPaymentMode == ModeIncassoConfig.incassoCreditCard &&
+           this._selectedPaymentConfig.TIPOPAYMENT == PaymentChannel.stripe &&
+           !!this.selectedArea &&
+           this.selectedArea.ID == this.startService.areaSelected?.ID;
   }
+
+  /**
+   * L'utente vuole pagare una scadenza
+   * @param scadenza Scadenza da pagare
+   */
+  onClickPaga(scadenza: IscrizioneIncasso): void {
+
+    if (this.paymentInProgress || !this.canPayOnline || !scadenza || !scadenza.requestPayment()) {
+      return;
+    }
+
+    const utente = this.startService.activeUtenteDoc;
+
+    //Valore in centesimi
+    const amount = Math.round(scadenza.IMPORTO * 100);
+
+    let description = 'Pagamento Iscrizione Corso ' + this.corsoDoc.DENOMINAZIONE;
+    if (scadenza.DATASCADENZA) {
+      description += ` (Scadenza ${MyDateTime.formatDate(scadenza.DATASCADENZA, 'dd/MM/yyyy')})`;
+    }
+
+    //guidPrimaryKey = Iscrizione, guidSecondary = Scadenza pagata
+    const metadata: StripePaymentIntentMetadata = {
+      email: utente?.EMAIL,
+      customerName: utente?.NOMINATIVO,
+      device: this.platform.platforms().join(','),
+      productsType: 'corso',
+      guidPrimaryKey: this.idIscrizione,
+      guidSecondaryKey: scadenza.ID,
+      customerGuid: utente?.ID,
+      corsoGuid: this.utenteIscrizioneDoc.IDCORSO,
+      campoGuid: ''
+    };
+
+    this.paymentInProgress = true;
+
+    this.payWithStripe(amount, description, metadata)
+        .then(paymentResult => {
+          //Se null l'utente ha annullato
+          if (paymentResult) {
+            return this.onPaymentCompleted(scadenza.ID);
+          }
+        })
+        .catch(error => {
+          this.onPaymentFailed(error);
+        })
+        .finally(() => {
+          this.paymentInProgress = false;
+        });
+  }
+
+  /**
+   * Avvia il pagamento tramite Stripe.
+   * Su iOS non viene usato Apple Pay, ma la Payment Sheet,
+   * cosi' l'utente sceglie tra carta e gli altri metodi abilitati.
+   * Su browser viene mostrato il form con i dati della carta.
+   * @returns Il risultato del pagamento, null se l'utente ha annullato
+   */
+  private payWithStripe(amount: number, description: string, metadata: StripePaymentIntentMetadata): Promise<PaymentResult | null> {
+    return new Promise<PaymentResult | null>((resolve, reject) => {
+
+      this.startService.presentPaymentOptions(amount, 'EUR', description, metadata, { useApplePay: false })
+          .then(result => {
+
+            if (!result.success) {
+              reject(result.error);
+              return;
+            }
+
+            if (!this.platform.is('capacitor')) {
+              //Browser: è stato creato il PaymentIntent, mostro il form
+              this.currentPaymentResolve = resolve;
+              this.currentPaymentReject = reject;
+              this.showStripeForm = true;
+
+              //Aspetto che Angular renderizzi il DOM, poi monto Stripe
+              setTimeout(() => {
+                this.mountStripeElement();
+              }, 100);
+              return;
+            }
+
+            //Mobile: pagamento gia' completato
+            resolve(result);
+          })
+          .catch(error => {
+            reject(error);
+          });
+    });
+  }
+
+  /**
+   * Monta l'elemento Stripe nel DOM (solo browser)
+   */
+  async mountStripeElement() {
+    try {
+      await this.startService.mountPaymentElement();
+    } catch (error) {
+      LogApp.consoleLog(error, 'error');
+      this.showStripeForm = false;
+      if (this.currentPaymentReject) {
+        this.currentPaymentReject('Errore caricamento form pagamento');
+      }
+    }
+  }
+
+  /**
+   * Conferma il pagamento (solo browser)
+   */
+  async confirmStripePayment() {
+    if (this.confirmingStripe) {
+      return;
+    }
+    this.confirmingStripe = true;
+
+    try {
+      const result = await this.startService.confirmBrowserPayment();
+      this.showStripeForm = false;
+
+      if (result.success) {
+        if (this.currentPaymentResolve) {
+          this.currentPaymentResolve(result);
+        }
+      }
+      else if (this.currentPaymentReject) {
+        this.currentPaymentReject(result.error);
+      }
+    } catch (error: any) {
+      this.showStripeForm = false;
+      if (this.currentPaymentReject) {
+        this.currentPaymentReject(error.message || error);
+      }
+    } finally {
+      this.confirmingStripe = false;
+    }
+  }
+
+  /**
+   * Annulla il pagamento (solo browser)
+   */
+  cancelStripePayment() {
+    this.showStripeForm = false;
+    if (this.currentPaymentResolve) {
+      //Annullato dall'utente, non è un errore
+      this.currentPaymentResolve(null);
+    }
+  }
+
+  /**
+   * Attende che la scadenza risulti pagata, controllando il server ogni 3 secondi.
+   * Il pagamento viene registrato dal webhook di Stripe e potrebbe metterci qualche istante.
+   * Termina appena la scadenza è pagata, dopo il numero massimo di controlli o
+   * se la pagina viene chiusa
+   * @param idScadenza Scadenza appena pagata
+   */
+  private waitScadenzaPagata(idScadenza: string): Promise<void> {
+    return new Promise<void>(resolve => {
+      let attempt = 0;
+
+      const scheduleNext = () => {
+        if (this.destroyed || attempt >= this.PAYMENT_CHECK_MAX_ATTEMPTS) {
+          resolve();
+        }
+        else {
+          this.paymentCheckTimer = setTimeout(check, this.PAYMENT_CHECK_INTERVAL_MS);
+        }
+      };
+
+      const check = () => {
+        attempt++;
+
+        this.requestIncassiIscrizione(this.idIscrizione)
+            .then(listIncassi => {
+              const scadenza = listIncassi.find(elItem => elItem.ID == idScadenza);
+
+              if (scadenza && !scadenza.requestPayment()) {
+                //Il server ha registrato il pagamento
+                resolve();
+              }
+              else {
+                scheduleNext();
+              }
+            })
+            .catch(error => {
+              //Un errore momentaneo non ferma i controlli
+              LogApp.consoleLog(error, 'error');
+              scheduleNext();
+            });
+      };
+
+      //Il primo controllo dopo l'intervallo
+      scheduleNext();
+    });
+  }
+
+  /**
+   * Pagamento riuscito: attendo la registrazione sul server, ricarico i dati e avviso l'utente.
+   * @param idScadenza Scadenza appena pagata
+   */
+  private onPaymentCompleted(idScadenza: string): Promise<void> {
+    return this.startService.showLoadingMessage('Conferma del pagamento in corso')
+              .then(elLoading => {
+                elLoading.present();
+
+                return this.waitScadenzaPagata(idScadenza)
+                           .then(() => this.onRequestAllData())
+                           .then(() => {
+                              this.loadedData = true;
+                              this.errorLoadingData = false;
+                           })
+                           .catch(error => {
+                              this.loadedData = true;
+                              this.errorLoadingData = true;
+                              this.messageErrorPage = this.startService.convertErrorDisplay(error);
+                           })
+                           .finally(() => {
+                              elLoading.dismiss();
+                           });
+              })
+              .then(() => {
+
+                if (!this.errorLoadingData) {
+                  const scadenzaAggiornata = this.listSituazionePagamenti.find(elItem => elItem.ID == idScadenza);
+
+                  if (scadenzaAggiornata && scadenzaAggiornata.requestPayment()) {
+                    //Il server non ha ancora registrato il pagamento
+                    this.startService.presentAlertMessage('<p>Pagamento ricevuto.</p><p>La scadenza verrà aggiornata a breve, refresh della pagina per aggiornare.</p>',
+                                                          'Pagamento in elaborazione');
+                  }
+                  else {
+                    this.startService.presentAlertMessage('Il pagamento è stato completato con successo', 'Pagamento completato');
+                  }
+                }
+              });
+  }
+
+  /**
+   * Pagamento non riuscito
+   * @param error Errore ricevuto
+   */
+  private onPaymentFailed(error: any) {
+    let message = 'Pagamento non completato';
+
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    else if (typeof error == 'string') {
+      message = error;
+    }
+    else if (error) {
+      message = error.toString();
+    }
+
+    this.startService.presentAlertMessage(message, 'Pagamento fallito');
+  }
+
+  //#endregion
 
   //funzione che recupera i metodi di pagamento e li inserisce in un array
   setPaymentFromArea() {

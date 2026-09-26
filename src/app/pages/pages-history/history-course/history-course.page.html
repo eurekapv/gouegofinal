@@ -284,8 +284,21 @@
                       {{itemScadenza.IMPORTO | currency: 'EUR'}}
                     </div>
                   </div>
-                  <div class="payment-status-badge" [class.badge-success]="!itemScadenza.requestPayment()" [class.badge-danger]="itemScadenza.requestPayment()">
-                    {{!itemScadenza.requestPayment() ? 'Pagato' : 'Da Pagare'}}
+                  <div class="payment-footer">
+                    <div class="payment-status-badge" [class.badge-success]="!itemScadenza.requestPayment()" [class.badge-danger]="itemScadenza.requestPayment()">
+                      {{!itemScadenza.requestPayment() ? 'Pagato' : 'Da Pagare'}}
+                    </div>
+
+                    @if(itemScadenza.requestPayment() && canPayOnline) {
+                      <button
+                          type="button"
+                          class="pay-btn"
+                          [disabled]="paymentInProgress"
+                          (click)="onClickPaga(itemScadenza)">
+                        <ion-icon name="card-outline"></ion-icon>
+                        <span>Paga ora</span>
+                      </button>
+                    }
                   </div>
                 </div>
               }
@@ -330,5 +343,30 @@
    </div>
 
  }
+
+  <!-- Stripe Payment Form (solo browser) -->
+  @if(showStripeForm) {
+    <div class="stripe-payment-container">
+      <div class="stripe-form-wrapper">
+        <h3>Inserisci i dati della carta</h3>
+        <div id="payment-element"></div>
+        <ion-button
+          expand="block"
+          color="success"
+          [disabled]="confirmingStripe"
+          (click)="confirmStripePayment()">
+          Conferma Pagamento
+        </ion-button>
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="medium"
+          [disabled]="confirmingStripe"
+          (click)="cancelStripePayment()">
+          Annulla
+        </ion-button>
+      </div>
+    </div>
+  }
 
 </ion-content>

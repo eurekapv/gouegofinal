@@ -93,7 +93,7 @@ import { ShopCarrello } from '../models/shop/shop-carrello.model';
 import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
 import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso-giornaliero.model';
-import { PaymentResult, StripePaymentIntentMetadata, StripePaymentService } from './payment/stripe-payment.service';
+import { PaymentOptionsConfig, PaymentResult, StripePaymentIntentMetadata, StripePaymentService } from './payment/stripe-payment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -2352,17 +2352,19 @@ initializeStripe():Promise<void> {
 /**
  * Metodo universale: sceglie automaticamente il metodo migliore
  * @param amount 
- * @param currency   
- * @returns 
+ * @param currency
+ * @param options Opzioni facoltative (es. useApplePay = false)
+ * @returns
  */
 presentPaymentOptions(
   amount: number,
   currency: string = 'EUR',
   description?: string,
-  metadata?: StripePaymentIntentMetadata
+  metadata?: StripePaymentIntentMetadata,
+  options?: PaymentOptionsConfig
 ):Promise<PaymentResult> {
 
-      return this.stripePayment.presentPaymentOptions(amount, currency, description, metadata);
+      return this.stripePayment.presentPaymentOptions(amount, currency, description, metadata, options);
 }
 
 /**

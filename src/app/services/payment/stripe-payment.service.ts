@@ -12,7 +12,7 @@ export interface StripePaymentIntentMetadata {
   device?: string;
   productsType?: string;
   guidPrimaryKey?: string;
-  guidSecondary?: string;
+  guidSecondaryKey?: string;
   customerGuid?: string;
   corsoGuid?: string;
   campoGuid?: string;
@@ -34,6 +34,17 @@ export interface PaymentResult {
   success: boolean;
   paymentIntentId?: string;
   error?: string;
+}
+
+/**
+ * Opzioni facoltative per presentPaymentOptions
+ */
+export interface PaymentOptionsConfig {
+  /**
+   * Default TRUE. Se FALSE su iOS non viene usato Apple Pay ma la Payment Sheet,
+   * così l'utente può scegliere tra carta e gli altri metodi abilitati (Satispay, Klarna, ...)
+   */
+  useApplePay?: boolean;
 }
 
 @Injectable({
@@ -770,12 +781,14 @@ async confirmBrowserPayment(): Promise<PaymentResult> {
   * @param currency Striva Valuta
   * @param idAccountConnected 
   * @param mode Modalità
+  * @param options Opzioni facoltative (es. useApplePay = false per usare la Payment Sheet anche su iOS)
   */
 async presentPaymentOptions(
       amount: number,
       currency: string = 'EUR',
       description?: string,
-      metadata?: StripePaymentIntentMetadata
+      metadata?: StripePaymentIntentMetadata,
+      options?: PaymentOptionsConfig
 ): Promise<PaymentResult> {
 
   
@@ -800,15 +813,15 @@ async presentPaymentOptions(
 
   // 📱 MOBILE: usa Stripe Native
 
-  // Su iOS, prova prima Apple Pay
+  // Su iOS, prova prima Apple Pay (a meno che il chiamante non lo escluda)
   const applePayAvailable = this.isApplePayAvailable();
   console.log('🍎 Apple Pay available?', applePayAvailable);
-  if (applePayAvailable) {
+  if (applePayAvailable && options?.useApplePay !== false) {
     console.log('🍎 Using Apple Pay');
     return this.payWithApplePay(amount, currency, description, metadata);
   }
 
-  // Su Android, usa Payment Sheet (include Google Pay automaticamente)
+  // Su Android (e su iOS se Apple Pay è escluso), usa Payment Sheet (include Google Pay automaticamente)
   // NOTA: Disabilitato Google Pay nativo per bug nel plugin v7.2.2
   // (NullPointerException in GooglePayExecutor.kt:66)
   console.log('📱 Android detected - using Payment Sheet (includes Google Pay option)');

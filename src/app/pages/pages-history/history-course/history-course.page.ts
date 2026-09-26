@@ -71,6 +71,10 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
   private paymentCheckTimer: any;
   private destroyed: boolean = false;
 
+  //Finchè ci sono scadenze in attesa di conferma la pagina si aggiorna da sola
+  private readonly PENDING_REFRESH_INTERVAL_MS = 10000;
+  private pendingRefreshTimer: any;
+
   isDesktop: boolean;
 
   //Enum Html
@@ -171,6 +175,10 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
     if (this.paymentCheckTimer) {
       clearTimeout(this.paymentCheckTimer);
     }
+
+    if (this.pendingRefreshTimer) {
+      clearTimeout(this.pendingRefreshTimer);
+    }
   }
 
   //#region RICHIESTE
@@ -237,6 +245,9 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
             this.setCanDelete();
             //Recupero le modalita di pagamento
             this.setListPayment();
+
+            //Se ci sono scadenze in attesa di conferma, la pagina si aggiornerà da sola
+            this.schedulePendingRefresh();
 
             resolve();
           })
@@ -745,6 +756,63 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
     return scadenza.requestPayment() &&
            this.listStripeIntents.some(elIntent => elIntent.GUIDSECONDARYKEY == scadenza.ID &&
                                                    elIntent.isSucceededOrProcessing());
+  }
+
+  /**
+   * TRUE se almeno una scadenza è in attesa di conferma del pagamento
+   */
+  hasPagamentiInAttesa(): boolean {
+    return this.listSituazionePagamenti.some(elItem => this.isPagamentoInAttesa(elItem));
+  }
+
+  /**
+   * Se c'è almeno una scadenza in attesa di conferma, programma un aggiornamento
+   * silenzioso (solo scadenze e intent, senza ricaricare la pagina).
+   * Si ripete finchè restano scadenze in attesa. Si può richiamare più volte:
+   * annulla sempre l'aggiornamento già programmato
+   */
+  private schedulePendingRefresh() {
+    if (this.pendingRefreshTimer) {
+      clearTimeout(this.pendingRefreshTimer);
+      this.pendingRefreshTimer = null;
+    }
+
+    if (this.destroyed || !this.hasPagamentiInAttesa()) {
+      return;
+    }
+
+    this.pendingRefreshTimer = setTimeout(() => {
+      this.onPendingRefresh();
+    }, this.PENDING_REFRESH_INTERVAL_MS);
+  }
+
+  /**
+   * Aggiorna in silenzio scadenze e intent, poi riprogramma se serve
+   */
+  private onPendingRefresh() {
+    if (this.destroyed) {
+      return;
+    }
+
+    //Se l'utente sta pagando ci pensa già quel flusso
+    if (this.paymentInProgress) {
+      this.schedulePendingRefresh();
+      return;
+    }
+
+    Promise.all([this.requestIncassiIscrizione(this.idIscrizione),
+                 this.requestStripeIntents()])
+           .then(([listIncassi, listIntents]) => {
+              this.listSituazionePagamenti = listIncassi;
+              this.listStripeIntents = listIntents;
+           })
+           .catch(error => {
+              //Un errore momentaneo non ferma gli aggiornamenti
+              LogApp.consoleLog(error, 'error');
+           })
+           .finally(() => {
+              this.schedulePendingRefresh();
+           });
   }
 
   /**

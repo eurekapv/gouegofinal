@@ -232,6 +232,11 @@ export enum PaymentEnvironment {
     production = 20
 }
 
+export enum RecordEliminato {
+    Yes = 'Y',
+    No = 'N'
+}
+
 //Si puo' pagare in struttura, pagare subito, o con un bonifico
 export enum PaymentMode {
     pagaStruttura = 10,

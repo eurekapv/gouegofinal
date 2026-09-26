@@ -94,6 +94,8 @@ import { UtenteTotaleMinuti } from '../models/utente/utente-totale-minuti.model'
 import { UtenteMinuti } from '../models/utente/utente-minuti.model';
 import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso-giornaliero.model';
 import { PaymentOptionsConfig, PaymentResult, StripePaymentIntentMetadata, StripePaymentService } from './payment/stripe-payment.service';
+import { StripeIntentServiceService } from './stripe-intent/stripe-intent.service.service';
+import { StripeIntent } from '../models/pagamenti/stripe-intent';
 
 @Injectable({
   providedIn: 'root'
@@ -232,6 +234,7 @@ export class StartService {
     private fileService: FileService,
     private shopService: ShoppingService,
     private stripePayment: StripePaymentService,
+    private stripeIntentService: StripeIntentServiceService
     
     ) { 
 
@@ -2381,6 +2384,19 @@ mountPaymentElement() {
 
 //#endregion
 
+
+//#region STRIPEINTENT
+  /**
+   * Richiede elenco degli stripe intent con le chiavi passate
+   * @param guidPrimaryKey 
+   * @param guidSecondaryKey Facoltativa, se non passata non viene filtrata
+   * @returns
+   */
+  requestStripeIntentBy(guidPrimaryKey: string,
+            guidSecondaryKey?: string): Observable<StripeIntent[]> {
+              return this.stripeIntentService.requestBy(guidPrimaryKey, guidSecondaryKey);
+            }
+//#endregion
 
 //#region OCCUPAZIONE CAMPI
 get docOccupazione() {

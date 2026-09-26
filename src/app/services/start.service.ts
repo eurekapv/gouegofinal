@@ -2763,7 +2763,7 @@ getUrlPageBasic(where: 'home'|'agenda'|'eventi'|'shop'|'profile'): string[] {
       retPath.push('tab-shop')
       break;
 
-    case 'shop':
+    case 'profile':
       retPath.push('tab-profile')
       break;
 

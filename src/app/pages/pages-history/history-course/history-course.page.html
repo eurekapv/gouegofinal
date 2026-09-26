@@ -100,288 +100,230 @@
      </div>
    
      <!-- ========================================== -->
-     <!-- TAB NAVIGATION -->
-     <!-- ========================================== -->
-     <div class="tab-navigation">
-       <button 
-         class="tab-button" 
-         [class.active]="activeTab === 'dettagli'"
-         (click)="activeTab = 'dettagli'">
-         Dettagli
-       </button>
-       <button 
-         class="tab-button" 
-         [class.active]="activeTab === 'pagamento'"
-         (click)="activeTab = 'pagamento'">
-         Pagamento
-       </button>
-     </div>
-   
-     <!-- ========================================== -->
      <!-- TAB CONTENT -->
      <!-- ========================================== -->
      <div class="tab-content">
    
-       <!-- ========================================== -->
-       <!-- TAB DETTAGLI -->
-       <!-- ========================================== -->
-        @if(activeTab === 'dettagli') {
-          <div class="details-section">
-      
-            <!-- QR CODE E ID -->
-            <div class="qr-section">
-              <h3 class="section-title">QR Code e ID {{isLezioneSingola ? 'Lezione' : 'Iscrizione'}}</h3>
-              
-              <div class="qr-card">
+        <div class="details-section">
+    
+          <!-- QR CODE E ID -->
+          <div class="qr-section">
+            <h3 class="section-title">QR Code e ID {{isLezioneSingola ? 'Lezione' : 'Iscrizione'}}</h3>
+            
+            <div class="qr-card">
 
-                @if(utenteIscrizioneDoc.CODICEALFA) {
+              @if(utenteIscrizioneDoc.CODICEALFA) {
 
-                  <h4 class="qr-id">ID: {{utenteIscrizioneDoc.CODICEALFA}}</h4>
-                }
-
-                <div class="qr-code-wrapper">
-                  <qrcode 
-                    [qrdata]="utenteIscrizioneDoc.getQrCode()" 
-                    [allowEmptyString]="true">
-                  </qrcode>
-                </div>
-                <div class="qr-info">
-                  <ion-icon name="information-circle-outline"></ion-icon>
-                  <p>Presenta il Qr-code o l'ID iscrizione all'ingresso</p>
-                </div>
-              </div>
-            </div>
-      
-            <!-- BOTTONI CALENDARIO E ALLEGATI -->
-             @if(!isLezioneSingola) {
-               <div class="action-buttons">
-                 <button 
-                      class="action-btn calendar-btn" 
-                      (click)="onClickCalendar()">
-
-                   <ion-icon name="calendar-outline"></ion-icon>
-                   <span>Calendario</span>
-                 </button>
-               </div>
-             }
-      
-            <!-- DETTAGLI CORSO -->
-            <div class="details-info">
-              <h3 class="section-title">Dettagli {{isLezioneSingola ? 'Lezione' : 'Corso'}}</h3>
-      
-              <!-- GIORNI SETTIMANA (solo per corsi a periodo) -->
-               @if(!isLezioneSingola) {
-                 <div class="data-card">
-                   <app-settimana-block
-                     size="md"
-                     [showOnlySelected]="true"
-                     [listDays]="corsoDoc._SETTIMANA">
-                   </app-settimana-block>
-                 </div>
-               }
-      
-              <!-- PERIODO CORSO (solo per corsi a periodo) -->
-               @if(!isLezioneSingola) {
-                 <div class="data-card">
-                   <div class="data-row">
-                     <ion-icon name="calendar-outline" color="primary"></ion-icon>
-                     <div class="data-content">
-                       <span class="data-label">Dal</span>
-                       <span class="data-value">{{corsoDoc.DATAINIZIO | date : 'EEEE dd/LL/yyyy' | titlecase}}</span>
-                     </div>
-                   </div>
-                   <div class="data-row">
-                     <ion-icon name="calendar-outline" color="primary"></ion-icon>
-                     <div class="data-content">
-                       <span class="data-label">Al</span>
-                       <span class="data-value">{{corsoDoc.DATAFINE | date : 'EEEE dd/LL/yyyy' | titlecase}}</span>
-                     </div>
-                   </div>
-                   <div class="data-row">
-                     <ion-icon name="list-outline" color="primary"></ion-icon>
-                     <div class="data-content">
-                       <span class="data-label">Numero Lezioni</span>
-                       <span class="data-value">{{corsoDoc.NUMEROLEZIONI}} {{corsoDoc.NUMEROLEZIONI > 1 ? 'Lezioni' : 'Lezione'}}</span>
-                     </div>
-                   </div>
-                 </div>
-               }
-      
-              <!-- PROGRAMMA CORSO -->
-               @if(corsoDoc?.existProgrammaCorso()) {
-                 <div class="data-card">
-                   <div class="program-header" 
-                            (click)="onClickExpandCorsoProgramma()">
-                     <ion-icon name="document-text-outline" color="primary"></ion-icon>
-                     <span class="data-label">Programma del Corso</span>
-                     <ion-icon name="chevron-down-outline" class="expand-icon"></ion-icon>
-                   </div>
-
-                   <div class="program-content" 
-                        [ngClass]="getClassLabelProgramma()">
-                     <div 
-                      [innerHTML]="corsoDoc.getFullProgrammaHTML() | safeHtml"></div>
-                   </div>
-                 </div>
-               }
-      
-              <!-- LIVELLO, ETA', SESSO -->
-              <div class="data-card">
-                <div class="data-row">
-                  <ion-icon name="bar-chart-outline" color="primary"></ion-icon>
-                  <div class="data-content">
-                    <span class="data-label">Livello</span>
-                    <span class="data-value">{{corsoDoc['_DENOMINAZIONE_Livello'] ? corsoDoc['_DENOMINAZIONE_Livello'] : 'Tutti i Livelli'}}</span>
-                  </div>
-                </div>
-                <div class="data-row">
-                  <ion-icon name="bookmark-outline" color="primary"></ion-icon>
-                  <div class="data-content">
-                    <span class="data-label">Età</span>
-                    <span class="data-value">{{corsoDoc['_DESCTOOLTIP_CategoriaEta'] ? corsoDoc['_DESCTOOLTIP_CategoriaEta'] : 'Per tutte le età'}}</span>
-                  </div>
-                </div>
-                <div class="data-row">
-                  <ion-icon name="transgender-outline" color="primary"></ion-icon>
-                  <div class="data-content">
-                    <span class="data-label">Sesso</span>
-                    <span class="data-value">{{corsoDoc.TARGETSESSO ? (corsoDoc.TARGETSESSO | targetSesso) : 'Maschile/Femminile'}}</span>
-                  </div>
-                </div>
-              </div>
-      
-      
-              <!-- ISCRIZIONE -->
-              <div class="data-card enrollment-card">
-                <div class="enrollment-header">
-                  <ion-icon name="checkmark-circle" [color]="iscrizioneConfermata() ? 'success' : 'danger'"></ion-icon>
-                  <span class="enrollment-title">Iscrizione {{iscrizioneConfermata() ? 'Confermata' : 'In Attesa'}}</span>
-                </div>
-                <div class="enrollment-date">
-                  <span class="enrollment-label">Iscritto il</span>
-                  <span class="enrollment-value">{{utenteIscrizioneDoc.DATAISCRIZIONE | date: 'dd/MM/yyyy'}}</span>
-                </div>
-              </div>
-      
-            </div>
-      
-          <!-- SEZIONE PROGRAMMA E ALLEGATI -->
-          <section class="info-section" >
-
-              <div class="section-header">
-
-                <ion-icon 
-                  name="document-text-outline" 
-                  color="secondary">
-                </ion-icon>
-                <h2>Programma</h2>
-            </div>
-      
-            <ion-card class="info-card">
-              
-              <ion-card-content>
-                  @if(corsoDoc.existProgrammaCorso()) {
-                    <div 
-                        class="html-content" 
-                        [innerHTML]="corsoDoc.getFullProgrammaHTML() | safeHtml"
-                        >
-                    </div>
-                  }
-
-                  @if(!corsoDoc.existProgrammaCorso()) {
-
-                    <p class="ion-padding-vertical">
-                      Il centro sportivo non ha pubblicato il programma {{isLezioneSingola ? 'della lezione' : 'del corso'}}
-                    </p>
-                  }
-
-                  <ion-button 
-                    expand="block" 
-                    fill="outline"
-                    color="success"
-                    class="action-btn"
-                    (click)="onClickAllegati()">
-                  <ion-icon slot="start" name="document-attach-outline"></ion-icon>
-                  Scarica Allegati
-                </ion-button>
-              </ion-card-content>
-            </ion-card>
-          </section>      
-      
-            <!-- AZIONI ELIMINA E CONDIVIDI -->
-            <div class="action-section">
-              @if(canDelete) {
-                <button 
-                    class="action-button delete-button"  
-                    (click)="onClickTrash()">
-                  <ion-icon name="trash-outline"></ion-icon>
-                  <span>Elimina</span>
-                </button>
+                <h4 class="qr-id">ID: {{utenteIscrizioneDoc.CODICEALFA}}</h4>
               }
 
-              <button class="action-button share-button" (click)="onClickShare()">
-                <ion-icon name="share-social-outline"></ion-icon>
-                <span>Condividi</span>
-              </button>
+              <div class="qr-code-wrapper">
+                <qrcode 
+                  [qrdata]="utenteIscrizioneDoc.getQrCode()" 
+                  [allowEmptyString]="true">
+                </qrcode>
+              </div>
+              <div class="qr-info">
+                <ion-icon name="information-circle-outline"></ion-icon>
+                <p>Presenta il Qr-code o l'ID iscrizione all'ingresso</p>
+              </div>
             </div>
-      
           </div>
-        }
-   
-       <!-- ========================================== -->
-       <!-- TAB PAGAMENTO -->
-       <!-- ========================================== -->
-        @if(activeTab === 'pagamento') {
-          <div class="payment-section">
-      
-            <h3 class="section-title">Situazione Pagamento</h3>
-      
-            <!-- LEZIONI A GIORNATA - PACCHETTO ORARIO -->
-             @if(isLezioneSingola) {
-               <div class="payment-status complete">
-                 <ion-icon name="checkmark-circle"></ion-icon>
-                 <span>PACCHETTO ORARIO</span>
+    
+          <!-- BOTTONI CALENDARIO E ALLEGATI -->
+           <div class="action-buttons" [class.two-column]="!isLezioneSingola">
+
+             @if(!isLezioneSingola) {
+               <button
+                    type="button"
+                    class="action-btn"
+                    (click)="onClickCalendar()">
+                 <ion-icon name="calendar-outline"></ion-icon>
+                 <span>Calendario</span>
+               </button>
+             }
+
+             <button
+                  type="button"
+                  class="action-btn"
+                  (click)="onClickAllegati()">
+               <ion-icon name="document-attach-outline"></ion-icon>
+               <span>Documenti Allegati</span>
+             </button>
+
+           </div>
+    
+          <!-- DETTAGLI CORSO -->
+          <div class="details-info">
+            <h3 class="section-title">Dettagli {{isLezioneSingola ? 'Lezione' : 'Corso'}}</h3>
+        
+            <!-- PERIODO CORSO (solo per corsi a periodo) -->
+             @if(!isLezioneSingola) {
+               <div class="data-card">
+
+                 <app-settimana-block
+                    colorSelected="success"
+                    colorNotSelected="warning"
+                   size="md"
+                   [showOnlySelected]="false"
+                   [listDays]="corsoDoc._SETTIMANA">
+                 </app-settimana-block>
+
+                 <div class="data-row">
+                   <ion-icon name="calendar-outline" color="primary"></ion-icon>
+                   <div class="data-content">
+                     <span class="data-label">Dal</span>
+                     <span class="data-value">{{corsoDoc.DATAINIZIO | date : 'EEEE dd/LL/yyyy' | titlecase}}</span>
+                   </div>
+                 </div>
+                 <div class="data-row">
+                   <ion-icon name="calendar-outline" color="primary"></ion-icon>
+                   <div class="data-content">
+                     <span class="data-label">Al</span>
+                     <span class="data-value">{{corsoDoc.DATAFINE | date : 'EEEE dd/LL/yyyy' | titlecase}}</span>
+                   </div>
+                 </div>
+                 <div class="data-row">
+                   <ion-icon name="list-outline" color="primary"></ion-icon>
+                   <div class="data-content">
+                     <span class="data-label">Numero Lezioni</span>
+                     <span class="data-value">{{corsoDoc.NUMEROLEZIONI}} {{corsoDoc.NUMEROLEZIONI > 1 ? 'Lezioni' : 'Lezione'}}</span>
+                   </div>
+                 </div>
                </div>
              }
-      
-            <!-- CORSI A PERIODO - SCADENZE PAGAMENTO -->
-             @if(!isLezioneSingola && listSituazionePagamenti && listSituazionePagamenti.length > 0) {
-               <div>
-                 
-                @for (itemScadenza of listSituazionePagamenti; track itemScadenza.ID) {
-                  <div class="payment-card">
-                    <div class="payment-row">
-                      <div class="payment-label">
-                        <span>{{itemScadenza.DICITURADOC}}</span>
-                        @if(itemScadenza.DATASCADENZA) {
-                          <small>Scadenza: {{itemScadenza.DATASCADENZA | date: 'dd/MM/yyyy'}}</small>
-                        }
- 
-                      </div>
-                      <div class="payment-value" [class.paid]="!itemScadenza.requestPayment()" [class.unpaid]="itemScadenza.requestPayment()">
-                        {{itemScadenza.IMPORTO | currency: 'EUR'}}
-                      </div>
+    
+            <!-- PROGRAMMA CORSO -->
+             @if(corsoDoc?.existProgrammaCorso()) {
+               <div class="data-card">
+                 <div class="program-header" 
+                          (click)="onClickExpandCorsoProgramma()">
+                   <ion-icon name="document-text-outline" color="primary"></ion-icon>
+                   <span class="data-label">Programma del Corso</span>
+                   <ion-icon name="chevron-down-outline" class="expand-icon"></ion-icon>
+                 </div>
+
+                 <div class="program-content" 
+                      [ngClass]="getClassLabelProgramma()">
+                   <div 
+                    [innerHTML]="corsoDoc.getFullProgrammaHTML() | safeHtml"></div>
+                 </div>
+               </div>
+             }
+    
+            <!-- LIVELLO, ETA', SESSO -->
+            <div class="data-card">
+              <div class="data-row">
+                <ion-icon name="bar-chart-outline" color="primary"></ion-icon>
+                <div class="data-content">
+                  <span class="data-label">Livello</span>
+                  <span class="data-value">{{corsoDoc['_DENOMINAZIONE_Livello'] ? corsoDoc['_DENOMINAZIONE_Livello'] : 'Tutti i Livelli'}}</span>
+                </div>
+              </div>
+              <div class="data-row">
+                <ion-icon name="bookmark-outline" color="primary"></ion-icon>
+                <div class="data-content">
+                  <span class="data-label">Età</span>
+                  <span class="data-value">{{corsoDoc['_DESCTOOLTIP_CategoriaEta'] ? corsoDoc['_DESCTOOLTIP_CategoriaEta'] : 'Per tutte le età'}}</span>
+                </div>
+              </div>
+              <div class="data-row">
+                <ion-icon name="transgender-outline" color="primary"></ion-icon>
+                <div class="data-content">
+                  <span class="data-label">Sesso</span>
+                  <span class="data-value">{{corsoDoc.TARGETSESSO ? (corsoDoc.TARGETSESSO | targetSesso) : 'Maschile/Femminile'}}</span>
+                </div>
+              </div>
+            </div>
+    
+    
+            <!-- ISCRIZIONE -->
+            <div class="data-card enrollment-card">
+              <div class="enrollment-header">
+                <ion-icon name="checkmark-circle" [color]="iscrizioneConfermata() ? 'success' : 'danger'"></ion-icon>
+                <span class="enrollment-title">Iscrizione {{iscrizioneConfermata() ? 'Confermata' : 'In Attesa'}}</span>
+              </div>
+              <div class="enrollment-date">
+                <span class="enrollment-label">Iscritto il</span>
+                <span class="enrollment-value">{{utenteIscrizioneDoc.DATAISCRIZIONE | date: 'dd/MM/yyyy'}}</span>
+              </div>
+            </div>
+    
+          </div>
+
+
+        </div>
+   
+        <div class="payment-section">
+    
+          <h3 class="section-title">Situazione Pagamento</h3>
+    
+          <!-- LEZIONI A GIORNATA - PACCHETTO ORARIO -->
+           @if(isLezioneSingola) {
+             <div class="payment-status complete">
+               <ion-icon name="checkmark-circle"></ion-icon>
+               <span>PACCHETTO ORARIO</span>
+             </div>
+           }
+    
+          <!-- CORSI A PERIODO - SCADENZE PAGAMENTO -->
+           @if(!isLezioneSingola && listSituazionePagamenti && listSituazionePagamenti.length > 0) {
+             <div>
+               
+              @for (itemScadenza of listSituazionePagamenti; track itemScadenza.ID) {
+                <div class="payment-card">
+                  <div class="payment-row">
+                    <div class="payment-label">
+                      <span>{{itemScadenza.DICITURADOC}}</span>
+                      @if(itemScadenza.DATASCADENZA) {
+                        <small>Scadenza: {{itemScadenza.DATASCADENZA | date: 'dd/MM/yyyy'}}</small>
+                      }
+
                     </div>
-                    <div class="payment-status-badge" [class.badge-success]="!itemScadenza.requestPayment()" [class.badge-danger]="itemScadenza.requestPayment()">
-                      {{!itemScadenza.requestPayment() ? 'Pagato' : 'Da Pagare'}}
+                    <div class="payment-value" [class.paid]="!itemScadenza.requestPayment()" [class.unpaid]="itemScadenza.requestPayment()">
+                      {{itemScadenza.IMPORTO | currency: 'EUR'}}
                     </div>
                   </div>
-                }
-         
-               </div>
-             }
-      
-            <!-- MESSAGGIO SE NON CI SONO PAGAMENTI -->
-             @if(!isLezioneSingola && (!listSituazionePagamenti || listSituazionePagamenti.length === 0)) {
+                  <div class="payment-status-badge" [class.badge-success]="!itemScadenza.requestPayment()" [class.badge-danger]="itemScadenza.requestPayment()">
+                    {{!itemScadenza.requestPayment() ? 'Pagato' : 'Da Pagare'}}
+                  </div>
+                </div>
+              }
+       
+             </div>
+           }
+    
+          <!-- MESSAGGIO SE NON CI SONO PAGAMENTI -->
+           @if(!isLezioneSingola && (!listSituazionePagamenti || listSituazionePagamenti.length === 0)) {
 
-               <div class="no-payments">
-                 <ion-icon name="information-circle-outline"></ion-icon>
-                 <p>Nessuna informazione di pagamento disponibile</p>
-               </div>
-             }
-      
-          </div>
-        }
+             <div class="no-payments">
+               <ion-icon name="information-circle-outline"></ion-icon>
+               <p>Nessuna informazione di pagamento disponibile</p>
+             </div>
+           }
+
+        </div>
+
+        <!-- AZIONI ELIMINA E CONDIVIDI -->
+        <div class="action-section">
+          @if(canDelete) {
+            <button
+                type="button"
+                class="action-button delete-button"
+                (click)="onClickTrash()">
+              <ion-icon name="trash-outline"></ion-icon>
+              <span>Elimina</span>
+            </button>
+          }
+
+          <button
+              type="button"
+              class="action-button share-button"
+              (click)="onClickShare()">
+            <ion-icon name="share-social-outline"></ion-icon>
+            <span>Condividi</span>
+          </button>
+        </div>
    
      </div>
    

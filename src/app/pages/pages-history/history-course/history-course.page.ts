@@ -10,7 +10,7 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Utente } from 'src/app/models/utente/utente.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
-import { CancellazioniIscrizioniGiornaliere, ModalitaIscrizione, StatoIscrizione, StatoPagamento, TipoCorso, ValueList } from 'src/app/models/zsupport/valuelist.model';
+import { CancellazioniIscrizioniGiornaliere, ModalitaIscrizione, ModeIncassoConfig, SettorePagamentiAttivita, StatoIscrizione, StatoPagamento, TipoCorso, ValueList } from 'src/app/models/zsupport/valuelist.model';
 import { StartService } from 'src/app/services/start.service';
 import { PeriodicCourseDetailCalendarPage } from '../../pages-location/course/periodic/periodic-course-detail-calendar/periodic-course-detail-calendar.page';
 import { AllegatilistPage } from '../allegatilist/allegatilist.page';
@@ -18,7 +18,7 @@ import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model
 import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
 import { Area } from 'src/app/models/struttura/area.model';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
-import { Share } from '@capacitor/share';
+
 
 @Component({
   selector: 'app-history-course',
@@ -40,7 +40,7 @@ export class HistoryCoursePage implements OnInit {
   utenteIscrizioneDoc: UtenteIscrizione = new  UtenteIscrizione(); //il documento iscrizione NON OBSERVABLE
   listSituazionePagamenti: IscrizioneIncasso[] = []; //Situazione dei pagamenti
 
-  areaDoc: Area;
+  selectedArea: Area;
   corsoDoc: Corso = new Corso();
   locationDoc: Location = new Location();
   //Valorizzata in caso di Iscrizioni Giornaliere
@@ -50,16 +50,17 @@ export class HistoryCoursePage implements OnInit {
 
   selectedLocation: Location = new Location(); //il documento location NON OBSERVABLE 
 
-  arPayments: AreaPaymentSetting[] = [];
+  /**Configurazione per pagamenti con Stripe */
+  _configIncassoMobile: AreaPaymentSetting;
+  _selectedPaymentMode: ModeIncassoConfig;
+  _selectedPaymentConfig: AreaPaymentSetting;
+
   isDesktop: boolean;
 
   //Enum Html
   modalitaIscrizione: typeof ModalitaIscrizione = ModalitaIscrizione;
 
   titleForm = '';
-
-  // NUOVA PROPRIETÀ PER I TAB
-  activeTab: 'dettagli' | 'pagamento' = 'dettagli';
 
   //La Label contenente il programma po' essere ristretta o allargata
   expandProgramma: boolean = false;
@@ -199,9 +200,11 @@ export class HistoryCoursePage implements OnInit {
             return this.startService.requestAreaById(this.locationDoc.IDAREAOPERATIVA);
           })
           .then(elAreaDoc => {
-            this.areaDoc = elAreaDoc;
+            this.selectedArea = elAreaDoc;
             //Reimposto il canDelete
             this.setCanDelete();
+            //Recupero le modalita di pagamento
+            this.setListPayment();
 
             resolve();
           })
@@ -209,6 +212,34 @@ export class HistoryCoursePage implements OnInit {
             reject(error);
           });       
     })
+  }
+
+  /**
+   * Recupera i metodi di pagamento sulla base dell'Area e popola 
+   * le variabili con la configurazione
+   */  
+  setListPayment() {
+
+    let listConfigIncassi: AreaPaymentSetting[];
+
+    LogApp.consoleLog('Imposto Lista Metodi Pagamento');
+    this._configIncassoMobile = null;
+
+    //Ho il documento dell'area
+    if (this.selectedArea) {
+      //Recupero le modalità
+      listConfigIncassi = this.selectedArea.getPaymentFor(SettorePagamentiAttivita.settorePagamentoCorso);
+
+      //Recupero la modalità per il pagamento in mobile (se presente)
+      this._configIncassoMobile = AreaPaymentSetting.findConfigIncassoFor(listConfigIncassi, 
+                                                                          ModeIncassoConfig.incassoCreditCard, 
+                                                                          SettorePagamentiAttivita.settorePagamentoCorso);
+      if (this._configIncassoMobile) {
+        this._selectedPaymentConfig = this._configIncassoMobile;
+        this._selectedPaymentMode = ModeIncassoConfig.incassoCreditCard;
+      }
+
+    }
   }
 
   /**
@@ -459,10 +490,10 @@ export class HistoryCoursePage implements OnInit {
         if (MyDateTime.isAfter(this.dataPianificataDoc.DATAORAINIZIO, new Date())) {
           LogApp.consoleLog('Lezione nel futuro');
 
-          if (this.areaDoc) {
-            LogApp.consoleLog(this.areaDoc);
+          if (this.selectedArea) {
+            LogApp.consoleLog(this.selectedArea);
 
-            switch (this.areaDoc.APPDELETEISCRIZIONIFLAG) {
+            switch (this.selectedArea.APPDELETEISCRIZIONIFLAG) {
               case  CancellazioniIscrizioniGiornaliere.sempre:
                   LogApp.consoleLog('Sempre abilitate')
                   flagDelete = true;
@@ -471,8 +502,8 @@ export class HistoryCoursePage implements OnInit {
               case CancellazioniIscrizioniGiornaliere.limitata:
                   let numHours = 0;
 
-                  if (this.areaDoc.APPDELETEISCRIZIONIORE != null && this.areaDoc.APPDELETEISCRIZIONIORE != undefined) {
-                    numHours = this.areaDoc.APPDELETEISCRIZIONIORE;
+                  if (this.selectedArea.APPDELETEISCRIZIONIORE != null && this.selectedArea.APPDELETEISCRIZIONIORE != undefined) {
+                    numHours = this.selectedArea.APPDELETEISCRIZIONIORE;
                   }
 
                   LogApp.consoleLog(`Limitate entro ${numHours} ore`)

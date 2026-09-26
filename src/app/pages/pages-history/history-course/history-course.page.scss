@@ -178,39 +178,6 @@
 }
 
 // =====================================================
-// TAB NAVIGATION
-// =====================================================
-.tab-navigation {
-  display: flex;
-  gap: 0;
-  padding: 0 20px;
-  margin-bottom: 20px;
-
-  .tab-button {
-    flex: 1;
-    padding: 14px;
-    background: white;
-    border: none;
-    border-bottom: 3px solid transparent;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--ion-color-mediumlight);
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &.active {
-      color: var(--ion-color-primary);
-      border-bottom-color: var(--ion-color-primary);
-      background: var(--ion-color-extralight);
-    }
-
-    &:hover:not(.active) {
-      background: var(--ion-color-light);
-    }
-  }
-}
-
-// =====================================================
 // TAB CONTENT
 // =====================================================
 .tab-content {
@@ -279,52 +246,50 @@
 // =====================================================
 .action-buttons {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  
   gap: 12px;
   margin-bottom: 24px;
 
+   &.two-column {
+    grid-template-columns: repeat(2, 1fr);
+   }
+
   .action-btn {
     background: white;
-    border: 2px solid var(--ion-color-primary);
+    border: 2px solid var(--ion-color-success);
     border-radius: 14px;
-    padding: 14px 16px;
+    padding: 14px 12px;
+    min-height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: var(--ion-color-primary);
+    color: var(--ion-color-success);
+    font-family: inherit;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: center;
 
     ion-icon {
-      font-size: 22px;
+      font-size: 24px;
+      flex-shrink: 0;
     }
 
-    &:hover {
-      background: var(--ion-color-primary);
+    &:active {
+      background: var(--ion-color-success);
       color: white;
     }
 
-    &.calendar-btn {
-      border-color: var(--ion-color-primary);
-      color: var(--ion-color-primary);
-
-      &:hover {
-        background: var(--ion-color-primary);
-      }
-    }
-
-    &.attachments-btn {
-      border-color: var(--ion-color-success);
-      color: var(--ion-color-success);
-
+    @media (hover: hover) {
       &:hover {
         background: var(--ion-color-success);
         color: white;
       }
     }
+
   }
 }
 
@@ -463,51 +428,45 @@
 // ACTION SECTION (Elimina/Condividi)
 // =====================================================
 .action-section {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding-bottom: 8px;
 
   .action-button {
-    background: white;
-    border: 2px solid;
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 8px 16px;
+    display: inline-flex;
+    flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    transition: background 0.2s ease, color 0.2s ease;
+    font-family: inherit;
 
     ion-icon {
-      font-size: 28px;
+      font-size: 18px;
     }
 
     span {
-      font-size: 0.9rem;
-      font-weight: 700;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    &:active {
+      background: rgba(0, 0, 0, 0.06);
     }
 
     &.delete-button {
-      border-color: var(--ion-color-danger);
       color: var(--ion-color-danger);
-
-      &:hover {
-        background: var(--ion-color-danger);
-        color: white;
-      }
     }
 
     &.share-button {
-      border-color: var(--ion-color-primary);
-      color: var(--ion-color-primary);
-
-      &:hover {
-        background: var(--ion-color-primary);
-        color: white;
-      }
+      color: var(--ion-color-medium-shade);
     }
   }
 }
@@ -710,16 +669,8 @@ app-settimana-block {
     }
   }
 
-  .tab-navigation,
   .tab-content {
     padding: 0 20px 32px 20px;
-  }
-
-  .action-section {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
 
@@ -780,9 +731,5 @@ app-settimana-block {
 @media (min-width: 1024px) {
   .data-card:hover {
     transform: translateY(-3px);
-  }
-
-  .action-button:hover {
-    transform: translateY(-2px);
   }
 }

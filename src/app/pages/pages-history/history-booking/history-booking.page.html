@@ -12,7 +12,8 @@
   <!-- ========================================== -->
   <!-- MAIN CONTENT -->
   <!-- ========================================== -->
-  <div class="booking-container" *ngIf="loadingComplete">
+  @if(loadingComplete) {
+  <div class="booking-container">
 
     <!-- ========================================== -->
     <!-- HERO HEADER CARD -->
@@ -33,17 +34,6 @@
         </div>
       </div>
 
-      <!-- Cliente (Nome dal modello Prenotazione) -->
-      <!-- <div class="hero-customer">
-        <div class="customer-avatar">
-          <ion-icon name="person"></ion-icon>
-        </div>
-        <div class="customer-info">
-          <h2>{{myPrenotazione.NOMINATIVO}}</h2>
-          <p *ngIf="myPrenotazione.MOBILENUMBER">{{myPrenotazione.MOBILENUMBER}}</p>
-        </div>
-      </div> -->
-
       <!-- Location e Campo -->
       <div class="hero-location">
         <div class="location-icon">
@@ -61,7 +51,8 @@
     <!-- ========================================== -->
     <!-- ACCORDION DATE MULTIPLE (se presenti) -->
     <!-- ========================================== -->
-    <div class="dates-section" *ngIf="numDatePianificate > 1">
+    @if(numDatePianificate > 1) {
+    <div class="dates-section">
       <ion-accordion-group #accordiondate class="dates-accordion">
         <ion-accordion>
           <ion-item slot="header" color="warning" lines="none">
@@ -72,44 +63,23 @@
             <ion-radio-group
                 (ngModelChange)="onChangeActivePianificazione($event)"
                 [(ngModel)]="idPianificazione">
+              @for(itemDate of prenotazioneDoc?.PRENOTAZIONEPIANIFICAZIONE; track itemDate.ID) {
               <ion-item
-                  *ngFor="let itemDate of myPrenotazione?.PRENOTAZIONEPIANIFICAZIONE"
                   lines="none"
                   class="date-item">
                 <ion-radio [value]="itemDate.ID">
                   <h6 class="date-label">{{itemDate.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy'}} alle {{itemDate.DATAORAINIZIO | date: 'HH:mm'}}</h6>
                 </ion-radio>
               </ion-item>
+              }
             </ion-radio-group>
           </div>               
         </ion-accordion>
       </ion-accordion-group>
     </div>
+    }
 
-    <!-- ========================================== -->
-    <!-- TAB NAVIGATION -->
-    <!-- ========================================== -->
-    <div class="tab-navigation">
-      <div class="tab-buttons">
-        <button 
-            class="tab-button"
-            [class.active]="activeTab === 'dettagli'"
-            (click)="activeTab = 'dettagli'">
-          Dettagli
-        </button>
-        <button 
-            class="tab-button"
-            [class.active]="activeTab === 'pagamento'"
-            (click)="activeTab = 'pagamento'">
-          Pagamento
-        </button>
-      </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- TAB CONTENT - DETTAGLI -->
-    <!-- ========================================== -->
-    <div class="tab-content" *ngIf="activeTab === 'dettagli'">
+    <div class="tab-content">
       
       <!-- QR CODE SECTION -->
       <div class="qr-section">
@@ -129,7 +99,7 @@
           </div>
         </div>
       </div>
-
+  
       <!-- DETTAGLI PRENOTAZIONE -->
       <div class="details-section">
         <h3 class="section-title">Dettagli Prenotazione</h3>
@@ -146,7 +116,7 @@
             </div>
           </div>
         </div>
-
+  
         <div class="data-card">
           <div class="data-row">
             <ion-icon name="time-outline" class="data-icon"></ion-icon>
@@ -156,7 +126,7 @@
             </div>
           </div>
         </div>
-
+  
         <div class="data-card">
           <div class="data-row">
             <ion-icon name="people-outline" class="data-icon"></ion-icon>
@@ -167,7 +137,7 @@
           </div>
         </div>
       </div>
-
+  
       <!-- ACTION BUTTONS -->
       <div class="action-section">
         @if(activePianificazione.isInFuture()) {
@@ -175,25 +145,19 @@
             <ion-icon name="trash-outline"></ion-icon>
             <span>Elimina</span>
           </button>
-
+  
           <button class="action-button share-button" (click)="onShare(activePianificazione)">
             <ion-icon name="share-social-outline"></ion-icon>
             <span>Condividi</span>
           </button>
-
+  
         }
       </div>
-
     </div>
-
-    <!-- ========================================== -->
-    <!-- TAB CONTENT - PAGAMENTO -->
-    <!-- ========================================== -->
-    <div class="tab-content" *ngIf="activeTab === 'pagamento'">
-      
+    <div class="tab-content">
       <div class="payment-section">
         <h3 class="section-title">Situazione Pagamento</h3>
-
+  
         <!-- IMPORTO TOTALE -->
         <div class="payment-card">
           <div class="payment-row">
@@ -201,33 +165,110 @@
             <span class="payment-value total">{{activePianificazione.TOTALE | currency: 'EUR'}}</span>
           </div>
         </div>
-
+  
         <!-- PAGAMENTO COMPLETATO -->
-        <div class="payment-status complete" *ngIf="activePianificazione.paymentRequested() == false">
+        @if(activePianificazione.paymentRequested() == false) {
+        <div class="payment-status complete">
           <ion-icon name="checkmark-circle"></ion-icon>
           <span>PAGAMENTO COMPLETATO</span>
         </div>
+        }
 
         <!-- IMPORTO PAGATO -->
-        <div class="payment-card" *ngIf="activePianificazione.paymentRequested() == true && activePianificazione?.INCASSATO != 0">
+        @if(activePianificazione.paymentRequested() == true && activePianificazione?.INCASSATO != 0) {
+        <div class="payment-card">
           <div class="payment-row">
             <span class="payment-label">Pagamento Effettuato</span>
             <span class="payment-value paid">{{activePianificazione.INCASSATO | currency: 'EUR'}}</span>
           </div>
         </div>
+        }
 
         <!-- RESIDUO DA PAGARE -->
-        <div class="payment-card outstanding" *ngIf="activePianificazione.paymentRequested() == true">
+        @if(activePianificazione.paymentRequested() == true) {
+        <div class="payment-card outstanding">
           <div class="payment-row">
             <span class="payment-label">Residuo da pagare</span>
             <span class="payment-value">{{activePianificazione.RESIDUO | currency: 'EUR'}}</span>
           </div>
         </div>
+        }
 
-      </div>
+        @if(containScadenze()) {
+          <div>
+              @for (itemScadenza of getCollectionScadenze(); track itemScadenza.ID) {
+                <div class="payment-card">
+                  <div class="payment-row">
+                    <div class="payment-label">
+                      <span>{{itemScadenza.DICITURADOC}}</span>
+                      @if(itemScadenza.DATASCADENZA) {
+                        <small>Scadenza: {{itemScadenza.DATASCADENZA | date: 'dd/MM/yyyy'}}</small>
+                      }
+
+                    </div>
+                    <div class="payment-value"
+                         [class.paid]="!itemScadenza.requestPayment()"
+                         [class.unpaid]="itemScadenza.requestPayment() && !isPagamentoInAttesa(itemScadenza)"
+                         [class.pending]="isPagamentoInAttesa(itemScadenza)">
+                      {{itemScadenza.IMPORTO | currency: 'EUR'}}
+                    </div>
+                  </div>
+                  <div class="payment-footer">
+                    <div class="payment-status-badge"
+                         [class.badge-success]="!itemScadenza.requestPayment()"
+                         [class.badge-warning]="isPagamentoInAttesa(itemScadenza)"
+                         [class.badge-danger]="itemScadenza.requestPayment() && !isPagamentoInAttesa(itemScadenza)">
+                      {{!itemScadenza.requestPayment() ? 'Pagato' : (isPagamentoInAttesa(itemScadenza) ? 'In attesa di conferma' : 'Da Pagare')}}
+                    </div>
+
+                    @if(itemScadenza.requestPayment() && canPayOnline && !isPagamentoInAttesa(itemScadenza)) {
+                      <button
+                          type="button"
+                          class="pay-btn"
+                          [disabled]="paymentInProgress"
+                          (click)="onClickPaga(itemScadenza)">
+                        <ion-icon name="card-outline"></ion-icon>
+                        <span>Paga ora</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+       
+          </div>
+        }
 
     </div>
+      
+    </div>
+
 
   </div>
+  }
+
+  <!-- Stripe Payment Form (solo browser) -->
+  @if(showStripeForm) {
+    <div class="stripe-payment-container">
+      <div class="stripe-form-wrapper">
+        <h3>Inserisci i dati della carta</h3>
+        <div id="payment-element"></div>
+        <ion-button
+          expand="block"
+          color="success"
+          [disabled]="confirmingStripe"
+          (click)="confirmStripePayment()">
+          Conferma Pagamento
+        </ion-button>
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="medium"
+          [disabled]="confirmingStripe"
+          (click)="cancelStripePayment()">
+          Annulla
+        </ion-button>
+      </div>
+    </div>
+  }
 
 </ion-content>

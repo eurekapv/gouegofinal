@@ -10,7 +10,7 @@ export class UtenteIscrizione extends IDDocument {
         IDPIANIFICAZIONECORSO: string; //
         IDAREAOPERATIVA:       string; //
         TIPOCORSO:             number;
-        DENOMINAZIONECORSO:    string;
+        DENOMINAZIONE:    string;
         DATAINIZIO:            Date;
         ORAINIZIO:             Date;
         DATAFINE:              Date;
@@ -107,7 +107,7 @@ export class UtenteIscrizione extends IDDocument {
         let arString = ['IDCORSO',
                         'IDPIANIFICAZIONECORSO',
                         'IDAREAOPERATIVA',
-                        'DENOMINAZIONECORSO',
+                        'DENOMINAZIONE',
                         'IDUTENTE',
                         'IDSPORT',
                         'DENOMINAZIONESPORT',

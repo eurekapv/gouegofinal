@@ -8,6 +8,7 @@ import { ApicallService } from '../zsupport/apicall.service';
 import { StartConfiguration } from '../../models/start-configuration.model';
 import { UtentePrenotazione } from '../../models/utente/utenteprenotazione.model';
 import { IDDocument } from '../../library/models/iddocument.model';
+import { DocstructureService } from 'src/app/library/services/docstructure.service';
 
 
 @Injectable({
@@ -23,7 +24,9 @@ export class UtenteprenotazioneService {
   }
 
 
-  constructor(private apiService: ApicallService) { }
+  constructor(private apiService: ApicallService,
+              private docStructure: DocstructureService
+  ) { }
 
   /**
    * Effettua la richiesta dell'elenco Prenotazioni di un utente
@@ -90,25 +93,24 @@ export class UtenteprenotazioneService {
    * @param maxRecord Max Record da recuperare
    */
   requestDaPagare(config: StartConfiguration, 
-                  idUtente: string, 
-                  maxRecord: number = 0): Promise<UtentePrenotazione[]> {
+                  idUtente: string
+                  ): Promise<UtentePrenotazione[]> {
 
     return new Promise((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
-          
+      myHeaders = myHeaders.append('X-HTTP-Method-Override','getDaSaldare');
 
       const doObject = 'UTENTEPRENOTAZIONE';
-        
-      let myUrl = config.urlBase + '/' + doObject;  
-  
-      //Nei Parametri imposto l'area richiesta
-      let myParams = this.apiService.getHttpParams().set('IDUTENTE',idUtente);
-      myParams = myParams.append('RESIDUO','>0');
-      myParams = myParams.append('$top', (maxRecord + '') );
-  
-  
+
+      let myParams = this.docStructure.getHttpParams();
+      let objBody = { guidUtente: idUtente};
+      
+      //Url da chiamare
+      let myUrl = config.urlBase + '/' + doObject
+
+
       this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
+        .httpPost(myUrl, myHeaders, myParams, objBody)
         .pipe(
           map(data => {
             

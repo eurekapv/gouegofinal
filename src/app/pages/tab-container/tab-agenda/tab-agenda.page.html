@@ -132,15 +132,21 @@
 
   <!-- DA PAGARE -->
   <div class="dapagare-section" *ngIf="totalDaPagare > 0">
-    <div class="section-header">
+    <div class="section-header dapagare-header" (click)="onToggleDaPagare()">
       <h3>
         <ion-icon name="card" color="danger"></ion-icon>
         Da Pagare
       </h3>
-      <span class="count-badge danger">{{ totalDaPagare }}</span>
+      <div class="dapagare-header-right">
+        <span class="count-badge danger">{{ totalDaPagare }}</span>
+        <ion-icon
+            name="chevron-down"
+            class="expand-icon"
+            [class.expanded]="daPagareExpanded"></ion-icon>
+      </div>
     </div>
 
-    <div class="dapagare-list">
+    <div class="dapagare-list" *ngIf="daPagareExpanded">
       <div
           class="dapagare-item"
           *ngFor="let item of listIscrizioniDaPagare"
@@ -149,7 +155,7 @@
           <ion-icon name="school-outline"></ion-icon>
         </div>
         <div class="dapagare-content">
-          <h4>{{ item.DENOMINAZIONECORSO }}</h4>
+          <h4>{{ item.DENOMINAZIONE }}</h4>
           <p *ngIf="item.DENOMINAZIONELOCATION">{{ item.DENOMINAZIONELOCATION }}</p>
         </div>
         <div class="dapagare-amount">{{ item.RESIDUO | currency: 'EUR' }}</div>

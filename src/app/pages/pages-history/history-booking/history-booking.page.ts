@@ -111,34 +111,64 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
                 this.historyId = param.get('historyId');
         
                 if (this.historyId.length !== 0) {
-
-                  this.requestByHistoryId(this.historyId)
-                      .then(() => {
-                        this.loadingController.dismiss();
-                        //Recupero avvenuto correttamente
-                        this.loadingComplete = true;
-
-                      })
-                      .catch(error => {
-                        this.loadingController.dismiss();
-                        //Errori di recupero
-                        this.showMessage(error);
-                        this.onGoToBack();
-                      })
-                }
+                    //Carico i dati
+                    this.loadData(elLoading);
+                  }
                 else {
+                  elLoading.dismiss();
                   this.showMessage('Informazioni prenotazione errate');
                   this.onGoToBack();
                 }
               }
               else {
+                elLoading.dismiss();
                 this.showMessage('Informazioni prenotazione errate');
                 this.onGoToBack();
               }
             });
     })
 
-  }  
+  }
+
+  /**
+   * Effettua il caricamento dei dati
+   * @param elLoading Loading da chiudere al termine (solo al primo caricamento, non sul refresher)
+   * @param refresherEvent Evento del refresher da completare (solo sul pull-to-refresh)
+   */
+  loadData(elLoading?: HTMLIonLoadingElement, refresherEvent?: any) {
+    //Ricarica i dati
+    this.requestByHistoryId(this.historyId)
+        .then(() => {
+          //Recupero avvenuto correttamente
+          this.loadingComplete = true;
+        })
+        .catch(error => {
+          //Errori di recupero
+          this.showMessage(error);
+          this.onGoToBack();
+        })
+        .finally(() => {
+          if (elLoading) {
+            elLoading.dismiss();
+          }
+          this.stopRefresher(refresherEvent);
+        })
+  }
+
+  /** Esecuzione del refresh pagina */
+  doRefresh(ev:any){
+    this.loadData(null, ev);
+  }
+
+  /**
+   * Interrompe il refresher
+   * @param ev
+   */
+  stopRefresher(ev: any) {
+    if (ev && ev.target) {
+      ev.target.complete();
+    }
+  }
 
   ngOnDestroy() {
     if (this.subStartConfig) {
@@ -202,6 +232,7 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
                                 this.prenotazioneDoc = elPrenotazione;
                                 LogApp.consoleLog('Prenotazione trovata');
                                 LogApp.consoleLog(this.prenotazioneDoc);
+                                console.log(this.prenotazioneDoc);
                                 //Imposto la Pianificazione attiva
                                 return this.setActivePianificazione(this.prenotazioneDoc, this.idPianificazione);
                               })

@@ -2103,12 +2103,13 @@ get listUtentePrenotazioni():Observable<UtentePrenotazione[]> {
    * @param idUtente Utente che effettua richiesta
    * @param maxRecord Max Record da recuperare
    */
-  requestPrenotazioniDaPagare(idUtente: string, 
-                              maxRecord: number = 0): Promise<UtentePrenotazione[]> {
+  requestPrenotazioniDaPagare(idUtente: string 
+                              ): Promise<UtentePrenotazione[]> {
 
     const actualStartConfig = this._startConfig.getValue();
-    return this.utentePrenotazioneService.requestDaPagare(actualStartConfig, idUtente, maxRecord);
+    return this.utentePrenotazioneService.requestDaPagare(actualStartConfig, idUtente);
   }
+  
 //#endregion
 
 //#region UTENTE ISCRIZIONE
@@ -2142,10 +2143,9 @@ requestIscrizioneById(idIscrizione){
    * @param idUtente Utente che effettua richiesta
    * @param maxRecord Max Record da recuperare
    */
-  requestIscrizioniDaPagare(idUtente: string, 
-                            maxRecord: number = 0): Promise<UtenteIscrizione[]> {
+  requestIscrizioniDaPagare(idUtente: string): Promise<UtenteIscrizione[]> {
     const actualStartConfig = this._startConfig.getValue();
-    return this.utenteIscrizioneService.requestDaPagare(actualStartConfig, idUtente, maxRecord)
+    return this.utenteIscrizioneService.requestDaPagare(actualStartConfig, idUtente)
   }
 
 //#endregion

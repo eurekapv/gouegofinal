@@ -9,6 +9,10 @@
 
 <ion-content>
   
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="0.8" pullMin="60" pullMax="120">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <!-- ========================================== -->
   <!-- MAIN CONTENT -->
   <!-- ========================================== -->
@@ -162,39 +166,39 @@
         <div class="payment-card">
           <div class="payment-row">
             <span class="payment-label">Importo Prenotazione</span>
-            <span class="payment-value total">{{activePianificazione.TOTALE | currency: 'EUR'}}</span>
+            <span class="payment-value total">{{prenotazioneDoc.TOTALE | currency: 'EUR'}}</span>
           </div>
         </div>
   
         <!-- PAGAMENTO COMPLETATO -->
-        @if(activePianificazione.paymentRequested() == false) {
+        @if(!prenotazioneDoc.paymentRequested()) {
         <div class="payment-status complete">
           <ion-icon name="checkmark-circle"></ion-icon>
           <span>PAGAMENTO COMPLETATO</span>
         </div>
         }
 
-        <!-- IMPORTO PAGATO -->
-        @if(activePianificazione.paymentRequested() == true && activePianificazione?.INCASSATO != 0) {
-        <div class="payment-card">
-          <div class="payment-row">
-            <span class="payment-label">Pagamento Effettuato</span>
-            <span class="payment-value paid">{{activePianificazione.INCASSATO | currency: 'EUR'}}</span>
+        <!-- IMPORTO GIA PAGATO  -->
+        @if(prenotazioneDoc?.INCASSATO != 0) {
+          <div class="payment-card">
+            <div class="payment-row">
+              <span class="payment-label">Pagamento Effettuato</span>
+              <span class="payment-value paid">{{prenotazioneDoc.INCASSATO | currency: 'EUR'}}</span>
+            </div>
           </div>
-        </div>
         }
 
         <!-- RESIDUO DA PAGARE -->
-        @if(activePianificazione.paymentRequested() == true) {
+        @if(prenotazioneDoc.paymentRequested()) {
         <div class="payment-card outstanding">
           <div class="payment-row">
             <span class="payment-label">Residuo da pagare</span>
-            <span class="payment-value">{{activePianificazione.RESIDUO | currency: 'EUR'}}</span>
+            <span class="payment-value">{{prenotazioneDoc.RESIDUO | currency: 'EUR'}}</span>
           </div>
         </div>
         }
 
-        @if(containScadenze()) {
+        @if(containScadenze() && prenotazioneDoc.paymentRequested()) {
           <div>
               @for (itemScadenza of getCollectionScadenze(); track itemScadenza.ID) {
                 <div class="payment-card">

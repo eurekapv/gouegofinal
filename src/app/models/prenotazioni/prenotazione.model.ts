@@ -266,6 +266,14 @@ export class Prenotazione extends IDDocument {
     }
 
 
+    /** Controlla se c'e' un residuo sulla prenotazione */
+    paymentRequested(): boolean {
+        let flagReturn = false;
+
+        flagReturn = (this.RESIDUO != 0)
+        
+        return flagReturn;
+    }
 
     /**
      * Converte il JSON ricevuto e ritorna una Prenotazione

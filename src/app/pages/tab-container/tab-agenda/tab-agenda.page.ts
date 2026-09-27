@@ -102,6 +102,7 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   //Iscrizioni e Prenotazioni con un residuo da pagare
   listIscrizioniDaPagare: UtenteIscrizione[] = [];
   listPrenotazioniDaPagare: UtentePrenotazione[] = [];
+  daPagareExpanded: boolean = false; //Accordion: se TRUE mostra l'elenco
   // Variabile loading per skeleton (aggiungi con le altre variabili)
   isLoadingTrainer: boolean = false;
   isLoadingCustode: boolean = false;
@@ -647,6 +648,13 @@ export class TabAgendaPage implements OnInit, OnDestroy {
    */
   get totalDaPagare(): number {
     return (this.listIscrizioniDaPagare?.length || 0) + (this.listPrenotazioniDaPagare?.length || 0);
+  }
+
+  /**
+   * Espande/collassa l'elenco delle scadenze da pagare
+   */
+  onToggleDaPagare() {
+    this.daPagareExpanded = !this.daPagareExpanded;
   }
 
   /**

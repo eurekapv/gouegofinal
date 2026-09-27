@@ -83,28 +83,26 @@ export class UtenteiscrizioneService {
    * @param maxRecord Max Record da recuperare
    */
   requestDaPagare(config: StartConfiguration, 
-                  idUtente: string, 
-                  maxRecord: number = 0): Promise<UtenteIscrizione[]> {
+                  idUtente: string
+                 ): Promise<UtenteIscrizione[]> {
 
     return new Promise((resolve, reject)=>{
       let myHeaders = config.getHttpHeaders();
-          
+      myHeaders = myHeaders.append('X-HTTP-Method-Override','getDaSaldare');
 
       const doObject = 'UTENTEISCRIZIONE';
-        
-      let myUrl = config.urlBase + '/' + doObject;  
-  
-      //Nei Parametri imposto l'area richiesta
-      let myParams = this.apiService.getHttpParams().set('IDUTENTE',idUtente);
-      myParams = myParams.append('RESIDUO','>0');
-      myParams = myParams.append('$top', (maxRecord + '') );
-  
-  
+
+      let myParams = this.docStructure.getHttpParams();
+      let objBody = { guidUtente: idUtente};
+      
+      //Url da chiamare
+      let myUrl = config.urlBase + '/' + doObject
+
       this.apiService
-        .httpGet(myUrl, myHeaders, myParams)
+        .httpPost(myUrl, myHeaders, myParams,objBody)
         .pipe(
           map(data => {
-            
+              
               let arReturn = [];
               if (data.UTENTEISCRIZIONE) {
                 arReturn = data.UTENTEISCRIZIONE;

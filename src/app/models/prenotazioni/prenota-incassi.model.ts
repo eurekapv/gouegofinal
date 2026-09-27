@@ -1,17 +1,17 @@
-import { Descriptor, TypeDefinition } from "../../library/models/descriptor.model";
-import { IDDocument } from "../../library/models/iddocument.model";
+import { IDDocument } from "src/app/library/models/iddocument.model";
 import { PaymentChannel, TipoRigoIncasso } from "../zsupport/valuelist.model";
+import { Descriptor, TypeDefinition } from "src/app/library/models/descriptor.model";
 
-export class IscrizioneIncasso extends IDDocument {
-    IDISCRIZIONECORSO:               string;
-    DATASCADENZA:                    Date;
-    MODALITA:                        PaymentChannel;
-    DATAOPERAZIONE:                  Date;
-    IMPORTO:                         number;
-    NOTES:                           string;
-    TIPORIGO:                        TipoRigoIncasso;
-    ZORDER:                          number;
-    DICITURADOC:                     string;
+export class PrenotaIncassi extends IDDocument {
+    IDPRENOTAZIONE: string;
+    TIPORIGO: TipoRigoIncasso;
+    DATAOPERAZIONE: Date;
+    IMPORTO: number;
+    MODALITA: PaymentChannel;
+    DATASCADENZA: Date;
+    NOTES: string;
+    ZORDER: number;
+    DICITURADOC: string;
     IDCONTO:                         string;
     IDTRANSACTION:                   string;
     IDORDER:                         string;
@@ -26,7 +26,7 @@ export class IscrizioneIncasso extends IDDocument {
     */
      getDescriptor(): Descriptor {
         let objDescriptor = new Descriptor();
-        let arString = ['IDISCRIZIONECORSO',
+        let arString = ['IDPRENOTAZIONE',
                         'NOTES',
                         'DICITURADOC',
                         'IDCONTO',
@@ -35,8 +35,7 @@ export class IscrizioneIncasso extends IDDocument {
                         ];
         let arNumber = ['ZORDER',
                         'MODALITA',
-                        'TIPORIGO',
-                        'TIPOPREZZO'
+                        'TIPORIGO'
                        ];
         let arDecimal = ['IMPORTO'
                         ];
@@ -45,8 +44,8 @@ export class IscrizioneIncasso extends IDDocument {
         let arDateTime =[];
         let arTime = [];
     
-        objDescriptor.className = 'IscrizioneIncasso';
-        objDescriptor.classWebApiName = 'ISCRIZIONEINCASSO';
+        objDescriptor.className = 'PrenotaIncassi';
+        objDescriptor.classWebApiName = 'PRENOTAINCASSI';
         objDescriptor.doRemote = true;
         objDescriptor.describeField = 'DICITURADOC';
         
@@ -61,21 +60,19 @@ export class IscrizioneIncasso extends IDDocument {
         
     
         return objDescriptor;
-    }    
-    
-    
+    }      
 
-/**
- * Imposta le proprietà nell'oggetto
- * @param data JSON Received
- */
+    /**
+     * Imposta le proprietà nell'oggetto
+     * @param data JSON Received
+     */
     setJSONProperty(data: any) {
         //Chiamo IDDOcument
         super.setJSONProperty(data);
 
         this.setOriginal();
 
-    } 
+    }
     
     /**
      * Torna TRUE se il rigo deve ancora essere incassato
@@ -88,5 +85,5 @@ export class IscrizioneIncasso extends IDDocument {
         }
 
         return flagRequest;
-    }
+    }    
 }

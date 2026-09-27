@@ -3,6 +3,7 @@ import { TypeDefinition, Descriptor} from '../../library/models/descriptor.model
 import { PrenotazionePianificazione } from './prenotazionepianificazione.model';
 import { PaymentChannel } from '../zsupport/valuelist.model';
 import { PrenotaTesseramento } from './prenota_tesseramento.model';
+import { PrenotaIncassi } from './prenota-incassi.model';
 
 export class Prenotazione extends IDDocument {
     DATA: Date; 
@@ -19,6 +20,7 @@ export class Prenotazione extends IDDocument {
     MSGINVALID: string;
     PRENOTAZIONEPIANIFICAZIONE: PrenotazionePianificazione[];
     PRENOTATESSERAMENTO: PrenotaTesseramento[];
+    PRENOTAZIONIINCASSI: PrenotaIncassi[];
     IDTRANSACTION: string;
     IDORDER: string;
     CHANNELPAYMENT: PaymentChannel;
@@ -46,6 +48,7 @@ export class Prenotazione extends IDDocument {
 
         this.PRENOTAZIONEPIANIFICAZIONE = [];
         this.PRENOTATESSERAMENTO = [];
+        this.PRENOTAZIONIINCASSI = [];
         
     }
 
@@ -149,6 +152,7 @@ export class Prenotazione extends IDDocument {
     
         this.PRENOTAZIONEPIANIFICAZIONE = [];
         this.PRENOTATESSERAMENTO = [];
+        this.PRENOTAZIONIINCASSI = [];
 
         if (data.PRENOTAZIONEPIANIFICAZIONE) {
             this.setCollectionPianificazioni(data);
@@ -157,6 +161,10 @@ export class Prenotazione extends IDDocument {
         if (data.PRENOTATESSERAMENTO) {
             this.setCollectionTesseramenti(data);
         }
+
+        if (data.PRENOTAINCASSI) {
+            this.setCollectionIncassi(data);
+        }        
     }
 
     /**
@@ -188,6 +196,26 @@ export class Prenotazione extends IDDocument {
                 //Imposto i dati
                 recTesseramento.setJSONProperty(element);
                 this.PRENOTATESSERAMENTO.push(recTesseramento);
+
+            })
+        }
+    }
+
+
+        /**
+     * Importa i tesseramenti
+     * @param data 
+     */
+    setCollectionIncassi(data: any) {
+        if (data && data.PRENOTAINCASSI) {
+            
+            //Ciclo e creo le tessere
+            data.PRENOTAINCASSI.forEach(element => {
+                
+                let recIncasso = new PrenotaIncassi();
+                //Imposto i dati
+                recIncasso.setJSONProperty(element);
+                this.PRENOTAZIONIINCASSI.push(recIncasso);
 
             })
         }
@@ -231,6 +259,7 @@ export class Prenotazione extends IDDocument {
         objDescriptor.setRelation('IDUTENTE','Utente');
         objDescriptor.addCollection('PRENOTAZIONEPIANIFICAZIONE', 'PrenotazionePianificazione', 'IDPRENOTAZIONE')
         objDescriptor.addCollection('PRENOTATESSERAMENTO', 'PrenotaTesseramento', 'IDPRENOTAZIONE')
+        objDescriptor.addCollection('PRENOTAINCASSI', 'PrenotaIncassi', 'IDPRENOTAZIONE')
         
         
         return objDescriptor;

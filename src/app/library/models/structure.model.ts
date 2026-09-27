@@ -56,6 +56,8 @@ import { ArticoloScorta } from 'src/app/models/shop/articolo-scorta.model';
 import { UtenteTotaleMinuti } from 'src/app/models/utente/utente-totale-minuti.model';
 import { UtenteMinuti } from 'src/app/models/utente/utente-minuti.model';
 import { CorsoGiornaliero } from 'src/app/models/corso/corso-giornaliero.model';
+import { PrenotaIncassi } from 'src/app/models/prenotazioni/prenota-incassi.model';
+import { StripeIntent } from 'src/app/models/pagamenti/stripe-intent';
 
 
 
@@ -121,7 +123,9 @@ export const Structure: any = {
     IscrizioneIncasso,
     ShopCarrello,
     DetailCarrello,
-    RiepilogoCarrello
+    RiepilogoCarrello,
+    PrenotaIncassi,
+    StripeIntent
 
 }
 

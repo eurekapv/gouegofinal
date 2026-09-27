@@ -359,8 +359,9 @@ export class PrenotazioneService {
           //Questi sono i parametri per l'esportazione
           let paramExport = new ParamsExport();
           paramExport.clearDOProperty = false;
-          paramExport.clearPKProperty = true;
+          paramExport.clearPKProperty = false;
           paramExport.clearPrivateProperty = true;
+          console.log(docPrenotazione.ID);
           
           //Creo il JSON del documento , eliminando le proprietà do e private (true) e le chiavi primarie(true)
           

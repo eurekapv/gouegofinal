@@ -995,7 +995,8 @@ onSelectDefaultTypePayment(): Promise<void> {
       }
 
       //Presenta le Opzioni del pagamento
-      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, metadata)
+      //Su iOS non uso Apple Pay ma la Payment Sheet, cosi' l'utente puo' scegliere tra carta e gli altri metodi abilitati
+      this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, metadata, { useApplePay: false })
         .then(result => {
 
           if (result.success) {

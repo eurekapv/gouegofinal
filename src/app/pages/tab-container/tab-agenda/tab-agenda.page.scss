@@ -164,6 +164,95 @@ ion-content {
     border-radius: 12px;
     font-size: 0.85rem;
     font-weight: 700;
+
+    &.danger {
+      background: var(--ion-color-danger);
+    }
+  }
+}
+
+// =====================================================
+// DA PAGARE
+// =====================================================
+.dapagare-section {
+  margin-bottom: 32px;
+  animation: slideDown 0.4s ease-out 0.1s both;
+
+  .section-header h3 ion-icon {
+    color: var(--ion-color-danger);
+  }
+}
+
+.dapagare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dapagare-item {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  .dapagare-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(var(--ion-color-danger-rgb), 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-danger);
+    }
+  }
+
+  .dapagare-content {
+    flex: 1;
+    min-width: 0;
+
+    h4 {
+      margin: 0 0 2px 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ion-color-dark);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--ion-color-mediumlight);
+      text-transform: capitalize;
+    }
+  }
+
+  .dapagare-amount {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--ion-color-danger);
+    white-space: nowrap;
+  }
+
+  .dapagare-arrow {
+    font-size: 18px;
+    color: var(--ion-color-mediumlight);
+    flex-shrink: 0;
   }
 }
 

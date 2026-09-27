@@ -76,6 +76,67 @@ export class UtenteiscrizioneService {
   }
 
 
+  /**
+   * Effettua la richiesta dell'elenco Iscrizioni con un residuo da pagare
+   * @param config Dati configurazione
+   * @param idUtente Utente che effettua richiesta
+   * @param maxRecord Max Record da recuperare
+   */
+  requestDaPagare(config: StartConfiguration, 
+                  idUtente: string, 
+                  maxRecord: number = 0): Promise<UtenteIscrizione[]> {
+
+    return new Promise((resolve, reject)=>{
+      let myHeaders = config.getHttpHeaders();
+          
+
+      const doObject = 'UTENTEISCRIZIONE';
+        
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto l'area richiesta
+      let myParams = this.apiService.getHttpParams().set('IDUTENTE',idUtente);
+      myParams = myParams.append('RESIDUO','>0');
+      myParams = myParams.append('$top', (maxRecord + '') );
+  
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(
+          map(data => {
+            
+              let arReturn = [];
+              if (data.UTENTEISCRIZIONE) {
+                arReturn = data.UTENTEISCRIZIONE;
+              }
+  
+              return arReturn;
+            
+          }),
+          map(listData => {
+            let listReturn: UtenteIscrizione[] = [];
+            listData.forEach(element => {
+              const doc = new UtenteIscrizione();
+              doc.setJSONProperty(element);
+              listReturn.push(doc);
+            });            
+            return listReturn;
+          })
+        )
+        .subscribe({
+          next: (resultData)=> {
+            //Al termine ritorno la nuova lista
+            resolve(resultData);
+          },
+          error: (err) => {
+            reject (err);
+          }
+        });
+  
+    });
+  }   
+
+
      /**
    * 
    * @param config Dati configurazione

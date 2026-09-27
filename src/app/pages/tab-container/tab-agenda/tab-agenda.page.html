@@ -130,6 +130,49 @@
     </ion-chip>
   </div>
 
+  <!-- DA PAGARE -->
+  <div class="dapagare-section" *ngIf="totalDaPagare > 0">
+    <div class="section-header">
+      <h3>
+        <ion-icon name="card" color="danger"></ion-icon>
+        Da Pagare
+      </h3>
+      <span class="count-badge danger">{{ totalDaPagare }}</span>
+    </div>
+
+    <div class="dapagare-list">
+      <div
+          class="dapagare-item"
+          *ngFor="let item of listIscrizioniDaPagare"
+          (click)="onClickIscrizioneDaPagare(item)">
+        <div class="dapagare-icon">
+          <ion-icon name="school-outline"></ion-icon>
+        </div>
+        <div class="dapagare-content">
+          <h4>{{ item.DENOMINAZIONECORSO }}</h4>
+          <p *ngIf="item.DENOMINAZIONELOCATION">{{ item.DENOMINAZIONELOCATION }}</p>
+        </div>
+        <div class="dapagare-amount">{{ item.RESIDUO | currency: 'EUR' }}</div>
+        <ion-icon name="chevron-forward" class="dapagare-arrow"></ion-icon>
+      </div>
+
+      <div
+          class="dapagare-item"
+          *ngFor="let item of listPrenotazioniDaPagare"
+          (click)="onClickPrenotazioneDaPagare(item)">
+        <div class="dapagare-icon">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="dapagare-content">
+          <h4>{{ item.DENOMINAZIONECAMPO || item.DENOMINAZIONESPORT }}</h4>
+          <p>{{ item.DATAORAINIZIO | date: 'EEEE dd/MM/yyyy' | titlecase }}</p>
+        </div>
+        <div class="dapagare-amount">{{ item.RESIDUO | currency: 'EUR' }}</div>
+        <ion-icon name="chevron-forward" class="dapagare-arrow"></ion-icon>
+      </div>
+    </div>
+  </div>
+
   <!-- PROSSIMO IMPEGNO CON COUNTDOWN -->
   <div class="next-impegno-section" *ngIf="nextImpegno">
     <div class="section-header">

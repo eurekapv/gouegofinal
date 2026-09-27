@@ -24,6 +24,10 @@ export class UtentePrenotazione extends IDDocument {
     
     DURATAORE: number; 
     NUMPARTECIPANTI: number;
+
+    TOTALE: number;
+    INCASSATO: number;
+    RESIDUO: number;
     
     
 
@@ -66,7 +70,7 @@ export class UtentePrenotazione extends IDDocument {
                         'DENOMINAZIONECAMPO'
                         ];
         let arNumber = ['NUMPARTECIPANTI'];
-        let arNumberDecimal = ['DURATAORE'];
+        let arNumberDecimal = ['DURATAORE', 'TOTALE', 'INCASSATO', 'RESIDUO'];
         let arBoolean = [];
         let arDate = [];
         let arDateTime =['DATAORAINIZIO','DATAORAFINE'];

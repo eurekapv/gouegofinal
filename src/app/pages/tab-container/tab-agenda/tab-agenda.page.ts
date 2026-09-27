@@ -8,6 +8,8 @@ import { GeneratorQrcode } from 'src/app/models/imdb/generator-qrcode.model';
 import { ImpegnoCollaboratore } from 'src/app/models/utente/impegno-collaboratore.model';
 import { ImpegnoCustode } from 'src/app/models/utente/impegno-custode.model';
 import { Impegno } from 'src/app/models/utente/impegno.model';
+import { UtenteIscrizione } from 'src/app/models/utente/utenteiscrizione.model';
+import { UtentePrenotazione } from 'src/app/models/utente/utenteprenotazione.model';
 import { Location } from 'src/app/models/struttura/location.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { Utente } from 'src/app/models/utente/utente.model';
@@ -96,6 +98,10 @@ export class TabAgendaPage implements OnInit, OnDestroy {
 
   personalFilter: 'tutti' | 'oggi' | 'domani' | 'settimana' = 'tutti';
   isLoadingPersonal: boolean = false;
+
+  //Iscrizioni e Prenotazioni con un residuo da pagare
+  listIscrizioniDaPagare: UtenteIscrizione[] = [];
+  listPrenotazioniDaPagare: UtentePrenotazione[] = [];
   // Variabile loading per skeleton (aggiungi con le altre variabili)
   isLoadingTrainer: boolean = false;
   isLoadingCustode: boolean = false;
@@ -600,11 +606,66 @@ export class TabAgendaPage implements OnInit, OnDestroy {
   
     // Effettuo la richiesta
     this.startService.requestImpegniPersonali(idUtente, this.futureRequestImpegni, this.numRequestImpegniTop);
-    
+
+    // Richiedo anche le iscrizioni/prenotazioni con un residuo da pagare
+    this.requestListDaPagare(idUtente);
+
     // Nascondi loading dopo un timeout (o quando arrivano i dati)
     setTimeout(() => {
       this.hideLoadingPersonal();
     }, 500);
+  }
+
+  /**
+   * Richiede le Iscrizioni Corso e le Prenotazioni con un residuo da pagare.
+   * Un errore non blocca la pagina, la sezione semplicemente non compare
+   * @param idUtente Utente loggato
+   */
+  requestListDaPagare(idUtente: string) {
+
+    if (!idUtente || idUtente.length == 0) {
+      this.listIscrizioniDaPagare = [];
+      this.listPrenotazioniDaPagare = [];
+      return;
+    }
+
+    Promise.all([this.startService.requestIscrizioniDaPagare(idUtente),
+                 this.startService.requestPrenotazioniDaPagare(idUtente)])
+           .then(([listIscrizioni, listPrenotazioni]) => {
+              this.listIscrizioniDaPagare = listIscrizioni;
+              this.listPrenotazioniDaPagare = listPrenotazioni;
+           })
+           .catch(error => {
+              LogApp.consoleLog(error, 'error');
+              this.listIscrizioniDaPagare = [];
+              this.listPrenotazioniDaPagare = [];
+           });
+  }
+
+  /**
+   * Totale degli elementi con un residuo da pagare
+   */
+  get totalDaPagare(): number {
+    return (this.listIscrizioniDaPagare?.length || 0) + (this.listPrenotazioniDaPagare?.length || 0);
+  }
+
+  /**
+   * Click su una Iscrizione Corso da pagare: apro la sua scheda
+   * @param item Iscrizione selezionata
+   */
+  onClickIscrizioneDaPagare(item: UtenteIscrizione) {
+    let urlPath = this.startService.getUrlPageHistoryPersonal('course', item.ID);
+    this.navController.navigateForward(urlPath);
+  }
+
+  /**
+   * Click su una Prenotazione da pagare: apro la sua scheda
+   * @param item Prenotazione selezionata
+   */
+  onClickPrenotazioneDaPagare(item: UtentePrenotazione) {
+    let historyId = item.IDPRENOTAZIONE + '-' + item.ID;
+    let urlPath = this.startService.getUrlPageHistoryPersonal('book', historyId);
+    this.navController.navigateForward(urlPath);
   }
 
   /**

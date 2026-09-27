@@ -81,6 +81,68 @@ export class UtenteprenotazioneService {
     });
   }
 
+
+  /**
+   * Effettua la richiesta dell'elenco Prenotazioni 
+   * di un utente con residuo da pagare
+   * @param config Dati configurazione
+   * @param idUtente Utente che effettua richiesta
+   * @param maxRecord Max Record da recuperare
+   */
+  requestDaPagare(config: StartConfiguration, 
+                  idUtente: string, 
+                  maxRecord: number = 0): Promise<UtentePrenotazione[]> {
+
+    return new Promise((resolve, reject)=>{
+      let myHeaders = config.getHttpHeaders();
+          
+
+      const doObject = 'UTENTEPRENOTAZIONE';
+        
+      let myUrl = config.urlBase + '/' + doObject;  
+  
+      //Nei Parametri imposto l'area richiesta
+      let myParams = this.apiService.getHttpParams().set('IDUTENTE',idUtente);
+      myParams = myParams.append('RESIDUO','>0');
+      myParams = myParams.append('$top', (maxRecord + '') );
+  
+  
+      this.apiService
+        .httpGet(myUrl, myHeaders, myParams)
+        .pipe(
+          map(data => {
+            
+              let arReturn = [];
+              if (data.UTENTEPRENOTAZIONE) {
+                arReturn = data.UTENTEPRENOTAZIONE;
+              }
+  
+              return arReturn;
+            
+          }),
+          map(listData => {
+            let listReturn: UtentePrenotazione[] = [];
+            listData.forEach(element => {
+              const doc = new UtentePrenotazione();
+              doc.setJSONProperty(element);
+              listReturn.push(doc);
+            });            
+            return listReturn;
+          })
+        )
+        .subscribe({
+          next: (resultData)=> {
+            //Al termine ritorno la nuova lista
+            resolve(resultData);
+          },
+          error: (err) => {
+            reject (err);
+          }
+        });
+  
+    });
+  }  
+
   /**
    * Aggiunge all'elenco una prenotazione dell'utente
    * @param objUtentePrenotazione Prenotazione da aggiungere

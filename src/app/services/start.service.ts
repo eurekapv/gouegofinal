@@ -96,6 +96,8 @@ import { CorsoGiornaliero, GroupedCorsiGiornalieri } from '../models/corso/corso
 import { PaymentOptionsConfig, PaymentResult, StripePaymentIntentMetadata, StripePaymentService } from './payment/stripe-payment.service';
 import { StripeIntentServiceService } from './stripe-intent/stripe-intent.service.service';
 import { StripeIntent } from '../models/pagamenti/stripe-intent';
+import { UtentePrenotazione } from '../models/utente/utenteprenotazione.model';
+import { UtenteIscrizione } from '../models/utente/utenteiscrizione.model';
 
 @Injectable({
   providedIn: 'root'
@@ -2090,10 +2092,23 @@ requestUtentePrenotazioni(idUtente: string) {
 /**
  * Lista Prenotazioni di tipo Observable
  */
-get listUtentePrenotazioni() {
+get listUtentePrenotazioni():Observable<UtentePrenotazione[]> {
   return this.utentePrenotazioneService.listUtentePrenotazione;
 }
 
+  /**
+   * Effettua la richiesta dell'elenco Prenotazioni 
+   * di un utente con residuo da pagare
+   * @param config Dati configurazione
+   * @param idUtente Utente che effettua richiesta
+   * @param maxRecord Max Record da recuperare
+   */
+  requestPrenotazioniDaPagare(idUtente: string, 
+                              maxRecord: number = 0): Promise<UtentePrenotazione[]> {
+
+    const actualStartConfig = this._startConfig.getValue();
+    return this.utentePrenotazioneService.requestDaPagare(actualStartConfig, idUtente, maxRecord);
+  }
 //#endregion
 
 //#region UTENTE ISCRIZIONE
@@ -2120,6 +2135,18 @@ get listUtenteIscrizioni() {
 requestIscrizioneById(idIscrizione){
   return this.utenteIscrizioneService.requestById(idIscrizione);
 }
+
+  /**
+   * Effettua la richiesta dell'elenco Iscrizioni con un residuo da pagare
+   * @param config Dati configurazione
+   * @param idUtente Utente che effettua richiesta
+   * @param maxRecord Max Record da recuperare
+   */
+  requestIscrizioniDaPagare(idUtente: string, 
+                            maxRecord: number = 0): Promise<UtenteIscrizione[]> {
+    const actualStartConfig = this._startConfig.getValue();
+    return this.utenteIscrizioneService.requestDaPagare(actualStartConfig, idUtente, maxRecord)
+  }
 
 //#endregion
 

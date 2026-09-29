@@ -21,6 +21,7 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { TotaleScadenze } from 'src/app/shared/interfaces/interfaces';
 import { IscrizioneIncasso } from 'src/app/models/corso/iscrizione-incasso.model';
 import { StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
+import { environment } from 'src/environments/environment.prod';
 
 
 @Component({
@@ -991,7 +992,8 @@ onSelectDefaultTypePayment(): Promise<void> {
         guidPrimaryKey: this.iscrizioneDoc.ID,
         customerGuid: this.userDoc?.ID,
         corsoGuid: this.iscrizioneDoc.IDCORSO,
-        campoGuid: ''
+        campoGuid: '',
+        version: environment.version
       }
 
       //Presenta le Opzioni del pagamento

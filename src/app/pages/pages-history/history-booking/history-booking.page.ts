@@ -19,6 +19,7 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PrenotaIncassi } from 'src/app/models/prenotazioni/prenota-incassi.model';
 import { StripeIntent } from 'src/app/models/pagamenti/stripe-intent';
 import { PaymentResult, StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
+import { environment } from 'src/environments/environment.prod';
 Swiper.use([Navigation, Pagination]);
 
 @Component({
@@ -501,7 +502,8 @@ export class HistoryBookingPage implements OnInit, OnDestroy {
       guidSecondaryKey: scadenza.ID,
       customerGuid: utente?.ID,
       corsoGuid: '',
-      campoGuid: idCampo
+      campoGuid: idCampo,
+      version: environment.version
     };
 
     this.paymentInProgress = true;

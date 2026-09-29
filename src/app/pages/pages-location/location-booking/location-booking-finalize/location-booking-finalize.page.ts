@@ -20,6 +20,8 @@ import { AreaLink } from 'src/app/models/struttura/arealink.model';
 import { LogApp } from 'src/app/models/zsupport/log.model';
 import { PrenotaTesseramento } from 'src/app/models/prenotazioni/prenota_tesseramento.model';
 import { StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
+import { MyDateTime } from 'src/app/library/models/mydatetime.model';
+import { environment } from 'src/environments/environment.prod';
 
 
 @Component({
@@ -544,6 +546,12 @@ payWithStripe(): Promise<PaymentProcess> {
     
     const amount = this.activePrenotazione.TOTALE * 100;
     const idCampo = (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE && this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length != 0) ? this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0].IDCAMPO : '';
+    const pianificaDoc = (this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE && this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE.length != 0) ? this.activePrenotazione.PRENOTAZIONEPIANIFICAZIONE[0] : null;
+
+    if (!pianificaDoc) {
+      reject('Nessuna data pianificata');
+      return;
+    }
 
     const paymentDescription = 'Pagamento Prenotazione ' + this.selectedLocation?.DENOMINAZIONE;
     //Costruisco il metadata
@@ -555,7 +563,12 @@ payWithStripe(): Promise<PaymentProcess> {
       guidPrimaryKey: this.activePrenotazione.ID,
       customerGuid: this.docUtente?.ID,
       corsoGuid: '',
-      campoGuid: idCampo
+      campoGuid: idCampo,
+      locationStart: MyDateTime.formatDateTimeNoTimeZone(pianificaDoc.DATAORAINIZIO),
+      locationEnd: MyDateTime.formatDateTimeNoTimeZone(pianificaDoc.DATAORAFINE),
+      locationDuration: pianificaDoc.DURATAORE,
+      locationPeople: pianificaDoc.NUMPARTECIPANTI,
+      version: environment.version
     }
 
     this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, metadata)

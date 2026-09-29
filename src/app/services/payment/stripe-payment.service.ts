@@ -16,6 +16,11 @@ export interface StripePaymentIntentMetadata {
   customerGuid?: string;
   corsoGuid?: string;
   campoGuid?: string;
+  locationStart?: string;
+  locationEnd?: string;
+  locationDuration?: number;
+  locationPeople?: number;
+  version?:string;
 }
 
 export interface StripePaymentIntent {

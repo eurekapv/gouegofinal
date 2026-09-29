@@ -20,6 +20,7 @@ import { StripeIntent } from 'src/app/models/pagamenti/stripe-intent';
 import { PianificazioneCorso } from 'src/app/models/corso/pianificazionecorso.model';
 import { Area } from 'src/app/models/struttura/area.model';
 import { MyDateTime, TypePeriod } from 'src/app/library/models/mydatetime.model';
+import { environment } from 'src/environments/environment.prod';
 
 
 @Component({
@@ -845,7 +846,8 @@ export class HistoryCoursePage implements OnInit, OnDestroy {
       guidSecondaryKey: scadenza.ID,
       customerGuid: utente?.ID,
       corsoGuid: this.utenteIscrizioneDoc.IDCORSO,
-      campoGuid: ''
+      campoGuid: '',
+      version: environment.version
     };
 
     this.paymentInProgress = true;

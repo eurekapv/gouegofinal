@@ -13,6 +13,7 @@ import { LogApp } from 'src/app/models/zsupport/log.model';
 import { AreaLink } from 'src/app/models/struttura/arealink.model';
 import { Browser } from '@capacitor/browser';
 import { StripePaymentIntentMetadata } from 'src/app/services/payment/stripe-payment.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-cart-checkout',
@@ -625,7 +626,8 @@ export class CartCheckoutPage implements OnInit, OnDestroy {
         guidPrimaryKey: this.carrelloDoc.ID,
         customerGuid: this.userDoc?.ID,
         corsoGuid: '',
-        campoGuid: ''
+        campoGuid: '',
+        version: environment.version
       }
 
       this.startService.presentPaymentOptions(amount, 'EUR', paymentDescription, metadata)

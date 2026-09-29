@@ -192,6 +192,15 @@ static formatDateISO(dateValue: Date, formatRepresentation: 'date' | 'time' | 'c
     return isoValue;
 }
 
+/**
+ * Formatta una data ora senza ricalcoli dati dal timezone
+ * @param dateTimeValue 
+ * @returns 
+ */
+static formatDateTimeNoTimeZone(dateTimeValue: Date) {
+    return MyDateTime.formatDate(dateTimeValue, "yyyy-MM-dd'T'HH:mm:ss");
+}
+
 //Formatta un orario passata  (Data e Ora)
 static formatTime(data: Date, withSeconds:boolean =false): string {
 

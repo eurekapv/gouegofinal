@@ -564,6 +564,7 @@ payWithStripe(): Promise<PaymentProcess> {
       customerGuid: this.docUtente?.ID,
       corsoGuid: '',
       campoGuid: idCampo,
+      sportGuid: pianificaDoc.IDSPORT,
       locationStart: MyDateTime.formatDateTimeNoTimeZone(pianificaDoc.DATAORAINIZIO),
       locationEnd: MyDateTime.formatDateTimeNoTimeZone(pianificaDoc.DATAORAFINE),
       locationDuration: pianificaDoc.DURATAORE,

@@ -16,6 +16,7 @@ export interface StripePaymentIntentMetadata {
   customerGuid?: string;
   corsoGuid?: string;
   campoGuid?: string;
+  sportGuid?: string;
   locationStart?: string;
   locationEnd?: string;
   locationDuration?: number;
